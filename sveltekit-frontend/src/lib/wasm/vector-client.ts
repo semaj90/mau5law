@@ -2,13 +2,13 @@
  * WebAssembly-JavaScript Bridge for Vector Operations
  * Handles client-side WASM optimization with server-side CUDA fallback
  */
-import type { VectorSimilarityRequest } from '../types/vector-types';
+import type { VectorSimilarityRequest } from, '../types/vector-types';
 interface WasmModule { memory: WebAssembly.Memory;, cosineSimJS: (aPtr: number, bPtr: number, length: number) => number;
   dotProductJS: (aPtr: number, bPtr: number, length: number) => number;
   cosineSimilaritySIMD: (aPtr: number, bPtr: number, length: number) => number;
   hybridCosineSimilarity: (aPtr: number, bPtr: number, length: number, useServer: number) => number;
   shouldUseServer: (operationType: number, dataSize: number, complexityScore: number) => number;
-  batchVectorChunking: (; vectorsPtr: number,
+  batchVectorChunking: (;, vectorsPtr: number,
     numVectors: number,
     vectorLength: number,
     chunkSize: number,
@@ -32,7 +32,7 @@ class VectorWasmClient {
       const wasmResponse = await fetch('/wasm/vector-operations.wasm');
       const wasmBytes = await wasmResponse.arrayBuffer();
       const result = await WebAssembly.instantiate(wasmBytes, {});
-      this.wasmModule = result.instance.exports as unknown as WasmModule;
+      this.wasmModule = result.instance.exports as: unknown as WasmModule;
       this.isInitialized = true;
       console.log('Vector WASM module initialized successfully');
       console.log('Memory usage:', this.getMemoryUsage(), 'bytes');
@@ -49,7 +49,7 @@ class VectorWasmClient {
     vectorB: Float32Array,
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',
     forceServer = false
-  ): Promise<{ result: number; usedServer: boolean; processingTime: number }> {
+  ): Promise<{ result: number; usedServer: boolean;, processingTime: number }> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
     }
@@ -87,7 +87,7 @@ class VectorWasmClient {
     chunkSize = 50
   ): Promise<{ results: number[];, usedServer: boolean;
     processingTime: number;
-    chunksProcessed: number;
+   , chunksProcessed: number;
   }> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
@@ -101,7 +101,7 @@ class VectorWasmClient {
     if (shouldUseServer) {
       // Server-side batch processing
       const request: VectorSimilarityRequest = {
-        operation: 'batch',
+       , operation: 'batch',
         vectorA: Array.from(queryVector),
         vectors: vectors.map(v => Array.from(v)),
         algorithm: this.algorithmToNumber(algorithm),
@@ -149,7 +149,7 @@ class VectorWasmClient {
       normalize?: boolean;
     } = {}
   ): Promise<{ embeddings: number[][];, processingTime: number;
-    tokensProcessed: number;
+   , tokensProcessed: number;
   }> {
     const startTime = performance.now();
     const response = await fetch('/api/v1/vector/embeddings', {
@@ -178,12 +178,12 @@ class VectorWasmClient {
    * Matrix operations with CUDA acceleration
    */
   async computeMatrix(
-    operation: 'multiply' | 'transpose' | 'inverse',
+   , operation: 'multiply' | 'transpose' | 'inverse',
     matrixA: number[][],
     matrixB?: number[][],
     options: { useCUDA?: boolean; parallel?: boolean } = {}
   ): Promise<{ result: number[][];, processingTime: number;
-    flops: number;
+   , flops: number;
   }> {
     const response = await fetch('/api/v1/vector/matrix', {
       method: 'POST',
@@ -212,7 +212,7 @@ class VectorWasmClient {
    * Semantic search with pgvector and CUDA acceleration
    */
   async semanticSearch(
-    query: string,
+   , query: string,
     options: {
       limit?: number;
       threshold?: number;
@@ -225,7 +225,7 @@ class VectorWasmClient {
       metadata?: any;
     }>;
     totalCount: number;
-    processingTime: number;
+   , processingTime: number;
   }> {
     const response = await fetch('/api/v1/vector/search', {
       method: 'POST',
@@ -251,7 +251,7 @@ class VectorWasmClient {
     };
   }
   private computeLocalSimilarity(
-    vectorA: Float32Array,
+   , vectorA: Float32Array,
     vectorB: Float32Array,
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan'
   ): number {
@@ -270,10 +270,10 @@ class VectorWasmClient {
       // Compute similarity using SIMD optimization
       let result: number;
       switch (algorithm) {
-        case 'cosine':
+        case, 'cosine':
           result = this.wasmModule.cosineSimilaritySIMD(ptrA, ptrB, length);
           break;
-        case 'dot':
+        case, 'dot':
           result = this.wasmModule.dotProductJS(ptrA, ptrB, length);
           break;
         default:
@@ -292,7 +292,7 @@ class VectorWasmClient {
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan'
   ): Promise<number> {
     const request: VectorSimilarityRequest = {
-      operation: algorithm as VectorSimilarityRequest['operation'],
+     , operation: algorithm as VectorSimilarityRequest['operation'],
       vectorA: Array.from(vectorA),
       vectorB: Array.from(vectorB),
       useCUDA: true,
@@ -311,13 +311,13 @@ class VectorWasmClient {
   }
   private algorithmToNumber(algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan'): number {
     switch (algorithm) {
-      case 'cosine':
+      case, 'cosine':
         return 0;
-      case 'euclidean':
+      case, 'euclidean':
         return 1;
-      case 'dot':
+      case, 'dot':
         return 2;
-      case 'manhattan':
+      case, 'manhattan':
         return 3;
       default: return 0;
     }
@@ -326,13 +326,13 @@ class VectorWasmClient {
     // Simple complexity scoring for routing decisions
     const baseScore = Math.log2(Math.max(1, length));
     switch (algorithm) {
-      case 'cosine':
+      case, 'cosine':
         return baseScore * 1.5; // More complex due to normalization
-      case 'euclidean':
+      case, 'euclidean':
         return baseScore * 1.2;
-      case 'manhattan':
+      case, 'manhattan':
         return baseScore * 1.0;
-      case 'dot':
+      case, 'dot':
         return baseScore * 0.8; // Simplest operation
       default: return baseScore;
     }
@@ -342,7 +342,7 @@ class VectorWasmClient {
     return this.wasmModule.getMemoryStats();
   }
   async benchmark(iterations = 100): Promise<{ localPerformance: number;, memoryUsage: number;
-    recommendations: string[];
+   , recommendations: string[];
   }> {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
     const benchmarkTime = this.wasmModule.benchmarkOperation(0, 1000, iterations);

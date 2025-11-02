@@ -2,12 +2,12 @@
  * Route Registry for Dynamic Route Management
  * Centralized registry for all application routes
  */
-import { writable, derived, type Readable } from 'svelte/store';
-import { page } from '$app/stores';
-import type { RouteDefinition } from '$lib/data/routes-config';
-import { allRoutes } from '$lib/data/routes-config';
-import type { GeneratedRoute, DynamicRouteConfig } from './dynamic-route-generator.js';
-import { dynamicRouteGenerator } from './dynamic-route-generator.js';
+import { writable, derived, type Readable } from, 'svelte/store';
+import { page } from, '$app/stores';
+import type { RouteDefinition } from, '$lib/data/routes-config';
+import { allRoutes } from, '$lib/data/routes-config';
+import type { GeneratedRoute, DynamicRouteConfig } from, './dynamic-route-generator.js';
+import { dynamicRouteGenerator } from, './dynamic-route-generator.js';
 
 /**
  * Route Registry State interface
@@ -24,7 +24,7 @@ export interface RouteRegistryState {
 /**
  * Route Registry Options interface
  */
-export interface RouteRegistryOptions { maxHistorySize: number;, maxRecentSize: number;
+export interface RouteRegistryOptions {, maxHistorySize: number;, maxRecentSize: number;
   persistState: boolean;
   storageKey: string;
 }
@@ -40,7 +40,7 @@ export const CATEGORY_UNKNOWN = 'unknown';
  */
 export class RouteRegistry {
   private state = writable<RouteRegistryState>({
-    routes: new Map(),
+   , routes: new Map(),
     dynamicRoutes: new Map(),
     currentRoute: null,
     routeHistory: [],
@@ -49,7 +49,7 @@ export class RouteRegistry {
   });
 
   private cachedState: RouteRegistryState;
-  private options: RouteRegistryOptions;
+  private, options: RouteRegistryOptions;
 
   constructor(_options: Partial<RouteRegistryOptions> = {}) {
     this.options = {
@@ -351,7 +351,7 @@ export class RouteRegistry {
     dynamic: number;
     favorites: number;
     recent: number;
-    categories: Record<string, number>;
+   , categories: Record<string, number>;
   } {
     const state = this.getCurrentState();
     const categories: Record<string, number> = {};
@@ -458,9 +458,9 @@ export class RouteRegistry {
           };
           this.state.update(state => ({
             ...state,
-            favorites: new Set((p.favorites ?? []) as string[]),
-            recentRoutes: (p.recentRoutes ?? []) as string[],
-            routeHistory: (p.routeHistory ?? []) as string[]
+            favorites: new Set((p.favorites ?? []) as: string[]),
+            recentRoutes: (p.recentRoutes ?? []) as: string[],
+            routeHistory: (p.routeHistory ?? []) as: string[]
           }));
         } else {
           console.warn('Route registry state in localStorage is invalid, ignoring.');
@@ -528,7 +528,7 @@ function asString(v: any): string | undefined {
 }
 
 function getPathHref(route: RouteDefinition | GeneratedRoute): { path?: string; href?: string } {
-  const r = route as unknown as Record<string, unknown>;
+  const r = route as: unknown as Record<string, unknown>;
   return {
     path: asString(r['path']),
     href: asString(r['href'])
@@ -536,7 +536,7 @@ function getPathHref(route: RouteDefinition | GeneratedRoute): { path?: string; 
 }
 
 function getRouteCategory(route: RouteDefinition | GeneratedRoute): string {
-  const r = route as unknown as Record<string, unknown>;
+  const r = route as: unknown as Record<string, unknown>;
   // prefer explicit: 'category' property if present
   if ('category' in route) {
     const c = asString(r['category']);
@@ -552,19 +552,19 @@ function getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): { title: s
   tags: string[];
   id: string;
 } {
-  const r = route as unknown as Record<string, unknown>;
+  const r = route, as: unknown as Record<string, unknown>;
   const title = asString(r['title']) ?? '';
   const description = asString(r['description']) ?? '';
 
   let tags: string[] = [];
   // try top-level tags
   if (Array.isArray(r['tags'])) {
-    tags = (r['tags'] as unknown[]).filter(t => typeof t === 'string') as string[];
+    tags = (r['tags'] as: unknown[]).filter(t => typeof t === 'string') as: string[];
   } else {
     // or metadata.tags
     const meta = r['metadata'] as Record<string, unknown> | undefined;
     if (meta && Array.isArray(meta['tags'])) {
-      tags = (meta['tags'] as unknown[]).filter(t => typeof t === 'string') as string[];
+      tags = (meta['tags'] as: unknown[]).filter(t => typeof t === 'string') as: string[];
     }
   }
 

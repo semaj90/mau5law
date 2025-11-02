@@ -1,4 +1,4 @@
-import { uploadWithXhr } from './xhr';
+import { uploadWithXhr } from, './xhr';
 export type SubmitResult = { status: number; responseText?: string };
 /**
  * Submit data with progress. For FormData (file uploads) it uses XHR to provide upload progress.

@@ -1,9 +1,9 @@
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { CONFIG } from '$lib/config/env.server';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import { CONFIG } from, '$lib/config/env.server';
 
 const qdrantUrl = CONFIG.QDRANT_URL || process.env.QDRANT_URL || 'http://127.0.0.1:6333';
 
-export const qdrantClient = new QdrantClient({ url: qdrantUrl });
+export const qdrantClient = new QdrantClient({, url: qdrantUrl });
 
 export async function initQdrant(): Promise<void> {
   try {
@@ -22,12 +22,12 @@ if (CONFIG.NODE_ENV !== 'production') {
 }
 
 export default qdrantClient;
-import type { DocumentItem, VisionItem, SearchResult } from '$lib/types/sharedTypes';
+import type { DocumentItem, VisionItem, SearchResult } from, '$lib/types/sharedTypes';
 
 // Added/relocated imports (moved here so they are available to functions defined earlier)
-import { qdrantOptimized } from './qdrant-optimized.js';
-import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
-import { productionLogger, as logger } from '../production-logger.js';
+import { qdrantOptimized } from, './qdrant-optimized.js';
+import { createQdrantWrapper, QdrantApiWrapper } from, './qdrant-api-wrapper.js';
+import { productionLogger, as logger } from, '../production-logger.js';
 
 // Inferred types from QdrantApiWrapper as they are not exported directly
 type QdrantCollection = NonNullable<Awaited<ReturnType<QdrantApiWrapper['getCollection']>>>;
@@ -37,7 +37,7 @@ type QdrantConfig = Parameters<QdrantApiWrapper['createCollection']>[1];
 const COLLECTIONS = {
   DOCUMENTS: `documents` };
 
-let qdrantWrapper: QdrantApiWrapper | undefined;
+let, qdrantWrapper: QdrantApiWrapper | undefined;
 function getQdrantWrapper(): QdrantApiWrapper | undefined {
   if (!qdrantWrapper) {
     qdrantWrapper = createQdrantWrapper();
@@ -59,7 +59,7 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
     return { ok: false };
   }
   // Safely read embeddings length without using `any`
-  const maybeEmb = (item as unknown as { embeddings?: number[] }).embeddings;
+  const maybeEmb = (item, as: unknown as { embeddings?: number[] }).embeddings;
   const embLen = maybeEmb?.length ?? 0;
   console.debug('qdrant.upsert:', item.id, 'size', embLen);
 
@@ -71,7 +71,7 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
         {,
          , id: item.id,
           vector,
-          payload: item as unknown as Record<string, unknown>
+          payload: item, as: unknown as Record<string, unknown>
         },
       ]
     });
@@ -87,7 +87,7 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
 export async function searchQdrant(queryVector: number[], topK = 10): Promise<SearchResult[]> {
   // Prefer optimized client search when available
   try {
-    const opt = qdrantOptimized as unknown as
+    const opt = qdrantOptimized as: unknown as
       | { search?: (collection: string, q: number[], options?: { limit?: number }) => Promise<unknown[]> }
       | undefined;
     if (opt?.search && typeof opt.search === 'function') {
@@ -99,7 +99,7 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
     if (!wrapper || typeof wrapper.search !== 'function') {
       return [];
     }
-    // Provide a correctly-typed options object (vector is required)
+    // Provide a correctly-typed options: object (vector is required)
     const options = {
       vector: Array.from(queryVector),
       limit: topK
@@ -118,13 +118,13 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
 // Added explicit types for Qdrant filter/search payloads
 type QdrantFilterMatch = { any: string[] } | { value: string };
 
-type QdrantFilterClause = { key: string;, match: QdrantFilterMatch;
+type QdrantFilterClause = {, key: string;, match: QdrantFilterMatch;
 };
 
 type QdrantSearchPayload = {
   vector: number[];
   limit?: number;
-  filter?: { must: QdrantFilterClause[] };
+  filter?: {, must: QdrantFilterClause[] };
 };
 
 // Filtered search using Qdrant payload filters (tags, caseId)
@@ -153,14 +153,14 @@ export async function searchQdrantFiltered(
     }
 
     const payload: QdrantSearchPayload = {
-      vector: Array.from(queryVector),
+     , vector: Array.from(queryVector),
       limit: options.limit ?? 10,
       filter: must.length > 0 ? { must } : undefined
     };
 
     // call search via a typed facade to avoid `any` casts
     const typedWrapper = wrapper as {
-      search: (collection: string, payload: QdrantSearchPayload) => Promise<SearchResult[]>;
+     , search: (collection: string, payload: QdrantSearchPayload) => Promise<SearchResult[]>;
     };
 
     const res = await typedWrapper.search(COLLECTIONS.DOCUMENTS, payload);

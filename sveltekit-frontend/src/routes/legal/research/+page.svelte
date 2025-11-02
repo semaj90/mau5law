@@ -1,27 +1,27 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
-  import LoadingButton from '$lib/headless/LoadingButton.svelte';
-  import FormField from '$lib/headless/FormField.svelte';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { nesGPUBridge } from, '$lib/gpu/nes-gpu-memory-bridge';
+  import HeadlessDialog from, '$lib/headless/HeadlessDialog.svelte';
+  import LoadingButton from, '$lib/headless/LoadingButton.svelte';
+  import FormField from, '$lib/headless/FormField.svelte';
   // Icons (import only icons actually used to avoid type errors)
-  import Search from 'lucide-svelte/icons/search';
-  import BookOpen from 'lucide-svelte/icons/book-open';
-  import Brain from 'lucide-svelte/icons/brain';
-  import Filter from 'lucide-svelte/icons/filter';
-  import FileText from 'lucide-svelte/icons/file-text';
-  import Bookmark from 'lucide-svelte/icons/bookmark';
-  import Star from 'lucide-svelte/icons/star';
-  import Clock from 'lucide-svelte/icons/clock';
-  import Library from 'lucide-svelte/icons/library';
-  import Gavel from 'lucide-svelte/icons/gavel';
-  import Calendar from 'lucide-svelte/icons/calendar';
-  import Link from 'lucide-svelte/icons/link';
-  import ExternalLink from 'lucide-svelte/icons/external-link';
-  import Eye from 'lucide-svelte/icons/eye';
-  // Svelte 5 runes
+  import Search from, 'lucide-svelte/icons/search';
+  import BookOpen from, 'lucide-svelte/icons/book-open';
+  import Brain from, 'lucide-svelte/icons/brain';
+  import Filter from, 'lucide-svelte/icons/filter';
+  import FileText from, 'lucide-svelte/icons/file-text';
+  import Bookmark from, 'lucide-svelte/icons/bookmark';
+  import Star from, 'lucide-svelte/icons/star';
+  import Clock from, 'lucide-svelte/icons/clock';
+  import Library from, 'lucide-svelte/icons/library';
+  import Gavel from, 'lucide-svelte/icons/gavel';
+  import Calendar from, 'lucide-svelte/icons/calendar';
+  import Link from, 'lucide-svelte/icons/link';
+  import ExternalLink from, 'lucide-svelte/icons/external-link';
+  import Eye from, 'lucide-svelte/icons/eye';
+  // Svelte, 5 runes
 
   // --- ADDED: explicit types to avoid `never` / `unknown` inference errors ---
   interface DocumentResult {
@@ -67,7 +67,7 @@ import type { Document } from '$lib/types';
     id: string | null;
     startTime: Date;
     queries: ResearchQuery[];
-    findings: any[];
+   , findings: any[];
   };
   // --- END ADDED ---
 
@@ -81,7 +81,7 @@ import type { Document } from '$lib/types';
     dateRange: string;
     precedentialValue: string;
   }>({
-    jurisdiction: '',
+   , jurisdiction: '',
     court: '',
     documentType: '',
     dateRange: '',
@@ -111,7 +111,7 @@ import type { Document } from '$lib/types';
     documentTypes: string[];
     precedentialValues: string[];
   }>({
-    jurisdictions: ['Federal', 'State', 'Local', 'International'],
+   , jurisdictions: ['Federal', 'State', 'Local', 'International'],
     courts: ['Supreme Court', 'Court of Appeals', 'District Court', 'Bankruptcy Court'],
     documentTypes: ['case', 'statute', 'regulation', 'brief', 'opinion'],
     precedentialValues: ['High', 'Medium', 'Low', 'Informational']
@@ -151,8 +151,8 @@ import type { Document } from '$lib/types';
       };
       // Guarded call to nesGPUBridge if available
       try {
-        if (nesGPUBridge && typeof (nesGPUBridge as any).storeCHRROMPattern === 'function') {
-          await (nesGPUBridge as any).storeCHRROMPattern(`search_${Date.now()}`, { query: searchQuery });
+        if (nesGPUBridge && typeof (nesGPUBridge, as: any).storeCHRROMPattern === 'function') {
+          await (nesGPUBridge as: any).storeCHRROMPattern(`search_${Date.now()}`, { query: searchQuery });
         }
       } catch (e) {
         console.warn('nesGPUBridge.storeCHRROMPattern failed or unavailable', e);
@@ -188,8 +188,8 @@ import type { Document } from '$lib/types';
       {,
         id: '1',
         title: 'Smith v. Johnson - Contract Dispute Resolution',
-        citation: '123 F.3d 456 (9th Cir. 2019)',
-        fullCitation: 'Smith v. Johnson, 123 F.3d 456 (9th Cir. 2019)',
+        citation: '123 F.3d, 456 (9th Cir. 2019)',
+        fullCitation: 'Smith v. Johnson, 123 F.3d, 456 (9th Cir. 2019)',
         court: '9th Circuit Court of Appeals',
         jurisdiction: 'Federal',
         dateDecided: '2019-03-15',
@@ -221,7 +221,7 @@ import type { Document } from '$lib/types';
       },
       {
         id: '3',
-        title: 'Legal Brief: Motion for Summary Judgment Template',
+        title: 'Legal, Brief: Motion for Summary Judgment Template',
         citation: 'Practice Guide Ch. 7',
         fullCitation: 'Federal Practice Guide, Chapter 7: Summary Judgment Motions (2023)',
         court: 'Practice Guide',
@@ -284,7 +284,7 @@ import type { Document } from '$lib/types';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          documentId: document.id,
+         , documentId: document.id,
           citation: document.citation,
           title: document.title,
           notes: ''
@@ -331,17 +331,17 @@ import type { Document } from '$lib/types';
     });
   }
   function getRelevanceColor(score: number) {
-    if (score >= 0.9) return 'text-green-600 bg-green-100';
-    if (score >= 0.8) return 'text-blue-600 bg-blue-100';
-    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
-    return 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return, 'text-green-600 bg-green-100';
+    if (score >= 0.8) return, 'text-blue-600 bg-blue-100';
+    if (score >= 0.7) return, 'text-yellow-600 bg-yellow-100';
+    return, 'text-gray-600 bg-gray-100';
   }
   function getPrecedentialColor(value: string) {
     switch (value) {
-      case 'High': return 'text-red-600 bg-red-100';
-      case 'Medium': return 'text-yellow-600 bg-yellow-100';
-      case 'Low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-blue-600 bg-blue-100';
+      case, 'High': return, 'text-red-600 bg-red-100';
+      case, 'Medium': return, 'text-yellow-600 bg-yellow-100';
+      case, 'Low': return, 'text-gray-600 bg-gray-100';
+      default: return, 'text-blue-600 bg-blue-100';
     }
   }
 </script>
@@ -397,10 +397,10 @@ import type { Document } from '$lib/types';
                 bind:value={searchQuery}
                 onkeydown={(e) => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
-                class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500, focus:border-blue-500"
               />
               <div class="absolute inset-y-0 right-0, flex, items-center">
-                <div class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2, focus:ring-offset-2, focus:ring-blue-500">
+                <div class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none, focus:ring-2, focus:ring-offset-2, focus:ring-blue-500">
   <LoadingButton, onclick={performSearch}
                   loading={isSearching}
                   disabled={!searchQuery.trim()}>
@@ -417,7 +417,7 @@ import type { Document } from '$lib/types';
             <div class="flex, items-center, space-x-4">
               <span class="text-sm, font-medium, text-gray-700">Search Mode:</span>
               {#each [
-                { id: 'semantic', label: 'AI Semantic', icon: Brain },
+                {, id: 'semantic', label: 'AI Semantic', icon: Brain },
                 { id: 'boolean', label: 'Boolean', icon: Filter },
                 { id: 'phrase', label: 'Exact Phrase', icon: FileText }
               ] as mode}
@@ -505,7 +505,7 @@ import type { Document } from '$lib/types';
             <div class="flex, items-center, justify-between">
               <div class="flex, items-center, space-x-4">
                 <span, class="text-sm, text-gray-700">Sort by:</span>
-                <select bind:value={sortBy} class="rounded-md, border-gray-300, text-sm">
+                <select, bind:value={sortBy} class="rounded-md, border-gray-300, text-sm">
                   <option, value="relevance">Relevance</option>
                   <option, value="date">Date</option>
                   <option, value="citations">Citations</option>
@@ -528,14 +528,14 @@ import type { Document } from '$lib/types';
                   </div>
                   <div class="flex items-center, space-x-2, ml-4">
                     <span
-                      class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getRelevanceColor(((result as any).relevanceScore ?? 0))}
+                      class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium, " + getRelevanceColor(((result as: any).relevanceScore ?? 0))}
                     >
-                      {Math.round(((result as any).relevanceScore ?? 0) * 100)}% match
+                      {Math.round(((result as: any).relevanceScore ?? 0) * 100)}% match
                     </span>
                     <button
                       onclick={() => saveCitation(result)}
                       class="p-1 text-gray-400 transition-colors hover:text-yellow-500"
-                      class:text-yellow-500={(result as any).isBookmarked}
+                      class:text-yellow-500={(result, as: any).isBookmarked}
                     >
                       <Bookmark, class="h-4, w-4" />
                     </button>
@@ -558,7 +558,7 @@ import type { Document } from '$lib/types';
                     </div>
                   </div>
                   <div class="flex, items-center, space-x-2">
-                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs, font-medium " + getPrecedentialColor((result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}>
+                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs, font-medium, " + getPrecedentialColor((result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}>
                       {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue} Precedent
                     </span>
                     <button
@@ -590,7 +590,7 @@ import type { Document } from '$lib/types';
                 <button
                   onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(); }}
                   disabled={currentPage <= 1}
-                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50, disabled:opacity-50"
                 >
                   Previous
                 </button>
@@ -600,7 +600,7 @@ import type { Document } from '$lib/types';
                 <button
                   onclick={() => { currentPage = currentPage + 1; performSearch(); }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
-                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50, disabled:opacity-50"
                 >
                   Next
                 </button>

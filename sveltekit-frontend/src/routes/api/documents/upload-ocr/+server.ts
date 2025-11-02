@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
-import { db } from '$lib/server/database';
-import { documents, embeddings } from '$lib/server/db/schema-postgres';
-import { gpuRAGService } from '$lib/services/gpu-rag-service';
-import { QdrantVectorService } from '$lib/server/services';
-import { env } from '$env/dynamic/private';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
+import { db } from, '$lib/server/database';
+import { documents, embeddings } from, '$lib/server/db/schema-postgres';
+import { gpuRAGService } from, '$lib/services/gpu-rag-service';
+import { QdrantVectorService } from, '$lib/server/services';
+import { env } from, '$env/dynamic/private';
 
 /**
  * OCR Document Upload API with GPU Embedding + Qdrant Integration
@@ -26,7 +26,7 @@ interface UploadResult {
   error?: string;
 }
 
-// Helper: safe type guard for OCR entity objects
+//, Helper: safe type guard for OCR entity objects
 function isEntityObject(x: any): x is { type?: any } {
   return typeof x === 'object' && x !== null && 'type' in x;
 }
@@ -39,7 +39,7 @@ async function extractTextFromFile(
   fetchFn: typeof fetch
 ): Promise<{ text: string; entities?: Record<string, unknown> | undefined; embedding?: number[] }> {
   const fileType = file.type;
-  const OCR_SERVICE_URL = (env.SURYA_OCR_URL as string) || 'http://localhost:8090/v1';
+  const OCR_SERVICE_URL = (env.SURYA_OCR_URL as: string) || 'http://localhost:8090/v1';
 
   // For text files, read directly
   if (fileType === 'text/plain' || fileType === 'application/json') {
@@ -89,7 +89,7 @@ async function extractTextFromFile(
     }
   }
 
-  throw new Error(`Unsupported file type: ${fileType}');'' }'`
+  throw new Error(`Unsupported file, type: ${fileType}');'' }'`
 
 /**
  * Auto-tag document content
@@ -130,12 +130,12 @@ const handler: RequestHandler = async ({ request, fetch }) => {
 
     for (const file of files) {
       const result: UploadResult = {
-        success: false,
+       , success: false,
         filename: file.name
       };
 
       try {
-        // Step 1: Extract text using GPU OCR service (Surya + langextract-go)
+        // Step, 1: Extract text using GPU OCR service (Surya + langextract-go)
         const ocrResult = await extractTextFromFile(file, fetch);
         const extractedText = ocrResult.text;
         result.textExtracted = extractedText.substring(0, 100) + '...'; // Preview
@@ -145,11 +145,11 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         const regexTags = generateTags(extractedText);
         let ocrTags: string[] = [];
         try {
-          const ents = ocrResult.entities as unknown as { entities?: any };
+          const ents = ocrResult.entities, as: unknown as { entities?: any };
           if (Array.isArray(ents?.entities)) {
-            ocrTags = (ents.entities as unknown[])
+            ocrTags = (ents.entities as: unknown[])
               .map(e => (isEntityObject(e) && typeof e.type === 'string' ? e.type : undefined))
-              .filter((t): t is string => typeof t === 'string');
+              .filter((t): t is: string => typeof t === 'string');
           }
         } catch {
           ocrTags = [];
@@ -158,7 +158,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         result.tags = tags;
 
         // Step 3: Use embedding from OCR service or generate new one
-        let embedding: number[] | null = ocrResult.embedding || null;
+        let, embedding: number[] | null = ocrResult.embedding || null;
         if (!embedding) {
           try {
             const embeddingResult = await gpuRAGService.generateEmbedding(extractedText);
@@ -196,10 +196,10 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         if (embedding) {
           await db.insert(embeddings).values({
             documentId: doc.id,
-            content: extractedText.substring(0, 500), // First 500 chars for chunk
+            content: extractedText.substring(0, 500), // First, 500 chars for chunk
             embedding,
             metadata: {
-              chunkIndex: 0,
+             , chunkIndex: 0,
               chunkCount: 1,
               tags
             }
@@ -210,15 +210,15 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         if (embedding) {
           try {
             const vectorPoint: VectorPoint = {
-              id: doc.id,
+             , id: doc.id,
               vector: embedding,
               payload: {
-                documentId: doc.id,
+               , documentId: doc.id,
                 content: extractedText,
                 filename: file.name,
                 tags,
                 metadata: {
-                  fileType: file.type,
+                 , fileType: file.type,
                   fileSize: file.size
                 },
                 confidence: doc.confidence || 0.5,
@@ -270,7 +270,7 @@ export const POST = withValidationAndRate(handler, null, {
 /**
  * GET: Check upload endpoint health
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     // probe Qdrant by performing a lightweight search for an empty vector (should not error)
     let qdrantHealthy = false;

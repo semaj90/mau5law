@@ -1,4 +1,4 @@
-declare module 'xstate' {
+declare module, 'xstate' {
   // Minimal, forgiving signatures used only to satisfy TypeScript during builds.
   export function createMachine<Context = any, Event = any>(
     config: any,
@@ -29,7 +29,7 @@ export type {
   AnyEventObject,
   Observer,
   Subscription
-} from 'xstate';
+} from, 'xstate';
 export {
   createMachine,
   createActor,
@@ -42,13 +42,13 @@ export {
   fromCallback,
   fromObservable,
   fromEventObservable
-} from 'xstate';
+} from, 'xstate';
 // Common state machine types
 export interface MachineContext {
   [key: string]: any;
 }
 export interface MachineEvent {
-  type: string;
+ , type: string;
   [key: string]: any;
 }
 // Promise snapshot types for XState v5
@@ -90,7 +90,7 @@ export type JobType =
   | 'search_indexing';
 export interface JobDefinition { id: string;, type: JobType;
   priority: number;
-  data: Record<string, unknown>;
+ , data: Record<string, unknown>;
   options?: {
     delay?: number;
     attempts?: number;
@@ -98,7 +98,7 @@ export interface JobDefinition { id: string;, type: JobType;
     };
   };
 }
-export interface JobStatus { id: string;, status: 'pending' | 'active' | 'completed' | 'failed' | 'delayed';
+export interface JobStatus {, id: string;, status: 'pending' | 'active' | 'completed' | 'failed' | 'delayed';
   progress: number;
   result?: any;
   error?: string;
@@ -106,15 +106,15 @@ export interface JobStatus { id: string;, status: 'pending' | 'active' | 'compl
   processedAt?: Date;
   completedAt?: Date;
 }
-export interface QueueState { name: string;, size: number;
+export interface QueueState {, name: string;, size: number;
   processing: number;
   completed: number;
   failed: number;
 }
 // State machine context for async operations
 export interface AsyncStateContext {
-  jobs: Map<string, JobStatus>;
+ , jobs: Map<string, JobStatus>;
   queues: Map<string, QueueState>;
   errors: string[];
-  isProcessing: boolean;
+ , isProcessing: boolean;
 }

@@ -2,11 +2,11 @@
  * Vector Search Store - PostgreSQL pgvector + Ollama Integration
  * Enhanced RAG with semantic search capabilities
  */
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
 type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
 
-export type SearchHistoryItem = { query: string;, timestamp: number;
+export type SearchHistoryItem = {, query: string;, timestamp: number;
   resultCount: number;
   latency: number;
 };
@@ -34,7 +34,7 @@ export interface VectorSearchState {
   error: string | null;
 }
 const initialState: VectorSearchState = {
-  query: '',
+ , query: '',
   results: [],
   isSearching: false, // Added comma
   lastSearchTime: null, // Added comma
@@ -104,7 +104,7 @@ export const vectorSearchActions = {
         isSearching: false,
         // Append to search history
         searchHistory: [
-          ...state.searchHistory.slice(-9), // Keep last 10
+          ...state.searchHistory.slice(-9), // Keep last, 10
           {
             query,
             timestamp: Date.now(),
@@ -161,11 +161,11 @@ export const vectorSearchActions = {
         isGeneratingResponse: false,
         // Optionally append to search history as a RAG event
         searchHistory: [
-          ...state.searchHistory.slice(-9), // Keep last 10
+          ...state.searchHistory.slice(-9), // Keep last, 10
           {
             query,
             timestamp: Date.now(),
-            resultCount: 1, // RAG response count as 1
+            resultCount: 1, // RAG response count as, 1
             latency
           },
         ]

@@ -8,7 +8,7 @@
   let { value = $bindable(), onValueChange, children, ...restProps }: Props = $props();
 </script>
 
-<Select.Root bind:value {onValueChange} {...restProps}>
+<Select bind:value {onValueChange} {...restProps}>
   {@render children?.()}
-</Select.Root>
+</Select>
 ;

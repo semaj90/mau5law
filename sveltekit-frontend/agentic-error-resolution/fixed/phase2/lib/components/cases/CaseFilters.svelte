@@ -95,7 +95,7 @@
   </div>
   <div class="flex items-center gap-2">
     <Filter class="w-4 h-4 text-gray-500" />
-    <Select.Root bind:value={statusFilter}>
+    <Select bind:value={statusFilter}>
       <Select.Trigger class="w-[140px]">
         <Select.Value placeholder="Status" />
       </Select.Trigger>
@@ -105,10 +105,10 @@
         <Select.Item value="pending">Pending</Select.Item>
         <Select.Item value="closed">Closed</Select.Item>
       </Select.Content>
-    </Select.Root>
+    </Select>
   </div>
   <div class="flex items-center gap-2">
-    <Select.Root bind:value={sortBy}>
+    <Select bind:value={sortBy}>
       <Select.Trigger class="w-[130px]">
         <Select.Value placeholder="Sort by" />
       </Select.Trigger>
@@ -117,7 +117,7 @@
         <Select.Item value="title">Title</Select.Item>
         <Select.Item value="status">Status</Select.Item>
       </Select.Content>
-    </Select.Root>
+    </Select>
   </div>
   <Button
     variant="ghost"

@@ -13,7 +13,7 @@ export interface ChatMessage {
   id?: string;
   role: ChatRole;
   content: string;
-  timestamp?: string; // ISO string, optional
+  timestamp?: string; //, ISO: string, optional
 }
 
 /* Embedding types and options */
@@ -141,7 +141,7 @@ export interface IUltraJSONParser {
   stringify(data: any): string;
 
   /**
-   * Safe parse that never throws; returns null on invalid JSON
+   * Safe parse that never throws; returns: null on invalid JSON
    */
   safeParse?<T = any>(data: string): T | null;
 }
@@ -149,7 +149,7 @@ export interface IUltraJSONParser {
 export interface IWasmClusteringService {
   /**
    * Cluster vectors and return cluster assignment index for each input vector.
-   * Accepts Float32Array or number[][] for flexibility.
+   * Accepts Float32Array or: number[][] for flexibility.
    */
   cluster(vectors: Array<Float32Array | number[]>, n: number, options?: ClusterOptions): Promise<number[]>;
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; wasmVersion?: string }>;

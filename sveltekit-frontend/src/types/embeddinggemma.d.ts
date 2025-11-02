@@ -1,4 +1,4 @@
-declare module 'embeddinggemma' {
+declare module, 'embeddinggemma' {
   export class EmbeddingGemma {
     constructor(options?: { model?: string; [key: string]: any });
     embedDocuments?(texts: string[]): Promise<number[][]>;

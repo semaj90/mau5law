@@ -1,6 +1,6 @@
 // src/lib/services/ai-service-orchestrator.ts
 /**
- * Enhanced AI Service Orchestrator - Phase 3
+ * Enhanced AI Service Orchestrator - Phase, 3
  * Features:
  * - Multi-provider routing (Ollama → TensorRT → vLLM → OpenAI)
  * - Context7 MCP integration for agentic doc retrieval
@@ -9,38 +9,38 @@
  * - Health monitoring and metrics
  */
 
-import { TritonInferenceClient } from './providers/tensorrt-triton/triton-client';
-import OllamaClient from './providers/ollama/ollama-client'; // Changed to default import
-import { HealthMonitor } from './health-monitor';
-import { embeddingService } from './embedding-service';
-import type { AIProvider, InferenceRequest, InferenceResponse } from './types/ai-provider';
+import { TritonInferenceClient } from, './providers/tensorrt-triton/triton-client';
+import OllamaClient from, './providers/ollama/ollama-client'; // Changed to default import
+import { HealthMonitor } from, './health-monitor';
+import { embeddingService } from, './embedding-service';
+import type { AIProvider, InferenceRequest, InferenceResponse } from, './types/ai-provider';
 import {
   mcpContext72GetLibraryDocs,
   getSvelte5Docs,
   getDrizzleOrmDocs,
   getTypeScriptDocs,
-  type LibraryDocsResponse // Assuming LibraryDocsResponse is { id: string; content: string; }
-} from '$lib/mcp-context72-get-library-docs';
-import { AI_CONFIG, HEALTH_CONFIG } from '$lib/server/config';
+  type LibraryDocsResponse // Assuming LibraryDocsResponse is { id: string;, content: string; }
+} from, '$lib/mcp-context72-get-library-docs';
+import { AI_CONFIG, HEALTH_CONFIG } from, '$lib/server/config';
 
 // ============================================================================
 // Types
 // ============================================================================
 export interface FunctionDefinition { name: string;, description: string;
-  parameters: { type: 'object';, properties: Record<string, { type: string; description?: string }>;
+  parameters: {, type: 'object';, properties: Record<string, { type: string; description?: string }>;
     required?: string[];
   };
 }
 
 // Define an enriched type for library documentation that includes the libraryName
-interface EnrichedLibraryDoc { id: string; // Assuming LibraryDocsResponse has, an: 'id' property, content: string;
+interface EnrichedLibraryDoc {, id: string; // Assuming LibraryDocsResponse has, an: 'id' property, content: string;
   libraryName: string;
 }
 
 export interface AgenticRequest extends InferenceRequest {
   enableMCPDocs?: boolean;
   requiredLibraries?: string[];
-  functionCalling?: { enabled: boolean;, functions: FunctionDefinition[];
+  functionCalling?: {, enabled: boolean;, functions: FunctionDefinition[];
   };
   context?: {
     caseId?: string;
@@ -51,9 +51,9 @@ export interface AgenticRequest extends InferenceRequest {
 
 export interface AgenticResponse extends InferenceResponse {
   mcpDocsUsed?: EnrichedLibraryDoc[]; // Use the enriched type
-  functionCalls: { // Made non-optional, will always be an array (possibly empty)
+ , functionCalls: { // Made non-optional, will always be an array (possibly empty)
     name: string;
-    arguments: Record<string, unknown>;
+   , arguments: Record<string, unknown>;
     result?: any;
   }[];
   enhancedContext?: string;
@@ -66,8 +66,8 @@ export class AIServiceOrchestrator {
   private providers: Map<string, AIProvider> = new Map();
   private healthMonitor: HealthMonitor;
   private currentProvider: string = 'ollama';
-  private mcpDocsCache: Map<string, LibraryDocsResponse> = new Map(); // Cache original LibraryDocsResponse
-  private circuitBreakerState: Map<string, { failures: number; lastFailure: number }> = new Map();
+  private, mcpDocsCache: Map<string, LibraryDocsResponse> = new Map(); // Cache original LibraryDocsResponse
+  private circuitBreakerState: Map<string, { failures: number;, lastFailure: number }> = new Map();
 
   constructor() {
     this.healthMonitor = new HealthMonitor(this.providers);
@@ -153,7 +153,7 @@ export class AIServiceOrchestrator {
     let mcpDocsUsed: EnrichedLibraryDoc[] = []; // Use EnrichedLibraryDoc
     let enhancedPrompt = request.prompt;
 
-    // Step 1: Fetch MCP docs if needed
+    // Step, 1: Fetch MCP docs if needed
     if (request.enableMCPDocs && request.requiredLibraries && request.requiredLibraries.length > 0) {
       console.log(`📚 Fetching Context7 docs for: ${request.requiredLibraries.join(', ')}`);
       mcpDocsUsed = await this.fetchMCPDocs(request.requiredLibraries);
@@ -168,7 +168,7 @@ export class AIServiceOrchestrator {
     }
 
     // Step 2: Execute inference with circuit breaker
-    const baseRequest: InferenceRequest = {
+    const, baseRequest: InferenceRequest = {
       ...request,
       prompt: enhancedPrompt
     };
@@ -176,7 +176,7 @@ export class AIServiceOrchestrator {
     const response = await this.executeWithFailover(baseRequest);
 
     // Step 3: Handle function calling if enabled
-    let functionCalls: AgenticResponse['functionCalls'] = []; // Initialized as empty array, type is non-optional
+    let, functionCalls: AgenticResponse['functionCalls'] = []; // Initialized as empty array, type is non-optional
     if (
       request.functionCalling?.enabled &&
       AI_CONFIG.functionCalling.enabled &&
@@ -240,7 +240,7 @@ export class AIServiceOrchestrator {
         ...response,
         provider: this.currentProvider,
         metadata: {
-          latency: response.latency,
+         , latency: response.latency,
           tokens: response.tokens,
           model: provider.modelName
         }
@@ -296,20 +296,20 @@ export class AIServiceOrchestrator {
 
       // Fetch from Context7 MCP
       try {
-        let doc: LibraryDocsResponse;
+        let, doc: LibraryDocsResponse;
 
         // Use specialized helpers for known libraries
         switch (libraryId) {
-          case 'svelte5':
-          case 'svelte':
+          case, 'svelte5':
+          case, 'svelte':
             doc = await getSvelte5Docs();
             break;
-          case 'drizzle':
-          case 'drizzle-orm':
+          case, 'drizzle':
+          case, 'drizzle-orm':
             doc = await getDrizzleOrmDocs();
             break;
-          case 'typescript':
-          case 'ts':
+          case, 'typescript':
+          case, 'ts':
             doc = await getTypeScriptDocs();
             break;
           default:
@@ -336,7 +336,7 @@ export class AIServiceOrchestrator {
   ): Promise<AgenticResponse['functionCalls']> {
     const functionCalls: AgenticResponse['functionCalls'] = [];
 
-    // Parse Gemma function calling format: <function_call>{"name": "...", "arguments": {...}}</function_call>
+    // Parse Gemma function calling, format: <function_call>{"name": "...", "arguments": {...}}</function_call>
     const functionCallRegex = /<function_call>(.*?)<\/function_call>/gs;
     const matches = responseText.matchAll(functionCallRegex);
 
@@ -361,7 +361,7 @@ export class AIServiceOrchestrator {
 
   async generateEmbedding(text: string): Promise<Float32Array> {
     const embeddingResult = await embeddingService.embed(text);
-    // Assuming embeddingService.embed returns number[] | null
+    // Assuming embeddingService.embed returns: number[] | null
     if (embeddingResult === null || !Array.isArray(embeddingResult)) {
       throw new Error('Failed to generate embedding or embedding result is invalid.');
     }
@@ -372,9 +372,9 @@ export class AIServiceOrchestrator {
     const healthyProviders = this.healthMonitor.getHealthyProviders();
 
     // Priority order
-    if (healthyProviders.has('tensorrt-triton')) return 'tensorrt-triton';
-    if (healthyProviders.has('ollama')) return 'ollama';
-    if (healthyProviders.has('vllm')) return 'vllm';
+    if (healthyProviders.has('tensorrt-triton')) return, 'tensorrt-triton';
+    if (healthyProviders.has('ollama')) return, 'ollama';
+    if (healthyProviders.has('vllm')) return, 'vllm';
 
     throw new Error('No healthy providers available');
   }
@@ -388,7 +388,7 @@ export class AIServiceOrchestrator {
         latency: this.healthMonitor.getLatency(name)
       })),
       embedding: {
-        model: 'embeddinggemma:latest',
+       , model: 'embeddinggemma:latest',
         provider: 'ollama' }'` };'`
   }
 }

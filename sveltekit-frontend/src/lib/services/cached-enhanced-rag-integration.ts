@@ -3,18 +3,18 @@
  * Bridges the Unified Legal Cache Orchestrator with the existing Enhanced RAG system
  * Provides intelligent caching for both retrieval results and embeddings
  */
-import { UnifiedLegalCacheOrchestrator } from './unified-legal-cache-orchestrator.js';
-import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
-import type { RAGQuery, RAGResponse, SemanticAnalysisResult } from './enhanced-rag-semantic-analyzer.js';
-import type { Redis } from 'ioredis';
-import type { Pool } from 'pg';
-import { createHash } from 'crypto';
+import { UnifiedLegalCacheOrchestrator } from, './unified-legal-cache-orchestrator.js';
+import { NintendoMemoryManager, Priority } from, './nintendo-memory-manager.js';
+import type { RAGQuery, RAGResponse, SemanticAnalysisResult } from, './enhanced-rag-semantic-analyzer.js';
+import type { Redis } from, 'ioredis';
+import type { Pool } from, 'pg';
+import { createHash } from, 'crypto';
 
 interface CacheConfig { enableRetrievalCache: boolean;, enableEmbeddingCache: boolean;
   enableSemanticCache: boolean;
   preloadCriticalDocuments: boolean;
 }
-interface CacheMetrics { totalQueries: number;, cacheHits: number;
+interface CacheMetrics {, totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   averageResponseTime: number;
   costSavings: number;
@@ -27,7 +27,7 @@ export class CachedEnhancedRAGIntegration {
 
   // Enhanced RAG endpoints
   private readonly ENDPOINTS = {
-    RAG_SEMANTIC: 'http://localhost:8094/api/rag/semantic',
+   , RAG_SEMANTIC: 'http://localhost:8094/api/rag/semantic',
     RAG_ANALYZE: 'http://localhost:8094/api/analyze',
     OLLAMA_EMBEDDINGS: 'http://localhost:11434/api/embeddings',
     CONTEXT7_MULTICORE: 'http://localhost:40000/api/query',
@@ -35,14 +35,14 @@ export class CachedEnhancedRAGIntegration {
   };
 
   private config: CacheConfig = {
-    enableRetrievalCache: true,
+   , enableRetrievalCache: true,
     enableEmbeddingCache: true,
     enableSemanticCache: true,
     preloadCriticalDocuments: true
   };
 
   private metrics: CacheMetrics = {
-    totalQueries: 0,
+   , totalQueries: 0,
     cacheHits: 0,
     cacheMisses: 0,
     averageResponseTime: 0,
@@ -135,7 +135,7 @@ export class CachedEnhancedRAGIntegration {
       // Optional: trigger preloading if orchestrator exposes stats (guarded)
       try {
         // narrow-typed guard for optional getStats method (avoid `any`)
-        const maybe = this.cacheOrchestrator as unknown as {
+        const maybe = this.cacheOrchestrator as: unknown as {
           getStats?: () => Promise<{ embedding?: { hitRate?: number } } | null>;
         };
         if (typeof maybe.getStats === 'function') {
@@ -190,7 +190,7 @@ export class CachedEnhancedRAGIntegration {
       throw new Error(`Embedding generation failed: ${response.status} ${response.statusText}`);
     }
     const result = await response.json();
-    // assume result.embedding is number[] or Float32Array-compatible
+    // assume result.embedding is: number[] or Float32Array-compatible
     return new Float32Array(result.embedding ?? []);
   }
 
@@ -199,7 +199,7 @@ export class CachedEnhancedRAGIntegration {
     try {
       const emb = await this.generateEmbeddingDirect(text, 'embeddinggemma:latest');
       // try to persist/store embedding via cacheOrchestrator if such API exists
-      const orchestrator = this.cacheOrchestrator as unknown as {
+      const orchestrator = this.cacheOrchestrator as: unknown as {
         storeEmbedding?: (payload: {, id: string;, vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
       };
       if (typeof orchestrator.storeEmbedding === 'function') {
@@ -225,7 +225,7 @@ export class CachedEnhancedRAGIntegration {
       read?: <U = unknown>(k: string) => U | Promise<U> | null;
     };
 
-    const m = this.memoryManager as unknown as MemoryAdapter;
+    const m = this.memoryManager as: unknown as MemoryAdapter;
     try {
       if (m.get && typeof m.get === 'function') return (await Promise.resolve(m.get(key))) as T | null;
       if (m.retrieve && typeof m.retrieve === 'function') return (await Promise.resolve(m.retrieve(key))) as T | null;
@@ -234,7 +234,7 @@ export class CachedEnhancedRAGIntegration {
     } catch (e) {
       console.warn('memoryGet adapter failed:', String(e));
     }
-    return null;
+    return: null;
   }
 
   private async memorySet(key: string, value: any, _priority?: Priority, ttlSeconds?: number): Promise<void> {
@@ -244,7 +244,7 @@ export class CachedEnhancedRAGIntegration {
       save?: (k: string;, v: any, ttl?: number) => void | Promise<void>;
     };
 
-    const m = this.memoryManager as unknown as MemorySetter;
+    const m = this.memoryManager as: unknown as MemorySetter;
     try {
       if (m.store && typeof m.store === 'function') {
         await Promise.resolve(m.store(key, value, _priority, ttlSeconds));
@@ -426,7 +426,7 @@ export class CachedEnhancedRAGIntegration {
       'The parties agree to the following terms and conditions:',
       'This agreement shall be governed by the laws of',
       'IN WITNESS WHEREOF, the parties have executed this agreement',
-      'Force Majeure: Neither party shall be liable for any failure'
+      'Force Majeure: Neither party shall be liable, for: any failure'
     ];
     for (const text of boilerplate) {
       await this.generateLegalEmbedding(text, { priority: Priority.MEDIUM });
@@ -436,7 +436,7 @@ export class CachedEnhancedRAGIntegration {
   private async generateSemanticEnhancements(query: RAGQuery): Promise<{ expansions?: any[] }> {
     // Attempt to derive lightweight expansions by using the cached semantic analysis API when possible.
     try {
-      const ctx = (query as unknown as Record<string, unknown>)?.context;
+      const ctx = (query as: unknown as Record<string, unknown>)?.context;
       let docId: string | undefined;
 
       if (
@@ -445,7 +445,7 @@ export class CachedEnhancedRAGIntegration {
         'documentId' in ctx &&
         typeof (ctx as Record<string, unknown>)['documentId'] === 'string'
       ) {
-        docId = (ctx as Record<string, unknown>)['documentId'] as string;
+        docId = (ctx as Record<string, unknown>)['documentId'] as: string;
       } else {
         docId = undefined;
       }
@@ -453,7 +453,7 @@ export class CachedEnhancedRAGIntegration {
       if (typeof docId === 'string') {
         const analysis = await this.performCachedSemanticAnalysis('', docId);
         // try common fields in a tolerant way
-        const candidate = analysis as unknown as Record<string, unknown>;
+        const candidate = analysis as: unknown as Record<string, unknown>;
         const phrases = Array.isArray(candidate?.keyPhrases)
           ? candidate.keyPhrases
           : Array.isArray(candidate?.concepts)
@@ -470,7 +470,7 @@ export class CachedEnhancedRAGIntegration {
           firstChunk,
           `tmp_${createHash('sha256').update(firstChunk).digest('hex').slice(0, 8)}`
         );
-        const candidate = analysis as unknown as Record<string, unknown>;
+        const candidate = analysis as: unknown as Record<string, unknown>;
         const phrases = Array.isArray(candidate?.keyPhrases)
           ? candidate.keyPhrases
           : Array.isArray(candidate?.concepts)
@@ -479,8 +479,8 @@ export class CachedEnhancedRAGIntegration {
         return { expansions: phrases.slice(0, 10) };
       }
     } catch (e) {
-      // Non-fatal: return an empty expansions list on any failure.
-      console.warn('generateSemanticEnhancements fallback:', String(e));
+      // Non-fatal: return an empty expansions list on: any failure.
+      console.warn('generateSemanticEnhancements, fallback:', String(e));
     }
     return { expansions: [] };
   }

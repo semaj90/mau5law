@@ -3,11 +3,11 @@ Enhanced File Upload Component with localStorage Fallback
 Automatically handles server upload with localStorage fallback
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
-  import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
-  import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import enhancedFileUpload from, '$lib/services/enhanced-file-upload.js';
+  import type { UploadResponse } from, '$lib/services/enhanced-file-upload.js';
+  import localStorageFiles from, '$lib/services/localStorage-file-fallback.js';
   // Props (use Svelte exports)
   const { caseId } = $props<{ caseId: string | undefined }>()
   const { description } = $props<{ description: string | undefined }>()
@@ -28,19 +28,19 @@ Automatically handles server upload with localStorage fallback
   let error: string | null = null;
   // Storage stats shape
   type StorageStats = { used: number; available: number; percentage: number };
-  let storageStats: StorageStats = { used: 0, available: 0, percentage: 0 };
+  let storageStats: StorageStats = {, used: 0, available: 0, percentage: 0 };
   let fileInput: HTMLInputElement | null = null;
   // Combine initialization + periodic updater into one onMount to keep cleanup consistent
-  let _interval: ReturnType<typeof setInterval> | null = null;
+  let, _interval: ReturnType<typeof setInterval> | null = null;
   onMount(() => {
     try {
-      storageStats = (localStorageFiles as any).getStorageUsage?.() ?? storageStats;
+      storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats;
     } catch {
       // ignore
     }
     _interval = setInterval(() => {
       try {
-        storageStats = (localStorageFiles as any).getStorageUsage?.() ?? storageStats;
+        storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats;
       } catch {
         // ignore
       }
@@ -86,8 +86,8 @@ Automatically handles server upload with localStorage fallback
         }
       );
       uploadResults = results;
-      storageStats = (localStorageFiles as any).getStorageUsage?.() ?? storageStats;
-      const successCount = results.filter(r => !!(r as any).success).length;
+      storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats;
+      const successCount = results.filter(r => !!(r as: any).success).length;
       const errorCount = results.length - successCount;
       if (errorCount > 0) {
         error = `${errorCount} file(s) failed to upload`;
@@ -142,7 +142,7 @@ Automatically handles server upload with localStorage fallback
           class="storage-fill"
           style="width: {storageStats.percentage}%"
           class:warning={storageStats.percentage > 75}
-          class:critical={storageStats.percentage > 90}
+         , class:critical={storageStats.percentage > 90}
         ></div>
       </div>
       <span, class="storage-text">
@@ -153,7 +153,7 @@ Automatically handles server upload with localStorage fallback
   <div
     class="drop-zone"
     class:drag-over={isDragOver}
-    class:uploading={isUploading}
+   , class:uploading={isUploading}
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -214,7 +214,7 @@ Automatically handles server upload with localStorage fallback
       </div>
       <div, class="results-list">
         {#each uploadResults as result (result.fileName)}
-          <div, class="result-item" class:result-success={result.success} class:result-error={!result.success}>
+          <div, class="result-item" class:result-success={result.success}, class:result-error={!result.success}>
             <div, class="result-icon">
               {result.success ? '✅' : '❌'}
             </div>
@@ -287,7 +287,7 @@ Automatically handles server upload with localStorage fallback
   .drop-zone.drag-over {
     border-color: #3b82f6;
     background-color: #dbeaff;
-    transform: scale(1.02);
+   , transform: scale(1.02);
   }
   .drop-zone.uploading {
     border-color: #10b981;
@@ -324,7 +324,7 @@ Automatically handles server upload with localStorage fallback
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
+    0% {, transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .progress-text {
@@ -436,6 +436,6 @@ Automatically handles server upload with localStorage fallback
     color: #6b7280;
   }
   .error-text {
-    color: #dc2626;
+   , color: #dc2626;
   }
 </style>

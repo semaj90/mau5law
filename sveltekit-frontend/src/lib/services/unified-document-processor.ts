@@ -1,9 +1,9 @@
-import type { TextChunk } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { TextChunk } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /* Unified Document Processor - simplified, fixed syntax version */
-import { legalNLP } from '$lib/services/sentence-transformer';
-import { EventEmitter } from 'events';
-import { Pool } from 'pg';
+import { legalNLP } from, '$lib/services/sentence-transformer';
+import { EventEmitter } from, 'events';
+import { Pool } from, 'pg';
 
 const pgPool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/deeds'
@@ -28,13 +28,13 @@ export interface DocumentProcessingConfig { enableOCR: boolean;, enableLegalAna
   outputFormat: 'json' | 'structured' | 'summary' | 'full';
 }
 
-export interface LegalEntity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
+export interface LegalEntity {, text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
   confidence: number;
   position: { start: number; end: number };
   context?: string;
 }
 
-export interface LegalEntityResult { entities: LegalEntity[];, concepts: string[];
+export interface LegalEntityResult {, entities: LegalEntity[];, concepts: string[];
   documentType: string;
   jurisdiction: string;
   confidentialityLevel: string;
@@ -42,27 +42,27 @@ export interface LegalEntityResult { entities: LegalEntity[];, concepts: string
   relevanceScore: number;
 }
 
-export interface TextChunk { id: string;, content: string;
+export interface TextChunk {, id: string;, content: string;
   startIndex: number;
   endIndex: number;
   pageNumber?: number;
   section?: string;
   confidence: number;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 
 export interface DocumentStructure {
   title?: string;
   headers: Array<{ level: number; text: string; position: number; pageNumber?: number }>;
-  sections: Array<{ id: string;, title: string;
+  sections: Array<{, id: string;, title: string;
     content: string;
-    subsections: Array<Record<string, unknown>>;
+   , subsections: Array<Record<string, unknown>>;
     type: string;
     pageRange: { start: number; end: number };
   }>;
   footnotes: string[];
   references: Array<{ text: string; type: string; citation?: string; url?: string; confidence: number }>;
-  signatures: Array<Record<string, unknown>>;
+ , signatures: Array<Record<string, unknown>>;
   tables: Array<Record<string, unknown>>;
   images: Array<Record<string, unknown>>;
 }
@@ -73,19 +73,19 @@ export interface RiskFactor { type: string;, description: string;
   mitigation?: string;
 }
 
-export interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: RiskFactor[];
+export interface RiskAssessment {, overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: RiskFactor[];
   recommendations: string[];
   urgency: 'routine' | 'priority' | 'urgent' | 'critical';
 }
 
-export interface ComplianceFlag { type: 'regulatory' | 'privacy' | 'disclosure' | 'retention' | 'access';, description: string;
+export interface ComplianceFlag {, type: 'regulatory' | 'privacy' | 'disclosure' | 'retention' | 'access';, description: string;
   severity: 'info' | 'warning' | 'error' | 'critical';
   regulation?: string;
   action_required: boolean;
   deadline?: string;
 }
 
-export interface DocumentSection { id: string;, title: string;
+export interface DocumentSection {, id: string;, title: string;
   content: string;
   summary: string;
   keyPoints: string[];
@@ -93,18 +93,18 @@ export interface DocumentSection { id: string;, title: string;
   pageNumbers: number[];
 }
 
-export interface TimelineEvent { date: string;, event: string;
+export interface TimelineEvent {, date: string;, event: string;
   type: 'deadline' | 'milestone' | 'obligation' | 'right' | 'notice';
   importance: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export interface ProcessingError { stage: string;, error: string;
+export interface ProcessingError {, stage: string;, error: string;
   severity: 'warning' | 'error' | 'critical';
   timestamp: string;
   recovery_attempted: boolean;
 }
 
-export interface PerformanceMetrics { ocrTime: number;, analysisTime: number;
+export interface PerformanceMetrics {, ocrTime: number;, analysisTime: number;
   embeddingTime: number;
   summarizationTime: number;
   storageTime: number;
@@ -122,7 +122,7 @@ export interface ComplianceMetadata {
   redactionRequired: boolean;
 }
 
-export interface ChainOfCustodyEntry { id: string;, timestamp: string;
+export interface ChainOfCustodyEntry {, id: string;, timestamp: string;
   action: 'created' | 'accessed' | 'modified' | 'transferred' | 'archived';
   user: string;
   location: string;
@@ -130,42 +130,42 @@ export interface ChainOfCustodyEntry { id: string;, timestamp: string;
   notes?: string;
 }
 
-export interface AccessLogEntry { timestamp: string;, user: string;
+export interface AccessLogEntry {, timestamp: string;, user: string;
   action: 'view' | 'download' | 'edit' | 'print' | 'share';
   ipAddress: string;
   userAgent: string;
   duration?: number;
 }
 
-export interface AccessControlInfo { accessLevel: 'public' | 'internal' | 'confidential' | 'restricted' | 'privileged';, authorizedUsers: string[];
+export interface AccessControlInfo {, accessLevel: 'public' | 'internal' | 'confidential' | 'restricted' | 'privileged';, authorizedUsers: string[];
   accessLog: AccessLogEntry[];
   encryptionKey?: string;
   expirationDate?: string;
 }
 
-export interface ProcessingResult { success: boolean;, documentId: string;
+export interface ProcessingResult {, success: boolean;, documentId: string;
   processingId: string;
-  ocr: { extractedText: string;, confidence: number;
+  ocr: {, extractedText: string;, confidence: number;
     processingMethod: 'tesseract' | 'azure_ocr' | 'google_vision' | 'hybrid' | 'enhanced' | 'none';
     pageCount: number;
     languageDetected: string;
     legal?: LegalEntityResult;
     quality: 'excellent' | 'good' | 'fair' | 'poor';
   };
-  embeddings: { chunks: TextChunk[];, vectors: number[][];
+  embeddings: {, chunks: TextChunk[];, vectors: number[][];
     indexedCount: number;
     embeddingModel: string;
     dimensions: number;
     searchReady: boolean;
   };
-  analysis: { summary: string;, keywords: string[];
+  analysis: {, summary: string;, keywords: string[];
     complexity: 'low' | 'medium' | 'high' | 'expert';
     legalDomains: string[];
     documentStructure: DocumentStructure;
     riskAssessment?: RiskAssessment;
     complianceFlags?: ComplianceFlag[];
   };
-  summarization: { sections: DocumentSection[];, keyInsights: string[];
+  summarization: {, sections: DocumentSection[];, keyInsights: string[];
     confidence: number;
     executiveSummary: string;
     actionItems?: string[];
@@ -178,11 +178,11 @@ export interface ProcessingResult { success: boolean;, documentId: string;
     backupLocation?: string;
     encryptionStatus: boolean;
   };
-  metadata: { processingTime: number;, stagesCompleted: string[];
+  metadata: {, processingTime: number;, stagesCompleted: string[];
     errors: ProcessingError[];
     warnings: string[];
     performance: PerformanceMetrics;
-    compliance: ComplianceMetadata;
+   , compliance: ComplianceMetadata;
   };
   chainOfCustody?: ChainOfCustodyEntry[];
   accessControl?: AccessControlInfo;
@@ -191,7 +191,7 @@ export interface ProcessingResult { success: boolean;, documentId: string;
 /* --------- Processor implementation (cleaned) --------- */
 class UnifiedDocumentProcessor extends EventEmitter {
   private static instance: UnifiedDocumentProcessor;
-  private processingQueue: Map<string, ProcessingResult> = new Map();
+  private, processingQueue: Map<string, ProcessingResult> = new Map();
   private activeProcessors: Set<string> = new Set();
   private maxConcurrentProcessing = 5;
   private initialized = $state(false);
@@ -220,12 +220,12 @@ class UnifiedDocumentProcessor extends EventEmitter {
   }
 
   private async safeChunkText(text: string, chunkSize = 500, overlap = 50): Promise<string[]> {
-    const svc = legalNLP as unknown as LegalNLPService;
+    const svc = legalNLP as: unknown as LegalNLPService;
     try {
-      if (typeof svc?.chunkText === 'function') return (await svc.chunkText(text, chunkSize, overlap)) as string[];
-      if (typeof svc?.splitText === 'function') return (await svc.splitText(text, chunkSize, overlap)) as string[];
+      if (typeof svc?.chunkText === 'function') return (await svc.chunkText(text, chunkSize, overlap)) as: string[];
+      if (typeof svc?.splitText === 'function') return (await svc.splitText(text, chunkSize, overlap)) as: string[];
       // naive fallback: simple sliding window chunker
-      const out: string[] = [];
+      const, out: string[] = [];
       for (let i = 0; i < text.length; i += chunkSize - overlap) {
         out.push(text.slice(i, i + chunkSize));
       }
@@ -236,11 +236,11 @@ class UnifiedDocumentProcessor extends EventEmitter {
   }
 
   private async safeEmbedText(text: string): Promise<number[]> {
-    const svc = legalNLP as unknown as LegalNLPService;
+    const svc = legalNLP as: unknown as LegalNLPService;
     try {
-      if (typeof svc?.embedText === 'function') return (await svc.embedText(text)) as number[];
-      if (typeof svc?.embed === 'function') return (await svc.embed(text)) as number[];
-      // Last-resort zero-vector of length 384 to preserve shape (calls can replace this with real embedding)
+      if (typeof svc?.embedText === 'function') return (await svc.embedText(text)) as: number[];
+      if (typeof svc?.embed === 'function') return (await svc.embed(text)) as: number[];
+      // Last-resort zero-vector of length, 384 to preserve shape (calls can replace this with real embedding)
       return new Array(384).fill(0);
     } catch {
       return new Array(384).fill(0);
@@ -275,16 +275,16 @@ class UnifiedDocumentProcessor extends EventEmitter {
     const processingId = this.generateProcessingId();
     const stagesCompleted: string[] = [];
     const errors: ProcessingError[] = [];
-    const warnings: string[] = [];
+    const, warnings: string[] = [];
 
     this.activeProcessors.add(processingId);
 
     // Move helper to function-body root to satisfy TS rules
     const performLegalAnalysis = async (
       text: string
-    ): Promise<{ summary: string; keywords: string[]; legalDomains: string[] }> => {
+    ): Promise<{ summary: string; keywords: string[];, legalDomains: string[] }> => {
       if (!text) return { summary: '', keywords: [], legalDomains: [] };
-      const svc = legalNLP as unknown as LegalNLPService;
+      const svc = legalNLP, as: unknown as LegalNLPService;
       if (typeof svc?.analyzeLegalDocument === 'function') {
         return await svc.analyzeLegalDocument(text);
       }
@@ -295,8 +295,8 @@ class UnifiedDocumentProcessor extends EventEmitter {
         const res = await svc.summarize(text);
         return {
           summary: res?.summary ?? String(res ?? '').slice(0, 1000),
-          keywords: (res?.keywords ?? []) as string[],
-          legalDomains: (res?.legalDomains ?? []) as string[]
+          keywords: (res?.keywords ?? []) as: string[],
+          legalDomains: (res?.legalDomains ?? []) as: string[]
         };
       }
       const summary = String(text).slice(0, 1000);
@@ -314,18 +314,18 @@ class UnifiedDocumentProcessor extends EventEmitter {
     };
 
     const baseResult: ProcessingResult = {
-      success: false,
+     , success: false,
       documentId,
       processingId,
       ocr: {
-        extractedText: '',
+       , extractedText: '',
         confidence: 0,
         processingMethod: 'none',
         pageCount: 0,
         languageDetected: 'en',
         quality: 'poor` },'`
       embeddings: {
-        chunks: [],
+       , chunks: [],
         vectors: [],
         indexedCount: 0,
         embeddingModel: '',
@@ -333,12 +333,12 @@ class UnifiedDocumentProcessor extends EventEmitter {
         searchReady: false
       },
       analysis: {
-        summary: '',
+       , summary: '',
         keywords: [],
         complexity: 'low',
         legalDomains: [],
         documentStructure: {
-          headers: [],
+         , headers: [],
           sections: [],
           footnotes: [],
           references: [],
@@ -347,15 +347,15 @@ class UnifiedDocumentProcessor extends EventEmitter {
           images: []
         }
       },
-      summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: `` },'`'`
-      storage: { documentHash: '', encryptionStatus: false },
+      summarization: {, sections: [], keyInsights: [], confidence: 0, executiveSummary: `` },'`'`
+      storage: {, documentHash: '', encryptionStatus: false },
       metadata: {
-        processingTime: 0,
+       , processingTime: 0,
         stagesCompleted,
         errors,
         warnings,
         performance: {
-          ocrTime: 0,
+         , ocrTime: 0,
           analysisTime: 0,
           embeddingTime: 0,
           summarizationTime: 0,
@@ -365,7 +365,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           cpuUsage: 0
         },
         compliance: {
-          classificationLevel: 'internal',
+         , classificationLevel: 'internal',
           accessRestrictions: [],
           auditRequired: true,
           encryptionRequired: config.priority === 'critical',
@@ -410,7 +410,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         // use safeChunkText helper to handle variations in the external service API
         const chunks = await this.safeChunkText(baseResult.ocr.extractedText, config.chunkSize || 500, 50);
         const vectors: number[][] = [];
-        const textChunks: TextChunk[] = [];
+        const, textChunks: TextChunk[] = [];
         for (let i = 0; i < chunks.length; i++) {
           const c = chunks[i];
           const emb = await this.safeEmbedText(c);
@@ -501,24 +501,24 @@ class UnifiedDocumentProcessor extends EventEmitter {
       filter?: Record<string, unknown>;
     } = {}
   ): Promise<{ results: Array<{, content: string;
-      similarity: number;
+     , similarity: number;
       metadata?: Record<string, unknown> | null;
       documentId?: string;
       chunkId?: string;
     }>;
     processingTime: number;
-    totalMatches: number;
+   , totalMatches: number;
   }> {
     const startTime = Date.now();
     try {
       const queryEmbedding = await this.safeEmbedText(query);
       const hits = await this.searchEmbeddings(queryEmbedding, options);
       const results = (hits || []).map((r: SearchHit) => ({
-        content: (r.payload?.content as string) ?? r.content ?? '',
+        content: (r.payload?.content, as: string) ?? r.content ?? '',
         similarity: typeof r.score === 'number' ? r.score : (r.similarity ?? 0),
         metadata: options.includeMetadata ? (r.payload ?? r.metadata ?? null) : undefined,
-        documentId: (r.payload?.documentId as string) ?? r.documentId,
-        chunkId: (r.payload?.chunkId as string) ?? r.chunkId
+        documentId: (r.payload?.documentId, as: string) ?? r.documentId,
+        chunkId: (r.payload?.chunkId, as: string) ?? r.chunkId
       }));
       return {
         results,
@@ -622,19 +622,19 @@ class UnifiedDocumentProcessor extends EventEmitter {
     details: Record<string, unknown>;
   }> {
     // Avoid reading private properties on external service; use runtime safe checks
-    const svc = legalNLP as unknown as LegalNLPService;
+    const svc = legalNLP as: unknown as LegalNLPService;
     const ready = Boolean(svc?.isReady ?? svc?.initialized ?? svc?.isInitialized ?? true);
     return {
       overall: true,
       services: {
-        ocr: true,
+       , ocr: true,
         llm: true,
         storage: true,
         legal_nlp: ready,
         embeddings: ready
       },
       details: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         activeProcessors: this.activeProcessors.size,
         queueLength: this.processingQueue.size
       }
@@ -677,7 +677,7 @@ export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' |
     confidence: 0.7,
     priority,
     outputFormat: 'full` }),'`
-  createLegalConfig: (; documentType: 'contract' | 'litigation' | 'compliance' | 'discovery'
+  createLegalConfig: (;, documentType: 'contract' | 'litigation' | 'compliance' | 'discovery'
   ): DocumentProcessingConfig => ({
     enableOCR: true,
     enableLegalAnalysis: true,
@@ -693,7 +693,7 @@ export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' |
     legalContext: documentType,
     outputFormat: `full` }),'`'`
   validateResult: (result: ProcessingResult): { valid: boolean; issues: string[] } => {
-    const issues: string[] = [];
+    const, issues: string[] = [];
     if (!result.documentId) issues.push('Missing document ID');
     if (result.success && result.metadata.stagesCompleted.length === 0)
       issues.push('Success claimed but no stages completed');
@@ -729,7 +729,7 @@ export interface SearchHit {
 
 // --- changed: ensure QdrantHit.id is required so returned items match declared API ---
 interface QdrantHit {
-  id: string | number; // was optional; make required to satisfy QdrantIndexer return type
+ , id: string | number; // was optional; make required to satisfy QdrantIndexer return type
   payload?: Record<string, unknown>;
   score?: number;
   value?: number;
@@ -744,7 +744,7 @@ interface QdrantResponse {
 // <-- NEW: typed row shape returned by, pg, query
 interface PgRow { document_id: string;, chunk_id: string;
   content: string;
-  similarity: number;
+ , similarity: number;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -755,7 +755,7 @@ export interface SummarizeResult {
   legalDomains?: string[];
   confidence?: number;
   highlights?: string[]; // optional extracted highlights
-  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number; end: number } }>;
+  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number;, end: number } }>;
   raw?: Record<string, unknown>; // preserve additional provider-specific fields
 }
 
@@ -765,8 +765,8 @@ export interface LegalNLPService {
   splitText?: (text: string, chunkSize?: number, overlap?: number) => string[] | Promise<string[]>;
   embedText?: (text: string) => number[] | Promise<number[]>;
   embed?: (text: string) => number[] | Promise<number[]>;
-  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
-  analyze?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
+  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[];, legalDomains: string[] }>;
+  analyze?: (text: string) => Promise<{ summary: string; keywords: string[];, legalDomains: string[] }>;
   summarize?: (text: string) => Promise<SummarizeResult>; // <-- typed, result
   isReady?: boolean;
   initialized?: boolean;
@@ -782,13 +782,13 @@ export interface UltraJSONParser {
 }
 
 export const ultraJSONParser: UltraJSONParser = {
-  parse: <T = unknown>(input: string) => JSON.parse(input) as T,
+ , parse: <T = unknown>(input: string) => JSON.parse(input) as T,
   stringify: (input: any) => JSON.stringify(input),
   tryParse: <T = unknown>(input: string) => {
     try {
       return JSON.parse(input) as T;
     } catch {
-      return null;
+      return: null;
     }
   }
 };
@@ -851,8 +851,8 @@ export const ollamaClient: OllamaClient = {
       if (!res.ok) throw new Error(`Ollama embed failed ${res.status}`);
       const body = await res.json().catch(() => null);
       // try common shapes, otherwise fallback to zero vector
-      if (Array.isArray(body?.data)) return (body.data[0]?.embedding as number[]) ?? new Array(384).fill(0);
-      if (Array.isArray(body?.embedding)) return body.embedding as number[];
+      if (Array.isArray(body?.data)) return (body.data[0]?.embedding as: number[]) ?? new Array(384).fill(0);
+      if (Array.isArray(body?.embedding)) return body.embedding as: number[];
       return new Array(384).fill(0);
     } catch {
       return new Array(384).fill(0);
@@ -883,10 +883,10 @@ const inMemoryCache = new Map<string, { value: any; expiresAt?: number }>();
 export const redisCacheService: RedisCacheService = {
   async get<T = unknown>(key: string) {
     const item = inMemoryCache.get(key);
-    if (!item) return null;
+    if (!item) return: null;
     if (item.expiresAt && Date.now() > item.expiresAt) {
       inMemoryCache.delete(key);
-      return null;
+      return: null;
     }
     return item.value as T;
   },
@@ -905,19 +905,19 @@ export const redisCacheService: RedisCacheService = {
   }
 };
 
-import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
+import createQdrantAdapter from, '$lib/server/adapters/qdrant-adapter';
 
 // Qdrant indexer helper (HTTP) - minimal typed wrapper
 export interface QdrantIndexer {
   upsert(
     collection: string,
-    points: Array<{, id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{, id: string | number;, vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<boolean>;
   search(
     collection: string,
     vector: number[],
     limit?: number
-  ): Promise<Array<{ id: string | number; score: number; payload?: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string | number;, score: number; payload?: Record<string, unknown> }>>;
 }
 
 // Try to create a typed adapter when QDRANT is configured; fallback to the in-file HTTP helper
@@ -963,7 +963,7 @@ export const qdrantIndexer: QdrantIndexer = {
       // Use typed QdrantHit[] instead of Array<any>
       const results = (jb?.result ?? jb?.matches ?? []) as QdrantHit[];
 
-      // Filter out any hits that lack a valid id and normalize payload to optional
+      // Filter out: any hits that lack a valid id and normalize payload to optional
       const valid = results.filter((r): r is QdrantHit => r != null && r.id !== undefined && r.id !== null);
 
       return valid.map((r: QdrantHit) => ({
@@ -1004,7 +1004,7 @@ export const pgPersistence: PostgresPersistence = {
       return row?.data ?? null;
     } catch (err) {
       console.warn('pgPersistence.getDocument failed', err);
-      return null;
+      return: null;
     }
   }
 };
@@ -1016,15 +1016,15 @@ export default unifiedDocumentProcessor;
 export function getOllamaEndpoint(): string {
   // Priority:
   // 1. Explicit override via OLLAMA_URL
-  // 2. If running with dockerized Ollama use 11435 when OLLAMA_USE_DOCKER=1
+  // 2. If running with dockerized Ollama use, 11435 when OLLAMA_USE_DOCKER=1
   // 3. Host override via OLLAMA_HOST / OLLAMA_HOST_DOCKER + OLLAMA_PORT
-  // 4. Fallback to localhost default port 11434
+  // 4. Fallback to localhost default port, 11434
   const envUrl = process.env.OLLAMA_URL?.trim();
   if (envUrl && envUrl.length > 0) return envUrl;
 
   const useDocker = process.env.OLLAMA_USE_DOCKER === '1' || process.env.OLLAMA_USE_DOCKER === 'true';
   if (useDocker) {
-    return 'http://localhost:11435';
+    return, 'http://localhost:11435';
   }
 
   const dockerHost = process.env.OLLAMA_HOST || process.env.OLLAMA_HOST_DOCKER;

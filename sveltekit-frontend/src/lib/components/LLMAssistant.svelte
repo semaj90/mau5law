@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import { env } from '$env/dynamic/public';
-  // Svelte 5 runes usage (consistent with other components)
-  let messages = $state<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
+  import { env } from, '$env/dynamic/public';
+  // Svelte, 5 runes usage (consistent with other components)
+  let messages = $state<Array<{ role: 'user' | 'assistant';, text: string }>>([]);
   let input = $state<string>('');
   let loading = $state<boolean>(false);
   let error = $state<string>('');
@@ -22,7 +22,7 @@
       const res = await fetch('/api/contextual/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, ollamaEndpoint: getOllamaEndpoint() })
+        body: JSON.stringify({, message: text, ollamaEndpoint: getOllamaEndpoint() })
       });
       if (!res.ok) {
         const body = await res.text();
@@ -85,5 +85,5 @@
 </div>
 <style>
   .messages::-webkit-scrollbar { height: 8px; }
-  .messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
+  .messages::-webkit-scrollbar-thumb {, background: #cbd5e1; border-radius: 6px; }
 </style>

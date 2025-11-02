@@ -1,6 +1,6 @@
-import { browser } from '$app/environment'; // keep import safe for client bundling
-import { RABBITMQ_URL } from '$env/static/private';
-import type { Connection, Channel, Replies, ConsumeMessage } from 'amqplib';
+import { browser } from, '$app/environment'; // keep import safe for client bundling
+import { RABBITMQ_URL } from, '$env/static/private';
+import type { Connection, Channel, Replies, ConsumeMessage } from, 'amqplib';
 
 // --- TYPES ---
 export interface DocumentProcessingJob { documentId: string;, s3Key: string;
@@ -15,19 +15,19 @@ export interface DocumentProcessingJob { documentId: string;, s3Key: string;
   timestamp?: string;
 }
 
-export interface RabbitMQConfig { url: string;, queues: { documentProcessing: string;, ocrProcessing: string;
+export interface RabbitMQConfig {, url: string;, queues: {, documentProcessing: string;, ocrProcessing: string;
     embeddingProcessing: string;
     summarization: string;
     deadLetter: string;
   };
-  exchanges: { documents: string;, deadLetter: string;
+  exchanges: {, documents: string;, deadLetter: string;
   };
 }
 
 export interface IRabbitMQService {
   initialize(retries?: number, delay?: number): Promise<void>;
   publishDocumentProcessingJob(job: DocumentProcessingJob): Promise<boolean>;
-  publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }>;
+  publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number;, failed: number }>;
   getQueueStats(): Promise<Record<string, any>>;
   purgeQueue(queueType: keyof RabbitMQConfig['queues']): Promise<boolean>;
   close(): Promise<void>;
@@ -74,7 +74,7 @@ class RabbitMQService implements IRabbitMQService {
   private static instance: RabbitMQService;
   private connection: Connection | null = null;
   private channel: Channel | null = null;
-  private config: RabbitMQConfig;
+  private, config: RabbitMQConfig;
   private isConnected = $state(false);
   private isInitializing = $state(false);
 
@@ -83,14 +83,14 @@ class RabbitMQService implements IRabbitMQService {
     this.config = {
       url: RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
       queues: {
-        documentProcessing: 'doc_processing_queue',
+       , documentProcessing: 'doc_processing_queue',
         ocrProcessing: 'ocr_processing_queue',
         embeddingProcessing: 'embedding_processing_queue',
         summarization: 'summarization_queue',
         deadLetter: 'dead_letter_queue'
       },
       exchanges: {
-        documents: 'documents_exchange',
+       , documents: 'documents_exchange',
         deadLetter: 'dead_letter_exchange'
       }
     };
@@ -187,13 +187,13 @@ class RabbitMQService implements IRabbitMQService {
 
       let routingKey = 'doc.process';
       switch (job.processingType) {
-        case 'ocr':
+        case, 'ocr':
           routingKey = 'doc.ocr';
           break;
-        case 'embedding':
+        case, 'embedding':
           routingKey = 'doc.embed';
           break;
-        case 'summarization':
+        case, 'summarization':
           routingKey = 'doc.summarize';
           break;
       }
@@ -217,7 +217,7 @@ class RabbitMQService implements IRabbitMQService {
   }
 
   async publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }> {
-    const results = { success: 0, failed: 0 };
+    const results = {, success: 0, failed: 0 };
     for (const job of jobs) {
       (await this.publishDocumentProcessingJob(job)) ? results.success++ : results.failed++;
     }
@@ -311,7 +311,7 @@ class RabbitMQService implements IRabbitMQService {
 }
 
 // --- EXPORT: single safe export ---
-let rabbitMQService: IRabbitMQService;
+let, rabbitMQService: IRabbitMQService;
 if (browser) {
   rabbitMQService = new BrowserStub();
 } else {
@@ -323,7 +323,7 @@ export type { DocumentProcessingJob, RabbitMQConfig, IRabbitMQService };
 
 // --- HELPER: factory function ---
 export function createDocumentProcessingJob(
-  documentId: string,
+ , documentId: string,
   s3Key: string,
   s3Bucket: string,
   originalName: string,

@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Repaired minimal pgAI summarize endpoint. Full DB & pgai integration deferred for compile stability.
 export const POST: RequestHandler = async ({ request }) => {
   const { text, format = 'summary' } = await request.json().catch(() => ({}));

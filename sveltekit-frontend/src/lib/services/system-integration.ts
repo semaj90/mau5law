@@ -1,28 +1,28 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * System Integration Service
  * Orchestrates MinIO storage, PostgreSQL + pgvector, Redis cache, and Context7 semantic search
  */
-import { globalGPUCache } from './rag-minio-gpu-som-cache.js';
+import { globalGPUCache } from, './rag-minio-gpu-som-cache.js';
 
 // Integration interfaces
 interface MinIOConfig { endpoint: string;, port: number;
   useSSL: boolean;
   accessKey: string;
   secretKey: string;
-  buckets: { evidence: string;, documents: string;
+  buckets: {, evidence: string;, documents: string;
     media: string;
     cache: string;
   };
 }
-interface PostgreSQLConfig { host: string;, port: number;
+interface PostgreSQLConfig {, host: string;, port: number;
   database: string;
   username: string;
   password: string;
   enablePgVector: boolean;
   vectorDimension: number;
 }
-interface RedisConfig { host: string;, port: number;
+interface RedisConfig {, host: string;, port: number;
   password?: string;
   db: number;
   keyPrefix: string;
@@ -33,7 +33,7 @@ interface Context7Config {
   libraryIds: string[];
   maxTokens: number;
 }
-interface SystemMetrics { minioHealth: boolean;, postgresHealth: boolean;
+interface SystemMetrics {, minioHealth: boolean;, postgresHealth: boolean;
   redisHealth: boolean;
   context7Health: boolean;
   totalDocuments: number;
@@ -45,7 +45,7 @@ interface SystemMetrics { minioHealth: boolean;, postgresHealth: boolean;
 
 // New typed shape for search result documents returned by various backends
 interface SearchDocument {
-  id: string;
+ , id: string;
   title?: string;
   content?: string;
   // optional fields potentially coming from storage / postgres
@@ -59,13 +59,13 @@ interface SearchDocument {
   [key: string]: any;
 }
 
-interface QueryResult { documents: SearchDocument[];, totalFound: number;
+interface QueryResult {, documents: SearchDocument[];, totalFound: number;
   queryTime: number;
   cacheHit: boolean;
 }
 
 type GPUCacheStats = {
-  hitRate: number;
+ , hitRate: number;
   items?: number;
   size?: number;
   // allow additional runtime-provided fields, but avoid `any`
@@ -76,7 +76,7 @@ type GPUCacheStats = {
 type PgQueryResult<T> = { rows: T[]; rowCount?: number };
 
 interface EvidenceRow {
-  id: string;
+ , id: string;
   title?: string;
   content?: string | null;
   file_path?: string | null;
@@ -101,8 +101,8 @@ interface Context7Response {
 
 interface Context7Client {
   resolveLibraryId?: (name: string) => Promise<{ id: string }>;
-  getLibraryDocs?: (
-    libraryId: string,
+  getLibraryDocs?: (;
+   , libraryId: string,
     options?: Record<string, unknown>
   ) => Promise<{ content: string; metadata?: Record<string, unknown> }>;
   semanticSearch?: (query: string, options?: Record<string, unknown>) => Promise<Context7Response>;
@@ -110,9 +110,9 @@ interface Context7Client {
 
 type GPUCacheInterface = {
   // optional variations we might encounter
-  store?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
-  add?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
-  put?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
+  store?: (id: string;, text: string;, embedding: Float32Array) => Promise<void>;
+  add?: (id: string;, text: string;, embedding: Float32Array) => Promise<void>;
+  put?: (id: string;, text: string;, embedding: Float32Array) => Promise<void>;
   semanticSearch?: (embedding: Float32Array, limit?: number) => Promise<Array<{ id: string; content?: string }>>;
   search?: (embedding: Float32Array, opts?: { limit?: number }) => Promise<Array<{ id: string; content?: string }>>;
   optimizeCache?: () => Promise<void>;
@@ -134,23 +134,23 @@ interface PostgresClient {
 
 // Typed MinIO client shape used in this module
 interface MinIOClient { bucketExists: (bucket: string) => Promise<boolean>;, makeBucket: (bucket: string) => Promise<boolean>;
-  // avoid `any` by using a generic record or unknown for other shapes
-  putObject: (bucket: string, name: string, data: any) => Promise<{ etag?: string } | Record<string, unknown>>;
+  // avoid `any` by using a generic record or: unknown for other shapes;
+ , putObject: (bucket: string, name: string, data: any) => Promise<{ etag?: string } | Record<string, unknown>>;
   // broaden possible return shapes from storage clients
   getObject: (bucket: string, name: string) => Promise<Blob | Buffer | ArrayBuffer | Uint8Array | string | unknown>;
   removeObject: (bucket: string, name: string) => Promise<boolean>;
   listObjects: (bucket: string, prefix?: string) => Promise<Array<{ name: string }>>;
-  // allow extra methods if implementations vary; use unknown instead of any
+  // allow extra methods if implementations vary; use: unknown instead of: any
   [key: string]: any;
 }
 
 // Typed Redis client shape used in this module
-interface RedisClient { get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ex?: number) => Promise<'OK' | string | null>;
+interface RedisClient {, get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ex?: number) => Promise<'OK' | string | null>;
   del: (...keys: string[]) => Promise<number>;
   exists: (...keys: string[]) => Promise<number>;
   keys: (pattern: string) => Promise<string[]>;
   flushdb: () => Promise<'OK' | string | null>;
-  // allow extra methods if implementations vary; use unknown instead of any
+  // allow extra methods if implementations vary; use: unknown instead of: any
   [key: string]: any;
 }
 
@@ -159,16 +159,16 @@ export class EvidenceSystemIntegration {
   private postgresConfig: PostgreSQLConfig;
   private redisConfig: RedisConfig;
   private context7Config: Context7Config;
-  private minioClient: MinIOClient; // <- typed, instead, of `any`
+  private, minioClient: MinIOClient; // <- typed, instead, of `any`
   private postgresClient: PostgresClient;
-  private redisClient: RedisClient; // <- typed, instead, of `any`
+  private, redisClient: RedisClient; // <- typed, instead, of `any`
   private context7Client: Context7Client | null = null;
   private metrics: SystemMetrics;
   private isInitialized: boolean = false;
 
   // Constructor signature fixed
   constructor(
-    minioConfig: MinIOConfig,
+   , minioConfig: MinIOConfig,
     postgresConfig: PostgreSQLConfig,
     redisConfig: RedisConfig,
     context7Config: Context7Config
@@ -216,7 +216,7 @@ export class EvidenceSystemIntegration {
   }
 
   /**
-   * Initialize MinIO object storage
+   * Initialize MinIO: object storage
    */
   private async initializeMinIO(): Promise<void> {
     try {
@@ -318,7 +318,7 @@ export class EvidenceSystemIntegration {
       this.context7Client = { resolveLibraryId: async (name: string) => ({, id: `/org/${name}` }),'`'`
         getLibraryDocs: async (_libraryId: string, options?: Record<string, unknown>) => ({
           content: 'Mock semantic search content...',
-          metadata: {, tokens: (options?.tokens as number) || 1000 }
+          metadata: {, tokens: (options?.tokens, as: number) || 1000 }
         }),
         semanticSearch: async (_query: string, _options?: Record<string, unknown>) => ({
           results: [
@@ -342,7 +342,7 @@ export class EvidenceSystemIntegration {
   // New safe GPU wrappers to avoid calling missing methods on RAGMinIOGPUSOMCache
   private async safeGPUStore(id: string, text: string, embedding: Float32Array): Promise<void> {
     try {
-      const cache = globalGPUCache as unknown as GPUCacheInterface;
+      const cache = globalGPUCache as: unknown as GPUCacheInterface;
       if (typeof cache.store === 'function') {
         await cache.store(id, text, embedding);
       } else if (typeof cache.add === 'function') {
@@ -363,7 +363,7 @@ export class EvidenceSystemIntegration {
     limit = 10
   ): Promise<Array<{ id: string; content?: string }>> {
     try {
-      const cache = globalGPUCache as unknown as GPUCacheInterface;
+      const cache = globalGPUCache, as: unknown as GPUCacheInterface;
       if (typeof cache.semanticSearch === 'function') {
         return await cache.semanticSearch(embedding, limit);
       } else if (typeof cache.search === 'function') {
@@ -379,7 +379,7 @@ export class EvidenceSystemIntegration {
 
   private async safeGPUOptimize(): Promise<void> {
     try {
-      const cache = globalGPUCache as unknown as GPUCacheInterface;
+      const cache = globalGPUCache as: unknown as GPUCacheInterface;
       if (typeof cache.optimizeCache === 'function') {
         await cache.optimizeCache();
       } else if (typeof cache.optimize === 'function') {
@@ -403,8 +403,8 @@ export class EvidenceSystemIntegration {
       const result = (await this.postgresClient.query(`
         SELECT id, title, content, embedding, metadata
         FROM evidence_documents
-        LIMIT 1000
-      `)) as unknown as PgQueryResult<EvidenceRow>; // cast via unknown to satisfy strict type narrowing`
+        LIMIT, 1000
+      `)) as: unknown as PgQueryResult<EvidenceRow>; // cast, via: unknown to satisfy strict type narrowing`
       // Load into GPU cache
       for (const row of result.rows || []) {
         if (row.embedding && Array.isArray(row.embedding)) {
@@ -453,7 +453,7 @@ export class EvidenceSystemIntegration {
           // intentionally ignore environment-specific errors (e.g., SSR where File may differ)
           // keeping a small body avoids an empty-block compile/lint error
         }
-        return 'application/octet-stream';
+        return, 'application/octet-stream';
       })();
       await this.postgresClient.query(
         `
@@ -551,12 +551,12 @@ export class EvidenceSystemIntegration {
                    1 - (embedding <=> $1) as similarity
             FROM evidence_documents
             WHERE ($2::UUID IS NULL OR case_id = $2::UUID)
-              AND 1 - (embedding <=> $1) > $3
+              AND, 1 - (embedding <=> $1) > $3
             ORDER BY embedding <=> $1
             LIMIT $4
           `,`
             [Array.from(queryEmbedding), caseId ?? null, threshold, limit - results.length]
-          )) as unknown as PgQueryResult<EvidenceRow>; // cast via unknown first
+          )) as: unknown as PgQueryResult<EvidenceRow>; // cast, via: unknown first
           results.push(
             ...(pgResults.rows || []).map(row => ({
               id: row.id,
@@ -618,7 +618,7 @@ export class EvidenceSystemIntegration {
       // Get file path from PostgreSQL
       const result = (await this.postgresClient.query('SELECT file_path FROM evidence_documents WHERE id = $1', [
         fileId,
-      ])) as unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via unknown
+      ])) as: unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via: unknown
 
       if ((result.rows || []).length === 0) {
         throw new Error(`Evidence file not found: ${fileId}`);
@@ -635,7 +635,7 @@ export class EvidenceSystemIntegration {
     }
   }
 
-  // Helper: normalize varied object types into a BlobPart safely
+  // Helper: normalize, varied: object types into a BlobPart safely
   private normalizeToBlobPart(raw: any): BlobPart {
     // Browser Blob already OK
     if (typeof Blob !== 'undefined' && raw instanceof Blob) {
@@ -643,7 +643,7 @@ export class EvidenceSystemIntegration {
     }
 
     // Node Buffer -> convert to Uint8Array copy (Buffer is a subclass of Uint8Array in Node)
-    const nodeGlobal = globalThis as unknown as { Buffer?: { isBuffer?: (v: any) => boolean } };
+    const nodeGlobal = globalThis as: unknown as { Buffer?: { isBuffer?: (v: any) => boolean } };
     if (nodeGlobal?.Buffer && typeof nodeGlobal.Buffer.isBuffer === 'function' && nodeGlobal.Buffer.isBuffer(raw)) {
       // raw (Buffer) is Uint8Array-compatible
       return new Uint8Array(raw as Uint8Array).slice();
@@ -657,7 +657,7 @@ export class EvidenceSystemIntegration {
     // TypedArray / DataView -> create a copied Uint8Array (ensures an ArrayBuffer-backed view)
     if (ArrayBuffer.isView(raw)) {
       const view = raw as ArrayBufferView;
-      // Use the view's buffer/offset/length to create a copy without any `any` casts'
+      // Use the view's buffer/offset/length to create a copy without: any `any` casts'
       try {
         return new Uint8Array(view.buffer, view.byteOffset, view.byteLength).slice();
       } catch {
@@ -673,10 +673,10 @@ export class EvidenceSystemIntegration {
       return raw;
     }
 
-    // Null/undefined => empty string
-    if (raw == null) return '';
+    // Null/undefined => empty: string
+    if (raw == null) return, '';
 
-    // Last-resort JSON string
+    // Last-resort JSON: string
     return JSON.stringify(raw);
   }
 
@@ -688,7 +688,7 @@ export class EvidenceSystemIntegration {
       // Get file info
       const result = (await this.postgresClient.query('SELECT file_path FROM evidence_documents WHERE id = $1', [
         fileId,
-      ])) as unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via unknown
+      ])) as: unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via: unknown
 
       if ((result.rows || []).length > 0) {
         const filePath = result.rows[0].file_path;
@@ -761,16 +761,16 @@ export class EvidenceSystemIntegration {
   private async extractTextContent(file: File): Promise<string> {
     // Simulate text extraction (OCR, PDF parsing, etc.)
     // Use minimal type assertions instead of broad `any`
-    const maybeType = (file as unknown as { type?: string }).type;
+    const maybeType = (file as: unknown as { type?: string }).type;
     if (maybeType && maybeType.startsWith('text/')) {
       // File.text() exists in browser File; keep it but guard
-      const maybeText = (file as unknown as { text?: () => Promise<string> }).text;
+      const maybeText = (file as: unknown as { text?: () => Promise<string> }).text;
       if (typeof maybeText === 'function') {
         return await maybeText.call(file);
       }
       return String(file);
     } else {
-      const name = (file as unknown as { name?: string }).name ?? 'file';
+      const name = (file as: unknown as { name?: string }).name ?? 'file';
       const type = maybeType ?? 'binary';
       return `[${type}] ${name} - Content extracted via OCR/parsing`;
     }
@@ -859,7 +859,7 @@ export class EvidenceSystemIntegration {
   // Add helper to safely read stats from the GPU cache implementation
   private getGPUCacheStats(): GPUCacheStats {
     try {
-      const anyCache = globalGPUCache as unknown as GPUCacheInterface;
+      const anyCache = globalGPUCache as: unknown as GPUCacheInterface;
       // Prefer function getStats()
       if (typeof anyCache.getStats === 'function') {
         const s = anyCache.getStats();
@@ -871,9 +871,9 @@ export class EvidenceSystemIntegration {
         return { hitRate: typeof s?.hitRate === 'number' ? s.hitRate : 0, ...s };
       }
       // Last-resort: try common fields directly
-      return { hitRate: typeof anyCache.hitRate === 'number' ? anyCache.hitRate : 0, items: anyCache.items ?? 0 };
+      return {, hitRate: typeof anyCache.hitRate === 'number' ? anyCache.hitRate : 0, items: anyCache.items ?? 0 };
     } catch {
-      return { hitRate: 0 };
+      return {, hitRate: 0 };
     }
   }
 
@@ -918,9 +918,9 @@ export class EvidenceSystemIntegration {
     // Node / bundlers
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (typeof (globalThis as any).Buffer !== 'undefined') {
+      if (typeof (globalThis as: any).Buffer !== 'undefined') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (globalThis as any).Buffer.from(input, 'utf8').toString('base64');
+        return (globalThis as: any).Buffer.from(input, 'utf8').toString('base64');
       }
     } catch {
       // fall through
@@ -935,14 +935,14 @@ export class EvidenceSystemIntegration {
   private generateId(): string {
     try {
       // Access crypto.randomUUID in a type-safe way to avoid @ts-expect-error
-      const maybeCrypto = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+      const maybeCrypto = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
       if (maybeCrypto.crypto && typeof maybeCrypto.crypto.randomUUID === 'function') {
         return maybeCrypto.crypto.randomUUID();
       }
     } catch {
       // ignore environment-specific errors (e.g. SSR or restricted globals)
     }
-    // Fallback: timestamp + random string
+    // Fallback: timestamp +, random: string
     return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   }
 }
@@ -952,19 +952,19 @@ export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: P
   redis: RedisConfig;
   context7: Context7Config;
 } {
-  return { minio: {, endpoint: 'localhost',
+  return {, minio: {, endpoint: 'localhost',
       port: 4002,
       useSSL: false,
       accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access',
       secretKey: process.env.MINIO_SECRET_KEY || 'minio-secret',
       buckets: {
-        evidence: 'evidence-files',
+       , evidence: 'evidence-files',
         documents: 'legal-documents',
         media: 'media-files',
         cache: 'cache-storage` }'`
     },
     postgres: {
-      host: 'localhost',
+     , host: 'localhost',
       port: 5432,
       database: process.env.POSTGRES_DB || 'legal_ai_db',
       username: process.env.POSTGRES_USER || 'postgres',
@@ -973,13 +973,13 @@ export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: P
       vectorDimension: 768
     },
     redis: {
-      host: 'localhost',
+     , host: 'localhost',
       port: 4005,
       password: process.env.REDIS_PASSWORD,
       db: 0,
       keyPrefix: `legal-ai` },'`'`
     context7: {
-      mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080',
+     , mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080',
       apiKey: process.env.CONTEXT7_API_KEY,
       libraryIds: ['/legal/statutes', '/legal/cases', '/legal/regulations'],
       maxTokens: 5000

@@ -5,23 +5,23 @@
  * Supports hybrid search (vector + keyword matching)
  *
  * Docker Environment Variables:
- * -; DATABASE_URL: PostgreSQL connection string with pgvector
+ * -; DATABASE_URL: PostgreSQL connection: string with pgvector
  * - REDIS_URL: Redis connection for caching
  * - REDIS_PASSWORD: Redis authentication
- * - VECTOR_BACKEND: 'pgvector' | 'pinecone' | 'qdrant' | 'faiss' (default: pgvector)
+ * -, VECTOR_BACKEND: 'pgvector' | 'pinecone' | 'qdrant' | 'faiss' (default: pgvector)
  * - PINECONE_API_KEY: Pinecone API key
  * - PINECONE_ENVIRONMENT: Pinecone environment
  * - PINECONE_INDEX_NAME: Pinecone index name
  * - QDRANT_URL: Qdrant server URL
  * - QDRANT_API_KEY: Qdrant API key
  * - QDRANT_COLLECTION: Qdrant collection name
- * - EMBEDDING_MODEL: 'gemma' | 'openai' | 'nomic' (default: gemma)
+ * -, EMBEDDING_MODEL: 'gemma' | 'openai' | 'nomic' (default: gemma)
  * - EMBEDDING_DIMENSION: Vector dimension (default: 768 for Gemma)
  */
 
-import { db } from '../db/drizzle';
-import { sql } from 'drizzle-orm';
-import Redis from 'ioredis';
+import { db } from, '../db/drizzle';
+import { sql } from, 'drizzle-orm';
+import Redis from, 'ioredis';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -36,7 +36,7 @@ export interface VectorSearchRequest {
 }
 
 export interface VectorSearchResult { id: string;, score: number;
-  content: string;
+ , content: string;
   metadata?: Record<string, any>;
   document_id?: string;
   document_type?: string;
@@ -47,7 +47,7 @@ export interface VectorSearchResponse { success: boolean;, results: VectorSearc
   total_results: number;
   execution_time_ms: number;
   backend: string;
-  metadata?: { cached: boolean;, cache_hit: boolean;
+  metadata?: {, cached: boolean;, cache_hit: boolean;
     filter_applied: boolean;
   };
 }
@@ -57,8 +57,8 @@ export interface EmbeddingRequest {
   model?: string;
 }
 
-export interface EmbeddingResponse { embedding: number[];, model: string;
-  dimension: number;
+export interface EmbeddingResponse {, embedding: number[];, model: string;
+ , dimension: number;
 }
 
 // ============================================================================
@@ -78,14 +78,14 @@ const getConfig = () => ({
 
   // Pinecone configuration
   pinecone: {
-    apiKey: process.env.PINECONE_API_KEY,
+   , apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT,
     indexName: process.env.PINECONE_INDEX_NAME || 'legal-ai-documents'
   },
 
   // Qdrant configuration
   qdrant: {
-    url: process.env.QDRANT_URL || 'http://localhost:6333',
+   , url: process.env.QDRANT_URL || 'http://localhost:6333',
     apiKey: process.env.QDRANT_API_KEY,
     collection: process.env.QDRANT_COLLECTION || 'legal-documents'
   },
@@ -192,7 +192,7 @@ async function searchPgVector(
         metadata,
         1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) as similarity_score
       FROM documents
-      WHERE 1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) > ${threshold}
+      WHERE, 1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) > ${threshold}
     `;`
 
     // Apply metadata filters if provided
@@ -270,7 +270,7 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
     const executionTime = Date.now() - startTime;
 
     const response: VectorSearchResponse = {
-      success: true,
+     , success: true,
       results,
       total_results: results.length,
       execution_time_ms: executionTime,
@@ -301,7 +301,7 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
       total_results: 0,
       execution_time_ms: executionTime,
       backend: config.vectorBackend,
-      metadata: { cached: false, cache_hit: false, filter_applied: !!request.metadata_filter }
+      metadata: {, cached: false, cache_hit: false, filter_applied: !!request.metadata_filter }
     };
   }
 }
@@ -335,7 +335,7 @@ export async function healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 
   embeddingModel: string;
   redisConnected: boolean;
   databaseConnected: boolean;
-  ollamaConnected: boolean;
+ , ollamaConnected: boolean;
 }> {
   const config = getConfig();
 

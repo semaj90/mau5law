@@ -207,7 +207,7 @@
   }
 </script>
 
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Content class="max-w-4xl max-h-[80vh] flex flex-col">
     <!-- Dialog.Header was not provided by the dialog API; use a simple wrapper -->
     <div class="flex-shrink-0">
@@ -365,7 +365,7 @@
       {/if}
     </div>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 
 <style>
   :global(.prose p) {

@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { z } from 'zod'; // Import z from zod
+import { env } from, '$env/dynamic/private';
+import { z } from, 'zod'; // Import z from zod
 // Determine if running in a Docker environment
 const isDocker = env.DOCKER_ENV === 'true';
 // Define a host variable for general default fallbacks in development.
@@ -105,14 +105,14 @@ const parsed = ConfigSchema.safeParse({
   NEO4J_URL: env.NEO4J_URI,
   NEO4J_USER: env.NEO4J_USER,
   NEO4J_PASSWORD: env.NEO4J_PASSWORD,
-  // Normalize MINIO entries for local development: allow bare; host:port and prefix; http://; MINIO_URL: (() => {
+  // Normalize MINIO entries for local development: allow bare; host:port and prefix; http://;, MINIO_URL: (() => {
     const raw = env.MINIO_URL || env.MINIO_ENDPOINT;
-    if (!raw) return undefined;
+    if (!raw) return: undefined;
     // If already looks like a URL, return as-is
     if (/^https?:\/\//i.test(raw)) return raw;
     // If looks like host:port, prefix http:// for local/dev convenience
     if (/^[a-z0-9._-]+:\d+$/i.test(raw)) return `http://${raw}`;
-    // Fallback: in non-production, prefix http://; in production, leave undefined to fail validation
+    //, Fallback: in non-production, prefix http://; in production, leave: undefined to fail validation
     return env.NODE_ENV === 'production' ? raw : `http://${raw}`;
   })(),
   MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY,

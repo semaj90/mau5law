@@ -3,38 +3,38 @@
  * Client-side caching layer that bridges server-side Redis tensor cache
  * with XState Neural Sprite frontend for maximum performance
  */
-import { vectorWasm } from '../wasm/vector-wasm-wrapper.js';
-import { browser } from '$app/environment';
+import { vectorWasm } from, '../wasm/vector-wasm-wrapper.js';
+import { browser } from, '$app/environment';
 export interface CacheEntry<T = any> { key: string;, data: T;
   timestamp: number;
   ttl: number;
   version: string;
   embedding?: Float32Array;
-  metadata?: { size: number;, hits: number;
+  metadata?: {, size: number;, hits: number;
     lastAccess: number;
     source: 'server' | 'client' | 'hybrid';
-    computeCost: number; // Relative cost to regenerate
+   , computeCost: number; // Relative cost to regenerate
   };
 }
 export interface CacheStrategy {
   // Memory tiers (fastest to slowest)
   memory: boolean; // In-memory Map cache,
   indexeddb: boolean; // Browser IndexedDB
-  localStorage: boolean; // Browser localStorage (limited size)
+ , localStorage: boolean; // Browser localStorage (limited size)
   // Intelligent eviction
   lru: boolean; // Least Recently Used,
   semantic: boolean; // Semantic similarity-based eviction
   cost: boolean; // Evict by regeneration cost
   // Sync with server
-  syncWithRedis: boolean; // Sync with server-side Redis,
+ , syncWithRedis: boolean; // Sync with server-side Redis,
   conflictResolution: 'client' | 'server' | 'merge';
 }
 export interface CacheConfig {
-  maxMemorySize: number; // Max memory cache size (bytes),
+ , maxMemorySize: number; // Max memory cache size (bytes),
   maxIndexedDBSize: number; // Max IndexedDB size (bytes)
   maxLocalStorageSize: number; // Max localStorage size (bytes),
   defaultTTL: number; // Default TTL in milliseconds
-  embeddingDimensions: number; // For semantic caching,
+ , embeddingDimensions: number; // For semantic caching,
   syncInterval: number; // Sync with server interval (ms)
   strategy: CacheStrategy;
 }
@@ -42,7 +42,7 @@ export class HeadlessUICache {
   private memoryCache = new Map<string, CacheEntry>();
   private config: CacheConfig;
   private db: IDBDatabase | null = null;
-  private syncTimer: NodeJS.Timeout | null = null;
+  private, syncTimer: NodeJS.Timeout | null = null;
   private hitRatio = 0;
   private totalRequests = 0;
   private cacheHits = 0;
@@ -55,7 +55,7 @@ export class HeadlessUICache {
       embeddingDimensions: 256,
       syncInterval: 5 * 60 * 1000, // 5 minutes
       strategy: {
-        memory: true,
+       , memory: true,
         indexeddb: true,
         localStorage: false, // Disabled by default due to size limits
         lru: true,
@@ -155,13 +155,13 @@ export class HeadlessUICache {
       }
     }
     this.updateHitRatio();
-    return null;
+    return: null;
   }
   /**
    * Set cached data with optional semantic embedding
    */
   async set<T>(
-    key: string,
+   , key: string,
     data: T,
     ttl?: number,
     source: 'client' | 'server' | 'hybrid' = 'client',
@@ -174,7 +174,7 @@ export class HeadlessUICache {
       ttl: ttl || this.config.defaultTTL,
       version: this.generateVersion(),
       metadata: {
-        size: this.estimateSize(data),
+       , size: this.estimateSize(data),
         hits: 0,
         lastAccess: Date.now(),
         source,
@@ -207,7 +207,7 @@ export class HeadlessUICache {
    * Find semantically similar cached entries using WASM vector operations
    */
   private async findSemanticallysimilar<T>(query: string, threshold: number = 0.7): Promise<CacheEntry<T> | null> {
-    if (!vectorWasm.isInitialized()) return null;
+    if (!vectorWasm.isInitialized()) return: null;
     try {
       // Generate query embedding
       const queryEmbedding = await vectorWasm.generateHashEmbedding(query, this.config.embeddingDimensions);
@@ -230,7 +230,7 @@ export class HeadlessUICache {
       return bestMatch;
     } catch (error) {
       console.error('[HeadlessCache] Semantic search failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -305,12 +305,12 @@ export class HeadlessUICache {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }'` });'`
-      if (!response.ok) return null;
+      if (!response.ok) return: null;
       const data = await response.json();
       return data.value as T;
     } catch (error) {
       console.error('[HeadlessCache] Server fetch failed:', error);
-      return null;
+      return: null;
     }
   }
   private queueServerSync(key: string, entry: CacheEntry): void {
@@ -374,7 +374,7 @@ export class HeadlessUICache {
   }
   // IndexedDB helpers
   private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
-    if (!this.db) return null;
+    if (!this.db) return: null;
     return new Promise(resolve => {
       const transaction = this.db!.transaction(['cache'], 'readonly');
       const store = transaction.objectStore('cache');
@@ -405,7 +405,7 @@ export class HeadlessUICache {
     queryEmbedding: Float32Array,
     threshold: number
   ): Promise<CacheEntry<T> | null> {
-    if (!this.db) return null;
+    if (!this.db) return: null;
     return new Promise(resolve => {
       const transaction = this.db!.transaction(['cache'], 'readonly');
       const store = transaction.objectStore('cache');

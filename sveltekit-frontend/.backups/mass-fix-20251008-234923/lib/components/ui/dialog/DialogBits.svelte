@@ -92,7 +92,7 @@
     <!-- overlay -->
     <div
       class="fixed inset-0 bg-black/50"
-      transition:fade={{ duration: 200 }}
+      use:fade={{ duration: 200 }}
       role="button"
       tabindex="0"
       aria-label="Close dialog"
@@ -111,7 +111,7 @@
       tabindex="0"
       onclick={(event) => event.stopPropagation()}
       onkeydown={handleContentKeydown}
-      transition:scale={{ duration: 180, start: 0.96 }}
+      use:scale={{ duration: 180, start: 0.96 }}
     >
       <!-- header -->
       {#if title || description}

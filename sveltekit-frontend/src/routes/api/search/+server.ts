@@ -1,17 +1,17 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler, RequestEvent } from './$types';
-import { z } from 'zod';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler, RequestEvent } from, './$types';
+import { z } from, 'zod';
 // db/sql/QueryResult removed — using enhancedVectorSearchService instead
-import { createMachine, fromPromise, assign } from 'xstate';
+import { createMachine, fromPromise, assign } from, 'xstate';
 
 // --- Configuration ---
-import { OLLAMA_BASE_URL } from '$env/static/private';
-import { redis } from '$lib/server/cache/redis';
-import { generateEmbedding, summarizeText } from '$lib/server/ollama-client'; // EMBEDDING_MODEL removed (unused)
-import { extractKeywords } from '$lib/server/langextract/google-langextract';
+import { OLLAMA_BASE_URL } from, '$env/static/private';
+import { redis } from, '$lib/server/cache/redis';
+import { generateEmbedding, summarizeText } from, '$lib/server/ollama-client'; // EMBEDDING_MODEL removed (unused)
+import { extractKeywords } from, '$lib/server/langextract/google-langextract';
 // qdrantClient unused — enhancedVectorSearchService handles Qdrant calls
-import { enhancedVectorSearchService } from '$lib/server/ai/vector-search-service-instance';
-import { securityService } from '$lib/services/security.js';
+import { enhancedVectorSearchService } from, '$lib/server/ai/vector-search-service-instance';
+import { securityService } from, '$lib/services/security.js';
 
 // --- Constants ---
 const CACHE_TTL = 60 * 5; // 5 minutes
@@ -26,7 +26,7 @@ type SearchResultItem = {
   id: string;
   title?: string | null;
   content?: string | null;
-  similarity: number; // normalized to 0..1 after processing
+ , similarity: number; // normalized to 0..1 after processing
   source?: 'pg' | 'qdrant';
 };
 
@@ -43,11 +43,11 @@ type VectorResult = SearchResultItem & {
 type SearchResponse = { success: boolean;, timestamp: string;
   query?: string;
   results: SearchResultItem[];
-  metadata: { count: number;, processingTime: number;
+  metadata: {, count: number;, processingTime: number;
     embeddingDimensions: number;
     threshold: number;
     searchTypes: string[];
-    cached: boolean;
+   , cached: boolean;
     tags?: string[];
     summarized?: string;
   };
@@ -59,20 +59,20 @@ type SearchResponse = { success: boolean;, timestamp: string;
 
 // Define a structured response type for GET, aligning with AdminStatusResponse
 type SearchStatusResponse = { status: 'healthy' | 'unhealthy' | 'degraded' | 'unknown';, timestamp: string;
-  services: { ollama: {; status: 'ready' | 'ready_fallback' | 'missing_model' | 'unavailable' | 'unknown'; // Added: 'ready_fallback'; primaryModel: string; // Added, fallbackModel: string; // Added
+  services: { ollama: {; status: 'ready' | 'ready_fallback' | 'missing_model' | 'unavailable' | 'unknown'; // Added: 'ready_fallback';, primaryModel: string; // Added, fallbackModel: string; // Added
       activeModel: string | null; // Added
       availableModels: string[];
     };
-    vectorSearch: { status: 'healthy' | 'unhealthy' | 'degraded' | 'unknown';, details: any | null;
-      stats: { totalDocuments: number;, indexedDocuments: number;
+    vectorSearch: {, status: 'healthy' | 'unhealthy' | 'degraded' | 'unknown';, details: any | null;
+      stats: {, totalDocuments: number;, indexedDocuments: number;
         averageVectorDimensions: number;
       };
     };
-    redis: { status: 'connected' | 'unavailable';, topQueries: Array<{ query: string; count: number }>;
+    redis: {, status: 'connected' | 'unavailable';, topQueries: Array<{ query: string; count: number }>;
       recentErrors: number;
     };
   };
-  capabilities: { textToVector: boolean;, vectorSimilarity: boolean;
+  capabilities: {, textToVector: boolean;, vectorSimilarity: boolean;
     fuzzySearch: boolean;
     hybridSearch: boolean;
     caching: boolean;
@@ -86,7 +86,7 @@ type SearchStatusResponse = { status: 'healthy' | 'unhealthy' | 'degraded' | 'un
   details?: any;
 };
 
-type SearchError = { message: string;, code: string;
+type SearchError = {, message: string;, code: string;
   timestamp: string;
   details?: any;
 };
@@ -94,11 +94,11 @@ type SearchError = { message: string;, code: string;
 // --- Zod Schemas ---
 const SearchRequestSchema = z
   .object({
-    query: z.string().min(1).optional(),
+   , query: z.string().min(1).optional(),
     embedding: z.array(z.number()).optional(),
     options: z
       .object({
-        limit: z.number().int().min(1).max(50).optional().default(10),
+       , limit: z.number().int().min(1).max(50).optional().default(10),
         threshold: z.number().min(0).max(1).optional().default(0.6),
         entityTypes: z
           .array(z.enum(['evidence', 'case']))
@@ -113,7 +113,7 @@ const SearchRequestSchema = z
       })
       .optional()
   })
-  .refine(data => data.query || data.embedding, { message: "Either 'query', or: 'embedding' must be provided",
+  .refine(data => data.query || data.embedding, { message: "Either, 'query', or: 'embedding' must be provided",
     path: ['query', 'embedding']
   });
 
@@ -167,7 +167,7 @@ type RunPayload = {
 };
 
 // --- XState machine: avoid explicit `any` usage ---
-const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
+const searchMachine = (createMachine, as: unknown as (...args: any[]) => unknown)(
   {
     id: 'search',
     context: (input: any) =>
@@ -182,14 +182,14 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
         error: null
       }) as SearchMachineContext,
     initial: 'checkingCache',
-    states: { checkingCache: {, invoke: {
-          src: fromPromise(async ({ input }: { input?: RunPayload }) => {
+    states: {, checkingCache: {, invoke: {
+         , src: fromPromise(async ({ input }: { input?: RunPayload }) => {
             const payload = input ?? {};
             const query = payload.input?.query;
             if (query) {
               const cached = await redis.get(`search:cache:${query}`);
               if (cached) {
-                const parsed = JSON.parse(cached as string);
+                const parsed = JSON.parse(cached as: string);
                 return {
                   results: parsed.results ?? [],
                   cachedAt: parsed.cachedAt ?? null,
@@ -198,13 +198,13 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
                 } as FromCacheOutput;
               }
             }
-            return null;
+           , return: null;
           }),
           onDone: [
             {,
-              guard: ({ event }: { event: any }) => Boolean((event as { output?: FromCacheOutput })?.output),
+              guard: ({ event }: {, event: any }) => Boolean((event as { output?: FromCacheOutput })?.output),
               actions: assign({
-                finalResults: (_ctx, evt: { output?: FromCacheOutput }) =>
+               , finalResults: (_ctx, evt: { output?: FromCacheOutput }) =>
                   (evt.output?.results ?? []) as VectorResult[],
                 cachedAt: (_ctx, evt: { output?: FromCacheOutput }) => evt.output?.cachedAt ?? null,
                 options: (ctx: SearchMachineContext, evt: { output?: FromCacheOutput }) => ({
@@ -218,9 +218,9 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             { target: 'generatingEmbedding' }
           ],
           onError: {
-            target: 'generatingEmbedding',
+           , target: 'generatingEmbedding',
             actions: assign({
-              error: (_ctx, evt: { error?: any }) => {
+             , error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 return {
                   message: e instanceof Error ? e.message : String(e),
@@ -232,7 +232,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
           }
         }
       },
-      generatingEmbedding: { invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
+      generatingEmbedding: {, invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
             const payload = input ?? {};
             const providedEmbedding = payload.input?.embedding;
             const query = payload.input?.query;
@@ -240,14 +240,14 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             if (!query) throw new Error('Query is required to generate embedding.');
             return await generateEmbedding(query);
           }),
-          onDone: { actions: assign({, embedding: (_ctx, evt: { output?: number[] }) => evt.output ?? []
+          onDone: {, actions: assign({, embedding: (_ctx, evt: { output?: number[] }) => evt.output ?? []
             }),
             target: 'performingVectorSearch'
           },
           onError: {
-            target: 'failure',
+           , target: 'failure',
             actions: assign({
-              error: (_ctx, evt: { error?: any }) => {
+             , error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 return {
                   message: e instanceof Error ? e.message : String(e),
@@ -259,7 +259,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
           }
         }
       },
-      performingVectorSearch: { invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
+      performingVectorSearch: {, invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
             // ensure payload has the RunPayload shape and options are typed so destructuring is safe
             const payload = (input ?? {}) as RunPayload;
             const embedding: number[] = payload.input?.embedding ?? [];
@@ -276,22 +276,22 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
                 include_payload: true
               })) as {
                 pgResults?: Array<{ id: string; title?: string | null; content?: string | null; score?: number }>;
-                qResults?: Array<{ id: string; payload?: Record<string, unknown> | null; score?: number }>;
+                qResults?: Array<{, id: string; payload?: Record<string, unknown> | null; score?: number }>;
                 stats?: { pgCount?: number; qdrantCount?: number };
               };
 
               const pgResults: SearchResultItem[] = (unified.pgResults ?? []).map(r => ({
                 id: String(r.id),
-                title: (r.title ?? null) as string | null,
-                content: (r.content ?? null) as string | null,
+                title: (r.title ?? null) as: string | null,
+                content: (r.content ?? null) as: string | null,
                 similarity: Number(r.score ?? 0),
                 source: 'pg'
               }));
 
               const qResults: SearchResultItem[] = (unified.qResults ?? []).map(h => ({
                 id: String(h.id),
-                title: ((h.payload?.title as string) ?? null) as string | null,
-                content: ((h.payload?.content as string) ?? (h.payload?.summary as string) ?? null) as string | null,
+                title: ((h.payload?.title, as: string) ?? null) as: string | null,
+                content: ((h.payload?.content, as: string) ?? (h.payload?.summary as: string) ?? null) as: string | null,
                 similarity: Number(h.score ?? 0),
                 source: 'qdrant'
               }));
@@ -317,7 +317,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
               } as VectorSearchInvokeOutput;
             }
           }),
-          onDone: { actions: assign({, pgResults: (_ctx, evt: { output?: VectorSearchInvokeOutput }) =>
+          onDone: {, actions: assign({, pgResults: (_ctx, evt: { output?: VectorSearchInvokeOutput }) =>
                 (evt.output?.pgResults ?? []) as SearchResultItem[],
               qResults: (_ctx, evt: { output?: VectorSearchInvokeOutput }) =>
                 (evt.output?.qResults ?? []) as SearchResultItem[]
@@ -325,9 +325,9 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             target: 'normalizingAndMerging'
           },
           onError: {
-            target: 'failure',
+           , target: 'failure',
             actions: assign({
-              error: (_ctx, evt: { error?: any }) => {
+             , error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 return {
                   message: e instanceof Error ? e.message : String(e),
@@ -341,9 +341,9 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
       normalizingAndMerging: {
         // entry should be an assign action that returns partial context
         // use plain assign to avoid XState generic mismatch
-        entry: assign((ctx, _evt) => {
+       , entry: assign((ctx, _evt) => {
           // Use local typing/casts inside to keep runtime behavior; safe to access ctx fields
-          const localCtx = ctx as unknown as SearchMachineContext; // cast via unknown to satisfy TS
+          const localCtx = ctx as: unknown as SearchMachineContext; // cast, via: unknown to satisfy TS
           const { pgResults = [], qResults = [], options = {} as ActorInputOptions } = localCtx;
           const { limit = 10, weightPg = 1, weightQdrant = 1, threshold = 0.6 } = options || {};
 
@@ -374,7 +374,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
           return { finalResults: merged } as Partial<SearchMachineContext>;
         }),
         target: `summarizingAndTagging` },
-      summarizingAndTagging: { invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
+      summarizingAndTagging: {, invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
             const payload = input ?? {};
             // finalResults come from context (the machine writes them) — do not rely on options.finalResults
             const finalResults: VectorResult[] = (payload.context?.finalResults ?? []) as VectorResult[];
@@ -394,7 +394,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             }
             return { summarized, tags } as SummaryInvokeOutput;
           }),
-          onDone: { actions: assign({, options: (ctx: SearchMachineContext, evt: { output?: SummaryInvokeOutput }) => ({
+          onDone: {, actions: assign({, options: (ctx: SearchMachineContext, evt: { output?: SummaryInvokeOutput }) => ({
                 ...(ctx.options ?? {}),
                 tags: evt.output?.tags ?? ctx.options?.tags,
                 summarized: evt.output?.summarized ?? ctx.options?.summarized
@@ -402,9 +402,9 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             }),
             target: `cachingResults` },
           onError: {
-            target: 'cachingResults',
+           , target: 'cachingResults',
             actions: assign({
-              error: (_ctx, evt: { error?: any }) => {
+             , error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 const errorMessage = e instanceof Error ? e.message : String(e);
                 return {
@@ -416,19 +416,19 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
           }
         }
       },
-      cachingResults: { invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
+      cachingResults: {, invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
             const payload = input ?? {};
             // query may be in input or context
             const query =
-              (payload.input?.query as string | undefined) ?? (payload.context?.query as string | undefined);
+              (payload.input?.query as: string | undefined) ?? (payload.context?.query as: string | undefined);
             const finalResults: VectorResult[] = payload.context?.finalResults ?? [];
             const options = (payload.context?.options ??
               payload.input?.options ??
               {}) as NonNullable<ActorInputOptions>;
 
             if (query && finalResults.length > 0) {
-              // provide a correctly typed options object instead of `any`
-              const redisSetOptions: Record<string, number> = { EX: CACHE_TTL };
+              // provide a correctly typed options: object instead of `any`
+              const, redisSetOptions: Record<string, number> = { EX: CACHE_TTL };
               await redis.set(
                 `search:cache:${query}`,
                 JSON.stringify({
@@ -437,7 +437,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
                   tags: options.tags,
                   summarized: options.summarized
                 }),
-                redisSetOptions as unknown as Parameters<typeof, redis.set>[2]
+                redisSetOptions as: unknown as Parameters<typeof, redis.set>[2]
               );
               await redis.zincrby?.(TOP_K_KEY, 1, query);
             }
@@ -445,15 +445,15 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
           onDone: 'success',
           onError: `success` }
       },
-      success: { type: `final` },
-      failure: { type: `final` }
+      success: {, type: `final` },
+      failure: {, type: `final` }
     }
   },
   {}
-) as unknown;
+) as: unknown;
 
 // Export the machine so the symbol is used (avoids unused-variable lint errors)
-export const searchMachineRef = searchMachine as unknown;
+export const searchMachineRef = searchMachine as: unknown;
 
 // Type helper for XState snapshot - avoid `any`
 // (SearchSnapshot removed — not used)
@@ -481,7 +481,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
             details: validationError.errors,
             results: [],
             metadata: {
-              count: 0,
+             , count: 0,
               processingTime: Date.now() - startTime,
               embeddingDimensions: 0,
               threshold: 0,
@@ -500,8 +500,8 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
     // Simplified search path: generate embedding (if not provided) and query the unified vector search service directly.
     // This bypasses the XState machine for a straightforward, observable path.
     // Keep existing validation and security headers.
-    const providedEmbedding: number[] | undefined = parsedBody.embedding as number[] | undefined;
-    let embedding: number[] = providedEmbedding ?? [];
+    const providedEmbedding: number[] | undefined = parsedBody.embedding as: number[] | undefined;
+    let, embedding: number[] = providedEmbedding ?? [];
 
     if ((!embedding || embedding.length === 0) && parsedBody.query) {
       try {
@@ -540,7 +540,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
     // Allow optional metadata_filter at top-level for backward compatibility
     type FilterShape = Record<string, unknown> | undefined;
     const filters: FilterShape =
-      (parsedBody as unknown as { metadata_filter?: FilterShape })?.metadata_filter ??
+      (parsedBody, as: unknown as { metadata_filter?: FilterShape })?.metadata_filter ??
       parsedBody.options?.filters ??
       undefined;
 
@@ -577,7 +577,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
 
     const results = (resultsRaw || []).map((r: UnifiedSearchHit) => {
       const meta = r.metadata as Record<string, unknown> | undefined;
-      const metaTitle = meta && typeof meta['title'] === 'string' ? (meta['title'] as string) : undefined;
+      const metaTitle = meta && typeof meta['title'] === 'string' ? (meta['title'] as: string) : undefined;
       return {
         id: String(r.id ?? r.documentId ?? ''),
         title: String((metaTitle ?? r.filename ?? '') || ''),
@@ -595,7 +595,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
       responseTime,
       timestamp: new Date().toISOString(),
       metadata: {
-        modelUsed: process.env.EMBEDDING_MODEL || PRIMARY_EMBEDDING_MODEL_NAME,
+       , modelUsed: process.env.EMBEDDING_MODEL || PRIMARY_EMBEDDING_MODEL_NAME,
         indexType: `pgvector|qdrant` }
     };
 
@@ -604,7 +604,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
     console.error(`❌ [${requestId}] Search error: ${String(error)}`);
 
     const errorResponse: SearchError = {
-      message: error instanceof Error ? error.message : 'Internal server error during search',
+     , message: error instanceof Error ? error.message : 'Internal server error during search',
       code: 'INTERNAL_ERROR',
       timestamp: new Date().toISOString(),
       details: error instanceof Error ? error.stack : String(error)
@@ -633,7 +633,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
         details: errorResponse.details,
         results: [],
         metadata: {
-          count: 0,
+         , count: 0,
           processingTime: Date.now() - startTime,
           embeddingDimensions: 0,
           threshold: 0,
@@ -655,7 +655,7 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
 
     let ollamaStatus: SearchStatusResponse['services']['ollama']['status'] = 'unknown';
     let ollamaModels: string[] = [];
-    let activeOllamaModel: string | null = null; // Track the active model
+    let, activeOllamaModel: string | null = null; // Track the active model
 
     try {
       const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
@@ -664,7 +664,7 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
         ollamaModels = Array.isArray(data.models)
           ? (data.models
               .map((m: { name?: string } | string) => (typeof m === 'string' ? m : m?.name))
-              .filter(Boolean) as string[])
+              .filter(Boolean) as: string[])
           : [];
 
         if (ollamaModels.includes(PRIMARY_EMBEDDING_MODEL_NAME)) {
@@ -693,14 +693,14 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
         return raw as SearchStatusResponse['services']['vectorSearch']['status'];
       }
       // map common external values conservatively
-      if (raw === 'unavailable' || raw === 'down' || raw === 'error' || raw === '') return 'unhealthy';
-      return 'unknown';
+      if (raw === 'unavailable' || raw === 'down' || raw === 'error' || raw === '') return, 'unhealthy';
+      return, 'unknown';
     };
 
     // Get top queries from sorted set
     const topQueries = await redis.zrevrange(TOP_K_KEY, 0, 9, 'WITHSCORES');
 
-    const topQueriesFormatted: Array<{ query: string; count: number }> = [];
+    const topQueriesFormatted: Array<{ query: string;, count: number }> = [];
     if (topQueries.length) {
       for (let i = 0; i < topQueries.length; i += 2) {
         topQueriesFormatted.push({ query: topQueries[i], count: Number(topQueries[i + 1]) });
@@ -718,16 +718,16 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
         availableModels: ollamaModels
       },
       vectorSearch: {
-        status: normalizeVectorStatus(vectorHealth.status),
+       , status: normalizeVectorStatus(vectorHealth.status),
         details: vectorHealth.details,
         stats: {
-          totalDocuments: vectorStats.totalDocuments,
+         , totalDocuments: vectorStats.totalDocuments,
           indexedDocuments: vectorStats.indexedDocuments,
           averageVectorDimensions: vectorStats.averageVectorDimensions
         }
       },
       redis: {
-        status: redisStatus,
+       , status: redisStatus,
         topQueries: topQueriesFormatted,
         recentErrors: 0
       }
@@ -746,11 +746,11 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
           : 'degraded';
 
     return json({
-      status: overallStatus,
+     , status: overallStatus,
       timestamp: new Date().toISOString(),
       services,
       capabilities: {
-        textToVector: true,
+       , textToVector: true,
         vectorSimilarity: true,
         fuzzySearch: true,
         hybridSearch: true,
@@ -768,29 +768,29 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
     const errorBody = {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      services: { ollama: {, status: 'unavailable',
+      services: {, ollama: {, status: 'unavailable',
           primaryModel: PRIMARY_EMBEDDING_MODEL_NAME,
           fallbackModel: FALLBACK_EMBEDDING_MODEL_NAME,
           activeModel: null,
           availableModels: []
         },
         vectorSearch: {
-          status: 'unhealthy',
+         , status: 'unhealthy',
           details: null,
           stats: {
-            totalDocuments: 0,
+           , totalDocuments: 0,
             indexedDocuments: 0,
             averageVectorDimensions: 0
           }
         },
         redis: {
-          status: 'unavailable',
+         , status: 'unavailable',
           topQueries: [],
           recentErrors: 0
         }
       },
       capabilities: {
-        textToVector: false,
+       , textToVector: false,
         vectorSimilarity: false,
         fuzzySearch: false,
         hybridSearch: false,
@@ -803,7 +803,7 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
       error: error instanceof Error ? error.message : String(error),
       code: 'INTERNAL_ERROR',
       details: error instanceof Error ? error.stack : String(error)
-    } as unknown as SearchStatusResponse;
+    } as: unknown as SearchStatusResponse;
 
     return json(errorBody, { status: 500 });
   }

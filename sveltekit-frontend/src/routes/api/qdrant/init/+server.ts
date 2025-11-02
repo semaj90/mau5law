@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { qdrantService } from '$lib/services/qdrant-vector-service';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { qdrantService } from, '$lib/services/qdrant-vector-service';
 
 /**
  * Qdrant Initialization API
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * GET: Get collection info
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     const collectionInfo = await qdrantService.getCollectionInfo();
     const healthy = await qdrantService.healthCheck();
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async () => {
 /**
  * DELETE: Delete collection
  */
-export const DELETE: RequestHandler = async ({ request }) => {
+export const, DELETE: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { collectionName } = body;

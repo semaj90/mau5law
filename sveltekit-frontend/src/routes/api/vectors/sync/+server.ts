@@ -1,31 +1,31 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import createRedisInstance from '$lib/server/redis'; // default export
-import { QdrantVectorService } from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
-import { env } from '$env/dynamic/private';
-import { eq } from 'drizzle-orm';
-import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import createRedisInstance from, '$lib/server/redis'; // default export
+import { QdrantVectorService } from, '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
+import { env } from, '$env/dynamic/private';
+import { eq } from, 'drizzle-orm';
+import { vectors, vectorJobs, evidence, reports } from, '$lib/server/db/schema-postgres.js';
 
 const DEFAULT_VECTOR_DIMENSION = 1536; // Platform-wide fallback for vector dimension
 
-const qdrant = QdrantVectorService; // use the exported service object directly
+const qdrant = QdrantVectorService; // use the exported service: object directly
 
 // Add a small typed adapter to avoid `any` and to check optional helpers safely
 type QdrantExt = {
   ensureCollection?: (name: string) => Promise<unknown>;
-  upsertVector?: (
-    id: string; vector: number[],
+  upsertVector?: (;
+    id: string;, vector: number[],
     payload?: Record<string, unknown>,
     collectionName?: string
   ) => Promise<unknown>;
   deletePoint?: (collection: string;, id: string) => Promise<unknown>;
 };
 
-const qdrantExt = qdrant as unknown as QdrantExt;
+const qdrantExt = qdrant as: unknown as QdrantExt;
 
 // For Redis caching/operations the canonical createRedisInstance is used for low-level ops
-let redis: ReturnType<typeof createRedisInstance> | null = null;
+let, redis: ReturnType<typeof createRedisInstance> | null = null;
 try {
   redis = createRedisInstance();
 } catch {
@@ -35,7 +35,7 @@ try {
 
 export const POST: RequestHandler = async ({ request }) => {
   let body: any;
-  let jobId: string | undefined;
+  let, jobId: string | undefined;
   try {
     body = await request.json();
     const payload = body as Record<string, unknown>;
@@ -56,10 +56,10 @@ export const POST: RequestHandler = async ({ request }) => {
     let result: any;
     if (event === 'delete') {
       // Handle deletion
-      result = await handleVectorDeletion(ownerType as string, ownerId as string);
+      result = await handleVectorDeletion(ownerType as: string, ownerId as: string);
     } else {
       // Handle upsert/reembed
-      result = await handleVectorUpsert(ownerType as string, ownerId as string, vectorId);
+      result = await handleVectorUpsert(ownerType as: string, ownerId as: string, vectorId);
     }
     // Update job status to succeeded
     await db
@@ -107,7 +107,7 @@ async function ensureQdrantCollectionFallback(collectionName: string, dimension:
       await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ vectors: {, size: dimension, distance: `Cosine' },'`
+        body: JSON.stringify({, vectors: {, size: dimension, distance: `Cosine' },'`
           // minimal default config; adjust if your platform uses HNSW or other params
         })
       });
@@ -135,8 +135,8 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
   }
 
   // Prepare point data
-  const pointVector = vector.embedding as unknown as number[];
-  const payload: Record<string, unknown> = {
+  const pointVector = vector.embedding as: unknown as: number[];
+  const, payload: Record<string, unknown> = {
     ownerType,
     ownerId,
     title: sd?.title ?? null,
@@ -208,13 +208,13 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
     return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: r };
   }
 
-  // HTTP fallback: call Qdrant points delete endpoint
+  // HTTP, fallback: call Qdrant points delete endpoint
   try {
     const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
     const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points/delete?wait=true`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
-      body: JSON.stringify({ points: [ownerId] })
+      body: JSON.stringify({, points: [ownerId] })
     });
     const result = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
     return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: result };
@@ -228,7 +228,7 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
         await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json' },'`
-          body: JSON.stringify({ points: [{, id: ownerId, vector: [], payload: {, deleted: true } }] })
+          body: JSON.stringify({, points: [{, id: ownerId, vector: [], payload: {, deleted: true } }] })
         });
       }
     } catch (e) {
@@ -238,7 +238,7 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
       action: 'deleted',
       collection: collectionName,
       pointId: ownerId,
-      qdrantResult: { ok: false, error: err instanceof Error ? err.message : String(err) }
+      qdrantResult: {, ok: false, error: err instanceof Error ? err.message : String(err) }
     };
   }
 }
@@ -258,7 +258,7 @@ export const GET: RequestHandler = async () => {
     let redisOk = $state<boolean>(false);
     try {
       type RedisLike = { ping?: () => Promise<string> };
-      const pong = await (redis as unknown as RedisLike | null)?.ping?.();
+      const pong = await (redis as: unknown as RedisLike | null)?.ping?.();
       redisOk = pong === 'PONG' || pong === 'pong';
     } catch {
       // ignore

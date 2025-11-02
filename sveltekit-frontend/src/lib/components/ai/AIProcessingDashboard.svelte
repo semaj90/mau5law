@@ -3,17 +3,17 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- AI Processing, Dashboard - Integration, Demo -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from 'bits-ui';
-  import  LLMProviderSelector  from "./LLMProviderSelector.svelte";
-  import { aiServiceWorkerManager, type AITaskResult } from '$lib/services/aiServiceWorkerManager';
-  import type { LLMProvider } from '$lib/types/llm';
-  import { fly } from 'svelte/transition';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from, 'bits-ui';
+  import  LLMProviderSelector  from, "./LLMProviderSelector.svelte";
+  import { aiServiceWorkerManager, type AITaskResult } from, '$lib/services/aiServiceWorkerManager';
+  import type { LLMProvider } from, '$lib/types/llm';
+  import { fly } from, 'svelte/transition';
 
-  // Reactive local state (Svelte 5 runes $state used; kept as simple reactive variables)
+  // Reactive local state (Svelte, 5 runes $state used; kept as simple reactive variables)
   let taskQueue: any[] = [];
   let workerStatus: any[] = [];
   let systemMetrics: {
@@ -21,9 +21,9 @@ import type { Document } from '$lib/types';
     averageResponseTime: number;
     currentLoad: number;
     availableWorkers: number;
-  } = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
+  } = {, totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
 
-  let selectedProvider: LLMProvider | null = null;
+  let, selectedProvider: LLMProvider | null = null;
   let isProcessing = $state<boolean>(false);
   let processingResults: AITaskResult[] = [];
   let testInput = "Analyze this legal document for key compliance issues and regulatory requirements.";
@@ -34,35 +34,35 @@ import type { Document } from '$lib/types';
       name: "Document Embedding",
       type: "embedding" as const,
       description: "Generate vector embeddings for document search",
-      payload: { text: testInput, model: "nomic-embed-text" }
+      payload: {, text: testInput, model: "nomic-embed-text" }
     },
     {
       name: "Legal Analysis",
       type: "analysis" as const,
       description: "Analyze document for legal compliance",
-      payload: { content: testInput, analysisType: "legal-document" }
+      payload: {, content: testInput, analysisType: "legal-document" }
     },
     {
       name: "Text Generation",
       type: "generation" as const,
       description: "Generate legal summary and recommendations",
-      payload: { prompt: `Create a legal summary for: ${testInput}`, model: "gemma3-legal" }
+      payload: { prompt: `Create a legal summary, for: ${testInput}`, model: "gemma3-legal" }
     },
     {
       name: "Vector Search",
       type: "vector-search" as const,
       description: "Search similar documents in database",
-      payload: { query: testInput, collection: "legal_docs", limit: 5 }
+      payload: {, query: testInput, collection: "legal_docs", limit: 5 }
     }
   ];
 
   // Event handlers (kept simple)
   const handleProviderSelected = (event: CustomEvent) => {
     // If LLMProviderSelector emits provider in detail, keep this handler as fallback
-    selectedProvider = (event as any).detail?.provider ?? selectedProvider;
+    selectedProvider = (event as: any).detail?.provider ?? selectedProvider;
   };
   const handleStatusChanged = (event: CustomEvent) => {
-    console.log(`Provider status changed`, (event as any).detail);
+    console.log(`Provider status changed`, (event as: any).detail);
   };
 
   // Process single task
@@ -83,7 +83,7 @@ import type { Document } from '$lib/types';
         provider: selectedProvider,
         payload: taskTemplate.payload,
         metadata: {
-          userId: 'demo-user',
+         , userId: 'demo-user',
           sessionId: 'demo-session',
           timestamp: Date.now()
         }
@@ -97,12 +97,12 @@ import type { Document } from '$lib/types';
           result: generateMockResult(taskTemplate.type),
           duration: Math.random() * 2000 + 500,
           metrics: {
-            tokensProcessed: Math.floor(Math.random() * 1000) + 100,
+           , tokensProcessed: Math.floor(Math.random() * 1000) + 100,
             throughput: Math.floor(Math.random() * 50) + 10,
             memoryUsed: `${Math.floor(Math.random() * 500) + 100}MB`
           }
         };
-        processingResults = [mockResult, ...processingResults].slice(0, 10); // Keep last 10
+        processingResults = [mockResult, ...processingResults].slice(0, 10); // Keep last, 10
         isProcessing = false;
       }, Math.random() * 3000 + 1000);
     } catch (error) {
@@ -138,7 +138,7 @@ import type { Document } from '$lib/types';
           result: generateMockResult(t.type),
           duration: Math.random() * 2000 + 200,
           metrics: {
-            tokensProcessed: Math.floor(Math.random() * 1000) + 50,
+           , tokensProcessed: Math.floor(Math.random() * 1000) + 50,
             throughput: Math.floor(Math.random() * 50) + 5,
             memoryUsed: `${Math.floor(Math.random() * 500) + 80}MB`
           }
@@ -155,32 +155,32 @@ import type { Document } from '$lib/types';
   // Generate mock results for demo
   const generateMockResult = (taskType: string) => {
     switch (taskType) {
-      case 'embedding':
+      case, 'embedding':
         return {
-          embedding: Array.from({ length: 384 }, () => Math.random() - 0.5),
+          embedding: Array.from({, length: 384 }, () => Math.random() - 0.5),
           dimensions: 384
         };
-      case 'analysis':
+      case, 'analysis':
         return {
           entities: ['GDPR', 'Privacy Policy', 'Data Controller'],
           sentiment: 'neutral',
           compliance_score: 0.85,
           key_points: ['Data retention requirements', 'User consent mechanisms', 'Privacy by design']
         };
-      case 'generation':
+      case, 'generation':
         return {
           text: 'This document appears to address key privacy regulations including GDPR compliance, data retention policies, and user consent mechanisms. Recommendations include updating privacy notices and implementing data subject request procedures.',
           confidence: 0.92
         };
-      case 'vector-search':
+      case, 'vector-search':
         return {
           results: [
-            { id: '1', title: 'Privacy Policy Template', similarity: 0.94 },
+            {, id: '1', title: 'Privacy Policy Template', similarity: 0.94 },
             { id: '2', title: 'GDPR Compliance Guide', similarity: 0.87 },
             { id: '3', title: 'Data Retention Standards', similarity: 0.81 }
           ]
         };
-      default: return { status: 'completed' };
+      default: return {, status: 'completed' };
     }
   };
 
@@ -228,11 +228,11 @@ import type { Document } from '$lib/types';
   // Utility functions
   const getTaskTypeColor = (type: string) => {
     switch (type) {
-      case 'embedding': return 'bg-blue-500';
-      case 'generation': return 'bg-green-500';
-      case 'analysis': return 'bg-purple-500';
-      case 'vector-search': return 'bg-orange-500';
-      default: return 'bg-gray-500';
+      case, 'embedding': return, 'bg-blue-500';
+      case, 'generation': return, 'bg-green-500';
+      case, 'analysis': return, 'bg-purple-500';
+      case, 'vector-search': return, 'bg-orange-500';
+      default: return, 'bg-gray-500';
     }
   };
   const formatDuration = (ms: number) => (ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`);
@@ -251,7 +251,7 @@ import type { Document } from '$lib/types';
         {selectedProvider?.status?.toUpperCase() || 'NO PROVIDER'}
       </Badge>
       <div, class="text-sm, text-yorha-text-secondary">
-        Queue: {taskQueue?.length || 0} | Workers: {systemMetrics?.availableWorkers || 0}
+        Queue: {taskQueue?.length || 0} |, Workers: {systemMetrics?.availableWorkers || 0}
       </div>
     </div>
   </div>
@@ -313,7 +313,7 @@ import type { Document } from '$lib/types';
         <textarea
           id="-test-input-"
           bind:value={testInput}
-          class="w-full h-20 px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary placeholder-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary"
+          class="w-full h-20 px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary placeholder-yorha-text-tertiary focus:outline-none focus:ring-2, focus:ring-yorha-primary"
           placeholder="Enter text to process..."
         ></textarea>
       </div>
@@ -418,7 +418,7 @@ import type { Document } from '$lib/types';
               <div class="text-xs, text-yorha-text-secondary, space-y-1">
                 <div>Type: {worker.type}</div>
                 <div>Completed: {worker.tasksCompleted}</div>
-                <div>Avg Time: {formatDuration(worker.averageTaskTime)}</div>
+                <div>Avg, Time: {formatDuration(worker.averageTaskTime)}</div>
                 <div>Load: {(worker.load || 0).toFixed(1)}%</div>
               </div>
             </div>

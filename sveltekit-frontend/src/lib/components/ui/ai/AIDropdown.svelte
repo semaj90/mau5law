@@ -1,6 +1,6 @@
 <script, lang="ts">
 	// Updated props: do NOT use $state for incoming props defaults.
-	type Item = { id: string; label: string };
+	type Item = { id: string;, label: string };
 
 	let {
 		value = $bindable(''),
@@ -43,7 +43,7 @@
 
 	function onTriggerKeydown(e: KeyboardEvent) {
 		switch (e.key) {
-			case 'ArrowDown':
+			case, 'ArrowDown':
 				e.preventDefault();
 				if (!isOpen) {
 					isOpen = true;
@@ -53,7 +53,7 @@
 					highlighted = highlighted === null ? 0 : Math.min(items.length - 1, highlighted + 1);
 				}
 				break;
-			case 'ArrowUp':
+			case, 'ArrowUp':
 				e.preventDefault();
 				if (!isOpen) {
 					isOpen = true;
@@ -63,8 +63,8 @@
 					highlighted = highlighted === null ? items.length - 1 : Math.max(0, highlighted - 1);
 				}
 				break;
-			case 'Enter':
-			case ' ':
+			case, 'Enter':
+			case, ' ':
 				e.preventDefault();
 				if (isOpen && highlighted !== null) {
 					selectItem(items[highlighted].id);
@@ -72,7 +72,7 @@
 					toggle();
 				}
 				break;
-			case 'Escape':
+			case, 'Escape':
 				e.preventDefault();
 				close();
 				break;
@@ -119,7 +119,7 @@
 					role="option"
 					aria-selected={value === item.id}
 					class:selected={value === item.id}
-					class:highlighted={highlighted === idx}
+				, class:highlighted={highlighted === idx}
 					onclick={() => selectItem(item.id)}
 					onmouseenter={() => (highlighted = idx)}
 				>
@@ -142,7 +142,7 @@
 		justify-content: space-between;
 		gap: 0.5rem;
 		padding: 0.4rem 0.6rem;
-		background: var(--dropdown-bg, #fff);
+	, background: var(--dropdown-bg, #fff);
 		border: 1px solid var(--dropdown-border, #ccc);
 		border-radius: 6px;
 		cursor: pointer;
@@ -151,12 +151,12 @@
 	.ai-dropdown-caret { font-size: 0.9em; margin-left: 0.5rem; }
 	.ai-dropdown-list {
 		position: absolute;
-		top: calc(100% + 6px);
+	, top: calc(100% + 6px);
 		left: 0;
 		min-width: 160px;
 		max-height: 240px;
 		overflow: auto;
-		background: var(--dropdown-bg, #fff);
+	, background: var(--dropdown-bg, #fff);
 		border: 1px solid var(--dropdown-border, #ccc);
 		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 		z-index: 40;
@@ -168,7 +168,7 @@
 		padding: 0.4rem 0.6rem;
 		cursor: pointer;
 	}
-	.ai-dropdown-list li.highlighted { background: var(--dropdown-highlight, #eef); }
+	.ai-dropdown-list li.highlighted {, background: var(--dropdown-highlight, #eef); }
 	.ai-dropdown-list li.selected { font-weight: 600; }
-	.ai-dropdown-empty { color: #666; cursor: default; padding: 0.4rem 0.6rem; }
+	.ai-dropdown-empty { color: #666; cursor: default;, padding: 0.4rem 0.6rem; }
 </style>

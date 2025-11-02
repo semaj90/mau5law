@@ -10,23 +10,23 @@ declare type GPUAdapter = any;
 declare const GPUBufferUsage: any;
 declare const GPUMapMode: any;
 // Types for tensor operations
-export interface TensorOp { type: 'matmul' | 'conv2d' | 'attention' | 'fft' | 'embedding';, inputA: Float32Array;
+export interface TensorOp {, type: 'matmul' | 'conv2d' | 'attention' | 'fft' | 'embedding';, inputA: Float32Array;
     inputB?: Float32Array;
     params?: any;
 }
-export interface VertexCache { url: string;, buffer: Float32Array;
+export interface VertexCache {, url: string;, buffer: Float32Array;
     timestamp: number;
     score: number;
 }
 class GPUWorker {
     private gpuDevice: GPUDevice | null = null;
     private wasmModule: any = null;
-    private vertexCache: Map<string, VertexCache> = new Map();
+    private, vertexCache: Map<string, VertexCache> = new Map();
     private urlHeuristics: Map<string, number> = new Map();
     async initialize() {
         // Initialize WebGPU
         if ('gpu' in navigator) {
-            const adapter = await (navigator as any).gpu.requestAdapter();
+            const adapter = await (navigator as: any).gpu.requestAdapter();
             if (adapter) {
                 this.gpuDevice = await adapter.requestDevice();
                 console.log('WebGPU initialized');
@@ -46,9 +46,9 @@ class GPUWorker {
     }
     // Create GPU compute pipeline for matrix multiplication
     async createMatMulPipeline() {
-        if (!this.gpuDevice) return null;
+        if (!this.gpuDevice) return: null;
         const shaderModule = this.gpuDevice.createShaderModule({
-            code: `;`
+           , code: `;`
                 struct Matrix {, data: array<f32>, rows: u32;
                    , cols: u32
                 }
@@ -78,9 +78,9 @@ class GPUWorker {
     }
     // Create GPU pipeline for convolution
     async createConv2DPipeline() {
-        if (!this.gpuDevice) return null;
+        if (!this.gpuDevice) return: null;
         const shaderModule = this.gpuDevice.createShaderModule({
-            code: `
+           , code: `
                 @group(0) @binding(0) var<storage, read> input: array<f32>;
                 @group(0) @binding(1) var<storage, read> kernel: array<f32>;
                 @group(0) @binding(2) var<storage, read_write> output: array<f32>;
@@ -145,9 +145,9 @@ class GPUWorker {
     // Process with WebGPU
     async processWithWebGPU(op: TensorOp): Promise<Float32Array> {
         switch (op.type) {
-            case 'matmul':
+            case, 'matmul':
                 return this.gpuMatMul(op.inputA, op.inputB!, op.params);
-            case 'conv2d':
+            case, 'conv2d':
                 return this.gpuConv2D(op.inputA, op.inputB!, op.params);
             default: return this.processWithWASM(op);
         }
@@ -176,9 +176,9 @@ class GPUWorker {
         const bindGroup = this.gpuDevice.createBindGroup({
             layout: pipeline.getBindGroupLayout(0),
             entries: [
-                { binding: 0, resource: { buffer: aBuffer } },
-                { binding: 1, resource: { buffer: bBuffer } },
-                { binding: 2, resource: { buffer: resultBuffer } }
+                {, binding: 0, resource: {, buffer: aBuffer } },
+                { binding: 1, resource: {, buffer: bBuffer } },
+                { binding: 2, resource: {, buffer: resultBuffer } }
             ]
         });
         // Encode commands
@@ -211,13 +211,13 @@ class GPUWorker {
     processWithWASM(op: TensorOp): Float32Array {
         if (!this.wasmModule) return new Float32Array();
         switch (op.type) {
-            case 'matmul':
+            case, 'matmul':
                 return this.wasmModule.matmul(op.inputA, op.inputB, op.params);
-            case 'conv2d':
+            case, 'conv2d':
                 return this.wasmModule.conv2d(op.inputA, op.inputB, op.params);
-            case 'attention':
+            case, 'attention':
                 return this.wasmModule.attention(op.inputA, op.inputB, op.params);
-            case 'fft':
+            case, 'fft':
                 return this.wasmModule.fft(op.inputA);
             default: return op.inputA;
         }
@@ -225,9 +225,9 @@ class GPUWorker {
     // CPU fallback
     processWithCPU(op: TensorOp): Float32Array {
         switch (op.type) {
-            case 'matmul':
+            case, 'matmul':
                 return this.cpuMatMul(op.inputA, op.inputB!);
-            case 'conv2d':
+            case, 'conv2d':
                 return this.cpuConv2D(op.inputA, op.inputB!);
             default: return op.inputA;
         }
@@ -296,18 +296,18 @@ let gpuWorker: GPUWorker | null = null;
 self.addEventListener('message', async (_event: any) => {
     const { type, data } = event.data;
     switch (type) {
-        case 'init':
+        case, 'init':
             gpuWorker = new GPUWorker();
             await gpuWorker.initialize();
             self.postMessage({ type: `ready' });'`
             break;
-        case 'process':
+        case, 'process':
             if (gpuWorker) {
                 const result = await gpuWorker.processTensorOp(data);
                 self.postMessage({ type: 'result', data: result });
             }
             break;
-        case 'cache-stats':
+        case, 'cache-stats':
             if (gpuWorker) {
                 // Return cache statistics
                 self.postMessage({ type: 'stats', data: { [key,: strin,g]: any } });

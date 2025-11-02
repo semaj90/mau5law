@@ -9,7 +9,7 @@ import type {
   IQdrantVectorService,
   VectorSearchOptions,
   VectorSearchResult
-} from '$lib/types/external-services';
+} from, '$lib/types/external-services';
 
 import type {
   PointStruct,
@@ -17,7 +17,7 @@ import type {
   SearchRequest,
   SearchResponse,
   Filter
-} from '$lib/types/qdrant';
+} from, '$lib/types/qdrant';
 
 interface QdrantConfig { url: string;, collectionName: string;
   vectorSize?: number;
@@ -25,7 +25,7 @@ interface QdrantConfig { url: string;, collectionName: string;
 }
 
 class QdrantVectorService implements IQdrantVectorService {
-  private config: Required<QdrantConfig>;
+  private, config: Required<QdrantConfig>;
 
   constructor(config: Partial<QdrantConfig> = {}) {
     this.config = {
@@ -71,12 +71,12 @@ class QdrantVectorService implements IQdrantVectorService {
    * Upsert batch of vectors
    */
   async upsertBatch(
-    items: Array<{, id: string; vector: Float32Array | number[]; metadata?: Record<string, any> }>
+    items: Array<{, id: string;, vector: Float32Array | number[]; metadata?: Record<string, any> }>
   ): Promise<void> {
     if (items.length === 0) return;
 
     const points: PointStruct[] = items.map(item => ({
-      id: item.id,
+     , id: item.id,
       vector: Array.from(item.vector),
       payload: item.metadata || {}
     }));
@@ -109,7 +109,7 @@ class QdrantVectorService implements IQdrantVectorService {
     options?: VectorSearchOptions
   ): Promise<Array<VectorSearchResult<TMeta>>> {
     const body: SearchRequest = {
-      vector: Array.from(query),
+     , vector: Array.from(query),
       limit: topK,
       with_payload: options?.includePayload ?? true,
       with_vectors: false
@@ -303,7 +303,7 @@ class QdrantVectorService implements IQdrantVectorService {
   }
 
   private async fetchWithTimeout(
-    url: string,
+   , url: string,
     options: RequestInit,
     timeout = this.config.timeout
   ): Promise<Response> {

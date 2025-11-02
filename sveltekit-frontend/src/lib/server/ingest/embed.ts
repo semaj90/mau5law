@@ -9,11 +9,11 @@
  * Designed to work with configurable HTTP endpoints for easy swapping
  * between local and remote Gemma instances.
  */
-import fetch, { type Response, type RequestInit } from 'node-fetch';
-import fs from 'fs/promises';
-import { getGemmaEmbedEndpoint } from '$lib/server/integrations/gemma'; // Import the new helper
+import fetch, { type Response, type RequestInit } from, 'node-fetch';
+import fs from, 'fs/promises';
+import { getGemmaEmbedEndpoint } from, '$lib/server/integrations/gemma'; // Import the new helper
 
-// Helper for fetch with timeout, as 'timeout' is not a standard RequestInit property
+// Helper for fetch with timeout, as, 'timeout' is not a standard RequestInit property
 async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -51,14 +51,14 @@ export interface BatchEmbeddingResult {
   success: boolean;
   embeddings?: number[][];
   errors?: string[];
-  metadata?: { batchSize: number;, successCount: number;
+  metadata?: {, batchSize: number;, successCount: number;
     failureCount: number;
     totalProcessingTime: number;
   };
 }
 
 export interface EmbeddingEndpointHealth {
-  healthy: boolean;
+ , healthy: boolean;
   status?: number;
   statusText?: string;
   url?: string;
@@ -108,7 +108,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
         success: true,
         embeddings,
         metadata: {
-          batchSize: inputTexts.length,
+         , batchSize: inputTexts.length,
           successCount: embeddings.length,
           failureCount: Math.max(0, inputTexts.length - embeddings.length),
           totalProcessingTime: Date.now() - startTime
@@ -119,7 +119,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
         success: true,
         embedding: embeddings[0],
         metadata: {
-          model: result.model || 'unknown',
+         , model: result.model || 'unknown',
           dimensions: embeddings[0]?.length,
           processingTime: Date.now() - startTime,
           inputType: 'text',
@@ -177,7 +177,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
       success: true,
       embedding,
       metadata: {
-        model: result.model || 'unknown',
+       , model: result.model || 'unknown',
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'image',
@@ -235,7 +235,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
       success: true,
       embedding,
       metadata: {
-        model: result.model || 'unknown',
+       , model: result.model || 'unknown',
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'audio',
@@ -322,7 +322,7 @@ export async function embedImageBuffers(
     embeddings,
     errors: errors.length > 0 ? errors : undefined,
     metadata: {
-      batchSize: buffers.length,
+     , batchSize: buffers.length,
       successCount: embeddings.length,
       failureCount: errors.length,
       totalProcessingTime: Date.now() - startTime
@@ -360,7 +360,7 @@ export async function embedContent(
   }
   return {
     success: false,
-    error: `Unsupported content type for; embedding: ${contentType}' };'`
+    error: `Unsupported content type for;, embedding: ${contentType}' };'`
 }
 /**
  * Health check for Gemma embedding endpoint

@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { User } from '$lib/types';
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import PgvectorSearchInterface from '$lib/components/search/PgvectorSearchInterface.svelte';
+import type { User } from, '$lib/types';
+  import { onMount } from, 'svelte';
+  import { goto } from, '$app/navigation';
+  import { page } from, '$app/stores';
+  import PgvectorSearchInterface from, '$lib/components/search/PgvectorSearchInterface.svelte';
 
   let isAuthenticated = $state<boolean>(false);
   let userName = $state<string>('');
@@ -116,7 +116,7 @@ import type { User } from '$lib/types';
             <div, class="step-number">3</div>
             <div, class="step-content">
               <h4>Results Cache</h4>
-              <p>Results are cached in Redis for 1 hour for instant future queries</p>
+              <p>Results are cached in Redis for, 1 hour for instant future queries</p>
             </div>
           </div>
 
@@ -181,7 +181,7 @@ import type { User } from '$lib/types';
 <style>
   .search-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+   , background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
     color: var(--console-fg, white);
     font-family: 'Courier New', monospace;
   }
@@ -201,9 +201,9 @@ import type { User } from '$lib/types';
   }
 
   .page-title {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     font-size: 2rem;
-    color: var(--console-primary, #00aa00);
+   , color: var(--console-primary, #00aa00);
     letter-spacing: 1px;
   }
 
@@ -222,23 +222,23 @@ import type { User } from '$lib/types';
   .nav-button {
     padding: 0.75rem 1.5rem;
     background: transparent;
-    border: 2px solid var(--console-primary, #00aa00);
+   , border: 2px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 4px;
-    cursor: pointer;
+   , cursor: pointer;
     font-family: 'Courier New', monospace;
     font-weight: bold;
     transition: all 0.2s;
   }
 
   .nav-button:hover {
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
 
   .user-info {
     padding: 0.75rem 1rem;
-    background: rgba(0, 170, 0, 0.1);
+   , background: rgba(0, 170, 0, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
     font-size: 0.9rem;
@@ -247,7 +247,7 @@ import type { User } from '$lib/types';
   .page-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+   , padding: 2rem;
   }
 
   .features-section,
@@ -258,35 +258,35 @@ import type { User } from '$lib/types';
 
   .section-title {
     font-size: 1.5rem;
-    color: var(--console-primary, #00aa00);
-    margin: 0 0 1.5rem 0;
+   , color: var(--console-primary, #00aa00);
+    margin: 0, 0 1.5rem 0;
     letter-spacing: 1px;
     border-bottom: 2px solid var(--console-primary, #00aa00);
     padding-bottom: 0.5rem;
   }
 
   .features-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;
   }
 
   .feature-card {
     padding: 1.5rem;
-    background: rgba(0, 170, 0, 0.05);
+   , background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
     transition: all 0.2s;
   }
 
   .feature-card:hover {
-    background: rgba(0, 170, 0, 0.1);
+   , background: rgba(0, 170, 0, 0.1);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 170, 0, 0.2);
   }
 
   .feature-card h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0, 0 0.5rem 0;
     color: var(--console-primary, #00aa00);
   }
 
@@ -297,7 +297,7 @@ import type { User } from '$lib/types';
   }
 
   .steps {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
@@ -306,7 +306,7 @@ import type { User } from '$lib/types';
     display: flex;
     gap: 1rem;
     padding: 1.5rem;
-    background: rgba(0, 170, 0, 0.05);
+   , background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
   }
@@ -315,7 +315,7 @@ import type { User } from '$lib/types';
     min-width: 40px;
     width: 40px;
     height: 40px;
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
     border-radius: 50%;
     display: flex;
@@ -326,7 +326,7 @@ import type { User } from '$lib/types';
   }
 
   .step-content h4 {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     color: var(--console-primary, #00aa00);
   }
 
@@ -337,7 +337,7 @@ import type { User } from '$lib/types';
   }
 
   .tech-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
   }
@@ -348,14 +348,14 @@ import type { User } from '$lib/types';
     align-items: center;
     text-align: center;
     padding: 1rem;
-    background: rgba(0, 170, 0, 0.05);
+   , background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
     transition: all 0.2s;
   }
 
   .tech-item:hover {
-    background: rgba(0, 170, 0, 0.1);
+   , background: rgba(0, 170, 0, 0.1);
     transform: scale(1.05);
   }
 
@@ -366,7 +366,7 @@ import type { User } from '$lib/types';
 
   .tech-name {
     font-weight: bold;
-    color: var(--console-primary, #00aa00);
+   , color: var(--console-primary, #00aa00);
     margin-bottom: 0.25rem;
   }
 
@@ -377,7 +377,7 @@ import type { User } from '$lib/types';
 
   .loading {
     text-align: center;
-    padding: 3rem;
+   , padding: 3rem;
     font-size: 1.2rem;
   }
 

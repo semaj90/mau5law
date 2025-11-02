@@ -8,9 +8,9 @@
  * - MinIO (object storage)
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getLegalAIPipeline } from '$lib/server/integrations';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getLegalAIPipeline } from, '$lib/server/integrations';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -26,20 +26,20 @@ export const GET: RequestHandler = async () => {
       {
         status: health.overall,
         timestamp: new Date().toISOString(),
-        services: { ollama: {, status: health.services.ollama.status,
+        services: {, ollama: {, status: health.services.ollama.status,
             latencyMs: health.services.ollama.latencyMs
           },
           redis: {
-            status: health.services.redis.status,
+           , status: health.services.redis.status,
             usedMemory: health.services.redis.usedMemory ?
               `${Math.round(health.services.redis.usedMemory / 1024 / 1024)}MB` : undefined
           },
           qdrant: {
-            status: health.services.qdrant.status,
+           , status: health.services.qdrant.status,
             collections: health.services.qdrant.collections
           },
           minio: {
-            status: health.services.minio.status,
+           , status: health.services.minio.status,
             buckets: health.services.minio.buckets
           }
         }

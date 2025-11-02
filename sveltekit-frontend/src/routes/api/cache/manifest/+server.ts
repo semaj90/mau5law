@@ -1,11 +1,11 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 /**
  * Cache manifest endpoint for headless UI cache sync
  * GET /api/cache/manifest - Get cache manifest for synchronization
  */
 // Mock implementation - would integrate with actual Redis tensor cache
-const mockCache = new Map<string, { value: any, timestamp: number; ttl: number; version: string; source: string; size: number
+const mockCache = new Map<string, { value: any, timestamp: number; ttl: number; version: string; source: string;, size: number
 }>()
 export const GET: RequestHandler = async ({ url }) => {
   try {

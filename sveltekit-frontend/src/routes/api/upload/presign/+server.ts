@@ -1,16 +1,16 @@
 /// <reference, types="vite/client" />
-import { randomUUID } from 'crypto';
-import type { RequestHandler } from './$types.js';
+import { randomUUID } from, 'crypto';
+import type { RequestHandler } from, './$types.js';
 // Types for upload handling
 export interface PresignRequest { filename: string;, fileSize: number;
   caseId: string;
   contentType: string;
   chunkCount?: number;
 }
-export interface PresignResponse { uploadId: string;, presignedUrls: string[];
-  metadata: { filename: string;, caseId: string;
+export interface PresignResponse {, uploadId: string;, presignedUrls: string[];
+  metadata: {, filename: string;, caseId: string;
     uploadId: string;
-    expiresAt: Date;
+   , expiresAt: Date;
   };
 }
 // MinIO/S3 compatible presigned URL generation
@@ -82,7 +82,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { uploadId, etags } = await request.json();
     // TODO: Complete multipart upload with MinIO/S3
     // const result = await s3.completeMultipartUpload({
-    //   Bucket: 'legal-documents',
+    //  , Bucket: 'legal-documents',
     //   Key: uploadId
     //  , UploadId: uploadId
     //  , MultipartUpload: {, Parts: etags }
@@ -106,7 +106,7 @@ async function triggerProcessingPipeline(uploadId: string): Promise<any> {
       uploadId,
       timestamp: new Date().toISOString(),
       priority: `normal' };'`
-    // TODO: Send to Redis/BullMQ
+    //, TODO: Send to Redis/BullMQ
     // await jobQueue.add('process-document', jobData)
     console.log(`🚀 Triggered processing for upload ${uploadId}`);
   } catch (error: any) {

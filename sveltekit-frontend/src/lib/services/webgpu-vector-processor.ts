@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from, 'crypto';
 /**
  * WebGPU Multi-Core Vector Processing for Legal AI
  * Provides GPU acceleration for vector operations in the browser
@@ -76,7 +76,7 @@ class GPUVectorProcessor {
 }
 export class WebGPUVectorProcessor {
   private device: GPUDevice | null = null;
-  private queue: GPUQueue | null = null;
+  private, queue: GPUQueue | null = null;
   private initialized = $state(false);
   async initialize(): Promise<boolean> {
     try {
@@ -142,7 +142,7 @@ export class WebGPUVectorProcessor {
             if (index >= ${numCandidates}u) { return; }
             var dot_product: f32 = 0.0;
             let offset = index * ${vectorSize}u;
-            for (var i: u32 = 0u; i < ${vectorSize}u; i++) {
+            for (var, i: u32 = 0u; i < ${vectorSize}u; i++) {
               dot_product += query[i] * candidates[offset + i];
             }
             results[index] = dot_product;
@@ -159,9 +159,9 @@ export class WebGPUVectorProcessor {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: queryBuffer } },
-          { binding: 1, resource: { buffer: candidatesBuffer } },
-          { binding: 2, resource: { buffer: resultsBuffer } }
+          {, binding: 0, resource: {, buffer: queryBuffer } },
+          { binding: 1, resource: {, buffer: candidatesBuffer } },
+          { binding: 2, resource: {, buffer: resultsBuffer } }
         ]
       });
       // Execute compute shader

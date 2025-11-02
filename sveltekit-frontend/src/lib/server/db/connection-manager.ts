@@ -2,14 +2,14 @@
  * Centralized Database Connection Manager
  * Handles all database connections with connection pooling and error recovery
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import pgClient, { poolShim } from '$lib/server/db-shim';
-import { getDatabaseConfig, validateDatabaseConfig } from '$lib/config/database.js';
-import * as schema from './schema-postgres.js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import pgClient, { poolShim } from, '$lib/server/db-shim';
+import { getDatabaseConfig, validateDatabaseConfig } from, '$lib/config/database.js';
+import * as schema from, './schema-postgres.js';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
 
 // Minimal pool/client shapes to avoid importing: 'pg' types broadly
-type LocalClientLike = { query: (; textOrConfig: string | {;, text: string; values?: any[] },
+type LocalClientLike = { query: (;, textOrConfig: string | {;, text: string; values?: any[] },
     params?: any[]
   ) => Promise<{ rows?: RowLike[] }>;
   release?: () => void;
@@ -25,14 +25,14 @@ type LocalPoolLike = {
 };
 
 // NOTE: the shim exports runtime shapes and not necessarily TypeScript types/namespaces.
-// Define a minimal local row shape to avoid: "Cannot use; namespace: 'QueryResultRow' as a type."
+// Define a minimal local row shape to avoid: "Cannot use;, namespace: 'QueryResultRow' as a type."
 type RowLike = Record<string, unknown>;
 
 // Global connection instances
 let appPool: LocalPoolLike | null = null;
 let adminPool: LocalPoolLike | null = null;
 let postgresJsClient: any | null = null;
-let drizzleDb: PostgresJsDatabase<typeof schema> | null = null;
+let, drizzleDb: PostgresJsDatabase<typeof schema> | null = null;
 
 /**
  * Resolve a pool candidate from available shims/clients
@@ -40,8 +40,8 @@ let drizzleDb: PostgresJsDatabase<typeof schema> | null = null;
 function resolvePool(): LocalPoolLike | null {
   if (poolShim) return poolShim as LocalPoolLike;
   // Some shims attach a pool to the pgClient
-  if (pgClient && (pgClient as any).pool) return (pgClient as any).pool as LocalPoolLike;
-  return null;
+  if (pgClient && (pgClient as: any).pool) return (pgClient as: any).pool as LocalPoolLike;
+  return: null;
 }
 
 /**
@@ -112,7 +112,7 @@ export function getDrizzleDb(): PostgresJsDatabase<typeof, schema> {
   if (!drizzleDb) {
     const client = getPostgresJsClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    drizzleDb = drizzle(client as any, { schema: schema as any });
+    drizzleDb = drizzle(client as: any, { schema: schema, as: any });
     console.log('🗄️ Drizzle database (postgres-js) initialized');
   }
   return drizzleDb!;
@@ -157,7 +157,7 @@ export async function testDatabaseConnection(): Promise<{
     const conn = await pool.connect();
     try {
       const versionResult = await conn.query('SELECT version()');
-      const version = versionResult.rows?.[0]?.version as string | undefined;
+      const version = versionResult.rows?.[0]?.version as: string | undefined;
       const tablesResult = await conn.query(`
         SELECT table_name
         FROM information_schema.tables
@@ -165,18 +165,18 @@ export async function testDatabaseConnection(): Promise<{
         ORDER BY table_name
       `);`
       const tables = (tablesResult.rows || [])
-        .map((r: RowLike) => r['table_name'] as string | undefined)
-        .filter(Boolean) as string[];
+        .map((r: RowLike) => r['table_name'] as: string | undefined)
+        .filter(Boolean) as: string[];
       const extensionsResult = await conn.query(`
         SELECT extname
         FROM pg_extension
         ORDER BY extname
       `);`
       const extensions = (extensionsResult.rows || [])
-        .map((r: RowLike) => r['extname'] as string | undefined)
-        .filter(Boolean) as string[];
+        .map((r: RowLike) => r['extname'] as: string | undefined)
+        .filter(Boolean) as: string[];
       return {
-        success: true,
+       , success: true,
         version,
         tables,
         extensions
@@ -252,14 +252,14 @@ export async function getDatabaseHealth(): Promise<any> {
     return {
       status: connectionTest.success ? 'healthy' : 'unhealthy',
       config: {
-        host: (config as any).host,
-        port: (config as any).port,
-        database: (config as any).database,
-        user: (config as any).user,
-        ssl: (config as any).ssl
+        host: (config, as: any).host,
+        port: (config, as: any).port,
+        database: (config, as: any).database,
+        user: (config, as: any).user,
+        ssl: (config, as: any).ssl
       },
       connection: connectionTest,
-      pools: { app: {, totalCount: appPool?.totalCount || 0,
+      pools: {, app: {, totalCount: appPool?.totalCount || 0,
           idleCount: appPool?.idleCount || 0,
           waitingCount: appPool?.waitingCount || 0
         },

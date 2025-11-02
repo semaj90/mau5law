@@ -1,5 +1,5 @@
 // src/lib/server/orchestrators/nes-cache-orchestrator.ts
-import type { MultiDimArray } from '$lib/workers/gpu-tensor-worker';
+import type { MultiDimArray } from, '$lib/workers/gpu-tensor-worker';
 class NesCacheOrchestrator {
   private store = new Map<string, MultiDimArray>();
   private paused = $state(false);
@@ -18,7 +18,7 @@ class NesCacheOrchestrator {
     this.store.delete(key);
   }
   async getMemoryStats(): Promise<{ count: number }> {
-    return { count: this.store.size };
+    return {, count: this.store.size };
   }
   setPaused(paused: boolean) {
     this.paused = !!paused;

@@ -632,7 +632,7 @@
 </div>
 
 
-<Dialog.Root bind:open={findModal.show}>
+<Dialog bind:open={findModal.show}>
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>Find Related Evidence</Dialog.Title>
@@ -671,7 +671,7 @@
 			<Button variant="secondary" onclick={closeFindModal}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
-</Dialog.Root>
+</Dialog>
 
 {#if miniModal.show}
 	<div class="fixed z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">

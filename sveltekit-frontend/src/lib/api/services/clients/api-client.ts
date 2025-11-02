@@ -1,19 +1,19 @@
 // API Client utility for centralized API calls
-import { error } from '@sveltejs/kit';
+import { error } from, '@sveltejs/kit';
 export interface ApiConfig {
   baseUrl?: string;
   timeout?: number;
   retries?: number;
 }
 const defaultConfig: ApiConfig = {
-  baseUrl: '',
+ , baseUrl: '',
   timeout: 10000,
   retries: 3
 }
 
 // Fix: proper ApiError class implementation
 export class ApiError extends Error {
-  public status: number;
+  public, status: number;
   public data?: any;
 
   constructor(message: string, status = 0, data?: any) {
@@ -28,7 +28,7 @@ export class ApiError extends Error {
 
 // Fix: proper function signature and implementation
 export async function apiFetch<T = any>(
-  endpoint: string,
+ , endpoint: string,
   options: RequestInit & { config?: ApiConfig } = {}
 ): Promise<T> {
   const { config = {}, ...fetchOptions } = options;
@@ -55,7 +55,7 @@ export async function apiFetch<T = any>(
       return (await response.json()) as T;
     }
     // Fallback to text
-    return (await response.text()) as unknown as T;
+    return (await response.text()) as: unknown as T;
   } catch (err: any) {
     clearTimeout(timeoutId);
     if (err instanceof ApiError) {

@@ -23,55 +23,55 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
+  } from, '$lib/components/ui/enhanced-bits.svelte';
  * ```
  */
 // Core N64 Components (New implementations with advanced 3D effects)
-export { default, as Button } from './N643DButton.svelte.js';
-export { default, as N64Button } from './N643DButton.svelte.js';
-export { default, as Input } from './Input.svelte.js';
-export { default, as N64Input } from './Input.svelte.js';
-export { default, as TextField } from './N64TextField.svelte.js';
-export { default, as N64TextField } from './N64TextField.svelte.js';
-export { default, as Card } from './Card.svelte.js';
-export { default, as N64Card } from './Card.svelte.js';
-export { default, as Dialog } from './Dialog.svelte.js';
-export { default, as N64Dialog } from './Dialog.svelte.js';
-export { default, as Modal } from './N64Modal.svelte.js';
-export { default, as N64Modal } from './N64Modal.svelte.js';
-export { default, as Select } from './Select.svelte.js';
-export { default, as N64Select } from './N64Select.svelte.js';
-export { default, as Dropdown } from './Select.svelte.js'; // Alias
-export { default, as ProgressBar } from './ProgressBar.svelte.js';
-export { default, as N64ProgressBar } from './ProgressBar.svelte.js';
-export { default, as Progress } from './N64Progress.svelte.js';
-export { default, as N64Progress } from './N64Progress.svelte.js';
-export { default, as Switch } from './Switch.svelte.js';
-export { default, as N64Switch } from './Switch.svelte.js';
-export { default, as Toggle } from './N64Toggle.svelte.js';
-export { default, as N64Toggle } from './N64Toggle.svelte.js';
+export { default, as Button } from, './N643DButton.svelte.js';
+export { default, as N64Button } from, './N643DButton.svelte.js';
+export { default, as Input } from, './Input.svelte.js';
+export { default, as N64Input } from, './Input.svelte.js';
+export { default, as TextField } from, './N64TextField.svelte.js';
+export { default, as N64TextField } from, './N64TextField.svelte.js';
+export { default, as Card } from, './Card.svelte.js';
+export { default, as N64Card } from, './Card.svelte.js';
+export { default, as Dialog } from, './Dialog.svelte.js';
+export { default, as N64Dialog } from, './Dialog.svelte.js';
+export { default, as Modal } from, './N64Modal.svelte.js';
+export { default, as N64Modal } from, './N64Modal.svelte.js';
+export { default, as Select } from, './Select.svelte.js';
+export { default, as N64Select } from, './N64Select.svelte.js';
+export { default, as Dropdown } from, './Select.svelte.js'; // Alias
+export { default, as ProgressBar } from, './ProgressBar.svelte.js';
+export { default, as N64ProgressBar } from, './ProgressBar.svelte.js';
+export { default, as Progress } from, './N64Progress.svelte.js';
+export { default, as N64Progress } from, './N64Progress.svelte.js';
+export { default, as Switch } from, './Switch.svelte.js';
+export { default, as N64Switch } from, './Switch.svelte.js';
+export { default, as Toggle } from, './N64Toggle.svelte.js';
+export { default, as N64Toggle } from, './N64Toggle.svelte.js';
 // Additional N64 Components (Existing implementations)
-export { default, as N64Badge } from './N64Badge.svelte.js';
-export { default, as N64Canvas } from './N64Canvas.svelte.js';
-export { default, as N64Cartridge } from './N64Cartridge.svelte.js';
-export { default, as N64Checkbox } from './N64Checkbox.svelte.js';
-export { default, as N64Controller } from './N64Controller.svelte.js';
-export { default, as N64EvolutionLoader } from './N64EvolutionLoader.svelte.js';
-export { default, as N64FormGrid } from './N64FormGrid.svelte.js';
-export { default, as N64LoadingRing } from './N64LoadingRing.svelte.js';
-export { default, as N64Panel } from './N64Panel.svelte.js';
-export { default, as N64Screen } from './N64Screen.svelte.js';
-export { default, as N64Slider } from './N64Slider.svelte.js';
-export { default, as N64Surface } from './N64Surface.svelte.js';
-export { default, as N64TextArea } from './N64TextArea.svelte.js';
-export { default, as N64TextureFilteringCache } from './N64TextureFilteringCache.svelte.js';
-export { default, as N64Toaster } from './N64Toaster.svelte.js';
+export { default, as N64Badge } from, './N64Badge.svelte.js';
+export { default, as N64Canvas } from, './N64Canvas.svelte.js';
+export { default, as N64Cartridge } from, './N64Cartridge.svelte.js';
+export { default, as N64Checkbox } from, './N64Checkbox.svelte.js';
+export { default, as N64Controller } from, './N64Controller.svelte.js';
+export { default, as N64EvolutionLoader } from, './N64EvolutionLoader.svelte.js';
+export { default, as N64FormGrid } from, './N64FormGrid.svelte.js';
+export { default, as N64LoadingRing } from, './N64LoadingRing.svelte.js';
+export { default, as N64Panel } from, './N64Panel.svelte.js';
+export { default, as N64Screen } from, './N64Screen.svelte.js';
+export { default, as N64Slider } from, './N64Slider.svelte.js';
+export { default, as N64Surface } from, './N64Surface.svelte.js';
+export { default, as N64TextArea } from, './N64TextArea.svelte.js';
+export { default, as N64TextureFilteringCache } from, './N64TextureFilteringCache.svelte.js';
+export { default, as N64Toaster } from, './N64Toaster.svelte.js';
 // Utility Modules
-export { default, as N64ToastStore } from './N64ToastStore.ts.js';
-export { default, as retroPerformanceGuard } from './retroPerformanceGuard.ts.js';
-export { default, as useRetroTransform } from './useRetroTransform.js';
-export { default, as parallaxDynamic } from './parallaxDynamic.js';
-export { default, as tokens } from './tokens.ts.js';
+export { default, as N64ToastStore } from, './N64ToastStore.ts.js';
+export { default, as retroPerformanceGuard } from, './retroPerformanceGuard.ts.js';
+export { default, as useRetroTransform } from, './useRetroTransform.js';
+export { default, as parallaxDynamic } from, './parallaxDynamic.js';
+export { default, as tokens } from, './tokens.ts.js';
 // Type exports for component props
 export type {
   GamingComponentProps,
@@ -85,7 +85,7 @@ export type {
   RetroEffect,
   GamingAudioConfig,
   ProgressiveGamingConfig
-} from '../types/gaming-types.js';
+} from, '../types/gaming-types.js';
 // Constants and presets
 export {
   NES_COLOR_PALETTE,
@@ -97,7 +97,7 @@ export {
   GAMING_COMPONENT_SIZES,
   RETRO_EFFECTS,
   GAMING_SOUND_EFFECTS
-} from '../constants/gaming-constants.js';
+} from, '../constants/gaming-constants.js';
 /**
  * Quick Start Configuration
  *
@@ -126,7 +126,7 @@ export const N64_QUICK_START_CONFIG = {
 export const N64_PERFORMANCE_PRESETS = {
   // Maximum quality for high-end devices
   ultra: {
-    renderOptions: N64_TEXTURE_PRESETS.ultraEnhanced,
+   , renderOptions: N64_TEXTURE_PRESETS.ultraEnhanced,
     materialType: 'pbr' as const,
     meshComplexity: 'ultra' as const,
     enableLighting: true,
@@ -138,7 +138,7 @@ export const N64_PERFORMANCE_PRESETS = {
   },
   // Balanced quality for most devices
   balanced: {
-    renderOptions: N64_TEXTURE_PRESETS.balanced,
+   , renderOptions: N64_TEXTURE_PRESETS.balanced,
     materialType: 'phong' as const,
     meshComplexity: 'medium' as const,
     enableLighting: true,
@@ -150,7 +150,7 @@ export const N64_PERFORMANCE_PRESETS = {
   },
   // Optimized for low-end devices
   performance: {
-    renderOptions: N64_TEXTURE_PRESETS.lowPoly,
+   , renderOptions: N64_TEXTURE_PRESETS.lowPoly,
     materialType: 'basic' as const,
     meshComplexity: 'low' as const,
     enableLighting: false,
@@ -168,24 +168,24 @@ export const N64_PERFORMANCE_PRESETS = {
  */
 export const N64_THEME_VARIANTS = {
   // Classic N64 controller inspired
-  classic: { primary: {, base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' },
-    secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-    accent: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
+  classic: {, primary: {, base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' },
+    secondary: {, base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
+    accent: {, base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
   },
   // Dark cyberpunk theme
-  cyberpunk: { primary: {, base: '#00ff88', highlight: '#33ffaa', shadow: '#00cc66' },
-    secondary: { base: '#ff0080', highlight: '#ff33aa', shadow: '#cc0066' },
-    accent: { base: '#0088ff', highlight: '#33aaff', shadow: '#0066cc' }
+  cyberpunk: {, primary: {, base: '#00ff88', highlight: '#33ffaa', shadow: '#00cc66' },
+    secondary: {, base: '#ff0080', highlight: '#ff33aa', shadow: '#cc0066' },
+    accent: {, base: '#0088ff', highlight: '#33aaff', shadow: '#0066cc' }
   },
   // Retro arcade theme
-  arcade: { primary: {, base: '#ff6b35', highlight: '#ff8c66', shadow: '#cc5529' },
-    secondary: { base: '#f7931e', highlight: '#ffaa4d', shadow: '#c5741a' },
-    accent: { base: '#c5299b', highlight: '#d14daa', shadow: '#9e2179' }
+  arcade: {, primary: {, base: '#ff6b35', highlight: '#ff8c66', shadow: '#cc5529' },
+    secondary: {, base: '#f7931e', highlight: '#ffaa4d', shadow: '#c5741a' },
+    accent: {, base: '#c5299b', highlight: '#d14daa', shadow: '#9e2179' }
   },
   // Military/tactical theme
-  military: { primary: {, base: '#4a5c2a', highlight: '#6b8039', shadow: `#3a4620` },'`'`
-    secondary: { base: '#8b4513', highlight: '#a0611a', shadow: `#6d3410` },
-    accent: { base: '#cd853f', highlight: '#d4a374', shadow: `#a36a32` }
+  military: {, primary: {, base: '#4a5c2a', highlight: '#6b8039', shadow: `#3a4620` },'`'`
+    secondary: {, base: '#8b4513', highlight: '#a0611a', shadow: `#6d3410` },
+    accent: {, base: '#cd853f', highlight: '#d4a374', shadow: `#a36a32` }
   }
 }
 /**
@@ -195,7 +195,7 @@ export const N64_THEME_VARIANTS = {
  */
 export const N64_A11Y_HELPERS = {
   // ARIA label generators
-  generateProgressLabel: (value: number, max: number) =>
+ , generateProgressLabel: (value: number, max: number) =>
     `Progress: ${value} of ${max} (${Math.round((value / max) * 100)}%)`,
   generateSwitchLabel: (checked: boolean, label: string) =>
     `${label}: ${checked ? 'On' : `Off` }`,
@@ -237,18 +237,18 @@ export const N64_UTILS = {
   // Audio context management
   createSpatialAudio: () => {
     try {
-      return new (window.AudioContext || (window as any).webkitAudioContext)();
+      return new (window.AudioContext || (window as: any).webkitAudioContext)();
     } catch (error) {
       console.warn('Web Audio API not supported');
-      return null;
+      return: null;
     }
   },
   // Performance detection
   getDeviceMemory: () => {
-    return (navigator as any).deviceMemory || 4; // Default to 4GB if not available
+    return (navigator as: any).deviceMemory || 4; // Default to 4GB if not available
   },
   getHardwareConcurrency: () => {
-    return navigator.hardwareConcurrency || 2; // Default to 2 cores
+    return navigator.hardwareConcurrency || 2; // Default to, 2 cores
   },
   // Recommended preset based on device capabilities
   getRecommendedPreset: () => {

@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+	import type { Snippet } from, 'svelte';
   interface TableColumn {
     key: string;
     title: string;
@@ -15,7 +15,7 @@
   }
   interface TableProps {
     columns: TableColumn[];
-    data: TableRow[];
+   , data: TableRow[];
     loading?: boolean;
     selectable?: boolean;
     sortable?: boolean;
@@ -111,11 +111,11 @@
   }
   function formatCellValue(value: any, column: TableColumn) {
     switch (column.type) {
-      case 'date':
+      case, 'date':
         return new Date(String(value)).toLocaleDateString();
-      case 'number':
+      case, 'number':
         return typeof value === 'number' ? value.toLocaleString() : String(value);
-      case 'status':
+      case, 'status':
         return String(value);
       default: return String(value);
     }
@@ -145,7 +145,7 @@
 <div
   class="yorha-table-container {className}"
   class:yorha-table-loading={loading}
-  class:yorha-glitch-effect={glitchEffect}
+ , class:yorha-glitch-effect={glitchEffect}
 >
   <!-- Table Header, with, Search -->
   <div, class="yorha-table-header">
@@ -167,7 +167,7 @@
       class="yorha-table"
       class:yorha-table-striped={striped}
       class:yorha-table-bordered={bordered}
-      class:yorha-table-hover={hover}
+     , class:yorha-table-hover={hover}
     >
       <thead, class="yorha-table-head">
         <tr, class="yorha-table-head-row">
@@ -188,7 +188,7 @@
               class:yorha-sortable={column.sortable && sortable}
               class:yorha-sorted-asc={sortColumn === column.key && sortDirection === 'asc'}
               class:yorha-sorted-desc={sortColumn === column.key && sortDirection === 'desc'}
-              style:width={column.width}
+             , style:width={column.width}
               onclick={() => handleSort(column)}
             >
               <div, class="yorha-header-content">
@@ -231,7 +231,7 @@
               class="yorha-table-row"
               class:yorha-row-selected={selectedRows.has(row.id)}
               class:yorha-row-even={index % 2 === 0}
-              class:yorha-row-odd={index % 2 === 1}
+             , class:yorha-row-odd={index % 2 === 1}
             >
               {#if selectable}
                 <td, class="yorha-table-cell, yorha-select-cell">
@@ -303,7 +303,7 @@
   .yorha-table-container {
     /* @apply bg-black border border-amber-400 relative overflow-hidden; */
     font-family: 'Courier New', monospace;
-    box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
+    box-shadow: 0, 0 20px rgba(255, 191, 0, 0.3);
   }
   .yorha-table-container::before {
     content: '';
@@ -312,11 +312,11 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #ffbf00, transparent);
+   , background: linear-gradient(90deg, transparent, #ffbf00, transparent);
     animation: scanline 3s linear infinite;
   }
   .yorha-glitch-effect {
-    animation: glitch 0.3s infinite;
+   , animation: glitch 0.3s infinite;
   }
   @keyframes glitch {
     0%,
@@ -395,7 +395,7 @@
   }
   .yorha-table-header-cell {
     /* @apply font-bold uppercase tracking-wider py-3 px-4; */
-    background: linear-gradient(45deg, #ffbf00, #ffd700);
+   , background: linear-gradient(45deg, #ffbf00, #ffd700);
   }
   .yorha-sortable {
     /* @apply cursor-pointer hover:bg-amber-300 transition-color; */
@@ -455,7 +455,7 @@
   }
   .yorha-action-btn-sm {
     /* @apply bg-amber-400 text-black px-2 py-1 text-xs font-mono hover: bg-amber-300 transition-color; */
-    border: 1px solid #ffbf00;
+   , border: 1px solid #ffbf00;
   }
   .yorha-loading-row,
   .yorha-empty-row {
@@ -496,7 +496,7 @@
   }
   @keyframes spin {
     to {
-      transform: rotate(360deg);
+     , transform: rotate(360deg);
     }
   }
   @keyframes pulse {
@@ -505,7 +505,7 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.5;
+     , opacity: 0.5;
     }
   }
 </style>

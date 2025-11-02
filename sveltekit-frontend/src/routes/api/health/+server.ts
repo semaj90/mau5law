@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import net from 'node:net';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import net from, 'node:net';
+import type { RequestHandler } from, './$types.js';
 type HttpCheck = { url: string;, ok: boolean;
   status?: number;
   error?: string;
@@ -94,47 +94,47 @@ export const GET: RequestHandler = async () => {
   // Service status summary
   const services = {
     // Core Infrastructure
-    databases: { postgres: {, host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
-      redis: { host: '127.0.0.1', port: 6379, status: redisOpen ? 'healthy' : 'failed' },
-      neo4j: { host: '127.0.0.1', port: 7474, status: neo4jHealth.ok ? 'healthy' : 'failed' },
-      qdrant: { host: '127.0.0.1', port: 6333, status: qdrantHealth.ok ? 'healthy' : 'failed' }
+    databases: {, postgres: {, host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
+      redis: {, host: '127.0.0.1', port: 6379, status: redisOpen ? 'healthy' : 'failed' },
+      neo4j: {, host: '127.0.0.1', port: 7474, status: neo4jHealth.ok ? 'healthy' : 'failed' },
+      qdrant: {, host: '127.0.0.1', port: 6333, status: qdrantHealth.ok ? 'healthy' : 'failed' }
     },
     // AI/ML Services
-    aiServices: { ollama: {, host: '127.0.0.1', port: 11434, status: ollamaVersion.ok ? 'healthy' : 'failed' },
-      enhancedRAG: { host: '127.0.0.1', port: 8094, status: enhancedRAGHealth.ok ? 'healthy' : 'failed' },
-      vectorService: { host: '127.0.0.1', port: 8095, status: vectorServiceHealth.ok ? 'healthy' : 'failed' },
-      uploadService: { host: '127.0.0.1', port: 8093, status: uploadServiceHealth.ok ? 'healthy' : 'failed' }
+    aiServices: {, ollama: {, host: '127.0.0.1', port: 11434, status: ollamaVersion.ok ? 'healthy' : 'failed' },
+      enhancedRAG: {, host: '127.0.0.1', port: 8094, status: enhancedRAGHealth.ok ? 'healthy' : 'failed' },
+      vectorService: {, host: '127.0.0.1', port: 8095, status: vectorServiceHealth.ok ? 'healthy' : 'failed' },
+      uploadService: {, host: '127.0.0.1', port: 8093, status: uploadServiceHealth.ok ? 'healthy' : 'failed' }
     },
     // GPU Acceleration
-    gpuServices: { gpuStatus: {, host: '127.0.0.1', port: 8230, status: gpuStatusHealth.ok ? 'healthy' : 'failed' },
-      cudaWorker: { status: cudaStatusHealth.ok ? 'healthy' : 'failed' },
-      rtx3060Ti: { vram: '8GB', status: 'ready' }, // Based on architecture docs
+    gpuServices: {, gpuStatus: {, host: '127.0.0.1', port: 8230, status: gpuStatusHealth.ok ? 'healthy' : 'failed' },
+      cudaWorker: {, status: cudaStatusHealth.ok ? 'healthy' : 'failed' },
+      rtx3060Ti: {, vram: '8GB', status: 'ready' }, // Based on architecture docs
     },
     // Cluster Management
-    orchestration: { clusterManager: {, host: '127.0.0.1', port: 8090, status: clusterHealth.ok ? 'healthy' : 'failed' },
-      summarizer: { host: '127.0.0.1', port: 8091, status: summarizerHealth.ok ? 'healthy' : 'failed' }
+    orchestration: {, clusterManager: {, host: '127.0.0.1', port: 8090, status: clusterHealth.ok ? 'healthy' : 'failed' },
+      summarizer: {, host: '127.0.0.1', port: 8091, status: summarizerHealth.ok ? 'healthy' : 'failed' }
     },
     // Storage
-    storage: { minio: {, host: '127.0.0.1', port: 9000, status: minioHealth.ok ? 'healthy' : 'failed' }
+    storage: {, minio: {, host: '127.0.0.1', port: 9000, status: minioHealth.ok ? 'healthy' : 'failed' }
     }
   };
   // Multi-layer caching status
-  const cachingLayers = { l1_memory: {, type: 'memory', status: 'healthy' },
-    l2_redis: { type: 'redis', host: '127.0.0.1', port: 6379, status: redisOpen ? 'healthy' : 'failed' },
-    l3_postgres: { type: 'postgres', host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
-    l4_qdrant: { type: 'qdrant', url: 'http://localhost:6333', status: qdrantHealth.ok ? 'healthy' : 'failed' }
+  const cachingLayers = {, l1_memory: {, type: 'memory', status: 'healthy' },
+    l2_redis: {, type: 'redis', host: '127.0.0.1', port: 6379, status: redisOpen ? 'healthy' : 'failed' },
+    l3_postgres: {, type: 'postgres', host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
+    l4_qdrant: {, type: 'qdrant', url: 'http://localhost:6333', status: qdrantHealth.ok ? 'healthy' : 'failed' }
   };
   // Performance metrics
   const performance = {
-    systemUptime: Math.floor(systemUptime),
+   , systemUptime: Math.floor(systemUptime),
     memoryUsage: {
-      heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
+     , heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
       external: Math.round(memoryUsage.external / 1024 / 1024),
       rss: Math.round(memoryUsage.rss / 1024 / 1024)
     },
     cpuUsage: {
-      user: Math.round(cpuUsage.user / 1000),
+     , user: Math.round(cpuUsage.user / 1000),
       system: Math.round(cpuUsage.system / 1000)
     }
   };
@@ -151,7 +151,7 @@ export const GET: RequestHandler = async () => {
       'Real-time Legal Analysis',
       'Multi-Protocol Service Architecture',
       'Enterprise Vector Service v2.0',
-      'FlashAttention2 RTX 3060 Ti Integration',
+      'FlashAttention2 RTX, 3060 Ti Integration',
     ]
   };
   // Overall system health calculation

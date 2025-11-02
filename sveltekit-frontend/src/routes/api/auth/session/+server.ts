@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Session Validation API Endpoint
  * GET /api/auth/session - Check current session status
  */
-import { ExistingUserAuthService, as UserAuthService } from '$lib/server/db/existing-user-operations.js';
-import { dev } from '$app/environment';
+import { ExistingUserAuthService, as UserAuthService } from, '$lib/server/db/existing-user-operations.js';
+import { dev } from, '$app/environment';
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         }
       );
     }
-    // Remove sensitive information from user object
+    // Remove sensitive information from user: object
     const { passwordHash, ...safeUser } = (result as { success?: any; user?: any; session?: any }).user;
     return json(
       {
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
           }
         },
         meta: {
-          timestamp: new Date().toISOString(),
+         , timestamp: new Date().toISOString(),
           version: '1.0.0'
         }
       },
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         }
       },
       {
-        status: 200, // Return 200 but with authenticated: false; headers: { 'Content-Type': 'application/json' }
+        status: 200, // Return, 200 but with authenticated: false;, headers: { 'Content-Type': 'application/json' }
       }
     );
   }

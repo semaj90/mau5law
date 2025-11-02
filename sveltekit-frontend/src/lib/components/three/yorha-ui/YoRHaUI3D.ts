@@ -3,33 +3,33 @@
  * Low-poly Three.js UI components with Square Enix NieR: Automata gothic aesthetic
  * Advanced CSS-like styling capabilities for 3D interfaces
  */
-import * as THREE from 'three';
+import * as THREE from, 'three';
 // YoRHa Color Scheme (NieR: Automata inspired)
 export const YORHA_COLORS = {
   // Primary gothic palette
   primary: {
-    black: 0x0a0a0a, // Deep gothic black
+   , black: 0x0a0a0a, // Deep gothic black
     white: 0xfaf6ed, // Warm off-white
     beige: 0xd4c5a9, // Desert sand
     grey: 0x8b8680, // Stone grey
   },
   // Accent colors
   accent: {
-    gold: 0xd4af37, // Golden highlights
+   , gold: 0xd4af37, // Golden highlights
     amber: 0xffc649, // Amber glow
     bronze: 0xcd7f32, // Bronze metallic
     copper: 0xb87333, // Copper warm
   },
   // Status colors
   status: {
-    success: 0x90ee90, // Light green
+   , success: 0x90ee90, // Light green
     warning: 0xffa500, // Orange warning
     error: 0xff6b6b, // Soft red error
     info: 0x87ceeb, // Sky blue info
   },
   // UI states
   interaction: {
-    hover: 0xe8dcc0, // Warm hover
+   , hover: 0xe8dcc0, // Warm hover
     active: 0xffd700, // Gold active
     disabled: 0x4a4a4a, // Disabled grey;
     focus: 0xf0e68c, // Khaki focus
@@ -121,7 +121,7 @@ export interface YoRHaGlow {
   size?: number;
   animation?: 'pulse' | 'scan' | 'static';
 }
-export interface YoRHaGradient { type: 'linear' | 'radial' | 'vertical' | 'horizontal' | 'diagonal';, colors: number[];
+export interface YoRHaGradient {, type: 'linear' | 'radial' | 'vertical' | 'horizontal' | 'diagonal';, colors: number[];
   stops?: number[];
   direction?: THREE.Vector3;
 }
@@ -145,7 +145,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected mesh!: THREE.Mesh;
   protected animationMixer?: THREE.AnimationMixer;
   protected boundingBox: THREE.Box3;
-  protected isHovered: boolean = $state(false);
+  protected, isHovered: boolean = $state(false);
   protected isActive: boolean = $state(false);
   protected isDisabled: boolean = $state(false);
   protected eventListeners: Map<string, Array<(event?: any) => void>> = new Map();
@@ -173,10 +173,10 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       opacity: 1,
       metalness: 0.1,
       roughness: 0.8,
-      padding: { all: 0.1 },
-      margin: { all: 0 },
+      padding: {, all: 0.1 },
+      margin: {, all: 0 },
       shadow: {
-        enabled: true,
+       , enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 0.5,
         intensity: 0.3,
@@ -188,7 +188,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected abstract createGeometry(): void;
   protected createMaterial(): void {
     const materialProps: THREE.MeshStandardMaterialParameters = {
-      color: this.style.backgroundColor,
+     , color: this.style.backgroundColor,
       opacity: this.style.opacity,
       transparent: (this.style.opacity || 1) < 1,
       metalness: this.style.metalness,
@@ -210,17 +210,17 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const ctx = canvas.getContext('2d')!;
     let gradientObj: CanvasGradient;
     switch (gradient.type) {
-      case 'linear':
-      case 'horizontal':
+      case, 'linear':
+      case, 'horizontal':
         gradientObj = ctx.createLinearGradient(0, 0, 256, 0);
         break;
-      case 'vertical':
+      case, 'vertical':
         gradientObj = ctx.createLinearGradient(0, 0, 0, 256);
         break;
-      case 'diagonal':
+      case, 'diagonal':
         gradientObj = ctx.createLinearGradient(0, 0, 256, 256);
         break;
-      case 'radial':
+      case, 'radial':
         gradientObj = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
         break;
       default:
@@ -341,7 +341,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         scanSpeed: {, value: 2.0 },
         scanWidth: {, value: 0.1 },
         baseColor: {, value: new THREE.Color(this.style.borderColor ?? YORHA_COLORS.primary.black) },
-        scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) }
+        scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) }
       },
       vertexShader: `
 			varying vec3 vPosition;
@@ -366,7 +366,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 		' });`'`
     borderMesh.material = scanMaterial;
     // Add to animation system - use typed uniform access
-    const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
+    const uniforms = scanMaterial.uniforms as: unknown as UniformsMap;
     this.addCustomAnimation('borderScan', (deltaTime: number) => {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
@@ -375,7 +375,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     // Add scan line effect
     const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
         scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) },
-        baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
+        baseColor: {, value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
       },
       vertexShader: `
 			varying vec2 vUv;
@@ -397,7 +397,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 		' });`'`
     this.mesh.material = scanMaterial;
     // typed uniform access
-    const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
+    const uniforms = scanMaterial.uniforms as: unknown as UniformsMap;
     this.addCustomAnimation('scan', (deltaTime: number) => {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
@@ -484,19 +484,19 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected createAnimation(animation: YoRHaAnimation): void {
     switch (animation.type) {
-      case 'pulse':
+      case, 'pulse':
         this.createPulseAnimation(this.mesh, animation.delay);
         break;
-      case 'rotate':
+      case, 'rotate':
         this.createRotateAnimation(animation);
         break;
-      case 'scale':
+      case, 'scale':
         this.createScaleAnimation(animation);
         break;
-      case 'scan':
+      case, 'scan':
         this.createScanAnimation(animation);
         break;
-      case 'glitch':
+      case, 'glitch':
         this.createGlitchAnimation(animation);
         break;
     }
@@ -528,7 +528,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     // Add scan line effect
     const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
         scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) },
-        baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
+        baseColor: {, value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -550,7 +550,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       ' });`'`
     this.mesh.material = scanMaterial;
     // typed uniform access
-    const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
+    const uniforms = scanMaterial.uniforms as: unknown as UniformsMap;
     this.addCustomAnimation('scan', (deltaTime: number) => {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
@@ -715,5 +715,5 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 }
 // Add strict uniform types to avoid `any`
 type NumericUniform = { value: number };
-type ColorUniform = { value: THREE.Color };
+type ColorUniform = {, value: THREE.Color };
 type UniformsMap = { [key: string]: NumericUniform | ColorUniform };

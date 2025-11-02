@@ -1,17 +1,17 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Feedback Loop API Endpoint
  * Provides rating collection, user pattern analysis, and training data management
  */
-import { feedbackLoopService } from '$lib/services/feedback-loop-service';
+import { feedbackLoopService } from, '$lib/services/feedback-loop-service';
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action');
     const data = await request.json();
     switch (action) {
-      case 'rate': {
+      case, 'rate': {
         const { userId, sessionId, interactionId, ratingType, score, feedback, context, metadata } = data;
         // Validate required fields
         if (!userId || !sessionId || !interactionId || !ratingType || score === undefined) {
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (score < 1 || score > 5) {
           return json(
             {
-              error: 'Score must be between 1 and 5'
+              error: 'Score must be between, 1 and 5'
             },
             { status: 400 }
           );
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           message: 'Rating collected successfully'
         });
       }
-      case 'batch_rate': {
+      case, 'batch_rate': {
         const { ratings } = data;
         if (!Array.isArray(ratings)) {
           return json(
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           failed: results.filter(item => !item.success)
         });
       }
-      default: return json({ error: 'Invalid action. Supported, actions: rate, batch_rate' }, { status: 400 });
+      default: return json({, error: 'Invalid action. Supported, actions: rate, batch_rate' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action');
     const userId = url.searchParams.get('userId');
     switch (action) {
-      case 'recommendations': {
+      case, 'recommendations': {
         if (!userId) {
           return json(
             {
@@ -111,14 +111,14 @@ export const GET: RequestHandler = async ({ url }) => {
           data: recommendations
         });
       }
-      case 'metrics': {
+      case, 'metrics': {
         const metrics = await feedbackLoopService.getFeedbackMetrics();
         return json({
           success: true,
           data: metrics
         });
       }
-      case 'health': {
+      case, 'health': {
         return json({
           success: true,
           service: 'feedback-loop',
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ]
         });
       }
-      default: return json({ error: 'Invalid action. Supported, actions: recommendations, metrics, health' }, { status: 400 });
+      default: return json({, error: 'Invalid action. Supported, actions: recommendations, metrics, health' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);

@@ -7,7 +7,7 @@
  *; OLD: GET /api/search/evidence?q=query
  * NEW: GET /api/v2/evidence?action=search&q=query&vector=true
  *
- * The new endpoint provides:
+ * The new endpoint, provides:
  * - Vector-powered semantic search (when Python AI available)
  * - Basic PostgreSQL search (automatic fallback)
  * - AI-generated search suggestions
@@ -16,7 +16,7 @@
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from, '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('q');

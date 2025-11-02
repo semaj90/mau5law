@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import { onMount } from 'svelte';
-  import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
+  import { onMount } from, 'svelte';
+  import LegalDocumentSummarizer from, '$lib/components/ai/LegalDocumentSummarizer.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from, "$lib/components/ui/enhanced-bits.svelte";
   let summarizerRef: any;
   function handleSummaryGenerated(summary: any) {
     console.log('Summary generated:', summary);
@@ -72,7 +72,7 @@
             <div class="bg-green-50 p-3 rounded-lg, border-l-4, border-green-500">
               <h4, class="font-medium, text-green-900">2. Content Input</h4>
               <p, class="text-sm, text-green-700">
-                Paste your legal document content. The AI can handle documents up to 200 pages effectively.
+                Paste your legal document content. The AI can handle documents up to, 200 pages effectively.
               </p>
             </div>
           </div>

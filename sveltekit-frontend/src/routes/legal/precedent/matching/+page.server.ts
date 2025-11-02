@@ -1,5 +1,5 @@
-import type { PageServerLoad } from './$types';
-import { env } from '$env/dynamic/private'; // For server-side environment variables
+import type { PageServerLoad } from, './$types';
+import { env } from, '$env/dynamic/private'; // For server-side environment variables
 
 export const load: PageServerLoad = async () => {
   // This is where you would load initial data for the page on the server.
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
   const databaseUrl = env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
   const redisUrl = env.REDIS_URL || 'redis://:redis@localhost:6379/0';
 
-  console.log('Server-side environment variables for Precedent Matching:');
+  console.log('Server-side environment variables for Precedent, Matching:');
   console.log(`OLLAMA_URL: ${ollamaUrl}`);
   console.log(`QDRANT_URL: ${qdrantUrl}`);
   console.log(`DATABASE_URL: ${databaseUrl}`);

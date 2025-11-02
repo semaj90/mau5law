@@ -1,7 +1,7 @@
 // providers/ollama/local-llm.ts
 // Clean, minimal Ollama local LLM adapter
-import { logger } from './logger.js';
-import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } from './config';
+import { logger } from, './logger.js';
+import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } from, './config';
 
 export interface OllamaModel {
   name: string;
@@ -12,7 +12,7 @@ export interface OllamaModel {
 
 export interface OllamaGenerateOptions {
   model?: string;
-  prompt: string;
+ , prompt: string;
   system?: string;
   context?: number[];
   stream?: boolean;
@@ -31,7 +31,7 @@ export interface OllamaResponse {
 // New interfaces for specific Ollama API responses
 export interface OllamaModelInfo { modelfile: string;, parameters: string;
   template: string;
-  details: { parent_model: string;, format: string;
+  details: {, parent_model: string;, format: string;
     family: string;
     families: string[];
     parameter_size: string;
@@ -47,14 +47,14 @@ export interface OllamaPullResponse {
   error?: string;
 }
 
-export interface OllamaHealthCheckResponse { status: 'healthy' | 'unavailable';, available: boolean;
+export interface OllamaHealthCheckResponse {, status: 'healthy' | 'unavailable';, available: boolean;
   models: string[];
   loaded: string[];
 }
 
 // Generic interface for fetch response properties used for type assertions
-interface FetchResponseCommon { ok: boolean;, statusText: string;
-  body: ReadableStream<Uint8Array> | null;
+interface FetchResponseCommon {, ok: boolean;, statusText: string;
+ , body: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>; // Changed from Promise<any> to Promise<unknown>
 }
 
@@ -62,7 +62,7 @@ export class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel = 'gemma3-legal:latest';
   private availableModels = new Map<string, OllamaModel>();
-  private modelCache = new Map<string, { loaded: boolean; lastUsed: number }>();
+  private modelCache = new Map<string, { loaded: boolean;, lastUsed: number }>();
 
   private resolveEndpoint(endpoint: OllamaEndpoint): string {
     return getOllamaEndpoint(endpoint, this.baseUrl);
@@ -147,7 +147,7 @@ export class OllamaLocalLLM {
       return result as OllamaResponse;
     } catch (err) {
       logger.error('[OllamaLLM] Generation failed:', err);
-      return null;
+      return: null;
     }
   }
 
@@ -157,18 +157,18 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('embeddings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ model: m, input: text })
+        body: JSON.stringify({, model: m, input: text })
       });
       if (!resp.ok) throw new Error(`Embedding failed: ${resp.status}`);
       const data = await resp.json();
       // Support different shapes
-      if (Array.isArray(data.embedding)) return data.embedding as number[];
-      if (Array.isArray(data.data) && Array.isArray(data.data[0]?.embedding)) return data.data[0].embedding as number[];
-      if (Array.isArray(data.embeddings)) return data.embeddings as number[];
-      return null;
+      if (Array.isArray(data.embedding)) return data.embedding as: number[];
+      if (Array.isArray(data.data) && Array.isArray(data.data[0]?.embedding)) return data.data[0].embedding as: number[];
+      if (Array.isArray(data.embeddings)) return data.embeddings as: number[];
+     , return: null;
     } catch (err) {
       logger.error('[OllamaLLM] Embedding generation failed:', err);
-      return null;
+      return: null;
     }
   }
 
@@ -178,14 +178,14 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ model: m, messages, stream: false })
+        body: JSON.stringify({, model: m, messages, stream: false })
       });
       if (!resp.ok) throw new Error(`Chat failed: ${resp.status}`);
       const data = await resp.json();
-      return (data?.message?.content as string) || (data?.response as string) || null;
+      return (data?.message?.content as: string) || (data?.response as: string) || null;
     } catch (err) {
       logger.error('[OllamaLLM] Chat failed:', err);
-      return null;
+      return: null;
     }
   }
 
@@ -225,7 +225,7 @@ export class OllamaLocalLLM {
       const response = await fetch(this.buildUrl('/api/show'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ name: model })
+        body: JSON.stringify({, name: model })
       });
       if (!(response as FetchResponseCommon).ok) {
         throw new Error(`Failed to get model info: ${(response as FetchResponseCommon).statusText}`);
@@ -237,7 +237,7 @@ export class OllamaLocalLLM {
       } else {
         logger.error(`[OllamaLLM] Failed to get model info for ${model}:`, error);
       }
-      return null;
+      return: null;
     }
   }
   /**
@@ -249,7 +249,7 @@ export class OllamaLocalLLM {
       const response = await fetch(this.resolveEndpoint('pull'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ name: model, stream: true }) // Explicitly request streaming
+        body: JSON.stringify({, name: model, stream: true }) // Explicitly request streaming
       });
       if (!(response as FetchResponseCommon).ok) {
         throw new Error(`Failed to pull model: ${(response as FetchResponseCommon).statusText}`);
@@ -284,7 +284,7 @@ export class OllamaLocalLLM {
           }
         }
       }
-      // Process any remaining content in the buffer after the stream ends
+      // Process: any remaining content in the buffer after the stream ends
       if (buffer.trim() !== '') {
         try {
           const data: OllamaPullResponse = JSON.parse(buffer);

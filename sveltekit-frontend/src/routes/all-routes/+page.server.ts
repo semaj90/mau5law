@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { PageServerLoad } from './$types.js';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { PageServerLoad } from, './$types.js';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
   // Detect logged-in user (locals preferred) or session cookie as fallback
@@ -83,7 +83,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
       : 'Public view — system dashboard at /dashboard.',
     conflicts: [], // No file-based conflicts detected without fs access
     counts: {
-      total: realRoutes.length,
+     , total: realRoutes.length,
       api: realRoutes.filter(r => r.path.startsWith('/api')).length,
       ui: realRoutes.filter(r => !r.path.startsWith('/api')).length,
       groups: {}
@@ -102,9 +102,9 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
   return {
     availableRoutes: realRoutes,
     routeInventory: {
-      fileRoutesSample: realRoutes.map(r => r.path),
+     , fileRoutesSample: realRoutes.map(r => r.path),
       counts: {
-        config: realRoutes.length,
+       , config: realRoutes.length,
         fileBased: 0, // No file-based scanning
         api: realRoutes.filter(r => r.path.startsWith('/api')).length,
         configMissingFiles: 0,
@@ -112,16 +112,16 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
         consolidatable: 0
       }
     },
-    serviceHealth: { system_overview: {, healthy_services: healthyServices,
+    serviceHealth: {, system_overview: {, healthy_services: healthyServices,
         total_services: services.length,
         uptime_hours: Math.floor(process.uptime() / 3600),
         last_updated: new Date().toISOString()
       },
       services: serviceStatus.map(result =>
-        result.status === 'fulfilled' ? result.value : { name: 'Unknown', status: 'error', error: result.reason }
+        result.status === 'fulfilled' ? result.value : {, name: 'Unknown', status: 'error', error: result.reason }
       ),
       performance: {
-        cpu_usage: Math.round(process.cpuUsage().user / 1000000),
+       , cpu_usage: Math.round(process.cpuUsage().user / 1000000),
         memory_usage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100),
         disk_usage: 45, // Mock value
       }

@@ -1,10 +1,10 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import '$lib/styles/tooltip-global.css';
-  import * as TooltipPrimitive from "bits-ui/tooltip";
-  import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils';
-  import { fade, scale } from 'svelte/transition';
+  // Svelte, 5 runes are auto-imported
+  import, '$lib/styles/tooltip-global.css';
+  import * as TooltipPrimitive from, "bits-ui/tooltip";
+  import type { Snippet } from, 'svelte';
+  import { cn } from, '$lib/utils';
+  import { fade, scale } from, 'svelte/transition';
   interface Props {
     content: string;
     side?: 'top' | 'right' | 'bottom' | 'left';
@@ -76,7 +76,7 @@
     {align}
     {sideOffset}
     transition={scale}
-    transitionConfig={{ duration 150, start: 0.95 }}
+    transitionConfig={{ duration, 150, start: 0.95 }}
   >
     {#if isLoadingDocs}
       <div class="flex, items-center, gap-2">

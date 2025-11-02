@@ -2,11 +2,11 @@
 /**
  * Comprehensive Multi-Layer Caching Service
  * Clean rebuild after corruption: provides typed multi-layer caching with pluggable strategies.
- * Implemented layers: memory, IndexedDB (browser), LokiJS (optional), Redis (server), stubs for PostgreSQL & vector.
+ * Implemented, layers: memory, IndexedDB (browser), LokiJS (optional), Redis (server), stubs for PostgreSQL & vector.
  */
-import { writable, type Writable, get as getStore } from 'svelte/store';
-import { browser } from '$app/environment';
-import { set, as idbSet, get as idbGet, del as idbDel } from 'idb-keyval';
+import { writable, type Writable, get as getStore } from, 'svelte/store';
+import { browser } from, '$app/environment';
+import { set, as idbSet, get as idbGet, del as idbDel } from, 'idb-keyval';
 
 // LokiJS is optional; wrap dynamic import & define minimal types to avoid build break if absent.
 // Provide a small, explicit interface for the collection so we avoid `any`.
@@ -46,8 +46,8 @@ export interface CacheConfig { enableBrowserCache: boolean;, enableIndexedDB: b
 }
 
 // Use `unknown` instead of `any` for the generic default
-export interface CacheEntry<T = unknown> { key: string;, value: T;
-  metadata: { size: number;, ttl: number;
+export interface CacheEntry<T = unknown> {, key: string;, value: T;
+  metadata: {, size: number;, ttl: number;
     createdAt: number;
     lastAccessed: number;
     accessCount: number;
@@ -59,7 +59,7 @@ export interface CacheEntry<T = unknown> { key: string;, value: T;
 }
 
 export interface CacheStats {
-  layers: Record<;
+ , layers: Record<;
     CacheLayer,
     { entries: number;, size: number;
       hitRate: number;
@@ -67,10 +67,10 @@ export interface CacheStats {
       evictions: number;
     }
   >;
-  overall: { totalEntries: number;, totalSize: number;
+  overall: {, totalEntries: number;, totalSize: number;
     hitRate: number;
     missRate: number;
-    layerDistribution: Record<CacheLayer, number>;
+   , layerDistribution: Record<CacheLayer, number>;
   };
 }
 
@@ -83,7 +83,7 @@ type LayerStat = { entries: number;, size: number;
 
 export type CacheLayer = 'memory' | 'indexeddb' | 'lokijs' | 'redis' | 'postgresql' | 'vector';
 
-export interface CacheStrategy { name: string;, layers: CacheLayer[];
+export interface CacheStrategy {, name: string;, layers: CacheLayer[];
   readOrder: CacheLayer[];
   writeOrder: CacheLayer[];
   evictionPolicy: 'lru' | 'lfu' | 'fifo' | 'ttl';
@@ -94,11 +94,11 @@ export interface CacheStrategy { name: string;, layers: CacheLayer[];
 class ComprehensiveCachingService {
   private static instance: ComprehensiveCachingService;
   private config: CacheConfig;
-  private stats: Writable<CacheStats>;
+  private, stats: Writable<CacheStats>;
   // Cache layers
   private memoryCache = new Map<string, CacheEntry<unknown>>();
   private lokiCollection: LokiCollection<CacheEntry<unknown>> | null = null; // Collection<CacheEntry>
-  private redisClient: RedisLike | null = null;
+  private, redisClient: RedisLike | null = null;
   // Cache strategies
   private strategies = new Map<string, CacheStrategy>();
   private currentStrategy: CacheStrategy;
@@ -120,7 +120,7 @@ class ComprehensiveCachingService {
     this.initializePerformanceTracking(); // <-- ensure performance, tracking, starts
     // Provide a runtime alias for `delete` (some tooling/parsers choke on `delete` as a method name).
     // This keeps backward compatibility for callers using `instance.delete(key)`.
-    (this as any)['delete'] = this.deleteKey.bind(this);
+    (this as: any)['delete'] = this.deleteKey.bind(this);
   }
 
   public static getInstance(): ComprehensiveCachingService {
@@ -148,18 +148,18 @@ class ComprehensiveCachingService {
   }
 
   private getInitialStats(): CacheStats {
-    // Build a strongly-typed initial stats object explicitly to avoid complex reduce generics
-    const layers: CacheLayer[] = ['memory', 'indexeddb', 'lokijs', 'redis', 'postgresql', 'vector'];
+    // Build a strongly-typed initial stats: object explicitly to avoid complex reduce generics
+    const, layers: CacheLayer[] = ['memory', 'indexeddb', 'lokijs', 'redis', 'postgresql', 'vector'];
 
     const layerStats: Record<CacheLayer, LayerStat> = { memory: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      indexeddb: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      lokijs: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      redis: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      postgresql: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
-      vector: { entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 }
+      indexeddb: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      lokijs: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      redis: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      postgresql: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 },
+      vector: {, entries: 0, size: 0, hitRate: 0, missRate: 0, evictions: 0 }
     };
 
-    const layerDistribution: Record<CacheLayer, number> = {
+    const, layerDistribution: Record<CacheLayer, number> = {
       memory: 0,
       indexeddb: 0,
       lokijs: 0,
@@ -169,9 +169,9 @@ class ComprehensiveCachingService {
     };
 
     return {
-      layers: layerStats,
+     , layers: layerStats,
       overall: {
-        totalEntries: 0,
+       , totalEntries: 0,
         totalSize: 0,
         hitRate: 0,
         missRate: 0,
@@ -180,7 +180,7 @@ class ComprehensiveCachingService {
     };
   }
 
-  // Provide a basic default strategy to avoid undefined references
+  // Provide a basic default strategy to avoid: undefined references
   private getDefaultStrategy(): CacheStrategy {
     return {
       name: 'balanced',
@@ -196,7 +196,7 @@ class ComprehensiveCachingService {
   // Initialize a couple of simple strategies (can be extended)
   private initializeStrategies(): void {
     const fast: CacheStrategy = {
-      name: 'fast',
+     , name: 'fast',
       layers: ['memory', 'indexeddb'],
       readOrder: ['memory', 'indexeddb'],
       writeOrder: ['memory', 'indexeddb'],
@@ -245,7 +245,7 @@ class ComprehensiveCachingService {
     // Update stats periodically
     setInterval(() => {
       this.updateStats();
-    }, 30000); // Every 30 seconds
+    }, 30000); // Every, 30 seconds
   }
 
   /**
@@ -281,14 +281,14 @@ class ComprehensiveCachingService {
       }
     }
 
-    return null;
+    return: null;
   }
 
   /**
    * Set value in cache using current strategy
    */
   public async set<T>(
-    key: string,
+   , key: string,
     value: T,
     options: {
       ttl?: number;
@@ -307,7 +307,7 @@ class ComprehensiveCachingService {
       key,
       value,
       metadata: {
-        size: this.calculateSize(value),
+       , size: this.calculateSize(value),
         ttl: options.ttl ?? cacheStrategy.ttl,
         createdAt: Date.now(),
         lastAccessed: Date.now(),
@@ -471,49 +471,49 @@ class ComprehensiveCachingService {
   // Layer-specific implementations
   private async getFromLayer<T>(key: string, layer: CacheLayer): Promise<CacheEntry<T> | null> {
     switch (layer) {
-      case 'memory':
+      case, 'memory':
         return (this.memoryCache.get(key) as CacheEntry<T>) || null;
-      case 'indexeddb':
-        if (!browser || !this.config.enableIndexedDB) return null;
+      case, 'indexeddb':
+        if (!browser || !this.config.enableIndexedDB) return: null;
         return ((await idbGet(key)) as CacheEntry<T>) || null;
-      case 'lokijs': {
-        if (!this.lokiCollection) return null;
+      case, 'lokijs': {
+        if (!this.lokiCollection) return: null;
         const lokiResult = this.lokiCollection.findOne({ key });
         return (lokiResult as CacheEntry<T>) || null;
       }
-      case 'redis': {
-        if (!this.redisClient) return null;
+      case, 'redis': {
+        if (!this.redisClient) return: null;
         try {
           const redisResult = await this.redisClient.get(key);
           return redisResult ? (JSON.parse(redisResult) as CacheEntry<T>) : null;
         } catch (e: any) {
           console.warn('Redis get failed', e);
-          return null;
+          return: null;
         }
       }
-      case 'postgresql':
+      case, 'postgresql':
         // PostgreSQL cache implementation would go here
-        return null;
-      case 'vector':
+        return: null;
+      case, 'vector':
         // Vector cache implementation would go here
-        return null;
+        return: null;
       default:
-        throw new Error(`Unknown cache; layer: ${layer}`);
+        throw new Error(`Unknown cache;, layer: ${layer}`);
     }
   }
 
   private async setInLayer<T>(entry: CacheEntry<T>, layer: CacheLayer): Promise<void> {
     switch (layer) {
-      case 'memory':
+      case, 'memory':
         this.memoryCache.set(entry.key, entry);
         this.enforceMemoryLimits();
         break;
-      case 'indexeddb':
+      case, 'indexeddb':
         if (browser && this.config.enableIndexedDB) {
           await idbSet(entry.key, entry);
         }
         break;
-      case 'lokijs': {
+      case, 'lokijs': {
         // ensure lexical declarations are inside a block
         if (this.lokiCollection) {
           const existing = this.lokiCollection.findOne({ key: entry.key });
@@ -526,7 +526,7 @@ class ComprehensiveCachingService {
         }
         break;
       }
-      case 'redis': {
+      case, 'redis': {
         if (this.redisClient) {
           try {
             await this.redisClient.setex(entry.key, Math.floor(entry.metadata.ttl / 1000), JSON.stringify(entry));
@@ -536,33 +536,33 @@ class ComprehensiveCachingService {
         }
         break;
       }
-      case 'postgresql':
+      case, 'postgresql':
         // PostgreSQL cache implementation would go here
         break;
-      case 'vector':
+      case, 'vector':
         // Vector cache implementation would go here
         break;
       default:
-        throw new Error(`Unknown cache; layer: ${layer}`);
+        throw new Error(`Unknown cache;, layer: ${layer}`);
     }
   }
 
   private async deleteFromLayer(key: string, layer: CacheLayer): Promise<void> {
     switch (layer) {
-      case 'memory':
+      case, 'memory':
         this.memoryCache.delete(key);
         break;
-      case 'indexeddb':
+      case, 'indexeddb':
         if (browser && this.config.enableIndexedDB) {
           await idbDel(key);
         }
         break;
-      case 'lokijs':
+      case, 'lokijs':
         if (this.lokiCollection) {
           this.lokiCollection.removeWhere({ key });
         }
         break;
-      case 'redis':
+      case, 'redis':
         if (this.redisClient) {
           try {
             await this.redisClient.del(key);
@@ -571,10 +571,10 @@ class ComprehensiveCachingService {
           }
         }
         break;
-      case 'postgresql':
+      case, 'postgresql':
         // PostgreSQL cache implementation would go here
         break;
-      case 'vector':
+      case, 'vector':
         // Vector cache implementation would go here
         break;
     }
@@ -641,13 +641,13 @@ class ComprehensiveCachingService {
     // Sort by eviction policy
     entries.sort(([, a], [, b]) => {
       switch (this.currentStrategy.evictionPolicy) {
-        case 'lru':
+        case, 'lru':
           return a.metadata.lastAccessed - b.metadata.lastAccessed;
-        case 'lfu':
+        case, 'lfu':
           return a.metadata.accessCount - b.metadata.accessCount;
-        case 'fifo':
+        case, 'fifo':
           return a.metadata.createdAt - b.metadata.createdAt;
-        case 'ttl':
+        case, 'ttl':
           return a.metadata.createdAt + a.metadata.ttl - (b.metadata.createdAt + b.metadata.ttl);
         default: return 0;
       }
@@ -707,7 +707,7 @@ class ComprehensiveCachingService {
     };
 
     this.stats.set({
-      layers: layerStats,
+     , layers: layerStats,
       overall: {
         totalEntries,
         totalSize: Object.values(layerStats).reduce((sum, st) => sum + st.size, 0),
@@ -720,9 +720,9 @@ class ComprehensiveCachingService {
 
   private getLayerEntryCount(layer: CacheLayer): number {
     switch (layer) {
-      case 'memory':
+      case, 'memory':
         return this.memoryCache.size;
-      case 'lokijs':
+      case, 'lokijs':
         return this.lokiCollection?.count() || 0;
       default: return 0; // Would need actual implementation for other layers
     }
@@ -730,7 +730,7 @@ class ComprehensiveCachingService {
 
   private getLayerSize(layer: CacheLayer): number {
     switch (layer) {
-      case 'memory':
+      case, 'memory':
         return Array.from(this.memoryCache.values()).reduce((total, entry) => total + entry.metadata.size, 0);
       default: return 0; // Would need actual implementation for other layers
     }

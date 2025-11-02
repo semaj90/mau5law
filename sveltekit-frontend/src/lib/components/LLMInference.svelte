@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
+  import { getAvailableModels, runInference } from, '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
   let selectedModel = $state<string>('');
   let prompt = $state<string>('');
@@ -42,7 +42,7 @@
   </div>
   <div, class="space-y-4">
     <label, for="prompt">Prompt:</label>
-    <textarea id="prompt" class="prompt-input" rows="4" bind:value={prompt} placeholder="Enter, your, prompt..."></textarea>
+    <textarea id="prompt" class="prompt-input" rows="4", bind:value={prompt} placeholder="Enter, your, prompt..."></textarea>
   </div>
   <button class="space-y-4 run-btn" onclick={() => handleInference()} disabled={loading || !selectedModel || !prompt.trim()}>
     {loading ? 'Running...' : 'Run Inference'}
@@ -61,7 +61,7 @@
     max-width: 500px;
     margin: 2rem auto;
     padding: 2rem;
-    background: #fff;
+   , background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -72,7 +72,7 @@
   }
   label {
     font-weight: 600;
-    display: block;
+   , display: block;
     margin-bottom: 0.5rem;
   }
   select,
@@ -97,7 +97,7 @@
   }
   .run-btn:disabled {
     background: #b0c4de;
-    cursor: not-allowed;
+   , cursor: not-allowed;
   }
   .run-btn:not(:disabled):hover {
     background: #0056b3;
@@ -110,7 +110,7 @@
     font-size: 1rem;
   }
   .error {
-    color: #b30000;
+   , color: #b30000;
     margin-top: 1rem;
     font-weight: 600;
   }

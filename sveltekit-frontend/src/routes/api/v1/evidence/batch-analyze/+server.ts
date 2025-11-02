@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Multi-File Evidence Batch Analysis API
  *
@@ -9,23 +9,23 @@ import type { Document } from '$lib/types';
  * - Batch citation verification
  * - Evidence relationship mapping
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 
-import { getUserId } from '$lib/server/auth/utils';
+import { getUserId } from, '$lib/server/auth/utils';
 // Batch analysis schemas
 const BatchAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   files: z
     .array(
       z.object({
-        id: z.string(),
+       , id: z.string(),
         filename: z.string(),
         content: z.string(),
         type: z.enum(['document', 'image', 'video', 'audio', 'other']),
         metadata: z
           .object({
-            fileSize: z.number().optional(),
+           , fileSize: z.number().optional(),
             uploadDate: z.string().datetime().optional(),
             source: z.string().optional()
           })
@@ -35,7 +35,7 @@ const BatchAnalysisSchema = z.object({
     .min(1, 'At least one file is required'),
   analysisOptions: z
     .object({
-      enableCrossDocumentAnalysis: z.boolean().default(true),
+     , enableCrossDocumentAnalysis: z.boolean().default(true),
       extractTimelines: z.boolean().default(true),
       detectRelationships: z.boolean().default(true),
       generateSummary: z.boolean().default(true),
@@ -74,10 +74,10 @@ type AnalysisResult = {
   [key: string]: any;
 };
 
-type IndividualResult = { fileId: string;, filename: string;
+type IndividualResult = {, fileId: string;, filename: string;
   success: boolean;
   analysis: AnalysisResult | null;
-  error: string | null;
+ , error: string | null;
 };
 
 // AI Integration
@@ -162,8 +162,7 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
 async function analyzeSingleDocument(file: EvidenceFile, model: string): Promise<AnalysisResult> {
   const analysisPrompt = `Analyze this legal evidence document and provide comprehensive analysis: '`
 ; DOCUMENT: ${file.filename}
-TYPE: ${file.type}
-CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `` }'`'`
+TYPE: ${file.type}, CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `` }'`'`
 
 Provide analysis in this exact JSON format:
 {
@@ -285,7 +284,7 @@ async function performCrossDocumentAnalysis(analysisResults: IndividualResult[])
     },
     unified_timeline: generateUnifiedTimeline(analysisResults),
     summary_insights: {
-      total_documents: analysisResults.length,
+     , total_documents: analysisResults.length,
       successful_analyses: analysisResults.filter(r => r.success).length,
       key_correlations: commonEntities.length + commonIssues.length,
       timeline_events: datePatterns.length
@@ -317,7 +316,7 @@ function generateDocumentRelationships(analysisResults: IndividualResult[]) {
           document2: doc2.filename,
           relationship_strength: (commonEntities.length + commonIssues.length) / 10,
           common_elements: {
-            entities: commonEntities,
+           , entities: commonEntities,
             legal_issues: commonIssues
           }
         });
@@ -342,14 +341,14 @@ function generateUnifiedTimeline(analysisResults: IndividualResult[]) {
   return {
     events: allTimelineEvents,
     date_range: {
-      earliest: allTimelineEvents[0]?.date || null,
+     , earliest: allTimelineEvents[0]?.date || null,
       latest: allTimelineEvents[allTimelineEvents.length - 1]?.date || null
     },
     event_count: allTimelineEvents.length
   };
 }
 
-// GPU detection - safe, environment-driven fallback (no undefined `response`)
+// GPU detection - safe, environment-driven fallback (no: undefined `response`)
 async function detectGPU(): Promise<boolean> {
   try {
     // Prefer explicit environment variable for CI/dev machines

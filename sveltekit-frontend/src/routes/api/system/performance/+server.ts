@@ -1,77 +1,77 @@
-import { json } from '@sveltejs/kit'
-import { productionLogger } from '$lib/server/production-logger'
-import os from "os"
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import { productionLogger } from, '$lib/server/production-logger'
+import os from, "os"
+import type { RequestHandler } from, './$types.js'
 
 export interface LegalAiPlatformMetrics { services: {, healthy: number;
     total: number;
-    responseTime: { avg: number;, p95: number;
+    responseTime: {, avg: number;, p95: number;
       p99: number;
     };
   };
-  gpu: { utilization: number;, memory: { total: number;, used: number;
+  gpu: {, utilization: number;, memory: {, total: number;, used: number;
       free: number;
     };
     temperature: number;
     performance: string;
   };
-  database: { connections: {, active: number;
+  database: {, connections: {, active: number;
       idle: number;
       max: number;
     };
-    queryPerformance: { avg: number;, p95: number;
+    queryPerformance: {, avg: number;, p95: number;
       slowQueries: number;
     };
   };
-  caching: { hitRate: number;, memoryUsage: number;
-    operations: { gets: number;, sets: number;
+  caching: {, hitRate: number;, memoryUsage: number;
+    operations: {, gets: number;, sets: number;
       deletes: number;
     };
   };
-  ai: { modelsLoaded: number;, inferenceSpeed: number; // tokens per second
+  ai: {, modelsLoaded: number;, inferenceSpeed: number; // tokens per second
     queueDepth: number;
     averageLatency: number;
   };
 }
 
-export interface BenchmarkMetrics { vectorSearch: {, latency: number;
+export interface BenchmarkMetrics {, vectorSearch: {, latency: number;
     throughput: number;
     accuracy: number;
   };
-  documentProcessing: { avgTime: number;, throughput: number;
+  documentProcessing: {, avgTime: number;, throughput: number;
     successRate: number;
   };
-  aiAnalysis: { responseTime: number;, tokensPerSecond: number;
+  aiAnalysis: {, responseTime: number;, tokensPerSecond: number;
     accuracy: number;
   };
 }
 
-export interface PerformanceMetrics { timestamp: string;, system: { uptime: number;, loadAverage: number[];
-    cpuUsage: { user: number;, system: number;
+export interface PerformanceMetrics {, timestamp: string;, system: {, uptime: number;, loadAverage: number[];
+    cpuUsage: {, user: number;, system: number;
       idle: number;
     };
-    memory: { total: number;, free: number;
+    memory: {, total: number;, free: number;
       used: number;
       percentage: number;
     };
-    disk: { usage: string;, available: string;
+    disk: {, usage: string;, available: string;
     };
   };
-  application: { nodeUptime: number;, memoryUsage: { heapUsed: number;, heapTotal: number;
+  application: {, nodeUptime: number;, memoryUsage: {, heapUsed: number;, heapTotal: number;
       external: number;
       rss: number;
     };
-    eventLoop: { delay: number;, utilization: number;
+    eventLoop: {, delay: number;, utilization: number;
     };
-    gc: { collections: number;, duration: number;
+    gc: {, collections: number;, duration: number;
     };
   };
   legal_ai_platform: LegalAiPlatformMetrics;
   benchmarks: BenchmarkMetrics;
-  alerts: { active: number;, warnings: string[];
+  alerts: {, active: number;, warnings: string[];
     critical: string[];
   };
-  processingTime: number;
+ , processingTime: number;
 }
 // Event loop monitoring
 let eventLoopDelay = 0;
@@ -111,40 +111,40 @@ export const GET: RequestHandler = async ({ url }) => {
     // System alerts
     const alerts = generateSystemAlerts(memoryPercentage, eventLoopDelay, platformMetrics);
     const metrics: PerformanceMetrics = {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       system: {
-        uptime: os.uptime(),
+       , uptime: os.uptime(),
         loadAverage: os.loadavg(),
         cpuUsage: {
-          user: Math.round(cpuUsage.user / 1000),
+         , user: Math.round(cpuUsage.user / 1000),
           system: Math.round(cpuUsage.system / 1000),
           idle: 100 - Math.round((cpuUsage.user + cpuUsage.system) / 10000)
         },
         memory: {
-          total: Math.round(totalMemory / GB),
+         , total: Math.round(totalMemory / GB),
           free: Math.round(freeMemory / GB),
           used: Math.round(usedMemory / GB),
           percentage: Math.round(memoryPercentage)
         },
         disk: {
-          usage: '45%',
+         , usage: '45%',
           available: '500GB'
         }
       },
       application: {
-        nodeUptime: Math.floor(nodeUptime),
+       , nodeUptime: Math.floor(nodeUptime),
         memoryUsage: {
-          heapUsed: Math.round(processMemory.heapUsed / MB),
+         , heapUsed: Math.round(processMemory.heapUsed / MB),
           heapTotal: Math.round(processMemory.heapTotal / MB),
           external: Math.round(processMemory.external / MB),
           rss: Math.round(processMemory.rss / MB)
         },
         eventLoop: {
-          delay: Math.round(eventLoopDelay),
+         , delay: Math.round(eventLoopDelay),
           utilization: Math.round(eventLoopUtilization)
         },
         gc: {
-          collections: Math.floor(Math.random() * 100) + 50,
+         , collections: Math.floor(Math.random() * 100) + 50,
           duration: Math.round(Math.random() * 10 + 2)
         }
       },
@@ -188,44 +188,44 @@ export const GET: RequestHandler = async ({ url }) => {
 async function gatherPlatformMetrics(_detailed: boolean): Promise<LegalAiPlatformMetrics> {
   // Simulate service health checks and metrics
   // TODO: Use `detailed` flag to include more granular metrics when available.
-  return { services: {, healthy: 14, // Out of 16 core services
+  return {, services: {, healthy: 14, // Out of, 16 core services
       total: 16,
       responseTime: {
-        avg: 45, // ms
+       , avg: 45, // ms
         p95: 120,
         p99: 250
       }
     },
     gpu: {
-      utilization: 67, // %
+     , utilization: 67, // %
       memory: {
-        total: 8192, // MB
+       , total: 8192, // MB
         used: 2800,
         free: 5392
       },
       temperature: 72, // Celsius
       performance: 'optimal` },'`
-    database: { connections: {, active: 8,
+    database: {, connections: {, active: 8,
         idle: 12,
         max: 100
       },
       queryPerformance: {
-        avg: 15, // ms
+       , avg: 15, // ms
         p95: 45,
         slowQueries: 2
       }
     },
     caching: {
-      hitRate: 89.5, // %
+     , hitRate: 89.5, // %
       memoryUsage: 45, // MB
       operations: {
-        gets: 1250,
+       , gets: 1250,
         sets: 340,
         deletes: 28
       }
     },
     ai: {
-      modelsLoaded: 3,
+     , modelsLoaded: 3,
       inferenceSpeed: 156, // tokens per second
       queueDepth: 2,
       averageLatency: 2800, // ms
@@ -236,8 +236,8 @@ async function gatherPlatformMetrics(_detailed: boolean): Promise<LegalAiPlatfor
 async function runPerformanceBenchmarks(detailed: boolean): Promise<BenchmarkMetrics> {
   if (!detailed) {
     return { vectorSearch: {, latency: 0, throughput: 0, accuracy: 0 },
-      documentProcessing: { avgTime: 0, throughput: 0, successRate: 0 },
-      aiAnalysis: { responseTime: 0, tokensPerSecond: 0, accuracy: 0 }
+      documentProcessing: {, avgTime: 0, throughput: 0, successRate: 0 },
+      aiAnalysis: {, responseTime: 0, tokensPerSecond: 0, accuracy: 0 }
     };
   }
   // Simulate various performance tests
@@ -247,12 +247,12 @@ async function runPerformanceBenchmarks(detailed: boolean): Promise<BenchmarkMet
       accuracy: 94.7, // %
     },
     documentProcessing: {
-      avgTime: 2800, // ms per document
+     , avgTime: 2800, // ms per document
       throughput: 21, // documents per minute
       successRate: 98.2, // %
     },
     aiAnalysis: {
-      responseTime: 3200, // ms
+     , responseTime: 3200, // ms
       tokensPerSecond: 156,
       accuracy: 91.8, // %
     }
@@ -265,7 +265,7 @@ function generateSystemAlerts(
   platformMetrics: LegalAiPlatformMetrics
 ) {
   const warnings: string[] = [];
-  const critical: string[] = [];
+  const, critical: string[] = [];
   // Memory alerts
   if (memoryPercentage > 90) {
     critical.push('System memory usage above 90%');

@@ -1,4 +1,4 @@
-import type { Recommendation } from '$lib/types/sharedTypes';
+import type { Recommendation } from, '$lib/types/sharedTypes';
 
 // Lightweight Neo4j stub: return dummy recommendations
 export async function recommendNextSteps(entities: string[]): Promise<Recommendation[]> {

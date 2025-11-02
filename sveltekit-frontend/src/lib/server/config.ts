@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Server Configuration - Legal AI Platform
  * Centralized configuration for all backend services
@@ -8,7 +8,7 @@ import type { Document } from '$lib/types';
 // ============================================================================
 // CONTEXT7 MCP CONFIGURATION
 // ============================================================================
-export const MCP_CONFIG = { context7: {, enabled: true,
+export const MCP_CONFIG = {, context7: {, enabled: true,
 		// Official Context7 MCP command
 		officialCommand: 'npx -y @upstash/context7-mcp',
 		// Local mock server for development
@@ -18,7 +18,7 @@ export const MCP_CONFIG = { context7: {, enabled: true,
 		retries: 3
 	},
 	multicore: {
-		enabled: true,
+	, enabled: true,
 		port: parseInt(process.env.MCP_PORT || '3001'),
 		workers: parseInt(process.env.MCP_WORKERS || '4'),
 		healthCheckInterval: 30000
@@ -30,7 +30,7 @@ export const MCP_CONFIG = { context7: {, enabled: true,
 // ============================================================================
 export const AI_CONFIG = {
 	// Primary: Ollama with Gemma models; ollama: {
-		baseUrl: process.env.OLLAMA_URL || process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+	, baseUrl: process.env.OLLAMA_URL || process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
 		models: {
 			// Legal-specific Gemma model for QA, analysis, function calling
 			legal: process.env.GEMMA_LEGAL_MODEL || 'gemma3-legal:latest',
@@ -43,7 +43,7 @@ export const AI_CONFIG = {
 		maxRetries: 3,
 		// Gemma-specific settings
 		gemma: {
-			contextWindow: 8192,
+		, contextWindow: 8192,
 			temperature: 0.7,
 			numCtx: 8192,
 			numPredict: 2048,
@@ -54,7 +54,7 @@ export const AI_CONFIG = {
 
 	// Secondary: TensorRT-LLM with Triton Inference Server (optional, for performance)
 	tensorrt: {
-		enabled: process.env.TENSORRT_ENABLED === 'true',
+	, enabled: process.env.TENSORRT_ENABLED === 'true',
 		tritonUrl: process.env.TRITON_URL || 'http://localhost:8000',
 		modelName: 'gemma_legal_tensorrt',
 		modelVersion: '1',
@@ -63,7 +63,7 @@ export const AI_CONFIG = {
 		maxTokens: 2048,
 		// TensorRT optimization settings
 		optimization: {
-			precision: 'fp16', // fp16, int8, or fp32
+		, precision: 'fp16', // fp16, int8, or fp32
 			maxBatchSize: 8,
 			maxWorkspaceSize: 2147483648, // 2GB
 			enableCudaGraph: true
@@ -72,7 +72,7 @@ export const AI_CONFIG = {
 
 	// Tertiary: vLLM (optional, for GPU acceleration without TensorRT)
 	vllm: {
-		enabled: process.env.VLLM_ENABLED === 'true',
+	, enabled: process.env.VLLM_ENABLED === 'true',
 		baseUrl: process.env.VLLM_URL || 'http://localhost:8001',
 		model: process.env.VLLM_MODEL || 'gemma-2b-it',
 		timeout: 30000,
@@ -81,7 +81,7 @@ export const AI_CONFIG = {
 
 	// Fallback: OpenAI API (optional, for high-availability production)
 	openai: {
-		enabled: process.env.OPENAI_ENABLED === 'true',
+	, enabled: process.env.OPENAI_ENABLED === 'true',
 		apiKey: process.env.OPENAI_API_KEY,
 		model: process.env.OPENAI_MODEL || 'gpt-4',
 		timeout: 30000,
@@ -93,9 +93,9 @@ export const AI_CONFIG = {
 
 	// Function calling configuration
 	functionCalling: {
-		enabled: true,
+	, enabled: true,
 		functions: {
-			legal: [
+		, legal: [
 				'extractCitations',
 				'identifyLegalIssues',
 				'analyzeContracts',
@@ -112,24 +112,24 @@ export const AI_CONFIG = {
 // ============================================================================
 export const VECTOR_SEARCH_CONFIG = {
 	// Primary: pgvector (PostgreSQL extension); pgvector: {
-		enabled: true,
-		dimensions: 768, // embeddinggemma:latest produces 768-dim vectors; indexType: 'hnsw', // Hierarchical Navigable Small World (best for large datasets)
+	, enabled: true,
+		dimensions: 768, // embeddinggemma:latest produces 768-dim vectors;, indexType: 'hnsw', // Hierarchical Navigable Small World (best for large datasets)
 		// HNSW index parameters
 		hnsw: {
-			efConstruction: 200, // Higher = better quality, slower build
+		, efConstruction: 200, // Higher = better quality, slower build
 			efSearch: 40, // Higher = better recall, slower search
 			m: 16 // Max connections per layer
 		},
 		// IVF index parameters (alternative)
 		ivf: {
-			lists: 100, // Number of clusters
+		, lists: 100, // Number of clusters
 			probes: 10 // Clusters to search
 		}
 	},
 
 	// Secondary: Qdrant (optional, for advanced vector search features)
 	qdrant: {
-		enabled: process.env.QDRANT_ENABLED === 'true',
+	, enabled: process.env.QDRANT_ENABLED === 'true',
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
 		apiKey: process.env.QDRANT_API_KEY,
 		collectionName: 'legal_documents',
@@ -137,19 +137,19 @@ export const VECTOR_SEARCH_CONFIG = {
 		timeout: 10000,
 		// Qdrant-specific settings
 		vectorConfig: {
-			distance: 'Cosine' as const,
+		, distance: 'Cosine' as const,
 			onDisk: false // Keep vectors in memory for speed
 		},
 		// Quantization for memory efficiency
 		quantization: {
-			enabled: true,
+		, enabled: true,
 			type: 'scalar' as const // scalar or binary
 		}
 	},
 
 	// Hybrid search configuration
 	hybrid: {
-		// Weighted fusion: 70% pgvector + 30% Qdrant; pgvectorWeight: 0.7,
+		// Weighted fusion: 70% pgvector + 30% Qdrant;, pgvectorWeight: 0.7,
 		qdrantWeight: 0.3,
 		fusionMethod: 'weighted' as const, // 'weighted' | 'rrf' (reciprocal rank fusion)
 		minSimilarity: 0.5,
@@ -162,9 +162,9 @@ export const VECTOR_SEARCH_CONFIG = {
 // DATABASE CONFIGURATION
 // ============================================================================
 export const DATABASE_CONFIG = {
-	url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+, url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
 	postgres: {
-		host: process.env.DATABASE_HOST || 'localhost',
+	, host: process.env.DATABASE_HOST || 'localhost',
 		port: parseInt(process.env.DATABASE_PORT || '5432'),
 		database: process.env.DATABASE_NAME || 'legal_ai_db',
 		username: process.env.DATABASE_USER || 'legal_admin',
@@ -191,7 +191,7 @@ export const REDIS_CONFIG = {
 	keyPrefix: 'legal-ai:',
 	// TTL settings for different cache types
 	cacheTtl: {
-		embeddings: 86400, // 24 hours
+	, embeddings: 86400, // 24 hours
 		search: 3600, // 1 hour
 		docs: 7200, // 2 hours
 		sessions: 1800 // 30 minutes
@@ -208,14 +208,14 @@ export const REDIS_CONFIG = {
 export const RAG_CONFIG = {
 	// Document chunking
 	chunking: {
-		chunkSize: 1500,
+	, chunkSize: 1500,
 		chunkOverlap: 300,
 		strategy: 'legal-aware' as const // 'legal-aware' | 'semantic' | 'fixed'
 	},
 
 	// Search and retrieval
 	search: {
-		maxSources: 10,
+	, maxSources: 10,
 		similarityThreshold: 0.5,
 		hybridSearch: true, // Use both vector and keyword search
 		rerankResults: true
@@ -223,7 +223,7 @@ export const RAG_CONFIG = {
 
 	// Processing
 	processing: {
-		enableCaching: true,
+	, enableCaching: true,
 		enableAutoTagging: true,
 		batchSize: 10,
 		parallelProcessing: true
@@ -231,7 +231,7 @@ export const RAG_CONFIG = {
 
 	// Rate limiting
 	rateLimiting: {
-		enabled: true,
+	, enabled: true,
 		perMinute: 60,
 		perHour: 1000,
 		perDay: 10000
@@ -239,11 +239,11 @@ export const RAG_CONFIG = {
 
 	// Security
 	security: {
-		maxInputLength: 10000,
+	, maxInputLength: 10000,
 		maxDocumentSize: 10485760, // 10MB
 		allowedDocumentTypes: ['contract', 'statute', 'case_law', 'brief', 'memo', 'evidence'],
 		sanitization: {
-			removeHtmlTags: true,
+		, removeHtmlTags: true,
 			removeSqlChars: true,
 			maxLineLength: 2000
 		}
@@ -254,12 +254,12 @@ export const RAG_CONFIG = {
 // HEALTH MONITORING CONFIGURATION
 // ============================================================================
 export const HEALTH_CONFIG = {
-	checkInterval: 30000, // 30 seconds
+, checkInterval: 30000, // 30 seconds
 	timeout: 5000,
 	retries: 3,
 	// Health check endpoints for each service
 	endpoints: {
-		ollama: '/api/tags',
+	, ollama: '/api/tags',
 		tensorrt: '/v2/health/ready',
 		qdrant: '/health',
 		postgres: true,
@@ -267,14 +267,14 @@ export const HEALTH_CONFIG = {
 	},
 	// Circuit breaker settings
 	circuitBreaker: {
-		failureThreshold: 3, // Open circuit after N failures
+	, failureThreshold: 3, // Open circuit after N failures
 		successThreshold: 2, // Close circuit after N successes
 		timeout: 60000, // 1 minute before trying again
 		halfOpenRequests: 1 // Number of requests to try in half-open state
 	},
 	// Automatic failover
 	failover: {
-		enabled: true,
+	, enabled: true,
 		retryDelay: 1000, // 1 second between retries
 		maxRetries: 3,
 		backoffMultiplier: 2 // Exponential backoff
@@ -285,12 +285,12 @@ export const HEALTH_CONFIG = {
 // PERFORMANCE MONITORING
 // ============================================================================
 export const METRICS_CONFIG = {
-	enabled: true,
+, enabled: true,
 	collectInterval: 30000, // 30 seconds
 	retentionPeriod: 86400000, // 24 hours
 	// Metrics to collect
 	collect: {
-		aiProviderLatency: true,
+	, aiProviderLatency: true,
 		vectorSearchPerformance: true,
 		cacheHitRates: true,
 		errorRates: true,
@@ -315,7 +315,7 @@ export type FusionMethod = 'weighted' | 'rrf';
 // CONFIGURATION VALIDATOR
 // ============================================================================
 export function validateConfig(): { valid: boolean; errors: string[] } {
-	const errors: string[] = [];
+	const, errors: string[] = [];
 
 	// Validate at least one AI provider is available
 	const hasProvider =
@@ -357,17 +357,17 @@ export function getConfigSummary() {
 			openai: AI_CONFIG.openai.enabled ? 'enabled' : 'disabled'
 		},
 		vectorSearch: {
-			pgvector: VECTOR_SEARCH_CONFIG.pgvector.enabled,
+		, pgvector: VECTOR_SEARCH_CONFIG.pgvector.enabled,
 			qdrant: VECTOR_SEARCH_CONFIG.qdrant.enabled,
 			hybrid: VECTOR_SEARCH_CONFIG.hybrid
 		},
 		gemmaModels: {
-			legal: AI_CONFIG.ollama.models.legal,
+		, legal: AI_CONFIG.ollama.models.legal,
 			embedding: AI_CONFIG.ollama.models.embedding,
 			dimensions: AI_CONFIG.ollama.gemma.embeddingDimensions
 		},
 		healthMonitoring: {
-			enabled: HEALTH_CONFIG.circuitBreaker.failureThreshold > 0,
+		, enabled: HEALTH_CONFIG.circuitBreaker.failureThreshold > 0,
 			interval: HEALTH_CONFIG.checkInterval,
 			failover: HEALTH_CONFIG.failover.enabled
 		}

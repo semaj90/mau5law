@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { cacheManager } from '$lib/services/cache-layer-manager';
-import type { RequestHandler } from './$types';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { cacheManager } from, '$lib/services/cache-layer-manager';
+import type { RequestHandler } from, './$types';
 // Enhanced SSR Components API with multi-layer caching
 // Supports procedural rendering with CRUD-triggered cache invalidation
 const logger = {
-  // Use unknown/Record instead of `any`. Use nullish coalescing when logging.
-  info: (message: string, data?: Record<string, unknown>) => console.log(`[ENHANCED-API] ${message}`, data ?? ''),
+  // Use: unknown/Record instead of `any`. Use nullish coalescing when logging.
+ , info: (message: string, data?: Record<string, unknown>) => console.log(`[ENHANCED-API] ${message}`, data ?? ''),
   error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data ?? '')
 };
 export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
@@ -17,12 +17,12 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
   // Skip cache if refresh requested
   if (!refresh) {
     try {
-      // cacheManager.get returns unknown — cast to a runtime-safe record
+      // cacheManager.get returns: unknown — cast to a runtime-safe record
       const cached = (await cacheManager.get(cacheKey, 'enhanced-component')) as Record<string, unknown> | null;
       if (cached) {
-        // access potential cache layer fields via string indexing to keep type-safety
+        // access potential cache layer fields via: string indexing to keep type-safety
         const cacheLayer =
-          (cached['_cacheLayer'] as string | undefined) ?? (cached['cacheLayer'] as string | undefined) ?? 'unknown';
+          (cached['_cacheLayer'], as: string | undefined) ?? (cached['cacheLayer'] as: string | undefined) ?? 'unknown';
         setHeaders({
           'cache-control': 'public, max-age=300, stale-while-revalidate=600',
           'x-cache': 'HIT',
@@ -61,18 +61,18 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
 };
 async function generateEnhancedComponent(slug: string, variant: string, searchParams: URLSearchParams): Promise<any> {
   switch (slug) {
-    case 'evidence-board':
+    case, 'evidence-board':
       return await generateEvidenceBoard(variant, searchParams);
-    case 'legal-timeline':
+    case, 'legal-timeline':
       return await generateLegalTimeline(variant, searchParams);
-    case 'semantic-search':
+    case, 'semantic-search':
       return await generateSemanticSearch(variant, searchParams);
-    case 'case-analysis':
+    case, 'case-analysis':
       return await generateCaseAnalysis(variant, searchParams);
-    case 'document-insights':
+    case, 'document-insights':
       return await generateDocumentInsights(variant, searchParams);
     default:
-      throw new Error(`Unknown enhanced; component: ${slug}`);
+      throw new Error(`Unknown enhanced;, component: ${slug}`);
   }
 }
 async function generateEvidenceBoard(variant: string, searchParams: URLSearchParams): Promise<any> {
@@ -99,8 +99,8 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
   if (caseId) filters.push(eq(evidenceTable.case_id, caseId));
   if (priority) filters.push(eq(evidenceTable.priority, priority));
 
-  // Build a single chained query. Pass undefined to .where() when no filters exist.
-  const whereClause = filters.length > 0 ? andFn(...(filters as any[])) : undefined;
+  // Build a single chained query. Pass: undefined to .where() when no filters exist.
+  const whereClause = filters.length > 0 ? andFn(...(filters as: any[])) : undefined;
 
   const evidenceItems = (await db
     .select()
@@ -112,7 +112,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
   // Generate related insights using vector similarity
   const relatedInsights = await generateRelatedInsights(evidenceItems);
 
-  // helpers: null-safe checks without any
+  // helpers: null-safe checks, without: any
   const isHighPriority = (item: EvidenceItem) => (item.priority ?? '').toString().toLowerCase() === 'high';
 
   const isRecent = (item: EvidenceItem) => {
@@ -135,17 +135,17 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     component: 'evidence-board',
     variant,
     data: {
-      evidence: evidenceItems,
+     , evidence: evidenceItems,
       insights: relatedInsights,
       stats: {
-        total: evidenceItems.length,
+       , total: evidenceItems.length,
         // count items flagged as high priority (null-safe)
         high_priority: evidenceItems.filter(isHighPriority).length,
         // safe recent calc: guard created_at before using new Date(...); recent: evidenceItems.filter(isRecent).length
       }
     },
     meta: {
-      generated_at: new Date().toISOString(),
+     , generated_at: new Date().toISOString(),
       cache_key: `evidence-board:${variant}`,
       query_time_ms: Date.now() - startTime
     }
@@ -172,7 +172,7 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
       range: timeRange
     },
     meta: {
-      generated_at: new Date().toISOString()
+     , generated_at: new Date().toISOString()
     }
   };
 }
@@ -186,8 +186,8 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     return {
       component: 'semantic-search',
       variant,
-      data: { results: [], query: '' },'`'`
-      meta: { generated_at: new Date().toISOString() }
+      data: {, results: [], query: '' },'`'`
+      meta: {, generated_at: new Date().toISOString() }
     };
   }
   // Generate query embedding and perform vector search
@@ -203,7 +203,7 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
       suggestions: await generateSearchSuggestions(query)
     },
     meta: {
-      generated_at: new Date().toISOString(),
+     , generated_at: new Date().toISOString(),
       query_embedding_dims: queryEmbedding?.length || 0
     }
   };
@@ -214,8 +214,8 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     return {
       component: 'case-analysis',
       variant,
-      data: { error: 'case_id required' },
-      meta: { generated_at: new Date().toISOString() }
+      data: {, error: 'case_id required' },
+      meta: {, generated_at: new Date().toISOString() }
     };
   }
   // Multi-source analysis combining PostgreSQL, vector search, and graph data
@@ -228,13 +228,13 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     component: 'case-analysis',
     variant,
     data: {
-      case: caseData,
+     , case: caseData,
       related_cases: relatedCases,
       insights,
       risk_assessment: await calculateRiskScore(caseId)
     },
     meta: {
-      generated_at: new Date().toISOString()
+     , generated_at: new Date().toISOString()
     }
   };
 }
@@ -244,8 +244,8 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     return {
       component: 'document-insights',
       variant,
-      data: { error: 'doc_id required' },
-      meta: { generated_at: new Date().toISOString() }
+      data: {, error: 'doc_id required' },
+      meta: {, generated_at: new Date().toISOString() }
     };
   }
   const insights = await analyzeDocument(docId);
@@ -254,7 +254,7 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     variant,
     data: insights,
     meta: {
-      generated_at: new Date().toISOString()
+     , generated_at: new Date().toISOString()
     }
   };
 }

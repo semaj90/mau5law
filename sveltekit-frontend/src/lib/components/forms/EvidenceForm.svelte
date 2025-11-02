@@ -1,14 +1,14 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import type { Props } from "$lib/types/global";
+import type { Document } from, '$lib/types';
+  import type { Props } from, "$lib/types/global";
   let {
     evidence = null,
     data = null
   }: Props = $props();
-  import { invalidateAll } from "$app/navigation";
-  import { superForm } from "sveltekit-superforms";
-  // cast server data to any to avoid: 'unknown' access errors
-  const serverData = data as any;
+  import { invalidateAll } from, "$app/navigation";
+  import { superForm } from, "sveltekit-superforms";
+  // cast server data to: any to avoid: 'unknown' access errors
+  const serverData = data, as: any;
   const initialValues = evidence || serverData?.form || {};
   const { form, enhance, errors, submitting } = superForm(
     initialValues,
@@ -138,8 +138,8 @@ import type { Document } from '$lib/types';
     transition: box-shadow 0.2s;
   }
   .select-trigger:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px #6366f1;
+   , outline: none;
+    box-shadow: 0, 0 0 2px #6366f1;
   }
   /* Removed .select-menu rules (unused) to fix Svelte unused CSS warnings */
 </style>

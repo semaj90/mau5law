@@ -1,7 +1,7 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // Case Creation State Machine - XState v5 compatible
 // Orchestrates legal case creation workflow with validation and API calls
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign, fromPromise } from, 'xstate';
 export interface CaseCreationContext { formData: {, title: string;
     description: string;
     priority: 'low' | 'medium' | 'high' | 'critical';
@@ -9,7 +9,7 @@ export interface CaseCreationContext { formData: {, title: string;
     location?: string;
     jurisdiction?: string;
   };
-  validationErrors: Record<string, string[]>;
+ , validationErrors: Record<string, string[]>;
   createdCase: any;
   error: string | null;
   isAutoSaving: boolean;
@@ -17,7 +17,7 @@ export interface CaseCreationContext { formData: {, title: string;
 }
 export const caseCreationMachine = createMachine(
   {
-    id: 'caseCreation',
+   , id: 'caseCreation',
     initial: 'idle',
     // types removed to avoid inline TS assertion parsing issues with esbuild
     context: {, formData: {, title: '',
@@ -25,7 +25,7 @@ export const caseCreationMachine = createMachine(
         priority: 'medium',
         status: 'open'
       },
-      validationErrors: {} as any,
+      validationErrors: {}, as: any,
       createdCase: null,
       error: null,
       isAutoSaving: false,
@@ -41,9 +41,9 @@ export const caseCreationMachine = createMachine(
           }
         }
       },
-      editing: { entry: assign({, error: null }),
-        on: { UPDATE_FORM: {, actions: assign({
-              formData: ({ context, event }) => ({
+      editing: {, entry: assign({, error: null }),
+        on: {, UPDATE_FORM: {, actions: assign({
+             , formData: ({ context, event }) => ({
                 ...context.formData,
                 ...event.data
               }),
@@ -51,9 +51,9 @@ export const caseCreationMachine = createMachine(
             })
           },
           VALIDATE_FORM: {
-            target: 'validating',
+           , target: 'validating',
             actions: assign({
-              formData: ({ context, event }) => ({
+             , formData: ({ context, event }) => ({
                 ...context.formData,
                 ...event.data
               })
@@ -63,35 +63,35 @@ export const caseCreationMachine = createMachine(
         },
         after: {
           2000: {
-            target: 'editing',
-            actions: assign({ isAutoSaving: false })
+           , target: 'editing',
+            actions: assign({, isAutoSaving: false })
           }
         }
       },
-      validating: { invoke: {, id: 'validateCaseData',
+      validating: {, invoke: {, id: 'validateCaseData',
           src: 'validateCaseData',
           input: ({ context }) => context,
           onDone: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
-              validationErrors: {} as any,
+              validationErrors: {}, as: any,
               error: null
             })
           },
           onError: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
-              validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
+             , validationErrors: ({ event }) => (event as: any).error?.validationErrors || {},
               error: 'Validation failed'
             })
           }
         }
       },
-      submitting: { entry: assign({, retryCount: ({ context }) => context.retryCount + 1
+      submitting: {, entry: assign({, retryCount: ({ context }) => context.retryCount + 1
         }),
         invoke: {
-          id: 'submitCase',
-          src: fromPromise(async ({ input }: { input: CaseCreationContext }) => {
+         , id: 'submitCase',
+          src: fromPromise(async ({ input }: {, input: CaseCreationContext }) => {
             const response = await fetch('/api/cases', {
               method: 'POST',
               headers: {
@@ -107,9 +107,9 @@ export const caseCreationMachine = createMachine(
           }),
           input: ({ context }) => context,
           onDone: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign({
-              createdCase: ({ event }) => event.output,
+             , createdCase: ({ event }) => event.output,
               error: null,
               retryCount: 0
             })
@@ -119,13 +119,13 @@ export const caseCreationMachine = createMachine(
               guard: ({ context }) => context.retryCount < 3,
               target: 'retrying',
               actions: assign({
-                error: ({ event }) => (event as any).error?.message || 'Submission failed'
+               , error: ({ event }) => (event as: any).error?.message || 'Submission failed'
               })
             },
             {
               target: 'failed',
               actions: assign({
-                error: ({ event }) => (event as any).error?.message || 'Submission failed after retries'
+               , error: ({ event }) => (event as: any).error?.message || 'Submission failed after retries'
               })
             },
           ]
@@ -133,19 +133,19 @@ export const caseCreationMachine = createMachine(
       },
       retrying: {
         after: {
-          1000: 'submitting` },'`
+         , 1000: 'submitting` },'`
         on: {
-          RETRY: `submitting` }
+         , RETRY: `submitting` }
       },
       completed: {
-        type: 'final',
-        entry: assign({ isAutoSaving: false }),
-        on: { RESET: {, target: 'idle',
-            actions: assign({ formData: {, title: '',
+       , type: 'final',
+        entry: assign({, isAutoSaving: false }),
+        on: {, RESET: {, target: 'idle',
+            actions: assign({, formData: {, title: '',
                 description: '',
                 priority: 'medium',
                 status: `open` },
-              validationErrors: {} as any,
+              validationErrors: {}, as: any,
               createdCase: null,
               error: null,
               isAutoSaving: false,
@@ -154,11 +154,11 @@ export const caseCreationMachine = createMachine(
           }
         }
       },
-      failed: { on: {, RETRY: 'submitting',
+      failed: {, on: {, RETRY: 'submitting',
           RESET: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
-              error: null,
+             , error: null,
               retryCount: 0
             })
           }
@@ -166,7 +166,7 @@ export const caseCreationMachine = createMachine(
       }
     }
   },
-  { actors: {, validateCaseData: fromPromise(async ({ input }: { input: CaseCreationContext }) => {
+  { actors: {, validateCaseData: fromPromise(async ({ input }: {, input: CaseCreationContext }) => {
         const errors: Record<string, string[]> = {};
         if (!input.formData.title?.trim()) {
           errors.title = ['Title is required'];
@@ -177,7 +177,7 @@ export const caseCreationMachine = createMachine(
         if (Object.keys(errors).length > 0) {
           throw { validationErrors: errors };
         }
-        return { valid: true };
+        return {, valid: true };
       })
     }
   }

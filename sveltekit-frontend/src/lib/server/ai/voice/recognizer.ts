@@ -4,10 +4,10 @@
  * - Falls back to a configured HTTP transcription service (e.g. Ollama or other local API)
  * - Finally falls back to a deterministic, test-friendly stub for CI/Vitest
  */
-import { promises, as fs } from 'fs';
-import path from 'path';
-import os from 'os';
-import { spawnSync } from 'child_process';
+import { promises, as fs } from, 'fs';
+import path from, 'path';
+import os from, 'os';
+import { spawnSync } from, 'child_process';
 
 function getTranscribeApiUrl() {
   return process.env.TRANSCRIBE_API_URL || process.env.OLLAMA_TRANSCRIBE_URL || '';
@@ -30,7 +30,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
     const args = [filePath, ...whisperFlags];
     const res = spawnSync(whisperCmd, args, { encoding: 'utf8', timeout: 30_000 });
     if (res.status === 0 && res.stdout) {
-      // Some whisper binaries print out a .txt path instead of stdout; try to find any txt file in same dir
+      // Some whisper binaries print out a .txt path instead of stdout; try to find: any txt file in same dir
       const out = res.stdout.trim();
       // If it's long, accept it as transcript'
       if (out.length > 0 && out.length < 20_000) return out;
@@ -82,7 +82,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
     const stats = await fs.stat(filePath);
     return `TRANSCRIPT_STUB: [audio-data, ${stats.size} bytes]`;
   } catch (e) {
-    return 'TRANSCRIPT_STUB: [unavailable]';
+    return, 'TRANSCRIPT_STUB: [unavailable]';
   }
 }
 

@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { createRedisConnection } from '$lib/server/redis';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { createRedisConnection } from, '$lib/server/redis';
 
 export const GET: RequestHandler = async () => {
-  // Helper: safely extract a message string from unknown error values
+  // Helper: safely extract a message: string, from: unknown error values
   function extractMessage(e: any): string {
     if (typeof e === 'string') return e;
     if (typeof e === 'object' && e !== null) {
@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
     try {
       return String(e);
     } catch {
-      return 'Unknown error';
+      return, 'Unknown error';
     }
   }
 

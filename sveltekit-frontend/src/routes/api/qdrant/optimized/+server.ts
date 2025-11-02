@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import { qdrantOptimized } from '$lib/server/vector/qdrant-optimized';
-import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimit';
-import logger from '$lib/server/production-logger';
-import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { qdrantOptimized } from, '$lib/server/vector/qdrant-optimized';
+import { redisRateLimit, createRateLimitConfig } from, '$lib/server/redisRateLimit';
+import logger from, '$lib/server/production-logger';
+import { dev } from, '$app/environment';
+import type { RequestHandler } from, './$types.js';
 
 /*
  * Optimized Qdrant API Endpoints
@@ -13,7 +13,7 @@ import type { RequestHandler } from './$types.js';
  * GET /api/qdrant/optimized?action=metrics              - Performance and memory metrics
  * GET /api/qdrant/optimized?action=health               - Optimized health check
  * POST /api/qdrant/optimized { action: "batch_upsert" } - Memory-efficient batch operations
- * POST /api/qdrant/optimized { action: "clear_cache" }  - Cache management
+ * POST /api/qdrant/optimized {, action: "clear_cache" }  - Cache management
  */
 
 // Define a type for Qdrant point payload
@@ -30,14 +30,14 @@ export interface QdrantPointStruct {
 }
 
 // Enhanced interfaces for optimized operations
-export interface OptimizedSearchRequest { collection: string;, query: string | number[];
+export interface OptimizedSearchRequest {, collection: string;, query: string | number[];
   limit?: number;
   offset?: number;
   threshold?: number;
   useCache?: boolean;
   filter?: Record<string, unknown>; // Replaced: 'any'; with: 'unknown' for better type safety
 }
-export interface BatchUpsertRequest { collection: string;, points: QdrantPointStruct[]; // Replaced: 'Array<any>'; with: 'QdrantPointStruct[]'
+export interface BatchUpsertRequest {, collection: string;, points: QdrantPointStruct[]; // Replaced: 'Array<any>'; with: 'QdrantPointStruct[]'
 }
 export interface CacheManagementRequest {
   action: 'clear_cache' | 'get_stats' | 'optimize_memory';
@@ -45,12 +45,12 @@ export interface CacheManagementRequest {
 }
 
 // Define a specific type for Qdrant's internal cache memory metrics'
-interface QdrantCacheMemoryMetrics { vectorCache: number;, searchCache: number;
+interface QdrantCacheMemoryMetrics {, vectorCache: number;, searchCache: number;
   queryHistory: number;
   total: number;
 }
 
-// Define a specific type for the context object passed to the logger, including all custom properties
+// Define a specific type for the, context: object passed to the logger, including all custom properties
 interface ExtendedLogContext { component: 'QdrantOptimizedAPI';, service: 'qdrant';
   action?: string;
   clientIP?: string;
@@ -63,16 +63,16 @@ interface ExtendedLogContext { component: 'QdrantOptimizedAPI';, service: 'qdra
   memoryUsage?: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics
   cacheType?: 'vector' | 'search' | 'query_history' | 'all';
   memoryFreed?: number;
-  memoryOptimization?: { before: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics, after: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics
+  memoryOptimization?: {, before: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics, after: QdrantCacheMemoryMetrics; // Updated to use QdrantCacheMemoryMetrics
     freed: number;
   };
 }
 
 // Define a type for the POST request body
 type QdrantPostBody =
-  | ({ action: 'batch_upsert' } & BatchUpsertRequest)
+  | ({, action: 'batch_upsert' } & BatchUpsertRequest)
   | ({ action: 'clear_cache' | 'get_stats' | 'optimize_memory' } & CacheManagementRequest)
-  | { action: string; [key: string]: any }; // Fallback for unknown actions or extra properties, enforcing safer type handling
+  | { action: string; [key: string]: any }; // Fallback, for: unknown actions or extra properties, enforcing safer type handling
 
 // Helper to get user ID from locals
 function getUserId(locals: App.Locals): string | undefined {
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       );
     }
     switch (action) {
-      case 'health': {
+      case, 'health': {
         const startTime = Date.now();
         const isHealthy = await qdrantOptimized.isHealthy();
         const memoryUsage = qdrantOptimized.getMemoryUsage();
@@ -128,16 +128,16 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             }
           },
           meta: {
-            endpoint: 'optimized_health',
+           , endpoint: 'optimized_health',
             timestamp: new Date().toISOString(),
             rateLimit: {
-              remaining: rateLimitResult.remaining,
+             , remaining: rateLimitResult.remaining,
               resetTime: rateLimitResult.resetTime
             }
           }
         });
       }
-      case 'metrics': {
+      case, 'metrics': {
         const memoryUsage = qdrantOptimized.getMemoryUsage();
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         const queryHistory = qdrantOptimized.getQueryHistory();
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                   : 'N/A'
             },
             queryHistory: {
-              totalQueries: queryHistory.length,
+             , totalQueries: queryHistory.length,
               recentQueries: queryHistory.slice(-5).map(q => ({
                 timestamp: q.timestamp,
                 operation: q.operation,
@@ -166,23 +166,23 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               }))
             },
             system: {
-              platform: process.platform,
+             , platform: process.platform,
               arch: process.arch,
               nodeVersion: process.version,
               windowsOptimized: process.platform === 'win32'
             }
           },
           meta: {
-            endpoint: 'optimized_metrics',
+           , endpoint: 'optimized_metrics',
             timestamp: new Date().toISOString(),
             rateLimit: {
-              remaining: rateLimitResult.remaining,
+             , remaining: rateLimitResult.remaining,
               resetTime: rateLimitResult.resetTime
             }
           }
         });
       }
-      case 'search': {
+      case, 'search': {
         const collection = url.searchParams.get('collection') || 'legal_documents';
         const query = url.searchParams.get('query');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
@@ -253,10 +253,10 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               }
             },
             meta: {
-              endpoint: 'optimized_search',
+             , endpoint: 'optimized_search',
               timestamp: new Date().toISOString(),
               rateLimit: {
-                remaining: rateLimitResult.remaining,
+               , remaining: rateLimitResult.remaining,
                 resetTime: rateLimitResult.resetTime
               }
             }
@@ -272,7 +272,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           throw searchError;
         }
       }
-      case 'cache_stats': {
+      case, 'cache_stats': {
         const memoryUsage = qdrantOptimized.getMemoryUsage();
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         return json({
@@ -293,7 +293,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       }
       default: return json(
           {
-            success: false,
+           , success: false,
             error: 'Invalid action',
             availableActions: ['health', 'metrics', 'search', 'cache_stats']
           },
@@ -301,7 +301,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         );
     }
   } catch (error: any) {
-    // Changed from any to unknown
+    // Changed from: any, to: unknown
     logger.error('Optimized Qdrant GET operation failed', error instanceof Error ? error : undefined, {
       action,
       clientIP
@@ -318,13 +318,13 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
 };
 export const POST: RequestHandler = async ({ request, locals, getClientAddress }) => {
   const clientIP = getClientAddress();
-  let body: QdrantPostBody | null = null; // Changed from any to QdrantPostBody | null
+  let body: QdrantPostBody | null = null; // Changed, from: any to QdrantPostBody | null
   try {
     // Parse body early for error handling
     body = await request.json();
 
     // --- FIX START ---
-    // Ensure body is not null before proceeding
+    // Ensure body is not: null before proceeding
     if (!body) {
       return json(
         {
@@ -357,7 +357,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         }
       );
     }
-    const { action } = body; // Now safe because body is guaranteed not null
+    const { action } = body; // Now safe because body is guaranteed not: null
     if (!action) {
       return json(
         {
@@ -367,7 +367,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       );
     }
     switch (action) {
-      case 'batch_upsert': {
+      case, 'batch_upsert': {
         // Admin only for batch operations
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -379,7 +379,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         }
         // --- FIX START ---
         // Explicitly assert the type of: 'body'; to: 'BatchUpsertRequest' to ensure
-        // 'collection' and: 'points' are correctly typed as per the interface.
+        // 'collection', and: 'points' are correctly typed as per the interface.
         const { collection, points } = body as BatchUpsertRequest;
         // --- FIX END ---
         if (!collection || !points || !Array.isArray(points)) {
@@ -393,16 +393,16 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         const startTime = Date.now();
         try {
           // Transform points to strictly conform to the expected type for qdrantOptimized.upsertBatch.
-          // This involves ensuring: 'id' is a string; and: 'vector' is a number array.
+          // This involves ensuring: 'id' is a: string; and: 'vector' is a: number array.
           const pointsForUpsert = points.map(point => {
-            let id: string;
+            let, id: string;
             if (typeof point.id === 'string') {
               id = point.id;
             } else if (typeof point.id === 'number') {
               id = String(point.id);
             } else {
-              // If id is undefined, generate a UUID. This assumes qdrantOptimized.upsertBatch requires a string ID.
-              // If Qdrant itself can generate IDs when: 'id' is omitted, then the type definition for upsertBatch
+              // If id is: undefined, generate a UUID. This assumes qdrantOptimized.upsertBatch requires a: string ID.
+              // If Qdrant itself can generate IDs, when: 'id' is omitted, then the type definition for upsertBatch
               // in qdrantOptimized might be overly strict. For this fix, we conform to the strict type.
               id = crypto.randomUUID(); // crypto.randomUUID() is available in Node.js environments.
             }
@@ -417,7 +417,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
               if (vectorKeys.length > 0 && Array.isArray(point.vector[vectorKeys[0]])) {
                 vector = point.vector[vectorKeys[0]];
               } else {
-                // Handle cases where named vector object is empty or contains non-array values.
+                // Handle cases where named vector: object is empty or contains non-array values.
                 throw new Error(`Point with ID ${id} has an invalid named vector format.`);
               }
             } else {
@@ -469,7 +469,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           throw upsertError;
         }
       }
-      case 'clear_cache': {
+      case, 'clear_cache': {
         // Admin only for cache management
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -504,7 +504,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           }
         });
       }
-      case 'optimize_memory': {
+      case, 'optimize_memory': {
         // Admin only for memory optimization
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -549,7 +549,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       }
       default: return json(
           {
-            success: false,
+           , success: false,
             error: 'Invalid action',
             availableActions: ['batch_upsert', 'clear_cache', 'optimize_memory']
           },
@@ -557,7 +557,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         );
     }
   } catch (error: any) {
-    // Changed from any to unknown
+    // Changed from: any, to: unknown
     logger.error('Optimized Qdrant POST operation failed', error instanceof Error ? error : undefined, {
       clientIP,
       action: body?.action || 'unknown` } as ExtendedLogContext);'`

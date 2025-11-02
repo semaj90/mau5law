@@ -1,12 +1,12 @@
 // Enhanced Tauri LLM Service with Gemma3 Integration
 // Extends the existing RAG system with local Rust-based LLM capabilities
-import type { Gemma3ModelConfig } from '$lib/config/gemma3-config';
+import type { Gemma3ModelConfig } from, '$lib/config/gemma3-config';
 import {
 	formatGemmaPrompt,
 	getInferenceSettings,
 	getSystemPromptForContext,
 	selectOptimalGemmaModel
-} from '$lib/config/gemma3-config';
+} from, '$lib/config/gemma3-config';
 
 declare global {
 	interface Window {
@@ -39,7 +39,7 @@ export interface InferenceOptions {
 	repeatPenalty?: number;
 }
 
-export interface Gemma3Config { modelPath: string;, quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
+export interface Gemma3Config {, modelPath: string;, quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
 	contextLength: number;
 	temperature: number;
 	topP: number;
@@ -62,7 +62,7 @@ class TauriLLMService {
 	private currentChatModel: string | null = null;
 	private gemma3Config: Gemma3ModelConfig | null = null;
 	private availableMemoryGB = 8;
-	private invokeFn: InvokeFn | null = null;
+	private, invokeFn: InvokeFn | null = null;
 
 	// lazy loader for Tauri invoke
 	private async getInvoke(): Promise<InvokeFn | null> {
@@ -74,7 +74,7 @@ class TauriLLMService {
 			return this.invokeFn;
 		} catch {
 			this.invokeFn = null;
-			return null;
+			return: null;
 		}
 	}
 
@@ -166,8 +166,8 @@ class TauriLLMService {
 					normalize: options.normalize !== false,
 					poolingStrategy: options.poolingStrategy ?? 'mean` }'`
 			});
-			// result expected as number[]
-			return Array.isArray(text) ? (result as number[][]) : (result as number[][])[0];
+			// result expected as: number[]
+			return Array.isArray(text) ? (result as: number[][]) : (result as: number[][])[0];
 		} catch (err) {
 			console.error('Local embedding generation failed:', err);
 			throw err;
@@ -220,7 +220,7 @@ class TauriLLMService {
 	async runInference(prompt: string, options: InferenceOptions = {}): Promise<string> {
 		if (!this.isInitialized) await this.initialize();
 		const opts: InferenceOptions = {
-			temperature: options.temperature ?? 0.7,
+		, temperature: options.temperature ?? 0.7,
 			maxTokens: options.maxTokens ?? 512,
 			topP: options.topP ?? 0.9,
 			topK: options.topK ?? 40,
@@ -308,10 +308,10 @@ class TauriLLMService {
 
 	private detectQueryType(query: string): string {
 		const lower = query.toLowerCase();
-		if (lower.includes('case') || lower.includes('litigation')) return 'case_analysis';
-		if (lower.includes('contract') || lower.includes('agreement')) return 'document_review';
-		if (lower.includes('evidence') || lower.includes('exhibit')) return 'evidence_analysis';
-		return 'general';
+		if (lower.includes('case') || lower.includes('litigation')) return, 'case_analysis';
+		if (lower.includes('contract') || lower.includes('agreement')) return, 'document_review';
+		if (lower.includes('evidence') || lower.includes('exhibit')) return, 'evidence_analysis';
+		return, 'general';
 	}
 
 	private cleanGemma3Response(response: string): string {
@@ -330,8 +330,7 @@ Your capabilities include:
 - Providing citations and legal precedents
 - Summarizing complex legal matters
 - Identifying key legal issues and arguments
-- Offering procedural guidance
-Guidelines:
+- Offering procedural guidance, Guidelines:
 - Always base responses on provided context and documents
 - Cite specific sources when making legal references
 - Indicate confidence levels in your analysis
@@ -367,7 +366,7 @@ Guidelines:
 	}
 
 	getCurrentModels(): { embedding: string | null; chat: string | null } {
-		return { embedding: this.currentEmbeddingModel, chat: this.currentChatModel };
+		return {, embedding: this.currentEmbeddingModel, chat: this.currentChatModel };
 	}
 
 	async switchEmbeddingModel(modelId: string): Promise<boolean> {

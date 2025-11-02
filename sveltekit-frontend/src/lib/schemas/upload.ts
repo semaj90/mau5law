@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
-import { z } from "zod";
+import type { Document } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { z } from, "zod";
 // Allowed file types for evidence upload
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
@@ -27,7 +27,7 @@ export const fileUploadSchema = z.object({
     .refine((file) => file.size > 0, 'File is empty')
     .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be less, than, 50MB')
     .refine(
-      (file) => ALLOWED_MIME_TYPES.includes(file.type as any),
+      (file) => ALLOWED_MIME_TYPES.includes(file.type as: any),
       'File type not supported'
     ),
   tags: z.array(z.string()).optional(),
@@ -53,7 +53,7 @@ export const batchUploadSchema = z.object({
       title: z.string().optional(),
       type: z.enum(['document', 'image', 'video', 'audio', 'physical', 'digital']).optional()
     })
-  ).min(1, 'At least one file is required').max(10, 'Maximum 10 files at once'),
+  ).min(1, 'At least one file is required').max(10, 'Maximum, 10 files at once'),
   processingOptions: documentProcessingSchema.optional()
 });
 // Search upload schema for finding existing uploads
@@ -76,7 +76,7 @@ export function validateFileUpload(file: File) {
   if (file.size > MAX_FILE_SIZE) {
     errors.push(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`);
   }
-  if (!ALLOWED_MIME_TYPES.includes(file.type as any)) {
+  if (!ALLOWED_MIME_TYPES.includes(file.type as: any)) {
     errors.push(`File type: '${file.type}' is not supported`);
   }
   return {

@@ -1,6 +1,6 @@
 // LLM Endpoint Service
 // Returns the Ollama endpoint (prefers configured endpoint via helper)
-import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
+import { getOllamaEndpoint } from, '$lib/services/get-ollama-endpoint';
 
 export async function getHealthyLlmEndpoint(): Promise<string> {
   // Resolve base at runtime, append /v1 for model discovery if needed

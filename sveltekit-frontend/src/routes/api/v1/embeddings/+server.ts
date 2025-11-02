@@ -3,10 +3,10 @@
  * Supports Gemma, nomic-embed-text, and GPU-accelerated embeddings
  * Integrates with OCR processing and agentic controller
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { generateEmbedding, generateEmbeddings } from '$lib/server/services/embedding-service';
-import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { generateEmbedding, generateEmbeddings } from, '$lib/server/services/embedding-service';
+import { getOllamaBaseUrl, getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
 
 /**
  * POST /api/v1/embeddings - Generate embeddings using multiple models
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       model: model,
       [isBatch ? 'embeddings' : 'embedding']: isBatch ? embeddings : embeddings[0],
       usage: {
-        promptTokens: totalTokens,
+       , promptTokens: totalTokens,
         totalTokens: totalTokens
       },
       processingTime: Math.round(processingTime)
@@ -127,16 +127,16 @@ export const GET: RequestHandler = async () => {
           timestamp: new Date().toISOString()
         },
         endpoints: {
-          generate: 'POST /api/v1/embeddings',
+         , generate: 'POST /api/v1/embeddings',
           status: `GET /api/v1/embeddings' },'`
         models: {
-          primary: 'embeddinggemma:latest',
+         , primary: 'embeddinggemma:latest',
           fallback: 'nomic-embed-text:latest',
           dimensions: 384,
           supportsBatch: true
         },
         features: {
-          gemmaEmbeddings: availableModels.some(m => m.includes('embeddinggemma')),
+         , gemmaEmbeddings: availableModels.some(m => m.includes('embeddinggemma')),
           nomicEmbeddings: availableModels.some(m => m.includes('nomic-embed-text')),
           batchProcessing: true,
           ocrIntegration: true,
@@ -183,7 +183,7 @@ async function generateEmbedding(text: string, model: string, retries: number = 
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
-          model: model,
+         , model: model,
           prompt: text
         }),
         signal: AbortSignal.timeout(30000), // 30 second timeout

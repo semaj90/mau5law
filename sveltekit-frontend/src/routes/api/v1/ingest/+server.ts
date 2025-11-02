@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { INGEST_SERVICE_URL } from '$env/static/private';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { readBodyFast } from, '$lib/server/utils/json-fast';
+import { INGEST_SERVICE_URL } from, '$env/static/private';
+import type { RequestHandler } from, './$types.js';
 /*
  * SvelteKit API proxy to Go Ingest Service (port 8227)
  * Integrates with your 37-service architecture
@@ -9,21 +9,21 @@ import type { RequestHandler } from './$types.js';
  */
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
 const TIMEOUT = 30000; // 30 seconds for document processing
-export interface DocumentIngestRequest { title: string;, content: string;
+export interface DocumentIngestRequest {, title: string;, content: string;
   case_id?: string;
   metadata?: Record<string, unknown>;
 }
 export interface BatchIngestRequest {
   documents: DocumentIngestRequest[];
 }
-export interface IngestResponse { id: string;, status: string;
+export interface IngestResponse {, id: string;, status: string;
   document_id: string;
   embedding_id: string;
   process_time_ms: number;
   timestamp: string;
 }
 // Single document ingestion
-export const POST: RequestHandler = async ({ request, fetch }) => {
+export const, POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const requestData = await readBodyFast(request);
     // Validate request structure
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     }
     // Transform to Go service format
     const ingestRequest: DocumentIngestRequest = {
-      title: requestData.title,
+     , title: requestData.title,
       content: requestData.content,
       case_id: requestData.case_id || requestData.caseId, // Support both formats
       metadata: {
@@ -91,11 +91,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       if (fetchErrorName === 'AbortError') {
         return json({ error: `Request timeout - document processing took too long` }, { status: 504 });
       }
-      // rethrow unknown error to be handled by outer catch
+      // rethrow: unknown error to be handled by outer catch
       throw fetchError;
     }
   } catch (error: any) {
-    // Ensure we log and return a safe message string
+    // Ensure we log and return a safe message: string
     const message = error instanceof Error ? error.message : String(error);
     console.error('Ingest API error:', error);'
     return json(
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
-          error: `Service; unreachable: ${response.status}` },'`'`
+          error: `Service;, unreachable: ${response.status}` },'`'`
         { status: 503 }
       );
     }

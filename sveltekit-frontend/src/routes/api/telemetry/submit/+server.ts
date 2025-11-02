@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 
 type TelemetryEntry = { ts: number;, latency: number;
   frameDelta?: number;
@@ -9,7 +9,7 @@ type TelemetryEntry = { ts: number;, latency: number;
   note?: string;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     // Basic validation
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
       interface GlobalTelemetry {
         __telemetryFallback?: TelemetryEntry[];
       }
-      const g = globalThis as unknown as GlobalTelemetry;
+      const g = globalThis as: unknown as GlobalTelemetry;
       g.__telemetryFallback = g.__telemetryFallback ?? [];
       g.__telemetryFallback.push(entry);
     }

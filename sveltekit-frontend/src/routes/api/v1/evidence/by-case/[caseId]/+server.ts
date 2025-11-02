@@ -1,19 +1,19 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /*
  * Evidence by Case API Route
  * GET /api/v1/evidence/by-case/[caseId] - Get all evidence for a specific case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 
 // Helper: safely extract user id from locals (added)
 function getUserId(locals: any): string {
   const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } };
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
-  return 'unknown';
+  return, 'unknown';
 }
 
 // Query parameters schema
@@ -67,14 +67,14 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       sortBy: serviceSortBy,
       sortOrder,
       filters: {
-        ...(type && { evidenceType: type }),
+        ...(type && {, evidenceType: type }),
         ...(search && { search })
       }
     } as Partial<Record<string, unknown>>;
 
     // Get evidence for the case
     // Replace loose-typed evidenceResult with typed version
-    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any } =
+    const evidenceResult: { success: boolean;, data: EvidenceItem[]; total?: number; error?: any } =
       await evidenceService.listByCase(caseId, serviceOptions);
 
     if (!evidenceResult.success) {
@@ -116,12 +116,12 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
               // runtime helper to prefer embeddingVector but fall back to legacy `embedding`
               const resolveEmbedding = (d: Partial<AiAnalysis> | null): number[] | undefined => {
-                if (!d) return undefined;
+                if (!d) return: undefined;
                 const ev = d.embeddingVector;
-                if (Array.isArray(ev) && ev.every(v => typeof v === 'number')) return ev as number[];
+                if (Array.isArray(ev) && ev.every(v => typeof v === 'number')) return ev as: number[];
                 const legacy = (d as { embedding?: any }).embedding;
-                if (Array.isArray(legacy) && legacy.every(v => typeof v === 'number')) return legacy as number[];
-                return undefined;
+                if (Array.isArray(legacy) && legacy.every(v => typeof v === 'number')) return legacy as: number[];
+               , return: undefined;
               };
 
               // Add analysis to evidence metadata
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 metadata: {
                   ...evidence.metadata,
                   aiAnalysis: {
-                    keyTerms: analysisData?.keyTerms ?? [],
+                   , keyTerms: analysisData?.keyTerms ?? [],
                     classification: analysisData?.classification,
                     importance: analysisData?.importance ?? 0.5,
                     entities: analysisData?.entities ?? [],
@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
             }
             return evidence;
           } catch (analysisError: any) {
-            // Narrow & log unknown analysis errors safely
+            // Narrow & log: unknown analysis errors safely
             console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError);
             return evidence;
           }
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
     // Calculate additional metadata (typed, no `any`)
     const evidenceTypes = [
-      ...new Set(enhancedEvidence.map(e => e.evidenceType).filter((v): v is string => typeof v === 'string')),
+      ...new Set(enhancedEvidence.map(e => e.evidenceType).filter((v): v is: string => typeof v === 'string')),
     ];
 
     const totalSize = enhancedEvidence.reduce((sum: number, e) => {
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         }
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_list_by_case',
         caseId
@@ -236,8 +236,8 @@ function getCircularReplacer() {
   const seen = new WeakSet();
   return (_key: string, value: any) => {
     if (typeof value === 'object' && value !== null) {
-      if (seen.has(value as object)) return '[Circular]';
-      seen.add(value as object);
+      if (seen.has(value as: object)) return, '[Circular]';
+      seen.add(value as: object);
     }
     return value;
   };
@@ -251,7 +251,7 @@ type AiAnalysis = {
   entities: any[];
   summary?: string;
   embeddingVector?: number[];
-  // legacy/older responses may include `embedding` with unknown shape
+  // legacy/older responses may include `embedding` with: unknown shape
   embedding?: any;
   confidence: number;
   analyzedAt: string;
@@ -265,7 +265,7 @@ type EvidenceMetadata = {
 };
 
 type EvidenceItem = {
-  id: string;
+ , id: string;
   evidenceType?: string;
   metadata?: EvidenceMetadata;
   content?: string;

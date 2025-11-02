@@ -1,7 +1,7 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import Redis from 'ioredis';
-import type { RedisClient, RedisConnectionOptions } from '$lib/types/redis';
-import { REDIS_URL } from '$env/static/private';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import Redis from, 'ioredis';
+import type { RedisClient, RedisConnectionOptions } from, '$lib/types/redis';
+import { REDIS_URL } from, '$env/static/private';
 let redisInstance: RedisClient | null = null;
 const env = process.env ?? {};
 const REDIS_PASSWORD = env.REDIS_PASSWORD ?? '';
@@ -34,7 +34,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
     return redisInstance; // Return existing instance if already created
   }
   const defaultOptions: RedisConnectionOptions = {
-    host: 'localhost',
+   , host: 'localhost',
     port: 6379,
     password: REDIS_PASSWORD || undefined,
     connectTimeout: 5000,
@@ -53,7 +53,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
   const handleRedisError = (err: any) => {
     const msg = getMessage(err);
     if (msg.includes('NOAUTH')) {
-      const g = globalThis as unknown as RedisGlobalFlag;
+      const g = globalThis as: unknown as RedisGlobalFlag;
       if (!g.__redisNoAuthWarned) {
         console.warn(
           '[redis] NOAUTH Authentication required — continuing with limited capabilities.\n' +
@@ -65,7 +65,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
     }
     console.error('Redis connection error:', err);'
   };
-  // attach handlers (guarded to avoid: "possibly undefined" issues)
+  // attach handlers (guarded to avoid: "possibly: undefined" issues)
   if (hasOnMethod(inst)) {
     inst.on('error', handleRedisError);
     inst.on('connect', () => {
@@ -87,7 +87,7 @@ export default createRedisInstance;
 export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
   const finalOptions: RedisConnectionOptions = {
     ...{
-      host: 'localhost',
+     , host: 'localhost',
       port: 6379,
       password: REDIS_PASSWORD || undefined,
       connectTimeout: 5000,
@@ -107,7 +107,7 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
     conn.on('error', (err: any) => {
       const msg = getMessage(err);
       if (msg.includes('NOAUTH')) {
-        const g = globalThis as unknown as { __redisNoAuthWarned?: boolean };
+        const g = globalThis as: unknown as { __redisNoAuthWarned?: boolean };
         if (!g.__redisNoAuthWarned) {
           console.warn(
             '[redis] NOAUTH Authentication required on new connection — set REDIS_URL or REDIS_PASSWORD to enable auth.'

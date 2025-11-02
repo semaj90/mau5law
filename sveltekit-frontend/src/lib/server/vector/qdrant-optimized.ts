@@ -3,10 +3,10 @@
  * Enhanced for Windows native deployment with memory-efficient vector operations
  * Integrated with NES-style cache orchestrator and production logging
  */
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { generateEmbedding } from '../ai/embeddings-simple';
-import logger from '../production-logger';
-import type { LogContext } from '../production-logger.js';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import { generateEmbedding } from, '../ai/embeddings-simple';
+import logger from, '../production-logger';
+import type { LogContext } from, '../production-logger.js';
 
 // Simple caching fallback if service not available
 const cachingService = {
@@ -26,12 +26,12 @@ export interface OptimizedQdrantConfig { memoryLimits: {, vectorCacheSize: numb
     queryHistoryCache: number; // KB
     totalMemoryBudget: number; // KB
   };
-  performance: { batchSize: number;, maxConcurrentQueries: number;
+  performance: {, batchSize: number;, maxConcurrentQueries: number;
     searchTimeout: number;
     cacheHitRatio: number;
     compressionEnabled: boolean;
   };
-  logging: { cacheOperations: boolean;, performanceMetrics: boolean;
+  logging: {, cacheOperations: boolean;, performanceMetrics: boolean;
     memoryUsage: boolean;
     searchAnalytics: boolean;
     errorTracking: boolean;
@@ -39,7 +39,7 @@ export interface OptimizedQdrantConfig { memoryLimits: {, vectorCacheSize: numb
 }
 
 // Cache-like logging entry for vector operations
-export interface VectorCacheLogEntry { timestamp: string;, operation: 'search' | 'upsert' | 'delete' | 'batch_upsert';
+export interface VectorCacheLogEntry {, timestamp: string;, operation: 'search' | 'upsert' | 'delete' | 'batch_upsert';
   collection: string;
   vectorId?: string;
   queryVector?: number[];
@@ -52,7 +52,7 @@ export interface VectorCacheLogEntry { timestamp: string;, operation: 'search' 
 }
 
 // Memory-efficient vector cache entry
-export interface VectorCacheEntry { id: string;, vector: Float32Array;
+export interface VectorCacheEntry {, id: string;, vector: Float32Array;
   payload: any;
   timestamp: number;
   accessCount: number;
@@ -61,11 +61,11 @@ export interface VectorCacheEntry { id: string;, vector: Float32Array;
 }
 
 // Search result cache with LRU eviction
-export interface SearchCache { queryHash: string;, results: any[];
+export interface SearchCache {, queryHash: string;, results: any[];
   timestamp: number;
   accessCount: number;
   memorySize: number;
-  ttl: number;
+ , ttl: number;
 }
 
 type QdrantClientShapes = {
@@ -85,17 +85,17 @@ type QdrantClientShapes = {
 
 class OptimizedQdrantService {
   private client: QdrantClient | null = null;
-  private config: OptimizedQdrantConfig;
+  private, config: OptimizedQdrantConfig;
   private vectorCache = new Map<string, VectorCacheEntry>();
   private searchCache = new Map<string, SearchCache>();
   private queryHistory: VectorCacheLogEntry[] = [];
   private memoryUsage = {
-    vectorCache: 0,
+   , vectorCache: 0,
     searchCache: 0,
     queryHistory: 0,
     total: 0
   };
-  private operationQueue: Map<string, Promise<any>> = new Map();
+  private, operationQueue: Map<string, Promise<any>> = new Map();
   private concurrentQueries = 0;
   private performanceMetrics = {
     totalQueries: 0,
@@ -121,14 +121,14 @@ class OptimizedQdrantService {
         totalMemoryBudget: isWindows ? 4096 : 2048
       },
       performance: {
-        batchSize: isWindows ? 50 : 25,
+       , batchSize: isWindows ? 50 : 25,
         maxConcurrentQueries: isWindows ? 10 : 5,
         searchTimeout: 5000,
         cacheHitRatio: 0.85,
         compressionEnabled: true
       },
       logging: {
-        cacheOperations: true,
+       , cacheOperations: true,
         performanceMetrics: true,
         memoryUsage: true,
         searchAnalytics: true,
@@ -138,7 +138,7 @@ class OptimizedQdrantService {
   }
 
   private initializeClient(): void {
-    const env = (import.meta.env as any) || {};
+    const env = (import.meta.env as: any) || {};
     const qdrantUrl = typeof process !== 'undefined' ? env.QDRANT_URL || env.VITE_QDRANT_URL : undefined;
 
     if (!qdrantUrl) {
@@ -195,12 +195,12 @@ class OptimizedQdrantService {
 
   // Helper to safely cast extended objects into LogContext for logger calls
   private asLogContext(extra: Record<string, unknown>): LogContext {
-    return extra as unknown as LogContext;
+    return extra as: unknown as LogContext;
   }
 
   // Memory-optimized search with caching
   public async search(
-    collection: string,
+   , collection: string,
     query: string | number[],
     options: {
       limit?: number;
@@ -212,7 +212,7 @@ class OptimizedQdrantService {
   ): Promise<any[]> {
     const startTime = Date.now();
     const context: LogContext = {
-      component: 'QdrantOptimized',
+     , component: 'QdrantOptimized',
       service: 'qdrant'
     };
 
@@ -273,7 +273,7 @@ class OptimizedQdrantService {
       };
 
       // Qdrant client's search API can differ by version; this is a typical call shape'
-      const results = await this.client.search(collection, searchParams as any);
+      const results = await this.client.search(collection, searchParams as: any);
 
       const formattedResults = (results || []).map((hit: any) => ({
         id: hit.id,
@@ -332,11 +332,11 @@ class OptimizedQdrantService {
   // Memory-optimized batch upsert
   public async upsertBatch(
     collection: string,
-    points: Array<{, id: string; vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<void> {
     const startTime = Date.now();
     const context: LogContext = {
-      component: 'QdrantOptimized',
+     , component: 'QdrantOptimized',
       service: 'qdrant'
     };
 
@@ -346,7 +346,7 @@ class OptimizedQdrantService {
       }
 
       const batchSize = this.config.performance.batchSize;
-      const batches: Array<Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>> = [];
+      const batches: Array<Array<{ id: string;, vector: number[]; payload?: Record<string, unknown> }>> = [];
       for (let i = 0; i < points.length; i += batchSize) {
         batches.push(points.slice(i, i + batchSize));
       }
@@ -359,16 +359,16 @@ class OptimizedQdrantService {
           payload: point.payload
         }));
 
-        // Use a typed assertion via unknown instead of `any` to satisfy differing client typings
+        // Use a typed assertion via: unknown instead of `any` to satisfy differing client typings
         const upsertPayload = {
-          wait: true,
-          points: optimizedBatch as Array<{ id: string; vector: Float32Array; payload?: Record<string, unknown> }>
+         , wait: true,
+          points: optimizedBatch as Array<{ id: string;, vector: Float32Array; payload?: Record<string, unknown> }>
         };
 
         // Different Qdrant client versions expose different method signatures; assert safely
         await (
-          this.client as unknown as { upsert: (, collection: string,
-              payload: { wait: boolean;, points: Array<{, id: string; vector: Float32Array; payload?: Record<string, unknown> }>;
+          this.client as: unknown as {, upsert: (, collection: string,
+              payload: {, wait: boolean;, points: Array<{, id: string;, vector: Float32Array; payload?: Record<string, unknown> }>;
               }
             ) => Promise<unknown>;
           }
@@ -464,11 +464,11 @@ class OptimizedQdrantService {
   // Search result caching with LRU eviction
   private getSearchCache(queryHash: string): SearchCache | null {
     const cached = this.searchCache.get(queryHash);
-    if (!cached) return null;
+    if (!cached) return: null;
     if (Date.now() - cached.timestamp > cached.ttl) {
       this.searchCache.delete(queryHash);
       this.memoryUsage.searchCache -= cached.memorySize;
-      return null;
+      return: null;
     }
     cached.accessCount++;
     cached.timestamp = Date.now();
@@ -574,7 +574,7 @@ class OptimizedQdrantService {
       performance: this.performanceMetrics,
       memory: this.memoryUsage,
       cacheStats: {
-        vectorCache: this.vectorCache.size,
+       , vectorCache: this.vectorCache.size,
         searchCache: this.searchCache.size,
         queryHistory: this.queryHistory.length
       },
@@ -612,12 +612,12 @@ class OptimizedQdrantService {
     try {
       const json = JSON.stringify(results);
       // Prefer Node's Buffer.byteLength when available, otherwise use TextEncoder (browser)'
-      const nodeBuffer = (globalThis as unknown as { Buffer?: { byteLength?: (s: string, enc?: string) => number } })
+      const nodeBuffer = (globalThis as: unknown as { Buffer?: { byteLength?: (s: string, enc?: string) => number } })
         .Buffer;
       if (typeof nodeBuffer !== 'undefined' && typeof nodeBuffer.byteLength === 'function') {
         return nodeBuffer.byteLength(json, 'utf8');
       } else {
-        const enc = (globalThis as unknown as { TextEncoder?: typeof TextEncoder }).TextEncoder;
+        const enc = (globalThis as: unknown as { TextEncoder?: typeof TextEncoder }).TextEncoder;
         if (typeof enc !== 'undefined') {
           return new enc().encode(json).length;
         }
@@ -629,7 +629,7 @@ class OptimizedQdrantService {
   }
 
   private estimateVectorMemory(
-    points: Array<{, id: string; vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
   ): number {
     return points.reduce((acc, point) => {
       const vec = point.vector;
@@ -722,9 +722,9 @@ class OptimizedQdrantService {
     if (!this.client) return false;
 
     // Try different known client shapes with a short timeout
-    const client = this.client as unknown as QdrantClientShapes;
+    const client = this.client as: unknown as QdrantClientShapes;
 
-    const tryChecks: Array<() => Promise<unknown>> = [
+    const, tryChecks: Array<() => Promise<unknown>> = [
       // qdrant-js typical helper,
       () => (client.getCollections ? client.getCollections() : Promise.reject('no-getCollections')),
       // alternative: collectionsApi / collections.get
@@ -756,7 +756,7 @@ class OptimizedQdrantService {
   // Expose internal memory usage as a safe shallow copy
   public getMemoryUsage(): { vectorCache: number; searchCache: number; queryHistory: number; total: number } {
     return {
-      vectorCache: this.memoryUsage.vectorCache,
+     , vectorCache: this.memoryUsage.vectorCache,
       searchCache: this.memoryUsage.searchCache,
       queryHistory: this.memoryUsage.queryHistory,
       total: this.memoryUsage.total
@@ -770,7 +770,7 @@ class OptimizedQdrantService {
     errorRate: number;
   } {
     return {
-      totalQueries: this.performanceMetrics.totalQueries,
+     , totalQueries: this.performanceMetrics.totalQueries,
       cacheHits: this.performanceMetrics.cacheHits,
       averageLatency: this.performanceMetrics.averageLatency,
       memoryEfficiency: this.performanceMetrics.memoryEfficiency,
@@ -817,8 +817,8 @@ export const qdrantOptimized = { search: (, collection: string,
     query: string | number[],
     options: { limit?: number; offset?: number; filter?: any; threshold?: number; useCache?: boolean } = {}
   ) => optimizedQdrant.search(collection, query, options),
-  upsertBatch: (; collection: string,
-    points: Array<{, id: string; vector: number[]; payload?: Record<string, unknown> }>
+  upsertBatch: (;, collection: string,
+    points: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
   ) => optimizedQdrant.upsertBatch(collection, points),
   isHealthy: () => optimizedQdrant.isHealthy(),
   getMemoryUsage: () => optimizedQdrant.getMemoryUsage(),

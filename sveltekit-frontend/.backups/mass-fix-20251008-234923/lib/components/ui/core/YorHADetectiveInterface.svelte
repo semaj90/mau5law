@@ -162,7 +162,7 @@
           class="nav-item"
           class:active={item.active}
           onclick={() => selectSidebarItem(index)}
-          transition:fade={{ delay: index * 50 }}
+          use:fade={{ delay: index * 50 }}
         >
           <span class="nav-icon">{item.icon}</span>
           <span class="nav-label">{item.label}</span>
@@ -236,7 +236,7 @@
             <div
               class="message {message.sender}"
               class:typing={message.isTyping}
-              transition:fly={{ y: 20, duration: 300 }}
+              use:fly={{ y: 20, duration: 300 }}
             >
               <div class="message-header">
                 <span class="message-sender">

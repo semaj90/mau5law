@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // Assuming this is the content of neo4j-recommendation-engine.ts
 // Please adjust if the actual file content is different.
 
@@ -8,7 +8,7 @@ export interface Recommendation {
   description: string;
   score: number;
   confidence: number;
-  aiGenerated: boolean;
+ , aiGenerated: boolean;
   // ... other properties of Recommendation
 }
 
@@ -19,7 +19,7 @@ export class Neo4jRecommendationEngine {
     // ...existing method logic...
   }
 
-  async getRecommendations(query: { userId: string; context: string; type: string; useAI: boolean;, limit: number; }): Promise<Recommendation[]> {
+  async getRecommendations(query: { userId: string; context: string; type: string;, useAI: boolean;, limit: number; }): Promise<Recommendation[]> {
     console.log('Generating mock recommendations for:', query.context);
     // Mock implementation for demonstration
     return [
@@ -42,6 +42,6 @@ export class Neo4jRecommendationEngine {
 
   cleanup(): void {
     console.log('Neo4jRecommendationEngine cleanup called.');
-    // Implement any necessary cleanup, e.g., closing Neo4j driver
+    // Implement: any necessary cleanup, e.g., closing Neo4j driver
   }
 }

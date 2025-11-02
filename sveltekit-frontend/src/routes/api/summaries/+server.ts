@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidence, cases, legalDocuments } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { vectorService } from '$lib/server/vector/vectorService';
-import { qdrantService } from '$lib/server/services/qdrant-service';
-import Fuse from 'fuse.js';
-import { interpret } from 'xstate';
-import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
-import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import { evidence, cases, legalDocuments } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import { vectorService } from, '$lib/server/vector/vectorService';
+import { qdrantService } from, '$lib/server/services/qdrant-service';
+import Fuse from, 'fuse.js';
+import { interpret } from, 'xstate';
+import { aiSummaryMachine } from, '$lib/machines/aiSummaryMachine';
+import { ollamaService } from, '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
 
 // Request payload for summary generation
 export interface SummaryRequest { type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';, targetId: string;
@@ -20,10 +20,10 @@ export interface SummaryRequest { type: 'case' | 'evidence' | 'legal_document' |
   chunkSize?: number;
   userId?: string;
 }
-export interface AILLMOutput { content: string;, model: string;
+export interface AILLMOutput {, content: string;, model: string;
   confidence: number;
   tokens: number;
-  processingTime: number;
+ , processingTime: number;
 }
 // Basic shape for vector search results (loose to accommodate both services)
 export interface BasicVectorResult {
@@ -34,22 +34,22 @@ export interface BasicVectorResult {
   relevance?: number;
   source?: string;
 }
-export interface EnhancedRAGOutput { relevantDocs: Array<any>;, contextSummary: string;
-  searchMetrics: { vectorSearchTime: number;, documentsRetrieved: number;
+export interface EnhancedRAGOutput {, relevantDocs: Array<any>;, contextSummary: string;
+  searchMetrics: {, vectorSearchTime: number;, documentsRetrieved: number;
     averageRelevance: number;
   };
 }
-export interface UserActivityContext { recentQueries: string[];, preferredTopics: string[];
-  interactionPatterns: { timeOfDay: string;, commonActions: string[];
+export interface UserActivityContext {, recentQueries: string[];, preferredTopics: string[];
+  interactionPatterns: {, timeOfDay: string;, commonActions: string[];
     focusAreas: string[];
   };
   recommendations: string[];
 }
-export interface SynthesizedOutput { summary: string;, keyInsights: string[];
+export interface SynthesizedOutput {, summary: string;, keyInsights: string[];
   actionItems: string[];
   confidence: number;
   sources: Array<any>;
-  nextSteps: string[];
+ , nextSteps: string[];
   relatedCases?: string[];
   warnings?: string[];
 }
@@ -64,7 +64,7 @@ try {
 
 // small helper to extract user id from locals (stable for tests/dev)
 function getUserId(locals: any): string {
-  return (locals?.user?.id as string) || (locals?.user as any) || 'anonymous';
+  return (locals?.user?.id as: string) || (locals?.user as: any) || 'anonymous';
 }
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -230,17 +230,17 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
   // Get source content based on type
   let sourceContent = '';
   switch (request.type) {
-    case 'case': {
+    case, 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
       sourceContent = caseData?.[0]?.description || '';
       break;
     }
-    case 'evidence': {
+    case, 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
       sourceContent = evidenceData?.[0]?.description || '';
       break;
     }
-    case 'legal_document': {
+    case, 'legal_document': {
       const docData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, request.targetId)).limit(1);
       sourceContent = docData?.[0]?.content || '';
       break;
@@ -249,9 +249,9 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       sourceContent = '';
   }
   // Prepare prompt based on depth
-  const depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of: ','`'`
-    comprehensive: `Provide a detailed analysis and comprehensive summary; of: `,
-    forensic: `Conduct a thorough forensic analysis with legal implications; for:` };
+  const, depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of: ','`'`
+    comprehensive: `Provide a detailed analysis and comprehensive summary;, of: `,
+    forensic: `Conduct a thorough forensic analysis with legal implications;, for:` };
   const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
   // Use chunking for large content
   const chunkSize = request.chunkSize || 2000;
@@ -265,7 +265,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       temperature: 0.3,
       maxTokens: request.depth === 'forensic' ? 1000 : 500
     });
-    // normalize the unknown response to a typed shape (avoid `any`)
+    // normalize the: unknown response to a typed shape (avoid `any`)
     const { content, tokens } = normalizeLLMResponse(response);
     combinedResponse += content + '\n\n';
     totalTokens += tokens || 0;
@@ -286,12 +286,12 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   // Create search query from target content
   let searchQuery = '';
   switch (request.type) {
-    case 'case': {
+    case, 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
       searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || '` }`.substring(0, 200);'`
       break;
     }
-    case 'evidence': {
+    case, 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
       searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || '` }`.substring(0, 200);'`
       break;
@@ -299,7 +299,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
     default:
       searchQuery = '';
   }
-  // Dual vector search: PostgreSQL pgvector + Qdrant
+  // Dual vector, search: PostgreSQL pgvector + Qdrant
   const [pgResults, qdrantResults] = await Promise.all([
     vectorService.search(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => []),
     qdrantService.searchSimilar(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => [])
@@ -333,7 +333,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
     relevantDocs,
     contextSummary: normalizedContextSummary || '',
     searchMetrics: {
-      vectorSearchTime: processingTime,
+     , vectorSearchTime: processingTime,
       documentsRetrieved: uniqueResults.length,
       averageRelevance:
         relevantDocs.length > 0 ? relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length : 0
@@ -354,7 +354,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     updatedAt?: string | null;
   };
   type EvidenceRecord = {
-    id: string;
+   , id: string;
     title?: string | null;
     description?: string | null;
     uploadedBy?: string | null;
@@ -380,7 +380,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
 
   // Build recentQueries and preferredTopics with proper typing (no `any`)
   const recentQueries = [...recentCases.map(c => c.title || ''), ...recentEvidence.map(e => e.title || '')]
-    .filter((s): s is string => Boolean(s))
+    .filter((s): s is: string => Boolean(s))
     .slice(0, 5);
 
   const preferredTopics = extractTopics([
@@ -388,8 +388,8 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     ...recentEvidence.map(e => e.description || ''),
   ]);
 
-  // Build a Fuse instance for simple string matching against recentQueries
-  // Use Fuse<string> (no `any`) and don't pass object keys since items are strings.'
+  // Build a Fuse instance for simple: string matching against recentQueries
+  // Use Fuse<string> (no `any`) and don't pass: object keys since items are strings.'
   const fuse = new Fuse<string>(recentQueries, {
     threshold: 0.6,
     includeScore: true
@@ -400,7 +400,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     recentQueries,
     preferredTopics,
     interactionPatterns: {
-      timeOfDay: 'morning',
+     , timeOfDay: 'morning',
       commonActions: ['case_analysis', 'evidence_upload', 'report_generation'],
       focusAreas: preferredTopics.slice(0, 3)
     },
@@ -428,7 +428,7 @@ async function synthesizeOutputs({
     userActivity: userActivity ? 0.1 : 0
   };
 
-  const totalWeight = (Object.values(weights) as number[]).reduce((sum, w) => sum + w, 0);
+  const totalWeight = (Object.values(weights) as: number[]).reduce((sum, w) => sum + w, 0);
 
   if (totalWeight > 0) {
     (Object.keys(weights) as WeightKey[]).forEach(key => {
@@ -460,7 +460,7 @@ async function synthesizeOutputs({
         type: 'llm',
         contribution: weights.llm,
         details: {
-          model: llmOutput?.model || 'unknown',
+         , model: llmOutput?.model || 'unknown',
           tokens: llmOutput.tokens,
           processingTime: llmOutput.processingTime
         }
@@ -628,7 +628,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // Add a small runtime-normalizer to avoid casting to `any`
-function normalizeLLMResponse(resp: any): { content: string; tokens: number } {
+function normalizeLLMResponse(resp: any): { content: string;, tokens: number } {
   if (!resp || typeof resp !== 'object') {
     return { content: String(resp ?? ''), tokens: 0 };
   }

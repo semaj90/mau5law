@@ -1,12 +1,12 @@
 <script, lang="ts">
   // removed bits-ui Dialog import (module types didn't export Dialog.*). Using a local modal markup below.'
   // cast helper type to satisfy sveltekit-superforms zod adapter typing
-  import type { ZodTypeAny } from 'zod';
-  import  Button  from "$lib/components/ui/button/Button.svelte";
-  import X from 'lucide-svelte';
-  import { superForm } from 'sveltekit-superforms';
-  import { zod } from 'sveltekit-superforms/adapters';
-  import { registerSchema } from '$lib/schemas/auth';
+  import type { ZodTypeAny } from, 'zod';
+  import  Button  from, "$lib/components/ui/button/Button.svelte";
+  import X from, 'lucide-svelte';
+  import { superForm } from, 'sveltekit-superforms';
+  import { zod } from, 'sveltekit-superforms/adapters';
+  import { registerSchema } from, '$lib/schemas/auth';
   interface Props {
     onsuccess?: () => void;
     open?: boolean;
@@ -26,7 +26,7 @@
     },
     {
       // cast the schema to ZodTypeAny to avoid the adapter's strict generic requirement'
-      validators: zod(registerSchema as unknown as ZodTypeAny),
+      validators: zod(registerSchema, as: unknown as ZodTypeAny),
       onUpdate({ form: f }) {
         if (f.valid) {
           onsuccess?.();
@@ -89,7 +89,7 @@
           name="email"
           id={emailId}
           bind:value={$form.email}
-          class="w-full px-3 py-2 border {$errors.email ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-3 py-2 border {$errors.email ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           placeholder="you@example.com"
         />
         {#if $errors.email}
@@ -103,7 +103,7 @@
           name="password"
           id={passwordId}
           bind:value={$form.password}
-          class="w-full px-3 py-2 border {$errors.password ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-3 py-2 border {$errors.password ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           placeholder="••••••••"
         />
         {#if $errors.password}
@@ -117,7 +117,7 @@
           name="confirmPassword"
           id={confirmPasswordId}
           bind:value={$form.confirmPassword}
-          class="w-full px-3 py-2 border {$errors.confirmPassword ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-3 py-2 border {$errors.confirmPassword ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           placeholder="••••••••"
         />
         {#if $errors.confirmPassword}
@@ -130,7 +130,7 @@
           id={termsId}
           name="termsAccepted"
           bind:checked={$form.termsAccepted}
-          class="mt-1 w-4 h-4 border-slate-300 rounded focus:ring-2 focus:ring-blue-500"
+          class="mt-1 w-4 h-4 border-slate-300 rounded focus:ring-2, focus:ring-blue-500"
         />
         <label, for={termsId} class="text-sm, text-slate-600">
           I agree to the <a, href="/terms" class="text-blue-600, hover:underline">Terms of Service</a> and
@@ -152,7 +152,7 @@
         <Button
           type="submit"
           disabled={$submitting || !$form.termsAccepted}
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700, disabled:opacity-50"
         >
           {#if $submitting}
             Creating...

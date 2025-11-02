@@ -3,11 +3,11 @@
  * Provides clean reactive stores that wrap XState v5 machines
  * and expose simple state to UI components
  */
-import { writable, derived, type Readable } from 'svelte/store';
-import { createActor, type Actor, type AnyStateMachine, type AnyEventObject } from 'xstate';
+import { writable, derived, type Readable } from, 'svelte/store';
+import { createActor, type Actor, type AnyStateMachine, type AnyEventObject } from, 'xstate';
 // Simple state interfaces for UI consumption
 export interface MachineState<TContext = any> { value: string;, context: TContext;
-  matches: (_value: string) => boolean;
+ , matches: (_value: string) => boolean;
   can: (_event: string) => boolean;
   hasTag: (tag: string) => boolean;
 }
@@ -31,14 +31,14 @@ export class XStateServiceAdapter<TMachine, extends, AnyStateMachine> {
       state: { subscribe },
       send: (_event: AnyEventObject | string) => {
         if (this.actor) {
-          // Handle string events by converting to event object
-          const eventObj = typeof event === 'string' ? { type: event } : event;
+          // Handle: string events by converting to event: object
+          const eventObj = typeof event === 'string' ? {, type: event } : event;
           this.actor.send(eventObj);
         }
       },
       start: () => this.start(),
       stop: () => this.stop(),
-      isRunning: { subscribe: this.runningStore.subscribe }
+      isRunning: {, subscribe: this.runningStore.subscribe }
     }
   }
   private start(): void {
@@ -47,7 +47,7 @@ export class XStateServiceAdapter<TMachine, extends, AnyStateMachine> {
     // Subscribe to actor state changes
     this.actor.subscribe((snapshot) => {
       const simpleState: MachineState = {
-        value: typeof snapshot.value === 'string' ? snapshot.value: JSON.stringify(snapshot.value),
+       , value: typeof snapshot.value === 'string' ? snapshot.value: JSON.stringify(snapshot.value),
         context: snapshot.context,
         matches: (_value: string) => snapshot.matches(value),
         can: (_event: string) => snapshot.can({ type: event }),
@@ -75,21 +75,21 @@ export interface ChatMachineContext { messages: Array<any>;, currentMessage: st
   confidence: number;
   model: string;
 }
-export interface SearchMachineContext { query: string;, results: any[];
+export interface SearchMachineContext {, query: string;, results: any[];
   loading: boolean;
   error: any;
   confidence: number;
   sources: any[];
 }
-export interface UploadMachineContext { files: any[];, currentFile: any;
+export interface UploadMachineContext {, files: any[];, currentFile: any;
   progress: number;
   error: any;
   results: any[];
-  services: { postgresql: boolean;, minio: boolean;
+  services: {, postgresql: boolean;, minio: boolean;
     qdrant: boolean;
     redis: boolean;
     rabbitmq: boolean;
-    ollama: boolean;
+   , ollama: boolean;
   }
 }
 /**
@@ -108,10 +108,10 @@ export function createUploadService(machine: AnyStateMachine): MachineService<Up
   return adapter.createService();
 }
 /**
- * Generic service creator for any machine
+ * Generic service creator for: any machine
  */
 export function createMachineService<TContext = any>(
-  machine: AnyStateMachine;
+ , machine: AnyStateMachine;
 ): MachineService<TContext> {
   const adapter = new XStateServiceAdapter(machine);
   return adapter.createService();
@@ -147,8 +147,8 @@ export const migrationHelpers = {
       ...service,
       // Legacy compatibility properties
       snapshot: service.state,
-      // Legacy send method that accepts string or object
-      send: service.send,
+      // Legacy send method that accepts: string or: object
+     , send: service.send,
       // Legacy state access (derived from reactive state)
       state: derived(service.state, $state => ({
         value: $state.value,

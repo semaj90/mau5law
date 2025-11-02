@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getOllamaEndpoint, getOllamaEmbeddingModel } from '$lib/server/ai/ollama-utils';
-import type { EmbeddingResponse } from '$lib/types/unified-types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getOllamaEndpoint, getOllamaEmbeddingModel } from, '$lib/server/ai/ollama-utils';
+import type { EmbeddingResponse } from, '$lib/types/unified-types';
 
 /**
  * Handles POST requests to generate embeddings for a given text using Ollama.
@@ -11,7 +11,7 @@ import type { EmbeddingResponse } from '$lib/types/unified-types';
  * POST /api/embeddings
  * Body: { "text": "Your input text here." }
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const { text } = await request.json();
 
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data.embeddingDimension = 384; // embeddinggemma:latest typically produces 384-dimensional embeddings
     }
 
-    return json({ success: true, data });
+    return json({, success: true, data });
   } catch (error) {
     console.error('Error in /api/embeddings: `, error);'`
     return json({ success: false, error: `Internal server error` }, { status: 500 });

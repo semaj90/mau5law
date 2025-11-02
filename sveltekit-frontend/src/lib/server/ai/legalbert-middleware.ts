@@ -1,48 +1,48 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { logger } from './logger.js';
-import * as crypto from 'crypto';
-// import { ENV_CONFIG } from '$lib/config/environment.js'; // removed - not used
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { logger } from, './logger.js';
+import * as crypto from, 'crypto';
+// import { ENV_CONFIG } from, '$lib/config/environment.js'; // removed - not used
 // lib/server/ai/legalbert-middleware.ts
 // LegalBERT middleware for specialized legal embeddings and analysis
-import { generateEmbedding } from './embeddings-simple.js';
-import { getOllamaUrl } from '$lib/server/services/docker-env';
+import { generateEmbedding } from, './embeddings-simple.js';
+import { getOllamaUrl } from, '$lib/server/services/docker-env';
 export interface LegalEmbeddingResult { embedding: number[];, dimensions: number;
   model: string;
   processingTime: number;
   confidence: number;
-  metadata: { textLength: number;, legalTerms: number;
+  metadata: {, textLength: number;, legalTerms: number;
     complexity: number;
   };
 }
 // New concrete types for analysis results
-export type LegalEntity = { text: string;, type: string;
+export type LegalEntity = {, text: string;, type: string;
   confidence: number;
   startIndex?: number;
   endIndex?: number;
   context?: string;
 };
-export type LegalConcept = { concept: string;, relevance: number;
+export type LegalConcept = {, concept: string;, relevance: number;
   category: string;
 };
-export type KeyPhrase = { phrase: string;, importance: number;
+export type KeyPhrase = {, phrase: string;, importance: number;
   category: string;
 };
-export type SubCategory = { category: string;, confidence: number;
+export type SubCategory = {, category: string;, confidence: number;
 };
-export interface LegalBertAnalysisResult { entities: LegalEntity[];, concepts: LegalConcept[];
-  sentiment: { polarity: number;, confidence: number;
+export interface LegalBertAnalysisResult {, entities: LegalEntity[];, concepts: LegalConcept[];
+  sentiment: {, polarity: number;, confidence: number;
     classification: 'positive' | 'neutral' | 'negative';
   };
-  complexity: { readabilityScore: number;, legalComplexity: number;
+  complexity: {, readabilityScore: number;, legalComplexity: number;
     technicalTerms: number;
   };
   keyPhrases: KeyPhrase[];
-  summary: { abstractive: string;, extractive: string[];
+  summary: {, abstractive: string;, extractive: string[];
     keyPoints: string[];
   };
 }
-export interface LegalClassificationResult { documentType: string;, confidence: number;
+export interface LegalClassificationResult {, documentType: string;, confidence: number;
   subCategories: SubCategory[];
   jurisdiction: string;
   practiceArea: string;
@@ -50,12 +50,12 @@ export interface LegalClassificationResult { documentType: string;, confidence:
   recommendations: string[];
 }
 // New types for model config and similarity result
-type ModelConfig = { embedding: string;, analysis: string;
+type ModelConfig = {, embedding: string;, analysis: string;
   baseUrl: string;
   apiKey?: string | undefined;
 };
-export type LegalSimilarityResult = { similarity: number;, confidence: number;
-  factors: { semantic: number; structural: number; legal_concepts: number };
+export type LegalSimilarityResult = {, similarity: number;, confidence: number;
+  factors: { semantic: number; structural: number;, legal_concepts: number };
 };
 // Metrics stub (replace with proper metrics service later)
 const metrics = {
@@ -75,7 +75,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<
   }
   throw new Error('Max retries exceeded');
 }
-// Replace any hardcoded Ollama URL usages with this robust helper.
+// Replace: any hardcoded Ollama URL usages with this robust helper.
 // It prefers OLLAMA_URL, then OLLAMA_HOST/OLLAMA_PORT, falls back to localhost.
 // prefer the shared docker-env helper which reads .env.local and process.env
 export function getOllamaEndpoint(): string {
@@ -96,22 +96,22 @@ export function getOllamaEndpoint(): string {
 }
 const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> = { local: {, embedding: 'embeddinggemma:latest',
     analysis: 'gemma3-legal:latest',
-    // ensure the local model always uses the helper, not a hardcoded string
-    baseUrl: getOllamaEndpoint()
+    // ensure the local model always uses the helper, not a hardcoded: string
+   , baseUrl: getOllamaEndpoint()
   },
   huggingface: {
-    embedding: 'nlpaueb/legal-bert-base-uncased',
+   , embedding: 'nlpaueb/legal-bert-base-uncased',
     analysis: 'nlpaueb/legal-bert-small-uncased',
     apiKey: process.env.HUGGINGFACE_API_KEY,
     baseUrl: `https://api-inference.huggingface.co/models` },
   openai: {
-    embedding: 'text-embedding-3-small',
+   , embedding: 'text-embedding-3-small',
     analysis: 'gpt-4',
     apiKey: process.env.OPENAI_API_KEY,
     baseUrl: `https://api.openai.com/v1` }
 };
 export class LegalBERTMiddleware {
-  private modelConfig: ModelConfig;
+  private, modelConfig: ModelConfig;
   private cache = new Map<string, LegalEmbeddingResult | LegalBertAnalysisResult | LegalClassificationResult>();
   private requestCount = 0;
   constructor(preferredModel: 'local' | 'huggingface' | 'openai' = 'local') {
@@ -167,7 +167,7 @@ export class LegalBERTMiddleware {
         processingTime: Date.now() - startTime,
         confidence: this.calculateEmbeddingConfidence(text, embedding),
         metadata: {
-          textLength: text.length,
+         , textLength: text.length,
           legalTerms,
           complexity
         }
@@ -190,7 +190,7 @@ export class LegalBERTMiddleware {
         processingTime: Date.now() - startTime,
         confidence: 0.7,
         metadata: {
-          textLength: text.length,
+         , textLength: text.length,
           legalTerms: 0,
           complexity: 0.5
         }
@@ -267,7 +267,7 @@ export class LegalBERTMiddleware {
       return {
         similarity: 0.5,
         confidence: 0.3,
-        factors: { semantic: 0.5, structural: 0.5, legal_concepts: 0.5 }
+        factors: {, semantic: 0.5, structural: 0.5, legal_concepts: 0.5 }
       };
     }
   }
@@ -296,31 +296,31 @@ export class LegalBERTMiddleware {
       // - raw array of numbers
       // - { embeddings: number[] }
       // - { vector: number[] }
-      // - { data: [{, embedding: number[] }, ...] }
+      // - {, data: [{, embedding: number[] }, ...] }
       if (Array.isArray(json) && json.every(n => typeof n === 'number')) {
-        return json as number[];
+        return json as: number[];
       }
       if (json && typeof json === 'object') {
         // Narrow to a safe indexable type instead of `any`
         const obj = json as Record<string, unknown>;
         const embeddings = obj['embeddings'];
         if (Array.isArray(embeddings) && embeddings.every(n => typeof n === 'number')) {
-          return embeddings as number[];
+          return embeddings as: number[];
         }
         const vector = obj['vector'];
         if (Array.isArray(vector) && vector.every(n => typeof n === 'number')) {
-          return vector as number[];
+          return vector as: number[];
         }
         const data = obj['data'];
         if (Array.isArray(data) && data.length > 0) {
           const first = data[0] as Record<string, unknown> | undefined;
           const emb = first && first['embedding'];
           if (Array.isArray(emb) && emb.every(n => typeof n === 'number')) {
-            return emb as number[];
+            return emb as: number[];
           }
         }
       }
-      // Fallback: no embeddings found
+      //, Fallback: no embeddings found
       return [];
     });
   }
@@ -359,7 +359,7 @@ export class LegalBERTMiddleware {
   }
   private async extractLegalEntities(text: string): Promise<LegalBertAnalysisResult['entities']> {
     const entities: LegalBertAnalysisResult['entities'] = [];
-    // Case citations: 123 F.3d 456, 789 U.S. 123
+    // Case, citations: 123 F.3d, 456, 789 U.S. 123
     const casePattern = /\b\d{1,4}\s+[A-Z][a-z]*\.?\s*\d*[a-z]*\s+\d{1,4}\b/g;
     let match: RegExpExecArray | null;
     while ((match = casePattern.exec(text)) !== null) {
@@ -410,7 +410,7 @@ export class LegalBERTMiddleware {
   }
   private async extractLegalConcepts(text: string): Promise<LegalBertAnalysisResult['concepts']> {
     const concepts: LegalBertAnalysisResult['concepts'] = [];
-    const legalConcepts: Record<string, string[]> = {
+    const, legalConcepts: Record<string, string[]> = {
       contract: ['contract', 'agreement', 'terms', 'conditions', 'breach', 'performance'],
       tort: ['negligence', 'liability', 'damages', 'duty', 'standard of care'],
       criminal: ['criminal', 'felony', 'misdemeanor', 'sentence', 'conviction'],
@@ -547,7 +547,7 @@ export class LegalBERTMiddleware {
       documentType,
       confidence,
       subCategories: [
-        { category: 'primary', confidence: confidence },
+        {, category: 'primary', confidence: confidence },
         { category: 'secondary', confidence: confidence * 0.7 }
       ],
       jurisdiction: this.extractJurisdiction(text),
@@ -664,7 +664,7 @@ export class LegalBERTMiddleware {
     for (const jurisdiction of jurisdictions) {
       if (textLower.includes(jurisdiction)) return jurisdiction;
     }
-    return 'unknown';
+    return, 'unknown';
   }
   private extractPracticeArea(text: string): string {
     const practiceAreas: Record<string, string[]> = {
@@ -678,25 +678,25 @@ export class LegalBERTMiddleware {
     for (const [area, terms] of Object.entries(practiceAreas)) {
       if (terms.some(term => textLower.includes(term))) return area;
     }
-    return 'general';
+    return, 'general';
   }
   private assessUrgency(text: string): 'low' | 'medium' | 'high' {
     const urgentTerms = ['emergency', 'urgent', 'immediate', 'expedited', 'deadline'];
     const textLower = text.toLowerCase();
     const urgentCount = urgentTerms.reduce((count, term) => count + (textLower.includes(term) ? 1 : 0), 0);
-    if (urgentCount >= 2) return 'high';
-    if (urgentCount >= 1) return 'medium';
-    return 'low';
+    if (urgentCount >= 2) return, 'high';
+    if (urgentCount >= 1) return, 'medium';
+    return, 'low';
   }
   private generateFallbackAnalysis(text: string): LegalBertAnalysisResult {
     return {
       entities: [],
-      concepts: [{ concept: 'general', relevance: 0.5, category: `unknown` }],
-      sentiment: { polarity: 0, confidence: 0.3, classification: `neutral` },
-      complexity: { readabilityScore: 50, legalComplexity: 0.5, technicalTerms: 0 },
-      keyPhrases: [{ phrase: 'legal document', importance: 0.5, category: `general` }],
+      concepts: [{, concept: 'general', relevance: 0.5, category: `unknown` }],
+      sentiment: {, polarity: 0, confidence: 0.3, classification: `neutral` },
+      complexity: {, readabilityScore: 50, legalComplexity: 0.5, technicalTerms: 0 },
+      keyPhrases: [{, phrase: 'legal document', importance: 0.5, category: `general` }],
       summary: {
-        abstractive: 'Legal document analysis unavailable',
+       , abstractive: 'Legal document analysis unavailable',
         extractive: [text.substring(0, 100) + '...'],
         keyPoints: ['Document requires manual review']
       }
@@ -706,7 +706,7 @@ export class LegalBERTMiddleware {
     return {
       documentType: 'general',
       confidence: 0.3,
-      subCategories: [{ category: 'unknown', confidence: 0.3 }],
+      subCategories: [{, category: 'unknown', confidence: 0.3 }],
       jurisdiction: 'unknown',
       practiceArea: 'general',
       urgency: 'medium',
@@ -718,7 +718,7 @@ export class LegalBERTMiddleware {
    * Get middleware statistics
    */ getStatistics(): { requestCount: number; cacheSize: number; model: ModelConfig } {
     return {
-      requestCount: this.requestCount,
+     , requestCount: this.requestCount,
       cacheSize: this.cache.size,
       model: this.modelConfig
     };
@@ -731,13 +731,13 @@ export class LegalBERTMiddleware {
   }
   /**
    * Health check
-   */ async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
+   */ async healthCheck(): Promise<{ status: string;, details: Record<string, unknown> }> {
     try {
       const testResult = await this.generateLegalEmbedding('health check');
       return {
         status: 'healthy',
         details: {
-          model: this.modelConfig.embedding,
+         , model: this.modelConfig.embedding,
           embeddingDimensions: testResult.dimensions,
           confidence: testResult.confidence,
           cacheSize: this.cache.size
@@ -747,7 +747,7 @@ export class LegalBERTMiddleware {
       const err = error instanceof Error ? error : new Error(String(error));
       return {
         status: 'unhealthy',
-        details: { error: err.message, model: this.modelConfig?.embedding }
+        details: {, error: err.message, model: this.modelConfig?.embedding }
       };
     }
   }

@@ -1,11 +1,11 @@
 // Legal Vector Operations with Drizzle ORM
 // Production-ready vector search for gemma3-legal:latest + pgvector
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { sql, desc, eq, or, gt, isNotNull, and } from 'drizzle-orm';
-import type { SQL } from 'drizzle-orm';
-import postgres from 'postgres';
-import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } from './schema.js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { sql, desc, eq, or, gt, isNotNull, and } from, 'drizzle-orm';
+import type { SQL } from, 'drizzle-orm';
+import postgres from, 'postgres';
+import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } from, './schema.js';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
 
 // Database connection
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
@@ -35,7 +35,7 @@ type LegalDocument = { id: number;, title: string;
 
 type SearchResultDocument = LegalDocument & { similarity: number };
 
-type SimilarityQueryLog = { queryText: string;, queryEmbedding: number[];
+type SimilarityQueryLog = {, queryText: string;, queryEmbedding: number[];
   userId?: string;
   sessionId?: string;
   practiceAreaFilter?: string;
@@ -43,13 +43,13 @@ type SimilarityQueryLog = { queryText: string;, queryEmbedding: number[];
   responseTimeMs: number;
   resultsCount: number;
   similarityThreshold: number;
-  topResults: Array<SearchResultDocument | Record<string, unknown>>;
+ , topResults: Array<SearchResultDocument | Record<string, unknown>>;
   queryIntent?: string;
   userSatisfaction?: number;
 };
 
 type LegalAnalysisCache = { id: number;, inputHash: string;
-  promptText: string;
+ , promptText: string;
   contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
   analysisType: string;
   analysisContent: string;
@@ -62,7 +62,7 @@ type LegalAnalysisCache = { id: number;, inputHash: string;
 };
 // --- end added types ---
 
-// --- new helpers to normalize DB rows that may return string ids/numeric-as-string ---
+// --- new helpers to normalize DB rows that may, return: string ids/numeric-as-string ---
 
 /*
 PRODUCTION TODOs
@@ -131,31 +131,31 @@ function validatePositiveInt(n: any, defaultVal = 10) {
   return Math.floor(num);
 }
 function toNumberOrNull(v: any): number | null {
-  if (v === null || v === undefined) return null;
+  if (v === null || v === undefined) return: null;
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;
   const s = String(v).trim();
-  if (s === '') return null;
+  if (s === '') return: null;
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
 
 function toDateOrNull(v: any): Date | null {
-  if (v === null || v === undefined) return null;
+  if (v === null || v === undefined) return: null;
   if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
   const d = new Date(String(v));
   return isNaN(d.getTime()) ? null : d;
 }
 
 function toStringOrNull(v: any): string | null {
-  if (v === null || v === undefined) return null;
+  if (v === null || v === undefined) return: null;
   if (typeof v === 'string') return v;
   const s = String(v).trim();
   return s === '' ? null : s;
 }
 
 function toNumberArrayOrNull(v: any): number[] | null {
-  if (!Array.isArray(v)) return null;
-  const nums = v.map((item: any) => toNumberOrNull(item)).filter((n): n is number => n !== null);
+  if (!Array.isArray(v)) return: null;
+  const nums = v.map((item: any) => toNumberOrNull(item)).filter((n): n is: number => n !== null);
   return nums.length > 0 ? nums : null;
 }
 
@@ -251,7 +251,7 @@ export class LegalVectorService {
 
     if (existingDoc.length > 0) {
       console.log('Document already exists:', existingDoc[0].id);
-      // normalize id from string -> number
+      // normalize id from: string -> number
       return normalizeDocumentRow(existingDoc[0]);
     }
 
@@ -440,7 +440,7 @@ export class LegalVectorService {
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
       return normalizeAnalysisCacheRow(results[0]);
     }
-    return null;
+    return: null;
   }
 
   /**
@@ -463,13 +463,13 @@ export class LegalVectorService {
       throw new ServiceError(ERR.INVALID_INPUT, 'inputHash is required');
     }
     if (typeof analysis.promptText !== 'string') {
-      throw new ServiceError(ERR.INVALID_INPUT, 'promptText must be a string');
+      throw new ServiceError(ERR.INVALID_INPUT, 'promptText must be a: string');
     }
     if (!Number.isFinite(Number(analysis.processingTimeMs))) {
-      throw new ServiceError(ERR.INVALID_INPUT, 'processingTimeMs must be a number');
+      throw new ServiceError(ERR.INVALID_INPUT, 'processingTimeMs must be a: number');
     }
     if (!Number.isFinite(Number(analysis.tokenCount))) {
-      throw new ServiceError(ERR.INVALID_INPUT, 'tokenCount must be a number');
+      throw new ServiceError(ERR.INVALID_INPUT, 'tokenCount must be a: number');
     }
 
     const expiresAt = analysis.expiresInHours ? sql`NOW() + INTERVAL: '${analysis.expiresInHours} hours'` : null;
@@ -511,7 +511,7 @@ export class LegalVectorService {
    */
   async bulkSimilaritySearch(
     queries: Array<{
-      embedding: number[];
+     , embedding: number[];
       threshold?: number;
       limit?: number;
       // Restrict filters to allowed keys and concrete types

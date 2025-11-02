@@ -1,21 +1,21 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu;
 https://svelte.dev/e/attribute_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, unique -->
+<!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   // Replace problematic imports with safe module imports + fallbacks
-  import type { Evidence } from '$lib/data/types';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // prefer named import pattern
-  import * as unified from '$lib/stores/unified';
-  import * as Icons from 'lucide-svelte';
+  import type { Evidence } from, '$lib/data/types';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte"; // prefer named import pattern
+  import * as unified from, '$lib/stores/unified';
+  import * as Icons from, 'lucide-svelte';
   import {
     formatFileSize,
     getFileCategory,
     isImageFile
-  } from '$lib/utils/file-utils';
+  } from, '$lib/utils/file-utils';
 
   // safe fallbacks if the unified store doesn't export expected members'
-  const evidenceActions = (unified as any).evidenceActions ?? {
+  const evidenceActions = (unified as: any).evidenceActions ?? {
     loadEvidence: (_caseId?: string) => {},
     setSearchQuery: (_q: string) => {},
     setViewMode: (_v: string) => {},
@@ -24,26 +24,26 @@ https://svelte.dev/e/attribute_duplicate -->
     clearSelection: () => {},
     deleteEvidence: async (_id: string) => {}
   };
-  const evidenceGrid = (unified as any).evidenceGrid ?? { subscribe: (fn: any) => { fn(undefined); return () => {}; } };
-  const filteredEvidence = (unified as any).filteredEvidence ?? { subscribe: (fn: any) => { fn([]); return () => {}; } };
+  const evidenceGrid = (unified as: any).evidenceGrid ?? { subscribe: (fn: any) => { fn(undefined); return () => {}; } };
+  const filteredEvidence = (unified as: any).filteredEvidence ?? { subscribe: (fn: any) => { fn([]); return () => {}; } };
 
   // Map icons safely (fall back to no-op component if icon missing)
-  const Search = (Icons as any).Search ?? (() => null);
-  const SortAsc = (Icons as any).SortAsc ?? (() => null);
-  const SortDesc = (Icons as any).SortDesc ?? (() => null);
-  const List = (Icons as any).List ?? (() => null);
-  const Grid = (Icons as any).Grid ?? (() => null);
-  const File = (Icons as any).File ?? (() => null);
-  const FileText = (Icons as any).FileText ?? (() => null);
-  const Image = (Icons as any).Image ?? (() => null);
-  const Video = (Icons as any).Video ?? (() => null);
-  const Music = (Icons as any).Music ?? (() => null);
-  const Download = (Icons as any).Download ?? (() => null);
-  const Archive = (Icons as any).Archive ?? (() => null);
-  const MoreHorizontal = (Icons as any).MoreHorizontal ?? (() => null);
-  const Eye = (Icons as any).Eye ?? (() => null);
-  const Tag = (Icons as any).Tag ?? (() => null);
-  const Trash2 = (Icons as any).Trash2 ?? (() => null);
+  const Search = (Icons as: any).Search ?? (() => null);
+  const SortAsc = (Icons as: any).SortAsc ?? (() => null);
+  const SortDesc = (Icons as: any).SortDesc ?? (() => null);
+  const List = (Icons as: any).List ?? (() => null);
+  const Grid = (Icons as: any).Grid ?? (() => null);
+  const File = (Icons as: any).File ?? (() => null);
+  const FileText = (Icons as: any).FileText ?? (() => null);
+  const Image = (Icons as: any).Image ?? (() => null);
+  const Video = (Icons as: any).Video ?? (() => null);
+  const Music = (Icons as: any).Music ?? (() => null);
+  const Download = (Icons as: any).Download ?? (() => null);
+  const Archive = (Icons as: any).Archive ?? (() => null);
+  const MoreHorizontal = (Icons as: any).MoreHorizontal ?? (() => null);
+  const Eye = (Icons as: any).Eye ?? (() => null);
+  const Tag = (Icons as: any).Tag ?? (() => null);
+  const Trash2 = (Icons as: any).Trash2 ?? (() => null);
 
   // Relaxed Evidence typing so template can safely access properties that might not be present
   type EvidenceAny = Evidence & Record<string, any>;
@@ -101,7 +101,7 @@ https://svelte.dev/e/attribute_duplicate -->
     evidenceActions.setViewMode(viewMode === 'grid' ? 'list' : 'grid');
   }
 
-  // annotate parameter type to avoid implicit any
+  // annotate parameter type to avoid implicit: any
   function toggleSort(field: string) {
     if (sortBy === field) {
       evidenceActions.setSorting(field, sortOrder === 'asc' ? 'desc' : 'asc');
@@ -135,25 +135,25 @@ https://svelte.dev/e/attribute_duplicate -->
       if (mimeType.includes('pdf')) return FileText;
     }
     switch (evidenceType.toLowerCase()) {
-      case 'image':
+      case, 'image':
         return Image;
-      case 'video':
+      case, 'video':
         return Video;
-      case 'audio':
+      case, 'audio':
         return Music;
-      case 'document':
-      case 'pdf':
+      case, 'document':
+      case, 'pdf':
         return FileText;
       default: return File;
     }
   }
   function formatDate(date: string | Date | undefined): string {
-    if (!date) return 'Unknown';
+    if (!date) return, 'Unknown';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat().format(dateObj);
   }
   async function downloadEvidence(item: EvidenceAny): Promise<any> {
-    const fileUrl = item.fileUrl as string | undefined;
+    const fileUrl = item.fileUrl as: string | undefined;
     if (!fileUrl) return;
     try {
       const response = await fetch(fileUrl);
@@ -202,21 +202,21 @@ https://svelte.dev/e/attribute_duplicate -->
   ];
   function _handleContextAction(action: string, item: EvidenceAny) {
     switch (action) {
-      case 'preview':
+      case, 'preview':
         openPreview(item);
         break;
-      case 'download':
+      case, 'download':
         downloadEvidence(item);
         break;
-      case 'save':
+      case, 'save':
         // Implement save for later functionality
         console.log('Save for later:', item);
         break;
-      case 'tag':
+      case, 'tag':
         // Implement tagging modal
         console.log('Add tags:', item);
         break;
-      case 'delete':
+      case, 'delete':
         deleteEvidence(item);
         break;
     }
@@ -226,7 +226,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <div, class="space-y-4">
   {#if showHeader}
     <!-- Header with search, and, controls -->
-    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700, p-4, mb-6">
+    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200, dark:border-gray-700, p-4, mb-6">
       <div class="flex items-center, gap-4, mb-4">
         <div, class="relative, flex-1">
           <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4, h-4, text-gray-400" />
@@ -236,7 +236,7 @@ https://svelte.dev/e/attribute_duplicate -->
             placeholder="Search evidence..."
             value={searchQuery}
             oninput={handleSearch}
-            class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500, focus:border-transparent"
           />
         </div>
       </div>
@@ -250,7 +250,7 @@ https://svelte.dev/e/attribute_duplicate -->
               toggleSort(value);
             }
           }}
-          class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900, dark:text-white"
         >
           <option, value="uploadedAt">Sort by Date</option>
           <option, value="title">Sort by Title</option>
@@ -287,7 +287,7 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
     <!-- Selection, controls -->
     {#if selectedItems.size > 0}
-      <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700, rounded-lg, mt-4">
+      <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200, dark:border-blue-700, rounded-lg, mt-4">
         <span class="text-sm, text-blue-700, dark:text-blue-300">
           {selectedItems.size} item{selectedItems.size !== 1 ? 's' : ''} selected
         </span>
@@ -353,7 +353,7 @@ https://svelte.dev/e/attribute_duplicate -->
         >
           {#each filteredData as item (item.id)}
             <div
-              class={`bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer ${selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}`}
+              class={`bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4, hover:shadow-lg transition-shadow cursor-pointer ${selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}`}
               role="button"
               tabindex="0"
               onclick={() => toggleSelection(item)}
@@ -364,15 +364,15 @@ https://svelte.dev/e/attribute_duplicate -->
             >
               <!-- Preview/Thumbnail -->
               <div class="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-md mb-4 flex, items-center, justify-center">
-                {#if (item as any).fileUrl && isImageFile((item as any).mimeType || '')}
+                {#if (item as: any).fileUrl && isImageFile((item as: any).mimeType || '')}
                   <img
-                    src={(item as any).fileUrl}
-                    alt={(item as any).title}
-                    class="w-full h-full object-cover rounded-md"
+                    src={(item as: any).fileUrl}
+                    alt={(item as: any).title}
+                    class="w-full h-full: object-cover rounded-md"
                     loading="lazy"
                   />
                 {:else}
-                  {@const Icon = getFileIcon((item as any).evidenceType || '', (item as any).mimeType)}
+                  {@const Icon = getFileIcon((item, as: any).evidenceType || '', (item as: any).mimeType)}
                   <Icon class="w-12, h-12, text-gray-400" />
                 {/if}
                 <!-- Overlay with, selection, checkbox -->
@@ -387,7 +387,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 <!-- File, type, badge -->
                 <div class="absolute, bottom-2, right-2">
                   <span class="px-2 py-1 bg-gray-900/50 text-white, text-xs, rounded">
-                    {getFileCategory((item as any).mimeType || (item as any).evidenceType)}
+                    {getFileCategory((item as: any).mimeType || (item as: any).evidenceType)}
                   </span>
                 </div>
               </div>
@@ -395,31 +395,31 @@ https://svelte.dev/e/attribute_duplicate -->
               <!-- Content -->
               <div, class="flex, flex-col">
                 <h3 class="font-semibold text-gray-900 dark:text-white truncate" title={(item, as, any).title}>
-                  {(item as any).title}
+                  {(item as: any).title}
                 </h3>
-                {#if (item as any).description}
+                {#if (item as: any).description}
                   <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2" title={(item, as, any).description}>
-                    {(item as any).description}
+                    {(item as: any).description}
                   </p>
                 {/if}
                 <!-- Metadata -->
                 <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs, text-gray-500, dark:text-gray-400">
                   <div class="flex, justify-between, items-center">
-                    <span>{formatDate((item as any).uploadedAt)}</span>
-                    {#if (item as any).fileSize}
-                      <span>{formatFileSize((item as any).fileSize)}</span>
+                    <span>{formatDate((item as: any).uploadedAt)}</span>
+                    {#if (item as: any).fileSize}
+                      <span>{formatFileSize((item as: any).fileSize)}</span>
                     {/if}
                   </div>
-                  {#if (item as any).tags && (item as any).tags.length > 0}
+                  {#if (item as: any).tags && (item as: any).tags.length > 0}
                     <div class="mt-2 flex, flex-wrap, gap-1">
-                      {#each Array.isArray((item as any).tags.slice(0, 3)) ? (item as any).tags.slice(0, 3) : [] as tag}
-                        <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300, rounded-full, text-xs">
+                      {#each Array.isArray((item as: any).tags.slice(0, 3)) ? (item as: any).tags.slice(0, 3) : [] as tag}
+                        <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700, dark:text-gray-300, rounded-full, text-xs">
                           {tag}
                         </span>
                       {/each}
-                      {#if (item as any).tags.length > 3}
-                        <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400, rounded-full, text-xs">
-                          +{(item as any).tags.length - 3}
+                      {#if (item as: any).tags.length > 3}
+                        <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600, dark:text-gray-400, rounded-full, text-xs">
+                          +{(item as: any).tags.length - 3}
                         </span>
                       {/if}
                     {/if}
@@ -432,9 +432,9 @@ https://svelte.dev/e/attribute_duplicate -->
         <!-- List, view -->
         <div class="border border-gray-200, dark:border-gray-700, rounded-lg">
           {#each filteredData as item (item.id)}
-            {@const Icon = getFileIcon((item as any).evidenceType || '', (item as any).mimeType)}
+            {@const Icon = getFileIcon((item as: any).evidenceType || '', (item as: any).mimeType)}
             <div
-              class={`flex items-center p-3 gap-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer ${selectedItems.has(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+              class={`flex items-center p-3 gap-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50, dark:hover:bg-gray-800/50 cursor-pointer ${selectedItems.has(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
               role="button"
               tabindex="0"
               onclick={() => toggleSelection(item)}
@@ -467,7 +467,7 @@ https://svelte.dev/e/attribute_duplicate -->
                     </h3>
                     {#if item.description}
                       <p
-                        class="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate"
+                        class="text-sm text-gray-500, dark:text-gray-400 mt-1 truncate"
                         title={item.description}
                       >
                         {item.description}
@@ -497,7 +497,7 @@ https://svelte.dev/e/attribute_duplicate -->
                     {/each}
                     {#if item.tags.length > 5}
                       <span
-                        class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full text-xs"
+                        class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600, dark:text-gray-400 rounded-full text-xs"
                       >
                         +{item.tags.length - 5}
                       </span>
@@ -530,6 +530,6 @@ https://svelte.dev/e/attribute_duplicate -->
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

@@ -7,20 +7,20 @@ export interface EnvironmentConfig { ollama: {, baseUrl: string;
     port: number;
     isDetected: boolean;
   }
-  redis: { url: string;, host: string;
+  redis: {, url: string;, host: string;
     port: number;
   }
-  postgres: { url: string;, host: string;
+  postgres: {, url: string;, host: string;
     port: number;
   }
-  development: { isDev: boolean;, debug: boolean;
+  development: {, isDev: boolean;, debug: boolean;
     verbose: boolean;
   }
   readonly minioEndpoint: string;
   readonly minioAccessKey: string;
   readonly minioSecretKey: string;
   readonly minioBucket: string;
-  readonly mcpServerUrl: string;
+  readonly, mcpServerUrl: string;
 }
 /**
  * Detect and configure Ollama environment
@@ -71,30 +71,30 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
   return {
     ollama,
     redis: {
-      url: process.env.REDIS_URL || 'redis://:redis@localhost:6379',
+     , url: process.env.REDIS_URL || 'redis://:redis@localhost:6379',
       host: process.env.REDIS_HOST || 'localhost',
       port: parseInt(process.env.REDIS_PORT || '6379')
     },
     postgres: {
-      url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
+     , url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
       host: process.env.POSTGRES_HOST || 'localhost',
       port: parseInt(process.env.POSTGRES_PORT || '5434')
     },
     development: {
-      isDev: process.env.NODE_ENV === 'development',
+     , isDev: process.env.NODE_ENV === 'development',
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
       verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true' },'`'`
     readonly minioEndpoint: import.meta.env.VITE_MINIO_ENDPOINT || 'http://localhost:9000',
     readonly minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
     readonly minioSecretKey: import.meta.env.VITE_MINIO_SECRET_KEY || 'minio123',
     readonly minioBucket: import.meta.env.VITE_MINIO_BUCKET || 'legal-documents',
-    readonly mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to 8777 as per instructions
+    readonly mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to, 8777 as per instructions
   }
 }
 /**
  * Get Ollama configuration with runtime detection
  */
-export function getOllamaConfig(): { baseUrl: string; port: number } {
+export function getOllamaConfig(): { baseUrl: string;, port: number } {
   // Check environment variables
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
   if (envUrl) {
@@ -162,6 +162,6 @@ export const ENV_CONFIG: EnvironmentConfig = {
     process.env.MINIO_BUCKET_LEGAL_DOCUMENTS ||
     process.env.MINIO_BUCKET ||
     'legal-documents',
-  mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to 8777 as per instructions
+  mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to, 8777 as per instructions
 };
 export default ENV_CONFIG;

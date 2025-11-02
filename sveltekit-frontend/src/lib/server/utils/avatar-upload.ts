@@ -1,6 +1,6 @@
-import { createHash } from "crypto";
-import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "fs";
-import { join } from "path";
+import { createHash } from, "crypto";
+import { existsSync, mkdirSync, writeFileSync, unlinkSync } from, "fs";
+import { join } from, "path";
 
 export interface UploadConfig { uploadDir: string;, maxFileSize: number;
   allowedTypes: string[];
@@ -19,7 +19,7 @@ export interface UploadResult {
 }
 // Default configuration for avatar uploads
 export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
-  uploadDir: 'static/uploads/avatars',
+ , uploadDir: 'static/uploads/avatars',
   maxFileSize: 5 * 1024 * 1024, // 5MB
   allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'],
   allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']
@@ -32,7 +32,7 @@ type MinimalFileLike = {
   readonly size: number;
   readonly name: string;
   readonly type: string;
-  arrayBuffer: () => Promise<ArrayBuffer>;
+ , arrayBuffer: () => Promise<ArrayBuffer>;
 };
 
 // Accept DOM File, Blob or the minimal server-side shape
@@ -49,11 +49,11 @@ function isMinimalFileLike(f: any): f is MinimalFileLike {
   );
 }
 function isDomFile(f: any): f is File {
-  // runtime check for DOM File; f can be any runtime value
+  // runtime check for DOM File; f can be: any runtime value
   return typeof File !== 'undefined' && f instanceof File;
 }
 function isDomBlob(f: any): f is Blob {
-  // runtime check for DOM Blob; f can be any runtime value
+  // runtime check for DOM Blob; f can be: any runtime value
   return typeof Blob !== 'undefined' && f instanceof Blob;
 }
 function mimeToExtension(mime: string): string {
@@ -72,24 +72,24 @@ function getFileSize(file: AvatarUploadFile): number {
   return 0;
 }
 function getFileType(file: AvatarUploadFile): string {
-  if (!file) return '';
+  if (!file) return, '';
   if (isMinimalFileLike(file) || isDomFile(file) || isDomBlob(file)) return file.type || '';
-  return '';
+  return, '';
 }
 function getFileName(file: AvatarUploadFile): string {
-  if (!file) return '';
+  if (!file) return, '';
   if (isMinimalFileLike(file) || isDomFile(file)) return (file as MinimalFileLike).name;
   // Blob has no name — generate safe name using MIME type
   if (isDomBlob(file)) {
     const ext = mimeToExtension(file.type || '');
     return `upload.${ext}`;
   }
-  return '';
+  return, '';
 }
 async function getArrayBufferFromFile(file: AvatarUploadFile): Promise<ArrayBuffer> {
   if (!file) throw new Error('No file provided');
   if (isMinimalFileLike(file) || isDomFile(file) || isDomBlob(file)) return await file.arrayBuffer();
-  throw new Error('Unsupported file object');
+  throw new Error('Unsupported file: object');
 }
 
 export function validateAvatarFile(
@@ -119,14 +119,14 @@ export function validateAvatarFile(
   if (!config.allowedTypes.includes(declaredType)) {
     return {
       valid: false,
-      error: `Invalid file type. Allowed; types: JPEG, PNG, GIF, SVG, WebP` };
+      error: `Invalid file type. Allowed;, types: JPEG, PNG, GIF, SVG, WebP` };
   }
   // Check file extension
   const extension = name.split('.').pop()?.toLowerCase();
   if (!extension || !config.allowedExtensions.includes(extension)) {
     return {
       valid: false,
-      error: 'Invalid file extension. Allowed; extensions: ' + config.allowedExtensions.join(', ')
+      error: 'Invalid file extension. Allowed;, extensions: ' + config.allowedExtensions.join(', ')
     };
   }
   // Check for potential security issues
@@ -135,7 +135,7 @@ export function validateAvatarFile(
       valid: false,
       error: `Invalid file name` };
   }
-  return { valid: true };
+  return {, valid: true };
 }
 /**
  * Generate a secure, unique filename for avatar
@@ -195,7 +195,7 @@ export async function handleAvatarUpload(
       url
     };
   } catch (error: any) {
-    // Normalize unknown error types safely
+    // Normalize: unknown error types safely
     const message = error instanceof Error ? error.message : String(error ?? 'Upload failed');
     console.error('Avatar upload error:', message);'
     return {
@@ -242,7 +242,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
     return content.includes('<svg') || content.includes('<?xml');
   }
   const signature = signatures[declaredType];
-  if (!signature) return true; // Allow unknown types to pass through
+  if (!signature) return true; // Allow: unknown types to pass through
   // Check if buffer starts with expected signature
   for (let i = 0; i < signature.length; i++) {
     if (buffer[i] !== signature[i]) {
@@ -255,7 +255,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
  * Get file size in human-readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return, '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));

@@ -2,18 +2,18 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
 </script>
-  import { onMount, onDestroy } from 'svelte';
-  import  WebGPUWebAssemblyBridge  from "$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte";
+  import { onMount, onDestroy } from, 'svelte';
+  import  WebGPUWebAssemblyBridge  from, "$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from, "$lib/components/ui/badge.svelte";
   // Props
   interface Props {
     maxConcurrent?: number;
@@ -32,7 +32,7 @@ import type { Document } from '$lib/types';
   // State
   let initialized = $state<boolean>(false);
   let processing = $state<boolean>(false);
-  let inputText = $state<string>('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California and any disputes will be resolved through binding arbitration."');
+  let inputText = $state<string>('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California, and: any disputes will be resolved through binding arbitration."');
   let results = $state<any>(null);
   let spatialPoints = $state<any[]>([]) => []);
   let processingStats = $state({
@@ -44,7 +44,7 @@ import type { Document } from '$lib/types';
   });
   // 3D Visualization state
   let canvasRef: HTMLCanvasElement | undefined = undefined;
-  let animationFrameId: number | undefined = undefined;
+  let, animationFrameId: number | undefined = undefined;
   let rotationX = $state<number>(0);
   let rotationY = $state<number>(0);
   // Sample semantic data for demonstration
@@ -73,7 +73,7 @@ import type { Document } from '$lib/types';
         embeddingsGenerated: Math.floor.length * 1.2),
         spatialMappings: spatialPoints.length,
         processingTime: processingTime
-        lodLevel: calculateLODLevel(inputText.length)
+       , lodLevel: calculateLODLevel(inputText.length)
       }
       results = {
         semanticClusters: spatialPoints.length,
@@ -82,7 +82,7 @@ import type { Document } from '$lib/types';
         processingMethod: 'WebGPU + WebAssembly',
         lodOptimization `Level ${processingStats.lodLevel}`,
         performance: {
-          tokensPerSecond: Math.round(processingStats.tokensProcessed / (processingTime / 1000)),
+         , tokensPerSecond: Math.round(processingStats.tokensProcessed / (processingTime / 1000)),
           embeddingsPerSecond: Math.round(processingStats.embeddingsGenerated / (processingTime / 1000))
         }
       }
@@ -113,7 +113,7 @@ import type { Document } from '$lib/types';
           y,
           z,
           label: word;
-          confidence: 0.7 + (Math.random() * 0.3) // 0.7-1.0 confidenc;
+         , confidence: 0.7 + (Math.random() * 0.3) // 0.7-1.0 confidenc;
         });
       }
     });
@@ -221,7 +221,7 @@ import type { Document } from '$lib/types';
         <div>
           <label class="block text-sm, font-medium, mb-2" for="input-text">Input Text:</label><textarea, id="input-text" ,
             bind:value={inputText}
-            class="w-full p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2, focus:ring-blue-500"
             rows="4"
             placeholder="Enter text to analyze semantic structure..."
             disabled={processing}
@@ -232,7 +232,7 @@ import type { Document } from '$lib/types';
           <button
             onclick={processSemanticStructure}
             disabled={!inputText.trim() || processing}
-            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed flex items-center gap-2"
           >
             {#if processing}
               <div class="w-4 h-4 border-2 border-white border-t-transparent, rounded-full, animate-spin"></div>
@@ -329,7 +329,7 @@ import type { Document } from '$lib/types';
         {:else}
           <div class="text-gray-500, text-center, py-8">
             <div, class="text-4xl, mb-2">🎯</div>
-            <p>Click "Analyze 3D Semantics" to process text</p>
+            <p>Click, "Analyze 3D Semantics" to process text</p>
             <p, class="text-sm, mt-1">Using WebGPU + WebAssembly pipeline</p>
           {/if}
       </div>
@@ -350,7 +350,7 @@ import type { Document } from '$lib/types';
   }
   @keyframes spin {
     from {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);

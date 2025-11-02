@@ -1,12 +1,12 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Detective Mode Pattern Detection API Route
  * POST /api/v1/detective/patterns - Detect suspicious patterns in case data
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 
 // Pattern detection request schema
 const PatternDetectionSchema = z.object({
@@ -18,7 +18,7 @@ const PatternDetectionSchema = z.object({
   sensitivity: z.number().min(0).max(1).default(0.7),
   options: z
     .object({
-      includeAnomalies: z.boolean().default(true),
+     , includeAnomalies: z.boolean().default(true),
       includePredictions: z.boolean().default(false),
       minOccurrences: z.number().min(1).default(2),
       timeWindow: z.string().optional(), // e.g., '30d', '7d', '24h'
@@ -38,7 +38,7 @@ interface Pattern { id: string;, type: string;
   [key: string]: any;
 }
 
-interface Anomaly { id: string;, type: string;
+interface Anomaly {, id: string;, type: string;
   subtype?: string;
   description?: string;
   confidence: number;
@@ -46,14 +46,14 @@ interface Anomaly { id: string;, type: string;
   [key: string]: any;
 }
 
-interface DetectionResults { patterns: Pattern[];, anomalies: Anomaly[];
+interface DetectionResults {, patterns: Pattern[];, anomalies: Anomaly[];
   insights?: string[];
   confidence: number;
   summary?: string;
   [key: string]: any;
 }
 
-type DetectionPart = { patterns: Pattern[];, anomalies: Anomaly[];
+type DetectionPart = {, patterns: Pattern[];, anomalies: Anomaly[];
   confidence: number;
 };
 // --- end new types ---
@@ -62,7 +62,7 @@ type DetectionPart = { patterns: Pattern[];, anomalies: Anomaly[];
  * POST /api/v1/detective/patterns
  * Detect suspicious patterns in case evidence and data
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (evidenceIds && evidenceIds.length > 0) {
       // Get specific evidence items
       evidence = await Promise.all(evidenceIds.map(id => evidenceService.getById(id)));
-      evidence = (evidence || []).filter(Boolean); // Remove null results
+      evidence = (evidence || []).filter(Boolean); // Remove: null results
     } else {
       // Get all case evidence
       const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 });
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: `pattern_detection_completed' }'`
     });
@@ -159,7 +159,7 @@ async function detectSuspiciousPatterns(
   options: GenericRecord = {}
 ): Promise<DetectionResults> {
   const results: DetectionResults = {
-    patterns: [],
+   , patterns: [],
     anomalies: [],
     insights: [],
     confidence: 0,
@@ -239,14 +239,14 @@ async function detectTemporalPatterns(
 ): Promise<DetectionPart> {
   const patterns: Pattern[] = [
     {
-      id: `temporal_${Date.now()}`,
+     , id: `temporal_${Date.now()}`,
       type: 'temporal',
       subtype: 'clustering',
       description: 'Evidence clustered in specific time periods',
       confidence: 0.85,
       occurrences: Math.floor((evidence || []).length * 0.6),
       timeRanges: [
-        { start: '2024-01-01T08:00:00Z', end: '2024-01-01T10:00:00Z', count: 3 },
+        {, start: '2024-01-01T08:00:00Z', end: '2024-01-01T10:00:00Z', count: 3 },
         { start: '2024-01-02T14:00:00Z', end: '2024-01-02T16:00:00Z', count: 4 }
       ],
       significance: 'high',
@@ -277,7 +277,7 @@ async function detectTemporalPatterns(
  * Detect location-based patterns
  */
 async function detectLocationPatterns(
-  _evidence: any[],
+ , _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -290,7 +290,7 @@ async function detectLocationPatterns(
         description: 'Evidence concentrated in specific geographic areas',
         confidence: 0.76,
         locations: [
-          { lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District' },'`'`
+          {, lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District' },'`'`
           { lat: 40.7589, lon: -73.9851, count: 3, name: `Upper West Side' }'`
         ],
         radius: '2.5 km',
@@ -303,7 +303,7 @@ async function detectLocationPatterns(
         subtype: 'geographic_outlier',
         description: 'Single evidence item far from cluster',
         confidence: 0.69,
-        location: { lat: 40.6892, lon: -74.0445, name: `Brooklyn' },'`
+        location: {, lat: 40.6892, lon: -74.0445, name: `Brooklyn' },'`
         distance: '15.2 km from cluster center',
         severity: `low' } as Anomaly'`
     ],
@@ -315,7 +315,7 @@ async function detectLocationPatterns(
  * Detect behavioral patterns
  */
 async function detectBehavioralPatterns(
-  evidence: any[],
+ , evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -349,7 +349,7 @@ async function detectBehavioralPatterns(
  * Detect communication patterns
  */
 async function detectCommunicationPatterns(
-  _evidence: any[],
+ , _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -361,7 +361,7 @@ async function detectCommunicationPatterns(
         subtype: 'frequency_pattern',
         description: 'Regular communication intervals detected',
         confidence: 0.67,
-        intervals: ['Every 2 hours', 'Daily at 9 AM', 'Weekly on Fridays'],
+        intervals: ['Every, 2 hours', 'Daily at, 9 AM', 'Weekly on Fridays'],
         channels: ['Email', 'Phone', 'Messaging'],
         significance: `medium' } as Pattern'`
     ],
@@ -384,7 +384,7 @@ async function detectCommunicationPatterns(
  * Detect financial patterns
  */
 async function detectFinancialPatterns(
-  _evidence: any[],
+ , _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -420,7 +420,7 @@ async function detectFinancialPatterns(
  * Detect digital forensics patterns
  */
 async function detectDigitalPatterns(
-  _evidence: any[],
+ , _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -518,12 +518,12 @@ type DetectiveLocals = {
 /* Add small GET health/placeholder handler (keeps endpoint available for simple checks) */
 export const GET: RequestHandler = async () => {
   // lightweight endpoint: the POST remains the full implementation above
-  return json({ success: true, message: `Detective patterns endpoint (ready)' });'`
+  return json({, success: true, message: `Detective patterns endpoint (ready)' });'`
 };
 
 /**
  * Utility: resolve user id from SvelteKit locals.
- * Returns a best-effort string id; caller already guards for auth where needed.
+ * Returns a best-effort: string id; caller already guards for auth where needed.
  */
 function getUserId(locals: DetectiveLocals): string {
   // Common shapes: locals.user.id, locals.session.userId, locals.user?.sub

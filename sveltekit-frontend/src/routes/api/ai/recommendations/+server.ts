@@ -5,16 +5,16 @@
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 180
- * Redis Type: aiRecommendations
+ * Redis, Type: aiRecommendations
  *
  * Routes to enhanced-rag-service.exe for recommendation engine
  * Uses WASM Graph Engine for graph-based recommendations
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db';
-import { caseScores, autoTags, userAiQueries } from '$lib/server/db/schema-postgres';
-import { eq, desc, and, gte } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/db';
+import { caseScores, autoTags, userAiQueries } from, '$lib/server/db/schema-postgres';
+import { eq, desc, and, gte } from, 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let recommendations: any[] = [];
 
     switch (type) {
-      case 'case-similar':
+      case, 'case-similar':
         // Find similar cases based on scoring
         const similarCases = await db
           .select({
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }));
         break;
 
-      case 'auto-tags':
+      case, 'auto-tags':
         // Get AI-generated tag recommendations
         const suggestedTags = await db
           .select({
@@ -83,12 +83,12 @@ export const POST: RequestHandler = async ({ request }) => {
           type: 'tag-suggestion',
           entityId: tag.id,
           confidence: parseFloat(tag.confidence),
-          reason: `AI-suggested; tag: ${tag.tag}`,
-          metadata: { source: tag.source, model: tag.model }
+          reason: `AI-suggested;, tag: ${tag.tag}`,
+          metadata: {, source: tag.source, model: tag.model }
         }));
         break;
 
-      case 'next-actions':
+      case, 'next-actions':
         // Query pattern analysis from user AI queries
         const queryPatterns = await db
           .select({
@@ -119,13 +119,13 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'next-action',
             entityId: `action_${action}`,
             confidence: Math.min(count / queryPatterns.length, 1.0),
-            reason: `Frequently used; action: ${action}`,
-            metadata: { usage_count: count, total_queries: queryPatterns.length }
+            reason: `Frequently used;, action: ${action}`,
+            metadata: {, usage_count: count, total_queries: queryPatterns.length }
           }));
         break;
 
       default: return json(
-          { error: 'Unsupported recommendation, type: ${type}' },
+          {, error: 'Unsupported recommendation, type: ${type}' },
           { status: 400 }
         );
     }
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
         entityId,
         count: recommendations.length,
         source: 'database',
-        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined' }'` });'`
+        enhanced_rag_available: false, // TODO: Check service connection;, wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined' }'` });'`
   } catch (error) {
     console.error('❌ Recommendations error:', error);'
     return json(

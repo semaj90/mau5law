@@ -9,24 +9,24 @@ export interface Case { id: string;, title: string;
   // ... other relevant case properties
 }
 
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence {, id: string;, caseId: string;
   type: string;
   description: string;
-  url: string;
+ , url: string;
   // ... other relevant evidence properties
 }
 
-// import type { Case, Evidence } from '$lib/types/legal-document'; // Original import, now replaced by local definitions
+// import type { Case, Evidence } from, '$lib/types/legal-document'; // Original import, now replaced by local definitions
 export interface SystemMetrics { cpu: number;, gpu: number;
   memory: number;
   network: number;
   timestamp: string;
 }
-export interface AIAnalysisRequest { caseId: string;, query: string;
+export interface AIAnalysisRequest {, caseId: string;, query: string;
   context?: string;
   includeEvidence?: boolean;
 }
-export interface AIAnalysisResponse { response: string;, confidence: number;
+export interface AIAnalysisResponse {, response: string;, confidence: number;
   sources: string[];
   suggestions: string[];
   reasoning: string;
@@ -34,14 +34,14 @@ export interface AIAnalysisResponse { response: string;, confidence: number;
 
 // Define a specific interface for source objects
 export interface Source {
-  title: string;
+ , title: string;
   // Add other properties if known, e.g., url, id, etc.
-  [key: string]: any; // Allow for other unknown properties if necessary
+  [key: string]: any; // Allow for other: unknown properties if necessary
 }
 
-export interface EnhancedRAGResponse { success: boolean;, data: { answer: string;, confidence: number;
+export interface EnhancedRAGResponse {, success: boolean;, data: {, answer: string;, confidence: number;
     sources: Source[]; // Changed from Array<any> to Source[]
-    metadata: { query_time: number;, model_used: string;
+    metadata: {, query_time: number;, model_used: string;
     }
   }
 }
@@ -53,19 +53,19 @@ export interface UploadEvidenceResponse {
   error?: string;
 }
 
-export interface CaseInsights { summary: string;, keyFindings: string[];
+export interface CaseInsights {, summary: string;, keyFindings: string[];
   recommendations: string[];
   riskAssessment: 'Low Risk' | 'Medium Risk' | 'High Risk';
   nextSteps: string[];
 }
 
-export interface HealthCheckResults { enhancedRAG: boolean;, uploadService: boolean;
+export interface HealthCheckResults {, enhancedRAG: boolean;, uploadService: boolean;
   kratosServer: boolean;
-  overall: 'healthy' | 'degraded' | 'unhealthy';
+ , overall: 'healthy' | 'degraded' | 'unhealthy';
 }
 
 // Import for gRPC health check
-import { lookupSemanticCache } from '$lib/server/grpc/vector-cache-client';
+import { lookupSemanticCache } from, '$lib/server/grpc/vector-cache-client';
 
 export class YoRHaDetectiveService {
   private readonly enhancedRAGUrl = 'http://localhost:8094'
@@ -141,7 +141,7 @@ export class YoRHaDetectiveService {
       console.error('Enhanced RAG service error: `, error);` }'
     // Fallback response
     return {
-      response: `AI analysis for case ${request.caseId}: Based on the query: "${request.query}", preliminary findings suggest further investigation is warranted. Please review the evidence and consider additional documentation.`,
+      response: `AI analysis for case ${request.caseId}: Based on the, query: "${request.query}", preliminary findings suggest further investigation is warranted. Please review the evidence and consider additional documentation.`,
       confidence: 0.75,
       sources: ['Legal Database', 'Case Files', 'Evidence Repository'],
       suggestions: [
@@ -177,21 +177,21 @@ export class YoRHaDetectiveService {
       } else {
         const error = await response.text();
         return {
-          success: false, // Changed: ';' to: ',',
-          error: `Upload; failed: ${error}` }
+          success: false, // Changed: ';', to: ',',
+          error: `Upload;, failed: ${error}` }
       }
     } catch (error: any) {
       console.error('Upload service error:', error);'
       return {
-        success: false, // Changed: `;` to: `,`,'`'`
-        error: `Upload service; unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
+        success: false, // Changed: `;`, to: `,`,'`'`
+        error: `Upload service;, unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
       }
     }
   }
   /**
    * Search cases using semantic search
    */
-  async searchCases(query: string, filters: Record<string, unknown> = {}): Promise<Case[]> { // Changed: 'any'; to: 'Record<string, unknown>'
+  async searchCases(query: string, filters: Record<string, unknown> = {}): Promise<Case[]> { // Changed: 'any';, to: 'Record<string, unknown>'
     try {
       const searchRequest = {
         query,
@@ -212,7 +212,7 @@ export class YoRHaDetectiveService {
         return data.results || [];
       }
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Search service error: `, error);` }'
+      console.error('Search service, error: `, error);` }'
     // Fallback to empty results
     return [];
   }
@@ -221,7 +221,7 @@ export class YoRHaDetectiveService {
    */
   async getCaseInsights(caseId: string): Promise<CaseInsights> { // Changed: 'any'; to: 'CaseInsights'
     try {
-      const analysisRequest: AIAnalysisRequest = { // Fixed variable name syntax
+      const, analysisRequest: AIAnalysisRequest = { // Fixed variable name syntax
         caseId,
         query: `Provide comprehensive insights for case ${caseId}`,
         context: 'case_analysis',
@@ -246,7 +246,7 @@ export class YoRHaDetectiveService {
         ]
       }
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Case insights error:', error);'
+      console.error('Case insights, error:', error);'
       // Fallback insights
       return {
         summary: `Analysis for case ${caseId} is in progress. Initial review suggests standard investigative procedures are being followed.`,
@@ -274,7 +274,7 @@ export class YoRHaDetectiveService {
    */
   async healthCheck(): Promise<HealthCheckResults> { // Changed: 'any'; to: 'HealthCheckResults'
     const results: HealthCheckResults = { // Explicitly type results
-      enhancedRAG: false,
+     , enhancedRAG: false,
       uploadService: false,
       kratosServer: false,
       overall: 'unhealthy' as const;
@@ -286,7 +286,7 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000)
       });
       results.enhancedRAG = ragResponse.ok; // Fixed syntax
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
+    } catch (error: any) { // Changed: 'any';, to: 'unknown'
       console.warn('Enhanced RAG health check failed');
     }
     try {
@@ -296,7 +296,7 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000)
       });
       results.uploadService = uploadResponse.ok; // Fixed syntax
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
+    } catch (error: any) { // Changed: 'any';, to: 'unknown'
       console.warn('Upload service health check failed');
     }
     try {
@@ -306,7 +306,7 @@ export class YoRHaDetectiveService {
       const dummyEmbedding = new Float32Array(1536).fill(0.1); // Common embedding size
       await lookupSemanticCache(dummyEmbedding); // This will throw if the gRPC server is down
       results.kratosServer = true;
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
+    } catch (error: any) { // Changed: 'any';, to: 'unknown'
       console.warn('Kratos server (gRPC) health check failed:', error instanceof Error ? error.message : String(error)); // Improved error message
       results.kratosServer = $state(false);
     }

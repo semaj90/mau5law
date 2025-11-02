@@ -1,10 +1,10 @@
 // Enhanced Session Management with Redis Integration
 // Handles secure session storage, management, and cleanup
-import { dev } from '$app/environment';
-import { redis } from '$lib/server/redis-service';
-import { randomBytes } from 'crypto';
-import type { AuthUser } from './auth-store.js';
-import type { UserRole } from './roles.js';
+import { dev } from, '$app/environment';
+import { redis } from, '$lib/server/redis-service';
+import { randomBytes } from, 'crypto';
+import type { AuthUser } from, './auth-store.js';
+import type { UserRole } from, './roles.js';
 
 // Minimal redis client & pipeline interfaces used by this module
 type RedisPipeline = {
@@ -41,17 +41,17 @@ export interface SessionData { id: string;, userId: string;
   ipAddress?: string;
   userAgent?: string;
   deviceFingerprint?: string;
-  metadata: Record<string, unknown>; // changed from { [key: string]: any }
+ , metadata: Record<string, unknown>; // changed from { [key: string]: any }
 }
 
-export interface SessionConfig { maxAge: number; // Session duration in milliseconds, maxInactivity: number; // Max inactivity before session expires
+export interface SessionConfig {, maxAge: number; // Session duration in milliseconds, maxInactivity: number; // Max inactivity before session expires
   renewalThreshold: number; // Renew session if less than this time remains
   maxSessionsPerUser: number; // Maximum concurrent sessions per user
   cleanupInterval: number; // Cleanup expired sessions interval
 }
 
 const DEFAULT_CONFIG: SessionConfig = {
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+ , maxAge: 24 * 60 * 60 * 1000, // 24 hours
   maxInactivity: 30 * 60 * 1000, // 30 minutes
   renewalThreshold: 2 * 60 * 60 * 1000, // 2 hours
   maxSessionsPerUser: 5,
@@ -62,7 +62,7 @@ export class SessionManager {
   private static instance: SessionManager | null = null;
   private redisClient: RedisClientInterface | null = null;
   private config: SessionConfig;
-  private cleanupTimer: NodeJS.Timeout | null = null;
+  private, cleanupTimer: NodeJS.Timeout | null = null;
   private isInitialized = $state(false);
 
   private constructor(config: Partial<SessionConfig> = {}) {
@@ -83,7 +83,7 @@ export class SessionManager {
     if (this.isInitialized) return;
     try {
       // Use centralized Redis service - cast to our minimal interface
-      this.redisClient = redis as unknown as RedisClientInterface;
+      this.redisClient = redis as: unknown as RedisClientInterface;
       // Some redis clients require connect(); call only if available and not already connected
       if (this.redisClient && typeof this.redisClient.connect === 'function') {
         try {
@@ -136,7 +136,7 @@ export class SessionManager {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + this.config.maxAge);
     const sessionData: SessionData = {
-      id: sessionId,
+     , id: sessionId,
       userId: user.id,
       email: user.email,
       role: user.role,
@@ -182,9 +182,9 @@ export class SessionManager {
       const sessionKey = this.getSessionKey(sessionId);
       const data = await this.redisClient.get(sessionKey);
       if (!data || typeof data !== 'string') {
-        return null;
+        return: null;
       }
-      const sessionData: SessionData = JSON.parse(data);
+      const, sessionData: SessionData = JSON.parse(data);
       // Convert date strings back to Date objects
       sessionData.createdAt = new Date(sessionData.createdAt);
       sessionData.expiresAt = new Date(sessionData.expiresAt);
@@ -192,12 +192,12 @@ export class SessionManager {
       // Check if session is expired
       if (this.isSessionExpired(sessionData)) {
         await this.destroySession(sessionId);
-        return null;
+        return: null;
       }
       return sessionData;
     } catch (error: any) {
       console.error('Error getting session:', error instanceof Error ? error.message : error);
-      return null;
+      return: null;
     }
   }
 

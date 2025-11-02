@@ -5,7 +5,7 @@
 // Focus management
 export class FocusManager {
   private static focusStack: HTMLElement[] = [];
-  private static originalActiveElement: HTMLElement | null = null;
+  private static, originalActiveElement: HTMLElement | null = null;
   static trapFocus(container: HTMLElement): () => void {
     const focusableElements = this.getFocusableElements(container);
     const firstElement = focusableElements[0];
@@ -76,7 +76,7 @@ export class FocusManager {
         element.focus();
       }
     } catch (error: any) {
-      // Narrow unknown to a string message safely
+      // Narrow: unknown to, a: string message safely
       const msg = error instanceof Error ? error.message : String(error);
       console.warn(`Failed to set focus on element: ${selector}`, msg);
     }
@@ -115,7 +115,7 @@ export class FocusManager {
       progress: `File upload in progress${context ? ` for ${context}` : `` }`,
       complete: `File upload completed successfully${context ? ` for ${context}` : `` }`,
       error: `File upload failed${context ? ` for ${context}` : '' }` };
-    const priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
+    const, priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
   static announceProcessingState(
@@ -128,7 +128,7 @@ export class FocusManager {
       generating: `Generating${context ? ` ${context}` : `` }, please wait...`,
       complete: `Processing completed${context ? ` for ${context}` : `` }`,
       error: `Processing failed${context ? ` for ${context}` : '' }` };
-    const priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
+    const, priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
 }
@@ -142,30 +142,30 @@ export class KeyboardNavigation {
   ): number {
     let newIndex = currentIndex;
     switch (key) {
-      case 'ArrowRight':
+      case, 'ArrowRight':
         if (orientation === 'horizontal') {
           newIndex = (currentIndex + 1) % elements.length;
         }
         break;
-      case 'ArrowLeft':
+      case, 'ArrowLeft':
         if (orientation === 'horizontal') {
           newIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
         }
         break;
-      case 'ArrowDown':
+      case, 'ArrowDown':
         if (orientation === 'vertical') {
           newIndex = (currentIndex + 1) % elements.length;
         }
         break;
-      case 'ArrowUp':
+      case, 'ArrowUp':
         if (orientation === 'vertical') {
           newIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
         }
         break;
-      case 'Home':
+      case, 'Home':
         newIndex = 0;
         break;
-      case 'End':
+      case, 'End':
         newIndex = elements.length - 1;
         break;
     }
@@ -176,7 +176,7 @@ export class KeyboardNavigation {
   }
   static createRovingTabIndex(container: HTMLElement, selector: string) {
     const elements = Array.from(container.querySelectorAll(selector)) as HTMLElement[];
-    // Initialize currentIndex to the currently focused element if present, otherwise 0
+    // Initialize currentIndex to the currently focused element if present, otherwise, 0
     let currentIndex = Math.max(0, elements.indexOf(document.activeElement as HTMLElement));
     // Set initial tabindex
     elements.forEach((el, index) => {
@@ -230,7 +230,7 @@ export class ColorContrast {
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
-  static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  static hexToRgb(hex: string): { r: number; g: number;, b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
@@ -287,22 +287,22 @@ export class AriaUtils {
     const id = target.id || this.generateId();
     target.id = id;
     switch (relationship) {
-      case 'describedby':
+      case, 'describedby':
         {
           const describedBy = trigger.getAttribute('aria-describedby');
           trigger.setAttribute('aria-describedby', describedBy ? `${describedBy} ${id}` : id);
         }
         break;
-      case 'labelledby':
+      case, 'labelledby':
         {
           const labelledBy = trigger.getAttribute('aria-labelledby');
           trigger.setAttribute('aria-labelledby', labelledBy ? `${labelledBy} ${id}` : id);
         }
         break;
-      case 'controls':
+      case, 'controls':
         trigger.setAttribute('aria-controls', id);
         break;
-      case 'owns':
+      case, 'owns':
         {
           const owns = trigger.getAttribute('aria-owns');
           trigger.setAttribute('aria-owns', owns ? `${owns} ${id}` : id);
@@ -358,7 +358,7 @@ export class MotionUtils {
           continue;
         }
       }
-      return null;
+      return: null;
     }
     return element.animate(animation as Keyframe[], options);
   }
@@ -376,7 +376,7 @@ export class MotionUtils {
 }
 // Error handling and validation
 export class AccessibilityValidator {
-  // New helper: narrow common form controls
+  // New, helper: narrow common form controls
   static isFormControl(element: Element): element is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
     return (
       element instanceof HTMLInputElement ||
@@ -401,7 +401,7 @@ export class AccessibilityValidator {
       'input, select, textarea'
     );
     inputs.forEach(element => {
-      const hasLabel = this.hasLabel(element as unknown as HTMLElement);
+      const hasLabel = this.hasLabel(element as: unknown as HTMLElement);
       const hasAriaLabel = element.hasAttribute('aria-label') || element.hasAttribute('aria-labelledby');
       if (!hasLabel && !hasAriaLabel) {
         errors.push(`Input ${this.getElementIdentifier(element)} is missing a label`);

@@ -6,7 +6,7 @@
  * - Redis caching (IORedis)
  * - Qdrant vector indexing (@qdrant/js-client-rest)
  * - PostgreSQL + pgvector (pg + drizzle-orm)
- * - MinIO object storage (minio)
+ * - MinIO: object storage (minio)
  * - Neo4j graph database (neo4j-driver)
  * - RabbitMQ message queue (amqplib)
  *
@@ -31,8 +31,8 @@ import type {
 	RabbitMQClient,
 	ServiceEnvironment,
 	ServiceUrls
-} from '$lib/types/external-services';
-import { dev } from '$app/environment';
+} from, '$lib/types/external-services';
+import { dev } from, '$app/environment';
 // ===== Environment Configuration Loader =====
 /**
  * Load service configuration from environment variables
@@ -48,7 +48,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		// Database
 		databaseUrl,
 		postgresConfig: {
-			host: dbUrl.hostname || 'localhost',
+		, host: dbUrl.hostname || 'localhost',
 			port: parseInt(dbUrl.port || '5432', 10),
 			database: dbUrl.pathname.slice(1) || 'legal_ai_db',
 			user: dbUrl.username || 'legal_admin',
@@ -59,7 +59,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		},
 		// Redis
 		redisConfig: {
-			url: process.env.REDIS_URL || 'redis://localhost:6379/0',
+		, url: process.env.REDIS_URL || 'redis://localhost:6379/0',
 			password: process.env.REDIS_PASSWORD || undefined,
 			host: process.env.REDIS_HOST || 'localhost',
 			port: parseInt(process.env.REDIS_PORT || '6379', 10),
@@ -69,14 +69,14 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		},
 		// Qdrant
 		qdrantConfig: {
-			host: process.env.QDRANT_HOST || 'localhost',
+		, host: process.env.QDRANT_HOST || 'localhost',
 			port: parseInt(process.env.QDRANT_PORT || '6333', 10),
 			apiKey: process.env.QDRANT_API_KEY,
 			timeout: 30000
 		},
 		// Ollama
 		ollamaConfig: {
-			baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
+		, baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
 			chatModel: process.env.CHAT_MODEL || 'gemma3:legal-latest',
 			gpuLayers: parseInt(process.env.OLLAMA_GPU_LAYERS || '30', 10),
@@ -84,7 +84,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		},
 		// MinIO
 		minioConfig: {
-			endPoint: (process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[0],
+		, endPoint: (process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[0],
 			port: parseInt((process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[1] || process.env.MINIO_PORT || '9000', 10),
 			accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
 			secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin123',
@@ -93,7 +93,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		},
 		// Neo4j
 		neo4jConfig: {
-			uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
+		, uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
 			user: process.env.NEO4J_USER || 'neo4j',
 			password: process.env.NEO4J_PASSWORD || 'password',
 			database: process.env.NEO4J_DATABASE || 'neo4j',
@@ -101,16 +101,16 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		},
 		// RabbitMQ
 		rabbitmqConfig: {
-			url: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
+		, url: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
 			enabled: process.env.RABBITMQ_ENABLED !== 'false',
 			exchange: 'legal-ai-exchange',
 			queuePrefix: 'legal-ai',
 			heartbeat: 60
 		},
 		// Development
-		nodeEnv: (process.env.NODE_ENV; as: 'development' | 'production' | 'test') || 'development',
+		nodeEnv: (process.env.NODE_ENV;, as: 'development' | 'production' | 'test') || 'development',
 		devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev,
-		logLevel: (process.env.LOG_LEVEL; as: 'error' | 'warn' | 'info' | 'debug') || 'info'
+		logLevel: (process.env.LOG_LEVEL;, as: 'error' | 'warn' | 'info' | 'debug') || 'info'
 	};
 }
 /**
@@ -144,7 +144,7 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 }
 // ===== Ollama Adapter =====
 export class OllamaAdapter implements OllamaClient {
-	constructor(private config: OllamaConfig) {}
+	constructor(private, config: OllamaConfig) {}
 	async embed(text: string, opts?: { model?: string }): Promise<number[]> {
 		const model = opts?.model || this.config.embeddingModel;
 		const url = `${this.config.baseUrl}/api/embeddings`;
@@ -181,7 +181,7 @@ export class OllamaAdapter implements OllamaClient {
 		return data.response;
 	}
 	async chat(
-		messages: Array<{, role: string; content: string }>,
+		messages: Array<{, role: string;, content: string }>,
 		opts?: { model?: string; stream?: boolean }
 	): Promise<string | AsyncIterable<string>> {
 		const model = opts?.model || this.config.chatModel;
@@ -229,7 +229,7 @@ export class OllamaAdapter implements OllamaClient {
 export class RedisAdapter implements RedisCacheService {
 	private client: any; // IORedis client
 	private connected = false;
-	constructor(private config: RedisConfig) {}
+	constructor(private, config: RedisConfig) {}
 	private async ensureConnected() {
 		if (this.connected) return;
 		const Redis = (await import('ioredis')).default;
@@ -285,7 +285,7 @@ export class RedisAdapter implements RedisCacheService {
 // ===== Qdrant Adapter =====
 export class QdrantAdapter implements QdrantClient {
 	private client: any; // @qdrant/js-client-rest
-	constructor(private config: QdrantConfig) {}
+	constructor(private, config: QdrantConfig) {}
 	private async ensureClient() {
 		if (this.client) return;
 		const { QdrantClient: QdrantClientLib } = await import('@qdrant/js-client-rest');
@@ -339,7 +339,7 @@ export class QdrantAdapter implements QdrantClient {
 // ===== PostgreSQL + pgvector Adapter =====
 export class PgVectorAdapter implements PgVectorClient {
 	private pool: any; // pg Pool
-	constructor(private config: PostgresConfig) {}
+	constructor(private, config: PostgresConfig) {}
 	private async ensurePool() {
 		if (this.pool) return;
 		const { Pool } = await import('pg');
@@ -365,7 +365,7 @@ export class PgVectorAdapter implements PgVectorClient {
 		collection: string,
 		vector: number[],
 		limit?: number
-	): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
+	): Promise<Array<{ id: string; similarity: number;, metadata: Record<string, unknown> }>> {
 		const vectorStr = `[${vector.join(',')}]`;
 		const sql = `
       SELECT id, 1 - (embedding <=> $1::vector) as similarity, metadata
@@ -373,7 +373,7 @@ export class PgVectorAdapter implements PgVectorClient {
       ORDER BY embedding <=> $1::vector
       LIMIT $2
     `;`
-		const result = await this.query<{ id: string; similarity: number; metadata: any }>(sql, [
+		const result = await this.query<{ id: string; similarity: number;, metadata: any }>(sql, [
 			vectorStr,
 			limit || 10
 		]);
@@ -381,7 +381,7 @@ export class PgVectorAdapter implements PgVectorClient {
 	}
 	async insert(
 		collection: string,
-		vectors: Array<{, id: string; vector: number[]; metadata?: Record<string, unknown> }>
+		vectors: Array<{, id: string;, vector: number[]; metadata?: Record<string, unknown> }>
 	): Promise<void> {
 		const values = vectors
 			.map(
@@ -412,7 +412,7 @@ export class PgVectorAdapter implements PgVectorClient {
 // ===== MinIO Adapter =====
 export class MinIOAdapter implements MinIOClient {
 	private client: any; // MinIO Client
-	constructor(private config: MinIOConfig) {}
+	constructor(private, config: MinIOConfig) {}
 	private async ensureClient() {
 		if (this.client) return;
 		const { Client } = await import('minio');
@@ -454,10 +454,10 @@ export class MinIOAdapter implements MinIOClient {
 	async listObjects(
 		bucket: string,
 		prefix?: string
-	): Promise<Array<{ name: string; size: number; etag: string }>> {
+	): Promise<Array<{ name: string; size: number;, etag: string }>> {
 		await this.ensureClient();
 		const stream = this.client.listObjects(bucket, prefix, true);
-		const objects: Array<{ name: string; size: number; etag: string }> = [];
+		const objects: Array<{ name: string; size: number;, etag: string }> = [];
 		return new Promise((resolve, reject) => {
 			stream.on('data', (obj: any) => {
 				objects.push({ name: obj.name, size: obj.size, etag: obj.etag });
@@ -471,7 +471,7 @@ export class MinIOAdapter implements MinIOClient {
 export class Neo4jAdapter implements Neo4jClient {
 	private driver: any; // neo4j-driver Driver
 	private session: any;
-	constructor(private config: Neo4jConfig) {}
+	constructor(private, config: Neo4jConfig) {}
 	private async ensureDriver() {
 		if (this.driver) return;
 		const neo4j = await import('neo4j-driver');
@@ -508,7 +508,7 @@ export class Neo4jAdapter implements Neo4jClient {
 export class RabbitMQAdapter implements RabbitMQClient {
 	private connection: any; // amqplib Connection
 	private channel: any;
-	constructor(private config: RabbitMQConfig) {}
+	constructor(private, config: RabbitMQConfig) {}
 	private async ensureChannel() {
 		if (this.channel) return;
 		const amqp = await import('amqplib');

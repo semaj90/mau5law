@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { jobStore /*, jobMachine */ } from '$lib/workers/job-state';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { jobStore /*, jobMachine */ } from, '$lib/workers/job-state';
 
 // Define a basic interface for a job item
 interface JobItem { id: string;, status: string;
@@ -8,7 +8,7 @@ interface JobItem { id: string;, status: string;
 }
 
 // Define an interface for the jobStore to provide type safety
-interface JobStore { listJobs: () => Promise<JobItem[]>; //, Removed: '?' to make it a required method, on: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
+interface JobStore {, listJobs: () => Promise<JobItem[]>; //, Removed: '?' to make it a required method, on: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
   off: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
 }
 
@@ -32,10 +32,10 @@ export const GET: RequestHandler = async ({ request }) => {
       const onUpdate = (rec: JobItem) => send({ type: 'update', item: rec });
       const onRemove = (id: string) => send({ type: 'remove', id });
       jobStore.on('update', onUpdate);
-      jobStore.on('remove', onRemove); // Removed: 'as any'
+      jobStore.on('remove', onRemove); // Removed: 'as: any'
       request.signal.addEventListener('abort', () => {
         jobStore.off('update', onUpdate);
-        jobStore.off('remove', onRemove); // Removed: 'as any'
+        jobStore.off('remove', onRemove); // Removed: 'as: any'
         controller.close();
       });
     }

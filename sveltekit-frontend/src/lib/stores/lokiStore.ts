@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import { writable, get } from 'svelte/store';
+import type { Case } from, '$lib/types';
+import { writable, get } from, 'svelte/store';
 
 /**
  * Loki-style mock service for Sidebar
@@ -32,7 +32,7 @@ interface LokiStore { evidence: Item[];, notes: Item[];
 
 // --- Global reactive store --- //
 export const lokiStore = writable<LokiStore>({
-  evidence: [],
+ , evidence: [],
   notes: [],
   canvasStates: []
 });
@@ -41,16 +41,16 @@ export const lokiStore = writable<LokiStore>({
 function createMockData(): LokiStore {
   return {
     evidence: [
-      { id: 'ev1', fileName: 'contract.pdf', description: 'Legal contract', tags: ['legal', 'pdf'] },
+      {, id: 'ev1', fileName: 'contract.pdf', description: 'Legal contract', tags: ['legal', 'pdf'] },
       { id: 'ev2', fileName: 'photo.png', description: 'Evidence photo', tags: ['image'] },
       { id: 'ev3', fileName: 'email.txt', description: 'Client email thread', tags: ['email', 'client'] },
     ],
     notes: [
-      { id: 'n1', title: 'Case summary', content: 'Important points...', tags: ['summary'] },
+      {, id: 'n1', title: 'Case summary', content: 'Important points...', tags: ['summary'] },
       { id: 'n2', title: 'Todo list', content: 'Follow up with witness...', tags: ['task'] }
     ],
     canvasStates: [
-      { id: 'c1', title: 'Scene Diagram', content: 'Canvas layout v1', tags: ['canvas'] },
+      {, id: 'c1', title: 'Scene Diagram', content: 'Canvas layout v1', tags: ['canvas'] },
       { id: 'c2', title: 'Relationship Map', content: 'Linked suspects', tags: ['map'] }
     ]
   };

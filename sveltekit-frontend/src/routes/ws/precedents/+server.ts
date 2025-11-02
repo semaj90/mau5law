@@ -1,4 +1,4 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ request }) => {
   // If the client attempted a WebSocket upgrade, provide a clear JSON response

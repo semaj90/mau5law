@@ -8,23 +8,23 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache; Strategy: conservative (cache-aside per error)
+ * - Cache;, Strategy: conservative (cache-aside per error)
  * - Memory Bank: PRG_ROM (Nintendo-style) for low-level efficiency
  * - Cache hits: ~2-5ms response time per error
  * - Fresh queries (Cache Miss): Full RAG pipeline execution
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import * as pako from 'pako';
-import { createHash } from 'crypto';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { tritonClient } from '$lib/server/triton-client';
-import { qdrantClient } from '$lib/server/qdrant-client';
-import { db } from '$lib/server/db';
-import { npmSolvedErrors, as solvedErrors } from '$lib/server/schema';
-import { sql } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import * as pako from, 'pako';
+import { createHash } from, 'crypto';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { tritonClient } from, '$lib/server/triton-client';
+import { qdrantClient } from, '$lib/server/qdrant-client';
+import { db } from, '$lib/server/db';
+import { npmSolvedErrors, as solvedErrors } from, '$lib/server/schema';
+import { sql } from, 'drizzle-orm';
 
 // --- Interfaces for Request, Response, and Cache ---
 
@@ -37,15 +37,15 @@ interface IntelligentTodoRequest {
   binaryResponse?: boolean;
 }
 
-interface IntelligentTodo { errorId: string;, originalError: string;
+interface IntelligentTodo {, errorId: string;, originalError: string;
   suggestedSteps: string[];
   contextUsed: number;
   cacheHit: boolean;
   processingTime: number;
 }
 
-interface CacheEntry { data: Uint8Array;, timestamp: number;
-  ttl: number;
+interface CacheEntry {, data: Uint8Array;, timestamp: number;
+ , ttl: number;
 }
 
 // In-memory L1 cache, with Redis acting as L2 via middleware
@@ -110,7 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           vector: errorEmbedding,
           limit: 3
         });
-        const similarErrorIds = similarErrorVectors.map((v: {, id: number | string }) => v.id as number);
+        const similarErrorIds = similarErrorVectors.map((v: {, id: number | string }) => v.id as: number);
 
         // 4. AUGMENT (PostgreSQL via Drizzle)
         let contextText = 'No similar errors found in the database.';
@@ -186,13 +186,13 @@ const originalGETHandler: RequestHandler = async () => {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       components: {
-        tritonServer: 'ok',
+       , tritonServer: 'ok',
         qdrantDatabase: 'ok',
         postgresDatabase: 'ok',
         redisCache: 'ok', // From middleware
       },
       performanceMetrics: {
-        l1CacheSizeBytes: Array.from(cache.values()).reduce((acc, entry) => acc + entry.data.length, 0),
+       , l1CacheSizeBytes: Array.from(cache.values()).reduce((acc, entry) => acc + entry.data.length, 0),
         l1CacheEntries: cache.size,
         // More metrics would be exposed from the services themselves.
       }

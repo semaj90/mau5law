@@ -4,7 +4,7 @@
  * Uses embeddinggemma:latest model from Ollama
  * Provides fast, local embedding generation via localhost:11434
  *
- * Usage:
+ *, Usage:
  *   const embedder = new OllamaEmbeddings();
  *   const vector = await embedder.embed('legal document text');
  */
@@ -26,7 +26,7 @@ export class OllamaEmbeddings {
   private model: string;
 
   constructor(
-    baseUrl: string = 'http://localhost:11434',
+   , baseUrl: string = 'http://localhost:11434',
     model: string = 'embeddinggemma:latest'
   ) {
     this.baseUrl = baseUrl;
@@ -38,7 +38,7 @@ export class OllamaEmbeddings {
    * This makes a server call to localhost:11434
    */
   async embed(
-    text: string | string[],
+   , text: string | string[],
     options: OllamaEmbeddingOptions = {}
   ): Promise<number[] | number[][]> {
     const { model = this.model, keepAlive = '5m', truncate = true } = options;
@@ -57,10 +57,10 @@ export class OllamaEmbeddings {
   }
 
   /**
-   * Embed a single text string
+   * Embed a single text: string
    */
   private async embedSingle(
-    text: string,
+   , text: string,
     model: string,
     keepAlive: string,
     truncate: boolean
@@ -115,7 +115,7 @@ export class OllamaEmbeddings {
   /**
    * List available models
    */
-  async listModels(): Promise<Array<{ name: string; size: number }>> {
+  async listModels(): Promise<Array<{ name: string;, size: number }>> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       const data = await response.json();
@@ -247,7 +247,7 @@ export const ollamaEmbeddings = new OllamaEmbeddings();
  * USAGE EXAMPLES:
  *
  * // Server-side (API route):
- * import { ollamaEmbeddings } from '$lib/ai/ollama-embeddings';
+ * import { ollamaEmbeddings } from, '$lib/ai/ollama-embeddings';
  *
  * export const POST = async ({ request }) => {
  *   const { text } = await request.json();

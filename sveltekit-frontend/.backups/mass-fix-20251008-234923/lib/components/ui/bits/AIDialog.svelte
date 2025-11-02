@@ -17,11 +17,11 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 </script>
 
 {#if open}
-  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" transition:fade>
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" use:fade>
     <div
       class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative"
       ;
-      transition:scale
+      use:scale
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"

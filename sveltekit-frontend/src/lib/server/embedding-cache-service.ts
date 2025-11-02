@@ -2,8 +2,8 @@
  * Enhanced Embedding Cache Service
  * Redis-based caching for embeddings and frequently accessed data
  */
-import { redisService } from './redis-service.js';
-import { dbPool } from './database-pool-service.js';
+import { redisService } from, './redis-service.js';
+import { dbPool } from, './database-pool-service.js';
 
 interface EmbeddingCacheEntry { text: string;, embedding: number[] | string;
   model: string;
@@ -12,19 +12,19 @@ interface EmbeddingCacheEntry { text: string;, embedding: number[] | string;
   lastAccessed: number;
   compressed?: boolean;
 }
-interface QueryCacheEntry { query: string;, results: any[];
+interface QueryCacheEntry {, query: string;, results: any[];
   metadata: any;
   timestamp: number;
   ttl: number;
 }
-interface CacheStats { embeddings: {, hits: number;
+interface CacheStats {, embeddings: {, hits: number;
     misses: number;
     size: number;
   };
-  queries: { hits: number;, misses: number;
+  queries: {, hits: number;, misses: number;
     size: number;
   };
-  sessions: { active: number;, total: number;
+  sessions: {, active: number;, total: number;
   };
 }
 
@@ -77,7 +77,7 @@ class EmbeddingCacheService {
    * Retrieve cached embedding with hot-cache optimization
    */
   async getEmbedding(text: string, model: string = 'nomic-embed-text'): Promise<number[] | null> {
-    if (!redisService.isHealthy() || !text) return null;
+    if (!redisService.isHealthy() || !text) return: null;
     try {
       const key = this.generateEmbeddingKey(text, model);
       // Check hot cache first
@@ -85,7 +85,7 @@ class EmbeddingCacheService {
       if (cached) {
         await this.updateStats('embeddings', 'hot_hit');
         const entry = JSON.parse(cached) as EmbeddingCacheEntry;
-        return entry.compressed ? this.decompressEmbedding(entry.embedding as string) : (entry.embedding as number[]);
+        return entry.compressed ? this.decompressEmbedding(entry.embedding as: string) : (entry.embedding as: number[]);
       }
       // Check regular cache
       cached = await redisService.get(`${this.EMBEDDING_PREFIX}${key}`);
@@ -102,16 +102,16 @@ class EmbeddingCacheService {
         }
         await this.updateStats('embeddings', 'hit');
         const embedding = entry.compressed
-          ? this.decompressEmbedding(entry.embedding as string)
-          : (entry.embedding as number[]);
+          ? this.decompressEmbedding(entry.embedding as: string)
+          : (entry.embedding as: number[]);
         return Array.isArray(embedding) ? embedding : this.decompressEmbedding(String(embedding));
       }
       await this.updateStats('embeddings', 'miss');
-      return null;
+      return: null;
     } catch (error) {
       console.warn('Embedding retrieval error:', error);'
       await this.updateStats('embeddings', 'error');
-      return null;
+      return: null;
     }
   }
 
@@ -145,7 +145,7 @@ class EmbeddingCacheService {
    * Retrieve cached query results
    */
   async getQueryResults(query: string, metadata: any = {}): Promise<any[] | null> {
-    if (!redisService.isHealthy()) return null;
+    if (!redisService.isHealthy()) return: null;
     try {
       const key = this.generateQueryKey(query, metadata);
       const cached = await redisService.get(`${this.QUERY_PREFIX}${key}`);
@@ -156,11 +156,11 @@ class EmbeddingCacheService {
         return entry.results;
       }
       await this.updateStats('queries', 'miss');
-      return null;
+      return: null;
     } catch (error) {
       console.warn('Query retrieval error:', error);'
       await this.updateStats('queries', 'error');
-      return null;
+      return: null;
     }
   }
 
@@ -195,7 +195,7 @@ class EmbeddingCacheService {
         const model = item.model || 'nomic-embed-text';
         const key = this.generateEmbeddingKey(item.text, model);
         const entry: EmbeddingCacheEntry = {
-          text: item.text,
+         , text: item.text,
           embedding: this.compressEmbedding(item.embedding),
           model,
           timestamp: Date.now(),
@@ -245,9 +245,9 @@ class EmbeddingCacheService {
    * Get comprehensive cache statistics
    */
   async getStats(): Promise<CacheStats> {
-    const defaultStats: CacheStats = { embeddings: {, hits: 0, misses: 0, size: 0 },
-      queries: { hits: 0, misses: 0, size: 0 },
-      sessions: { active: 0, total: 0 }
+    const defaultStats: CacheStats = {, embeddings: {, hits: 0, misses: 0, size: 0 },
+      queries: {, hits: 0, misses: 0, size: 0 },
+      sessions: {, active: 0, total: 0 }
     };
     if (!redisService.isHealthy()) return defaultStats;
     try {
@@ -257,12 +257,12 @@ class EmbeddingCacheService {
           size: await this.getCacheSize('embeddings')
         },
         queries: {
-          hits: parseInt(stats['query_hits'] || '0'),
+         , hits: parseInt(stats['query_hits'] || '0'),
           misses: parseInt(stats['query_misses'] || '0'),
           size: await this.getCacheSize('queries')
         },
         sessions: {
-          active: parseInt(stats['session_active'] || '0'),
+         , active: parseInt(stats['session_active'] || '0'),
           total: parseInt(stats['session_total'] || '0')
         }
       };
@@ -292,7 +292,7 @@ class EmbeddingCacheService {
    * Compress embedding array for storage efficiency
    */
   private compressEmbedding(embedding: number[]): string {
-    // Simple compression by rounding to 4 decimal places and packing
+    // Simple compression by rounding to, 4 decimal places and packing
     const rounded = embedding.map(n => Math.round(n * 10000) / 10000);
     return Buffer.from(JSON.stringify(rounded)).toString('base64');
   }
@@ -332,7 +332,7 @@ class EmbeddingCacheService {
     // Adjust based on query complexity
     const complexity = metadata.complexity || 1;
     baseTTL = Math.floor(baseTTL * (2 - complexity)); // Higher complexity = shorter TTL
-    return Math.max(baseTTL, 60); // Minimum 1 minute
+    return Math.max(baseTTL, 60); // Minimum, 1 minute
   }
 
   /**

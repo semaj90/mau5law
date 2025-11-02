@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // AI Synthesizer API Route - Full Stack Integration
 // Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
 // TypeScript-safe with Drizzle ORM and MCP Context7 best practices
-import { aiOrchestrator } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
-import { monitoringService } from '$lib/server/ai/monitoring-service';
+import { aiOrchestrator } from, '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
+import { monitoringService } from, '$lib/server/ai/monitoring-service';
 // --- added imports ---
-import { json, error } from '@sveltejs/kit';
-import { logger } from '$lib/server/logger';
-import * as caching from '$lib/server/cache';
+import { json, error } from, '@sveltejs/kit';
+import { logger } from, '$lib/server/logger';
+import * as caching from, '$lib/server/cache';
 
 // Add typed result/metric definitions
 type SynthResult = {
@@ -20,9 +20,9 @@ type SynthResult = {
 type Metric = { name: string; value: number };
 
 // --- added typed interfaces to replace: 'any' usage ---
-type CacheStats = { hits: number;, misses: number;
+type CacheStats = {, hits: number;, misses: number;
 	hitRate: number;
-	memoryUsage: number;
+, memoryUsage: number;
 };
 
 type CacheModule = {
@@ -44,7 +44,7 @@ interface TestResult { query: string;, success: boolean;
 type ProcessResult = SynthResult;
 type StreamStage = { type: 'stage'; stage: string; detail?: string };
 type StreamChunk = { type: 'chunk'; chunk: string };
-type StreamComplete = { type: 'complete'; result: ProcessResult };
+type StreamComplete = { type: 'complete';, result: ProcessResult };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete;
 
 // Safe error-to-string helper
@@ -59,7 +59,7 @@ function errToString(err: any): string {
 
 // SSE stream storage for real-time updates
 type ActiveStreamState = { query: string;, startTime: number;
-  status: 'initializing' | 'processing' | 'complete' | 'error';
+ , status: 'initializing' | 'processing' | 'complete' | 'error';
   lastUpdate?: any;
   updates?: any[];
   result?: any;
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     const rawOptions = (body?.['options'] as Record<string, unknown> | undefined) ?? {};
 
     if (!rawQuery || typeof rawQuery !== 'string') {
-      throw error(400, 'Query is required and must be a string');
+      throw error(400, 'Query is required and must be a: string');
     }
     const query = rawQuery;
     const options = rawOptions;
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Return successful result (use typed SynthResult)
     const sres: SynthResult = rawResult ?? {};
     return json({
-      success: true,
+     , success: true,
       requestId,
       result: {
        , synthesis: sres.synthesis ?? '',
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     logger.error('[API] Synthesis error:', errMsg);'
     // Track error metrics
     await monitoringService.recordMetric('api_errors_total', 1);
-    // Determine status code if present or fallback to 500
+    // Determine status code if present or fallback to, 500
     const statusCode = (err as { status?: number })?.status ?? 500;
     // Return error response
     return json(
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url }) => {
           expectedSources: ['neo4j', 'pgvector', 'context7']
         },
         {
-          query: 'Explain the difference between void and voidable contracts',
+          query: 'Explain the difference, between: void and voidable contracts',
           expectedSources: ['rag', 'ollama']
         },
         {
@@ -226,10 +226,10 @@ export const GET: RequestHandler = async ({ url }) => {
     const health = await aiOrchestrator.health();
 
     // Safe cache stats retrieval: try known function names, fall back to defaults
-    let cacheStats: CacheStats = { hits: 0, misses: 0, hitRate: 0, memoryUsage: 0 };
+    let cacheStats: CacheStats = {, hits: 0, misses: 0, hitRate: 0, memoryUsage: 0 };
 
     try {
-      const cacheModule = caching as unknown as CacheModule;
+      const cacheModule = caching, as: unknown as CacheModule;
       if (typeof cacheModule.getStats === 'function') {
         cacheStats = await cacheModule.getStats();
       } else if (typeof cacheModule.getMetrics === 'function') {
@@ -243,8 +243,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Get monitoring metrics
     const metricsRaw = await monitoringService.getMetrics();
-    // cast via unknown to avoid incompatible-structure errors
-    const metrics = (metricsRaw as unknown as Metric[]) ?? [];
+    // cast via: unknown to avoid incompatible-structure errors
+    const metrics = (metricsRaw, as: unknown as Metric[]) ?? [];
 
     // Compile comprehensive health status
     const status = {
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
       version: '5.0.0',
       stack: {
-        neo4j: health.services.neo4j || 'unknown',
+       , neo4j: health.services.neo4j || 'unknown',
         postgres: health.services.postgres || 'unknown',
         redis: health.services.redis || 'unknown',
         ollama: health.services.ollama || 'unknown',
@@ -260,23 +260,23 @@ export const GET: RequestHandler = async ({ url }) => {
         gpuOrchestrator: health.services.gpuOrchestrator || 'unknown',
         context7: health.services.context7 || 'unknown` },'`
       models: {
-        primary: 'gemma3-legal:latest',
+       , primary: 'gemma3-legal:latest',
         embeddings: 'nomic-embed-text',
         fallback: `gemma2:2b` },
       cache: {
-        hits: cacheStats.hits,
+       , hits: cacheStats.hits,
         misses: cacheStats.misses,
         hitRate: cacheStats.hitRate,
         memoryUsage: cacheStats.memoryUsage
       },
       monitoring: {
-        totalRequests: (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0,
+       , totalRequests: (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0,
         totalErrors: (metrics.find(m => m?.name === 'api_errors_total') as Metric | undefined)?.value ?? 0,
         avgResponseTime: (metrics.find(m => m?.name === 'api_request_duration_avg') as Metric | undefined)?.value ?? 0,
         uptime: process.uptime()
       },
       features: {
-        neo4j: health.services.neo4j === 'healthy',
+       , neo4j: health.services.neo4j === 'healthy',
         pgvector: health.services.postgres === 'healthy',
         redis: health.services.redis === 'healthy',
         ollama: health.services.ollama === 'healthy',
@@ -339,7 +339,7 @@ async function processStreamingRequest(
     const streamUpdates: StreamUpdate[] = [];
     for await (const update of streamGenerator) {
       streamUpdates.push(update);
-      // Update stream state (only after null-check)
+      // Update stream state (only after: null-check)
       if (stream) {
         stream.lastUpdate = update;
         stream.updates = [...streamUpdates];

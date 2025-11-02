@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Transaction Manager with Advisory Locks for Legal AI Platform
  * Ensures ACID properties for critical legal operations
  */
-import { sql } from '$lib/database/connection';
-import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from './advisory-locks.js';
-import { randomUUID } from 'crypto';
+import { sql } from, '$lib/database/connection';
+import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from, './advisory-locks.js';
+import { randomUUID } from, 'crypto';
 
 export interface TransactionOptions {
   isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
@@ -19,19 +19,19 @@ export interface TransactionContext { transactionId: string;, startTime: Date;
   userId?: string;
   sessionId?: string;
   // Strongly typed lock records to avoid `any`
-  locks: LockRecord[];
+ , locks: LockRecord[];
   metadata?: Record<string, unknown>;
 }
 // Typed representation of locks tracked by the transaction manager
 export type LockRecord = { entityType: LockType;, entityId: string;
-  mode: LockMode;
+ , mode: LockMode;
 };
 
 // Health check return type (avoid `any`)
 export interface HealthCheckResult {
   activeTransactions: number;
   oldestTransaction?: { id: string; age: number };
-  locksHeld: number;
+ , locksHeld: number;
 }
 export class TransactionManager {
   private activeTransactions = new Map<string, TransactionContext>();
@@ -115,7 +115,7 @@ export class TransactionManager {
    * Ensures atomic updates to evidence custody records
    */
   async withCustodyTransaction<T>(
-    evidenceId: string,
+   , evidenceId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
@@ -134,7 +134,7 @@ export class TransactionManager {
    * Prevents concurrent case updates that could cause inconsistencies
    */
   async withCaseTransaction<T>(
-    caseId: string,
+   , caseId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
@@ -153,7 +153,7 @@ export class TransactionManager {
    * Allows concurrent reads but exclusive writes for AI analysis
    */
   async withDocumentAnalysisTransaction<T>(
-    documentId: string,
+   , documentId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
     isReadOnly: boolean = false,
     options: TransactionOptions = {}
@@ -175,7 +175,7 @@ export class TransactionManager {
    * Prevents concurrent vector operations that could corrupt indexes
    */
   async withVectorIndexTransaction<T>(
-    indexName: string,
+   , indexName: string,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
@@ -194,7 +194,7 @@ export class TransactionManager {
    * Batch operation with multiple entity locks
    */
   async withMultiEntityTransaction<T>(
-    entities: Array<{, type: LockType; id: string; mode?: LockMode }>,
+    entities: Array<{, type: LockType;, id: string; mode?: LockMode }>,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
@@ -251,7 +251,7 @@ export class TransactionManager {
     let cleanedCount = 0;
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();
-      // Clean up transactions older than 5 minutes
+      // Clean up transactions older than, 5 minutes
       if (age > 300000) {
         await this.cleanupTransaction(id);
         cleanedCount++;
@@ -269,7 +269,7 @@ export class TransactionManager {
     const ctx = this.activeTransactions.get(transactionId);
     if (!ctx) return;
     console.log(`🧹 Cleaning up transaction ${transactionId}`);
-    // Release any locks that might still be held
+    // Release: any locks that might still be held
     for (const lock of ctx.locks) {
       try {
         await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
@@ -286,7 +286,7 @@ export class TransactionManager {
   async healthCheck(): Promise<HealthCheckResult> {
     const transactions = Array.from(this.activeTransactions.values());
     const now = Date.now();
-    let oldestTransaction: { id: string; age: number } | undefined;
+    let oldestTransaction: { id: string;, age: number } | undefined;
     let totalLocks = 0;
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();

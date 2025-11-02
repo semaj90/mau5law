@@ -1,11 +1,11 @@
 <script, lang="ts">
-  import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
-  import { Button } from 'bits-ui';
-  import xstateIntegration from '$lib/services/xstate-integration';
+  import { browser } from, '$app/environment';
+  import { onMount } from, 'svelte';
+  import { Button } from, 'bits-ui';
+  import xstateIntegration from, '$lib/services/xstate-integration';
 
   // ======================
-  // SVELTE 5 RUNES STATE
+  // SVELTE, 5 RUNES STATE
   // ======================
 
   // WebSocket connection state
@@ -27,7 +27,7 @@
     message?: string;
   }
   let workflowStatus = $state<WorkflowStatus>({
-    stage: 'idle',
+   , stage: 'idle',
     progress: 0,
     status: 'pending'
   });
@@ -38,7 +38,7 @@
     pythonAI: boolean;
     capabilities: string[];
   }>({
-    typescript: true,
+   , typescript: true,
     pythonAI: false,
     capabilities: []
   });
@@ -61,7 +61,7 @@
   let fileMetadata = $state<{
     filename: string;
     size: number;
-    uploadTime: string;
+   , uploadTime: string;
     analysis?: string;
   } | null>(null);
 
@@ -72,7 +72,7 @@
   // Compute WebSocket URL using public env or infer from location, fallback to Docker Desktop python-ai (localhost:8000)
   function computeWsUrl(): string {
     // Prefer explicit public env var (set in Docker / Caddy)
-    const envUrl = (import.meta as any).env?.PUBLIC_WS_URL || (import.meta as any).env?.VITE_WS_URL;
+    const envUrl = (import.meta as: any).env?.PUBLIC_WS_URL || (import.meta as: any).env?.VITE_WS_URL;
     if (envUrl) return envUrl;
 
     if (browser) {
@@ -84,7 +84,7 @@
 
     // Fallback to Docker Desktop python AI service host
     const fallbackProtocol = 'ws';
-    const fallbackHost = (import.meta as any).env?.PUBLIC_WS_HOST || 'localhost:8000';
+    const fallbackHost = (import.meta as: any).env?.PUBLIC_WS_HOST || 'localhost:8000';
     return `${fallbackProtocol}://${fallbackHost}/ws`;
   }
 
@@ -140,7 +140,7 @@
 
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
-      case 'TOKEN':
+      case, 'TOKEN':
         // Real-time token streaming
         streamingTokens += data.token;
         isStreaming = true;
@@ -153,7 +153,7 @@
         }
         break;
 
-      case 'COMPLETE':
+      case, 'COMPLETE':
         // Streaming complete
         isStreaming = false;
         console.log('✅ AI streaming complete');
@@ -164,7 +164,7 @@
         }
         break;
 
-      case 'WORKFLOW_UPDATE':
+      case, 'WORKFLOW_UPDATE':
         // Workflow progress update
         workflowStatus = {
           stage: data.stage,
@@ -174,7 +174,7 @@
         };
         break;
 
-      case 'ERROR':
+      case, 'ERROR':
         console.error('AI Error:', data.message);
         workflowStatus = {
           ...workflowStatus,
@@ -183,7 +183,7 @@
         };
         break;
 
-      case 'PONG':
+      case, 'PONG':
         // Heartbeat response
         console.log('💓 Pong received');
         break;
@@ -194,10 +194,10 @@
     if (!ws || !wsConnected || ws.readyState !== WebSocket.OPEN) {
       console.warn('WebSocket not open; falling back to REST query where available');
       // Optionally call REST endpoint for analysis if WS not available (server must support)
-      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+      const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       fetch(`${apiBase}?action=analyze`, {
         method: 'POST',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {, Accept: 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, file_id: fileId || currentFileId })
       }).catch(err => console.warn('REST analysis fallback failed', err));
       streamingTokens = '';
@@ -259,15 +259,15 @@
     formData.append('file', selectedFile);
     // Get authenticated user from XState auth machine (use top-level import)
     // replaced deprecated/non-existent method getGlobalState(...) with safe access to globalState
-    const _global = (xstateIntegration as any)?.globalState;
-    // authState may be stored under .auth or be the top-level state object; handle both
+    const _global = (xstateIntegration as: any)?.globalState;
+    // authState may be stored under .auth or be the top-level state: object; handle both
     const authState = _global?.auth ?? _global ?? null;
     const userId = authState?.context?.user?.id || 'anonymous';
     formData.append('user_id', userId);
     formData.append('caseId', 'case_001');
 
     // Ensure apiBase is available for upload and later analysis triggers
-    const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+    const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
 
     try {
       uploadProgress = 0;
@@ -351,7 +351,7 @@
 
     try {
       // Use unified API v2 endpoint with vector search (env-aware)
-      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+      const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       const response = await fetch(
         `${apiBase}?action=search&q=${encodeURIComponent(searchQuery)}&vector=true&limit=10`
       );
@@ -407,7 +407,7 @@
 
     (async () => {
       try {
-        const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+        const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
         const healthResponse = await fetch(`${apiBase}?action=health`);
         const health = await healthResponse.json();
         if (!mounted) return;
@@ -468,9 +468,9 @@
 
   function getProgressColor(progress: number): string {
     // Use UnoCSS theme tokens for colors
-    if (progress < 30) return 'bg-red-500';
-    if (progress < 70) return 'bg-yellow-500';
-    return 'bg-green-500';
+    if (progress < 30) return, 'bg-red-500';
+    if (progress < 70) return, 'bg-yellow-500';
+    return, 'bg-green-500';
   }
 </script>
 
@@ -583,7 +583,7 @@
 
           <!-- Upload, Button -->
           <button
-            class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50, disabled:cursor-not-allowed"
             onclick={uploadFile}
             disabled={!selectedFile || !wsConnected || isStreaming}
           >
@@ -677,7 +677,7 @@
               class="flex-1 px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
             />
             <button
-              class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors disabled:opacity-50"
+              class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors, disabled:opacity-50"
               onclick={performSearch}
               disabled={isSearching || !searchQuery.trim()}
             >
@@ -788,16 +788,16 @@
   }
 
   .overflow-y-auto::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.3);
+   , background: rgba(15, 23, 42, 0.3);
   }
 
   .overflow-y-auto::-webkit-scrollbar-thumb {
-    background: rgba(100, 116, 139, 0.5);
+   , background: rgba(100, 116, 139, 0.5);
     border-radius: 4px;
   }
 
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: rgba(100, 116, 139, 0.7);
+   , background: rgba(100, 116, 139, 0.7);
   }
 
   /* Smooth animations */
@@ -806,7 +806,7 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.5;
+     , opacity: 0.5;
     }
   }
 </style>

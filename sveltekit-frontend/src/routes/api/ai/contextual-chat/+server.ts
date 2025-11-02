@@ -1,9 +1,9 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { invokeContextualChain } from '$lib/server/ai/contextual-gpu-chain';
-import { getTopAdapter, recordAdapterUsage } from '$lib/server/adapter-ranking';
-import { createRedisClient } from '$lib/server/redis-client';
-import { getNeo4jDriver } from '$lib/server/neo4j-client';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { invokeContextualChain } from, '$lib/server/ai/contextual-gpu-chain';
+import { getTopAdapter, recordAdapterUsage } from, '$lib/server/adapter-ranking';
+import { createRedisClient } from, '$lib/server/redis-client';
+import { getNeo4jDriver } from, '$lib/server/neo4j-client';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 
   const maybeLocals = locals as { user?: { id?: string } } | undefined;
-  const userId = (body?.userId as string | undefined) ?? maybeLocals?.user?.id;
+  const userId = (body?.userId as: string | undefined) ?? maybeLocals?.user?.id;
   const response = await invokeContextualChain(input, userId);
 
   // Best-effort: record usage asynchronously

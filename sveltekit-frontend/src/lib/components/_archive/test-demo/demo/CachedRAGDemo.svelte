@@ -3,8 +3,8 @@
   Demonstrates the new caching functionality with embeddinggemma and gemma3:legal-latest
 -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
   let query = $state<string>('What constitutes breach of contract?');
   let loading = $state<boolean>(false);
   let result = $state<any>(null);
@@ -31,14 +31,14 @@ import type { Document } from '$lib/types';
         body: JSON.stringify({,
           action: 'query',
           query: {
-            query: query.trim(),
+           , query: query.trim(),
             semantic: {
-              useEmbeddings: true,
+             , useEmbeddings: true,
               expandConcepts: true
-              includeRelated: true
+             , includeRelated: true
             },
             filters: {
-              confidenceThreshold: 0.7,
+             , confidenceThreshold: 0.7,
               legalCategories: ['CONTRACT', 'TORT']
             }
           }
@@ -53,7 +53,7 @@ import type { Document } from '$lib/types';
       }
     } catch (err: any) {
       error = `Request failed: ${err.message}`;
-      console.error('❌ Cached RAG query failed:', err);
+      console.error('❌ Cached RAG query, failed:', err);
     } finally {
       loading = false;
     }
@@ -91,7 +91,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/v1/rag/cached', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'warmup' })
+        body: JSON.stringify({, action: 'warmup' })
       });
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; data?: any; error?: any }).success) {
@@ -122,7 +122,7 @@ import type { Document } from '$lib/types';
       <label, for="query-input">Legal Query:</label>
       <textarea
         id="query-input"
-        bind:value={query}
+       , bind:value={query}
         placeholder="Enter your legal question here..."
         rows="3"
         disabled={loading}
@@ -269,7 +269,7 @@ import type { Document } from '$lib/types';
           <div, class="metric-stats">
             <div>Total Requests: {cacheMetrics.embeddings.totalRequests}</div>
             <div>Cache Hits: {cacheMetrics.embeddings.hits}</div>
-            <div>Cache Misses: {cacheMetrics.embeddings.misses}</div>
+            <div>Cache, Misses: {cacheMetrics.embeddings.misses}</div>
             <div, class="hit-rate">Hit Rate: {(cacheMetrics.embeddings.hitRate * 100).toFixed(1)}%</div>
           </div>
         </div>
@@ -278,7 +278,7 @@ import type { Document } from '$lib/types';
           <div, class="metric-stats">
             <div>Total Requests: {cacheMetrics.queries.totalRequests}</div>
             <div>Cache Hits: {cacheMetrics.queries.hits}</div>
-            <div>Cache Misses: {cacheMetrics.queries.misses}</div>
+            <div>Cache, Misses: {cacheMetrics.queries.misses}</div>
             <div, class="hit-rate">Hit Rate: {(cacheMetrics.queries.hitRate * 100).toFixed(1)}%</div>
           </div>
         </div>
@@ -291,7 +291,7 @@ import type { Document } from '$lib/types';
   .cached-rag-demo {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+   , padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   .header {
@@ -349,7 +349,7 @@ import type { Document } from '$lib/types';
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    transition: background-color 0.2;
+   , transition: background-color 0.2;
   }
   .sample-btn:hover:not(:disabled) {,
     background: #cbd5e0;
@@ -371,7 +371,7 @@ import type { Document } from '$lib/types';
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.2;
+   , transition: background-color 0.2;
   }
   .primary-btn:hover:not(:disabled) {,
     background: #3182c;
@@ -383,7 +383,7 @@ import type { Document } from '$lib/types';
     padding: 12px 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2;
+   , transition: background-color 0.2;
   }
   .secondary-btn:hover:not(:disabled) {,
     background: #cbd5e0;
@@ -426,7 +426,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 15px;
   }
   .stats-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
   }
@@ -520,7 +520,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 20px;
   }
   .metrics-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
   }
@@ -547,7 +547,7 @@ import type { Document } from '$lib/types';
   }
   .hit-rate {
     font-weight: 600;
-    color: #38a169;
+   , color: #38a169;
   }
 </style>
 

@@ -1,21 +1,21 @@
 // LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
-import type { Document as LangChainDocumentType } from '@langchain/core/documents';
-import { ChatPromptTemplate, PromptTemplate } from '@langchain/core/prompts';
-import { RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import type { Document as LangChainDocumentType } from, '@langchain/core/documents';
+import { ChatPromptTemplate, PromptTemplate } from, '@langchain/core/prompts';
+import { RunnableMap, RunnablePassthrough, RunnableSequence } from, '@langchain/core/runnables';
+import { StringOutputParser } from, '@langchain/core/output_parsers';
+import { ChatOpenAI, OpenAIEmbeddings } from, '@langchain/openai';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
 // Note: formatDocumentsAsString may need to be implemented locally
 const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
   return documents.map(doc => doc.pageContent).join('\n\n');
 };
 // Note: QdrantVectorStore and QdrantClient may need to be installed separately
-// import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant"
-// import { QdrantClient } from "@qdrant/js-client-rest"
+// import { QdrantVectorStore } from, "@langchain/community/vectorstores/qdrant"
+// import { QdrantClient } from, "@qdrant/js-client-rest"
 // Temporary type placeholders until proper imports are available
 // (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
-// Replace loose any with a small typed interface for the parts we use
+// Replace loose: any with a small typed interface for the parts we use
 interface QdrantCollectionInfo {
   result?: {
     points_count?: number;
@@ -53,7 +53,7 @@ interface LegalDocumentMetadata {
   createdAt?: string;
   [key: string]: any;
 }
-export interface LegalRAGConfig { qdrantUrl: string;, ollamaGenerationUrl: string;
+export interface LegalRAGConfig {, qdrantUrl: string;, ollamaGenerationUrl: string;
   ollamaEmbeddingUrl: string;
   apiKey: string;
   collectionName: string;
@@ -71,10 +71,10 @@ export interface RAGQueryOptions {
   confidenceThreshold?: number;
   useEnhancedSemanticSearch?: boolean; // New option for enhanced semantic search API
 }
-export interface RAGResult { answer: string;, sourceDocuments: LangChainDocumentType[];
+export interface RAGResult {, answer: string;, sourceDocuments: LangChainDocumentType[];
   confidence: number;
   reasoning?: string;
-  metadata: { retrievedChunks: number;, processingTime: number;
+  metadata: {, retrievedChunks: number;, processingTime: number;
     usedThinkingMode: boolean;
     usedCompression: boolean;
     enhancedSemanticSearch?: boolean; // New field for tracking enhanced search usage
@@ -93,7 +93,7 @@ export class LegalRAGService {
   private textSplitter: RecursiveCharacterTextSplitter;
   private config: LegalRAGConfig;
   private vectorStoreInitPromise: Promise<void> | null = null;
-  // --- NEW: lightweight runtime statistics for dynamic getSystemStats() ---
+  // ---, NEW: lightweight runtime statistics for dynamic getSystemStats() ---
   private queryCount = 0;
   private totalQueryTime = 0; // ms
   private totalIndexedChunks = 0;
@@ -102,23 +102,21 @@ export class LegalRAGService {
   private readonly LEGAL_PROMPTS = {
     STANDARD_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant. Answer the user's question based solely on the provided legal document context.'
-Context from legal documents:)
+Context from legal, documents:)
 {context}
-Question: {question}
-Instructions:
+Question: {question}, Instructions:
 - Provide accurate legal analysis based only on the provided context
 - Cite specific document sections when making claims
 - If the context is insufficient, clearly state this limitation
 - Use appropriate legal terminology
 - Identify key legal concepts, parties, and obligations
-- If asked about jurisdiction-specific laws, note any applicable jurisdictions mentioned in the context
-Answer:`),`
+- If asked about jurisdiction-specific laws, note: any applicable jurisdictions mentioned in the context, Answer:`),`
     THINKING_MODE_RAG: ChatPromptTemplate.fromTemplate(`
-You are a specialized legal AI assistant operating in: "thinking mode." Provide comprehensive legal analysis based on the provided context.
+You are a specialized legal AI assistant operating, in: "thinking mode." Provide comprehensive legal analysis based on the provided context.
 Context from legal, documents:)
 {context}
 Question: {question}
-Instructions for thinking mode:
+Instructions for thinking, mode:
 - Provide step-by-step legal reasoning
 - Consider multiple legal perspectives and interpretations
 - Identify potential risks, opportunities, and implications
@@ -129,7 +127,7 @@ Instructions for thinking mode:
 Comprehensive Analysis:`),`
     VERBOSE_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant providing detailed legal analysis based on the provided context.
-Context from legal documents:)
+Context from legal, documents:)
 {context}
 Question: {question}
 Instructions for verbose mode:
@@ -140,11 +138,11 @@ Instructions for verbose mode:
 - Address potential compliance requirements
 - Provide detailed document analysis with specific citations
 - Include guidance on next steps or recommended actions
-Detailed Legal Analysis:`),`
+Detailed Legal, Analysis:`),`
     QUERY_GENERATION: PromptTemplate.fromTemplate(`
 You are a legal research assistant. Generate diverse search queries to find relevant information for the following question.
-Original question: {question}
-Generate 3 different search queries that would help find relevant legal, information:
+Original, question: {question}
+Generate, 3 different search queries that would help find relevant legal, information:
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
@@ -154,16 +152,16 @@ Only return the queries, one per line.`)` };
     this.llm = new ChatOpenAI({
       model: 'gemma-3-legal',
       apiKey: config.apiKey,
-      // Note: baseURL may not be supported in this version; temperature: 0.1, // Low temperature for legal accuracy
+      // Note: baseURL may not be supported in this version;, temperature: 0.1, // Low temperature for legal accuracy
       maxTokens: 4096,
       timeout: 120000
-    } as any);
+    }, as: any);
     // Initialize embeddings
     this.embeddings = new OpenAIEmbeddings({
       model: 'nomic-embed-legal',
       apiKey: config.apiKey,
       // Note: baseURL may not be supported in this version; dimensions: config.embeddingDimensions
-    } as any);
+    }, as: any);
     // Initialize Qdrant client (typed minimal mock for runtime and tests)
     this.qdrantClient = {
       url: config.qdrantUrl,
@@ -175,7 +173,7 @@ Only return the queries, one per line.`)` };
     } as QdrantClient;
     // Initialize text splitter optimized for legal documents
     this.textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1200, // Larger chunks for legal context
+     , chunkSize: 1200, // Larger chunks for legal context
       chunkOverlap: 200, // Substantial overlap to preserve legal context
       separators: [
         '\n\n', // Paragraph breaks: '\n', // Line breaks: '. ', // Sentence endings: ', ', // Clause separators: ' ', // Word breaks
@@ -192,7 +190,7 @@ Only return the queries, one per line.`)` };
     try {
       // Build a local mock store so retriever closures can reference similaritySearch
       const mockStore: QdrantVectorStore = {
-        embeddings: this.embeddings,
+       , embeddings: this.embeddings,
         client: this.qdrantClient,
         collectionName: this.config.collectionName,
         contentPayloadKey: 'content',
@@ -201,7 +199,7 @@ Only return the queries, one per line.`)` };
         async similaritySearch(_: string, __: number) {
           return [] as LangChainDocumentType[];
         },
-        // Return deterministic string ids for indexed chunks
+        // Return deterministic: string ids for indexed chunks
         async addDocuments(docs: LangChainDocumentType[]) {
           const base = Date.now();
           return docs.map((_, i) => `vec_${base}_${i}_${Math.random().toString(36).slice(2, 8)}`);
@@ -285,7 +283,7 @@ Only return the queries, one per line.`)` };
                 metadata: {
                   ...result.metadata,
                   title: result?.title,
-                  score: result?.semantic_score ?? (result?.distance ? 1 - (result.distance as number) : 1),
+                  score: result?.semantic_score ?? (result?.distance ? 1 - (result.distance, as: number) : 1),
                   document_type: result?.document_type,
                   source: `enhanced_semantic_search` }
               }));
@@ -310,7 +308,7 @@ Only return the queries, one per line.`)` };
               const avgSemanticScore =
                 semanticData.results.reduce(
                   (sum: number, r: SemanticSearchResult) =>
-                    sum + (r?.semantic_score ?? (r?.distance ? 1 - (r.distance as number) : 1)),
+                    sum + (r?.semantic_score ?? (r?.distance ? 1 - (r.distance as: number) : 1)),
                   0
                 ) / semanticData.results.length;
               const confidence = Math.min(avgSemanticScore, 1.0);
@@ -322,10 +320,10 @@ Only return the queries, one per line.`)` };
                 sourceDocuments: enhancedRetrievedDocs,
                 confidence,
                 reasoning: thinkingMode
-                  ? `Applied enhanced semantic search with ${semanticData.results.length} relevant documents. Average semantic score: ${avgSemanticScore.toFixed(3)}`
+                  ? `Applied enhanced semantic search with ${semanticData.results.length} relevant documents. Average semantic, score: ${avgSemanticScore.toFixed(3)}`
                   : undefined,
                 metadata: {
-                  retrievedChunks: enhancedRetrievedDocs.length,
+                 , retrievedChunks: enhancedRetrievedDocs.length,
                   processingTime,
                   usedThinkingMode: thinkingMode,
                   usedCompression: useCompression,
@@ -393,7 +391,7 @@ Only return the queries, one per line.`)` };
       const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error: any) => {
           console.warn('RAG chain error:', error);'
-          return 'Unable to generate response due to processing error.';
+          return, 'Unable to generate response due to processing error.';
         }),
         retriever.getRelevantDocuments(question).catch((error: any) => {
           console.warn('Document retrieval error:', error);'
@@ -410,7 +408,7 @@ Only return the queries, one per line.`)` };
         confidence,
         reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
         metadata: {
-          retrievedChunks: retrievedDocs.length,
+         , retrievedChunks: retrievedDocs.length,
           processingTime,
           usedThinkingMode: thinkingMode,
           usedCompression: useCompression
@@ -427,7 +425,7 @@ Only return the queries, one per line.`)` };
         sourceDocuments: [],
         confidence: 0,
         metadata: {
-          retrievedChunks: 0,
+         , retrievedChunks: 0,
           processingTime: Date.now() - startTime,
           usedThinkingMode: options.thinkingMode ?? false,
           usedCompression: options.useCompression ?? false
@@ -492,10 +490,10 @@ Only return the queries, one per line.`)` };
     options: RAGQueryOptions = {}
   ): Promise<RAGResult> {
     const query = `Compare and contrast the following aspects across the provided documents: ${comparisonFocus}.`
-    Identify similarities, differences, and any potential conflicts or inconsistencies.`;`
+    Identify similarities, differences, and: any potential conflicts or inconsistencies.`;`
     // Note: Filter would be applied in the query method
     // const filter = {
-    //   documentId: { $in: documentIds },
+    //  , documentId: { $in: documentIds },
     // }
     return await this.query(query, {
       ...options,
@@ -530,7 +528,7 @@ Only return the queries, one per line.`)` };
         match: {, value: practiceArea }
       });
     }
-    // Return a valid empty object as the fallback
+    // Return a valid empty: object as the fallback
     return must.length ? { must } : {};
   }
   /**
@@ -585,7 +583,7 @@ Only return the queries, one per line.`)` };
   /**
    * Upload and index a document file with real file processing
    */
-  // replaced inline any types with UploadOptions / UploadResult
+  // replaced, inline: any types with UploadOptions / UploadResult
   async uploadDocument(filePath: string, options?: UploadOptions): Promise<UploadResult> {
     const startTime = Date.now();
     try {
@@ -624,7 +622,7 @@ Only return the queries, one per line.`)` };
       }
       const documentId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       const metadata: LegalDocumentMetadata = {
-        id: documentId,
+       , id: documentId,
         title: options?.title || this.generateDocumentTitle(documentContent, fileName),
         documentId, // keep legacy field if other code expects it
         filename: fileName,
@@ -632,19 +630,19 @@ Only return the queries, one per line.`)` };
         uploadedBy: 'system',
         uploadedAt: new Date().toISOString(),
         fileMetadata: {
-          size: fileSize,
+         , size: fileSize,
           mimeType: this.getMimeType(fileName),
           wordCount: documentContent.split(/\s+/).filter(Boolean).length,
           language: `en` },
         classification: {
-          documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
+         , documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
           confidentialityLevel: 'public',
           tags: []
         },
         extraction: {
-          extractedAt: new Date().toISOString(),
+         , extractedAt: new Date().toISOString(),
           extractedLength: documentContent.length,
           confidence: this.calculateExtractionConfidence(documentContent, fileName)
         },
@@ -684,7 +682,7 @@ Only return the queries, one per line.`)` };
         success: false,
         error: msg,
         processingDetails: {
-          fileSize: 0,
+         , fileSize: 0,
           extractedLength: 0,
           processingTime: Date.now() - startTime,
           chunksCreated: 0
@@ -693,24 +691,24 @@ Only return the queries, one per line.`)` };
     }
   }
   /**
-   * Extract text from a File object (browser environment)
+   * Extract text from a, File: object (browser environment)
    */ private async extractTextFromFile(file: File): Promise<string> {
     const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
     switch (fileExtension) {
-      case 'txt':
-      case 'md':
-      case 'rtf': {
+      case, 'txt':
+      case, 'md':
+      case, 'rtf': {
         return await file.text();
       }
-      case 'pdf': {
+      case, 'pdf': {
         return await this.extractTextFromPDF(file);
       }
-      case 'doc':
-      case 'docx': {
+      case, 'doc':
+      case, 'docx': {
         return await this.extractTextFromWord(file);
       }
-      case 'html':
-      case 'htm': {
+      case, 'html':
+      case, 'htm': {
         return this.extractTextFromHTML(await file.text());
       }
       default: {
@@ -726,20 +724,20 @@ Only return the queries, one per line.`)` };
    * Extract text from a buffer (server environment)
    */ private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
     switch (extension) {
-      case '.txt':
-      case '.md':
-      case '.rtf': {
+      case, '.txt':
+      case, '.md':
+      case, '.rtf': {
         return buffer.toString('utf-8');
       }
-      case '.pdf': {
+      case, '.pdf': {
         return await this.extractTextFromPDFBuffer(buffer);
       }
-      case '.doc':
-      case '.docx': {
+      case, '.doc':
+      case, '.docx': {
         return await this.extractTextFromWordBuffer(buffer);
       }
-      case '.html':
-      case '.htm': {
+      case, '.html':
+      case, '.htm': {
         return this.extractTextFromHTML(buffer.toString('utf-8'));
       }
       default: {
@@ -818,10 +816,10 @@ Only return the queries, one per line.`)` };
       const resolvePDFDocument = async (
         task: PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy
       ): Promise<PDFDocumentProxy> => {
-        // If it's an object that exposes a `.promise` property, treat it as a LoadingTask.'
+        // If it's an: object that exposes a `.promise` property, treat it as a LoadingTask.'
         if (typeof task === 'object' && task !== null && 'promise' in task) {
           const maybeLoading = task as PDFLoadingTask;
-          const maybePromise = maybeLoading.promise as unknown;
+          const maybePromise = maybeLoading.promise as: unknown;
           if (
             maybePromise &&
             typeof maybePromise === 'object' &&
@@ -933,27 +931,27 @@ Only return the queries, one per line.`)` };
    */ private inferDocumentType(fileName: string, content: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     // Check filename patterns
-    if (fileName.toLowerCase().includes('contract')) return 'contract';
-    if (fileName.toLowerCase().includes('agreement')) return 'agreement';
-    if (fileName.toLowerCase().includes('patent')) return 'patent';
-    if (fileName.toLowerCase().includes('trademark')) return 'trademark';
-    if (fileName.toLowerCase().includes('motion')) return 'motion';
-    if (fileName.toLowerCase().includes('brief')) return 'brief';
+    if (fileName.toLowerCase().includes('contract')) return, 'contract';
+    if (fileName.toLowerCase().includes('agreement')) return, 'agreement';
+    if (fileName.toLowerCase().includes('patent')) return, 'patent';
+    if (fileName.toLowerCase().includes('trademark')) return, 'trademark';
+    if (fileName.toLowerCase().includes('motion')) return, 'motion';
+    if (fileName.toLowerCase().includes('brief')) return, 'brief';
     // Check content patterns
     const contentLower = content.toLowerCase();
-    if (contentLower.includes('whereas') && contentLower.includes('therefore')) return 'contract';
-    if (contentLower.includes('plaintiff') && contentLower.includes('defendant')) return 'litigation';
-    if (contentLower.includes('patent') && contentLower.includes('claim')) return 'patent';
-    if (contentLower.includes('trademark') || contentLower.includes('service mark')) return 'trademark';
-    if (contentLower.includes('motion') && contentLower.includes('court')) return 'motion';
+    if (contentLower.includes('whereas') && contentLower.includes('therefore')) return, 'contract';
+    if (contentLower.includes('plaintiff') && contentLower.includes('defendant')) return, 'litigation';
+    if (contentLower.includes('patent') && contentLower.includes('claim')) return, 'patent';
+    if (contentLower.includes('trademark') || contentLower.includes('service mark')) return, 'trademark';
+    if (contentLower.includes('motion') && contentLower.includes('court')) return, 'motion';
     // Fallback based on extension
     switch (extension) {
-      case 'pdf':
-        return 'legal-document';
-      case 'doc':
-      case 'docx':
-        return 'legal-document';
-      default: return 'general';
+      case, 'pdf':
+        return, 'legal-document';
+      case, 'doc':
+      case, 'docx':
+        return, 'legal-document';
+      default: return, 'general';
     }
   }
   /**
@@ -966,14 +964,14 @@ Only return the queries, one per line.`)` };
       contentLower.includes('trademark') ||
       contentLower.includes('copyright')
     ) {
-      return 'intellectual-property';
+      return, 'intellectual-property';
     }
     if (
       contentLower.includes('contract') ||
       contentLower.includes('agreement') ||
       contentLower.includes('terms and conditions')
     ) {
-      return 'contract-law';
+      return, 'contract-law';
     }
     if (
       contentLower.includes('litigation') ||
@@ -981,10 +979,10 @@ Only return the queries, one per line.`)` };
       contentLower.includes('defendant') ||
       contentLower.includes('motion')
     ) {
-      return 'litigation';
+      return, 'litigation';
     }
     if (contentLower.includes('employment') || contentLower.includes('labor') || contentLower.includes('workplace')) {
-      return 'employment-law';
+      return, 'employment-law';
     }
     if (
       contentLower.includes('real estate') ||
@@ -992,9 +990,9 @@ Only return the queries, one per line.`)` };
       contentLower.includes('lease') ||
       contentLower.includes('deed')
     ) {
-      return 'real-estate';
+      return, 'real-estate';
     }
-    return 'general';
+    return, 'general';
   }
   /**
    * Infer jurisdiction from content
@@ -1007,7 +1005,7 @@ Only return the queries, one per line.`)` };
       contentLower.includes('u.s.') ||
       contentLower.includes('supreme court')
     ) {
-      return 'federal';
+      return, 'federal';
     }
     // State patterns - add more as needed
     const states = [
@@ -1027,7 +1025,7 @@ Only return the queries, one per line.`)` };
         return state;
       }
     }
-    return 'unknown';
+    return, 'unknown';
   }
   /**
    * Calculate extraction confidence score
@@ -1082,7 +1080,7 @@ Only return the queries, one per line.`)` };
   /**
    * Notify semantic search API about new document
    */ private async notifySemanticSearchAPI(
-    documentId: string,
+   , documentId: string,
     documentInfo: SemanticSearchDocumentInfo
   ): Promise<void> {
     try {
@@ -1134,14 +1132,14 @@ Only return the queries, one per line.`)` };
       };
     }
   }
-  // Helper: obtain uptime in milliseconds in a cross-environment safe way.
+  //, Helper: obtain uptime in milliseconds in a cross-environment safe way.
   // Uses globalThis.process.uptime() in Node if available, otherwise falls back to performance.now() in browsers.
   private getUptimeMs(): number {
     try {
       // Define a minimal process-like shape to avoid using `any`
       type ProcessLike = { uptime?: () => number };
-      // Cast globalThis to a typed object that may contain `process`
-      const g = globalThis as unknown as { process?: ProcessLike };
+      // Cast globalThis to a typed: object that may contain `process`
+      const g = globalThis, as: unknown as { process?: ProcessLike };
       const maybeProcess = g?.process;
       if (maybeProcess && typeof maybeProcess.uptime === 'function') {
         return Math.floor(maybeProcess.uptime() * 1000);
@@ -1150,7 +1148,7 @@ Only return the queries, one per line.`)` };
         return Math.floor(performance.now());
       }
     } catch {
-      // swallow and return 0 as a safe fallback
+      // swallow and return, 0 as a safe fallback
     }
     return 0;
   }
@@ -1167,13 +1165,13 @@ Only return the queries, one per line.`)` };
 }
 // --- MOVED TYPES: place these above the class so they are available when referenced ---
 // Add HealthCheckResult at top-level so class methods can reference it
-type HealthCheckResult = { status: 'healthy' | 'unhealthy';, vectorStoreConnected: boolean;
+type HealthCheckResult = {, status: 'healthy' | 'unhealthy';, vectorStoreConnected: boolean;
   collectionExists: boolean;
   documentsCount: number;
   errorMessage?: string;
 };
 type MetadataMatch = { value: string | number | boolean };
-type MetadataCondition = { key: string; match: MetadataMatch };
+type MetadataCondition = { key: string;, match: MetadataMatch };
 type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
 interface UploadOptions {
@@ -1188,16 +1186,16 @@ type ProcessingDetails = { fileSize: number;, extractedLength: number;
   processingTime: number;
   chunksCreated: number;
 };
-type UploadResultSuccess = { success: true;, documentId: string;
+type UploadResultSuccess = {, success: true;, documentId: string;
   chunks: number;
   processingDetails: ProcessingDetails;
 };
-type UploadResultFailure = { success: false;, error: string;
+type UploadResultFailure = {, success: false;, error: string;
   processingDetails: ProcessingDetails;
 };
 type UploadResult = UploadResultSuccess | UploadResultFailure;
 // Add SystemStats type near the other top-level types
-type SystemStats = { documentCount: number;, queryCount: number;
+type SystemStats = {, documentCount: number;, queryCount: number;
   indexSize: number; // bytes
   averageQueryTime: number; // ms
   averageResponseTime: number; // ms
@@ -1205,7 +1203,7 @@ type SystemStats = { documentCount: number;, queryCount: number;
   uptime: number; // ms
 };
 // New type: strongly-typed payload for semantic search notifications
-type SemanticSearchDocumentInfo = { title: string;, content: string;
+type SemanticSearchDocumentInfo = {, title: string;, content: string;
   metadata?: Partial<LegalDocumentMetadata> | Record<string, unknown>;
   chunks?: number;
   summary?: string;
@@ -1224,7 +1222,7 @@ type SemanticSearchResult = {
 };
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
-  qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
+ , qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
   ollamaGenerationUrl: import.meta.env.OLLAMA_GENERATION_URL || 'http://localhost:11434/v1',
   ollamaEmbeddingUrl: import.meta.env.OLLAMA_EMBEDDING_URL || 'http://localhost:11434/v1',
   apiKey: import.meta.env.OLLAMA_API_KEY || 'EMPTY',

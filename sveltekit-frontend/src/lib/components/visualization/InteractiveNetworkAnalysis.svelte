@@ -3,15 +3,15 @@
   Advanced network visualization for evidence relationships and collaboration patterns
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
-  import { websocketStore  } from '$lib/stores/unified';
-  import * as d3 from 'd3';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { browser } from, '$app/environment';
+  import { websocketStore  } from, '$lib/stores/unified';
+  import * as d3 from, 'd3';
   interface Props {
     caseId: string;
     evidenceData: any[];
-    relationshipData: any[];
+   , relationshipData: any[];
     width?: number;
     height?: number;
     interactive?: boolean;
@@ -33,7 +33,7 @@
   // Reactive state
   let containerElement: HTMLDivElement;
   let svg: any;
-  let simulation: any;
+  let, simulation: any;
   let selectedNode = $state<any>(null);
   let hoveredNode = $state<any>(null);
   let networkMetrics = $state<any>({});
@@ -48,7 +48,7 @@
   let nodeElements: any;
   let linkElements: any;
   let labelElements: any;
-  let clusterElements: any;
+  let, clusterElements: any;
   // small UI helpers to use previously-unused state and wire simple interactions
   function setAnalysisMode(mode: 'relationships' | 'importance' | 'timeline' | 'similarity') {
     analysisMode = mode;
@@ -97,7 +97,7 @@
         // removed the generic type argument to avoid the: "Untyped function calls may not accept type arguments" TS error
         svg.select('.network-container').attr('transform', event.transform);
       });
-    svg.call(zoom as any);
+    svg.call(zoom as: any);
     // Create container for network elements
     svg.append('g').attr('class', 'network-container');
   }
@@ -139,7 +139,7 @@
   }
   // Assign a cluster id based on evidence metadata or fallback
   function assignCluster(evidence: any): string {
-    if (!evidence) return 'cluster-0';
+    if (!evidence) return, 'cluster-0';
     if (evidence.clusterId) return String(evidence.clusterId);
     if (evidence.type) return `type-${evidence.type}`;
     // stable-ish fallback using id
@@ -253,7 +253,7 @@
       .text((d: any) => d.label);
     // create or restart simulation
     simulation?.stop();
-    simulation = d3.forceSimulation(nodes as any)
+    simulation = d3.forceSimulation(nodes as: any)
       .force('link', d3.forceLink(links).id((d: any) => d.id).distance((d: any) => 30 + (1 - (d.value ?? 0.5)) * 80))
       .force('charge', d3.forceManyBody().strength(-120))
       .force('center', d3.forceCenter(width / 2, height / 2))
@@ -294,7 +294,7 @@
     try {
       // websocketStore is an imported store previously in file
       const unsubscribe = websocketStore?.subscribe?.((msg: any) => {
-        // simple handler: expect messages with { type: 'node-update' | 'link-add', payload }
+        // simple handler: expect messages with {, type: 'node-update' | 'link-add', payload }
         if (!msg || !msg.type) return;
         if (msg.type === 'node-update') {
           const idx = nodes.findIndex(n => n.id === msg.payload.id);
@@ -320,7 +320,7 @@
   <div, class="controls-panel">
     <div, class="analysis-controls">
       <label, for="analysis">Analysis mode</label>
-      <select, id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as any)}>
+      <select, id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as: any)}>
         <option, value="relationships" selected={analysisMode === 'relationships'}>Relationships</option>
         <option, value="importance" selected={analysisMode === 'importance'}>Importance</option>
         <option, value="timeline" selected={analysisMode === 'timeline'}>Timeline</option>
@@ -380,7 +380,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     padding: 15px;
     border-radius: 6px;
     backdrop-filter: blur(10px);
@@ -390,7 +390,7 @@
   .analysis-controls, .view-controls, .action-controls {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+   , gap: 8px;
   }
   .analysis-controls label, .view-controls label {
     color: #ccc;
@@ -398,7 +398,7 @@
     margin-bottom: 4px;
   }
   .analysis-controls select {
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     padding: 6px 8px;
@@ -419,7 +419,7 @@
     gap: 5px;
   }
   .btn-control {
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     padding: 6px 12px;
@@ -429,7 +429,7 @@
     transition: all 0.2s ease;
   }
   .btn-control:hover {
-    background: rgba(255, 255, 255, 0.2);
+   , background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
   }
   .metrics-panel {
@@ -437,16 +437,16 @@
     top: 10px;
     right: 10px;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.9);
+   , background: rgba(0, 0, 0, 0.9);
     color: white;
-    padding: 15px;
+   , padding: 15px;
     border-radius: 6px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
   }
   .metrics-panel h3 {
-    margin: 0 0 10px 0;
+   , margin: 0, 0 10px 0;
     color: #4a90e2;
     font-size: 14px;
   }
@@ -472,16 +472,16 @@
     bottom: 10px;
     left: 10px;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.9);
+   , background: rgba(0, 0, 0, 0.9);
     color: white;
-    padding: 15px;
+   , padding: 15px;
     border-radius: 6px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     max-width: 300px;
   }
   .node-details-panel h3 {
-    margin: 0 0 10px 0;
+   , margin: 0, 0 10px 0;
     color: #4a90e2;
     font-size: 16px;
     padding-right: 20px;
@@ -495,7 +495,7 @@
     margin-top: 10px;
   }
   .connected-nodes h4 {
-    margin: 0 0 5px 0;
+   , margin: 0, 0 5px 0;
     color: #4a90e2;
     font-size: 14px;
   }
@@ -534,7 +534,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
+   , background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -545,19 +545,19 @@
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+   , border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #4a90e2;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
+    0% {, transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .d3-container {
     width: 100%;
-    height: 100%;
+   , height: 100%;
   }
   :global(.network-container .link) {
     transition: opacity 0.2s ease;

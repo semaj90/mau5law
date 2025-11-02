@@ -1,5 +1,5 @@
-import { requireAuth } from '$lib/server/auth';
-import { error } from '@sveltejs/kit';
+import { requireAuth } from, '$lib/server/auth';
+import { error } from, '@sveltejs/kit';
 export async function load(event): Promise<any> {
   try {
     // This will throw an error if user is not authenticated
@@ -7,7 +7,7 @@ export async function load(event): Promise<any> {
     return {
       user: user,
       session: {
-        id: session.id,
+       , id: session.id,
         fresh: session.fresh,
         expiresAt: session.expiresAt
       }

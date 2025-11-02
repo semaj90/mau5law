@@ -2,23 +2,23 @@
  * Unified Search Index API
  * Orchestrates: PostgreSQL + Drizzle + pgvector + Qdrant + MinIO + Loki.js
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/db/connection'
-import { legalDocuments, documentChunks } from '$lib/server/db/schema'
-import { sql, desc, and, or, like, gte, lte } from 'drizzle-orm'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { db } from, '$lib/server/db/connection'
+import { legalDocuments, documentChunks } from, '$lib/server/db/schema'
+import { sql, desc, and, or, like, gte, lte } from, 'drizzle-orm'
 // Mock Qdrant client
-interface QdrantPoint { id: string, vector: number[]; payload: { document_id: string, content: string; metadata: { [key: string]: any }
+interface QdrantPoint { id: string, vector: number[]; payload: {, document_id: string, content: string; metadata: { [key: string]: any }
   }
 }
 // Mock MinIO metadata
-interface MinIOMetadata { bucket: string, key: string; contentType: string; lastModified: Date; size: number; metadata: Record<string, string>
+interface MinIOMetadata {, bucket: string, key: string; contentType: string; lastModified: Date; size: number;, metadata: Record<string, string>
 }
 // Mock Loki.js log entries
-interface LokiEntry { timestamp: string, level: string; message: string; labels: Record<string, string>
+interface LokiEntry { timestamp: string, level: string; message: string;, labels: Record<string, string>
   metadata?: { [key: string]: any }
 }
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   console.log('🔍 Building unified search index...')
   try {
     // Multi-source index building
@@ -83,7 +83,7 @@ async function buildPostgreSQLIndex(): Promise<any> {
       content: doc.content || '',
       entities: extractEntitiesFromContent(doc.content || ''),
       metadata: {
-        practiceArea: doc.practiceArea,
+       , practiceArea: doc.practiceArea,
         documentType: doc.documentType,
         caseId: doc.caseId,
         uploadDate: doc.uploadDate?.toISOString(),
@@ -102,7 +102,7 @@ async function buildPostgreSQLIndex(): Promise<any> {
         content: 'Legal document stored in PostgreSQL with full-text search capabilities',
         entities: ['Contract', 'Analysis', 'PostgreSQL'],
         metadata: {
-          practiceArea: 'Contract Law',
+         , practiceArea: 'Contract Law',
           documentType: 'PDF',
           caseId: 'case_pg_001',
           uploadDate: new Date().toISOString(),
@@ -121,7 +121,7 @@ async function buildVectorIndex(): Promise<any> {
   try {
     // In production: Query Qdrant collection
     // const response = await qdrantClient.scroll({
-    //   collection_name: 'legal_documents',
+    //  , collection_name: 'legal_documents',
     //   limit: 1000,
     //   with_payload: true
     //  , with_vector: false
@@ -129,13 +129,13 @@ async function buildVectorIndex(): Promise<any> {
     // Mock Qdrant data
     const mockQdrantPoints: QdrantPoint[] = [
       {
-        id: 'qdrant_001',
+       , id: 'qdrant_001',
         vector: new Array(768).fill(0).map(() => Math.random()),
         payload: {
-          document_id: 'doc_q001',
+         , document_id: 'doc_q001',
           content: 'Vector-indexed legal document with semantic search capabilities',
           metadata: {
-            practiceArea: 'Contract Law',
+           , practiceArea: 'Contract Law',
             documentType: 'PDF',
             confidence: 0.92,
             embedding_model: `nomic-embed-text` }
@@ -145,10 +145,10 @@ async function buildVectorIndex(): Promise<any> {
         id: 'qdrant_002',
         vector: new Array(768).fill(0).map(() => Math.random()),
         payload: {
-          document_id: 'doc_q002',
+         , document_id: 'doc_q002',
           content: 'Evidence document with high-quality embeddings for similarity search',
           metadata: {
-            practiceArea: 'Criminal Law',
+           , practiceArea: 'Criminal Law',
             documentType: 'Audio',
             confidence: 0.87,
             embedding_model: `nomic-embed-text` }
@@ -156,7 +156,7 @@ async function buildVectorIndex(): Promise<any> {
       }
     ]
     return mockQdrantPoints.map(point => ({
-      id: point.payload.document_id,
+     , id: point.payload.document_id,
       title: `Vector Document - ${point.payload.document_id}`,
       content: point.payload.content,
       entities: extractEntitiesFromContent(point.payload.content),
@@ -174,7 +174,7 @@ async function buildVectorIndex(): Promise<any> {
   }
 }
 /*
- * Build MinIO object storage index
+ * Build MinIO: object storage index
  */
 async function buildMinIOIndex(): Promise<any> {
   console.log('🗄️ Building MinIO storage index...')
@@ -184,7 +184,7 @@ async function buildMinIOIndex(): Promise<any> {
     // Mock MinIO metadata
     const mockMinioObjects: MinIOMetadata[] = [
       {
-        bucket: 'legal-documents',
+       , bucket: 'legal-documents',
         key: 'evidence/contracts/sla_template.pdf',
         contentType: 'application/pdf',
         lastModified: new Date('2024-01-15'),
@@ -214,10 +214,10 @@ async function buildMinIOIndex(): Promise<any> {
       return {
         id: 'minio_${obj.key.replace(/[^a-zA-Z0-9]/g, '_')}`,'`
         title: fileName.replace(/\.[^/.]+$/, '').replace(/_/g, ' '),
-        content: `File stored in; MinIO: ${obj.key} (${formatFileSize(obj.size)})`,
+        content: `File stored in;, MinIO: ${obj.key} (${formatFileSize(obj.size)})`,
         entities: [fileType, obj.metadata['x-amz-meta-practice-area'] || 'Legal'],
         metadata: {
-          practiceArea: obj.metadata['x-amz-meta-practice-area'],
+         , practiceArea: obj.metadata['x-amz-meta-practice-area'],
           documentType: fileType,
           caseId: obj.metadata['x-amz-meta-case-id'],
           uploadDate: obj.lastModified.toISOString(),
@@ -248,15 +248,15 @@ async function buildLokiIndex(): Promise<any> {
     // Mock Loki log entries
     const mockLokiEntries: LokiEntry[] = [
       {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         level: 'info',
         message: 'Evidence upload completed successfully',
         labels: {
-          job: 'legal-platform',
+         , job: 'legal-platform',
           service: 'evidence-upload',
           case_id: 'case_123` },'`
         metadata: {
-          document_id: 'doc_upload_001',
+         , document_id: 'doc_upload_001',
           file_name: 'contract_evidence.pdf',
           file_size: 1024000,
           processing_time: `2.3s` }
@@ -266,22 +266,22 @@ async function buildLokiIndex(): Promise<any> {
         level: 'warn',
         message: 'Document processing took longer than expected',
         labels: {
-          job: 'legal-platform',
+         , job: 'legal-platform',
           service: 'document-processor',
           case_id: `case_124` },
         metadata: {
-          document_id: 'doc_slow_001',
+         , document_id: 'doc_slow_001',
           processing_time: '45.7s',
           reason: `large_file_size` }
       }
     ]
     return mockLokiEntries.map((entry, index) => ({
       id: `loki_${index}`,
-      title: `System; Log: ${entry.message}`,
+      title: `System;, Log: ${entry.message}`,
       content: `${entry.level.toUpperCase()}: ${entry.message}`,
       entities: ['System Log', entry.level, entry.labels.service || 'unknown'],
       metadata: {
-        practiceArea: 'System Operations',
+       , practiceArea: 'System Operations',
         documentType: 'Log',
         caseId: entry.labels.case_id,
         uploadDate: entry.timestamp,
@@ -321,7 +321,7 @@ function parseJsonMetadata(metadata: any): { [key: string]: any } {
   return metadata || {}
 }
 function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B'
+  if (bytes === 0) return, '0 B'
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k));

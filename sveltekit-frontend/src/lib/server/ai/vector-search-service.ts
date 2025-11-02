@@ -14,15 +14,15 @@
  * - Similarity threshold filtering
  * - Comprehensive error handling
  */
-import Redis from 'ioredis';
-import type { Sql } from 'postgres';
+import Redis from, 'ioredis';
+import type { Sql } from, 'postgres';
 // Type for postgres client
 type PostgresClient = Sql<Record<string, unknown>>;
 /**
  * Vector search result with metadata and relevance scoring
  */
 export interface VectorSearchResult { id: string;, content: string;
-  similarity: number;
+ , similarity: number;
   distance?: number;
   metadata?: Record<string, unknown>;
   documentId?: string;
@@ -54,14 +54,14 @@ export interface BatchSearchRequest {
 /**
  * Batch search response
  */
-export interface BatchSearchResponse { results: VectorSearchResult[][];, totalTime: number;
+export interface BatchSearchResponse {, results: VectorSearchResult[][];, totalTime: number;
   successful: number;
   failed: number;
 }
 /**
  * Vector store provider configuration
  */
-export interface VectorProviderConfig { name: string;, type: 'pgvector' | 'qdrant';
+export interface VectorProviderConfig {, name: string;, type: 'pgvector' | 'qdrant';
   enabled: boolean;
   priority: number;
   timeout: number;
@@ -70,12 +70,12 @@ export interface VectorProviderConfig { name: string;, type: 'pgvector' | 'qdra
 /**
  * Vector store status
  */
-export interface VectorStoreStatus { provider: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
+export interface VectorStoreStatus {, provider: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
   lastCheck: Date;
   responseTime: number;
   errorCount: number;
   successCount: number;
-  successRate: number;
+ , successRate: number;
 }
 /**
  * Unified Vector Search Service
@@ -93,7 +93,7 @@ export class VectorSearchService {
   private cacheTtl: number = 3600; // 1 hour default
   // Provider status tracking
   private pgvectorStatus: VectorStoreStatus = {
-    provider: 'pgvector',
+   , provider: 'pgvector',
     status: 'unavailable',
     lastCheck: new Date(),
     responseTime: 0,
@@ -102,7 +102,7 @@ export class VectorSearchService {
     successRate: 0
   };
   private qdrantStatus: VectorStoreStatus = {
-    provider: 'qdrant',
+   , provider: 'qdrant',
     status: 'unavailable',
     lastCheck: new Date(),
     responseTime: 0,
@@ -136,7 +136,7 @@ export class VectorSearchService {
   async initialize(): Promise<void> {
     console.log('[VectorSearchService] Initializing with providers: pgvector (primary), qdrant (fallback)');
     await Promise.all([this.checkPgVectorHealth(), this.checkQdrantHealth()]);
-    // Start periodic health checks every 30 seconds
+    // Start periodic health checks every, 30 seconds
     this.startHealthChecks();
   }
   /**
@@ -156,7 +156,7 @@ export class VectorSearchService {
     }
     // Route to primary provider first
     let results: VectorSearchResult[] = [];
-    let usedProvider: 'pgvector' | 'qdrant' = this.primaryProvider;
+    let, usedProvider: 'pgvector' | 'qdrant' = this.primaryProvider;
     try {
       if (this.primaryProvider === 'pgvector' && this.pgvectorStatus.status !== 'unavailable') {
         results = await this.searchPgVector(request);
@@ -298,7 +298,7 @@ export class VectorSearchService {
         LIMIT ${limit}
       `;`
       return (
-        results as unknown as Array<{ id: string;, content: string;
+        results as: unknown as Array<{, id: string;, content: string;
          , similarity: number;
           metadata?: Record<string, unknown>;
           document_id?: string;
@@ -347,7 +347,7 @@ export class VectorSearchService {
       }
       const data = (await response.json()) as { result: Array<{, id: string;
           score: number;
-          payload: Record<string, unknown>;
+         , payload: Record<string, unknown>;
         }>;
       };
       return data.result.map(item => ({
@@ -512,7 +512,7 @@ export class VectorSearchService {
     this.healthCheckInterval = setInterval(() => {
       Promise.all([this.checkPgVectorHealth(), this.checkQdrantHealth()]).catch(error => {
         console.error('[VectorSearchService] Health check error:', error);` });`'
-    }, 30000); // Check every 30 seconds
+    }, 30000); // Check every, 30 seconds
   }
   /**
    * Stop health checks
@@ -557,7 +557,7 @@ export class VectorSearchService {
    */
   getStatus(): { pgvector: VectorStoreStatus; qdrant: VectorStoreStatus } {
     return {
-      pgvector: this.pgvectorStatus,
+     , pgvector: this.pgvectorStatus,
       qdrant: this.qdrantStatus
     };
   }

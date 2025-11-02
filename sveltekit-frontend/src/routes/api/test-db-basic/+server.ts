@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     console.log('🧪 Testing Basic Database Import...');
@@ -8,7 +8,7 @@ export const GET: RequestHandler = async () => {
     console.log('✅ Import successful');
     // Test basic SQL
     const { sql } = await import('drizzle-orm');
-    const testQuery = await db.execute(sql`SELECT 1 as test`);
+    const testQuery = await db.execute(sql`SELECT, 1 as test`);
     console.log('✅ Basic query successful:', testQuery);
     return json({
       status: 'success',

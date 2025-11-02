@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit/server'; // Import json helper
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit/server'; // Import json helper
 /*
  * Production Evidence Processing API
  * Smart detection and analysis pipeline
@@ -18,18 +18,18 @@ export interface EvidenceItem { id: string;, case_id: string;
   created_at: string;
   updated_at: string;
 }
-export interface ProcessingJob { id: string;, evidence_id: string;
+export interface ProcessingJob {, id: string;, evidence_id: string;
   job_type: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   progress: number;
   result?: any;
   error_message?: string;
-  created_at: string;
+ , created_at: string;
 }
 // Mock database operations (replace with actual database client)
 const mockEvidenceData: EvidenceItem[] = [
   {
-    id: 'evd-001',
+   , id: 'evd-001',
     case_id: 'CASE-2025-001',
     evidence_number: 'EVD-2025-001',
     title: 'Legal Contract Document',
@@ -57,13 +57,13 @@ const mockEvidenceData: EvidenceItem[] = [
 ];
 const mockProcessingJobs: ProcessingJob[] = [
   {
-    id: 'job-001',
+   , id: 'job-001',
     evidence_id: 'evd-001',
     job_type: 'smart_detection',
     status: 'completed',
     progress: 100,
     result: {
-      entities_found: 5,
+     , entities_found: 5,
       confidence_avg: 0.91,
       processing_time_ms: 1250
     },
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: `Missing required; field: ${field}`,
+            error: `Missing required;, field: ${field}`,
             timestamp: new Date().toISOString()
           },
           { status: 400 }
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Create new evidence item
     const newEvidence: EvidenceItem = {
-      id: `evd-${Date.now()}`,
+     , id: `evd-${Date.now()}`,
       case_id: data.case_id,
       evidence_number: `EVD-${Date.now()}`,
       title: data.title,
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
     mockEvidenceData.push(newEvidence);
     // Create processing job for smart detection
     const processingJob: ProcessingJob = {
-      id: `job-${Date.now()}`,
+     , id: `job-${Date.now()}`,
       evidence_id: newEvidence.id,
       job_type: 'smart_detection',
       status: 'queued',

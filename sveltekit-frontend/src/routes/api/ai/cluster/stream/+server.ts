@@ -1,12 +1,12 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { subscribeClusterEvents } from '$lib/server/ai/cluster-stream';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { subscribeClusterEvents } from, '$lib/server/ai/cluster-stream';
 
 const denoGlobal = (globalThis as typeof globalThis & {
-  Deno?: { upgradeWebSocket?: (request: Request) => { response: Response; socket: WebSocket } };
+  Deno?: { upgradeWebSocket?: (request: Request) => { response: Response;, socket: WebSocket } };
 }).Deno;
 
 const WebSocketPairCtor = (globalThis as typeof globalThis & {
-  WebSocketPair?: new () => { 0: WebSocket; 1: WebSocket };
+  WebSocketPair?: new () => { 0: WebSocket;, 1: WebSocket };
 }).WebSocketPair;
 
 export const GET: RequestHandler = async ({ request }) => {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ request }) => {
     return new Response(null, {
       status: 101,
       webSocket: client
-    } as unknown as ResponseInit);
+    }, as: unknown as ResponseInit);
   }
 
   return new Response('WebSocket upgrade not supported on this platform', { status: 501 });

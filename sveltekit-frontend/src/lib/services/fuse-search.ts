@@ -1,11 +1,11 @@
-import type { ButtonVariant, ButtonSize } from '$lib/types/Button';
+import type { ButtonVariant, ButtonSize } from, '$lib/types/Button';
 
 // Fuse.js search service for Button indexing
 export type ButtonInfo = { id: string;, keywords: string[]; // Add this line
   variant?: ButtonVariant; // Add this property
   size?: ButtonSize; // Add this property
   label: string;
-  element: HTMLElement | null;
+ , element: HTMLElement | null;
 };
 
 // Minimal in-memory, SSR-safe searchable button index (no external deps)
@@ -14,7 +14,7 @@ const buttonStore = new Map<string, ButtonInfo>();
 /** Simple searchable button index used for UI button lookup */
 export const searchableButtonIndex = {
   addButton: (buttonInfo: ButtonInfo): void => {
-    // Avoid storing DOM references on server: allow null for element
+    // Avoid storing DOM references on server: allow: null for element
     const safe = { ...buttonInfo, element: typeof window === 'undefined' ? null : buttonInfo.element };
     buttonStore.set(safe.id, safe);
   },
@@ -33,7 +33,7 @@ export const searchableButtonIndex = {
     }
     const q = query.toLowerCase().trim();
     type Scored = { item: ButtonInfo; score: number };
-    const scored: Scored[] = [];
+    const, scored: Scored[] = [];
     for (const item of buttonStore.values()) {
       let score = 0;
       if (item.label && item.label.toLowerCase().includes(q)) score += 3;

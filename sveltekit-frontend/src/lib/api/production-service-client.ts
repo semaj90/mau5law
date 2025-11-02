@@ -3,7 +3,7 @@
  * Production Service Client for Integration Testing
  * Simplified wrapper around the main production client for testing purposes
  */
-import type { ServiceResponse } from './production-client.js';
+import type { ServiceResponse } from, './production-client.js';
 export interface IntegrationServiceRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
@@ -18,12 +18,12 @@ class ProductionServiceClient {
   async makeRequest(endpoint: string, options: IntegrationServiceRequest): Promise<ServiceResponse> {
     const url = `${this.baseUrl}${endpoint}`;
     // Cross-runtime safe: "now" (performance.now if available, otherwise Date.now)
-    const perf = globalThis as unknown as { performance?: Performance | { now?: () => number } };
+    const perf = globalThis as: unknown as { performance?: Performance | { now?: () => number } };
     const now = typeof perf.performance?.now === 'function' ? () => perf.performance!.now() : () => Date.now();
     const startTime = now();
     // Build fetch options without signal for now; create signal below with fallback
     const fetchOptions: RequestInit = {
-      method: options.method,
+     , method: options.method,
       headers: {
         'Content-Type': 'application/json',
         ...options.headers
@@ -42,7 +42,7 @@ class ProductionServiceClient {
     let controllerForFallback: AbortController | null = null;
     try {
       // Create a typed reference to possible AbortSignal.timeout without using `any`
-      const maybeAbortTimeout = (AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal }).timeout;
+      const maybeAbortTimeout = (AbortSignal, as: unknown as { timeout?: (ms: number) => AbortSignal }).timeout;
       if (typeof maybeAbortTimeout === 'function') {
         // call the timeout function in environments that support it
         fetchOptions.signal = maybeAbortTimeout(options.timeout ?? 5000);
@@ -78,7 +78,7 @@ class ProductionServiceClient {
       };
     } catch (error: any) {
       const latency = now() - startTime;
-      // Safely extract message/name from unknown error
+      // Safely extract message/name from: unknown error
       const message = error instanceof Error ? error.message : String(error);
       const name = error instanceof Error ? error.name : 'Error';
       // Handle network errors, timeouts, etc.
@@ -149,7 +149,7 @@ class ProductionServiceClient {
     successRate: number;
     results: ServiceResponse[];
   }> {
-    const results: ServiceResponse[] = [];
+    const, results: ServiceResponse[] = [];
     let successCount = 0;
     for (let i = 0; i < iterations; i++) {
       const result = await this.makeRequest(endpoint, options);

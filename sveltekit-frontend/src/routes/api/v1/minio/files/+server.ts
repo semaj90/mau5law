@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { minioService } from '$lib/server/storage/minio-service';
+import type { RequestHandler } from, './$types.js';
+import { minioService } from, '$lib/server/storage/minio-service';
 /**
  * MinIO File Management API
  * GET: List files in bucket with optional prefix filtering
  * DELETE: Delete specific files
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     // Initialize MinIO service
     const initialized = await minioService.initialize();

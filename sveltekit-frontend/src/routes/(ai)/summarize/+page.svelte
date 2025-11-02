@@ -2,22 +2,22 @@
 AI Document Summarization - Generate summaries of legal documents
 -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 	// Safe imports (works with default or named exports)
-	import * as EssentialRoutePageModule from '$lib/templates/EssentialRoutePage.svelte';
+	import * as EssentialRoutePageModule from, '$lib/templates/EssentialRoutePage.svelte';
 	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule;
 
 	// UI components / icons
-	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte';
-	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
+	import EnhancedButton from, '$lib/components/ui/enhanced-bits.svelte';
+	import { FileText, Upload, Download, Brain, Clock, Star } from, 'lucide-svelte';
 
 	// Fallback summary template
 	const FALLBACK_SUMMARY = `This legal document: "{filename}" outlines key provisions, procedural requirements, and compliance standards. Main points: statutory obligations, evidence handling rules, timelines, and recommended next steps.`;
 
 	// Types
-	type FileMetadata = { id: string; name: string; size: number; uploadedAt?: string };
+	type FileMetadata = { id: string; name: string;, size: number; uploadedAt?: string };
 
-	// State (Svelte 5 runes are auto-imported)
+	// State (Svelte, 5 runes are auto-imported)
 	let selectedFile = $state<FileMetadata | null>(null);
 	let rawFile = $state<File | null>(null);
 	let isUploading = $state<boolean>(false);
@@ -307,7 +307,7 @@ import type { Document } from '$lib/types';
 
 	/* Spinner animation */
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
+		0% {, transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
 

@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers
  */
-import { dev } from '$app/environment';
+import { dev } from, '$app/environment';
 
 export interface VectorSearchRequest {
   query?: {
@@ -21,7 +21,7 @@ export interface VectorSearchRequest {
     case_ids?: string[];
     doc_types?: DocumentType[];
     date_range?: {
-      from number;
+      from: number;
       to: number;
     };
     legal_categories?: string[];
@@ -35,17 +35,17 @@ export interface VectorSearchRequest {
     debug_mode?: boolean;
   };
 }
-export interface VectorSearchResponse { results: SearchResult[];, metadata: ResponseMetadata;
+export interface VectorSearchResponse {, results: SearchResult[];, metadata: ResponseMetadata;
   analytics: QueryAnalytics;
   recommendations: Recommendation[];
 }
-export interface SearchResult { id: string;, document: DocumentMetadata;
+export interface SearchResult {, id: string;, document: DocumentMetadata;
   similarity_score: number;
   embedding?: number[];
   snippets: TextSnippet[];
   legal_context: LegalContext;
 }
-export interface DocumentMetadata { title: string;, content_preview: string;
+export interface DocumentMetadata {, title: string;, content_preview: string;
   type: DocumentType;
   created_at: number;
   updated_at: number;
@@ -56,23 +56,23 @@ export interface DocumentMetadata { title: string;, content_preview: string;
   page_count: number;
   word_count: number;
 }
-export interface TextSnippet { text: string;, highlights: HighlightRange[];
+export interface TextSnippet {, text: string;, highlights: HighlightRange[];
   relevance_score: number;
   page_number: number;
 }
-export interface HighlightRange { start: number;, end: number;
+export interface HighlightRange {, start: number;, end: number;
   match_type: 'exact' | 'semantic' | 'keyword';
 }
-export interface LegalContext { precedents: string[];, citations: Citation[];
+export interface LegalContext {, precedents: string[];, citations: Citation[];
   key_terms: string[];
   practice_area: string;
   legal_weight: number;
 }
-export interface Citation { citation_text: string;, source: string;
+export interface Citation {, citation_text: string;, source: string;
   url: string;
   relevance: number;
 }
-export interface ResponseMetadata { processing_time_ms: number;, total_results: number;
+export interface ResponseMetadata {, processing_time_ms: number;, total_results: number;
   algorithm_used: string;
   from_cache: boolean;
   data_source: string;
@@ -80,28 +80,28 @@ export interface ResponseMetadata { processing_time_ms: number;, total_results:
   quality: SearchQuality;
   client_time_ms?: number;
 }
-export interface SearchQuality { avg_similarity: number;, query_clarity: number;
+export interface SearchQuality {, avg_similarity: number;, query_clarity: number;
   result_diversity: number;
   exact_matches: number;
   semantic_matches: number;
 }
-export interface QueryAnalytics { query_id: string;, query_hash: string;
+export interface QueryAnalytics {, query_id: string;, query_hash: string;
   expansion_terms: string[];
   clusters: SemanticCluster[];
   complexity: QueryComplexity;
 }
-export interface SemanticCluster { cluster_id: string;, theme: string;
+export interface SemanticCluster {, cluster_id: string;, theme: string;
   weight: number;
   representative_terms: string[];
 }
-export interface QueryComplexity { complexity_score: number;, complexity_level: 'simple' | 'moderate' | 'complex';
+export interface QueryComplexity {, complexity_score: number;, complexity_level: 'simple' | 'moderate' | 'complex';
   complexity_factors: string[];
 }
-export interface Recommendation { type: string;, title: string;
+export interface Recommendation {, type: string;, title: string;
   description: string;
   action_url: string;
   confidence: number;
-  tags: string[];
+ , tags: string[];
 }
 export enum DocumentType {
   UNKNOWN = 0,
@@ -119,7 +119,7 @@ export enum DocumentType {
  */
 export class VectorSearchClient {
   private readonly baseUrl: string;
-  private readonly timeout: number;
+  private readonly, timeout: number;
   constructor(baseUrl = '/api/v1/vector', timeout = 30000) {
     this.baseUrl = baseUrl;
     this.timeout = timeout;
@@ -202,7 +202,7 @@ export class VectorSearchClient {
     const batchRequest = {
       requests,
       batch_params: {
-        parallel_processing: true,
+       , parallel_processing: true,
         max_concurrent: 10,
         return_aggregated_analytics: true
       }

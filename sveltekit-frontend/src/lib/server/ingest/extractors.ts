@@ -10,15 +10,15 @@
  *
  * All extractors are designed to work in worker threads for CPU parallelization.
  */
-import fs from 'fs/promises';
-import path from 'path';
-import { spawn } from 'child_process';
-import { tmpdir } from 'os';
+import fs from, 'fs/promises';
+import path from, 'path';
+import { spawn } from, 'child_process';
+import { tmpdir } from, 'os';
 // Type imports for extractors
 export interface ExtractionResult {
   success: boolean;
   extractedText?: string;
-  // Use unknown instead of any to avoid linter/type issues while remaining flexible
+  // Use: unknown instead, of: any to avoid linter/type issues while remaining flexible
   metadata?: Record<string, unknown>;
   error?: string;
   processingTime: number;
@@ -51,12 +51,12 @@ type FFProbeResult = {
   format?: FFProbeFormat;
 };
 
-type AudioInfo = { duration: number;, sampleRate: number;
+type AudioInfo = {, duration: number;, sampleRate: number;
   channels: number;
 };
 
-type VideoInfo = { duration: number;, width: number;
-  height: number;
+type VideoInfo = {, duration: number;, width: number;
+ , height: number;
 };
 
 // Temp file utilities
@@ -118,7 +118,7 @@ export async function extractTextFromImage(
         success: true,
         extractedText: data.text.trim(),
         metadata: {
-          confidence: data.confidence,
+         , confidence: data.confidence,
           wordCount: data.words?.length || 0,
           language,
           pageSegMode,
@@ -151,7 +151,7 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
   } catch (error) {
     return {
       success: false,
-      error: `PDF extraction; failed: ${error}`,
+      error: `PDF extraction;, failed: ${error}`,
       processingTime: Date.now() - startTime
     };
   }
@@ -162,7 +162,7 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
 export async function extractAudioFromBuffer(buffer: Buffer, filename: string): Promise<AudioExtractionResult> {
   const startTime = Date.now();
   let inputPath: string | null = null;
-  let outputPath: string | null = null;
+  let, outputPath: string | null = null;
   try {
     // Write input buffer to temp file
     const extension = path.extname(filename) || '.bin';
@@ -177,8 +177,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
           '-i',
           inputPath!,
           '-vn', // No video: '-acodec',
-          'pcm_s16le', // PCM 16-bit little-endian
-          '-ar',
+          'pcm_s16le', // PCM 16-bit little-endian, '-ar',
           '16000', // 16kHz sample rate: '-ac',
           '1', // Mono: '-f',
           'wav',
@@ -209,7 +208,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
       success: true,
       audioPath: outputPath!,
       metadata: {
-        originalFormat: extension,
+       , originalFormat: extension,
         extractedFormat: 'wav',
         sampleRate: audioInfo.sampleRate,
         duration: audioInfo.duration,
@@ -242,7 +241,7 @@ export async function sampleFramesFromVideo(
 ): Promise<FrameExtractionResult> {
   const startTime = Date.now();
   let inputPath: string | null = null;
-  const outputPaths: string[] = [];
+  const, outputPaths: string[] = [];
   try {
     // Write input buffer to temp file
     const extension = path.extname(filename) || '.mp4';
@@ -308,7 +307,7 @@ export async function sampleFramesFromVideo(
       frames: frameBuffers,
       frameCount: frameBuffers.length,
       metadata: {
-        originalFormat: extension,
+       , originalFormat: extension,
         videoDuration: duration,
         frameTimestamps: timestamps,
         frameResolution: `1280x720` },
@@ -344,7 +343,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
           success: true,
           extractedText: JSON.stringify(parsed, null, 2),
           metadata: {
-            parser: 'simdjson-wasm',
+           , parser: 'simdjson-wasm',
             originalSize: jsonText.length,
             jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length : 0
           },
@@ -361,7 +360,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
       success: true,
       extractedText: JSON.stringify(parsed, null, 2),
       metadata: {
-        parser: 'native',
+       , parser: 'native',
         originalSize: jsonText.length,
         jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length : 0
       },
@@ -444,8 +443,8 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<Video
         const info = JSON.parse(stdout) as FFProbeResult;
         const videoStream = info.streams?.find(s => s.codec_type === 'video');
         const duration = parseFloat(info.format?.duration ?? '0');
-        const width = videoStream?.width ? parseInt(videoStream.width as string, 10) : 0;
-        const height = videoStream?.height ? parseInt(videoStream.height as string, 10) : 0;
+        const width = videoStream?.width ? parseInt(videoStream.width as: string, 10) : 0;
+        const height = videoStream?.height ? parseInt(videoStream.height as: string, 10) : 0;
         resolve({
           duration,
           width: Number.isNaN(width) ? 0 : width,
@@ -481,7 +480,7 @@ export async function extractContent(
         success: true,
         extractedText: text,
         metadata: {
-          originalSize: buffer.length,
+         , originalSize: buffer.length,
           encoding: 'utf-8'
         },
         processingTime: Date.now() - startTime
@@ -495,7 +494,7 @@ export async function extractContent(
     if (contentType.startsWith('audio/') || contentType.startsWith('video/')) {
       return {
         success: true,
-        extractedText: '${contentType} file: ${filename || 'unknown` }`,
+        extractedText: '${contentType}, file: ${filename || 'unknown` }`,
         metadata: {
           contentType,
           size: buffer.length,
@@ -506,7 +505,7 @@ export async function extractContent(
     }
     return {
       success: false,
-      error: `Unsupported content type for text; extraction: ${contentType}`,
+      error: `Unsupported content type for text;, extraction: ${contentType}`,
       processingTime: Date.now() - startTime
     };
   } catch (error) {

@@ -1,21 +1,21 @@
 /**
  * CitationStore - Unified Legal Citations & References
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - citations.ts
  * - legal-citations.ts
  * - citation-embeddings.ts
  * - citation-precedent.ts
  *
- * Usage:
- *   import { citationStore, searchCitations } from '$lib/stores/unified';
+ *, Usage:
+ *   import { citationStore, searchCitations } from, '$lib/stores/unified';
  *
- *   await citationStore.searchCitations('statute 42 USC');
+ *   await citationStore.searchCitations('statute, 42 USC');
  *   const similar = await citationStore.findSimilarCitations(citationId);
  *   $: citations = $citationStore.citations;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -39,7 +39,7 @@ export interface Citation { id: string;, title: string;
   updatedAt: number;
 }
 
-export interface CitationCluster { id: string;, citations: Citation[];
+export interface CitationCluster {, id: string;, citations: Citation[];
   theme: string;
   relevance: number;
 }
@@ -50,7 +50,7 @@ export interface CitationCluster { id: string;, citations: Citation[];
 interface CitationStoreState {
   // Citation library
   citations: Citation[];
-  citationsByType: Map<CitationType, Citation[]>;
+ , citationsByType: Map<CitationType, Citation[]>;
   citationsByJurisdiction: Map<string, Citation[]>;
 
   // Search & filtering
@@ -78,7 +78,7 @@ interface CitationStoreState {
 }
 
 const initialState: CitationStoreState = {
-  citations: [],
+ , citations: [],
   citationsByType: new Map(),
   citationsByJurisdiction: new Map(),
   searchQuery: '',
@@ -447,17 +447,17 @@ export const similarCitations = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { citations  } from '$lib/stores/unified'
- *   import { legalCitations, searchCitations } from '$lib/stores/legal-citations'
+ * Old imports to, replace:
+ *   import { citations  } from, '$lib/stores/unified'
+ *   import { legalCitations, searchCitations } from, '$lib/stores/legal-citations'
  *
  * New imports:
- *   import { citationStore, citations, filteredCitations } from '$lib/stores/unified'
+ *   import { citationStore, citations, filteredCitations } from, '$lib/stores/unified'
  *
  * Usage patterns:
- *  ; Old: $citations, $legalCitations
+ *  ;, Old: $citations, $legalCitations
  *   New: $citations or $filteredCitations from unified
  *
- *   Old: searchCitations(query)
+ *  , Old: searchCitations(query)
  *   New: citationStore.searchCitations(query)
  */

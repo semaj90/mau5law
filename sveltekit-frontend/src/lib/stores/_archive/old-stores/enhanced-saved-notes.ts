@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Enhanced Saved Notes Store - Integrated with Legal AI Platform
  * Features: OCR integration, AI-generated notes, legal citations, embeddings
  */
-import { browser } from "$app/environment";
-import { derived, writable } from "svelte/store";
-import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
-import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
+import { browser } from, "$app/environment";
+import { derived, writable } from, "svelte/store";
+import { fastParse, fastStringify, createSIMDJSONCache } from, '$lib/utils/simd-json-cache';
+import { createWorkerPool } from, '$lib/workers/legal-ai-worker-pool';
 // Enhanced Legal Note Interface
 export interface LegalNote { id: string;, title: string;
   content: string;
@@ -30,7 +30,7 @@ export interface LegalNote { id: string;, title: string;
     // OCR Integration
     ocrExtracted?: boolean;
     ocrConfidence?: number;
-    ocrBoundingBoxes?: Array<{ text: string;, confidence: number;
+    ocrBoundingBoxes?: Array<{, text: string;, confidence: number;
       bbox: { x: number; y: number; width: number; height: number }
     }>;
     // Embeddings & Semantic Search
@@ -39,7 +39,7 @@ export interface LegalNote { id: string;, title: string;
     semanticSimilarity?: number;
     // Legal Context
     relatedCases?: string[];
-    legalCitations?: Array<{ type: 'case_law' | 'statute' | 'regulation' | 'precedent';, citation: string;
+    legalCitations?: Array<{, type: 'case_law' | 'statute' | 'regulation' | 'precedent';, citation: string;
       relevance: number;
       snippet?: string;
     }>;
@@ -48,12 +48,12 @@ export interface LegalNote { id: string;, title: string;
     jurisdiction?: string;
     // Neo4j Integration
     neo4jNodeId?: string;
-    graphRelationships?: Array<{ type: string;, targetId: string;
+    graphRelationships?: Array<{, type: string;, targetId: string;
       properties: any;
     }>;
     // RAG Integration
     ragDocumentId?: string;
-    ragChunks?: Array<{ id: string;, content: string;
+    ragChunks?: Array<{, id: string;, content: string;
       embedding: number[];
       relevance: number;
     }>;
@@ -65,15 +65,15 @@ export interface LegalNote { id: string;, title: string;
     priority?: 'low' | 'medium' | 'high' | 'urgent';
     archived?: boolean;
     // File Attachments
-    attachments?: Array<{ id: string;, filename: string;
+    attachments?: Array<{, id: string;, filename: string;
       contentType: string;
       size: number;
       minioPath?: string;
     }>;
   }
 }
-export interface NoteFilters { search: string;, noteType: string;
-  tags: string[];
+export interface NoteFilters {, search: string;, noteType: string;
+ , tags: string[];
   caseId?: string;
   riskLevel?: string;
   practiceArea?: string;
@@ -87,7 +87,7 @@ export interface NoteStats { total: number;, byType: Record<string, number>;
   ocrExtracted: number;
   totalTags: number;
   averageConfidence: number;
-  recentlyUpdated: number;
+ , recentlyUpdated: number;
 }
 // Stores
 export const legalNotes = writable<LegalNote[]>([]);
@@ -174,7 +174,7 @@ export const filteredNotes = derived(
 // Enhanced stats
 export const noteStats = derived(legalNotes, ($legalNotes): NoteStats => {
   const stats: NoteStats = {
-    total: $legalNotes.length,
+   , total: $legalNotes.length,
     byType: {},
     byRiskLevel: {},
     aiGenerated: 0,
@@ -214,7 +214,7 @@ class EnhancedNotesManager {
   private static instance: EnhancedNotesManager;
   private dbPrefix = "legal-note-";
   private simdCache = createSIMDJSONCache({
-    defaultTTL: 3600,
+   , defaultTTL: 3600,
     compressionEnabled: true,
     enableMetrics: true
   });
@@ -383,7 +383,7 @@ class EnhancedNotesManager {
   }
   // Get existing note
   private async getExistingNote(noteId: string): Promise<LegalNote | null> {
-    if (!browser) return null;
+    if (!browser) return: null;
     try {
       const stored = localStorage.getItem(`${this.dbPrefix}${noteId}`);
       if (stored) {
@@ -392,13 +392,13 @@ class EnhancedNotesManager {
     } catch (error) {
       console.warn('Failed to retrieve existing note:', error);
     }
-    return null;
+    return: null;
   }
   // Create note from OCR results
   async createNoteFromOCR(ocrResult: any, caseId?: string): Promise<LegalNote> {
     const noteId = `ocr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const note: LegalNote = {
-      id: noteId,
+     , id: noteId,
       title: `OCR Extract - ${new Date().toLocaleDateString()}`,
       content: ocrResult.text,
       markdown: ocrResult.text,
@@ -407,9 +407,9 @@ class EnhancedNotesManager {
       noteType: 'ocr_extracted',
       tags: ['ocr', 'extracted'],
       caseId,
-      userId: 'current-user', // TODO: Get from auth; savedAt: new Date(),
+      userId: 'current-user', // TODO: Get from auth;, savedAt: new Date(),
       metadata: {
-        ocrExtracted: true,
+       , ocrExtracted: true,
         ocrConfidence: ocrResult.confidence,
         ocrBoundingBoxes: ocrResult.boundingBoxes,
         sourceDocument: ocrResult.sourceDocument,
@@ -423,7 +423,7 @@ class EnhancedNotesManager {
   async createNoteFromAIAnalysis(analysis: any, sourceContent: string, caseId?: string): Promise<LegalNote> {
     const noteId = `ai-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const note: LegalNote = {
-      id: noteId,
+     , id: noteId,
       title: analysis.title || `AI Analysis - ${new Date().toLocaleDateString()}`,
       content: analysis.summary || sourceContent,
       markdown: analysis.markdown || analysis.summary,
@@ -435,7 +435,7 @@ class EnhancedNotesManager {
       userId: 'current-user',
       savedAt: new Date(),
       metadata: {
-        aiGenerated: true,
+       , aiGenerated: true,
         aiModel: analysis.model || 'gemma3:legal-latest',
         confidence: analysis.confidence,
         legalCitations: analysis.citations,
@@ -574,14 +574,14 @@ class EnhancedNotesManager {
     });
     let content: string;
     let filename: string;
-    let mimeType: string;
+    let, mimeType: string;
     switch (format) {
-      case "legal_brief":
+      case, "legal_brief":
         content = this.formatAsLegalBrief(notes);
         filename = `legal-brief-${new Date().toISOString().split("T")[0]}.md`;
         mimeType = "text/markdown";
         break;
-      case "markdown":
+      case, "markdown":
         content = this.formatAsMarkdown(notes);
         filename = `notes-export-${new Date().toISOString().split("T")[0]}.md`;
         mimeType = "text/markdown";

@@ -156,7 +156,7 @@
     {/snippet}
   </Drawer>
 {:else}
-  <Dialog.Root bind:open> <!-- Bind to the: 'open' prop -->
+  <Dialog bind:open> <!-- Bind to the: 'open' prop -->
     <Dialog.Content size="lg">
       <Dialog.Header>
         <Dialog.Title>Case Summary</Dialog.Title>
@@ -234,5 +234,5 @@
         {/if}
       </div>
     </Dialog.Content>
-  </Dialog.Root>
+  </Dialog>
 {/if}

@@ -3,11 +3,11 @@
  * Handles file uploads, generates embeddings with embeddinggemma:latest,
  * stores in pgvector, and caches in Redis
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { nanoid } from 'nanoid';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { writeFile, mkdir } from, 'fs/promises';
+import { join } from, 'path';
+import { nanoid } from, 'nanoid';
 
 const UPLOAD_DIR = join(process.cwd(), 'uploads', 'rag-ingest');
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Extract text content (simple implementation)
       const textContent = file.type.includes('text') ? buffer.toString('utf-8') : `Binary file: ${file.name}`;
 
-      // Generate embeddings using embeddinggemma:latest
+      // Generate embeddings using, embeddinggemma:latest
       const embeddings = await generateEmbeddings(textContent, file.name);
       totalEmbeddings += embeddings.length;
 
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
         embeddings,
         content: textContent.substring(0, 5000), // First 5KB
         metadata: {
-          size: file.size,
+         , size: file.size,
           type: file.type,
           uploadedAt: new Date().toISOString()
         }
@@ -103,10 +103,10 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
     }
 
     // Generate embeddings using Ollama embeddinggemma:latest
-    const embeddings: number[][] = [];
+    const, embeddings: number[][] = [];
 
     for (const chunk of chunks.slice(0, 10)) {
-      // Limit to first 10 chunks
+      // Limit to first, 10 chunks
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`

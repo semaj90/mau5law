@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Alert Center - Legal AI Platform
  *
@@ -20,16 +20,16 @@ import type { Document } from '$lib/types';
  * @version 3.2.0
  * @lastModified 2025-01-20
  */
-import fs from 'fs';
-import path from 'path';
-import type { NATSMessagingService } from './nats-messaging-service.js';
+import fs from, 'fs';
+import path from, 'path';
+import type { NATSMessagingService } from, './nats-messaging-service.js';
 import {
   getQUICMetrics,
   getAggregateAnomaliesLast5m,
   getStageBaselineSnapshot,
   resetBudgetCounters,
   getBudgetCounters
-} from './pipeline-metrics.js';
+} from, './pipeline-metrics.js';
 
 // Add a typed alias for QUIC metrics to avoid `any`
 type QUICMetrics = ReturnType<typeof, getQUICMetrics>;
@@ -57,7 +57,7 @@ export interface RuntimeAlert { id: string;, type: AlertType;
   category: AlertCategory;
   message: string;
   description?: string;
-  timestamp: number;
+ , timestamp: number;
   caseId?: string;
   userId?: string;
   clientId?: string;
@@ -65,7 +65,7 @@ export interface RuntimeAlert { id: string;, type: AlertType;
   metadata?: Record<string, unknown>;
   acknowledgementRequired: boolean;
   escalationLevel: number;
-  retentionPeriod: number; // days,
+ , retentionPeriod: number; // days,
   complianceFlags: string[];
 }
 /**
@@ -141,8 +141,8 @@ export type AlertCategory =
 /**
  * Alert Configuration Settings
  */
-export interface AlertConfig { ringBufferSize: number;, retentionDays: number;
-  escalationTimeouts: Record<AlertSeverity, number>;
+export interface AlertConfig {, ringBufferSize: number;, retentionDays: number;
+ , escalationTimeouts: Record<AlertSeverity, number>;
   notificationChannels: NotificationChannel[];
   complianceSettings: ComplianceAlertSettings;
   autoRemediation: AutoRemediationSettings;
@@ -150,7 +150,7 @@ export interface AlertConfig { ringBufferSize: number;, retentionDays: number;
 /**
  * Notification Channel Configuration
  */
-export interface NotificationChannel { type: 'email' | 'sms' | 'slack' | 'teams' | 'webhook' | 'nats' | 'dashboard';, endpoint: string;
+export interface NotificationChannel {, type: 'email' | 'sms' | 'slack' | 'teams' | 'webhook' | 'nats' | 'dashboard';, endpoint: string;
   credentials?: Record<string, string>;
   filters: AlertFilterConfig;
   enabled: boolean;
@@ -159,7 +159,7 @@ export interface NotificationChannel { type: 'email' | 'sms' | 'slack' | 'teams'
 /**
  * Alert Filter Configuration
  */
-export interface AlertFilterConfig { severityLevels: AlertSeverity[];, categories: AlertCategory[];
+export interface AlertFilterConfig {, severityLevels: AlertSeverity[];, categories: AlertCategory[];
   types: AlertType[];
   excludePatterns: string[];
   includePatterns: string[];
@@ -168,23 +168,23 @@ export interface AlertFilterConfig { severityLevels: AlertSeverity[];, categori
 /**
  * Time Window Configuration
  */
-export interface TimeWindowConfig { startHour: number;, endHour: number;
+export interface TimeWindowConfig {, startHour: number;, endHour: number;
   timezone: string;
   daysOfWeek: number[];
 }
 /**
  * Compliance Alert Settings
  */
-export interface ComplianceAlertSettings { privilegeBreachThreshold: number;, chainOfCustodyTimeout: number;
+export interface ComplianceAlertSettings {, privilegeBreachThreshold: number;, chainOfCustodyTimeout: number;
   retentionViolationGracePeriod: number;
-  confidentialityLevelMapping: Record<string, AlertSeverity>;
+ , confidentialityLevelMapping: Record<string, AlertSeverity>;
   auditLogRequired: boolean;
   regulatoryNotificationRequired: boolean;
 }
 /**
  * Auto-Remediation Settings
  */
-export interface AutoRemediationSettings { enabled: boolean;, maxAttempts: number;
+export interface AutoRemediationSettings {, enabled: boolean;, maxAttempts: number;
   cooldownPeriod: number;
   allowedActions: string[];
   escalationOnFailure: boolean;
@@ -193,7 +193,7 @@ export interface AutoRemediationSettings { enabled: boolean;, maxAttempts: numb
 /**
  * Alert Statistics
  */
-export interface AlertStatistics { totalAlerts: number;, alertsBySeverity: Record<AlertSeverity, number>;
+export interface AlertStatistics {, totalAlerts: number;, alertsBySeverity: Record<AlertSeverity, number>;
   alertsByCategory: Record<AlertCategory, number>;
   alertsByType: Record<string, number>;
   averageResponseTime: number;
@@ -201,7 +201,7 @@ export interface AlertStatistics { totalAlerts: number;, alertsBySeverity: Reco
   autoRemediationSuccessRate: number;
   complianceViolations: number;
   mostFrequentAlerts: Array<any>;
-  timeDistribution: Record<string, number>;
+ , timeDistribution: Record<string, number>;
 }
 // ===== ALERT CENTER IMPLEMENTATION =====
 /**
@@ -209,7 +209,7 @@ export interface AlertStatistics { totalAlerts: number;, alertsBySeverity: Reco
  */
 export class AlertCenter {
   private alerts: RuntimeAlert[] = [];
-  private config: AlertConfig;
+  private, config: AlertConfig;
   private natsService?: NATSMessagingService;
   private sustainedP99Breaches = 0;
   private lastP99Ok = Date.now();
@@ -227,7 +227,7 @@ export class AlertCenter {
 
   // Helper: safe access to high-resolution time without using `any`
   private getNow(): number {
-    const perf = (globalThis as unknown as { performance?: { now?: () => number } }).performance;
+    const perf = (globalThis as: unknown as { performance?: { now?: () => number } }).performance;
     return typeof perf?.now === 'function' ? perf.now() : Date.now();
   }
 
@@ -242,10 +242,10 @@ export class AlertCenter {
    */
   private buildDefaultConfig(overrides?: Partial<AlertConfig>): AlertConfig {
     const defaultConfig: AlertConfig = {
-      ringBufferSize: this.RING_SIZE,
+     , ringBufferSize: this.RING_SIZE,
       retentionDays: 90,
       escalationTimeouts: {
-        info: 24 * 60 * 60 * 1000,      // 24 hours
+       , info: 24 * 60 * 60 * 1000,      // 24 hours
         warning: 4 * 60 * 60 * 1000,    // 4 hours
         critical: 30 * 60 * 1000,       // 30 minutes;
         emergency: 5 * 60 * 1000        // 5 minutes
@@ -255,7 +255,7 @@ export class AlertCenter {
           type: 'dashboard',
           endpoint: '/api/v1/notifications/dashboard',
           filters: {
-            severityLevels: ['info', 'warning', 'critical', 'emergency'],
+           , severityLevels: ['info', 'warning', 'critical', 'emergency'],
             categories: ['system_performance', 'legal_compliance', 'security_breach'],
             types: [],
             excludePatterns: [],
@@ -268,7 +268,7 @@ export class AlertCenter {
           type: 'nats',
           endpoint: this.SYSTEM_ALERTS_SUBJECT,
           filters: {
-            severityLevels: ['critical', 'emergency'],
+           , severityLevels: ['critical', 'emergency'],
             categories: ['legal_compliance', 'security_breach'],
             types: [],
             excludePatterns: [],
@@ -279,7 +279,7 @@ export class AlertCenter {
         }
       ],
       complianceSettings: {
-        privilegeBreachThreshold: 1,
+       , privilegeBreachThreshold: 1,
         chainOfCustodyTimeout: 60 * 60 * 1000, // 1 hour
         retentionViolationGracePeriod: 7 * 24 * 60 * 60 * 1000, // 7 days
         confidentialityLevelMapping: {
@@ -291,7 +291,7 @@ export class AlertCenter {
         regulatoryNotificationRequired: true
       },
       autoRemediation: {
-        enabled: true,
+       , enabled: true,
         maxAttempts: 3,
         cooldownPeriod: this.AUTOSOLVE_COOLDOWN_MS,
         allowedActions: ['restart_service', 'clear_cache', 'rotate_logs'],
@@ -366,12 +366,12 @@ export class AlertCenter {
       message: this.humanizeAlertMessage(type, quicMetrics),
       description: this.generateAlertDescription(type, context),
       timestamp: Date.now(),
-      caseId: context['caseId'] as string | undefined,
-      userId: context['userId'] as string | undefined,
-      clientId: context['clientId'] as string | undefined,
+      caseId: context['caseId'], as: string | undefined,
+      userId: context['userId'], as: string | undefined,
+      clientId: context['clientId'], as: string | undefined,
       legalContext,
       metadata: {
-        quicP99: quicMetrics?.p99,
+       , quicP99: quicMetrics?.p99,
         quicErrors1m: quicMetrics?.error_rate_1m,
         anomalies5m: getAggregateAnomaliesLast5m(),
         systemLoad: context['systemLoad'],
@@ -413,7 +413,7 @@ export class AlertCenter {
   private logAlert(alert: RuntimeAlert): void {
     const logLevel = this.mapSeverityToLogLevel(alert.severity);
     // Use console[logLevel] if available
-    const logger = (console as any)[logLevel] ?? console.log;
+    const logger = (console as: any)[logLevel] ?? console.log;
     logger(
       `[ALERT][${alert.severity.toUpperCase()}][${alert.category}] ${alert.type}: ${alert.message}`,
       {
@@ -442,7 +442,7 @@ export class AlertCenter {
    */
   private async sendNotificationToChannel(alert: RuntimeAlert, channel: NotificationChannel): Promise<void> {
     switch (channel.type) {
-      case 'nats':
+      case, 'nats':
         if (this.natsService) {
           await this.natsService.publish(channel.endpoint, { alert: {, id: alert.id,
               type: alert.type,
@@ -455,13 +455,13 @@ export class AlertCenter {
           });
         }
         break;
-      case 'dashboard':
+      case, 'dashboard':
         // Dashboard notifications handled by WebSocket or SSE in browser
         if (typeof window !== 'undefined' && window.alertDashboard?.addAlert) {
           window.alertDashboard.addAlert(alert);
         }
         break;
-      case 'webhook':
+      case, 'webhook':
         await fetch(channel.endpoint, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
@@ -469,7 +469,7 @@ export class AlertCenter {
         });
         break;
       default:
-        console.warn(`Unsupported notification channel; type: ${channel.type}`);
+        console.warn(`Unsupported notification channel;, type: ${channel.type}`);
     }
   }
   /**
@@ -574,19 +574,19 @@ export class AlertCenter {
    */
   private extractLegalContext(context: AlertContext = {}): LegalAlertContext | undefined {
     // minimal presence checks using indexed access
-    if (!context) return undefined;
+    if (!context) return: undefined;
     if (!context['legal'] && !context['caseId'] && !context['evidenceId'] && !context['confidentialityLevel']) {
-      return undefined;
+      return: undefined;
     }
     return {
-      confidentialityLevel: (context['confidentialityLevel'] as LegalAlertContext['confidentialityLevel']) ?? 'public',
-      chainOfCustodyId: context['chainOfCustodyId'] as string | undefined,
-      evidenceId: context['evidenceId'] as string | undefined,
-      documentId: context['documentId'] as string | undefined,
-      privilegeScope: context['privilegeScope'] as string | undefined,
-      clientMatter: context['clientMatter'] as string | undefined,
-      jurisdictionCode: context['jurisdictionCode'] as string | undefined,
-      regulatoryCompliance: (context['regulatoryCompliance'] as string[]) ?? [],
+     , confidentialityLevel: (context['confidentialityLevel'] as LegalAlertContext['confidentialityLevel']) ?? 'public',
+      chainOfCustodyId: context['chainOfCustodyId'], as: string | undefined,
+      evidenceId: context['evidenceId'], as: string | undefined,
+      documentId: context['documentId'], as: string | undefined,
+      privilegeScope: context['privilegeScope'], as: string | undefined,
+      clientMatter: context['clientMatter'], as: string | undefined,
+      jurisdictionCode: context['jurisdictionCode'], as: string | undefined,
+      regulatoryCompliance: (context['regulatoryCompliance'], as: string[]) ?? [],
       auditTrailRequired: context['auditTrailRequired'] !== false,
       legalHoldStatus: context['legalHoldStatus'] as LegalAlertContext['legalHoldStatus'] | undefined
     };
@@ -598,7 +598,7 @@ export class AlertCenter {
     const messages: Record<AlertType, string> = {
       'p99_latency_exceeded': 'QUIC p99 latency ${quicMetrics?.p99 ?? 'unknown` }ms exceeded threshold`,
       'error_spike': 'QUIC error spike detected (${quicMetrics?.error_rate_1m ?? 'unknown` } errors/min)`,
-      'pipeline_anomaly_spike': `Pipeline anomaly spike (${getAggregateAnomaliesLast5m()} anomalies in 5 minutes)`,
+      'pipeline_anomaly_spike': `Pipeline anomaly spike (${getAggregateAnomaliesLast5m()} anomalies in, 5 minutes)`,
       'service_unavailable': 'Critical service is unavailable',
       'memory_threshold_exceeded': 'System memory usage exceeded threshold',
       'cpu_threshold_exceeded': 'CPU usage exceeded threshold',
@@ -632,7 +632,7 @@ export class AlertCenter {
    */
   private generateAlertDescription(type: AlertType, context: AlertContext = {}): string {
     const baseDescription = `Alert triggered for ${type} at ${new Date().toISOString()}`;
-    const desc = context['description'] as string | undefined;
+    const desc = context['description'] as: string | undefined;
     if (desc) {
       return `${baseDescription}. ${desc}`;
     }
@@ -809,7 +809,7 @@ export class AlertCenter {
    */
   public getSustainedP99Info(): { sustainedP99Breaches: number; threshold: number; lastP99OkTs: number } {
     return {
-      sustainedP99Breaches: this.sustainedP99Breaches,
+     , sustainedP99Breaches: this.sustainedP99Breaches,
       threshold: this.SUSTAINED_P99_THRESHOLD,
       lastP99OkTs: this.lastP99Ok
     };
@@ -819,7 +819,7 @@ export class AlertCenter {
    */
   public buildBaseline(): BaselineFile {
     const baseline: BaselineFile = {
-      created: new Date().toISOString(),
+     , created: new Date().toISOString(),
       stages: getStageBaselineSnapshot(),
       quic: getQUICMetrics()
     };
@@ -840,10 +840,10 @@ export class AlertCenter {
       p90: number;
       p99: number;
       anomalies: number;
-    } : { stage: string;, p50: number;
+    } : {, stage: string;, p50: number;
       p90: number;
       p99: number;
-      anomalies: number;
+     , anomalies: number;
     };
 
     const newStages = newBaseline.stages as StageSnapshot[];
@@ -859,13 +859,13 @@ export class AlertCenter {
         };
       }
       const deltas = {
-        p50: stage.p50 - prevStage.p50,
+       , p50: stage.p50 - prevStage.p50,
         p90: stage.p90 - prevStage.p90,
         p99: stage.p99 - prevStage.p99,
         anomalies: stage.anomalies - prevStage.anomalies
       };
       return {
-        stage: stage.stage,
+       , stage: stage.stage,
         deltas
       };
     });
@@ -883,7 +883,7 @@ export class AlertCenter {
         fs.mkdirSync(this.RUNTIME_DIR, { recursive: true });
       }
       const state: PersistedState = {
-        sustainedP99Breaches: this.sustainedP99Breaches,
+       , sustainedP99Breaches: this.sustainedP99Breaches,
         lastP99Ok: this.lastP99Ok,
         lastBaseline: this.persistenceState?.lastBaseline,
         budgets: getBudgetCounters(),
@@ -947,7 +947,7 @@ export interface BaselineFile { created: string;, stages: ReturnType<typeof, ge
   quic: QUICMetrics;
 }
 
-export interface PersistedState { sustainedP99Breaches: number;, lastP99Ok: number;
+export interface PersistedState {, sustainedP99Breaches: number;, lastP99Ok: number;
   lastBaseline?: BaselineFile;
   budgets?: any;
   savedAt: string;
@@ -957,7 +957,7 @@ export interface PersistedState { sustainedP99Breaches: number;, lastP99Ok: num
 /**
  * Global Alert Center Instance
  */
-let alertCenterInstance: AlertCenter | null = null;
+let, alertCenterInstance: AlertCenter | null = null;
 /**
  * Get or create Alert Center singleton
  */
@@ -987,13 +987,13 @@ export function getAlertHistory(): RuntimeAlert[] {
 export async function maybeTriggerAutosolve(fetchFn: typeof fetch, rawCodes: string[]): Promise<{ triggered: boolean }> {
   const alertCenter = getAlertCenter();
   const alerts = await alertCenter.routeAlerts(rawCodes, { fetchFn });
-  // Check if any alerts triggered auto-remediation
+  // Check if: any alerts triggered auto-remediation
   for (const alert of alerts) {
     if (alertCenter['shouldTriggerAutoRemediation'](alert)) {
       return { triggered: true };
     }
   }
-  return { triggered: false };
+  return {, triggered: false };
 }
 /**
  * Legacy get sustained P99 info function

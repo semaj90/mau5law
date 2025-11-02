@@ -3,39 +3,39 @@
  * Stores NES-style character glyphs with texture streaming
  * Integrates with CHR-ROM caching and quantized text processing
  */
-import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
-import { chrRomPatternCache } from '../cache/chr-rom-pattern-cache.js';
-import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
+import { base64FP32Quantizer } from, '../text/base64-fp32-quantizer.js';
+import { chrRomPatternCache } from, '../cache/chr-rom-pattern-cache.js';
+import { enhancedCachingRevolutionaryBridge } from, '../services/enhanced-caching-revolutionary-bridge.js';
 export interface GlyphTexture { char: string;, charCode: number;
-  nesPattern: Uint8Array; // 8x8 NES-style pattern,
+ , nesPattern: Uint8Array; // 8x8 NES-style pattern,
   quantizedData: Float32Array; // Quantized representation
-  textureData: ImageData | null; // Rendered texture,
+ , textureData: ImageData | null; // Rendered texture,
   chrRomBankId: number; // CHR-ROM bank assignment
   cacheTimestamp: number;
   accessCount: number;
-  renderMetrics: { width: number;, height: number;
+  renderMetrics: {, width: number;, height: number;
     pixelDensity: number;
     colorDepth: number;
   }
 }
-export interface GlyphFont { fontName: string;, fontSize: number;
+export interface GlyphFont {, fontName: string;, fontSize: number;
   fontStyle: 'classic' | 'modern' | 'legal' | 'retro';
-  glyphs: Map<string, GlyphTexture>;
+ , glyphs: Map<string, GlyphTexture>;
   totalGlyphs: number;
   cacheSize: number; // In bytes
   lastOptimized: number;
 }
-export interface GlyphCacheMetrics { totalGlyphs: number;, cacheHitRate: number;
+export interface GlyphCacheMetrics {, totalGlyphs: number;, cacheHitRate: number;
   memoryUsage: number;
   renderingTime: number;
   compressionRatio: number;
   nesPatternEfficiency: number;
 }
-export interface SynthesizedGlyph { original: string;, synthesized: string;
+export interface SynthesizedGlyph {, original: string;, synthesized: string;
   confidence: number;
   didYouMean: string[];
   llmGenerated: boolean;
-  embeddings: Float32Array;
+ , embeddings: Float32Array;
 }
 export class GlyphCacheSystem {
   private fonts = new Map<string, GlyphFont>();
@@ -44,12 +44,12 @@ export class GlyphCacheSystem {
   private readonly GLYPH_SIZE = 8; // 8x8 NES standard
   private readonly MAX_CACHE_SIZE = 50 * 1024 * 1024; // 50MB max cache
   private readonly CACHE_CLEANUP_INTERVAL = 300000; // 5 minutes
-  // LLM Integration for: "did you mean" suggestions
+  // LLM Integration, for: "did you mean" suggestions
   private llmCache = new Map<string, string[]>();
   private ollamaUrl: string = 'http://localhost:11437';
   // Performance metrics
   private metrics: GlyphCacheMetrics = {
-    totalGlyphs: 0,
+   , totalGlyphs: 0,
     cacheHitRate: 0,
     memoryUsage: 0,
     renderingTime: 0,
@@ -143,7 +143,7 @@ export class GlyphCacheSystem {
     fontSize: number
   ): Promise<void> {
     const font: GlyphFont = {
-      fontName: fontKey,
+     , fontName: fontKey,
       fontSize,
       fontStyle,
       glyphs: new Map(),
@@ -178,7 +178,7 @@ export class GlyphCacheSystem {
       cacheTimestamp: Date.now(),
       accessCount: 1,
       renderMetrics: {
-        width: this.GLYPH_SIZE,
+       , width: this.GLYPH_SIZE,
         height: this.GLYPH_SIZE,
         pixelDensity: 1,
         colorDepth: 32 // RGBA
@@ -190,13 +190,13 @@ export class GlyphCacheSystem {
     const charCode = char.charCodeAt(0);
     // Style-specific pattern generation
     switch (fontStyle) {
-      case 'classic':
+      case, 'classic':
         return this.generateClassicNESPattern(char, charCode);
-      case 'modern':
+      case, 'modern':
         return this.generateModernPattern(char, charCode);
-      case 'legal':
+      case, 'legal':
         return this.generateLegalPattern(char, charCode);
-      case 'retro':
+      case, 'retro':
         return this.generateRetroPattern(char, charCode);
       default: return this.generateClassicNESPattern(char, charCode);
     }
@@ -286,7 +286,7 @@ export class GlyphCacheSystem {
     return pattern;
   }
   private generateFallbackPattern(charCode: number): number[] {
-    // Generate a fallback pattern for unknown characters
+    // Generate a fallback pattern for: unknown characters
     const pattern = new Array(8).fill(0);
     for (let i = 0; i < 8; i++) {
       pattern[i] = (charCode + i) % 256;
@@ -298,7 +298,7 @@ export class GlyphCacheSystem {
     nesPattern: Uint8Array,
     fontStyle: GlyphFont['fontStyle']
   ): ImageData | null {
-    if (!this.renderContext) return null;
+    if (!this.renderContext) return: null;
     // Clear canvas
     this.renderContext.clearRect(0, 0, this.GLYPH_SIZE, this.GLYPH_SIZE);
     // Create image data
@@ -350,7 +350,7 @@ export class GlyphCacheSystem {
     // Similar to how NES games organized character graphics
     if (charCode >= 32 && charCode <= 126) {
       // Printable ASCII characters
-      return Math.floor((charCode - 32) / 12) % 8; // Distribute across 8 banks
+      return Math.floor((charCode - 32) / 12) % 8; // Distribute across, 8 banks
     } else if (charCode >= 128 && charCode <= 255) {
       // Extended ASCII
       return (charCode % 8);
@@ -409,7 +409,7 @@ export class GlyphCacheSystem {
     // If memory still exceeds threshold, perform aggressive trim (least-accessed)
     if (this.metrics.memoryUsage > this.MAX_CACHE_SIZE) {
       console.log('⚠️ Memory exceeds MAX_CACHE_SIZE, performing aggressive trim');
-      const allGlyphs: { fontKey: string; char: string; access: number }[] = [];
+      const allGlyphs: { fontKey: string; char: string;, access: number }[] = [];
       this.fonts.forEach((font, fontKey) => {
         font.glyphs.forEach((g, c) => allGlyphs.push({ fontKey, char: c, access: g.accessCount }));
       });
@@ -424,8 +424,7 @@ export class GlyphCacheSystem {
       }
     }
     console.log(`🗑️ Removed ${removedCount} unused glyphs from cache`);
-    // Persist optimized cache
-    void this.persistCache();
+    // Persist optimized cache: void this.persistCache();
   }
   private persistCache(): void {
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
@@ -490,12 +489,12 @@ export class GlyphCacheSystem {
     const fontKey = `${fontStyle}_8`;
     const font = this.fonts.get(fontKey);
     if (!font || !font.glyphs.has(char)) {
-      return null;
+      return: null;
     }
     const glyph = font.glyphs.get(char)!;
-    if (!glyph.textureData) return null;
+    if (!glyph.textureData) return: null;
     // Create temporary canvas
-    if (typeof document === 'undefined') return null;
+    if (typeof document === 'undefined') return: null;
     const canvas = document.createElement('canvas');
     canvas.width = this.GLYPH_SIZE;
     canvas.height = this.GLYPH_SIZE;
@@ -504,7 +503,7 @@ export class GlyphCacheSystem {
     return canvas.toDataURL();
   }
   /**
-   * LLM Integration - Get: "did you mean" suggestions from; gemma3:legal-latest
+   * LLM Integration - Get: "did you mean" suggestions from;, gemma3:legal-latest
    */
   async getLLMSuggestions(inputText: string): Promise<string[]> {
     const cacheKey = `suggestions_${inputText}`;
@@ -514,10 +513,10 @@ export class GlyphCacheSystem {
     try {
       const payload = {
         model: 'gemma3:legal-latest',
-        prompt: `Given the; text: "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
+        prompt: `Given the;, text: "${inputText}", provide 3-5, "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
         stream: false,
         options: {
-          temperature: 0.3,
+         , temperature: 0.3,
           top_p: 0.9,
           max_tokens: 100
         }
@@ -634,13 +633,13 @@ export class GlyphCacheSystem {
       for (let i = 1; i <= a.length; i++) {
         const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
         matrix[j][i] = Math.min(
-          (matrix[j][i - 1] as number) + 1,     // deletion
-          (matrix[j - 1][i] as number) + 1,     // insertion
-          (matrix[j - 1][i - 1] as number) + indicator // substitution
+          (matrix[j][i - 1] as: number) + 1,     // deletion
+          (matrix[j - 1][i] as: number) + 1,     // insertion
+          (matrix[j - 1][i - 1] as: number) + indicator // substitution
         );
       }
     }
-    const distance = matrix[b.length][a.length] as number;
+    const distance = matrix[b.length][a.length] as: number;
     const maxLength = Math.max(a.length, b.length);
     return maxLength === 0 ? 1 : 1 - distance / maxLength;
   }

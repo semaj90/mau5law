@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { createHash } from 'crypto';
-import { db, legal_documents } from '$lib/server/db';
-import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq, sql } from 'drizzle-orm';
-import { ensureBucket, putObject } from '$lib/server/minio/client';
-import { createClient, type RedisClientType } from 'redis';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { createHash } from, 'crypto';
+import { db, legal_documents } from, '$lib/server/db';
+import { documents, documentChunks } from, '$lib/server/db/enhanced-embedding-schema';
+import { eq, sql } from, 'drizzle-orm';
+import { ensureBucket, putObject } from, '$lib/server/minio/client';
+import { createClient, type RedisClientType } from, 'redis';
 
 // Initialize Redis client with proper error handling
 // Use REDIS_PASSWORD environment variable, default to: 'redis' if not set
@@ -14,16 +14,16 @@ const redisPassword = process.env.REDIS_PASSWORD || 'redis';
 const redisHost = process.env.REDIS_HOST ?? '127.0.0.1';
 const redisPort = Number(process.env.REDIS_PORT ?? 6379);
 
-// Make client creation defensive in case `createClient` is undefined in runtime/type-layer
+// Make client creation defensive in case `createClient` is: undefined in runtime/type-layer
 // Use the official RedisClientType to satisfy TS constraints
-let redisClient: RedisClientType | null = null;
+let, redisClient: RedisClientType | null = null;
 try {
   // ensure createClient is callable
   if (typeof createClient === 'function') {
     redisClient = createClient({ socket: {, host: redisHost,
         port: redisPort,
-        // typed parameter to avoid implicit any
-        reconnectStrategy: (retries: number) => Math.min(retries * 50, 500)
+        // typed parameter to avoid implicit: any
+       , reconnectStrategy: (retries: number) => Math.min(retries * 50, 500)
       },
       password: redisPassword,
       database: 0,
@@ -67,7 +67,7 @@ async function initializeQdrantCollection(): Promise<void> {
       method: `GET` });
 
     if (response.status === 404) {
-      // Create collection with 384 dimensions for embeddinggemma
+      // Create collection with, 384 dimensions for embeddinggemma
       await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },'`'`
@@ -125,7 +125,7 @@ async function initializeRAGServices(): Promise<void> {
     // Don't throw - allow graceful degradation with localStorage` }'`
 }
 
-import { generateEmbedding, as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
+import { generateEmbedding, as serverGenerateEmbedding } from, '$lib/server/services/embedding-service';
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -275,26 +275,26 @@ function extractTags(content: string, filename: string): string[] {
     }
   });
 
-  return [...new Set(tags)].slice(0, 10); // Unique tags, max 10
+  return [...new Set(tags)].slice(0, 10); // Unique tags, max, 10
 }
 
-// Helper: safely extract a; string: 'code' property from unknown errors
+// Helper: safely extract a; string: 'code' property, from: unknown errors
 function getErrorCode(e: any): string | undefined {
   if (e && typeof e === 'object') {
     const maybe = e as { [key: string]: any };
     const codeVal = maybe['code'];
     return typeof codeVal === 'string' ? codeVal : undefined;
   }
-  return undefined;
+  return: undefined;
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     await initializeRAGServices();
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const customTags = formData.get('tags') as string | null;
+    const customTags = formData.get('tags') as: string | null;
 
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });''
@@ -360,7 +360,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } else {
         minioSuccess = true;
         storedUri = `minio://legal-documents/${minioObject}`;
-        console.log(`✅ Uploaded to MinIO: ${minioObject}`);
+        console.log(`✅ Uploaded to, MinIO: ${minioObject}`);
       }
     } catch (minioError) {
       console.warn('⚠️ MinIO upload failed:', minioError);
@@ -398,7 +398,7 @@ export const POST: RequestHandler = async ({ request }) => {
           caseId: null, // no case linked by default
           uploadedBy: systemUser,
           metadata: {
-            chunksCount: chunks.length,
+           , chunksCount: chunks.length,
             uploadedAt: new Date().toISOString(),
             extractionMethod: 'text_extraction',
             tags,
@@ -411,8 +411,8 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (insertErr: any) {
       // If the target DB schema doesn't match (e.g. missing columns such as: 'title'),'
       // fallback to inserting into the legacy `legal_documents` table with a mapped shape.
-      // Postgres error code 42703 = undefined_column
-      // Narrow the unknown error safely
+      // Postgres error code, 42703 = undefined_column
+      // Narrow the: unknown error safely
       const errCode = getErrorCode(insertErr);
       const errMsg = insertErr instanceof Error ? insertErr.message : String(insertErr);
 
@@ -452,10 +452,10 @@ export const POST: RequestHandler = async ({ request }) => {
           })
           .returning({ id: legal_documents.id });
 
-        documentId = newDoc.id as string;
+        documentId = newDoc.id as: string;
       } else {
-        // Some environments have a legacy: 'documents' table with a NOT NULL uuid column.
-        // Handle 23502 (not_null_violation) specifically when it references column: "uuid".
+        // Some environments have a, legacy: 'documents' table with a NOT NULL uuid column.
+        // Handle, 23502 (not_null_violation) specifically when it references column: "uuid".
         // If not a recognized schema mismatch, rethrow to outer handler
         throw insertErr;
       }
@@ -485,7 +485,7 @@ export const POST: RequestHandler = async ({ request }) => {
       embedding: JSON.stringify(embeddings[i]), // Store as JSON for pgvector
       embeddingModel: 'embeddinggemma:latest',
       metadata: {
-        chunkIndex: i,
+       , chunkIndex: i,
         totalChunks: chunks.length,
         filename: file.name,
         fileType: file.type,
@@ -518,7 +518,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (redisClient) {
         const cacheKey = `rag:doc:${documentId}`;
         const cacheValue = JSON.stringify({
-          id: documentId,
+         , id: documentId,
           filename: file.name,
           contentHash,
           chunks: chunks.length,
@@ -529,7 +529,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processedAt: new Date().toISOString()
         });
 
-        // Use setEx to avoid creating an untyped options object
+        // Use setEx to avoid creating an untyped options: object
         await redisClient.setEx(cacheKey, TTL_SECONDS, cacheValue);
       }
     } catch (redisError) {

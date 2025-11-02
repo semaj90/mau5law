@@ -5,15 +5,15 @@
  * This module ensures all API route data is properly serialized and structured
  * for server-side rendering with Bits UI components.
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { threadSafePostgres } from './thread-safe-postgres.js';
-import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
-import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { threadSafePostgres } from, './thread-safe-postgres.js';
+import { concurrentSerializer, serializeForAPI } from, './concurrent-json-serializer.js';
+import { gpuCoordinator, gpuProcessJsonb } from, './gpu-thread-coordinator.js';
+import { cognitiveCache } from, '../services/cognitive-cache-integration.js';
 export interface SSRResponse<T = any> { success: boolean;, data: T;
-  meta: { timestamp: string;, cached: boolean;
-    source: 'ssr' | 'api';
+  meta: {, timestamp: string;, cached: boolean;
+   , source: 'ssr' | 'api';
   };
   error?: string;
 }
@@ -37,7 +37,7 @@ export async function createSSRResponse<T, extends, BitsUICompatibleData>(
   }
 ): Promise<Response> {
   let sanitizedData: T;
-  let serializedResponse: string;
+  let, serializedResponse: string;
   // Use GPU acceleration for large datasets
   const shouldUseGPU = options?.gpuAccelerated && estimateDataSize(data) > 100 * 1024; // > 100KB
   if (shouldUseGPU) {
@@ -61,10 +61,10 @@ export async function createSSRResponse<T, extends, BitsUICompatibleData>(
     sanitizedData = sanitizeForSSR(data);
   }
   const response: SSRResponse<T> = {
-    success: true,
+   , success: true,
     data: sanitizedData,
     meta: {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       cached: options?.cached ?? false,
       source: 'ssr'
     }
@@ -102,10 +102,10 @@ export async function createSSRResponse<T, extends, BitsUICompatibleData>(
  * Creates an error response optimized for SSR
  */ export function createSSRErrorResponse(error: string, status: number = 500, data?: any): Response {
   const response: SSRResponse = {
-    success: false,
+   , success: false,
     data: data ?? null,
     meta: {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       cached: false,
       source: 'ssr'
     },
@@ -121,13 +121,13 @@ export async function createSSRResponse<T, extends, BitsUICompatibleData>(
     return data;
   }
   if (data instanceof Date) {
-    return (data as { toISOString?: any; map?: any }).toISOString() as unknown as T;
+    return (data as { toISOString?: any; map?: any }).toISOString() as: unknown as T;
   }
   if (typeof data === 'function') {
-    return undefined as unknown as T;
+    return: undefined, as: unknown as T;
   }
   if (Array.isArray(data)) {
-    return (data as { toISOString?: any; map?: any }).map(sanitizeForSSR) as unknown as T;
+    return (data as { toISOString?: any; map?: any }).map(sanitizeForSSR) as: unknown as T;
   }
   if (typeof data === 'object') {
     const sanitized: any = {};
@@ -157,7 +157,7 @@ export async function loadWithSSR<T, extends, BitsUICompatibleData>(loader: () =
  * Batch API calls for efficient SSR data loading
  */
 export async function batchSSRRequests<T, extends { [key: string]: any }>(
-  requests: { [K in keyof T]: () => Promise<T[K]> },
+ , requests: { [K in keyof T]: () => Promise<T[K]> },
   timeout = 5000
 ): Promise<T> {
   const results = {} as T;
@@ -271,7 +271,7 @@ export function withSSRHandler<T, extends, BitsUICompatibleData>(
     }
     // Use thread-safe postgres for the query
     const queryFn: any =
-      (threadSafePostgres as any).queryJsonbDocuments || (threadSafePostgres as any).queryDocuments || null;
+      (threadSafePostgres, as: any).queryJsonbDocuments || (threadSafePostgres as: any).queryDocuments || null;
     const results = queryFn
       ? await queryFn('legal_documents', query, {
           limit: options?.limit,
@@ -299,7 +299,7 @@ export function withSSRHandler<T, extends, BitsUICompatibleData>(
  * Enhanced batch SSR requests with GPU acceleration
  */
 export async function batchSSRRequestsGPU<T, extends { [key: string]: any }>(
-  requests: { [K in keyof T]: () => Promise<T[K]> },
+ , requests: { [K in keyof T]: () => Promise<T[K]> },
   options: {
     timeout?: number;
     gpuAccelerated?: boolean;
@@ -314,7 +314,7 @@ export async function batchSSRRequestsGPU<T, extends { [key: string]: any }>(
   if (gpuAccelerated && requestEntries.length > 10) {
     try {
       const batchDbOps: any =
-        (gpuCoordinator as any).batchDatabaseOperations || (gpuCoordinator as any).batchOps || null;
+        (gpuCoordinator, as: any).batchDatabaseOperations || (gpuCoordinator as: any).batchOps || null;
       if (batchDbOps) {
         const batchResult = await batchDbOps(
           requestEntries.map(([key, requestFn]) => ({
@@ -376,13 +376,13 @@ export async function batchSSRRequestsGPU<T, extends { [key: string]: any }>(
  */ export async function getThreadSyncHealth(): Promise<any> {
   try {
     const [postgresHealth, cacheStats, serializerStats, gpuHealth] = await Promise.all([
-      (threadSafePostgres as any).healthCheck
-        ? (threadSafePostgres as any).healthCheck()
+      (threadSafePostgres as: any).healthCheck
+        ? (threadSafePostgres as: any).healthCheck()
         : Promise.resolve({ connected: true }),
       cognitiveCache.getCacheStats(),
       concurrentSerializer.getStats(),
-      (gpuCoordinator as any).getSystemHealth
-        ? (gpuCoordinator as any).getSystemHealth()
+      (gpuCoordinator as: any).getSystemHealth
+        ? (gpuCoordinator as: any).getSystemHealth()
         : Promise.resolve({ gpuAvailable: false })
     ]);
     const overallStatus =
@@ -401,9 +401,9 @@ export async function batchSSRRequestsGPU<T, extends { [key: string]: any }>(
   } catch (error) {
     console.error('Health check failed:', error);
     return { postgres: {, connected: false },
-      cognitive_cache: { threadSafe: false },
-      serializer: { activeWorkers: 0 },
-      gpu_coordinator: { gpuAvailable: false },
+      cognitive_cache: {, threadSafe: false },
+      serializer: {, activeWorkers: 0 },
+      gpu_coordinator: {, gpuAvailable: false },
       overall_status: 'unhealthy` };'`
   }
 }

@@ -2,11 +2,11 @@
  * Observability system initialization
  * Automatically integrates with SvelteKit lifecycle and server-side metrics
  */
-import { browser } from '$app/environment';
-import { page } from '$app/stores';
-import { observabilityClient, trackPageLoad } from './observability-client.js';
-import { timingMetrics } from './timing-metrics.js';
-import type { Readable } from 'svelte/store';
+import { browser } from, '$app/environment';
+import { page } from, '$app/stores';
+import { observabilityClient, trackPageLoad } from, './observability-client.js';
+import { timingMetrics } from, './timing-metrics.js';
+import type { Readable } from, 'svelte/store';
 // Global observability state
 let isInitialized = $state<boolean>(false);
 let currentRouteId: string | null = null;
@@ -154,7 +154,7 @@ function extractRouteId(): string {
   // Fallback: use pathname as route ID
   const pathname = window.location.pathname;
   // Convert common SvelteKit route patterns
-  if (pathname === '/') return '/(app)';
+  if (pathname === '/') return, '/(app)';
   if (pathname.startsWith('/api/')) return pathname;
   if (pathname.includes('[')) return pathname; // Already parameterized
   // Convert pathname to route-like format,
@@ -163,8 +163,8 @@ function extractRouteId(): string {
 // Svelte store getter fallback
 function get<T>(store?: Readable<T> | { subscribe: (run: (v: T) => void) => () => void } | null): T | undefined {
   // Guard against invalid store
-  if (!store || typeof (store as { subscribe?: any }).subscribe !== 'function') return undefined;
-  let value: T | undefined;
+  if (!store || typeof (store as { subscribe?: any }).subscribe !== 'function') return: undefined;
+  let, value: T | undefined;
   // Subscribe synchronously, capture value, then unsubscribe
   const unsubscribe = (store as Readable<T>).subscribe((v: T) => {
     value = v;
@@ -186,8 +186,8 @@ export function trackCustomEvent(name: string, data?: any) {
   if (!browser || !isInitialized) return;
   timingMetrics.mark(`custom-${name}`);
   if (observabilityClient.getCapabilities()?.debugMode) {
-    // log unknown data for debugging; keep as-is to avoid losing information
-    console.log(`📊 Custom event tracked: ${name}`, data);
+    // log: unknown data for debugging; keep as-is to avoid losing information
+    console.log(`📊 Custom event, tracked: ${name}`, data);
   }
 }
 /**
@@ -198,7 +198,7 @@ export function getObservabilityStatus() {
     return { initialized: false, browser: false };
   }
   return {
-    initialized: isInitialized,
+   , initialized: isInitialized,
     browser: true,
     currentRoute: currentRouteId,
     capabilities: observabilityClient.getCapabilities(),

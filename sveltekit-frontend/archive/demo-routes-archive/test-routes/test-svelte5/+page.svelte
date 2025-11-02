@@ -46,7 +46,7 @@ Test Button (onclick)
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">bits-ui v2 Dialog Test</h2>
 
-      <Dialog.Root bind:open={dialogOpen}>
+      <Dialog bind:open={dialogOpen}>
         <Dialog.Trigger class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           Open bits-ui Dialog
         </Dialog.Trigger>
@@ -67,7 +67,7 @@ Test Button (onclick)
             </div>
           </Dialog.Content>
         </Dialog.Portal>
-      </Dialog.Root>
+      </Dialog>
     </div>
 
     <!-- Test melt builder -->

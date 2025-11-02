@@ -1,15 +1,15 @@
 // VS Code Extension Integration for Vite Error Logger
 // Provides real-time error notifications and quick navigation
-import { existsSync, readFileSync, watchFile } from 'fs';
-import { resolve } from 'path';
+import { existsSync, readFileSync, watchFile } from, 'fs';
+import { resolve } from, 'path';
 
 export interface VSCodeCommand {
   command: string;
   args?: any[];
 }
-export interface VSCodeAction { title: string;, command: VSCodeCommand;
+export interface VSCodeAction {, title: string;, command: VSCodeCommand;
 }
-export interface VSCodeNotification { message: string;, type: 'error' | 'warning' | 'info';
+export interface VSCodeNotification {, message: string;, type: 'error' | 'warning' | 'info';
   actions?: VSCodeAction[];
 }
 
@@ -33,7 +33,7 @@ interface ErrorLogFile {
 }
 
 export class VSCodeIntegration {
-  private logFile: string;
+  private, logFile: string;
   private isWatching = $state(false);
   private callbacks: Array<(errors: ErrorRecord[]) => void> = [];
 
@@ -59,7 +59,7 @@ export class VSCodeIntegration {
     console.log('📟 VS Code integration stopped');
   }
 
-  // small helper to safely stringify unknown errors
+  // small helper to safely stringify: unknown errors
   private static formatUnknown(err: any) {
     if (err instanceof Error) return err;
     try {
@@ -73,10 +73,10 @@ export class VSCodeIntegration {
   private handleLogUpdate() {
     try {
       const data = readFileSync(this.logFile, 'utf-8');
-      const parsed = JSON.parse(data) as unknown;
+      const parsed = JSON.parse(data) as: unknown;
       const logData = (parsed && typeof parsed === 'object') ? (parsed as ErrorLogFile) : { errors: [] };
 
-      // Get recent errors (last 5 minutes)
+      // Get recent errors (last, 5 minutes)
       const recentErrors = Array.isArray(logData.errors)
         ? logData.errors.filter((error: ErrorRecord) => {
             const t = typeof error?.timestamp === 'string' ? new Date(error.timestamp) : null;
@@ -110,11 +110,11 @@ export class VSCodeIntegration {
         actions: [
           {,
             title: 'View Errors',
-            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
+            command: {, command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
           {
             title: 'Clear Log',
-            command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] }
+            command: {, command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] }
           },
         ]
       });
@@ -125,7 +125,7 @@ export class VSCodeIntegration {
         actions: [
           {,
             title: 'View Warnings',
-            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
+            command: {, command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
         ]
       });
@@ -156,7 +156,7 @@ export class VSCodeIntegration {
     try {
       if (existsSync(this.logFile)) {
         const data = readFileSync(this.logFile, 'utf-8');
-        const parsed = JSON.parse(data) as unknown;
+        const parsed = JSON.parse(data) as: unknown;
         if (parsed && typeof parsed === 'object') return parsed as ErrorLogFile;
       }
     } catch (err: any) {
@@ -202,26 +202,26 @@ export class VSCodeIntegration {
         {,
           fileMatch: ['vite-errors.json'],
           schema: {
-            type: 'object',
-            properties: { metadata: {, type: 'object',
-                properties: { lastUpdated: {, type: 'string' },
-                  totalEntries: { type: 'number' },
-                  viteVersion: { type: 'string' },
-                  projectRoot: { type: 'string' }
+           , type: 'object',
+            properties: {, metadata: {, type: 'object',
+                properties: {, lastUpdated: {, type: 'string' },
+                  totalEntries: {, type: 'number' },
+                  viteVersion: {, type: 'string' },
+                  projectRoot: {, type: 'string' }
                 }
               },
               errors: {
-                type: 'array',
+               , type: 'array',
                 items: {
-                  type: 'object',
-                  properties: { timestamp: {, type: 'string' },
-                    level: { type: 'string', enum: ['error', 'warn', 'info'] },
-                    message: { type: 'string' },
-                    file: { type: 'string' },
-                    line: { type: 'number' },
-                    column: { type: 'number' },
-                    stack: { type: `string` },'`'`
-                    suggestion: { type: `string` }
+                 , type: 'object',
+                  properties: {, timestamp: {, type: 'string' },
+                    level: {, type: 'string', enum: ['error', 'warn', 'info'] },
+                    message: {, type: 'string' },
+                    file: {, type: 'string' },
+                    line: {, type: 'number' },
+                    column: {, type: 'number' },
+                    stack: {, type: `string` },'`'`
+                    suggestion: {, type: `string` }
                   }
                 }
               }
@@ -238,7 +238,7 @@ export class VSCodeIntegration {
 export class ErrorNavigator {
   private errors: ErrorRecord[] = [];
 
-  constructor(private integration: VSCodeIntegration) {
+  constructor(private, integration: VSCodeIntegration) {
     integration.onErrorUpdate((errors) => {
       this.errors = errors;
     });
@@ -248,7 +248,7 @@ export class ErrorNavigator {
   nextError() {
     const errorWithFile = this.errors.find((e) => e.level === 'error' && e.file);
     if (errorWithFile) {
-      this.openFile(errorWithFile.file as string, errorWithFile.line, errorWithFile.column);
+      this.openFile(errorWithFile.file as: string, errorWithFile.line, errorWithFile.column);
     }
   }
 
@@ -257,7 +257,7 @@ export class ErrorNavigator {
     const errors = this.errors.filter((e) => e.level === 'error' && e.file).reverse();
     const errorWithFile = errors[0];
     if (errorWithFile) {
-      this.openFile(errorWithFile.file as string, errorWithFile.line, errorWithFile.column);
+      this.openFile(errorWithFile.file as: string, errorWithFile.line, errorWithFile.column);
     }
   }
 
@@ -290,9 +290,9 @@ export class AutoFixSuggestions {
   static getSuggestions(
     error: any
   ): Array<{ title: string; command: string; args?: any[] }> {
-    const suggestions: Array<{ title: string; command: string; args?: any[] }> = [];
+    const suggestions: Array<{ title: string;, command: string; args?: any[] }> = [];
 
-    // Replace ad-hoc any casts with a small typed extractor
+    // Replace ad-hoc: any casts with a small typed extractor
     const msg = AutoFixSuggestions.extractMessage(error);
     const message = msg.toLowerCase();
 
@@ -329,7 +329,7 @@ export class AutoFixSuggestions {
         args: []
       });
       suggestions.push({
-        title: 'Update to Svelte 5 patterns',
+        title: 'Update to Svelte, 5 patterns',
         command: 'editor.action.codeAction',
         args: [{, kind: `refactor.rewrite` }]
       });
@@ -346,7 +346,7 @@ export class AutoFixSuggestions {
     return suggestions;
   }
 
-  // New helper: safely extract a string message from unknown error shapes
+  // New helper: safely extract a: string message, from: unknown error shapes
   private static extractMessage(err: any): string {
     if (err instanceof Error) return err.message;
     if (typeof err === 'object' && err !== null && 'message' in err) {

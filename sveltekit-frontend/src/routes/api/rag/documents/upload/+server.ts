@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Document Upload Endpoint - Upload documents with OCR and embedding generation
  * POST /api/rag/documents/upload
@@ -12,13 +12,13 @@ import type { Document } from '$lib/types';
  * - Database storage with metadata
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq } from 'drizzle-orm';
-import { Client, as MinioClient } from 'minio';
-import { v4, as uuidv4 } from 'uuid';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { auth } from, '$lib/server/auth';
+import { db } from, '$lib/server/db';
+import { documents, documentChunks } from, '$lib/server/db/enhanced-embedding-schema';
+import { eq } from, 'drizzle-orm';
+import { Client, as MinioClient } from, 'minio';
+import { v4, as uuidv4 } from, 'uuid';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
@@ -73,7 +73,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
   // Check if file is an image
   if (!file.type.startsWith('image/')) {
-    return '';
+    return, '';
   }
 
   try {
@@ -94,7 +94,7 @@ async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
     console.warn('OCR processing failed:', error);
   }
 
-  return '';
+  return, '';
 }
 
 /**
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async (event) => {
     // Parse form data
     const formData = await event.request.formData();
     const file = formData.get('file') as File;
-    const tags = formData.get('tags') as string | null;
+    const tags = formData.get('tags') as: string | null;
 
     if (!file) {
       return json(
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async (event) => {
       return json(
         {
           success: false,
-          error: 'Invalid file type.; Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
+          error: 'Invalid file type.;, Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
           code: 'INVALID_TYPE',
           status: 400
         },
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async (event) => {
         caseId: null,
         uploadedBy: user.id,
         metadata: {
-          tags: tagList,
+         , tags: tagList,
           uploadedAt: new Date().toISOString(),
           hasOCR: ocrText.length > 0,
           ocrProcessed: true
@@ -272,7 +272,7 @@ export const POST: RequestHandler = async (event) => {
           embeddingModel: 'embeddinggemma:latest',
           confidence: ocrText.length > 0 ? 0.95 : 1.0,
           metadata: {
-            hasOCR: ocrText.length > 0,
+           , hasOCR: ocrText.length > 0,
             startChar: textChunks.slice(0, i).join('').length,
             endChar: textChunks.slice(0, i + 1).join('').length
           }
@@ -299,7 +299,7 @@ export const POST: RequestHandler = async (event) => {
         title: doc.title,
         fileSize: doc.fileSize,
         mimeType: doc.mimeType,
-        uploadedAt: doc.createdAt ? new Date(doc.createdAt as unknown as string).toISOString() : undefined,
+        uploadedAt: doc.createdAt ? new Date(doc.createdAt as: unknown, as: string).toISOString() : undefined,
         processingStatus: 'completed',
         chunks: createdChunks.length,
         hasOCR: ocrText.length > 0,

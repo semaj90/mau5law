@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * XState v5 Actor for Embedding Generation
  * Uses fromPromise for async embedding operations with legal AI context
  */
-import { fromPromise } from 'xstate/actors';
-import { createActor } from 'xstate';
-import { ollamaService } from '$lib/services/ollamaService';
+import { fromPromise } from, 'xstate/actors';
+import { createActor } from, 'xstate';
+import { ollamaService } from, '$lib/services/ollamaService';
 export interface EmbeddingInput {
   text: string;
   context?: {
@@ -15,9 +15,9 @@ export interface EmbeddingInput {
     priority?: 'high' | 'medium' | 'low';
   };
 }
-export interface EmbeddingOutput { embedding: number[];, dimension: number;
+export interface EmbeddingOutput {, embedding: number[];, dimension: number;
   model: string;
-  metadata: { textLength: number;, processingTime: number;
+  metadata: {, textLength: number;, processingTime: number;
     caseId?: string;
     evidenceId?: string;
     documentType?: string;
@@ -25,13 +25,13 @@ export interface EmbeddingOutput { embedding: number[];, dimension: number;
     timestamp: Date;
   };
 }
-export interface EmbeddingError { message: string;, code: 'OLLAMA_UNAVAILABLE' | 'TIMEOUT' | 'INVALID_INPUT' | 'MODEL_ERROR';
+export interface EmbeddingError {, message: string;, code: 'OLLAMA_UNAVAILABLE' | 'TIMEOUT' | 'INVALID_INPUT' | 'MODEL_ERROR';
   details?: any;
 }
 /**
  * XState v5 actor for generating embeddings with legal context
  */
-export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingInput }): Promise<EmbeddingOutput> => {
+export const embeddingActor = fromPromise(async ({ input }: {, input: EmbeddingInput }): Promise<EmbeddingOutput> => {
   const startTime = Date.now();
   try {
     // Validate input
@@ -43,7 +43,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
     }
     // Enhanced context for legal documents
     const contextualText = input.context?.documentType
-      ? `[Legal Document: ${input.context.documentType}] ${input.text}`
+      ? `[Legal, Document: ${input.context.documentType}] ${input.text}`
       : input.text;
     // Generate embedding using Ollama service
     const embedding = await ollamaService.generateEmbedding(contextualText);
@@ -59,7 +59,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
       dimension: embedding.length,
       model: 'nomic-embed-text', // Default embedding model
       metadata: {
-        textLength: input.text.length,
+       , textLength: input.text.length,
         processingTime,
         caseId: input.context?.caseId,
         evidenceId: input.context?.evidenceId,
@@ -89,13 +89,13 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
           details: error
         } as EmbeddingError;
       }
-      throw { message: 'Embedding generation, failed: ${error.message || 'Unknown error` }`,
+      throw {, message: 'Embedding generation, failed: ${error.message || 'Unknown error` }`,
         code: 'MODEL_ERROR',
         details: error
       } as EmbeddingError;
     }
-    // Fallback for completely unknown error types
-    throw { message: `Embedding generation, failed: any error type`,
+    // Fallback for completely: unknown error types
+    throw {, message: `Embedding generation, failed: any error type`,
       code: 'MODEL_ERROR',
       details: error
     } as EmbeddingError;
@@ -130,7 +130,7 @@ export const batchEmbeddingActor = fromPromise(
           details: error
         } as EmbeddingError;
       }
-      throw { message: `Batch embedding, failed: any error type`,
+      throw {, message: `Batch embedding, failed: any error type`,
         code: 'MODEL_ERROR',
         details: error
       } as EmbeddingError;

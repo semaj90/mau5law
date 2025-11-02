@@ -1,9 +1,9 @@
-import type { RequestHandler } from '@sveltejs/kit'
-import { Worker } from 'node:worker_threads'
-import os from 'node:os'
-import path from 'node:path'
+import type { RequestHandler } from, '@sveltejs/kit'
+import { Worker } from, 'node:worker_threads'
+import os from, 'node:os'
+import path from, 'node:path'
 interface QueryParams {
-  max: number;      // upper bound (exclusive)
+ , max: number;      // upper bound (exclusive)
   mode?: 'count' | 'list'
   workers?: number; // optional override for worker count
 }

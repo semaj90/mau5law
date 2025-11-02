@@ -1,24 +1,24 @@
 // WebGPU to CUDA Service Worker Bridge
 // Enables GPU acceleration for AI processing tasks using WebGPU as a bridge to CUDA
-import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike } from '../utils/buffer-conversion.js';
+import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike } from, '../utils/buffer-conversion.js';
 interface WebGPUCudaBridgeMessage {
 	type: 'init' | 'process' | 'status' | 'cleanup';
 	payload?: any;
 	requestId: string;
 }
-interface CudaProcessingTask { id: string;, type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing';
+interface CudaProcessingTask {, id: string;, type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing';
 	data: BufferLike;
 	config: any;
 	priority: 'low' | 'medium' | 'high' | 'critical';
 }
-interface WebGPUDevice { device: GPUDevice;, adapter: GPUAdapter;
-  isInitialized: boolean;
-  // GPUDeviceCapabilities is not a standard global type in TS, use any to avoid errors
+interface WebGPUDevice {, device: GPUDevice;, adapter: GPUAdapter;
+ , isInitialized: boolean;
+  // GPUDeviceCapabilities is not a standard global type in TS, use: any to avoid errors;
   capabilities: any;
 }
 class WebGPUCudaBridge {
   private webgpuDevice: WebGPUDevice | null = null;
-  private processingQueue: CudaProcessingTask[] = [];
+  private, processingQueue: CudaProcessingTask[] = [];
   private isProcessing = $state(false);
   private ollamaEndpoint = 'http://localhost:11434';
   private cudaServiceEndpoint = 'http://localhost:8085'; // Enhanced Legal CUDA Server
@@ -51,10 +51,10 @@ class WebGPUCudaBridge {
         adapter,
         isInitialized: true,
         capabilities: {
-          maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
+         , maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
           maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
           maxBufferSize: adapter.limits.maxBufferSize
-        } as any
+        }, as: any
       };
       console.log('✅ WebGPU initialized successfully');
       console.log('GPU Device:', {
@@ -104,20 +104,20 @@ class WebGPUCudaBridge {
     try {
       let result;
       switch (task.type) {
-        case 'inference':
+        case, 'inference':
           result = await this.processInference(task);
           break;
-        case 'embedding':
+        case, 'embedding':
           result = await this.processEmbedding(task);
           break;
-        case 'tensor-ops':
+        case, 'tensor-ops':
           result = await this.processTensorOperations(task);
           break;
-        case 'image-processing':
+        case, 'image-processing':
           result = await this.processImageOperations(task);
           break;
         default:
-          throw new Error(`Unknown task; type: ${task.type}`);
+          throw new Error(`Unknown task;, type: ${task.type}`);
       }
       // Send result back to main thread
       self.postMessage({
@@ -257,7 +257,7 @@ class WebGPUCudaBridge {
     const computePipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
       }),
       compute: {
-        module: shaderModule,
+       , module: shaderModule,
         entryPoint: `main` }
     });
     // Create command encoder and dispatch compute
@@ -344,7 +344,7 @@ class WebGPUCudaBridge {
           session_id: config.session_id,
           metadata: {
            , webgpu_bridge: true,
-            data_length: (data as any)?.length ?? (data as any)?.byteLength ?? 0,
+            data_length: (data, as: any)?.length ?? (data as: any)?.byteLength ?? 0,
             optimization_level: `rtx_3060_ti` }
         })
       });
@@ -559,11 +559,11 @@ class WebGPUCudaBridge {
     // This is a simplified implementation
     const inputArray = toFloat32Array(data);
     switch (config.operation) {
-      case 'multiply':
+      case, 'multiply':
         return inputArray.map(x => x * (config.factor || 1.0));
-      case 'add':
+      case, 'add':
         return inputArray.map(x => x + (config.value || 0.0));
-      case 'normalize':
+      case, 'normalize':
         const max = Math.max(...inputArray);
         const min = Math.min(...inputArray);
         return inputArray.map(x => (x - min) / (max - min));
@@ -575,11 +575,11 @@ class WebGPUCudaBridge {
     const inputArray = toFloat32Array(data);
     // Same operations as WebGPU version, but clearly marked as CPU fallback
     switch (config.operation) {
-      case 'multiply':
+      case, 'multiply':
         return inputArray.map(x => x * (config.factor || 1.0));
-      case 'add':
+      case, 'add':
         return inputArray.map(x => x + (config.value || 0.0));
-      case 'normalize':
+      case, 'normalize':
         const max = Math.max(...inputArray);
         const min = Math.min(...inputArray);
         return inputArray.map(x => (x - min) / (max - min));
@@ -610,11 +610,11 @@ class WebGPUCudaBridge {
       webgpuSupported: 'gpu' in navigator,
       deviceInfo: this.webgpuDevice
         ? {
-            vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',
+           , vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',
             architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown` }'`
         : null,
       endpoints: {
-        ollama: this.ollamaEndpoint,
+       , ollama: this.ollamaEndpoint,
         cudaService: this.cudaServiceEndpoint
       }
     };
@@ -636,7 +636,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
   const { type, payload, requestId } = event.data;
   try {
     switch (type) {
-      case 'init':
+      case, 'init':
         const initialized = await bridge.initializeWebGPU();
         self.postMessage({
           type: 'init-complete',
@@ -645,7 +645,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
           status: bridge.getStatus()
         });
         break;
-      case 'process':
+      case, 'process':
         const taskId = await bridge.addTask(payload);
         self.postMessage({
           type: 'task-queued',
@@ -653,14 +653,14 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
           taskId
         });
         break;
-      case 'status':
+      case, 'status':
         self.postMessage({
           type: 'status-response',
           requestId,
           status: bridge.getStatus()
         });
         break;
-      case 'cleanup':
+      case, 'cleanup':
         bridge.cleanup();
         self.postMessage({
           type: 'cleanup-complete',
@@ -668,7 +668,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
         });
         break;
       default:
-        throw new Error(`Unknown message; type: ${type}`);
+        throw new Error(`Unknown message;, type: ${type}`);
     }
   } catch (error) {
     self.postMessage({

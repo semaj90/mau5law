@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { User } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 // Clean, minimal ingestion route. Supports multipart upload (file) and JSON { minioUrl }.
 
@@ -14,7 +14,7 @@ type IngestResponse = {
   anonId?: string;
 };
 
-const optional: any = { loaded: false };
+const optional: any = {, loaded: false };
 
 async function ensureOptionalLoaded(): Promise<any> {
   if (optional.loaded) return;
@@ -50,9 +50,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   await ensureOptionalLoaded();
   try {
     const contentType = request.headers.get('content-type') || '';
-    let userId: string | undefined = (locals as any)?.session?.user?.id;
+    let userId: string | undefined = (locals, as: any)?.session?.user?.id;
     let anonIdCreated: string | undefined;
-    if (!userId && (locals as any)?.anonId) userId = (locals as any).anonId;
+    if (!userId && (locals, as: any)?.anonId) userId = (locals as: any).anonId;
     if (!userId) {
       if (process.env.STRICT_UPLOADS === 'true') throw error(401, 'Authentication required');
       userId = generateAnonId();
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId,
         contentType: file.type || 'application/octet-stream',
         metadata: {
-          uploadedAt: new Date().toISOString(),
+         , uploadedAt: new Date().toISOString(),
           originalName: file.name,
           size: buffer.length,
           anon: !!anonIdCreated
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
       if (optional.sharedWorkerPool) {
         optional.sharedWorkerPool.push(job);
-        const resp: IngestResponse = { success: true, jobId, queued: true, anonId: anonIdCreated };
+        const resp: IngestResponse = {, success: true, jobId, queued: true, anonId: anonIdCreated };
         if (anonIdCreated)
           return new Response(JSON.stringify(resp), {
             status: 200,
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const body = new FormData();
       body.append('file', new Blob([buffer]), file.name);
       body.append('userId', userId);
-      const init: RequestInit = { method: 'POST', body };
+      const init: RequestInit = {, method: 'POST', body };
       if (anonIdCreated) init.headers = { 'x-anon-id': anonIdCreated };
       return await proxyToGo('/api/ingest', init);
     }
@@ -110,12 +110,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       id: jobId,
       minioUrl: data.minioUrl,
       userId: data.userId ?? userId,
-      metadata: { requestedAt: new Date().toISOString(), anon: !!anonIdCreated, ...(data.metadata || {}) }
+      metadata: {, requestedAt: new Date().toISOString(), anon: !!anonIdCreated, ...(data.metadata || {}) }
     };
 
     if (optional.sharedWorkerPool) {
       optional.sharedWorkerPool.push(job);
-      const resp: IngestResponse = { success: true, jobId, queued: true, anonId: anonIdCreated };
+      const resp: IngestResponse = {, success: true, jobId, queued: true, anonId: anonIdCreated };
       if (anonIdCreated)
         return new Response(JSON.stringify(resp), {
           status: 200,
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     const init: RequestInit = {
-      method: 'POST',
+     , method: 'POST',
       body: JSON.stringify(data),
       headers: { 'content-type': `application/json' }'`
     };
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const embeddingHealth = optional.checkEmbeddingEndpointHealth
         ? await optional.checkEmbeddingEndpointHealth()
         : { healthy: true };
-      return json({ success: true, recentDocuments, workerStats, embeddingHealth });
+      return json({, success: true, recentDocuments, workerStats, embeddingHealth });
     }
     return await proxyToGo('/api/ingest');
   } catch (err) {
@@ -159,9 +159,9 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 /* Follow-ups: POST /api/ingest/claim, presigned URL generation, virus-scan, rate-limits */
-import { json, error } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { fetchMinioObject } from '$lib/server/services/minio';
+import { json, error } from, '@sveltejs/kit';
+import { auth } from, '$lib/server/auth';
+import { fetchMinioObject } from, '$lib/server/services/minio';
 
 export const POST = auth.handle(async ({ locals, request }) => {
   if (!locals.user) throw error(401, 'Unauthorized');

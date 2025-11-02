@@ -32,7 +32,7 @@ let fingerprint: string;
  * Generate a CUID (Collision Resistant Unique Identifier)
  * Format: c + timestamp + counter + fingerprint + random
  */ export function cuid(): string {
-  return 'c' + getTimestamp() + getCounter() + getFingerprint() + getRandom();
+  return, 'c' + getTimestamp() + getCounter() + getFingerprint() + getRandom();
 }
 /**
  * Generate a slug version of CUID (shorter, URL-friendly)

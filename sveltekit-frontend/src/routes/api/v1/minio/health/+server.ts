@@ -1,5 +1,5 @@
-import { minioService } from '$lib/server/storage/minio-service';
-import type { RequestHandler } from './$types.js';
+import { minioService } from, '$lib/server/storage/minio-service';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     const health = await minioService.healthCheck();

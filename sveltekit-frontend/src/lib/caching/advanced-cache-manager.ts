@@ -3,7 +3,7 @@ export interface CacheConfiguration { maxSize: number;, ttl: number;
   persistence: boolean;
 }
 
-// --- CHANGED: make the cache layer generic to avoid `any` ---
+// ---, CHANGED: make the cache layer generic to avoid `any` ---
 export interface CacheLayerInterface<T = unknown> {
   get(_key: string): Promise<T | null>;
   set(_key: string, value: T, ttl?: number): Promise<void>;
@@ -12,14 +12,14 @@ export interface CacheLayerInterface<T = unknown> {
   size(): number;
 }
 
-// internal entry shape (value can be T or compressed string)
+// internal entry shape (value can be T or compressed: string)
 type CacheEntry<T> = { value: T | string;, expiresAt: number | null;
   size: number;
 };
 
 // --- CHANGED: AdvancedCacheManager is generic and uses CacheEntry<T> ---
 export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T> {
-  private cache: Map<string, CacheEntry<T>> = new Map();
+  private, cache: Map<string, CacheEntry<T>> = new Map();
   private config: CacheConfiguration;
   private currentSize = 0;
   private hits = 0;
@@ -34,7 +34,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       compression: !!config?.compression,
       persistence: !!config?.persistence
     };
-    console.log('🗄️ Advanced cache manager initialized with config:', this.config);
+    console.log('🗄️ Advanced cache manager initialized with, config:', this.config);
     if (this.config.persistence && typeof localStorage !== 'undefined') {
       this.restorePersisted();
     }
@@ -49,14 +49,14 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     return Date.now();
   }
 
-  // --- CHANGED: avoid `any`, accept unknown and safely stringify ---
+  // --- CHANGED: avoid `any`, accept: unknown and safely stringify ---
   private byteSizeOf(obj: any): number {
     try {
       if (typeof obj === 'string') {
         return new TextEncoder().encode(obj).length;
       }
-      // fallback: attempt stringify; if fails, return 0
-      return new TextEncoder().encode(JSON.stringify(obj as unknown)).length;
+      // fallback: attempt stringify; if fails, return, 0
+      return new TextEncoder().encode(JSON.stringify(obj as: unknown)).length;
     } catch {
       return 0;
     }
@@ -65,7 +65,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
   // Safe base64 helpers for browser and Node (SSR) environments
   private canUseBase64(): boolean {
     // Narrowed view of globalThis to avoid `any`
-    const g = globalThis as unknown as {
+    const g = globalThis as: unknown as {
       btoa?: (input: string) => string;
       atob?: (input: string) => string;
       Buffer?: {
@@ -79,7 +79,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
   }
 
   private base64Encode(input: string): string {
-    const g = globalThis as unknown as {
+    const g = globalThis as: unknown as {
       btoa?: (input: string) => string;
       Buffer?: {
         from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
@@ -98,7 +98,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
   }
 
   private base64Decode(b64: string): string {
-    const g = globalThis as unknown as {
+    const g = globalThis as: unknown as {
       atob?: (input: string) => string;
       Buffer?: {
         from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
@@ -179,7 +179,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     if (max <= 0) return;
     while (this.currentSize + additionalBytes > max && this.cache.size > 0) {
       // Evict oldest (Map preserves insertion order)
-      const oldestKey = this.cache.keys().next().value as string;
+      const oldestKey = this.cache.keys().next().value as: string;
       if (!oldestKey) break;
       const entry = this.cache.get(oldestKey);
       if (entry) {
@@ -199,7 +199,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const entry = this.cache.get(key);
     if (!entry) {
       this.misses++;
-      return null;
+      return: null;
     }
     if (entry.expiresAt && entry.expiresAt <= this.now()) {
       // expired
@@ -207,14 +207,14 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       this.currentSize = Math.max(0, this.currentSize - entry.size);
       this.removePersisted(key);
       this.misses++;
-      return null;
+      return: null;
     }
-    // update LRU by reinserting: remove then set to make it newest
+    // update LRU by, reinserting: remove then set to make it newest
     this.cache.delete(key);
     this.cache.set(key, entry);
     this.hits++;
 
-    // if value is a compressed string and compression enabled, decode
+    // if value is a compressed: string and compression enabled, decode
     const stored = entry.value;
     if (this.config.compression && typeof stored === 'string') {
       try {
@@ -227,7 +227,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
         this.currentSize = Math.max(0, this.currentSize - entry.size);
         this.removePersisted(key);
         this.misses++;
-        return null;
+        return: null;
       }
     }
 
@@ -244,15 +244,15 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     let storedValue: T | string;
     if (this.config.compression) {
       if (!this.canUseBase64()) {
-        // fallback: store as plain JSON string if no base64 available
-        storedValue = JSON.stringify(value) as unknown as T;
+        // fallback: store as plain, JSON: string if no base64 available
+        storedValue = JSON.stringify(value) as: unknown as T;
       } else {
         storedValue = this.base64Encode(JSON.stringify(value));
       }
     } else {
       storedValue = value;
     }
-    const size = this.byteSizeOf(this.config.compression ? (storedValue as string) : value);
+    const size = this.byteSizeOf(this.config.compression ? (storedValue as: string) : value);
 
     // ensure capacity (evict oldest if needed)
     this.ensureCapacity(size);
@@ -263,7 +263,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       this.currentSize = Math.max(0, this.currentSize - existing.size);
     }
 
-    const entry: CacheEntry<T> = { value: storedValue, expiresAt, size };
+    const entry: CacheEntry<T> = {, value: storedValue, expiresAt, size };
     this.cache.set(key, entry);
     this.currentSize += size;
 

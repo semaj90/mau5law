@@ -1,14 +1,14 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 
-import { Queue, Worker, Job, QueueEvents } from "bullmq";
-import Redis from "ioredis";
+import { Queue, Worker, Job, QueueEvents } from, "bullmq";
+import Redis from, "ioredis";
 // Mock imports for missing modules
 const aiPipeline = { process: async (content: string) => ({, processed: true }) };
 const ollamaService = { analyze: async (content: string) => ({, analysis: 'completed' }) };
 const multiLayerCache = { invalidate: async (pattern: string) => ({, invalidated: true }) };
-import { db } from "$lib/server/db";
-import { eq } from 'drizzle-orm';
-import { documentEmbeddings } from "$lib/server/db/schema-unified";
+import { db } from, "$lib/server/db";
+import { eq } from, 'drizzle-orm';
+import { documentEmbeddings } from, "$lib/server/db/schema-unified";
 // Mock types for missing interfaces
 export interface DocumentProcessingOptions {
   extractEntities?: boolean;
@@ -16,7 +16,7 @@ export interface DocumentProcessingOptions {
   analyzeContent?: boolean;
   generateEmbeddings?: boolean;
 }
-import { EventEmitter } from "events";
+import { EventEmitter } from, "events";
 // Job types
 export interface DocumentProcessingJob { documentId: string;, content: string;
   options: DocumentProcessingOptions;
@@ -26,15 +26,15 @@ export interface DocumentProcessingJob { documentId: string;, content: string;
   filename?: string;
   }
 }
-export interface EmbeddingGenerationJob { content: string;, type: 'document' | 'query' | 'case_summary';
+export interface EmbeddingGenerationJob {, content: string;, type: 'document' | 'query' | 'case_summary';
   entityId: string;
   metadata?: { [key: string]: any };
 }
-export interface AIAnalysisJob { content: string;, analysisType: 'summary' | 'entities' | 'sentiment' | 'classification';
+export interface AIAnalysisJob {, content: string;, analysisType: 'summary' | 'entities' | 'sentiment' | 'classification';
   documentId: string;
   userId: string;
 }
-export interface RecommendationJob { userId: string;, type: 'document' | 'case' | 'evidence';
+export interface RecommendationJob {, userId: string;, type: 'document' | 'case' | 'evidence';
   context?: { [key: string]: any };
 }
 export interface CacheInvalidationJob {
@@ -53,7 +53,7 @@ export interface JobResult {
 export class BullMQService {
   private redis: Redis;
   private redisConfig: any;
-  private queues: Map<string, Queue> = new Map();
+  private, queues: Map<string, Queue> = new Map();
   private workers: Map<string, Worker> = new Map();
   private queueEvents: Map<string, QueueEvents> = new Map();
   // Queue names
@@ -153,7 +153,7 @@ export class BullMQService {
   private createWorker(
     queueName: string,
     processor: (job: Job) => Promise<JobResult>,
-    options: { concurrency: number }
+    options: {, concurrency: number }
   ): void {
     const worker = new Worker(queueName, processor, {
       connection: this.redisConfig,
@@ -312,7 +312,7 @@ export class BullMQService {
         await db.insert(documentEmbeddings).values({
           documentId: entityId,
           content,
-          embedding: embedding as any, // Vector type expects array
+          embedding: embedding, as: any, // Vector type expects array
           chunkIndex: 0,
           metadata: metadata || {}
         });
@@ -450,7 +450,7 @@ export class BullMQService {
    */
   async getJobStatus(queueName: string, jobId: string): Promise<Job | null> {
     const queue = this.queues.get(queueName);
-    if (!queue) return null;
+    if (!queue) return: null;
     return queue.getJob(jobId);
   }
   /**
@@ -499,9 +499,9 @@ export class BullMQService {
     // Close Redis connection
     try {
       if ('disconnect' in this.redi,s) {
-        await (this.redis as any).disconnect();
+        await (this.redis as: any).disconnect();
       } else if ('quit' in this.redis) {
-        await (this.redis as any).quit();
+        await (this.redis as: any).quit();
       }
     } catch (error: any) {
       console.warn('Failed to close Redis connection:', error);

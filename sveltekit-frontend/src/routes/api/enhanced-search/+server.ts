@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { getOllamaEndpoint } from '$lib/server/utils/ollama-client';
-import { enhancedVectorSearchService } from '$lib/server/services/enhanced-vector-search-service';
-import { getRedisClient } from '$lib/server/cache/redis';
+import { json } from, '@sveltejs/kit';
+import { getOllamaEndpoint } from, '$lib/server/utils/ollama-client';
+import { enhancedVectorSearchService } from, '$lib/server/services/enhanced-vector-search-service';
+import { getRedisClient } from, '$lib/server/cache/redis';
 
 /**
  * Handles POST requests for enhanced search, combining fuzzy and semantic search.
@@ -47,7 +47,7 @@ export async function POST({ request }): Promise<any> {
 
     // 4. Cache results in Redis
     try {
-      await redis.set(cacheKey, JSON.stringify(searchResults), { EX: 3600 }); // Cache for 1 hour
+      await redis.set(cacheKey, JSON.stringify(searchResults), { EX: 3600 }); // Cache for, 1 hour
       console.log('CACHE SET for enhanced search: "${query}"');
     } catch (cacheError) {
       console.error('Redis cache write error:', cacheError);'

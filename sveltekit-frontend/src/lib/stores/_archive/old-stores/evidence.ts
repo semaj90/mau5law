@@ -3,13 +3,13 @@
  * Comprehensive evidence management with chain of custody, encryption, and legal compliance
  * Supports digital forensics, case management, and audit trail requirements
  */
-import { writable, get, derived } from 'svelte/store';
-import { selectedCase } from './case-store.js';
+import { writable, get, derived } from, 'svelte/store';
+import { selectedCase } from, './case-store.js';
 // Core Evidence Interface
 export interface Evidence { id: string;, caseId: string;
   title: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'digital_forensic' | 'physical_item';
-  content: string; // URL for files, text for notes
+ , content: string; // URL for files, text for notes
   x: number; // Position on canvas,
   y: number; // Position on canvas
   // Legal-specific properties
@@ -17,9 +17,9 @@ export interface Evidence { id: string;, caseId: string;
   hash?: string; // File integrity hash
   originalHash?: string; // Original file hash for chain of custody
   chain_of_custody: ChainOfCustodyEntry[];
-  evidence_tag: string; // Police/court evidence tag number
-  collected_by: string; // Officer/investigator name,
-  collected_date: string; // ISO date string
+  evidence_tag: string; // Police/court evidence tag: number
+ , collected_by: string; // Officer/investigator name,
+  collected_date: string; // ISO date: string
   location_collected?: string;
   // Security and privacy
   confidentiality_level: 'public' | 'confidential' | 'privileged' | 'attorney_client';
@@ -49,7 +49,7 @@ export interface Evidence { id: string;, caseId: string;
   notes?: EvidenceNote[];
   tags?: string[];
 }
-export interface ChainOfCustodyEntry { id: string;, timestamp: string;
+export interface ChainOfCustodyEntry {, id: string;, timestamp: string;
   action: 'collected' | 'transferred' | 'accessed' | 'analyzed' | 'duplicated' | 'sealed' | 'unsealed';
   person: string;
   organization?: string;
@@ -59,21 +59,21 @@ export interface ChainOfCustodyEntry { id: string;, timestamp: string;
   witness?: string;
   notes?: string;
 }
-export interface AccessLogEntry { timestamp: string;, user_id: string;
+export interface AccessLogEntry {, timestamp: string;, user_id: string;
   user_name: string;
   action: 'view' | 'download' | 'edit' | 'delete' | 'share' | 'print';
   ip_address?: string;
   user_agent?: string;
   purpose?: string;
 }
-export interface AnalysisResult { id: string;, type: 'ocr' | 'image_analysis' | 'audio_transcription' | 'video_analysis' | 'forensic_analysis';
+export interface AnalysisResult {, id: string;, type: 'ocr' | 'image_analysis' | 'audio_transcription' | 'video_analysis' | 'forensic_analysis';
   result: any;
   confidence: number;
   timestamp: string;
   tool_used: string;
   version?: string;
 }
-export interface EvidenceNote { id: string;, content: string;
+export interface EvidenceNote {, id: string;, content: string;
   author: string;
   timestamp: string;
   type: 'observation' | 'analysis' | 'legal_note' | 'technical_note';
@@ -90,7 +90,7 @@ export interface EvidenceFilter {
   processed_only?: boolean;
   unprocessed_only?: boolean;
 }
-export interface EvidenceStats { total_count: number;, by_type: Record<string, number>;
+export interface EvidenceStats {, total_count: number;, by_type: Record<string, number>;
   by_priority: Record<string, number>;
   by_confidentiality: Record<string, number>;
   processed_count: number;
@@ -100,22 +100,22 @@ export interface EvidenceStats { total_count: number;, by_type: Record<string, 
   average_relevance_score: number;
 }
 // Store State Interface
-export interface EvidenceStoreState { evidence: Evidence[];, filtered_evidence: Evidence[];
+export interface EvidenceStoreState {, evidence: Evidence[];, filtered_evidence: Evidence[];
   current_filter: EvidenceFilter | null;
   selected_evidence: Evidence | null;
   isLoading: boolean;
   error: string | null;
-  processing_queue: string[]; // Evidence IDs being processed,
+ , processing_queue: string[]; // Evidence IDs being processed,
   stats: EvidenceStats | null;
   chain_of_custody_log: ChainOfCustodyEntry[];
   security_alerts: SecurityAlert[];
 }
-export interface SecurityAlert { id: string;, type: 'unauthorized_access' | 'integrity_check_failed' | 'chain_break' | 'encryption_error';
+export interface SecurityAlert {, id: string;, type: 'unauthorized_access' | 'integrity_check_failed' | 'chain_break' | 'encryption_error';
   evidence_id: string;
   message: string;
   timestamp: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  resolved: boolean;
+ , resolved: boolean;
 }
 // Evidence Store Implementation
 const createEvidenceStore = () => {
@@ -163,7 +163,7 @@ const createEvidenceStore = () => {
         stats?: EvidenceStats | null;
       };
       const evidenceList: Evidence[] = evidenceData.evidence || [];
-      const stats: EvidenceStats | null = evidenceData.stats || null;
+      const, stats: EvidenceStats | null = evidenceData.stats || null;
       // Validate evidence integrity
       await validateEvidenceIntegrity(evidenceList);
       update(state => ({
@@ -198,7 +198,7 @@ const createEvidenceStore = () => {
     createdAt: string;
   };
   class QUICTensorStream {
-    private writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
+    private, writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
     private connected = $state(false);
     async connect(url: string): Promise<void> {
       if (typeof window === 'undefined') return;
@@ -245,7 +245,7 @@ const createEvidenceStore = () => {
     if (quicStream?.isConnected()) return;
     const url =
       window.__QUIC_TENSOR_URL__ ||
-      (import.meta.env.VITE_QUIC_TENSOR_URL as string | undefined) ||
+      (import.meta.env.VITE_QUIC_TENSOR_URL as: string | undefined) ||
       'https://localhost:8447/legal-stream';
     quicStream = new QUICTensorStream();
     await quicStream.connect(String(url));
@@ -263,10 +263,10 @@ const createEvidenceStore = () => {
       if (!ev.embedding || !Array.isArray(ev.embedding) || ev.embedding.length === 0) continue;
       if (streamedEmbeddingIds.has(ev.id)) continue;
       const envelope: TensorEnvelope = {
-        kind: 'embedding',
+       , kind: 'embedding',
         evidenceId: ev.id,
-        caseId: caseId as string, // Explicitly cast caseId to string
-        dim: ev.embedding.length,
+        caseId: caseId, as: string, // Explicitly cast caseId to: string
+       , dim: ev.embedding.length,
         vector: ev.embedding,
         createdAt: new Date().toISOString()
       };
@@ -291,7 +291,7 @@ const createEvidenceStore = () => {
     subscribe,
     fetchEvidence,
     // Add new evidence with comprehensive metadata
-    addEvidence: async (; newEvidenceData: Omit<
+    addEvidence: async (;, newEvidenceData: Omit<
         Evidence,
         'id' | 'x' | 'y' | 'caseId' | 'created_at' | 'updated_at' | 'chain_of_custody' | 'access_log'
       >
@@ -312,7 +312,7 @@ const createEvidenceStore = () => {
           person: newEvidenceData.collected_by,
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
-          notes: `Evidence "${newEvidenceData.title}" added to case system' };'`
+          notes: `Evidence, "${newEvidenceData.title}" added to case system' };'`
         const evidencePayload = {
           ...newEvidenceData,
           caseId: currentCaseId,
@@ -356,7 +356,7 @@ const createEvidenceStore = () => {
       }
     },
     // Update evidence with optimistic updates and chain of custody
-    updateEvidence: async (; evidenceId: string,
+    updateEvidence: async (;, evidenceId: string,
       updates: Partial<Omit<Evidence, 'id' | 'caseId' | 'created_at'>>,
       chainOfCustodyAction?: { action: ChainOfCustodyEntry['action'];, person: string;
         purpose?: string;
@@ -377,7 +377,7 @@ const createEvidenceStore = () => {
             // Add chain of custody entry if provided
             if (chainOfCustodyAction) {
               const chainEntry: ChainOfCustodyEntry = {
-                id: `chain_${Date.now()}`,
+               , id: `chain_${Date.now()}`,
                 timestamp: new Date().toISOString(),
                 ...chainOfCustodyAction
               };
@@ -522,7 +522,7 @@ const createEvidenceStore = () => {
     // Search evidence
     searchEvidence: async (
       // Corrected function signature
-      query: string, // Added comma
+     , query: string, // Added comma
       options?: {
         include_content?: boolean;
         include_notes?: boolean;
@@ -555,7 +555,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           filtered_evidence: filtered,
-          current_filter: { search_text: query }
+          current_filter: {, search_text: query }
         };
       }); // Correctly close the update call
     }, // Correctly close the searchEvidence method and separate it from the next one
@@ -820,7 +820,7 @@ export function getUnprocessedEvidence(evidence: Evidence[]): Evidence[] {
 }
 export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   const stats: EvidenceStats = {
-    total_count: evidence.length,
+   , total_count: evidence.length,
     by_type: {},
     by_priority: {},
     by_confidentiality: {},
@@ -850,7 +850,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   return stats;
 }
 export function validateChainOfCustody(evidence: Evidence): { valid: boolean; issues: string[] } {
-  const issues: string[] = [];
+  const, issues: string[] = [];
   const chain = evidence.chain_of_custody;
   if (chain.length === 0) {
     issues.push('No chain of custody entries found');

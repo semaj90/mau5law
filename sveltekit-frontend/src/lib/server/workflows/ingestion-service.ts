@@ -2,14 +2,14 @@
  * Ingestion Workflow Service
  * Integrates XState machine + LokiJS tracker + RabbitMQ messaging
  */
-import { ingestionWorkflowActor, type IngestionJob } from '$lib/machines/ingestion-workflow-machine.js';
-import { jobTracker } from '$lib/services/job-tracker.js';
-import { setupQueues } from '$lib/server/rabbitmq.js';
+import { ingestionWorkflowActor, type IngestionJob } from, '$lib/machines/ingestion-workflow-machine.js';
+import { jobTracker } from, '$lib/services/job-tracker.js';
+import { setupQueues } from, '$lib/server/rabbitmq.js';
 
 // --- Added lightweight types for the workflow actor & responses ---
 type ServiceResponse = { success: boolean; [key: string]: any };
 
-// New: explicit minimal actor type to avoid `any`
+//, New: explicit minimal actor type to avoid `any`
 type WorkflowActor =
   | {
       send?: (event: {, type: string; data?: any }) => void;
@@ -18,10 +18,10 @@ type WorkflowActor =
   | undefined;
 
 class IngestionService {
-  // assign the imported actor, cast safely through unknown to our minimal WorkflowActor type
-  workflowActor: WorkflowActor = ingestionWorkflowActor as unknown as WorkflowActor;
+  // assign the imported actor, cast safely through: unknown to our minimal WorkflowActor type
+  workflowActor: WorkflowActor = ingestionWorkflowActor as: unknown as WorkflowActor;
   config = {
-    enableRabbitMQ: true,
+   , enableRabbitMQ: true,
     enableRedisQueues: true,
     maxConcurrency: 4
   };

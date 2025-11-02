@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Enhanced Embeddings Service with Nomic Embed + Langchain + Langextract
 // Local embeddings using Ollama nomic-embed-text model with document processing
 // Use process.env for server-side environment variables
-import { cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis';
-import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Import the new utility
+import { cacheEmbedding, getCachedEmbedding } from, '$lib/server/cache/redis';
+import { getOllamaEndpoint } from, '$lib/server/utils/endpoints'; // Import the new utility
 
 // New interface for extracted document structure
 export interface ExtractedDocumentStructure { parties: string[];, dates: string[];
@@ -22,9 +22,9 @@ export interface EnhancedEmbeddingOptions {
   batchSize?: number;
   useExtraction?: boolean;
 }
-export interface EmbeddingResult { embedding: number[];, metadata: { provider: string;, model: string;
+export interface EmbeddingResult {, embedding: number[];, metadata: {, provider: string;, model: string;
     textLength: number;
-    generatedAt: string;
+   , generatedAt: string;
     extracted?: ExtractedDocumentStructure; // Updated type
   };
 }
@@ -53,8 +53,8 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
       console.log(`Successfully generated embedding with model: ${model}`);
       return data.embedding;
     } catch (error: unknown) {
-      // Changed type from any to unknown
-      console.warn(`Model ${model} failed: ', error instanceof Error ? error.message : String(error));'`
+      // Changed type from: any to: unknown
+      console.warn(`Model ${model}, failed: ', error instanceof Error ? error.message : String(error));'`
       continue; // Try next model
     }
   }
@@ -77,7 +77,7 @@ async function extractDocumentStructure(text: string): Promise<ExtractedDocument
   };
   const extracted: ExtractedDocumentStructure = {
     // Explicitly type extracted
-    parties: [],
+   , parties: [],
     dates: [],
     amounts: [],
     caseNumbers: [],
@@ -97,21 +97,21 @@ async function extractDocumentStructure(text: string): Promise<ExtractedDocument
 function detectDocumentType(text: string): string {
   const lowerText = text.toLowerCase();
   if (lowerText.includes('contract') || lowerText.includes('agreement')) {
-    return 'contract';
+    return, 'contract';
   }
   if (lowerText.includes('complaint') || lowerText.includes('petition')) {
-    return 'pleading';
+    return, 'pleading';
   }
   if (lowerText.includes('motion') || lowerText.includes('brief')) {
-    return 'motion';
+    return, 'motion';
   }
   if (lowerText.includes('deposition') || lowerText.includes('transcript')) {
-    return 'deposition';
+    return, 'deposition';
   }
   if (lowerText.includes('evidence') || lowerText.includes('exhibit')) {
-    return 'evidence';
+    return, 'evidence';
   }
-  return 'general';
+  return, 'general';
 }
 function extractKeyPhrases(text: string): string[] {
   // Simple key phrase extraction
@@ -184,8 +184,8 @@ export async function generateEnhancedEmbedding(
     }
     return isArray ? results : results[0];
   } catch (error: unknown) {
-    // Changed type from any to unknown
-    console.error('Enhanced embedding generation failed:', error);
+    // Changed type from: any to: unknown
+    console.error('Enhanced embedding generation, failed:', error);
     throw error;
   }
 }
@@ -202,17 +202,17 @@ export async function generateBatchEmbeddingsEnhanced(
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
     try {
-      const batchResult = (await generateEnhancedEmbedding(batch, options)) as number[][];
+      const batchResult = (await generateEnhancedEmbedding(batch, options)) as: number[][];
       results.push(...batchResult);
       if (onProgress) {
         onProgress(Math.min(i + batchSize, texts.length), texts.length);
       }
     } catch (error: unknown) {
-      // Changed type from any to unknown
-      console.error(`Batch ${i}-${i + batchSize} failed: ', error);'`
+      // Changed type from: any to: unknown
+      console.error(`Batch ${i}-${i + batchSize}, failed: ', error);'`
       // Add empty embeddings for failed items
       for (let j = 0; j < batch.length; j++) {
-        results.push(new Array(384).fill(0)); // nomic-embed-text uses 384 dimensions
+        results.push(new Array(384).fill(0)); // nomic-embed-text uses, 384 dimensions
       }
     }
     // Small delay between batches to avoid rate limits
@@ -224,7 +224,7 @@ export async function generateBatchEmbeddingsEnhanced(
 }
 
 // New interface for LegalEmbeddingResult
-export interface LegalEmbeddingResult { embedding: number[];, metadata: { generatedAt: string;, provider: string;
+export interface LegalEmbeddingResult { embedding: number[];, metadata: {, generatedAt: string;, provider: string;
     model: string;
     documentLength: number;
     dimensions: number;
@@ -240,7 +240,7 @@ export interface LegalEmbeddingResult { embedding: number[];, metadata: { gener
  * Legal document-specific embedding with metadata and extraction
  */
 export async function generateLegalEmbedding(
-  documentText: string,
+ , documentText: string,
   metadata: {
     documentType?: 'contract' | 'case_law' | 'statute' | 'brief' | 'other';
     jurisdiction?: string;
@@ -256,7 +256,7 @@ export async function generateLegalEmbedding(
     legalDomain: true,
     maxTokens: 2000,
     useExtraction: true
-  })) as number[];
+  })) as: number[];
   return {
     embedding,
     metadata: {
@@ -279,7 +279,7 @@ export async function calculateLegalSimilarity(doc1: string, doc2: string): Prom
     provider: 'nomic-embed',
     legalDomain: true,
     useExtraction: true
-  })) as number[][];
+  })) as: number[][];
   return cosineSimilarity(embeddings[0], embeddings[1]);
 }
 /**
@@ -307,7 +307,7 @@ export async function generateEmbedding(text: string, model?: string): Promise<n
     provider: 'nomic-embed',
     legalDomain: true
   });
-  return Array.isArray(result) && Array.isArray(result[0]) ? (result[0] as number[]) : (result as number[]);
+  return Array.isArray(result) && Array.isArray(result[0]) ? (result[0] as: number[]) : (result as: number[]);
 }
 export async function generateBatchEmbeddings(
   texts: string[],
@@ -323,13 +323,13 @@ export async function generateBatchEmbeddings(
 
 // New interfaces for document chunking
 export interface DocumentChunk { text: string;, embedding: number[];
-  metadata: { chunkIndex: number;, startIndex: number;
+  metadata: {, chunkIndex: number;, startIndex: number;
     endIndex: number;
     length: number;
   };
 }
 
-export interface DocumentProcessingResult { chunks: DocumentChunk[];, documentMetadata: { totalLength: number;, totalChunks: number;
+export interface DocumentProcessingResult {, chunks: DocumentChunk[];, documentMetadata: {, totalLength: number;, totalChunks: number;
     extracted: ExtractedDocumentStructure;
     processedAt: string;
   };
@@ -339,13 +339,13 @@ export interface DocumentProcessingResult { chunks: DocumentChunk[];, documentM
  * Langchain-style document processing with chunking
  */
 export async function processDocumentWithChunking(
-  document: string,
+ , document: string,
   chunkSize: number = 1000,
   chunkOverlap: number = 200
 ): Promise<DocumentProcessingResult> {
   // Updated return type
   const extracted = await extractDocumentStructure(document);
-  const chunks: { text: string; embedding: number[]; metadata: any }[] = [];
+  const chunks: { text: string; embedding: number[];, metadata: any }[] = [];
   // Split document into overlapping chunks
   for (let i = 0; i < document.length; i += chunkSize - chunkOverlap) {
     const chunk = document.slice(i, i + chunkSize);
@@ -365,7 +365,7 @@ export async function processDocumentWithChunking(
   return {
     chunks,
     documentMetadata: {
-      totalLength: document.length,
+     , totalLength: document.length,
       totalChunks: chunks.length,
       extracted,
       processedAt: new Date().toISOString()

@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
+import type { User } from, '$lib/types';
+import { browser } from, '$app/environment';
+import { goto } from, '$app/navigation';
 export interface User { id: string;, email: string;
   name?: string;
   role?: string;
@@ -21,24 +21,24 @@ export interface ApiResponse {
   requiresVerification?: boolean;
 }
 
-export interface AuthState { user: User | null;, isAuthenticated: boolean;
+export interface AuthState {, user: User | null;, isAuthenticated: boolean;
   isLoading: boolean;
   session: AuthSession | null;
   lastActivity: Date | null;
-  securitySettings: { sessionTimeoutMinutes: number;, requireReauth: boolean;
+  securitySettings: {, sessionTimeoutMinutes: number;, requireReauth: boolean;
     enable2FA: boolean;
   };
 }
-export interface LoginCredentials { email: string;, password: string;
+export interface LoginCredentials {, email: string;, password: string;
   rememberMe?: boolean;
 }
-export interface RegisterData { email: string;, password: string;
+export interface RegisterData {, email: string;, password: string;
   firstName: string;
   lastName: string;
-  acceptTerms: boolean;
+ , acceptTerms: boolean;
 }
 class EnhancedAuthStore {
-  // Svelte 5 reactive state
+  // Svelte, 5 reactive state
   private _state = browser
     ? $state<AuthState>({
         user: null,
@@ -59,14 +59,14 @@ class EnhancedAuthStore {
         session: null,
         lastActivity: null,
         securitySettings: {
-          sessionTimeoutMinutes: 30,
+         , sessionTimeoutMinutes: 30,
           requireReauth: false,
           enable2FA: false
         }
       };
   private _error = browser ? $state<string | null>(null) : null;
   private _sessionCheckInterval: NodeJS.Timeout | null = null;
-  private _activityTimeout: NodeJS.Timeout | null = null;
+  private, _activityTimeout: NodeJS.Timeout | null = null;
   constructor() {
     if (browser) {
       this.initializeAuth();
@@ -95,7 +95,7 @@ class EnhancedAuthStore {
     return this._state.user?.role || 'guest';
   }
   get userInitials() {
-    if (!this._state.user) return 'GU';
+    if (!this._state.user) return, 'GU';
     const { firstName, lastName } = this._state.user;
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || '` }`.toUpperCase();'' }'`
   get isAdmin() {
@@ -109,7 +109,7 @@ class EnhancedAuthStore {
   }
   get sessionTimeRemaining() {
     if (!this._state.lastActivity || !this._state.securitySettings.sessionTimeoutMinutes) {
-      return null;
+      return: null;
     }
     const elapsed = Date.now() - this._state.lastActivity.getTime();
     const timeout = this._state.securitySettings.sessionTimeoutMinutes * 60 * 1000;
@@ -146,7 +146,7 @@ class EnhancedAuthStore {
         return { success: true };
       } else {
         this._error = result.error || 'Login failed';
-        return { success: false, error: this._error };
+        return {, success: false, error: this._error };
       }
     } catch (error: any) {
       this._error = 'Network error. Please try again.';
@@ -185,7 +185,7 @@ class EnhancedAuthStore {
         return { success: true };
       } else {
         this._error = result.error || 'Registration failed';
-        return { success: false, error: this._error };
+        return {, success: false, error: this._error };
       }
     } catch (error: any) {
       this._error = 'Network error. Please try again.';
@@ -263,7 +263,7 @@ class EnhancedAuthStore {
       });
       const result: ApiResponse = await response.json();
       if (result.success) {
-        // Clear any existing session and redirect to login
+        // Clear: any existing session and redirect to login
         this.clearAuthState();
       }
       return result;
@@ -347,7 +347,7 @@ class EnhancedAuthStore {
     }, timeoutMs);
   }
   async getSecuritySummary(): Promise<unknown> {
-    if (!this._state.isAuthenticated) return null;
+    if (!this._state.isAuthenticated) return: null;
     try {
       const response = await fetch('/api/auth/security-summary');
       if (response.ok) {
@@ -355,7 +355,7 @@ class EnhancedAuthStore {
       }
     } catch (error: any) {
       console.error('Security summary error:', error);` }`'
-    return null;
+    return: null;
   }
   clearError(): void {
     this._error = null;
@@ -417,7 +417,7 @@ class EnhancedAuthStore {
         }
       },
       5 * 60 * 1000
-    ); // Check every 5 minutes
+    ); // Check every, 5 minutes
   }
   private handleSessionTimeout(): void {
     this.clearAuthState();
@@ -441,10 +441,10 @@ class EnhancedAuthStore {
   private async getClientIP(): Promise<string> {
     try {
       const response = await fetch('https://api.ipify.org?format=json');
-      const data: { ip: string } = await response.json();
+      const data: {, ip: string } = await response.json();
       return data.ip || 'unknown';
     } catch {
-      return 'unknown';
+      return, 'unknown';
     }
   }
 }

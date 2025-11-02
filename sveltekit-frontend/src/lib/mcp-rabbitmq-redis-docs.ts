@@ -1,6 +1,6 @@
 // MCP Context7.2 - RabbitMQ and Redis Library Documentation
 // Get proper library documentation to fix integration issues
-import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from './mcp-context72-get-library-docs.js';
+import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from, './mcp-context72-get-library-docs.js';
 // Get RabbitMQ (amqplib) documentation
 export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(

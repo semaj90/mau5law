@@ -1,10 +1,10 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
- * YoRHa AI Chat Store - Persistent Chat Management with Svelte 5 Runes
+ * YoRHa AI Chat Store - Persistent Chat Management with Svelte, 5 Runes
  * Handles conversation history, user preferences, and Enhanced RAG integration
  */
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 
 export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
@@ -19,7 +19,7 @@ export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'syste
   };
 }
 
-export interface ChatSession { id: string;, title: string;
+export interface ChatSession {, id: string;, title: string;
   messages: ChatMessage[];
   created_at: Date;
   updated_at: Date;
@@ -28,7 +28,7 @@ export interface ChatSession { id: string;, title: string;
   evidence_id?: string;
 }
 
-export interface UserPreferences { theme: 'yorha-dark' | 'yorha-light';, auto_save: boolean;
+export interface UserPreferences {, theme: 'yorha-dark' | 'yorha-light';, auto_save: boolean;
   max_history: number;
   enable_rag: boolean;
   default_model: string;
@@ -36,7 +36,7 @@ export interface UserPreferences { theme: 'yorha-dark' | 'yorha-light';, auto_s
   export_format: 'json' | 'markdown' | 'txt';
 }
 
-export interface ChatState { currentSession: ChatSession | null;, sessions: ChatSession[];
+export interface ChatState {, currentSession: ChatSession | null;, sessions: ChatSession[];
   preferences: UserPreferences;
   isLoading: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
@@ -46,7 +46,7 @@ export interface ChatState { currentSession: ChatSession | null;, sessions: Cha
 
 // Default preferences
 const defaultPreferences: UserPreferences = {
-  theme: 'yorha-dark',
+ , theme: 'yorha-dark',
   auto_save: true,
   max_history: 100,
   enable_rag: true,
@@ -57,18 +57,18 @@ const defaultPreferences: UserPreferences = {
 
 // Storage keys
 const STORAGE_KEYS = {
-  SESSIONS: 'yorha-ai-chat-sessions',
+ , SESSIONS: 'yorha-ai-chat-sessions',
   PREFERENCES: 'yorha-ai-chat-preferences',
   CURRENT_SESSION: 'yorha-ai-current-session'
 };
 
 /**
- * AI Chat Store Manager with Svelte 5 Runes
+ * AI Chat Store Manager with Svelte, 5 Runes
  */
 class AIChatStore {
   private readonly RAG_SERVICE_URL = 'http://localhost:8093';
 
-  // Using Svelte 5 $state rune
+  // Using Svelte, 5 $state rune
   private state = $state<ChatState>({
     currentSession: null,
     sessions: [],
@@ -97,7 +97,7 @@ class AIChatStore {
   // Session Management
   createNewSession(title?: string): ChatSession {
     const session: ChatSession = {
-      id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+     , id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: title || `YoRHa Session ${new Date().toLocaleString()}`,
       messages: [],
       created_at: new Date(),
@@ -323,13 +323,13 @@ class AIChatStore {
   // Utility methods
   exportSession(sessionId: string, format: 'json' | 'markdown' | 'txt' = 'markdown'): string {
     const session = this.state.sessions.find(s => s.id === sessionId);
-    if (!session) return '';
+    if (!session) return, '';
 
     switch (format) {
-      case 'json':
+      case, 'json':
         return JSON.stringify(session, null, 2);
 
-      case 'markdown':
+      case, 'markdown':
         let md = `# ${session.title}\n\n`;
         md += `**Created:** ${session.created_at.toLocaleString()}\n`;
         md += `**Updated:** ${session.updated_at.toLocaleString()}\n`;
@@ -342,7 +342,7 @@ class AIChatStore {
 
         return md;
 
-      case 'txt':
+      case, 'txt':
         let txt = `${session.title}\n${'='.repeat(session.title.length)}\n\n`;
         txt += `Created: ${session.created_at.toLocaleString()}\n`;
         txt += `Updated: ${session.updated_at.toLocaleString()}\n\n`;
@@ -353,7 +353,7 @@ class AIChatStore {
 
         return txt;
 
-      default: return '';
+      default: return, '';
     }
   }
 

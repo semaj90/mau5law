@@ -275,7 +275,7 @@ fileInput.click()}
 				</div>
 				<!-- Processing Status -->
 				{#if $processing}
-					<div class="space-y-2" transition:fade>
+					<div class="space-y-2" use:fade>
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-yorha-text-secondary">Processing document...</span>
 							<span class="text-sm text-yorha-text-secondary">{Math.round($progress)}%</span>
@@ -319,7 +319,7 @@ fileInput.click()}
 			<form onsubmit|preventDefault={handleSubmit} class="space-y-6">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{#each populatedFields as field (field.name)}
-						<div class="space-y-2" transition:fade>
+						<div class="space-y-2" use:fade>
 							<!-- Field Label -->
 							<div class="flex items-center justify-between">
 								<Label class="flex items-center space-x-2">
@@ -358,7 +358,7 @@ fileInput.click()}
 							{/if}
 							<!-- Field Error -->
 							{#if $formErrors[field.name]}
-								<p class="text-xs text-yorha-danger" transition:scale>
+								<p class="text-xs text-yorha-danger" use:scale>
 									{$formErrors[field.name]}
 								</p>
 							{/if}

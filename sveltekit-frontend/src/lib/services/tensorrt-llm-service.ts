@@ -1,16 +1,16 @@
-import type { Case } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { Case } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * TensorRT-LLM Service with Ollama Fallback
  * High-performance inference service for legal AI
  */
-import { redisConfig, redisKeys, createServiceConfig } from '$lib/config/redis-config';
-import { env } from '$env/dynamic/private';
-// Configuration optimized for RTX 3060 Ti
+import { redisConfig, redisKeys, createServiceConfig } from, '$lib/config/redis-config';
+import { env } from, '$env/dynamic/private';
+// Configuration optimized for RTX, 3060 Ti
 const TENSORRT_ENDPOINT = env.TENSORRT_ENDPOINT || 'http://localhost:8100';
 const OLLAMA_ENDPOINT = env.OLLAMA_ENDPOINT || 'http://localhost:11434';
 const OLLAMA_MODEL = env.OLLAMA_MODEL || 'gemma3:legal-latest';
-// RTX 3060 Ti optimized settings
+// RTX, 3060 Ti optimized settings
 const RTX_3060_CONFIG = {
   max_batch_size: 2,
   max_input_len: 2048,
@@ -40,8 +40,8 @@ export interface InferenceResponse {
   error?: string;
   cached?: boolean;
 }
-export interface ModelInfo { name: string;, backend: 'tensorrt' | 'ollama';
-  available: boolean;
+export interface ModelInfo {, name: string;, backend: 'tensorrt' | 'ollama';
+ , available: boolean;
   warmup_time?: number;
   memory_usage?: number;
 }
@@ -148,7 +148,7 @@ class TensorRTLLMService {
     }
   }
   /**
-   * Generate inference using TensorRT-LLM with RTX 3060 Ti optimization
+   * Generate inference using TensorRT-LLM with RTX, 3060 Ti optimization
    */
   private async generateTensorRT(request: InferenceRequest): Promise<InferenceResponse> {
     const payload = {
@@ -159,9 +159,9 @@ class TensorRTLLMService {
       system_prompt:
         request.system_prompt ||
         'You are a helpful legal AI assistant specialized in legal analysis, case research, and evidence review.',
-      // RTX 3060 Ti specific optimizations
+      // RTX, 3060 Ti specific optimizations
       gpu_config: {
-        batch_size: Math.min(1, RTX_3060_CONFIG.max_batch_size),
+       , batch_size: Math.min(1, RTX_3060_CONFIG.max_batch_size),
         use_tensor_cores: RTX_3060_CONFIG.use_tensor_cores,
         mixed_precision: RTX_3060_CONFIG.mixed_precision,
         memory_pool: RTX_3060_CONFIG.memory_pool_limit,
@@ -202,7 +202,7 @@ class TensorRTLLMService {
         request.system_prompt ||
         'You are a specialized legal AI assistant with expertise in case analysis, evidence review, legal research, and procedural guidance. Focus on accuracy, legal precedent, and practical applications.',
       options: {
-        num_predict: request.max_tokens || 512,
+       , num_predict: request.max_tokens || 512,
         temperature: request.temperature || 0.1,
         num_ctx: 4096, // Match TensorRT context window
         num_gpu: 35, // Use GPU layers for better performance
@@ -287,7 +287,7 @@ class TensorRTLLMService {
     for (const model of models) {
       try {
         const warmupRequest: InferenceRequest = {
-          prompt: 'This is a warmup request.',
+         , prompt: 'This is a warmup request.',
           max_tokens: 10,
           temperature: 0.1,
           model: model.name
@@ -309,9 +309,9 @@ class TensorRTLLMService {
     ollama: { available: boolean; latency?: number };
     overall: 'healthy' | 'degraded' | 'down';
   }> {
-    const status = { tensorrt: {, available: this.tensorrtAvailable, latency: undefined as number | undefined },
-      ollama: { available: this.ollamaAvailable, latency: undefined as number | undefined },
-      overall: 'down' as 'healthy' | 'degraded' | 'down', // Corrected type assertion syntax
+    const status = {, tensorrt: {, available: this.tensorrtAvailable, latency: undefined, as: number | undefined },
+      ollama: {, available: this.ollamaAvailable, latency: undefined, as: number | undefined },
+      overall: 'down' as, 'healthy' | 'degraded' | 'down', // Corrected type assertion syntax
     };
     // Test TensorRT latency
     if (this.tensorrtAvailable) {
@@ -359,7 +359,7 @@ class TensorRTLLMService {
       return cached ? JSON.parse(cached) : null;
     } catch (error) {
       console.warn('Cache retrieval failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -380,7 +380,7 @@ class TensorRTLLMService {
    * Extract evidence context from prompts for legal AI optimization
    */
   private extractEvidenceContext(prompt: string): { hasEvidence: boolean;, evidenceIds: string[];
-    summary: string;
+   , summary: string;
     caseId?: string;
   } {
     const evidencePattern = /evidence[_\s]?id[:\s]+([a-zA-Z0-9_-]+)/gi;
@@ -398,7 +398,7 @@ class TensorRTLLMService {
       evidenceIds,
       summary:
         evidenceIds.length > 0
-          ? `Analyzing evidence: ${evidenceIds.join(', ')}${caseId ? ` in case ${caseId}` : `' }`'`
+          ? `Analyzing, evidence: ${evidenceIds.join(', ')}${caseId ? ` in case ${caseId}` : `' }`'`
           : hasLegalTerms
             ? 'Legal analysis request detected'
             : '',
@@ -416,10 +416,10 @@ class TensorRTLLMService {
   ): Promise<InferenceResponse> {
     const enhancedPrompt =
       evidenceIds && evidenceIds.length > 0
-        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown' }\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`'`'`
+        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown' }\nEvidence, IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`'`'`
         : prompt;
     return this.generateInference({
-      prompt: enhancedPrompt,
+     , prompt: enhancedPrompt,
       system_prompt:
         'You are a specialized legal AI assistant analyzing evidence and case materials. Provide thorough, accurate legal analysis with attention to chain of custody, evidence integrity, and legal relevance.',
       max_tokens: 1024,
@@ -433,7 +433,7 @@ class TensorRTLLMService {
   async getPerformanceMetrics(): Promise<{ tensorrt: { avgLatency: number; throughput: number; available: boolean };
     ollama: { avgLatency: number; throughput: number; available: boolean };
     cacheHitRate: number;
-    totalRequests: number;
+   , totalRequests: number;
   }> {
     try {
       const stats = await tensorrtRedis.hmget(
@@ -456,7 +456,7 @@ class TensorRTLLMService {
           available: this.tensorrtAvailable
         },
         ollama: {
-          avgLatency: ollamaLatency,
+         , avgLatency: ollamaLatency,
           throughput: ollamaRequests > 0 ? 1000 / (ollamaLatency || 1) : 0,
           available: this.ollamaAvailable
         },
@@ -466,7 +466,7 @@ class TensorRTLLMService {
     } catch (error) {
       console.warn('Failed to get performance metrics:', error);
       return { tensorrt: {, avgLatency: 0, throughput: 0, available: this.tensorrtAvailable },
-        ollama: { avgLatency: 0, throughput: 0, available: this.ollamaAvailable },
+        ollama: {, avgLatency: 0, throughput: 0, available: this.ollamaAvailable },
         cacheHitRate: 0,
         totalRequests: 0
       };

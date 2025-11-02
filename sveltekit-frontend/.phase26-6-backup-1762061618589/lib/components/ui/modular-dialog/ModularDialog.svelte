@@ -199,7 +199,7 @@
     };
   });
 </script>
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Portal>
     <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
@@ -313,7 +313,7 @@
         {/if}
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
   :global(.modular-dialog) {
     /* Replaced Tailwind @apply with safe CSS using CSS variables */

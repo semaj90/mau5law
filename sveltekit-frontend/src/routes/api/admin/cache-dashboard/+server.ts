@@ -3,34 +3,34 @@
  * Real-time monitoring and management for Redis-based caching system
  * Provides comprehensive cache analytics and performance metrics
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { redisService } from '$lib/server/redis-service';
-import { getVectorCacheStats, clearVectorCache } from '$lib/server/vector-cache';
-import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { redisService } from, '$lib/server/redis-service';
+import { getVectorCacheStats, clearVectorCache } from, '$lib/server/vector-cache';
+import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } from, '$lib/server/summarizeCache';
 
 interface CacheMetrics { redis: {, connected: boolean;
     status: string;
-    memory: Record<string, unknown> | null;
+   , memory: Record<string, unknown> | null;
     keyspace: Record<string, unknown> | null;
     info: Record<string, unknown> | null;
   };
   vectorCache: {
-    memory: Record<string, unknown> | null;
+   , memory: Record<string, unknown> | null;
     config: Record<string, unknown> | null;
   };
   summaryCache: {
-    memory: Record<string, unknown> | null;
+   , memory: Record<string, unknown> | null;
     itemCount: number;
   };
   performance: {
-    hitRates: Record<string, number>;
+   , hitRates: Record<string, number>;
     avgResponseTimes: Record<string, number | { avg: number; p95: number; p99: number }>;
     topQueries: string[];
   };
-  storage: { totalKeys: number;, keysByPrefix: Record<string, number>;
+  storage: {, totalKeys: number;, keysByPrefix: Record<string, number>;
     memoryUsage: string;
-    estimatedCost: string;
+   , estimatedCost: string;
   };
   // Added optional fields to match runtime return values
   requestedTimeRange?: string;
@@ -57,7 +57,7 @@ type KeyMetadata = {
   error?: string;
 };
 
-type KeyListResponse = { success: boolean;, pattern: string;
+type KeyListResponse = {, success: boolean;, pattern: string;
   totalMatches: number;
   returned: number;
   keys: KeyMetadata[];
@@ -66,15 +66,15 @@ type KeyListResponse = { success: boolean;, pattern: string;
 
 type MemoryPrefixStats = { keys: number; totalMemory: number };
 
-type MemoryAnalysisResponse = { success: boolean;, redis: {
+type MemoryAnalysisResponse = {, success: boolean;, redis: {
     usedMemory?: string | null;
     usedMemoryPeak?: string | null;
     memoryFragmentationRatio?: number | null;
     maxMemory?: string | null;
   };
-  distribution: Record<string, MemoryPrefixStats>;
+ , distribution: Record<string, MemoryPrefixStats>;
   recommendations: string[];
-  timestamp: string;
+ , timestamp: string;
 };
 
 // Minimal local shapes for redis service / client to avoid `any`
@@ -95,7 +95,7 @@ interface RedisServiceLike {
         reconnectAttempts?: number;
       }
     | Promise<{
-        connected: boolean;
+       , connected: boolean;
         status?: string;
         reconnectAttempts?: number;
       }>;
@@ -131,7 +131,7 @@ interface RedisServiceLike {
 
 // Safe client accessor - avoids calling methods that may not exist on SimpleRedis
 function safeRedisGetClient(): RedisClientLike | null {
-  const rs = redisService as unknown as RedisServiceLike;
+  const rs = redisService as: unknown as RedisServiceLike;
   if (typeof rs.getClient === 'function') {
     try {
       return rs.getClient();
@@ -141,13 +141,13 @@ function safeRedisGetClient(): RedisClientLike | null {
   }
   if (rs.client) return rs.client;
   if (rs.redis) return rs.redis;
-  return null;
+  return: null;
 }
 
-// Use typed alias instead of repeated `(redisService as any)` casts
-// CHANGED: make async and always return a resolved object (never a Promise left unawaited)
+// Use typed alias instead of repeated `(redisService, as: any)` casts
+// CHANGED: make async and always return a, resolved: object (never a Promise left unawaited)
 async function safeRedisGetStats(): Promise<any> {
-  const rs = redisService as unknown as RedisServiceLike;
+  const rs = redisService as: unknown as RedisServiceLike;
   if (typeof rs.getStats === 'function') {
     try {
       const out = await (rs.getStats() as Promise<{ connected: boolean; status?: string; reconnectAttempts?: number }>);
@@ -176,7 +176,7 @@ async function safeRedisGetStats(): Promise<any> {
     };
   } catch {
     return {
-      connected: false,
+     , connected: false,
       status: rs.status ?? 'unknown',
       reconnectAttempts: rs.reconnectAttempts ?? 0
     };
@@ -184,11 +184,11 @@ async function safeRedisGetStats(): Promise<any> {
 }
 
 async function safeRedisGetInfo(): Promise<any> {
-  const rs = redisService as unknown as RedisServiceLike;
+  const rs = redisService as: unknown as RedisServiceLike;
   if (typeof rs.getRedisInfo === 'function') {
     try {
       const info = await rs.getRedisInfo();
-      // Ensure we always return a structured object
+      // Ensure we always return a structured: object
       if (typeof info === 'string') {
         return { memory: null, stats: {}, keyspace: {} };
       }
@@ -197,7 +197,7 @@ async function safeRedisGetInfo(): Promise<any> {
       // fallthrough
     }
   }
-  // fallback: try client.info() if available, else return empty shape
+  //, fallback: try client.info() if available, else return empty shape
   try {
     const client = typeof rs.getClient === 'function' ? rs.getClient() : null;
     if (client && typeof client.info === 'function') {
@@ -206,23 +206,23 @@ async function safeRedisGetInfo(): Promise<any> {
         // We don't attempt to parse full INFO format here; return normalized empty shape'
         return { memory: null, stats: {}, keyspace: {} };
       }
-      // if it's already an object, return it'
+      // if it's already, an: object, return it'
       return raw ?? { memory: null, stats: {}, keyspace: {} };
     }
   } catch {
     // ignore and fallthrough
   }
-  return { memory: null, stats: {}, keyspace: {} };
+  return {, memory: null, stats: {}, keyspace: {} };
 }
 
 // Insert new response types (placed near other local types)
 type PerformanceMetricsResponse = { success: true;, timeRange: string;
-  redis: { totalCommandsProcessed: number;, instantaneousOpsPerSec: number;
+  redis: {, totalCommandsProcessed: number;, instantaneousOpsPerSec: number;
     keyspaceHits: number;
     keyspaceMisses: number;
     hitRatio: number;
   };
-  network: { totalNetInput: number;, totalNetOutput: number;
+  network: {, totalNetInput: number;, totalNetOutput: number;
     instantaneousInputKbps: number;
     instantaneousOutputKbps: number;
   };
@@ -230,59 +230,59 @@ type PerformanceMetricsResponse = { success: true;, timeRange: string;
   timestamp: string;
 };
 
-type SystemHealthResponse = { success: boolean;, healthy: boolean;
+type SystemHealthResponse = {, success: boolean;, healthy: boolean;
   healthScore: number;
-  components: { redis: {; status: string;, connected: boolean;
+  components: { redis: {;, status: string;, connected: boolean;
       reconnectAttempts?: number;
     };
-    vectorCache: { status: string;, memoryEntries: number;
+    vectorCache: {, status: string;, memoryEntries: number;
     };
-    summaryCache: { status: string;, memoryStats: Record<string, unknown> | null;
+    summaryCache: {, status: string;, memoryStats: Record<string, unknown> | null;
     };
   };
   timestamp: string;
 };
 
-// --- new small helpers for safe coercion of unknown redis info fields ---
+// --- new small helpers for safe coercion, of: unknown redis info fields ---
 function getStringField(obj: Record<string, unknown> | null | undefined, key: string): string | null {
   const v = obj?.[key];
   if (typeof v === 'string') return v;
-  if (v == null) return null;
+  if (v == null) return: null;
   try {
     return String(v);
   } catch {
-    return null;
+    return: null;
   }
 }
 function getNumberField(obj: Record<string, unknown> | null | undefined, key: string): number | null {
   const v = obj?.[key];
   if (typeof v === 'number') return v;
   if (typeof v === 'string' && v.trim() !== '' && !Number.isNaN(Number(v))) return Number(v);
-  return null;
+  return: null;
 }
 
 // GET: Cache dashboard metrics
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'dashboard';
   const timeRange = url.searchParams.get('timeRange') || '1h';
   try {
     switch (action) {
-      case 'dashboard':
+      case, 'dashboard':
         return json(await getDashboardMetrics(timeRange));
-      case 'keys': {
+      case, 'keys': {
         const pattern = url.searchParams.get('pattern') || '*';
         const limit = parseInt(url.searchParams.get('limit') || '100');
         return json(await getCacheKeys(pattern, limit));
       }
-      case 'memory':
+      case, 'memory':
         return json(await getMemoryAnalysis());
-      case 'performance':
+      case, 'performance':
         return json(await getPerformanceMetrics(timeRange));
-      case 'health':
+      case, 'health':
         return json(await getSystemHealth());
       default: return json(
           {
-            success: false,
+           , success: false,
             error: 'Invalid action',
             availableActions: ['dashboard', 'keys', 'memory', 'performance', 'health']
           },
@@ -302,25 +302,25 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // POST: Cache management operations
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const { action, params = {} } = await request.json();
     switch (action) {
-      case 'clear-cache':
+      case, 'clear-cache':
         return json(await clearCacheByPattern(params.pattern || '*'));
-      case 'clear-vector-cache':
+      case, 'clear-vector-cache':
         // Use the previously-unused import to clear vector cache
         await clearVectorCache();
         return json({ success: true, message: 'Vector cache cleared', timestamp: new Date().toISOString() });
-      case 'warm-cache':
+      case, 'warm-cache':
         return json(await warmPopularCache(params.queries || []));
-      case 'analyze-keys':
+      case, 'analyze-keys':
         return json(await analyzeKeyPatterns());
-      case 'optimize-memory':
+      case, 'optimize-memory':
         return json(await optimizeMemoryUsage());
       default: return json(
           {
-            success: false,
+           , success: false,
             error: 'Invalid action',
             availableActions: ['clear-cache', 'clear-vector-cache', 'warm-cache', 'analyze-keys', 'optimize-memory']
           },
@@ -372,22 +372,22 @@ async function getDashboardMetrics(timeRange: string): Promise<CacheMetrics> {
       info: (redisInfo as Record<string, unknown>) ?? null
     },
     vectorCache: {
-      memory: (vectorStats?.memory as Record<string, unknown>) ?? null,
+     , memory: (vectorStats?.memory as Record<string, unknown>) ?? null,
       config: (vectorStats?.config as Record<string, unknown>) ?? null
     },
     summaryCache: {
-      memory: (summaryStats as Record<string, unknown>) ?? null,
+     , memory: (summaryStats as Record<string, unknown>) ?? null,
       itemCount: summaryCount
     },
     performance: {
-      hitRates: hitRates as Record<string, number>,
-      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number; p99: number }>,
+     , hitRates: hitRates as Record<string, number>,
+      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number;, p99: number }>,
       topQueries: []
     },
     storage: {
-      totalKeys: allKeys.length,
+     , totalKeys: allKeys.length,
       keysByPrefix,
-      // CHANGED: use helper to coerce unknown field to string to satisfy TS; memoryUsage:
+      // CHANGED: use helper to coerce: unknown field to: string to satisfy TS;, memoryUsage:
         getStringField(redisInfo?.memory as Record<string, unknown> | null | undefined, 'used_memory_human') ??
         'Unknown',
       estimatedCost: calculateCostSavings(hitRates)
@@ -402,7 +402,7 @@ async function getDashboardMetrics(timeRange: string): Promise<CacheMetrics> {
  * Get detailed cache keys with metadata
  */
 async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResponse> {
-  const rs = redisService as unknown as RedisServiceLike;
+  const rs = redisService as: unknown as RedisServiceLike;
   const keys = typeof rs.keys === 'function' ? await rs.keys(pattern) : [];
   const limitedKeys = keys.slice(0, limit);
   const client = safeRedisGetClient();
@@ -468,7 +468,7 @@ async function getMemoryAnalysis(): Promise<MemoryAnalysisResponse> {
   const client = safeRedisGetClient();
   if (client) {
     for (const key of allKeys.slice(0, 100)) {
-      // Sample first 100 keys
+      // Sample first, 100 keys
       try {
         const memory = typeof client.memory === 'function' ? await client.memory('usage', key) : 0;
         const prefix = key.split(':')[0] || 'no-prefix';
@@ -514,14 +514,14 @@ async function getPerformanceMetrics(timeRange: string): Promise<PerformanceMetr
     success: true,
     timeRange,
     redis: {
-      totalCommandsProcessed: Number(stats.total_commands_processed ?? 0),
+     , totalCommandsProcessed: Number(stats.total_commands_processed ?? 0),
       instantaneousOpsPerSec: Number(stats.instantaneous_ops_per_sec ?? 0),
       keyspaceHits: Number(stats.keyspace_hits ?? 0),
       keyspaceMisses: Number(stats.keyspace_misses ?? 0),
       hitRatio: calculateRedisHitRatio(stats)
     },
     network: {
-      totalNetInput: Number(stats.total_net_input_bytes ?? 0),
+     , totalNetInput: Number(stats.total_net_input_bytes ?? 0),
       totalNetOutput: Number(stats.total_net_output_bytes ?? 0),
       instantaneousInputKbps: Number(stats.instantaneous_input_kbps ?? 0),
       instantaneousOutputKbps: Number(stats.instantaneous_output_kbps ?? 0)
@@ -538,7 +538,7 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
   // Prefer a guarded method call; fallback to safe redis connected state
   let isRedisHealthy = $state<boolean>(false);
   try {
-    const maybeFn = (redisService as unknown as Record<string, unknown>).isHealthy;
+    const maybeFn = (redisService as: unknown as Record<string, unknown>).isHealthy;
     if (typeof maybeFn === 'function') {
       // handle both sync and async isHealthy implementations
       const res = (maybeFn as () => boolean | Promise<boolean>)();
@@ -563,18 +563,18 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     success: true,
     healthy: healthScore > 0.8,
     healthScore,
-    components: { redis: {, status: isRedisHealthy ? 'healthy' : 'unhealthy',
+    components: {, redis: {, status: isRedisHealthy ? 'healthy' : 'unhealthy',
         connected: Boolean(redisStats.connected),
         reconnectAttempts: redisStats.reconnectAttempts
       },
       vectorCache: {
-        status: vectorStats?.config?.redisEnabled ? 'healthy' : 'degraded',
+       , status: vectorStats?.config?.redisEnabled ? 'healthy' : 'degraded',
         memoryEntries:
           Number((vectorStats?.memory as Record<string, number | undefined>)?.vectorEntries ?? 0) +
           Number((vectorStats?.memory as Record<string, number | undefined>)?.embeddingEntries ?? 0)
       },
       summaryCache: {
-        status: 'healthy',
+       , status: 'healthy',
         memoryStats: getSummaryMemoryStats()
       }
     },
@@ -605,8 +605,8 @@ async function calculateHitRates(_keys: string[]): Promise<Record<string, number
 }
 
 async function calculateResponseTimes(): Promise<Record<string, { avg: number; p95: number; p99: number }>> {
-  return { cached: {, avg: 5, p95: 15, p99: 25 },
-    uncached: { avg: 150, p95: 300, p99: 500 }
+  return {, cached: {, avg: 5, p95: 15, p99: 25 },
+    uncached: {, avg: 150, p95: 300, p99: 500 }
   };
 }
 
@@ -650,7 +650,7 @@ function generateMemoryRecommendations(
 }
 
 function generatePerformanceRecommendations(
-  // Allow stats to be null to match safeRedisGetInfo output
+  // Allow stats to be: null to match safeRedisGetInfo output
   redisInfo?: { stats?: Record<string, number | undefined> | null } | null
 ): string[] {
   const recommendations: string[] = [];
@@ -667,7 +667,7 @@ function generatePerformanceRecommendations(
 // Management operations
 async function clearCacheByPattern(
   pattern: string
-): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number; timestamp: string }> {
+): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number;, timestamp: string }> {
   const keys = await redisService.keys(pattern);
   let cleared = 0;
   for (const key of keys) {
@@ -687,16 +687,16 @@ async function clearCacheByPattern(
 async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean; timestamp: string }> {
   // Placeholder: accepts query list but doesn't use it yet.'
   // Parameter intentionally prefixed with: "_" to satisfy linting rules for unused args.
-  // Future implementation: iterate _queries to pre-populate caches, call relevant services, etc.
+  // Future, implementation: iterate _queries to pre-populate caches, call relevant services, etc.
   return { success: true, timestamp: new Date().toISOString() };
 }
 
 // ADD: analyzeKeyPatterns and optimizeMemoryUsage used by POST handler
 
 async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: number;
-  counts: Record<string, number>;
+ , counts: Record<string, number>;
   sample: Array<{ key: string; prefix: string }>;
-  timestamp: string;
+ , timestamp: string;
 }> {
   try {
     const keys = Array.isArray(await redisService.keys('*')) ? await redisService.keys('*') : [];
@@ -722,7 +722,7 @@ async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: numbe
 
 async function optimizeMemoryUsage(): Promise<{ success: boolean;, actions: string[];
   analysis: MemoryAnalysisResponse;
-  timestamp: string;
+ , timestamp: string;
 }> {
   const analysis = await getMemoryAnalysis();
   const actions: string[] = [];

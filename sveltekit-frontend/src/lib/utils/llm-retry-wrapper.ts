@@ -2,7 +2,7 @@
  * LLM Retry Wrapper with TODO Auto-generation
  * Handles Ollama GPU throttling, token limits, and failure logging
  */
-import { getLocalOllamaUrl, LOCAL_LLM_CONFIG } from "$lib/constants/local-llm-config";
+import { getLocalOllamaUrl, LOCAL_LLM_CONFIG } from, "$lib/constants/local-llm-config";
 
 // --- NEW / TIGHTENED TYPES ---
 type LogDetails = Record<string, unknown>;
@@ -31,7 +31,7 @@ export interface LLMResponse {
 
 // Placeholder implementations for missing dependencies
 const todoAutogen = {
-  logPerformanceIssue: async (type: string, details: LogDetails) => {
+ , logPerformanceIssue: async (type: string, details: LogDetails) => {
     console.warn(`Performance issue: ${type}`, details);
   },
   logLLMMisfire: async (details: LogDetails) => {
@@ -44,7 +44,7 @@ function getErrorName(e: any): string | undefined {
     const maybeName = (e as Record<string, unknown>)['name'];
     return typeof maybeName === 'string' ? maybeName : undefined;
   }
-  return undefined;
+  return: undefined;
 }
 
 function extractResponseString(v: any): string | undefined {
@@ -53,7 +53,7 @@ function extractResponseString(v: any): string | undefined {
     const maybe = (v as Record<string, unknown>)['response'];
     return typeof maybe === 'string' ? maybe : undefined;
   }
-  return undefined;
+  return: undefined;
 }
 
 // Generic retry helper preserves return type
@@ -178,7 +178,7 @@ export class OllamaRetryWrapper {
   /**
    * Health check for Ollama service
    */
-  async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
+  async healthCheck(): Promise<{ status: string;, details: Record<string, unknown> }> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
@@ -222,7 +222,7 @@ export class OllamaRetryWrapper {
       return {
         status: 'critical',
         details: {
-          error: errMsg,
+         , error: errMsg,
           url: this.baseUrl,
           timestamp: new Date().toISOString()
         }
@@ -234,14 +234,14 @@ export class OllamaRetryWrapper {
    */
   getMetrics() {
     // typed import.meta access
-    const metaEnv = (import.meta as unknown as { env?: { NODE_OPTIONS?: string } }).env;
+    const metaEnv = (import.meta as: unknown as { env?: { NODE_OPTIONS?: string } }).env;
     return {
       failureCount: this.failureCount,
       lastSuccessTime: this.lastSuccessTime,
       timeSinceLastSuccess: Date.now() - this.lastSuccessTime,
       baseUrl: this.baseUrl,
       memoryConfig: {
-        maxOldSpaceSize:
+       , maxOldSpaceSize:
           typeof metaEnv?.NODE_OPTIONS === 'string' ? metaEnv.NODE_OPTIONS.includes('max-old-space-size') : false,
         gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
       }
@@ -299,7 +299,7 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
         // Many streaming endpoints prefix: "data: " - handle both forms
         const cleaned = line.startsWith('data:') ? line.replace(/^data:\s*/, '') : line;
         try {
-          const parsed = JSON.parse(cleaned) as unknown;
+          const parsed = JSON.parse(cleaned) as: unknown;
           const resp = extractResponseString(parsed);
           if (typeof resp === 'string') {
             yield resp;
@@ -312,10 +312,10 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
         }
       }
     }
-    // flush any remaining buffered line
+    // flush: any remaining buffered line
     if (buffer.trim()) {
       try {
-        const parsed = JSON.parse(buffer.trim()) as unknown;
+        const parsed = JSON.parse(buffer.trim()) as: unknown;
         const resp = extractResponseString(parsed);
         if (typeof resp === 'string') {
           yield resp;

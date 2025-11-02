@@ -1,11 +1,11 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from 'lucide-svelte';
-  import { Card } from './index';
-  import type { AIAnalysis, EvidenceItem } from './types';
+  // Svelte, 5 runes are auto-imported
+  import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from, 'lucide-svelte';
+  import { Card } from, './index';
+  import type { AIAnalysis, EvidenceItem } from, './types';
   interface Props {
     analysis: AIAnalysis; // fixed typo
-    evidence: EvidenceItem;
+   , evidence: EvidenceItem;
     variant?: 'compact' | 'detailed' | 'summary';
     showRefresh?: boolean;
     showExport?: boolean;
@@ -28,7 +28,7 @@
   let confidenceLevel = $derived(() => {
     if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' }
     if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' }
-    return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
+    return {, color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
   });
   // Sort entities by confidence
   let sortedEntities = $derived(() =>
@@ -66,7 +66,7 @@
     URL.revokeObjectURL(url);
   }
 </script>
-<Card.Root class="nes-container, is-rounded, bg-white {className}" {...restProps}>
+<Card class="nes-container, is-rounded, bg-white {className}" {...restProps}>
   <!-- Header -->
   <div class="yorha-panel-header, pb-3, mb-4">
     <div class="flex, items-center, justify-between">
@@ -220,7 +220,7 @@
         </div>
       {/if}
   </div>
-</Card.Root>
+</Card>
 <style>
   /* Confidence indicator animations */
   .yorha-panel-content .bg-green-100 {
@@ -234,7 +234,7 @@
   }
   /* Theme weight bar animations */
   .bg-orange-500 {
-    transition: width: 0.8s ease-in-out;
+    transition:, width: 0.8s ease-in-out;
   }
   /* Entity card hover effects */
   .bg-purple-50:hover {

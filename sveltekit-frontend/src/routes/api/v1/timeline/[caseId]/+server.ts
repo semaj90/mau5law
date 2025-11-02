@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Case Timeline API Routes
  * GET /api/v1/timeline/[caseId] - Get case timeline
@@ -9,14 +9,14 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * GPU-Accelerated Evidence Analysis Pipeline:
  * ==========================================
  *
- * This timeline system supports auto-populated timelines based on AI-powered evidence analysis:
+ * This timeline system supports auto-populated timelines based on AI-powered evidence, analysis:
  *
  * 1. OCR Analysis (CUDA Service Workers)
  *    - Document text extraction using GPU-accelerated OCR
  *    - SIMD-optimized text parsing for maximum throughput
  *    - Parallel processing across multiple GPU cores
  *
- * 2. Evidence Feature Extraction (RTX 3060 Ti + CUDA)
+ * 2. Evidence Feature Extraction (RTX, 3060 Ti + CUDA)
  *    - Computer vision analysis for image/video evidence
  *    - NLP processing for textual evidence using Gemma embeddings
  *    - Temporal pattern recognition using SIMD operations
@@ -37,17 +37,17 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * - CONTEXT7_MULTICORE=true for parallel processing
  * - Binary QLoRA streaming for efficient data transfer
  *
- * Note: Individual event operations (PUT/DELETE) are handled by
+ *, Note: Individual event operations (PUT/DELETE) are handled by
  * /api/v1/timeline/events/[eventId] endpoint
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import db from '$lib/server/db/unified-client';
-import { caseTimeline, cases } from '$lib/server/db/schemas/cases-schema';
-import { eq, desc, asc, and, sql } from 'drizzle-orm';
-import { generateId } from 'lucia';
-import { z } from 'zod';
-import { getUserId } from '$lib/server/auth/utils';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import db from, '$lib/server/db/unified-client';
+import { caseTimeline, cases } from, '$lib/server/db/schemas/cases-schema';
+import { eq, desc, asc, and, sql } from, 'drizzle-orm';
+import { generateId } from, 'lucia';
+import { z } from, 'zod';
+import { getUserId } from, '$lib/server/auth/utils';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid ID format');
 // Timeline event schemas
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       dateRange:
         timelineEvents.length > 0
           ? {
-              start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
+             , start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
               end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate
             }
           : null,

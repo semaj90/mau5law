@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 // Test login endpoint to debug authentication
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { users } from '$lib/server/db/schema-postgres';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { users } from, '$lib/server/db/schema-postgres';
 // Note: Need proper auth service imports - drizzle-orm doesn't export auth functions'
-import { eq } from 'drizzle-orm';
+import { eq } from, 'drizzle-orm';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { email, password } = await request.json();
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`[TEST LOGIN] Testing password verification for: ${email}`);
     // TODO: Implement proper password verification - verifyPassword not available
     const validPassword = password && password.length > 0; // Mock validation
-    console.log(`[TEST LOGIN] Password verification result: ${validPassword}`);
+    console.log(`[TEST LOGIN] Password verification, result: ${validPassword}`);
     if (!validPassword) {
       return json({
         success: false,

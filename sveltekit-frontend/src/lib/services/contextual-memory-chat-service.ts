@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { browser } from '$app/environment';
-import { writable, type Writable } from 'svelte/store';
+import type { User } from, '$lib/types';
+import { browser } from, '$app/environment';
+import { writable, type Writable } from, 'svelte/store';
 
 export interface ChatMessage { id: string;, session_id: string;
   user_id: string;
@@ -19,7 +19,7 @@ export interface ChatMessage { id: string;, session_id: string;
   };
 }
 
-export interface ContextualPrompt { currentQuery: string;, recentMessages: ChatMessage[];
+export interface ContextualPrompt {, currentQuery: string;, recentMessages: ChatMessage[];
   semanticallySimilar: ChatMessage[];
   ragContext: string[];
   userPreferences: UserPreferences;
@@ -37,7 +37,7 @@ export interface UserPreferences {
 // Add the missing MemoryCacheEntry type used by the in-memory cache.
 // This prevents the TypeScript compiler from failing to parse the file
 // and resolves the cascade of errors that followed the missing type.
-interface MemoryCacheEntry { key: string;, response: string;
+interface MemoryCacheEntry {, key: string;, response: string;
   confidence: number;
   usage_count: number;
   last_used: Date;
@@ -48,14 +48,14 @@ interface MemoryCacheEntry { key: string;, response: string;
 }
 
 class ContextualMemoryChatService {
-  private memoryCache: Map<string, MemoryCacheEntry> = new Map();
+  private, memoryCache: Map<string, MemoryCacheEntry> = new Map();
   private userHistoryCache: Map<string, ChatMessage[]> = new Map();
   private sessionCache: Map<string, ChatMessage[]> = new Map();
   private ragContextCache: Map<string, string[]> = new Map();
   private serviceWorker: ServiceWorker | null = null;
 
   // Reactive stores
-  public chatHistory: Writable<ChatMessage[]> = writable([]);
+  public, chatHistory: Writable<ChatMessage[]> = writable([]);
   public isProcessing: Writable<boolean> = writable(false);
   public contextualInsights: Writable<Record<string, unknown>> = writable({
     similarQueries: [],
@@ -103,7 +103,7 @@ class ContextualMemoryChatService {
     } = {}
   ): Promise<{ response: string;, cached: boolean;
     contextUsed: ContextualPrompt;
-    processingTimeMs: number;
+   , processingTimeMs: number;
     quantized?: boolean | null;
   }> {
     const startTime = performance.now();
@@ -126,7 +126,7 @@ class ContextualMemoryChatService {
         }
       }
 
-      // Step 2: Build enhanced contextual prompt
+      // Step, 2: Build enhanced contextual prompt
       const contextualPrompt = await this.buildContextualPrompt(message, userId, sessionId, options);
 
       // Step 3: Send to LLM with context
@@ -141,7 +141,7 @@ class ContextualMemoryChatService {
 
       // Step 5: Update user history
       const userMsg: ChatMessage = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         session_id: sessionId,
         user_id: userId,
         role: 'user',
@@ -150,7 +150,7 @@ class ContextualMemoryChatService {
         content_embedding: await this.generateEmbedding(message)
       };
       const assistantMsg: ChatMessage = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         session_id: sessionId,
         user_id: userId,
         role: 'assistant',
@@ -158,7 +158,7 @@ class ContextualMemoryChatService {
         created_at: new Date(),
         content_embedding: await this.generateEmbedding(llmResponse.response),
         metadata: {
-          response_time_ms: performance.now() - startTime,
+         , response_time_ms: performance.now() - startTime,
           cached: false,
           quantized: !!llmResponse.quantized,
           model_used: llmResponse?.model || 'unknown' }'' };
@@ -278,13 +278,13 @@ class ContextualMemoryChatService {
 
   // Send to LLM with service worker integration
   private async sendToLLM(
-    contextualPrompt: ContextualPrompt,
+   , contextualPrompt: ContextualPrompt,
     userId: string,
     sessionId: string
   ): Promise<{ response: string; confidence?: number; quantized?: boolean | null; model?: string }> {
     try {
       const payload = {
-        messages: [
+       , messages: [
           {,
             role: 'user',
             content: contextualPrompt.enhancedPrompt
@@ -306,7 +306,7 @@ class ContextualMemoryChatService {
       }
       const data = await response.json();
       return {
-        response: (data?.choices?.[0]?.message?.content as string) ?? 'No response generated',
+        response: (data?.choices?.[0]?.message?.content, as: string) ?? 'No response generated',
         confidence: data?.confidence,
         quantized: data?.quantized ?? null,
         model: data?.model ?? 'unknown' };'' } catch (error) {
@@ -319,12 +319,12 @@ class ContextualMemoryChatService {
   private async checkMemoryCache(query: string, userId: string): Promise<MemoryCacheEntry | null> {
     const cacheKey = this.generateCacheKey(query, userId);
     const cached = this.memoryCache.get(cacheKey);
-    if (!cached) return null;
+    if (!cached) return: null;
 
     // Check TTL
     if (Date.now() > cached.last_used.getTime() + cached.ttl) {
       this.memoryCache.delete(cacheKey);
-      return null;
+      return: null;
     }
 
     // Update usage stats
@@ -339,12 +339,12 @@ class ContextualMemoryChatService {
     query: string,
     response: string,
     userId: string,
-    options: {, confidence: number; quantized?: boolean | null; contextWeight: number }
+    options: {, confidence: number; quantized?: boolean | null;, contextWeight: number }
   ): Promise<void> {
     const cacheKey = this.generateCacheKey(query, userId);
     const embedding = await this.generateEmbedding(query);
     const cacheEntry: MemoryCacheEntry = {
-      key: cacheKey,
+     , key: cacheKey,
       response,
       confidence: options.confidence,
       usage_count: 1,
@@ -412,7 +412,7 @@ class ContextualMemoryChatService {
         body: JSON.stringify({ query, userId, limit: 5 })
       });
       if (!resp.ok) return [];
-      const context = (await resp.json()) as string[];
+      const context = (await resp.json()) as: string[];
       this.ragContextCache.set(cacheKey, context);
       return context;
     } catch (error) {
@@ -431,7 +431,7 @@ class ContextualMemoryChatService {
       });
       if (!resp.ok) return this.generateSimpleEmbedding(text);
       const data = await resp.json();
-      return (data?.embedding as number[]) ?? this.generateSimpleEmbedding(text);
+      return (data?.embedding as: number[]) ?? this.generateSimpleEmbedding(text);
     } catch {
       return this.generateSimpleEmbedding(text);
     }
@@ -582,11 +582,11 @@ class ContextualMemoryChatService {
       },
       serviceWorker: serviceWorkerMetrics,
       userHistory: {
-        sessionsStored: this.sessionCache.size,
+       , sessionsStored: this.sessionCache.size,
         totalMessages: Array.from(this.sessionCache.values()).reduce((sum, msgs) => sum + msgs.length, 0)
       },
       ragContext: {
-        entriesCached: this.ragContextCache.size
+       , entriesCached: this.ragContextCache.size
       }
     };
   }

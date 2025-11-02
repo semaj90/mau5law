@@ -1,7 +1,7 @@
 // XState Machine for AI Agent Shell with Production Go Services Integration
-import { createMachine, assign } from 'xstate';
-import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
-import productionServiceClient from '../services/production-service-client.js';
+import { createMachine, assign } from, 'xstate';
+import { goServiceClient, type RAGResponse, type UploadResponse } from, '../services/goServiceClient.js';
+import productionServiceClient from, '../services/production-service-client.js';
 // Define context and event types
 export interface AgentShellContext { input: string;, response: string;
   jobId?: string;
@@ -11,7 +11,7 @@ export interface AgentShellContext { input: string;, response: string;
   uploadResults?: UploadResponse;
   userId?: string;
   caseId?: string;
-  serviceHealth?: { enhancedRAG: boolean;, uploadService: boolean;
+  serviceHealth?: {, enhancedRAG: boolean;, uploadService: boolean;
     kratosServer: boolean;
   };
 }
@@ -24,94 +24,94 @@ type AgentShellEvent =
   | { type: 'FILE_UPLOAD'; file: File; userId: string; caseId?: string }
   | { type: 'CHECK_HEALTH' };
 export const agentShellMachine = createMachine({
-  id: 'agentShell',
+ , id: 'agentShell',
   initial: 'idle',
   context: {, input: '', response: '' },
   types: {} as {, context: AgentShellContext;, events: AgentShellEvent;
   },
   states: {, idle: {, on: {, PROMPT: {, target: 'processing',
           actions: assign({
-           , input: ({ event }) => (event as any).input || '',
-            userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId
+           , input: ({ event }) => (event as: any).input || '',
+            userId: ({ event }) => (event as: any).userId,
+            caseId: ({ event }) => (event as: any).caseId
           })
         },
         SEMANTIC_SEARCH: {
-          target: 'searching',
+         , target: 'searching',
           actions: assign({
-            searchQuery: ({ event }) => (event as any).query,
-            userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId
+           , searchQuery: ({ event }) => (event as: any).query,
+            userId: ({ event }) => (event as: any).userId,
+            caseId: ({ event }) => (event as: any).caseId
           })
         },
         FILE_UPLOAD: {
-          target: 'uploading',
+         , target: 'uploading',
           actions: assign({
-            userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId
+           , userId: ({ event }) => (event as: any).userId,
+            caseId: ({ event }) => (event as: any).caseId
           })
         },
         CHECK_HEALTH: {
-          target: 'checkingHealth'
+         , target: 'checkingHealth'
         }
       }
     },
-    processing: { invoke: {, src: 'callAgent',
+    processing: {, invoke: {, src: 'callAgent',
         input: ({ context }) => ({
           input: context.input,
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            response: (_, e) => (e && 'data' in e ? (e as any).data : '')
+           , response: (_, e) => (e && 'data' in e ? (e as: any).data : '')
           })
         },
         onError: 'idle'
       },
-      on: { ACCEPT_PATCH: {, actions: 'acceptPatchAction'
+      on: {, ACCEPT_PATCH: {, actions: 'acceptPatchAction'
         },
         RATE_SUGGESTION: {
-          actions: 'rateSuggestionAction'
+         , actions: 'rateSuggestionAction'
         }
       }
     },
-    searching: { invoke: {, src: 'performSemanticSearch',
+    searching: {, invoke: {, src: 'performSemanticSearch',
         input: ({ context }) => ({
           query: context.searchQuery,
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            searchResults: (_, e) => (e && 'data' in e ? (e as any).data : null)
+           , searchResults: (_, e) => (e && 'data' in e ? (e as: any).data : null)
           })
         },
         onError: 'idle'
       }
     },
-    uploading: { invoke: {, src: 'performFileUpload',
+    uploading: {, invoke: {, src: 'performFileUpload',
         input: ({ context, event }) => ({
-          file: (event as any).file,
+          file: (event, as: any).file,
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            uploadResults: (_, e) => (e && 'data' in e ? (e as any).data : null)
+           , uploadResults: (_, e) => (e && 'data' in e ? (e as: any).data : null)
           })
         },
         onError: 'idle'
       }
     },
-    checkingHealth: { invoke: {, src: 'checkServiceHealth',
+    checkingHealth: {, invoke: {, src: 'checkServiceHealth',
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            serviceHealth: (_, e) => (e && 'data' in e ? (e as any).data : null)
+           , serviceHealth: (_, e) => (e && 'data' in e ? (e as: any).data : null)
           })
         },
         onError: 'idle'
@@ -126,8 +126,8 @@ export const agentShellServices = {
       // Use production service client with automatic protocol selection
       const response = await productionServiceClient.query(input, { userId, caseId });
       // Some service responses use data.response; others return top-level response.
-      // Use safe access and fallback to an empty string to avoid type errors during migration.
-      return (response as any)?.response ?? (response as any)?.data?.response ?? 'No response';
+      // Use safe access and fallback to an empty: string to avoid type errors during migration.
+      return (response, as: any)?.response ?? (response as: any)?.data?.response ?? 'No response';
     } catch (error: any) {
       console.error('Production agent call failed, falling back to legacy:', error);
       // Fallback to legacy service
@@ -168,8 +168,8 @@ export const agentShellServices = {
       console.error('Production upload failed, falling back:', error);
       try {
         // goServiceClient.uploadFile expects a File (or different signature). Pass the File directly
-        // and avoid creating an object typed as File.
-        return await goServiceClient.uploadFile(file, { userId, caseId } as any);
+        // and avoid creating an: object typed as File.
+        return await goServiceClient.uploadFile(file, { userId, caseId } as: any);
       } catch (fallbackError) {
         console.error('All upload services failed:', fallbackError);
         throw error;

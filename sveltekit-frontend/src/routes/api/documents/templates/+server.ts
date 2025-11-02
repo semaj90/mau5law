@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Document templates with pre-filled content
 const documentTemplates = { brief: {, title: 'Criminal Case Brief',
     content: `# Criminal Case Brief`
 ## Case Overview
 [Case Name] v. [Defendant Name]
-Case Number: [Case Number],
-Court: [Court Name]; Date: [Date]
+Case, Number: [Case Number],
+Court: [Court Name];, Date: [Date]
 ## Facts
 [Describe the factual background of the case, including what allegedly happened, when, where, and involving whom]
 ## Legal Issues
@@ -19,7 +19,7 @@ Court: [Court Name]; Date: [Date]
 ## Analysis
 ### Issue 1: [Legal Issue]
 [Analyze the law and apply it to the facts]
-### Issue 2: [Legal Issue]
+### Issue, 2: [Legal Issue]
 [Analyze the law and apply it to the facts]
 ## Conclusion
 [Summarize your legal conclusions and recommendations]
@@ -31,7 +31,7 @@ Court: [Court Name]; Date: [Date]
     citations: []
   },
   motion: {
-    title: 'Motion to [Action]',
+   , title: 'Motion to [Action]',
     content: `# Motion to [Action]`
 ## Introduction
 [Defendant/Plaintiff] respectfully moves this Court to [specific action requested] on the grounds that [brief reason].
@@ -57,18 +57,18 @@ Respectfully submitted,
     citations: []
   },
   contract: {
-    title: 'Legal Contract',
+   , title: 'Legal Contract',
     content: `# [Contract Title]`
-**Parties:** This agreement is entered into between [Party 1 Name] ("[Party 1 Short Name]") and [Party 2 Name] ("[Party 2 Short Name]").
+**Parties:** This agreement is entered into between [Party, 1 Name] ("[Party, 1 Short Name]") and [Party, 2 Name] ("[Party, 2 Short Name]").
 **Date:** [Date]
 ## Terms and Conditions
 ### 1. Purpose
 [Describe the purpose of the contract]
 ### 2. Obligations
-**[Party 1 Short Name] agrees to:**
+**[Party, 1 Short Name] agrees to:**
 - [Obligation 1]
 - [Obligation 2]
-**[Party 2 Short Name] agrees to:**
+**[Party, 2 Short Name] agrees to:**
 - [Obligation 1]
 - [Obligation 2]
 ### 3. Consideration
@@ -82,21 +82,21 @@ Respectfully submitted,
 ### 7. Governing Law
 This contract shall be governed by the laws of [Jurisdiction].
 ## Signatures
-**[Party 1 Name]**
-Signature: _________________________; Date: __________
-**[Party 2 Name]**
-Signature: _________________________; Date: __________
+**[Party, 1 Name]**
+Signature: _________________________;, Date: __________
+**[Party, 2 Name]**
+Signature: _________________________;, Date: __________
 `,`
     documentType: 'contract',
     tags: ['contract', 'template'],
     citations: []
   },
   evidence: {
-    title: 'Evidence Analysis Report',
+   , title: 'Evidence Analysis Report',
     content: `# Evidence Analysis Report`
 ## Case Information
 Case Number: [Case Number]
-Date of Analysis: [Date],
+Date of, Analysis: [Date],
 Analyst: [Analyst Name]
 ## Executive Summary
 [Brief overview of the evidence and key findings]
@@ -119,14 +119,14 @@ Analyst: [Analyst Name]
 [Provide recommendations for further investigation or action]
 ## Appendices
 - Appendix A: [Supporting documentation]
-- Appendix B: [Additional materials]
+- Appendix, B: [Additional materials]
 `,`
     documentType: 'evidence',
     tags: ['evidence', 'analysis', 'template'],
     citations: []
   },
   memo: {
-    title: 'Legal Memorandum',
+   , title: 'Legal Memorandum',
     content: `# Legal Memorandum`
 **TO:** [Recipient]
 **FROM:** [Your Name]
@@ -151,7 +151,7 @@ Analyst: [Analyst Name]
     citations: []
   },
   pleading: {
-    title: 'Legal Pleading',
+   , title: 'Legal Pleading',
     content: `# [Type of Pleading]`
 **IN THE [COURT NAME]**
 **[JURISDICTION]**
@@ -172,7 +172,7 @@ TO THE HONORABLE COURT:
 ## IV. CLAIMS FOR RELIEF
 ### Count I: [Claim]
 [State the elements of the claim]
-### Count II: [Claim]
+### Count, II: [Claim]
 [State the elements of the claim]
 ## V. PRAYER FOR RELIEF
 WHEREFORE, [PARTY NAME] respectfully requests that this Court:
@@ -191,7 +191,7 @@ Respectfully submitted,
   }
 };
 // GET /api/documents/templates - Get available document templates
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const documentType = url.searchParams.get('type');
     if (documentType) {
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: `Template not found for document; type: ${documentType}` },``
+            error: `Template not found for document;, type: ${documentType}` },``
           { status: 404 }
         );
       }
@@ -234,7 +234,7 @@ function getTemplateDescription(templateKey: string): string {
   return descriptions[templateKey as keyof typeof descriptions] || 'Legal document template';
 }
 // POST /api/documents/templates/[type] - Create a new document from a template
-export const POST: RequestHandler = async ({ url, request }) => {
+export const, POST: RequestHandler = async ({ url, request }) => {
   try {
     const templateType = url.pathname.split('/').pop();
     const body = await request.json();
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ url, request }) => {
     // Replace placeholders with customizations
     Object.entries(customizations).forEach(([key, value]) => {
       const placeholder = `[${key}]`;
-      customizedContent = customizedContent.replace(new RegExp(placeholder, 'g'), value as string);
+      customizedContent = customizedContent.replace(new RegExp(placeholder, 'g'), value as: string);
     });
     // Create the document
     const newDocument = {

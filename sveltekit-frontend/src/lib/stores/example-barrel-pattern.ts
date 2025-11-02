@@ -1,11 +1,11 @@
 /**
- * Example Barrel Stores Pattern - Svelte 5 with TypeScript
+ * Example Barrel Stores Pattern - Svelte, 5 with TypeScript
  *
- * This file demonstrates the modern barrel stores pattern using Svelte 5 runes.
+ * This file demonstrates the modern barrel stores pattern using Svelte, 5 runes.
  * Benefits:
  * - Type-safe centralized state management
  * - Auto-completion in IDEs
- * - Easy to import import { counterStore, todoStore } from '$lib/stores'
+ * - Easy to import import { counterStore, todoStore } from, '$lib/stores'
  * - Performance optimized with fine-grained reactivity
  */
 
@@ -38,9 +38,9 @@ export const counterStore = (() => {
 // ==================================================
 // Example 2: Todo Store with CRUD Operations
 // ==================================================
-interface Todo { id: string;, text: string;
+interface Todo {, id: string;, text: string;
   completed: boolean;
-  createdAt: Date;
+ , createdAt: Date;
 }
 
 export const todoStore = (() => {
@@ -50,9 +50,9 @@ export const todoStore = (() => {
   // Derived computed values
   let filteredTodos = $derived(() => {
     switch (filter) {
-      case 'active':
+      case, 'active':
         return todos.filter(t => !t.completed);
-      case 'completed':
+      case, 'completed':
         return todos.filter(t => t.completed);
       default: return todos;
     }
@@ -112,7 +112,7 @@ export const todoStore = (() => {
 // ==================================================
 // Example 3: Legal AI Store with Async Operations
 // ==================================================
-interface LegalDocument { id: string;, title: string;
+interface LegalDocument {, id: string;, title: string;
   content: string;
   embedding?: number[];
   aiSummary?: string;
@@ -121,11 +121,11 @@ interface LegalDocument { id: string;, title: string;
   createdAt: Date;
 }
 
-interface LegalAIState { documents: LegalDocument[];, selectedDocument: LegalDocument | null;
+interface LegalAIState {, documents: LegalDocument[];, selectedDocument: LegalDocument | null;
   isProcessing: boolean;
   error: string | null;
   searchQuery: string;
-  searchResults: LegalDocument[];
+ , searchResults: LegalDocument[];
 }
 
 export const legalAIStore = (() => {
@@ -308,4 +308,4 @@ export const themeStore = (() => {
 // Barrel Export Pattern
 // ==================================================
 // You can import all stores at once or individually:
-// import { counterStore, todoStore, legalAIStore } from '$lib/stores';
+// import { counterStore, todoStore, legalAIStore } from, '$lib/stores';

@@ -1,9 +1,9 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { page } from '$app/state';
-  import { browser } from '$app/environment';
-  import type { Snippet } from 'svelte';
-  // Add any layout-specific state or logic here
+  // Svelte, 5 runes are auto-imported
+  import { page } from, '$app/state';
+  import { browser } from, '$app/environment';
+  import type { Snippet } from, 'svelte';
+  // Add: any layout-specific state or logic here
   let mounted = $state<boolean>(false);
   if (browser) {
     mounted = true;
@@ -26,11 +26,11 @@
     transition: opacity 0.2s ease-in-out;
   }
   .evidence-canvas-layout.mounted {
-    opacity: 1;
+   , opacity: 1;
   }
   :global(body) {
     margin: 0;
-    padding: 0;
+   , padding: 0;
 font-family: {}
 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', {}
       'Droid Sans', 'Helvetica Neue', sans-serif;

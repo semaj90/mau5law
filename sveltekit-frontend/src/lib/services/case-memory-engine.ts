@@ -1,44 +1,44 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { analytics } from '../server/database/connection.js';
-import { qdrant } from '../server/vector/qdrant-manager.js';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { analytics } from, '../server/database/connection.js';
+import { qdrant } from, '../server/vector/qdrant-manager.js';
 // removed static rabbitmq import to avoid: "not a module" TS errors
-import { cacheManager } from './cache-layer-manager.js';
+import { cacheManager } from, './cache-layer-manager.js';
 
 // Case-Based Temporal Memory System for Local LLM Learning
 // Stores user interaction patterns, case progression, and builds contextual memory
 export interface CaseMemoryContext { case_id: string;, user_id: string;
-  temporal_context: { session_start: number;, last_interaction: number;
+  temporal_context: {, session_start: number;, last_interaction: number;
     total_session_time: number;
     interaction_frequency: number;
   };
-  learning_metrics: { user_expertise_level: 'novice' | 'intermediate' | 'expert';, case_complexity: number;
+  learning_metrics: {, user_expertise_level: 'novice' | 'intermediate' | 'expert';, case_complexity: number;
     interaction_patterns: string[];
     preferred_response_style: string;
   };
-  memory_degrees: { immediate: Interaction[]; // Last 5 interactions, short_term: Interaction[]; // Last hour
+  memory_degrees: {, immediate: Interaction[]; // Last, 5 interactions, short_term: Interaction[]; // Last hour
     medium_term: Interaction[]; // Last day
     long_term: Interaction[]; // Last week+
   };
 }
 
-export interface SelfPromptRecommendation { id: string;, type: 'next_action' | 'related_case' | 'research_suggestion' | 'document_analysis';
+export interface SelfPromptRecommendation {, id: string;, type: 'next_action' | 'related_case' | 'research_suggestion' | 'document_analysis';
   confidence: number;
   reasoning: string;
   prompt_template: string;
-  context_variables: Record<string, unknown>;
+ , context_variables: Record<string, unknown>;
   estimated_value: number;
   timing_suggestion: 'immediate' | 'soon' | 'background';
 }
 
 type InteractionType = 'chat' | 'search' | 'document_view' | 'analysis' | 'edit';
 
-export interface Interaction { id: string;, case_id: string;
+export interface Interaction {, id: string;, case_id: string;
   user_id: string;
   type: InteractionType;
   content: string;
   response?: string;
-  metadata: Record<string, unknown>; // tightened type
+ , metadata: Record<string, unknown>; // tightened type
   embedding?: number[];
   timestamp?: number;
 }
@@ -61,7 +61,7 @@ interface ResearchGap {
   urgency?: 'immediate' | 'soon' | 'background';
 }
 
-interface DocumentSummary { id: string;, title: string;
+interface DocumentSummary {, id: string;, title: string;
   potential_relevance?: number;
 }
 
@@ -75,7 +75,7 @@ interface AnalyticsExtensions {
 class LLMSelfLearningModel {
   // now accepts context so callers' context parameter is used and no: 'unused variable' warnings occur'
   async updateFromInteractions(
-    context: CaseMemoryContext,
+   , context: CaseMemoryContext,
     interactions: Interaction[],
     outcomes: any[]
   ): Promise<void> {
@@ -136,13 +136,13 @@ export class CaseMemoryEngine {
       case_id,
       user_id,
       temporal_context: {
-        session_start: this.findSessionStart(interactions, now),
+       , session_start: this.findSessionStart(interactions, now),
         last_interaction: interactions[0]?.timestamp ?? now,
         total_session_time: this.calculateSessionTime(interactions, now),
         interaction_frequency: this.calculateFrequency(interactions)
       },
       learning_metrics: {
-        user_expertise_level: patterns.expertise_level,
+       , user_expertise_level: patterns.expertise_level,
         case_complexity: await this.assessCaseComplexity(case_id),
         interaction_patterns: patterns.patterns,
         preferred_response_style: patterns.response_style
@@ -161,7 +161,7 @@ export class CaseMemoryEngine {
     const { case_id, user_id, interaction_type, content, response, metadata } = params;
     const now = Date.now();
     const interaction: Interaction = {
-      id: `${case_id}_${user_id}_${now}`,
+     , id: `${case_id}_${user_id}_${now}`,
       case_id,
       user_id,
       type: interaction_type,
@@ -197,7 +197,7 @@ export class CaseMemoryEngine {
       void (async () => {
         try {
           const ctx = await this.getCaseMemoryContext(case_id, user_id);
-          // outcomes currently empty placeholder; typed as unknown[]
+          // outcomes currently empty placeholder; typed as: unknown[]
           await this.updateLearningModel(ctx, [interaction], []);
         } catch {
           // ignore learning errors
@@ -241,7 +241,7 @@ export class CaseMemoryEngine {
 
   // Generate self-prompt recommendations based on current context
   async generateSelfPromptRecommendations(
-    case_id: string,
+   , case_id: string,
     user_id: string,
     triggerInteraction: Interaction
   ): Promise<SelfPromptRecommendation[]> {
@@ -275,9 +275,9 @@ export class CaseMemoryEngine {
         type: 'next_action',
         confidence: 0.8,
         reasoning: 'User performed multiple searches; deeper analysis may be useful',
-        prompt_template: `Based on your recent searches; about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
+        prompt_template: `Based on your recent searches;, about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
         context_variables: {
-          search_query: interaction.content,
+         , search_query: interaction.content,
           search_count: interactionTypes.filter(t => t === 'search').length
         },
         estimated_value: 0.7,
@@ -293,7 +293,7 @@ export class CaseMemoryEngine {
           confidence: 0.75,
           reasoning: 'User reviewed multiple documents; synthesis recommended',
           prompt_template: 'I notice you've reviewed ${viewedDocs.length} documents. Would you like a synthesis showing how these relate to your case strategy?`,`
-          context_variables: { document_count: viewedDocs.length, case_id: context.case_id },
+          context_variables: {, document_count: viewedDocs.length, case_id: context.case_id },
           estimated_value: 0.8,
           timing_suggestion: 'immediate' });'` }'`
     }
@@ -305,9 +305,9 @@ export class CaseMemoryEngine {
         type: 'next_action',
         confidence: 0.6,
         reasoning: 'Extended session detected; a summary may help',
-        prompt_template: 'You've been working on this case for over 2 hours. Would you like a summary of what we've covered and suggested next steps?`,'`
+        prompt_template: 'You've been working on this case for over, 2 hours. Would you like a summary of what we've covered and suggested next steps?`,'`
         context_variables: {
-          session_duration: context.temporal_context.total_session_time,
+         , session_duration: context.temporal_context.total_session_time,
           interaction_count: recentInteractions.length
         },
         estimated_value: 0.6,
@@ -338,9 +338,9 @@ export class CaseMemoryEngine {
           type: 'related_case',
           confidence: score,
           reasoning: `Found similar case with ${(score * 100).toFixed(1)}% similarity`,
-          prompt_template: 'I found a case similar to; yours: "${topCase.payload?.title ?? 'Unknown` }". Would you like an analysis of applicable approaches?`,
+          prompt_template: 'I found a case similar to;, yours: "${topCase.payload?.title ?? 'Unknown` }". Would you like an analysis of applicable approaches?`,
           context_variables: {
-            related_case_id: topCase.id,
+           , related_case_id: topCase.id,
             similarity_score: score,
             key_points: topCase.payload?.key_similarities ?? []
           },
@@ -363,7 +363,7 @@ export class CaseMemoryEngine {
         reasoning: gap.reasoning ?? 'Potential gap identified',
         prompt_template: 'I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,`
         context_variables: {
-          research_area: gap.area,
+         , research_area: gap.area,
           importance_level: gap.importance,
           suggested_sources: gap.sources ?? []
         },
@@ -384,9 +384,9 @@ export class CaseMemoryEngine {
         type: 'document_analysis',
         confidence: 0.7,
         reasoning: 'Unanalyzed documents may contain important evidence',
-        prompt_template: 'I; see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,`
+        prompt_template: 'I;, see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,`
         context_variables: {
-          document_id: topDoc.id,
+         , document_id: topDoc.id,
           document_title: topDoc.title,
           potential_relevance: topDoc.potential_relevance
         },
@@ -399,7 +399,7 @@ export class CaseMemoryEngine {
   // Self-learning model update hook
   private async updateLearningModel(context: CaseMemoryContext, interactions: Interaction[], outcomes: any[]) {
     try {
-      // forward context to the learning model (avoids "context declared but never read" and removes any)
+      // forward context to the learning model (avoids, "context declared but never read" and removes: any)
       await this.learningModel.updateFromInteractions(context, interactions, outcomes);
     } catch (err) {
       console.warn('updateLearningModel failed:', String(err));
@@ -410,7 +410,7 @@ export class CaseMemoryEngine {
   private async getTemporalInteractions(case_id: string, user_id: string, limit = 10): Promise<Interaction[]> {
     try {
       // prefer analytics service if available. cast to extension interface to allow optional methods
-      const analyticsExt = analytics as unknown as AnalyticsExtensions;
+      const analyticsExt = analytics as: unknown as AnalyticsExtensions;
       if (analyticsExt.getRecentInteractions) {
         return (await analyticsExt.getRecentInteractions(case_id, user_id, limit)) as Interaction[];
       }
@@ -426,7 +426,7 @@ export class CaseMemoryEngine {
     // lightweight heuristic using interactions (uses parameters so TS won't flag them unused)'
     const count = Array.isArray(interactions) ? interactions.length : 0;
     const expertise: UserExpertise = count > 50 ? 'expert' : count > 10 ? 'intermediate' : 'novice';
-    const patterns: string[] = [];
+    const, patterns: string[] = [];
     if (interactions.some(i => i.type === 'search')) patterns.push('searches_before_analysis');
     if (interactions.some(i => i.type === 'document_view')) patterns.push('prefers_document_review');
     if (interactions.some(i => i.type === 'analysis')) patterns.push('requests_deep_analysis');
@@ -482,7 +482,7 @@ export class CaseMemoryEngine {
 
   private async storeInteraction(_interaction: Interaction): Promise<void> {
     try {
-      const analyticsExt = analytics as unknown as AnalyticsExtensions;
+      const analyticsExt = analytics as: unknown as AnalyticsExtensions;
       if (analyticsExt.recordInteraction) {
         await analyticsExt.recordInteraction(_interaction);
         return;

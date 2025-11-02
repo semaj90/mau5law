@@ -1,14 +1,14 @@
-// Reactive Media Query Store for Svelte 5
+// Reactive Media Query Store for Svelte, 5
 // File: src/lib/utils/media-query.svelte.ts
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 
 /**
- * Creates a reactive media query store using Svelte 5 runes
- * @param query - CSS media query string
- * @returns Reactive boolean indicating if query matches
+ * Creates a reactive media query store using Svelte, 5 runes
+ * @param query - CSS media query: string
+ * @returns, Reactive: boolean indicating if query matches
  */
 export function createMediaQuery(query: string) {
-	// reactive boolean state
+	// reactive: boolean state
 	let matches = $state<boolean>(false);
 	let mediaQuery: MediaQueryList | null = null;
 

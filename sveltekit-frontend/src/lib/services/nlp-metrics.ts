@@ -1,11 +1,11 @@
 // Prometheus-style metrics exposition for NLP embeddings.
 // Integrates with nlpMetrics from sentence-transformer service.
-import { nlpMetrics } from './sentence-transformer.js';
-// TODO: Fix import - // Orphaned; content: import { getPipelineHistogram, getDedupeMetrics, getAutosolveMetrics, getQUICMetrics, getAggregateAnomaliesLast5m, getBudgetCounters import { getRedisMetrics } from './redis-metrics.js'
+import { nlpMetrics } from, './sentence-transformer.js';
+// TODO: Fix import - // Orphaned;, content: import { getPipelineHistogram, getDedupeMetrics, getAutosolveMetrics, getQUICMetrics, getAggregateAnomaliesLast5m, getBudgetCounters import { getRedisMetrics } from, './redis-metrics.js'
 export function renderNlpMetrics(): string {
   const lines: string[] = [];
   // Basic counters and summaries (gauges) in Prometheus text format
-  lines.push('# HELP nlp_embeddings_total Total number of embeddings computed');
+  lines.push('# HELP nlp_embeddings_total Total: number of embeddings computed');
   lines.push('# TYPE nlp_embeddings_total counter');
   lines.push(`nlp_embeddings_total ${nlpMetrics.embeddings_total}`);
   lines.push('# HELP nlp_embedding_cache_hits Cache hits for embeddings');
@@ -85,7 +85,7 @@ export function renderNlpMetrics(): string {
   lines.push('# TYPE quic_error_events_last_minute gauge');
   lines.push(`quic_error_events_last_minute ${quic.error_rate_1m || 0}`);
   // Aggregate anomalies
-  lines.push('# HELP pipeline_latency_anomalies_last5m Total pipeline latency anomalies detected over last 5 minutes');
+  lines.push('# HELP pipeline_latency_anomalies_last5m Total pipeline latency anomalies detected over last, 5 minutes');
   lines.push('# TYPE pipeline_latency_anomalies_last5m gauge');
   lines.push(`pipeline_latency_anomalies_last5m ${getAggregateAnomaliesLast5m()}`);
   // Error budget counters

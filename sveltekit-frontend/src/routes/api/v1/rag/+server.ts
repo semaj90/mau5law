@@ -1,17 +1,17 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import { readBodyFast } from, '$lib/server/utils/json-fast';
 /*
- * Enhanced RAG API Endpoint - SvelteKit 2 Production
+ * Enhanced RAG API Endpoint - SvelteKit, 2 Production
  * Integrates with Enhanced RAG service (port 8094) and dimensional caching
  * Supports multi-protocol routing (HTTP, gRPC, QUIC) with automatic failover
  */
-import { ensureError } from '$lib/utils/ensure-error';
-import { dev } from '$app/environment';
-import type { EnhancedRAGRequest, EnhancedRAGResponse, APIRequestContext } from '$lib/types/api.js';
-import { embeddingService } from '$lib/server/embedding-service.js';
-import crypto from 'crypto';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { dev } from, '$app/environment';
+import type { EnhancedRAGRequest, EnhancedRAGResponse, APIRequestContext } from, '$lib/types/api.js';
+import { embeddingService } from, '$lib/server/embedding-service.js';
+import crypto from, 'crypto';
 
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_CONFIG = {
@@ -20,7 +20,7 @@ const ENHANCED_RAG_CONFIG = {
   quic: 'localhost:8216',
   health: '/health',
   endpoints: {
-    query: '/api/rag/query',
+   , query: '/api/rag/query',
     semantic: '/api/rag/semantic',
     context: '/api/rag/context',
     health: '/health'
@@ -28,9 +28,9 @@ const ENHANCED_RAG_CONFIG = {
 };
 // Dimensional Cache Configuration
 const DIMENSIONAL_CACHE_CONFIG = {
-  http: 'http://localhost:8097',
+ , http: 'http://localhost:8097',
   endpoints: {
-    get: '/api/cache/get',
+   , get: '/api/cache/get',
     set: '/api/cache/set',
     stats: '/api/cache/stats'
   }
@@ -38,7 +38,7 @@ const DIMENSIONAL_CACHE_CONFIG = {
 /*
  * POST /api/v1/rag - Enhanced RAG Query Processing
  */
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = Date.now();
   const requestId = crypto.randomUUID();
   try {
@@ -128,14 +128,14 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   try {
     switch (action) {
-      case 'health':
+      case, 'health':
         return await handleHealthCheck();
-      case 'stats':
+      case, 'stats':
         return await handleStats();
-      case 'models':
+      case, 'models':
         return await handleModels();
       default: return json({
-          service: 'Enhanced RAG API',
+         , service: 'Enhanced RAG API',
           version: '2.0.0',
           endpoints: {
            , query: 'POST /api/v1/rag',
@@ -326,11 +326,11 @@ async function handleHealthCheck(): Promise<Response> {
           endpoint: ENHANCED_RAG_CONFIG.http,
           responseTime: `< 5ms (QUIC) | < 50ms (HTTP)` },
         dimensionalCache: {
-          status: cacheHealth.ok ? 'healthy' : 'degraded',
+         , status: cacheHealth.ok ? 'healthy' : 'degraded',
           endpoint: DIMENSIONAL_CACHE_CONFIG.http,
           note: `Optional - RAG works without cache` },
         embeddingService: {
-          status: embeddingHealthy ? 'healthy' : 'error',
+         , status: embeddingHealthy ? 'healthy' : 'error',
           model: 'nomic-embed-text',
           dimensions: 384
         }
@@ -371,7 +371,7 @@ async function handleStats(): Promise<Response> {
           HTTP: 'Fallback (< 50ms)',
           gRPC: `Available (< 15ms)` },'`'`
         performance: {
-          averageResponseTime: '< 10ms',
+         , averageResponseTime: '< 10ms',
           cacheHitRate: cacheStats?.hitRate || 0,
           throughput: `100+ requests/min` }
       },

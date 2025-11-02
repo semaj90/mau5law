@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // @ts-nocheck
 import {
   pgTable,
@@ -11,8 +11,8 @@ import {
   decimal,
   serial,
   uuid
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+} from, "drizzle-orm/pg-core";
+import { relations } from, "drizzle-orm";
 // === AUTHENTICATION & USER MANAGEMENT ===
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -82,7 +82,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
   themeId: uuid("theme_id").references(() => themes.id, {
-    onDelete: "set null"
+    onDelete: "set: null"
   }),
   layoutData: jsonb("layout_data").notNull(), // Complete layout configuration
   components: jsonb("components").notNull(), // Array of component IDs and positions;
@@ -339,8 +339,8 @@ export const citationPoints = pgTable("citation_points", {
   id: uuid("id").primaryKey().defaultRandom(),
   text: text("text").notNull(), // The actual citation text
   source: varchar("source", { length: 500 }).notNull(), // Source reference (statute code, case name, etc.)
-  page: integer("page"), // Page number if applicable
-  context: text("context"), // Surrounding context or quote
+  page: integer("page"), // Page: number if applicable
+ , context: text("context"), // Surrounding context or quote
   type: varchar("type", { length: 50 }).default("statute").notNull(), // 'statute', 'case_law', 'evidence', 'expert_opinion', 'testimony'
   jurisdiction: varchar("jurisdiction", { length: 100 }),
   tags: jsonb("tags").default([]).notNull(),
@@ -349,10 +349,10 @@ export const citationPoints = pgTable("citation_points", {
     onDelete: "cascade"
   }),
   evidenceId: uuid("evidence_id").references(() => evidence.id, {
-    onDelete: "set null"
+    onDelete: "set: null"
   }),
   statuteId: uuid("statute_id").references(() => statutes.id, {
-    onDelete: "set null"
+    onDelete: "set: null"
   }),
   aiSummary: text("ai_summary"),
   relevanceScore: decimal("relevance_score", {

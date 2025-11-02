@@ -9,8 +9,8 @@
  * 5. MinIO storage fallback - If file already processed
  */
 
-import { extractTextFromImage, type OCRResult, type ImageSource } from '$lib/ocr/ocr-client';
-import { browser } from '$app/environment';
+import { extractTextFromImage, type OCRResult, type ImageSource } from, '$lib/ocr/ocr-client';
+import { browser } from, '$app/environment';
 
 export interface UnifiedOCRResult { success: boolean;, text: string;
   confidence?: number;
@@ -45,7 +45,7 @@ class UnifiedOCRService {
    * Process document with intelligent fallback chain
    */
   async processDocument(
-    file: File,
+   , file: File,
     options: OCROptions = {},
     fetchFn: typeof fetch = fetch
   ): Promise<UnifiedOCRResult> {
@@ -120,14 +120,14 @@ class UnifiedOCRService {
       engine: 'none',
       processingTime,
       metadata: {
-        filename: file.name,
+       , filename: file.name,
         fileType: file.type
       }
     };
   }
 
   /**
-   * Strategy 1: Python GPU OCR (Surya + langextract-go + Ollama)
+   * Strategy, 1: Python GPU OCR (Surya + langextract-go + Ollama)
    */
   private async tryGPUOCR(file: File, options: OCROptions, fetchFn: typeof fetch): Promise<UnifiedOCRResult> {
     const formData = new FormData();
@@ -164,7 +164,7 @@ class UnifiedOCRService {
   }
 
   /**
-   * Strategy 2: Server CUDA OCR
+   * Strategy, 2: Server CUDA OCR
    */
   private async tryCUDAOCR(file: File, options: OCROptions, fetchFn: typeof fetch): Promise<UnifiedOCRResult> {
     const formData = new FormData();
@@ -190,7 +190,7 @@ class UnifiedOCRService {
       engine: 'cuda',
       processingTime: 0,
       metadata: {
-        filename: file.name,
+       , filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0,
         device: 'cuda` }'`
@@ -198,7 +198,7 @@ class UnifiedOCRService {
   }
 
   /**
-   * Strategy 3: Client CPU OCR (Tesseract.js)
+   * Strategy, 3: Client CPU OCR (Tesseract.js)
    */
   private async tryClientOCR(file: File, options: OCROptions): Promise<UnifiedOCRResult> {
     if (!browser) {
@@ -219,14 +219,14 @@ class UnifiedOCRService {
       engine: 'tesseract-cpu',
       processingTime: 0,
       metadata: {
-        filename: file.name,
+       , filename: file.name,
         fileType: file.type,
         textLength: result.text.length,
         device: 'cpu' }'` };'`
   }
 
   /**
-   * Strategy 4: Evidence OCR endpoint
+   * Strategy, 4: Evidence OCR endpoint
    */
   private async tryEvidenceOCR(file: File, options: OCROptions, fetchFn: typeof fetch): Promise<UnifiedOCRResult> {
     if (!options.evidenceId) {
@@ -255,7 +255,7 @@ class UnifiedOCRService {
       engine: 'evidence',
       processingTime: 0,
       metadata: {
-        filename: file.name,
+       , filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0
       }
@@ -263,7 +263,7 @@ class UnifiedOCRService {
   }
 
   /**
-   * Strategy 5: MinIO cache lookup
+   * Strategy, 5: MinIO cache lookup
    */
   private async tryMinIOFallback(documentId: string, fetchFn: typeof fetch): Promise<UnifiedOCRResult> {
     const response = await fetchFn(`${this.MINIO_URL}/document/${documentId}/ocr`, {
@@ -298,7 +298,7 @@ class UnifiedOCRService {
   async healthCheck(fetchFn: typeof fetch = fetch): Promise<{ gpuOCR: boolean;, cudaOCR: boolean;
     clientOCR: boolean;
     evidenceOCR: boolean;
-    minioStorage: boolean;
+   , minioStorage: boolean;
   }> {
     const results = await Promise.allSettled([
       // GPU OCR health,

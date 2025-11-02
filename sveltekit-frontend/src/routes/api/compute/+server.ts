@@ -1,14 +1,14 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // src/routes/api/compute/+server.ts
 // SvelteKit API endpoint for multi-threaded job pipeline
 // Implements PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } from '$lib/server/db';
-import { createClient } from 'redis';
-import { nanoid } from 'nanoid';
-import { vectorOutbox, vectorJobs, vectors } from '$lib/server/db/schema-postgres.js';
-import { eq } from 'drizzle-orm';
+import { db } from, '$lib/server/db';
+import { createClient } from, 'redis';
+import { nanoid } from, 'nanoid';
+import { vectorOutbox, vectorJobs, vectors } from, '$lib/server/db/schema-postgres.js';
+import { eq } from, 'drizzle-orm';
 
 // Initialize Redis connection
 const redis = createClient({
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .insert(vectorOutbox)
       .values({ ownerType: ownerType, as: 'evidence' | 'report' | 'case' | 'document',
         ownerId,
-        event: type; as: 'upsert' | 'delete' | 'reembed',
+        event: type;, as: 'upsert' | 'delete' | 'reembed',
         vector: null, // Will be filled by CUDA worker
         payload: data,
         attempts: 0
@@ -52,9 +52,9 @@ export const POST: RequestHandler = async ({ request }) => {
       .insert(vectorJobs)
       .values({
         jobId: finalJobId,
-        ownerType: ownerType; as: 'evidence' | 'report' | 'case' | 'document',
+        ownerType: ownerType;, as: 'evidence' | 'report' | 'case' | 'document',
         ownerId,
-        event: type; as: 'upsert' | 'delete' | 'reembed',
+        event: type;, as: 'upsert' | 'delete' | 'reembed',
         status: 'enqueued',
         progress: 0
       })
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // TODO: Add RabbitMQ publisher here for high-volume scenarios
     // Step 5: Return job tracking information
     return json({
-      success: true,
+     , success: true,
       jobId: finalJobId,
       outboxId: outboxRow.id,
       jobTrackingId: jobRow.id,
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url }) => {
         : null;
     }
     return json({
-      success: true,
+     , success: true,
       job: {
        , jobId: job.jobId,
         status: job.status,
@@ -178,15 +178,15 @@ export const GET: RequestHandler = async ({ url }) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getEstimatedTime(type: string, data: any): number {
   switch (type) {
-    case 'upsert': {
+    case, 'upsert': {
       // Estimate based on content length
       const contentLength = JSON.stringify(data).length;
       return Math.max(500, Math.min(5000, contentLength / 10));
     }
-    case 'reembed':
-      return 2000; // Re-embedding typically takes 2 seconds
-    case 'delete':
+    case, 'reembed':
+      return 2000; // Re-embedding typically takes, 2 seconds
+    case, 'delete':
       return 100; // Deletion is fast
-    default: return 1000; // Default 1 second
+    default: return 1000; // Default, 1 second
   }
 }

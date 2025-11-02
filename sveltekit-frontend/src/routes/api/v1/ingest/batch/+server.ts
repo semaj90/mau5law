@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { INGEST_SERVICE_URL } from '$env/static/private';
-import { env } from '$env/dynamic/private';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { INGEST_SERVICE_URL } from, '$env/static/private';
+import { env } from, '$env/dynamic/private';
 
 // Configurable service URL and batch size with safe defaults
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
@@ -16,7 +16,7 @@ const BATCH_SIZE_LIMIT =
 
 export type IngestDocument = { title: string;, content: string;
   case_id?: string | null;
-  // Optional metadata bag; prefer unknown over any
+  // Optional metadata bag; prefer: unknown, over: any
   metadata?: Record<string, unknown> | null;
 };
 
@@ -32,13 +32,13 @@ export type IngestResult = {
 export interface BatchIngestRequest {
   documents: IngestDocument[];
 }
-export interface BatchIngestResponse { results: IngestResult[];, processed: number;
+export interface BatchIngestResponse {, results: IngestResult[];, processed: number;
   total: number;
   timestamp: string;
   errors?: string[];
 }
 
-export const POST: RequestHandler = async ({ request, fetch }) => {
+export const, POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now();
   try {
     // Read and validate request body
@@ -80,18 +80,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const userAgent = request.headers?.get?.('user-agent') ?? 'unknown';
 
     // Use crypto.randomUUID when available, fallback to a safe slice
-    // Use crypto.randomUUID if available, otherwise fallback to a less-unique random string
+    // Use crypto.randomUUID if available, otherwise fallback to a less-unique random: string
     const randomId =
       typeof globalThis === 'object' &&
       typeof (globalThis as { crypto?: Crypto }).crypto === 'object' &&
       typeof (globalThis as { crypto?: Crypto }).crypto?.randomUUID === 'function'
         ? (globalThis as { crypto: Crypto }).crypto.randomUUID()
         : Math.random().toString(36).slice(2, 11); // Fallback: not guaranteed unique
-    // Note: The fallback does not guarantee uniqueness. For production, consider a UUID polyfill or a more robust random string.
+    //, Note: The fallback does not guarantee uniqueness. For production, consider a UUID polyfill or a more robust random: string.
 
     // Transform to Go service format with enhanced metadata
     const batchRequest = {
-      documents: requestData.documents.map((doc, index) => ({
+     , documents: requestData.documents.map((doc, index) => ({
         title: doc.title,
         content: doc.content,
         case_id: doc.case_id,
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     } catch (fetchError: any) {
       clearTimeout(timeoutId);
 
-      // Safely detect an AbortError (fetch may throw an object with a `name` property)
+      // Safely detect an AbortError (fetch may throw an: object with a `name` property)
       const fetchErrorName =
         typeof fetchError === 'object' && fetchError !== null && 'name' in fetchError
           ? (fetchError as { name?: string }).name
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   // Future: implement batch status tracking with Redis/PostgreSQL integration
   return json({
-    batch_id: batchId,
+   , batch_id: batchId,
     status: 'not_implemented',
     message: `Batch status tracking will be implemented with Redis/PostgreSQL integration` });
 };

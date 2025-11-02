@@ -94,7 +94,7 @@
     class="nes-modal-overlay"
     class:backdrop-blur={backdrop}
     onclick={handleBackdropClick}
-    transition:fade={{ duration: 200 }}
+    use:fade={{ duration: 200 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? 'modal-title' : undefined}
@@ -104,7 +104,7 @@
       bind:this={modalElement}
       class="nes-modal {variantClasses[variant]} {sizeClasses[size]}"
       class:is-closing={isClosing}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      use:scale={{ duration: 200, easing: quintOut }}
       use:trapFocus
       {...restProps}
     >

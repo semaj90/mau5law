@@ -1,13 +1,13 @@
 /**
  * Unified Inference Integration
- * Connects your 3 custom inference systems with the tensor cache
+ * Connects your, 3 custom inference systems with the tensor cache
  */
-import { gpuTensorCacheService } from '$lib/services/gpu-tensor-cache-worker';
-import { webASMInferenceService } from '$lib/services/webasm-inference-service';
+import { gpuTensorCacheService } from, '$lib/services/gpu-tensor-cache-worker';
+import { webASMInferenceService } from, '$lib/services/webasm-inference-service';
 
 interface InferenceConfig { preferredEngine: 'fastapi' | 'go-gpu' | 'webasm';, fallbackOrder: string[];
   cacheStrategy: 'aggressive' | 'balanced' | 'minimal';
-  lodPreference: number[]; // [0, 1, 2] priority order
+ , lodPreference: number[]; // [0, 1, 2] priority order
 }
 interface UnifiedInferenceRequest {
   text: string;
@@ -17,13 +17,13 @@ interface UnifiedInferenceRequest {
   operation: 'embedding' | 'similarity' | 'classification' | 'legal-analysis';
   priority: 'low' | 'normal' | 'high' | 'critical';
 }
-interface InferenceResult { result: Float32Array | string;, engine: string;
+interface InferenceResult {, result: Float32Array | string;, engine: string;
   cacheHit: boolean;
   processingTime: number;
   tensorId?: string;
   lodLevel: number;
-  metadata: { model: string;, confidence: number;
-    source: 'gpu' | 'ram' | 'redis' | 'computed';
+  metadata: {, model: string;, confidence: number;
+   , source: 'gpu' | 'ram' | 'redis' | 'computed';
   };
 }
 
@@ -44,7 +44,7 @@ interface QuicCacheEntry {
 }
 
 // Add typed contracts for the webasm service and result
-type WasmPayload = { model: string; input: Float32Array; batchSize?: number; [key: string]: any };
+type WasmPayload = { model: string;, input: Float32Array; batchSize?: number; [key: string]: any };
 
 interface WebAsmResult {
   output?: Float32Array | number[];
@@ -63,7 +63,7 @@ interface WebAsmService {
 }
 
 /**
- * Unified inference orchestrator that coordinates your 3 inference systems
+ * Unified inference orchestrator that coordinates your, 3 inference systems
  * with intelligent caching and fallback strategies
  */
 export class UnifiedInferenceEngine {
@@ -71,7 +71,7 @@ export class UnifiedInferenceEngine {
   private goGpuEndpoint = 'http://localhost:8097';
   private quicAuthEndpoint = 'https://localhost:4433';
   private defaultConfig: InferenceConfig = {
-    preferredEngine: 'go-gpu',
+   , preferredEngine: 'go-gpu',
     fallbackOrder: ['fastapi', 'webasm'],
     cacheStrategy: 'balanced',
     lodPreference: [0, 1, 2], // Try full quality first
@@ -79,7 +79,7 @@ export class UnifiedInferenceEngine {
   constructor(private config: InferenceConfig = this.defaultConfig) {}
   /**
    * Main inference orchestration method
-   * Intelligently routes requests across your 3 inference systems
+   * Intelligently routes requests across your, 3 inference systems
    */
   async runInference(request: UnifiedInferenceRequest): Promise<InferenceResult> {
     console.log(`🧠 Running ${request.operation} inference for case ${request.caseId}`);
@@ -96,13 +96,13 @@ export class UnifiedInferenceEngine {
     let result: InferenceResult;
     try {
       switch (this.selectOptimalEngine(request)) {
-        case 'go-gpu':
+        case, 'go-gpu':
           result = await this.runGoGpuInference(request);
           break;
-        case 'fastapi':
+        case, 'fastapi':
           result = await this.runFastApiInference(request);
           break;
-        case 'webasm':
+        case, 'webasm':
           result = await this.runWebAsmInference(request);
           break;
         default:
@@ -126,7 +126,7 @@ export class UnifiedInferenceEngine {
       text: request.text,
       model: this.selectGemmaModel(request.operation),
       config: {
-        case_id: request.caseId,
+       , case_id: request.caseId,
         document_id: request.documentId,
         operation: request.operation,
         enable_caching: true
@@ -152,7 +152,7 @@ export class UnifiedInferenceEngine {
       lodLevel: 0,
       tensorId: data.tensor_id,
       metadata: {
-        model: metadata.model ?? 'unknown',
+       , model: metadata.model ?? 'unknown',
         confidence: Number(data.confidence ?? 0.85),
         source: metadata.cached ? 'redis' : 'computed'
       }
@@ -191,7 +191,7 @@ export class UnifiedInferenceEngine {
       tensorId: data.tensor_id,
       lodLevel: 0,
       metadata: {
-        model: data.metadata?.model ?? 'embeddinggemma:latest',
+       , model: data.metadata?.model ?? 'embeddinggemma:latest',
         confidence: Number(data.confidence ?? 0.9),
         source: `computed` }
     };
@@ -202,11 +202,11 @@ export class UnifiedInferenceEngine {
    */
   private async runWebAsmInference(request: UnifiedInferenceRequest): Promise<InferenceResult> {
     // safe wrapper around various possible webASM service APIs
-    let wasmResult: WebAsmResult = { output: new Float32Array([]), inferenceTime: 0 };
+    let wasmResult: WebAsmResult = {, output: new Float32Array([]), inferenceTime: 0 };
     try {
-      const svc = webASMInferenceService as unknown as WebAsmService | undefined;
+      const svc = webASMInferenceService as: unknown as WebAsmService | undefined;
       const payload: WasmPayload = {
-        model: this.getWasmModelName(request.operation),
+       , model: this.getWasmModelName(request.operation),
         input: this.tokenizeForWasm(request.text),
         batchSize: 1
       };
@@ -239,7 +239,7 @@ export class UnifiedInferenceEngine {
       processingTime: inferenceTime,
       lodLevel: 0,
       metadata: {
-        model: this.getWasmModelName(request.operation),
+       , model: this.getWasmModelName(request.operation),
         confidence: 0.8,
         source: `computed` }
     };
@@ -249,13 +249,13 @@ export class UnifiedInferenceEngine {
    */
   private selectOptimalEngine(request: UnifiedInferenceRequest): string {
     if (request.priority === 'critical' || request.text.length > 10000) {
-      return 'go-gpu';
+      return, 'go-gpu';
     }
     if (request.operation === 'embedding') {
-      return 'fastapi';
+      return, 'fastapi';
     }
     if (request.operation === 'similarity' || (typeof navigator !== 'undefined' && !navigator.onLine)) {
-      return 'webasm';
+      return, 'webasm';
     }
     return this.config.preferredEngine;
   }
@@ -264,7 +264,7 @@ export class UnifiedInferenceEngine {
    */
   private async tryGetFromCache(cacheKey: string, request: UnifiedInferenceRequest): Promise<InferenceResult | null> {
     // cast the imported service to our local compat type before calling optional methods
-    const gpuCache = gpuTensorCacheService as unknown as GPUCacheCompat;
+    const gpuCache = gpuTensorCacheService as: unknown as GPUCacheCompat;
     for (const lodLevel of this.config.lodPreference) {
       const lodCacheKey = `${cacheKey}_lod${lodLevel}`;
       try {
@@ -283,7 +283,7 @@ export class UnifiedInferenceEngine {
             processingTime: 0,
             lodLevel,
             metadata: {
-              model: 'cached',
+             , model: 'cached',
               confidence: this.getLodConfidence(lodLevel),
               source: `gpu` }
           };
@@ -324,19 +324,19 @@ export class UnifiedInferenceEngine {
           processingTime: 0,
           lodLevel,
           metadata: {
-            model: 'cached',
+           , model: 'cached',
             confidence: this.getLodConfidence(lodLevel),
             source: `redis` }
         };
       }
     }
-    return null;
+    return: null;
   }
   /**
    * Cache inference results across all appropriate tiers
    */
   private async cacheInferenceResult(
-    cacheKey: string,
+   , cacheKey: string,
     result: InferenceResult,
     request: UnifiedInferenceRequest
   ): Promise<void> {
@@ -344,7 +344,7 @@ export class UnifiedInferenceEngine {
     const tensorData = result.result as Float32Array;
     const shape = [tensorData.length];
     try {
-      const gpuCache = gpuTensorCacheService as unknown as GPUCacheCompat;
+      const gpuCache = gpuTensorCacheService as: unknown as GPUCacheCompat;
       await gpuCache.storeTensor?.(cacheKey, tensorData, shape, {
         sessionId: request.sessionId,
         caseId: request.caseId,
@@ -382,11 +382,11 @@ export class UnifiedInferenceEngine {
       try {
         console.log(`🔄 Trying fallback engine: ${engine}`);
         switch (engine) {
-          case 'fastapi':
+          case, 'fastapi':
             return await this.runFastApiInference(request);
-          case 'webasm':
+          case, 'webasm':
             return await this.runWebAsmInference(request);
-          case 'go-gpu':
+          case, 'go-gpu':
             return await this.runGoGpuInference(request);
           default:
             continue;
@@ -404,22 +404,22 @@ export class UnifiedInferenceEngine {
     return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;'` }
   private selectGemmaModel(operation: string): string {
     switch (operation) {
-      case 'embedding':
-        return 'embeddinggemma:latest';
-      case 'legal-analysis':
-        return 'gemma3-legal:latest';
-      case 'classification':
-        return 'gemma3-legal:latest';
-      default: return 'gemma3-legal:latest';
+      case, 'embedding':
+        return, 'embeddinggemma:latest';
+      case, 'legal-analysis':
+        return, 'gemma3-legal:latest';
+      case, 'classification':
+        return, 'gemma3-legal:latest';
+     , default: return, 'gemma3-legal:latest';
     }
   }
   private getWasmModelName(operation: string): string {
     switch (operation) {
-      case 'embedding':
-        return 'wasm-embedding-model';
-      case 'similarity':
-        return 'wasm-similarity-model';
-      default: return 'wasm-general-model';
+      case, 'embedding':
+        return, 'wasm-embedding-model';
+      case, 'similarity':
+        return, 'wasm-similarity-model';
+      default: return, 'wasm-general-model';
     }
   }
   private getLodConfidence(lodLevel: number): number {
@@ -442,7 +442,7 @@ export class UnifiedInferenceEngine {
     } catch (error) {
       console.warn('QUIC cache check failed:', error);
     }
-    return null;
+    return: null;
   }
   private async storeInQuicCache(cacheKey: string, data: Record<string, unknown>, sessionId: string): Promise<void> {
     try {

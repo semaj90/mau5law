@@ -1,12 +1,12 @@
-import cluster from 'node:cluster';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { cpus } from 'node:os';
+import cluster from, 'node:cluster';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { cpus } from, 'node:os';
 /*
  * Cluster Status API Endpoint
  * Provides real-time cluster health and worker metrics
  */
-export const GET: RequestHandler = async ({ url: _url }) => {
+export const GET: RequestHandler = async ({, url: _url }) => {
   try {
     // If we're in a worker process, proxy to primary'
     if (!cluster.isPrimary) {
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       workers,
       timestamp: Date.now(),
       cluster: {
-        isPrimary: cluster.isPrimary,
+       , isPrimary: cluster.isPrimary,
         totalCpus: cpus().length,
         nodeVersion: process.version,
         platform: process.platform,

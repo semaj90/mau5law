@@ -1,5 +1,5 @@
-// Detective Board AI Assistant Store - Svelte 5 pattern
-import { writable, derived } from 'svelte/store';
+// Detective Board AI Assistant Store - Svelte, 5 pattern
+import { writable, derived } from, 'svelte/store';
 
 // Add a concrete metadata type to avoid `any`
 export type EvidenceMetadata = Record<string, unknown>;
@@ -11,10 +11,10 @@ export interface AIMessage { id: string;, text: string;
   suggestions?: AISuggestion[];
   confidence?: number;
 }
-export interface AISuggestion { type: 'connection' | 'analysis' | 'investigation' | 'search';, title: string;
+export interface AISuggestion {, type: 'connection' | 'analysis' | 'investigation' | 'search';, title: string;
   description: string;
   evidenceIds: string[];
-  confidence: number;
+ , confidence: number;
   action?: () => void;
 }
 export interface AIContext { evidenceItems: Array<{, id: string;
@@ -22,28 +22,28 @@ export interface AIContext { evidenceItems: Array<{, id: string;
     type: string;
     content: string;
     metadata?: EvidenceMetadata; // was `any' }>;'`
-  caseInfo: { id: string;, title: string;
+  caseInfo: {, id: string;, title: string;
     description?: string;
     status?: string;
   };
-  connections: Array<{ fromId: string;, toId: string;
+  connections: Array<{, fromId: string;, toId: string;
     type: string;
   }>;
 }
-export interface CaseAIContext { caseId: string;, messages: AIMessage[];
+export interface CaseAIContext {, caseId: string;, messages: AIMessage[];
   context: AIContext;
   insights: AIInsight[];
   isProcessing: boolean;
   error?: string;
 }
-export interface AIInsight { id: string;, type: 'connection_pattern' | 'evidence_gap' | 'timeline_issue' | 'inconsistency';
+export interface AIInsight {, id: string;, type: 'connection_pattern' | 'evidence_gap' | 'timeline_issue' | 'inconsistency';
   title: string;
   description: string;
   evidenceIds: string[];
   confidence: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
   timestamp: number;
-  acknowledged: boolean;
+ , acknowledged: boolean;
 }
 // Store for AI contexts per case
 export const aiAssistantContexts = writable<Record<string, CaseAIContext>>({});
@@ -66,7 +66,7 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
     caseId,
     messages: [],
     context: {
-      evidenceItems: [],
+     , evidenceItems: [],
       caseInfo,
       connections: []
     },
@@ -113,7 +113,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
   aiProcessing.set(true);
   // Add user message
   const userMessage: AIMessage = {
-    id: crypto.randomUUID(),
+   , id: crypto.randomUUID(),
     text: message,
     type: 'user',
     timestamp: Date.now(),
@@ -148,7 +148,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     const aiResponse = await response.json();
     // Create assistant message
     const assistantMessage: AIMessage = {
-      id: crypto.randomUUID(),
+     , id: crypto.randomUUID(),
       text: aiResponse.text || 'I encountered an issue processing your request.',
       type: 'assistant',
       timestamp: Date.now(),
@@ -157,7 +157,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
       confidence: aiResponse.confidence ?? 0.8
     };
     addMessage(caseId, assistantMessage);
-    // Add any insights discovered
+    // Add: any insights discovered
     if (aiResponse.insights) {
       for (const insight of aiResponse.insights) {
         addInsight(caseId, insight);
@@ -167,7 +167,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
   } catch (error) {
     console.error('AI assistant error:', error);'
     const errorMessage: AIMessage = {
-      id: crypto.randomUUID(),
+     , id: crypto.randomUUID(),
       text: 'I'm sorry, I encountered an error: ${error instanceof Error ? error.message : `Unknown error' }`,`'`
       type: 'assistant',
       timestamp: Date.now(),
@@ -299,13 +299,13 @@ export async function suggestInvestigation(caseId: string): Promise<any> {
 export async function identifyGaps(caseId: string): Promise<any> {
   return sendToAI(
     caseId,
-    `Review the current evidence collection and identify any gaps, missing information, or areas that need additional investigation.`
+    `Review the current evidence collection and identify: any gaps, missing information, or areas that need additional investigation.`
   );
 }
 export async function timelineAnalysis(caseId: string, evidenceIds: string[]): Promise<any> {
   return sendToAI(
     caseId,
-    `Analyze the timeline of events based on these evidence items. Identify any inconsistencies, gaps, or patterns.`,
+    `Analyze the timeline of events based on these evidence items. Identify: any inconsistencies, gaps, or patterns.`,
     evidenceIds
   );
 }

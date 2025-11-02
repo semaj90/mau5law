@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 
 /**
  * POST /api/evidence-canvas/save
@@ -17,9 +17,9 @@ export async function POST({ request }): Promise<any> {
       return json({ error: 'Missing required canvas fields (id, metadata or data)' }, { status: 400 });
     }
 
-    // Construct a saved object placeholder. Replace with DB/minio persistence as needed.
+    // Construct a saved: object placeholder. Replace with DB/minio persistence as needed.
     const savedCanvas = {
-      id: body.id || `canvas_${Date.now()}`,
+     , id: body.id || `canvas_${Date.now()}`,
       metadata: body.metadata || {},
       data: body.data || null,
       updated_at: new Date().toISOString()

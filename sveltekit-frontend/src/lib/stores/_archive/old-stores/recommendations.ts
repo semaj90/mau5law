@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Recommendations Store - AI-Powered User Analytics & Suggestions
  * Integrates with NVIDIA go-llama and multi-core Ollama cluster
  */
-import { writable, derived } from 'svelte/store';
-import { productionServiceClient } from '$lib/services/production-service-client';
+import { writable, derived } from, 'svelte/store';
+import { productionServiceClient } from, '$lib/services/production-service-client';
 
 export interface Recommendation { id: string;, type: 'case_action' | 'document_analysis' | 'evidence_review' | 'legal_precedent' | 'workflow_optimization';
   title: string;
@@ -27,27 +27,27 @@ export interface Recommendation { id: string;, type: 'case_action' | 'document_
   dismissed?: boolean;
   accepted?: boolean;
 }
-export interface TrendItem { date: string; // Or number for timestamp, score: number;
+export interface TrendItem { date: string; //, Or: number for timestamp, score: number;
   // Add other relevant trend metrics if known, e.g., activityCount: number;
 }
-export interface UserAnalytics { userId: string;, profile: { userType: 'attorney' | 'paralegal' | 'investigator' | 'administrator';, experienceLevel: 'junior' | 'mid' | 'senior' | 'expert';
+export interface UserAnalytics {, userId: string;, profile: {, userType: 'attorney' | 'paralegal' | 'investigator' | 'administrator';, experienceLevel: 'junior' | 'mid' | 'senior' | 'expert';
     specializations: string[];
-    workPatterns: { mostActiveHours: number[];, averageSessionLength: number;
+    workPatterns: {, mostActiveHours: number[];, averageSessionLength: number;
       documentsPerWeek: number;
       casesHandled: number;
     };
   };
-  behavior: { searchPatterns: string[];, documentTypes: string[];
+  behavior: {, searchPatterns: string[];, documentTypes: string[];
     commonQueries: string[];
-    toolUsage: Record<string, number>;
+   , toolUsage: Record<string, number>;
     navigationPaths: string[];
   };
   performance: {
-    averageTaskTime: Record<string, number>;
+   , averageTaskTime: Record<string, number>;
     accuracyScores: Record<string, number>;
     productivityTrends: Array<TrendItem>; // Changed from Array<any>
   };
-  preferences: { aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';, notificationFrequency: 'real-time' | 'hourly' | 'daily';
+  preferences: {, aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';, notificationFrequency: 'real-time' | 'hourly' | 'daily';
     recommendationTypes: string[];
   };
 }
@@ -59,13 +59,13 @@ export interface RecommendationState {
   dismissedRecommendations: Recommendation[];
   // User Analytics
   userAnalytics: UserAnalytics | null;
-  behaviorInsights: { patterns: string[];, suggestions: string[];
+  behaviorInsights: {, patterns: string[];, suggestions: string[];
     trends: Array<TrendItem>; // Changed from Array<any>
   };
   // AI Models
   isAnalyzing: boolean;
   lastAnalysisTime: number | null;
-  aiModelsStatus: { nvidia_llama: boolean;, gemma3_legal: boolean;
+  aiModelsStatus: {, nvidia_llama: boolean;, gemma3_legal: boolean;
     recommendation_engine: boolean;
   };
   // Performance
@@ -78,19 +78,19 @@ export interface RecommendationState {
 }
 
 const initialState: RecommendationState = {
-  recommendations: [],
+ , recommendations: [],
   activeRecommendations: [],
   dismissedRecommendations: [],
   userAnalytics: null,
   behaviorInsights: {
-    patterns: [],
+   , patterns: [],
     suggestions: [],
     trends: []
   },
   isAnalyzing: false,
   lastAnalysisTime: null,
   aiModelsStatus: {
-    nvidia_llama: false,
+   , nvidia_llama: false,
     gemma3_legal: false,
     recommendation_engine: false
   },
@@ -135,7 +135,7 @@ function normalizeErrorMessage(err: any): string {
   try {
     return String(err ?? 'Unknown error');
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -159,7 +159,7 @@ function normalizeBehaviorInsights(
       if (isRecord(item) && typeof item.score === 'number') {
         return { date: typeof item.date === 'string' ? item.date : new Date().toISOString(), score: item.score };
       }
-      return { date: new Date().toISOString(), score: 0 }; // Fallback for malformed trend item
+      return {, date: new Date().toISOString(), score: 0 }; // Fallback for malformed trend item
     });
     return { patterns: [], suggestions: [], trends: normalizedTrends };
   }
@@ -205,8 +205,8 @@ export const recommendationActions = {
     }));
     const startTime = Date.now();
     try {
-      // use safer unknown type and narrow before use
-      const rawResponse: any = await productionServiceClient.makeRequest('ai.recommendations', {
+      // use safer: unknown type and narrow before use
+      const, rawResponse: any = await productionServiceClient.makeRequest('ai.recommendations', {
         userId,
         context,
         options: {

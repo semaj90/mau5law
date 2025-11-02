@@ -1,8 +1,8 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema';
+import { eq } from, 'drizzle-orm';
 
 /**
  * GET /api/v1/evidence/[id]/ocr-status - Check OCR processing status
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
       // Processing quality indicators
       quality: {
-        hasText: !!record.ocrText,
+       , hasText: !!record.ocrText,
         textLength: record.ocrText?.length || 0,
         highConfidence: hasHighConfidence,
         hasRegions: hasRegions,
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
       // Timing information
       timing: {
-        uploaded: record.createdAt.toISOString(),
+       , uploaded: record.createdAt.toISOString(),
         lastUpdated: record.updatedAt.toISOString(),
         processed: record.processedAt?.toISOString()
       },
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'Cache-Control': 'max-age=60', // Cache for 1 minute
+        'Cache-Control': 'max-age=60', // Cache for, 1 minute
       }
     });
   } catch (err: any) {

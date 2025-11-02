@@ -45,7 +45,7 @@ export interface QdrantCondition {
   range?: { gt?: number; gte?: number; lt?: number; lte?: number };
 }
 
-export interface QdrantSearchResult { id: string | number;, score: number;
+export interface QdrantSearchResult {, id: string | number;, score: number;
   payload?: Record<string, any>;
   vector?: number[];
 }
@@ -58,11 +58,11 @@ export interface QdrantUpsertRequest {
   points: QdrantPoint[];
 }
 
-export interface QdrantCollectionInfo { status: string;, vectors_count: number;
+export interface QdrantCollectionInfo {, status: string;, vectors_count: number;
   indexed_vectors_count: number;
   points_count: number;
   segments_count: number;
-  config: { params: {, vectors: { size: number;, distance: string;
+  config: {, params: {, vectors: {, size: number;, distance: string;
       };
     };
   };
@@ -73,7 +73,7 @@ export interface QdrantCollectionInfo { status: string;, vectors_count: number;
  */
 export class QdrantHTTPClient {
   private baseUrl: string;
-  private collectionName: string;
+  private, collectionName: string;
 
   constructor(baseUrl = QDRANT_HTTP_URL, collectionName = QDRANT_COLLECTION) {
     this.baseUrl = baseUrl;
@@ -219,7 +219,7 @@ export class QdrantHTTPClient {
 export class QdrantQUICClient {
   private quicUrl: string;
   private collectionName: string;
-  private transport: any = null; // WebTransport instance
+  private, transport: any = null; // WebTransport instance
 
   constructor(quicUrl = QDRANT_QUIC_URL, collectionName = QDRANT_COLLECTION) {
     this.quicUrl = quicUrl;
@@ -236,7 +236,7 @@ export class QdrantQUICClient {
     }
 
     try {
-      this.transport = new (WebTransport as any)(this.quicUrl);
+      this.transport = new (WebTransport as: any)(this.quicUrl);
       await this.transport.ready;
       console.log('Qdrant QUIC/WebTransport connection established');
     } catch (error) {
@@ -300,7 +300,7 @@ export class QdrantQUICClient {
 export class QdrantClient {
   private httpClient: QdrantHTTPClient;
   private quicClient: QdrantQUICClient;
-  private preferredProtocol: 'http' | 'quic' | 'grpc';
+  private, preferredProtocol: 'http' | 'quic' | 'grpc';
 
   constructor(protocol: 'http' | 'quic' | 'grpc' = 'http') {
     this.httpClient = new QdrantHTTPClient();

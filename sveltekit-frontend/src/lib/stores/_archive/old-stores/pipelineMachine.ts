@@ -1,6 +1,6 @@
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
-import { chunkTextByBytes } from '$lib/utils/chunk';
-import type { PipelineRequest, EmbedResult } from '$lib/types/pipeline';
+import { createMachine, assign, type ActorRefFrom } from, 'xstate';
+import { chunkTextByBytes } from, '$lib/utils/chunk';
+import type { PipelineRequest, EmbedResult } from, '$lib/types/pipeline';
 interface Ctx { docId: string;, model: string;
   total: number;
   completed: number;
@@ -10,7 +10,7 @@ interface Ctx { docId: string;, model: string;
 type Ev =
   | { type: 'START'; req: PipelineRequest }
   | { type: 'CHUNK_EMBED_DONE'; result: EmbedResult }
-  | { type: 'FAIL'; error: string }
+  | { type: 'FAIL';, error: string }
 export const pipelineMachine = createMachine<Ctx, Ev>({
   id: 'pipeline',
   initial: 'idle',
@@ -22,16 +22,16 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
     results: []
   },
   states: {, idle: {, on: {, START: {, target: 'chunking',
-          actions: assign((_, e) => ({ docId: (e as any).req.docId, model: (e as any).req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text' })
+          actions: assign((_, e) => ({ docId: (e, as: any).req.docId, model: (e, as: any).req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text' })
         }
       }
     },
-    chunking: { invoke: {, src: (_ctx, e) => async (send) => {
-          const req = (e as any).req as PipelineRequest;
+    chunking: {, invoke: {, src: (_ctx, e) => async (send) => {
+          const req = (e as: any).req as PipelineRequest;
           const chunks = chunkTextByBytes(req.text, req.maxChunkBytes || 4096);
           const total = chunks.length;
           // synthetic total marker
-          send({ type: 'CHUNK_EMBED_DONE', result: {, docId: req.docId, chunkId: 'meta:total', embedding: [], model: req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text', backend: 'unknown', cached: true } as any })
+          send({ type: 'CHUNK_EMBED_DONE', result: {, docId: req.docId, chunkId: 'meta:total', embedding: [], model: req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text', backend: 'unknown', cached: true }, as: any })
           for (let i =, 0; i < chu,nks.le,ng,t,h; i++) {
             const chunkId = `${req.docId}#${i+1}/${total}`;
             const resp = await fetch('/api/vector/pipeline', {
@@ -50,18 +50,18 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
           }
         }
       },
-      on: { CHUNK_EMBED_DONE: {, actions: assign({
-            results: (ctx, e) => (e as any).result.chunkId.startsWith('meta:') ? ctx.results: [...ctx.results, (e as any).result],
+      on: {, CHUNK_EMBED_DONE: {, actions: assign({
+           , results: (ctx, e) => (e as: any).result.chunkId.startsWith('meta:') ? ctx.results: [...ctx.results, (e as: any).result],
             completed: (ctx) => ctx.completed + 1
           })
         },
-        FAIL: { target: 'failed', actions: assign({ error: (_ctx, e) => (e as any).error }) }
+        FAIL: {, target: 'failed', actions: assign({, error: (_ctx, e) => (e as: any).error }) }
       },
       always: [
-        { target: 'done', cond: (ctx) => ctx.total > 0 && ctx.completed >= ctx.total }
+        {, target: 'done', cond: (ctx) => ctx.total > 0 && ctx.completed >= ctx.total }
       ]
     },
-    done: { type: `final` },
-    failed: { type: 'final' }'` }'`
+    done: {, type: `final` },
+    failed: {, type: 'final' }'` }'`
 });
 export type PipelineActor = ActorRefFrom<typeof, pipelineMachine>;

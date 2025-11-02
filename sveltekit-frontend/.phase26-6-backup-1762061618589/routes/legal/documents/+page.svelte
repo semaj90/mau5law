@@ -385,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
             class="pl-8 w-full md:w-[400px]"
           />
         </div>
-        <Select.Root bind:selected={statusFilter}>
+        <Select bind:selected={statusFilter}>
           <Select.Trigger class="w-[140px]">
             <Select.Value placeholder="Status" />
           </Select.Trigger>
@@ -397,8 +397,8 @@ https://svelte.dev/e/js_parse_error -->
             <Select.Item value="final">Final</Select.Item>
             <Select.Item value="archived">Archived</Select.Item>
           </Select.Content>
-        </Select.Root>
-        <Select.Root bind:selected={typeFilter}>
+        </Select>
+        <Select bind:selected={typeFilter}>
           <Select.Trigger class="w-[140px]">
             <Select.Value placeholder="Type" />
           </Select.Trigger>
@@ -411,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
             <Select.Item value="template">Template</Select.Item>
             <Select.Item value="other">Other</Select.Item>
           </Select.Content>
-        </Select.Root>
+        </Select>
       </div>
     </div>
     <!-- Documents Grid -->
@@ -520,7 +520,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 </div>
 <!-- Upload Document Dialog -->
-<Dialog.Root bind:open={showUploadDialog}>
+<Dialog bind:open={showUploadDialog}>
   <Dialog.Content class="sm:max-w-[600px]">
     <Dialog.Header>
       <Dialog.Title>Upload Document</Dialog.Title>
@@ -579,7 +579,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="grid gap-2">
           <Label for="upload-type">Document Type</Label>
-          <Select.Root bind:selected={uploadType}>
+          <Select bind:selected={uploadType}>
             <Select.Trigger>
               <Select.Value placeholder="Select type" />
             </Select.Trigger>
@@ -591,7 +591,7 @@ https://svelte.dev/e/js_parse_error -->
               <Select.Item value="template">Template</Select.Item>
               <Select.Item value="other">Other</Select.Item>
             </Select.Content>
-          </Select.Root>
+          </Select>
         </div>
       </div>
       <div class="grid gap-2">
@@ -633,9 +633,9 @@ https://svelte.dev/e/js_parse_error -->
       </Button>
     </Dialog.Footer>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <!-- AI Analysis Dialog -->
-<Dialog.Root bind:open={showAIAnalysisDialog}>
+<Dialog bind:open={showAIAnalysisDialog}>
   <Dialog.Content class="sm:max-w-[700px]">
     {#if selectedDocument}
       <Dialog.Header>
@@ -745,7 +745,7 @@ https://svelte.dev/e/js_parse_error -->
       </Dialog.Footer>
     {/if}
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   .line-clamp-2 {
     display: -webkit-box;

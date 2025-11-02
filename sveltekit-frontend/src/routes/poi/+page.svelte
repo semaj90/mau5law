@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from, 'lucide-svelte';
+  import Button from, '$lib/components/ui/enhanced-bits.svelte';
   // State
   let searchQuery = $state<string>('');
   let viewMode = $state<'grid' | 'list' >('grid');
@@ -46,7 +46,7 @@ import type { Case } from '$lib/types';
 </svelte:head>
 <div class="container mx-auto, px-4, py-6">
   <!-- Header -->
-  <div class="flex flex-col gap-4 lg:flex-row lg:items-center, lg:justify-between, mb-6">
+  <div class="flex flex-col gap-4 lg:flex-row, lg:items-center, lg:justify-between, mb-6">
     <div>
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex, items-center, gap-3">
         <Users class="w-8, h-8, text-blue-600" />
@@ -89,7 +89,7 @@ import type { Case } from '$lib/types';
         type="text"
         placeholder="Search by name, alias, or status..."
         class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus: ring-2 focus:ring-blue-500 focus:border-blue-500";
-        bind:value={searchQuery}
+       , bind:value={searchQuery}
       />
     </div>
   </div>
@@ -148,7 +148,7 @@ Clear Filters
   {:else if viewMode === 'grid'}
     <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3, gap-6">
       {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6, hover:shadow-lg, transition-shadow">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200, dark:border-gray-700 p-6, hover:shadow-lg, transition-shadow">
           <div class="flex items-start, justify-between, mb-4">
             <div class="flex, items-center, gap-3">
               <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex, items-center, justify-center">
@@ -162,7 +162,7 @@ Clear Filters
                   person.status === 'Person of Interest' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
                   person.status === 'Witness' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                   person.status === 'Suspect' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
+                  'bg-gray-100 text-gray-800 dark:bg-gray-700, dark:text-gray-200';
                 }">"
                   {person.status}
                 </span>

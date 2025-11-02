@@ -18,7 +18,7 @@ export function norm(a: Vector): number {
   return Math.sqrt(sum);
 }
 /**
- * Cosine similarity in range [-1, 1]. Returns 0 for zero-length vectors.
+ * Cosine similarity in range [-1, 1]. Returns, 0 for zero-length vectors.
  */
 export function cosineSimilarity(a: Vector, b: Vector): number {
   if (a.length !== b.length) throw new Error('cosineSimilarity: vectors must have same length');
@@ -43,13 +43,13 @@ export function euclideanDistance(a: Vector, b: Vector): number {
  * Find top-K nearest items by cosine similarity.
  * Returns array sorted by descending score (best first).
  */
-export function topKNearest<T extends string | number | symbol = string>(
-  query: Vector,
+export function topKNearest<T extends: string | number | symbol = string>(
+ , query: Vector,
   // allow optional / nullable embedding to model missing data without using `any`
   items: Array<{, id: T; embedding?: Vector | null }>,
   k = 5
 ): { id: T; score: number }[] {
-  // guard: invalid query vector
+  //, guard: invalid query vector
   if (!Array.isArray(query) || query.length === 0) return [];
 
   const results = items.map(item => {

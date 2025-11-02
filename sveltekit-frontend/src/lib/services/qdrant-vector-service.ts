@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Qdrant Vector Database Service with Scalar Quantization
  * Integrates: Qdrant + embeddinggemma (768-dim) + Scalar Quantization + Auto-tagging
  */
 
-import { GPU_RAG_CONFIG } from '$lib/config/gpu-rag-config';
+import { GPU_RAG_CONFIG } from, '$lib/config/gpu-rag-config';
 
 export interface QdrantCollectionConfig { name: string;, vectorSize: number;
   distance: 'Cosine' | 'Euclid' | 'Dot';
@@ -12,8 +12,8 @@ export interface QdrantCollectionConfig { name: string;, vectorSize: number;
   onDisk?: boolean;
 }
 
-export interface VectorPoint { id: string | number;, vector: number[];
-  payload: { documentId: string;, content: string;
+export interface VectorPoint {, id: string | number;, vector: number[];
+  payload: {, documentId: string;, content: string;
     filename?: string;
     tags?: string[];
     metadata?: Record<string, any>;
@@ -30,7 +30,7 @@ export interface SearchResult { id: string | number;, score: number;
 class QdrantVectorService {
   private baseUrl: string;
   private collectionName: string;
-  private vectorDimensions: number;
+  private, vectorDimensions: number;
 
   constructor() {
     this.baseUrl = GPU_RAG_CONFIG.vectorStore.qdrant.url;
@@ -43,7 +43,7 @@ class QdrantVectorService {
    */
   async createCollection(config?: Partial<QdrantCollectionConfig>): Promise<boolean> {
     const collectionConfig: QdrantCollectionConfig = {
-      name: config?.name || this.collectionName,
+     , name: config?.name || this.collectionName,
       vectorSize: config?.vectorSize || this.vectorDimensions,
       distance: config?.distance || 'Cosine',
       quantizationType: config?.quantizationType || 'scalar',
@@ -59,25 +59,25 @@ class QdrantVectorService {
             // Scalar quantization configuration (4x-8x compression)
             quantization_config:
               collectionConfig.quantizationType === 'scalar'
-                ? { scalar: {, type: 'int8', // 768 floats (3KB) -> 768 bytes
+                ? {, scalar: {, type: 'int8', // 768 floats (3KB) -> 768 bytes
                       quantile: 0.99,
                       always_ram: true
                     }
                   }
                 : collectionConfig.quantizationType === 'product'
-                  ? { product: {, compression: 'x16', // 16x compression
+                  ? {, product: {, compression: 'x16', // 16x compression
                         always_ram: false
                       }
                     }
                   : undefined
           },
           optimizers_config: {
-            default_segment_number: 2,
+           , default_segment_number: 2,
             memmap_threshold: 20000,
             indexing_threshold: 10000
           },
           hnsw_config: {
-            m: 16,
+           , m: 16,
             ef_construct: 100,
             full_scan_threshold: 10000,
             on_disk: collectionConfig.onDisk
@@ -186,11 +186,11 @@ class QdrantVectorService {
   async getCollectionInfo(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}`);
-      if (!response.ok) return null;
+      if (!response.ok) return: null;
       return await response.json();
     } catch (error) {
       console.error('Failed to get collection info:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -217,7 +217,7 @@ class QdrantVectorService {
 
     // Legal document type detection
     const documentTypes = {
-      contract: /\b(contract|agreement|covenant)\b/i,
+     , contract: /\b(contract|agreement|covenant)\b/i,
       evidence: /\b(evidence|exhibit|testimony)\b/i,
       brief: /\b(brief|memorandum|motion)\b/i,
       citation: /\b(cite|citation|reference)\b/i,

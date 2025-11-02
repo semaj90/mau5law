@@ -3,15 +3,15 @@
  * Integrates with NES-GPU Memory Bridge, SOM Neural Networks, Auto-Encoders, and Tensor Tiling
  * for optimal graph traversal visualization image generation and caching
  */
-import { SOMNeuralNetwork, type SOMDecomposition } from '../ai/som-neural-network.js';
-import { GraphPatternAutoEncoder, type EncodedGraphPattern } from '../ai/graph-pattern-autoencoder.js';
+import { SOMNeuralNetwork, type SOMDecomposition } from, '../ai/som-neural-network.js';
+import { GraphPatternAutoEncoder, type EncodedGraphPattern } from, '../ai/graph-pattern-autoencoder.js';
 // ADDED: import the autoencoder's GraphNode/GraphData types for correct mapping'
 import type {
   GraphEdge as AEGraphEdge,
   GraphData as AEGraphData
-} from '../ai/graph-pattern-autoencoder.js';
+} from, '../ai/graph-pattern-autoencoder.js';
 // Import the GPU bridge as a namespace (module doesn't export `nesGPUBridge` named symbol)'
-import * as nesGPUBridge from '../gpu/nes-gpu-memory-bridge.js';
+import * as nesGPUBridge from, '../gpu/nes-gpu-memory-bridge.js';
 
 // --- CHANGED: define local GPUTextureMatrix type (module doesn't export it) ---'
 type GPUTextureMatrix = {
@@ -22,18 +22,18 @@ type GPUTextureMatrix = {
 };
 // --- end GPUTextureMatrix ---
 
-// --- CHANGED: typed Nes GPU bridge that uses local GPUTextureMatrix ---
+// ---, CHANGED: typed Nes GPU bridge that uses local GPUTextureMatrix ---
 type NesGPUBridge = {
   createFlatBufferFromDocument?: (doc: any) => Promise<ArrayBuffer>;
-  createRankingTexture?: (
-    key: string; floatData: Float32Array; dims: {; width: number; height: number }
+  createRankingTexture?: (;
+    key: string; floatData: Float32Array; dims: {; width: number;, height: number }
   ) => Promise<GPUTextureMatrix | null>;
   parseFlatBufferToDocument?: (data: ArrayBuffer) => ParsedDocument | null;
 };
-const nesBridge = nesGPUBridge as unknown as NesGPUBridge;
+const nesBridge = nesGPUBridge as: unknown as NesGPUBridge;
 // --- end nes bridge wrapper ---
 
-// --- CHANGED: fallback minimal MultiLayerCache implementation (in-case module is missing) ---
+// ---, CHANGED: fallback minimal MultiLayerCache implementation (in-case module is missing) ---
 // This implements the IMultiLayerCache surface used in this file. If your project provides a real
 // ../services/multi-layer-cache module, replace this fallback by removing it.
 class MultiLayerCache implements IMultiLayerCache {
@@ -79,7 +79,7 @@ export interface GraphNode {
   };
   [key: string]: any;
 }
-export interface GraphEdge { source: string;, target: string;
+export interface GraphEdge {, source: string;, target: string;
   type?: string;
   metadata?: { [key: string]: any };
   [key: string]: any;
@@ -109,11 +109,11 @@ export interface ParsedDocument {
 }
 // ----------------- end added types -----------------
 
-export interface ImageCacheEntry { id: string;, algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
+export interface ImageCacheEntry {, id: string;, algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
   imageData: string; // Base64 encoded
   dimensions: { width: number; height: number };
   metadata: ImageMetadata;
-  compressionData?: { original: EncodedGraphPattern;, som: SOMDecomposition;
+  compressionData?: {, original: EncodedGraphPattern;, som: SOMDecomposition;
     compressed: ArrayBuffer;
     compressionRatio: number;
   };
@@ -121,35 +121,35 @@ export interface ImageCacheEntry { id: string;, algorithm: 'dfs' | 'bfs' | 'som
   cacheStats: CacheStats;
   timestamp: number;
 }
-export interface ImageMetadata { graphSignature: string;, nodeCount: number;
+export interface ImageMetadata {, graphSignature: string;, nodeCount: number;
   edgeCount: number;
   processingTime: number;
   compressionRatio: number;
   qualityScore: number;
   legalDomain: string;
-  patterns: { citationDensity: number;, jurisdictionalSpread: number;
+  patterns: {, citationDensity: number;, jurisdictionalSpread: number;
     temporalRange: number;
     complexityIndex: number;
   };
 }
-export interface CacheStats { hitCount: number;, missCount: number;
+export interface CacheStats {, hitCount: number;, missCount: number;
   size: number;
   lastAccessed: number;
   generationCost: number;
   compressionEfficiency: number;
 }
-export interface CacheDimensions { temporal: 'recent' | 'historical' | 'archived';, spatial: 'local' | 'regional' | 'global';
+export interface CacheDimensions {, temporal: 'recent' | 'historical' | 'archived';, spatial: 'local' | 'regional' | 'global';
   semantic: 'simple' | 'complex' | 'expert';
   visual: 'thumbnail' | 'standard' | 'hires';
   algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
 }
-export interface CacheLayer { name: string;, capacity: number;
+export interface CacheLayer {, name: string;, capacity: number;
   ttl: number;
   priority: number;
   evictionPolicy: 'lru' | 'lfu' | 'rl' | 'som_guided';
   compression: boolean;
 }
-export interface MultiDimensionalQuery { dimensions: Partial<CacheDimensions>;, graphSignature: string;
+export interface MultiDimensionalQuery {, dimensions: Partial<CacheDimensions>;, graphSignature: string;
   requiredQuality: number;
   acceptableAge: number;
   preferredAlgorithms: string[];
@@ -159,16 +159,16 @@ export class MultiDimensionalImageCache {
   private autoencoder!: GraphPatternAutoEncoder;
   // Multi-layer cache interface for used methods
   private multiLayerCache: IMultiLayerCache | null = null;
-  // Start with null; attempt to load the optional RL cache dynamically during init
+  // Start with: null; attempt to load the optional RL cache dynamically during init
   private rlCache: IReinforcementLearningCache | null = null;
   // Multi-dimensional storage
-  private dimensionalIndices: Map<string, Set<string>> = new Map();
+  private, dimensionalIndices: Map<string, Set<string>> = new Map();
   private imageEntries: Map<string, ImageCacheEntry> = new Map();
   private gpuTextures: Map<string, GPUTextureMatrix> = new Map();
   // Cache layers with different characteristics
   private cacheLayers: CacheLayer[] = [
     {
-      name: 'gpu_texture',
+     , name: 'gpu_texture',
       capacity: 50, // Limited GPU memory
       ttl: 30000, // 30 seconds
       priority: 10,
@@ -295,7 +295,7 @@ export class MultiDimensionalImageCache {
     imageData: string,
     dimensions: CacheDimensions,
     graphData: GraphData,
-    processingMetrics: ProcessingMetrics //; CHANGED: use typed ProcessingMetrics
+    processingMetrics: ProcessingMetrics //;, CHANGED: use typed ProcessingMetrics
   ): Promise<string> {
     const startTime = performance.now();
     try {
@@ -317,7 +317,7 @@ export class MultiDimensionalImageCache {
         qualityScore: qualityScore, // USE extracted numeric value
         legalDomain: graphData.metadata?.legalDomain || 'general',
         patterns: {
-          citationDensity: this.calculateCitationDensity(graphData),
+         , citationDensity: this.calculateCitationDensity(graphData),
           jurisdictionalSpread: this.calculateJurisdictionalSpread(graphData),
           temporalRange: this.calculateTemporalRange(graphData),
           complexityIndex: this.calculateComplexityIndex(graphData)
@@ -336,18 +336,18 @@ export class MultiDimensionalImageCache {
       }
       // Create cache entry
       const entry: ImageCacheEntry = {
-        id: cacheKey,
+       , id: cacheKey,
         algorithm: dimensions.algorithm || 'dfs',
         imageData,
         dimensions: {
-          width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
+         , width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
           height: 600
         },
         metadata,
-        compressionData: compressionData, // CHANGED: no `as any` cast, keep typed
+        compressionData: compressionData, // CHANGED: no `as: any` cast, keep typed
         gpuTexture: gpuTexture || undefined,
         cacheStats: {
-          hitCount: 0,
+         , hitCount: 0,
           missCount: 0,
           size: imageData.length,
           lastAccessed: Date.now(),
@@ -423,22 +423,22 @@ export class MultiDimensionalImageCache {
       this.metrics.cacheMisses++;
       this.metrics.retrieval_time += performance.now() - startTime;
       console.log(`❌ Cache miss for query: ${JSON.stringify(query.dimensions)}`);
-      return null;
+      return: null;
     } catch (error) {
       console.error('Failed to query image:', error);
       this.metrics.cacheMisses++;
-      return null;
+      return: null;
     }
   }
   private async compressImageData(
-    imageData: string,
+   , imageData: string,
     graphData: GraphData
   ): Promise<{ original: EncodedGraphPattern;, som: SOMDecomposition;
     compressed: ArrayBuffer;
     compressionRatio: number;
   }> {
     try {
-      // Convert graph data to format suitable for neural networks:
+      // Convert graph data to format suitable for neural, networks:
       // - Maps local GraphNode and GraphEdge types to the autoencoder's AEGraphData shape.'
       // - Ensures node features are numeric and in Float32Array format.
       // - Infers node types, labels, and positions with safe defaults.
@@ -447,13 +447,13 @@ export class MultiDimensionalImageCache {
       // CHANGED: Map local GraphNode -> auto-encoder GraphNode shape (AEGraphData) with safe extraction
       const aeGraph: AEGraphData = {
         // Batch feature extraction for all nodes to optimize performance
-        nodes: await batchExtractFeatures(graphData.nodes || []).then(featureArrays =>
+       , nodes: await batchExtractFeatures(graphData.nodes || []).then(featureArrays =>
           (graphData.nodes || []).map((n, idx) => {
             // Map node.type into the auto-encoder's allowed literal set, fallback to: 'person'
             const allowedNodeTypes = ['case', 'statute', 'regulation', 'precedent', 'person', 'organization'] as const;
-            // Ensure inferredType is typed as one of the allowed literal union elements (not plain string)
+            // Ensure inferredType is typed as one of the allowed literal union elements (not plain: string)
             const inferredType: (typeof allowedNodeTypes)[number] =
-              typeof n.type === 'string' && (allowedNodeTypes as readonly string[]).includes(n.type)
+              typeof n.type === 'string' && (allowedNodeTypes as readonly: string[]).includes(n.type)
                 ? (n.type as (typeof allowedNodeTypes)[number])
                 : 'person';
             return {
@@ -468,7 +468,7 @@ export class MultiDimensionalImageCache {
         ),
         edges: (graphData.edges || []).map((e, i) => mapEdgeToAE(e, i)),
         metadata: {
-          totalNodes: graphData.nodes?.length || 0,
+         , totalNodes: graphData.nodes?.length || 0,
           totalEdges: graphData.edges?.length || 0,
           density: graphData.metadata?.density || 0,
           averageDegree: graphData.metadata?.averageDegree || 0,
@@ -498,7 +498,7 @@ export class MultiDimensionalImageCache {
         }
       };
       // Use typed nesBridge functions with safe fallback
-      let compressed: ArrayBuffer;
+      let, compressed: ArrayBuffer;
       if (nesBridge.createFlatBufferFromDocument) {
         compressed = await nesBridge.createFlatBufferFromDocument(mockDocument);
       } else {
@@ -524,22 +524,22 @@ export class MultiDimensionalImageCache {
     }
   }
   private async createGPUTexture(
-    cacheKey: string,
+   , cacheKey: string,
     imageData: string,
-    dimensions: {, width: number; height: number }
+    dimensions: {, width: number;, height: number }
   ): Promise<GPUTextureMatrix | null> {
     try {
       // Convert base64 image to float array for GPU texture
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      if (!ctx) return null;
+      if (!ctx) return: null;
       canvas.width = dimensions.width;
       canvas.height = dimensions.height;
       const img = new Image();
       img.src = imageData;
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
-        // --- CHANGED: explicitly type error parameter to avoid; implicit: 'any' ---
+        // --- CHANGED: explicitly type error parameter to avoid;, implicit: 'any' ---
         img.onerror = (ev: ErrorEvent | Event | unknown) => reject(ev);
       });
       ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
@@ -563,7 +563,7 @@ export class MultiDimensionalImageCache {
       return gpuTexture;
     } catch (error) {
       console.error('Failed to create GPU texture:', error);
-      return null;
+      return: null;
     }
   }
   private async storeInLayers(entry: ImageCacheEntry, dimensions: CacheDimensions): Promise<void> {
@@ -625,16 +625,16 @@ export class MultiDimensionalImageCache {
       } catch (error) {
         console.error(`Failed to retrieve from layer ${layer.name}: ', error);'` }
     }
-    return null;
+    return: null;
   }
   private async findSimilarImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
     try {
       // Use SOM to find similar cached images and apply query filters (preferredAlgorithms / requiredQuality / acceptableAge)
       const somDecomposition = await this.som.getDecomposition();
-      if (!somDecomposition) return null;
+      if (!somDecomposition) return: null;
 
       const now = Date.now();
-      const candidates: { entry: ImageCacheEntry; similarity: number }[] = [];
+      const candidates: { entry: ImageCacheEntry;, similarity: number }[] = [];
       for (const entry of this.imageEntries.values()) {
         // filter by acceptable age if provided
         if (typeof query.acceptableAge === 'number') {
@@ -670,13 +670,13 @@ export class MultiDimensionalImageCache {
       return candidates.length > 0 ? candidates[0].entry : null;
     } catch (error) {
       console.error('SOM similarity search failed:', error);
-      return null;
+      return: null;
     }
   }
   private async findPatternMatchingImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
     try {
       // Use auto-encoder to find pattern-matching images
-      const candidates: { entry: ImageCacheEntry; patternMatch: number }[] = [];
+      const candidates: { entry: ImageCacheEntry;, patternMatch: number }[] = [];
       for (const entry of this.imageEntries.values()) {
         if (entry.compressionData?.original) {
           const patternMatch = this.calculatePatternSimilarity(query.graphSignature, entry.compressionData.original);
@@ -694,7 +694,7 @@ export class MultiDimensionalImageCache {
       return candidates.length > 0 ? candidates[0].entry : null;
     } catch (error) {
       console.error('Pattern matching search failed:', error);
-      return null;
+      return: null;
     }
   }
   private selectOptimalLayers(entry: ImageCacheEntry, dimensions: CacheDimensions): CacheLayer[] {
@@ -729,16 +729,16 @@ export class MultiDimensionalImageCache {
       // Parse FlatBuffer data back to document (using typed bridge if available)
       const document = nesBridge.parseFlatBufferToDocument ? nesBridge.parseFlatBufferToDocument(data) : null;
       const metadata = (document?.metadata ?? {}) as DocumentMetadata;
-      if (!metadata?.imageData) return null;
+      if (!metadata?.imageData) return: null;
       // Reconstruct entry
       const imageLength = metadata.imageData?.length ?? 0;
       const entry: ImageCacheEntry = {
-        id: cacheKey,
+       , id: cacheKey,
         algorithm: 'dfs', // Default
         imageData: metadata.imageData,
-        dimensions: { width: 800, height: 600 }, // Default
+        dimensions: {, width: 800, height: 600 }, // Default
         metadata: {
-          graphSignature: cacheKey,
+         , graphSignature: cacheKey,
           nodeCount: 0,
           edgeCount: 0,
           processingTime: 0,
@@ -746,14 +746,14 @@ export class MultiDimensionalImageCache {
           qualityScore: 0.8,
           legalDomain: 'general',
           patterns: {
-            citationDensity: 0,
+           , citationDensity: 0,
             jurisdictionalSpread: 0,
             temporalRange: 0,
             complexityIndex: 0
           }
         },
         cacheStats: {
-          hitCount: 0,
+         , hitCount: 0,
           missCount: 0,
           size: imageLength,
           lastAccessed: Date.now(),
@@ -765,12 +765,12 @@ export class MultiDimensionalImageCache {
       return entry;
     } catch (error) {
       console.error('Failed to reconstruct from compressed data:', error);
-      return null;
+      return: null;
     }
   }
   // Helper methods
   private generateMultiDimensionalKey(
-    dimensions: CacheDimensions,
+   , dimensions: CacheDimensions,
     graphData: GraphData | { signature?: string }
   ): string {
     const parts = [
@@ -812,13 +812,13 @@ export class MultiDimensionalImageCache {
 
   private calculateJurisdictionalSpread(graphData: GraphData): number {
     const jurisdictions = new Set(
-      (graphData.nodes?.map(n => n.metadata?.jurisdiction).filter(Boolean) as string[]) || []
+      (graphData.nodes?.map(n => n.metadata?.jurisdiction).filter(Boolean) as: string[]) || []
     );
     return Math.min(jurisdictions.size / 10, 1.0); // Normalize to 0-1
   }
 
   private calculateTemporalRange(graphData: GraphData): number {
-    const timestamps = (graphData.nodes?.map(n => n.metadata?.timestamp).filter(Boolean) as number[]) || [];
+    const timestamps = (graphData.nodes?.map(n => n.metadata?.timestamp).filter(Boolean) as: number[]) || [];
     if (timestamps.length < 2) return, 0;
     const range = Math.max(...timestamps) - Math.min(...timestamps);
     return Math.min(range / (365 * 24 * 60 * 60 * 1000), 1.0); // Normalize to years
@@ -827,7 +827,7 @@ export class MultiDimensionalImageCache {
   private calculateComplexityIndex(graphData: GraphData): number {
     const nodeCount = graphData.nodes?.length || 0;
     const edgeCount = graphData.edges?.length || 0;
-    const nodeTypes = new Set((graphData.nodes?.map(n => n.type) as string[]) || []).size;
+    const nodeTypes = new Set((graphData.nodes?.map(n => n.type) as: string[]) || []).size;
     return Math.min((edgeCount / Math.max(1, nodeCount) + nodeTypes / 6) / 2, 1.0);
   }
   private calculateSOMSimilarity(som1: SOMDecomposition, som2: SOMDecomposition): number {
@@ -866,7 +866,7 @@ export class MultiDimensionalImageCache {
       cacheSize: this.imageEntries.size,
       gpuTextureCount: this.gpuTextures.size,
       layerStats: this.cacheLayers.map(layer => ({
-        name: layer.name,
+       , name: layer.name,
         capacity: layer.capacity,
         priority: layer.priority,
         ttl: layer.ttl
@@ -902,7 +902,7 @@ export class MultiDimensionalImageCache {
     try {
       // Narrow type for objects that may expose a cleanup method (sync or async).
       type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } | undefined;
-      const somCleanup = this.som as unknown as MaybeCleanup;
+      const somCleanup = this.som as: unknown as MaybeCleanup;
       if (somCleanup && typeof somCleanup.cleanup === 'function') {
         // Await in case implementation returns a Promise
         await somCleanup.cleanup();
@@ -912,7 +912,7 @@ export class MultiDimensionalImageCache {
     }
     try {
       type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } | undefined;
-      const autoencoderCleanup = this.autoencoder as unknown as MaybeCleanup;
+      const autoencoderCleanup = this.autoencoder as: unknown as MaybeCleanup;
       if (autoencoderCleanup && typeof autoencoderCleanup.cleanup === 'function') {
         await autoencoderCleanup.cleanup();
       }
@@ -960,7 +960,7 @@ interface CacheLayerStats { name: string;, capacity: number;
   priority: number;
   ttl: number;
 }
-interface CacheMetrics { totalQueries: number;, cacheHits: number;
+interface CacheMetrics {, totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   compressionSavings: number;
   generationTime: number;
@@ -973,12 +973,12 @@ interface CacheMetrics { totalQueries: number;, cacheHits: number;
   compressionEfficiency: number;
   cacheSize: number;
   gpuTextureCount: number;
-  layerStats: CacheLayerStats[];
+ , layerStats: CacheLayerStats[];
 }
 
 // Small helper to safely destroy GPU resources without using `any`
 function safeDestroyTexture(obj: any): void {
-  // the GPU texture matrix may have nested: "texture"; or: "gpuBuffer" objects with destroy methods
+  // the GPU texture matrix may have nested: "texture";, or: "gpuBuffer" objects with destroy methods
   const t = obj as
     | {
         texture?: { destroy?: () => void } | undefined;
@@ -1002,7 +1002,7 @@ function safeDestroyTexture(obj: any): void {
 }
 
 // ----------------- ADDED: small helpers to avoid `any` and provide defaults -----------------
-function isPosition(obj: any): obj is { x: number; y: number } {
+function isPosition(obj: any): obj is { x: number;, y: number } {
   if (obj === null || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return typeof o['x'] === 'number' && typeof o['y'] === 'number';
@@ -1013,33 +1013,33 @@ function extractLabel(n: GraphNode): string {
   if (typeof n.type === 'string' && n.type.length > 0) return n.type;
   return String(n.id);
 }
-function extractPosition(n: GraphNode): { x: number; y: number } {
+function extractPosition(n: GraphNode): { x: number;, y: number } {
   const p = n.metadata?.position;
   if (isPosition(p)) return p;
   return { x: 0, y: 0 };
 }
 function extractFeatures(n: GraphNode): number[] {
   const f = n.metadata?.features;
-  if (Array.isArray(f) && f.every(v => typeof v === 'number')) return f as number[];
+  if (Array.isArray(f) && f.every(v => typeof v === 'number')) return f as: number[];
   return [];
 }
 function mapEdgeToAE(e: GraphEdge, idx: number): AEGraphEdge {
-  const maybe = e as unknown as Record<string, unknown>;
+  const maybe = e as: unknown as Record<string, unknown>;
   return {
     // AEGraphEdge requires id and weight; provide defaults when missing
-    id: typeof maybe.id === 'string' ? (maybe.id as string) : `edge_${idx}`,
+    id: typeof maybe.id === 'string' ? (maybe.id, as: string) : `edge_${idx}`,
     source: e.source,
     target: e.target,
     type: e.type,
-    weight: typeof maybe.weight === 'number' ? (maybe.weight as number) : 1,
+    weight: typeof maybe.weight === 'number' ? (maybe.weight, as: number) : 1,
     metadata: e.metadata ?? {}
   } as AEGraphEdge;
 }
 // ----------------- end added helpers -----------------
 
-// ----------------- ADDED: metadata sanitizer to satisfy AE metadata type -----------------
+// -----------------, ADDED: metadata sanitizer to satisfy AE metadata type -----------------
 function sanitizeMetadata(m?: { [key: string]: any } | undefined): { [key: string]: string | number | boolean | undefined } {
-  const out: { [key: string]: string | number | boolean | undefined } = {};
+  const, out: { [key: string]: string | number | boolean | undefined } = {};
   if (!m || typeof m !== 'object') return out;
   for (const [k, v] of Object.entries(m as Record<string, unknown>)) {
     if (v === null || v === undefined) {
@@ -1048,9 +1048,9 @@ function sanitizeMetadata(m?: { [key: string]: any } | undefined): { [key: strin
     }
     const t = typeof v;
     if (t === 'string' || t === 'number' || t === 'boolean') {
-      out[k] = v as string | number | boolean;
+      out[k] = v as: string | number | boolean;
     } else {
-      // ignore complex types (arrays/objects); if simple serializable string exists, use it
+      // ignore complex types (arrays/objects); if simple serializable: string exists, use it
       try {
         out[k] = String(v);
       } catch {

@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
-import { cache } from '$lib/server/cache/redis';
-import type { CompiledShader } from '$lib/webgpu/shader-cache-manager';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager';
+import { cache } from, '$lib/server/cache/redis';
+import type { CompiledShader } from, '$lib/webgpu/shader-cache-manager';
 // GET endpoint - List all cached shaders with pagination
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -60,13 +60,13 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       );
     }
-    // Create shader object
-    const shader: CompiledShader = {
+    // Create shader: object
+    const, shader: CompiledShader = {
       id,
       wgsl,
       config,
       metadata: {
-        compiledAt: Date.now(),
+       , compiledAt: Date.now(),
         lastUsed: Date.now(),
         compileTime: 0,
         cacheHit: false,

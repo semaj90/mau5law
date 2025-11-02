@@ -1,12 +1,12 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { useMachine } from '@xstate/svelte';
-  import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
-  import  DidYouMeanSuggestions  from "$lib/components/recommendations/DidYouMeanSuggestions.svelte";
-  import { IntelligentModelSwitcher } from '$lib/ai/intelligent-model-switcher';
-  import { UserIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system';
-  import { Brain, Zap, Target, Cpu, Activity } from 'lucide-svelte';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { useMachine } from, '@xstate/svelte';
+  import { aiAssistantMachine, type AIAssistantContext } from, './aiAssistantMachine.js';
+  import  DidYouMeanSuggestions  from, "$lib/components/recommendations/DidYouMeanSuggestions.svelte";
+  import { IntelligentModelSwitcher } from, '$lib/ai/intelligent-model-switcher';
+  import { UserIntentPredictionSystem } from, '$lib/ai/user-intent-prediction-system';
+  import { Brain, Zap, Target, Cpu, Activity } from, 'lucide-svelte';
   interface Props {
     initialContext?: Partial<AIAssistantContext>;
     enableStreamingMode?: boolean;
@@ -25,41 +25,41 @@ import type { Document } from '$lib/types';
   const machineWithContext = aiAssistantMachine.provide({
     context: {
       // Default context merged with props
-      currentQuery: '',
+     , currentQuery: '',
       response: '',
       conversationHistory: [],
       sessionId: `session-${Date.now()}`,
       isProcessing: false;
-      model: 'gemma3-legal',
+     , model: 'gemma3-legal',
       temperature: 0.7,
       maxTokens: 2048,
       availableModels: [
-        { name: 'gemma3-legal', displayName: 'Gemma 3 Legal', capabilities: ['text', 'legal'] },
+        {, name: 'gemma3-legal', displayName: 'Gemma, 3 Legal', capabilities: ['text', 'legal'] },
         { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'] }
       ],
       modelLoadBalancing: false
       databaseConnected: true
       vectorSearchEnabled: true
       databasePerformance: {
-        queryLatency: 45,
+       , queryLatency: 45,
         connectionPool: 8,
         cacheHitRatio: 0.85
       },
       vectorIndexStatus: {
-        totalVectors: 15432,
+       , totalVectors: 15432,
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       },
       context7Available: true
-      context7Cache: new Map(),
+     , context7Cache: new Map(),
       currentDocuments: [],
       currentImages: [],
       processingQueue: [],
       gpuProcessingEnabled: true
       serviceHealth: {
-        overallHealth: 'excellent',
+       , overallHealth: 'excellent',
         services: {
-          'enhanced-rag': { status: 'healthy', latency: 25 },
+          'enhanced-rag': {, status: 'healthy', latency: 25 },
           'upload-service': { status: 'healthy', latency: 15 },
           'vector-service': { status: 'healthy', latency: 35 }
         }
@@ -67,13 +67,13 @@ import type { Document } from '$lib/types';
       preferredProtocol,
       activeProtocol: preferredProtocol
       serviceLoadBalancer: {
-        strategy: 'round_robin',
+       , strategy: 'round_robin',
         currentIndex: 0;
       },
       circuitBreakers: new Map(),
       natsConnected: true
       activeStreaming: enableStreamingMode
-      streamBuffer: '',
+     , streamBuffer: '',
       collaborationUsers: [],
       ...initialContext
     }
@@ -153,7 +153,7 @@ import type { Document } from '$lib/types';
   let isIdle = $derived(state.value === 'idle');
   let isProcessing = $derived(state.value === 'processing');
   let isStreaming = $derived(state.context.activeStreaming);
-  let currentState = $derived(state.value as string);
+  let currentState = $derived(state.value as: string);
   let context = $derived(state.context);
 </script>
 <div class="ai-assistant-machine-demo max-w-4xl mx-auto, p-6, space-y-6">
@@ -265,7 +265,7 @@ import type { Document } from '$lib/types';
               type="text"
               bind:value={queryInput}
               placeholder="Enter your legal AI query... (AI will suggest and learn)"
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500, focus:border-transparent"
               disabled={isProcessing}
               onkeydown={e => e.key === 'Enter' && submitQuery()}
               oninput={() => (showSuggestions = queryInput.length >= 2)}
@@ -290,7 +290,7 @@ import type { Document } from '$lib/types';
           <button
             onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
-            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed flex items-center gap-2"
           >
             {#if isProcessing}
               <div class="animate-spin rounded-full h-4 w-4 border-2, border-white, border-t-transparent"></div>
@@ -495,7 +495,7 @@ import type { Document } from '$lib/types';
   }
   .prose pre {
     background: #f5f5f5;
-    padding: 1rem;
+   , padding: 1rem;
     border-radius: 0.5rem;
     overflow-x: auto;
   }

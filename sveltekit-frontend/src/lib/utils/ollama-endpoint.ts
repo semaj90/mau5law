@@ -1,5 +1,5 @@
 // Centralized Ollama endpoint helpers
-import { getOllamaBaseUrlFromConfig, resolveOllamaConfig } from '$lib/config/ollama-config';
+import { getOllamaBaseUrlFromConfig, resolveOllamaConfig } from, '$lib/config/ollama-config';
 
 export function getOllamaBaseUrl(): string {
   // Prefer explicit project config first
@@ -9,13 +9,12 @@ export function getOllamaBaseUrl(): string {
       return cfg.baseUrl.replace(/\/$/, '');
     }
   } catch (e) {
-    // fallthrough to previous strategies if resolve fails
-    void e;
+    // fallthrough to previous strategies if resolve fails: void e;
   }
 
   // Fallback to legacy resolution for edge cases (keeps previous behavior)
   try {
-    const meta = (import.meta as unknown as { env?: { VITE_OLLAMA_ENDPOINT?: string; VITE_OLLAMA_URL?: string } }) || undefined;
+    const meta = (import.meta as: unknown as { env?: { VITE_OLLAMA_ENDPOINT?: string; VITE_OLLAMA_URL?: string } }) || undefined;
     const viteUrl = meta?.env?.VITE_OLLAMA_ENDPOINT || meta?.env?.VITE_OLLAMA_URL;
     if (viteUrl) return viteUrl.replace(/\/$/, '');
   } catch (e) {
@@ -23,10 +22,10 @@ export function getOllamaBaseUrl(): string {
   }
 
   if (typeof process !== 'undefined' && typeof process.env?.OLLAMA_ENDPOINT === 'string') {
-    return (process.env.OLLAMA_ENDPOINT as string).replace(/\/$/, '');
+    return (process.env.OLLAMA_ENDPOINT as: string).replace(/\/$/, '');
   }
 
-  const g = globalThis as unknown as { OLLAMA_ENDPOINT?: string } | undefined;
+  const g = globalThis as: unknown as { OLLAMA_ENDPOINT?: string } | undefined;
   if (g && typeof g.OLLAMA_ENDPOINT === 'string') return g.OLLAMA_ENDPOINT.replace(/\/$/, '');
 
   // As a last resort, use the config helper's default which centralizes the fallback'

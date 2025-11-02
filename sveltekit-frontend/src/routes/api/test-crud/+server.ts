@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /*
  * PostgreSQL CRUD Test Endpoint
  * Tests database connectivity and basic operations
  */
-import { json, error } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema-postgres';
-import type { RequestHandler } from './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import { users } from, '$lib/server/db/schema-postgres';
+import type { RequestHandler } from, './$types.js';
 
-// Helper: safely extract error info from unknown
+// Helper: safely extract error info, from: unknown
 function getErrorInfo(err: any) {
   if (err instanceof Error) {
     return { message: err.message, code: undefined, detail: undefined };
@@ -21,14 +21,14 @@ function getErrorInfo(err: any) {
       detail: typeof obj.detail === 'string' ? obj.detail : undefined
     };
   }
-  return { message: String(err), code: undefined, detail: undefined };
+  return {, message: String(err), code: undefined, detail: undefined };
 }
 
 // GET - Test database connection and list users
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     // Test database connection
-    const connectionTest = await db.execute('SELECT 1 as connection_test');
+    const connectionTest = await db.execute('SELECT, 1 as connection_test');
     // Get optional limit from query params
     const limit = parseInt(url.searchParams.get('limit') || '10');
     // Fetch sample users (without sensitive data)

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { memoryCache, getFromMemoryCache, setCache, checkApiKey, checkRateLimit, redisRateLimit } from '../../server/cache';
+import { describe, it, expect, beforeEach, vi } from, 'vitest';
+import { memoryCache, getFromMemoryCache, setCache, checkApiKey, checkRateLimit, redisRateLimit } from, '../../server/cache';
 
 describe('cache helpers (memory)', () => {
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe('cache helpers (memory)', () => {
 describe('auth and rate limit helpers', () => {
   it('checkApiKey allows when not configured', () => {
     const headers = new Headers();
-    const res = checkApiKey(headers as any);
+    const res = checkApiKey(headers as: any);
     expect(res.ok).toBe(true);
   });
 
@@ -41,7 +41,7 @@ describe('auth and rate limit helpers', () => {
   });
 });
 
-// Redis-backed limiter: mock getRedisClient to return null to force fallback
+// Redis-backed limiter: mock getRedisClient to, return: null to force fallback
 vi.mock('../../server/cache', async () => {
   const actual = await vi.importActual<any>('../../server/cache');
   return {

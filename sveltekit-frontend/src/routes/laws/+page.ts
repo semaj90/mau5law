@@ -1,5 +1,5 @@
-import type { PageLoad } from './$types.js';
-import { error } from '@sveltejs/kit';
+import type { PageLoad } from, './$types.js';
+import { error } from, '@sveltejs/kit';
 export const load: PageLoad = async ({ fetch, url, depends }) => {
   // Dependency tracking for cache invalidation
   depends('laws:quicklinks');
@@ -104,7 +104,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
       quickLinks,
       laws,
       meta: {
-        title: 'Legal Resources - Laws & Regulations',
+       , title: 'Legal Resources - Laws & Regulations',
         description: 'Browse California and state laws with AI-powered search and summaries'
       }
     };

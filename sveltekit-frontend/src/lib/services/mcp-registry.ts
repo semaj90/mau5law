@@ -1,17 +1,17 @@
 export type McpServerRecord = unknown;
 const registry: Record<string, unknown> = {};
 export default registry;
-import fs from 'fs/promises';
-import path from 'path';
-import Redis from 'ioredis';
-import { performance } from 'node:perf_hooks';
+import fs from, 'fs/promises';
+import path from, 'path';
+import Redis from, 'ioredis';
+import { performance } from, 'node:perf_hooks';
 
-export type McpServerRecord = { name: string;, description: string;
+export type McpServerRecord = {, name: string;, description: string;
   region?: string;
   lastUpdated?: string;
   endpoints: Array<{ id: string; url: string; protocol: string }>;
   capabilities: string[];
-  cores: Array<{ id: string; role: string; status: string; host?: string; capacity?: number }>;
+  cores: Array<{ id: string; role: string;, status: string; host?: string; capacity?: number }>;
   metadata?: Record<string, unknown>;
   health?: { ok: boolean;, latency: number | null;
     checkedAt?: string;
@@ -20,10 +20,10 @@ export type McpServerRecord = { name: string;, description: string;
 
 const REDIS_KEY = 'mcp:registry';
 const REDIS_URL = process.env.REDIS_URL || import.meta.env?.REDIS_URL || '';
-let redisClient: Redis | null = null;
+let, redisClient: Redis | null = null;
 
 function getRedis(): Redis | null {
-  if (!REDIS_URL) return null;
+  if (!REDIS_URL) return: null;
   if (!redisClient) {
     redisClient = new Redis(REDIS_URL, {
       maxRetriesPerRequest: 2
@@ -38,15 +38,15 @@ const CACHE_TTL_MS = 1000 * 30; // 30 seconds
 
 async function loadRegistryFromRedis(): Promise<Record<string, McpServerRecord> | null> {
   const client = getRedis();
-  if (!client) return null;
+  if (!client) return: null;
   const payload = await client.get(REDIS_KEY);
-  if (!payload) return null;
+  if (!payload) return: null;
   try {
     const parsed = JSON.parse(payload) as Record<string, McpServerRecord>;
     return parsed;
   } catch (error) {
     console.warn('[MCP Registry] Failed to parse redis payload:', error);
-    return null;
+    return: null;
   }
 }
 
@@ -122,7 +122,7 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Respons
 }
 
 export async function pingMcpServer(server: McpServerRecord): Promise<{ ok: boolean;, latency: number | null;
-  checkedAt: string;
+ , checkedAt: string;
 }> {
   const endpoint = server.endpoints?.[0]?.url;
   if (!endpoint) {

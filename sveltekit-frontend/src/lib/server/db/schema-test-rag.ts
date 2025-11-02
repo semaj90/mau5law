@@ -3,9 +3,9 @@
  * Tables: test_rag_documents, test_rag_embeddings
  * Purpose: Isolated RAG pipeline testing with pgvector + Qdrant + langextract + Ollama
  */
-import { pgTable, uuid, text, timestamp, jsonb, real, integer } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, jsonb, real, integer } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle-orm';
+import { relations } from, 'drizzle-orm';
 /**
  * Test RAG Documents Table
  * Stores document content, metadata, and legal analysis
@@ -26,7 +26,7 @@ export const testRagDocuments = pgTable('test_rag_documents', {
   confidence: real('confidence'),
   legalAnalysis: jsonb('legal_analysis').$type<{
     entities?: Array<{ type: string;, value: string;
-      offset: [number, number];
+     , offset: [number, number];
     }>;
     parties?: string[];
     dates?: string[];
@@ -68,7 +68,7 @@ export const testRagSearchSessions = pgTable('test_rag_search_sessions', {
     Array<{ documentId: string;, filename: string;
       similarity: number;
       score: number;
-      rank: number;
+     , rank: number;
     }>
   >(),
   searchType: text('search_type').notNull(), // 'semantic', 'text', 'hybrid'

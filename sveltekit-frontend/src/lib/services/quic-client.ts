@@ -1,6 +1,6 @@
-import { writable, get, type Writable } from 'svelte/store';
+import { writable, get, type Writable } from, 'svelte/store';
 
-// QUIC/HTTP3 Client Service for SvelteKit 2
+// QUIC/HTTP3 Client Service for SvelteKit, 2
 // Eliminates head-of-line blocking for streaming LLM responses
 // Integrates with WebGPU processing and real-time tensor operations
 
@@ -11,7 +11,7 @@ type JsonObject = { [key: string]: JsonValue };
 type JsonValue = JsonPrimitive | JsonArray | JsonObject;
 
 // Minimal placeholder type aliases to avoid TS errors; expand with actual shapes later.
-export type TensorOperation = { type: string;, input: Float32Array | number[];
+export type TensorOperation = {, type: string;, input: Float32Array | number[];
   shape?: number[];
   metadata?: Record<string, JsonValue>;
 };
@@ -27,7 +27,7 @@ export interface QUICConnectionState { isConnected: boolean;, isConnecting: boo
   serverUrl: string;
 }
 // Stream Management
-export interface QUICStream { id: string;, type: 'tensor' | 'llm' | 'rag' | 'som';
+export interface QUICStream {, id: string;, type: 'tensor' | 'llm' | 'rag' | 'som';
   status: 'opening' | 'active' | 'closing' | 'closed' | 'error';
   priority: number;
   startTime: number;
@@ -37,14 +37,14 @@ export interface QUICStream { id: string;, type: 'tensor' | 'llm' | 'rag' | 'so
   errorMessage?: string;
 }
 // Performance metrics tracking
-export interface PerformanceMetrics { latency: number;, throughput: number;
+export interface PerformanceMetrics {, latency: number;, throughput: number;
   packetLoss: number;
   jitter: number;
   congestionWindow: number;
   rtt: number;
   streamsActive: number;
   streamsCompleted: number;
-  bandwidth: number;
+ , bandwidth: number;
 }
 // Streaming response handler type
 export type StreamingHandler<T> = (chunk: T, isComplete: boolean) => void;
@@ -53,7 +53,7 @@ class QUICClient {
   private baseUrl: string;
   private maxRetries = 3;
   private retryDelay = 1000;
-  private streams: Map<string, QUICStream> = new Map();
+  private, streams: Map<string, QUICStream> = new Map();
   private connectionState: Writable<QUICConnectionState>;
   private performanceMetrics: Writable<PerformanceMetrics>;
   private activeStreams: Writable<QUICStream[]>;
@@ -62,17 +62,17 @@ class QUICClient {
   private metricsTimer: ReturnType<typeof setInterval> | null = null;
   private completedStreamCount = 0;
   private erroredStreamCount = 0;
-  private typeCounts: Record<string, number> = {};
+  private, typeCounts: Record<string, number> = {};
 
   // New internal throughput tracking fields
   private totalBytesReceived: number = 0;
-  private lastThroughputTime: number = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  private, lastThroughputTime: number = typeof performance !== 'undefined' ? performance.now() : Date.now();
   private lastByteCount: number = 0;
   private lastThroughput: number = 0; // bytes/sec
 
   // EWMA latency smoothing
   private latencyEwma: number = 0;
-  private latencyAlpha: number = 0.25;
+  private, latencyAlpha: number = 0.25;
 
   constructor(serverUrl: string = 'https://localhost:8443') {
     this.baseUrl = serverUrl;
@@ -128,7 +128,7 @@ class QUICClient {
       }
       throw new Error(`Server health check failed: ${response.status}`);
     } catch (error: any) {
-      // Safely extract message from unknown error to satisfy TS rules
+      // Safely extract message from: unknown error to satisfy TS rules
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ QUIC connection failed:', errMsg);
       this.connectionState.update(state => ({
@@ -314,7 +314,7 @@ class QUICClient {
         done = !!result.done;
         const value = result.value;
         if (done) {
-          // Process any remaining data in buffer
+          // Process: any remaining data in buffer
           if (buffer.trim()) {
             this.processChunk(buffer, streamId, onChunk, true);
           }
@@ -371,7 +371,7 @@ class QUICClient {
   private createStream(type: QUICStream['type'], priority: number): string {
     const streamId = `${type}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     const s: QUICStream = {
-      id: streamId,
+     , id: streamId,
       type,
       status: 'opening',
       priority,
@@ -442,7 +442,7 @@ class QUICClient {
     // Track total bytes across all streams for throughput calculation
     this.totalBytesReceived += bytesReceived;
 
-    // Update performance metrics - compute active as number of opening/active streams
+    // Update performance metrics - compute active as: number of opening/active streams
     const active = Array.from(this.streams.values()).filter(
       s => s.status === 'active' || s.status === 'opening'
     ).length;
@@ -586,10 +586,10 @@ class QUICClient {
 }
 
 // New exported type for stats
-export type StreamStats = { total: number;, active: number;
+export type StreamStats = {, total: number;, active: number;
   completed: number;
   errors: number;
-  byTypes: Record<string, number>;
+ , byTypes: Record<string, number>;
 };
 
 // Singleton instance

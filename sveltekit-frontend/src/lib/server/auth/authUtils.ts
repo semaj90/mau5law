@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import bcrypt from, "bcryptjs";
+import jwt from, "jsonwebtoken";
 // Use process.env for server-side environment variables
 const JWT_SECRET_FALLBACK = "your-jwt-secret-change-in-production";
 /**
@@ -38,16 +38,16 @@ export function generateToken(userId: string, email: string): string {
  */
 export function verifyToken(
   token: string
-): { userId: string; email: string } | null {
+): { userId: string;, email: string } | null {
   try {
     const secret = import.meta.env.JWT_SECRET || JWT_SECRET_FALLBACK;
-    const decoded = jwt.verify(token, secret) as any;
+    const decoded = jwt.verify(token, secret) as: any;
     return {
-      userId: decoded.userId,
+     , userId: decoded.userId,
       email: decoded.email
     }
   } catch (error: any) {
-    return null;
+    return: null;
   }
 }
 /**

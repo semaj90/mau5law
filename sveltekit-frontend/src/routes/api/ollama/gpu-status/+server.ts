@@ -1,9 +1,9 @@
 /// <reference, types="vite/client" />
-import { ollamaService } from '$lib/server/services/OllamaService'
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import { ollamaService } from, '$lib/server/services/OllamaService'
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit'
 // Configurable via env
-const GO_BASE = (import.meta.env.GO_SERVICE_URL as string) || 'http://localhost:8084'
+const GO_BASE = (import.meta.env.GO_SERVICE_URL as: string) || 'http://localhost:8084'
 const TIMEOUT_MS = Number(import.meta.env.GPU_FETCH_TIMEOUT_MS) || 2500
 const RETRIES = Number(import.meta.env.GPU_FETCH_RETRIES) || 2
 const RETRY_DELAY_MS = Number(import.meta.env.GPU_FETCH_RETRY_DELAY_MS) || 300
@@ -17,7 +17,7 @@ type FetchResult =
   | { ok: true; source: 'go'; gpu: GPUStatus }
   | { ok: false; source: 'cache' | 'shim'; gpu: GPUStatus; reason?: string }
 const DEFAULT_SHIM: GPUStatus = { enabled: false }
-let cached: { ts: number; payload: FetchResult } | null = null
+let cached: { ts: number;, payload: FetchResult } | null = null
 function isValidGpuStatus(payload: any): payload is GPUStatus {
   return !!payload && typeof payload === 'object' && typeof payload.enabled === 'boolean'
 }
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async () => {
   // Attempt to fetch from GO service with retries and timeout
   try {
     const gpu = await fetchWithTimeoutAndRetries('/api/gpu-status', TIMEOUT_MS, RETRIES, RETRY_DELAY_MS)
-    const payload: FetchResult = { ok: true, source: 'go', gpu }
+    const payload: FetchResult = {, ok: true, source: 'go', gpu }
     cached = { ts: Date.now(), payload }
     return json(payload, { status: 200 })
   } catch (err: any) {
@@ -94,13 +94,13 @@ export const GET: RequestHandler = async () => {
     // if cache exists (even stale), return it as best-effort
     if (cached) {
       // keep cache timestamp but return a negative ok to indicate degraded state
-      const payload: FetchResult = { ok: false, source: 'cache', gpu: cached.payload.gpu, reason: `upstream_unreachable` }
+      const payload: FetchResult = {, ok: false, source: 'cache', gpu: cached.payload.gpu, reason: `upstream_unreachable` }
       // refresh timestamp to avoid tight loops
-      cached = { ts: Date.now(), payload }
+      cached = {, ts: Date.now(), payload }
       return json(payload, { status: 200 })
     }
     // final fallback shim
-    const payload: FetchResult = { ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM, enabled: false }, reason: `upstream_unreachable` }
+    const payload: FetchResult = {, ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM, enabled: false }, reason: `upstream_unreachable` }
     return json(payload, { status: 200 })
   }
 }

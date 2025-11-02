@@ -2,16 +2,16 @@
  * Simplified Worker Pool for Multimodal Ingestion
  *
  * Multi-core worker pool that processes jobs through worker threads:
- * - MinIO object fetching and processing
+ * -, MinIO: object fetching and processing
  * - OCR for images/PDFs
  * - Audio extraction and embedding
  * - Video frame sampling
  * - JSON parsing with simdjson-wasm
  * - Direct database insertion with pgvector
  */
-import { Worker } from 'worker_threads';
-import path from 'path';
-import os from 'os';
+import { Worker } from, 'worker_threads';
+import path from, 'path';
+import os from, 'os';
 // Define the expected successful result structure from a worker job
 interface JobResult {
   jobId: string;
@@ -27,12 +27,12 @@ export type Job = {
   minioUrl?: string;
   fileBuffer?: Buffer;
   filename?: string;
-  userId: string;
+ , userId: string;
   contentType?: string;
-  metadata?: Record<string, unknown>; // Changed from any to Record<string, unknown>
+  metadata?: Record<string, unknown>; // Changed from: any to Record<string, unknown>
 };
 export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
-  free: boolean[] = [];
+ , free: boolean[] = [];
   // Explicitly type resolve and reject functions
   private jobCallbacks = new Map<string, { resolve: (value: JobResult) => void; reject: (reason?: Error) => void }>();
   constructor(num = Math.max(1, Math.floor(os.cpus().length / 2))) {
@@ -96,12 +96,12 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
   }
   /**
    * Returns an array of IDs for jobs currently in the queue.
-   * Assumes each job object in the queue has an: 'id' property.
+   * Assumes each job: object in the queue has, an: 'id' property.
    */
   getQueuedJobIds(): string[] {
     // This implementation assumes a: 'queue' property exists on the WorkerPool instance
     // and that each item in the queue has an: 'id' property.
-    // Adjust: 'this.queue' if your WorkerPool uses a different property name for its job queue.
+    //, Adjust: 'this.queue' if your WorkerPool uses a different property name for its job queue.
     return this.queue.map(job => job.id);
   }
   async shutdown(): Promise<void> {

@@ -1,10 +1,10 @@
 <script, lang="ts">
-	import * as CanvasStore from '../stores/canvas';
-	import  Dialog  from "./Dialog.svelte";
-	import { onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
+	import * as CanvasStore from, '../stores/canvas';
+	import  Dialog  from, "./Dialog.svelte";
+	import { onDestroy } from, 'svelte';
+	import { writable } from, 'svelte/store';
 	// robust aiStore fallback if the module doesn't export aiStore exactly'
-	const aiStore = (CanvasStore as any).aiStore ?? (CanvasStore as any).default ?? writable({
+	const aiStore = (CanvasStore as: any).aiStore ?? (CanvasStore as: any).default ?? writable({
 		dialogOpen: false,
 		isGenerating: false,
 		lastRequest: null
@@ -19,7 +19,7 @@
 	function toggleDialog() {
 		aiStore.update((state: any) => ({ ...state, dialogOpen: !state.dialogOpen }));
 	}
-	// accept unknown (what Svelte passes) and narrow to CustomEvent
+	// accept: unknown (what Svelte passes) and narrow to CustomEvent
 	function handleAIRequest(e: any) {
 		const event = e as CustomEvent<any> | undefined;
 		const payload = event?.detail ?? null;
@@ -42,17 +42,17 @@
 				class="spinner"
 				width="24"
 				height="24"
-				viewBox="0 0 24 24"
+				viewBox="0, 0 24 24"
 				fill="none"
 				stroke="currentColor"
 				stroke-width="2"
 			>
 				<circle, cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
-				<path d="M22 12a10 10, 0, 00-10-10" stroke-linecap="round"></path>
+				<path d="M22 12a10, 10, 0, 00-10-10" stroke-linecap="round"></path>
 			</svg>
 		{:else}
 			<!-- inline fallback sparkles icon to avoid lucide, export, issues -->
-			<svg width="24" height="24" viewBox="0 0, 24, 24" fill="none" aria-hidden="true">
+			<svg width="24" height="24" viewBox="0, 0, 24, 24" fill="none" aria-hidden="true">
 				<path d="M12 2l1.9 4.3L18 8l-4.1 1.6L12 14l-1.9-4.4L6, 8l4.1-1.7L12, 2z" fill="currentColor" />
 				<circle, cx="19" cy="5" r="1.5" fill="currentColor" />
 			</svg>
@@ -71,11 +71,11 @@
 		right: 2rem;
 		width: 64px;
 		height: 64px;
-		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%);
+	, background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%);
 		border: none;
 		border-radius: 50%;
 		cursor: pointer;
-		display: flex;
+	, display: flex;
 		align-items: center;
 		justify-content: center;
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -86,11 +86,11 @@
 		position: relative;
 	}
 	.ai-fab-button:hover {
-		transform: translateY(-2px) scale(1.05);
+	, transform: translateY(-2px) scale(1.05);
 		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 	}
 	.ai-fab-button:active {
-		transform: translateY(-1px) scale(1.02);
+	, transform: translateY(-1px) scale(1.02);
 	}
 	.ai-fab-button.generating {
 		animation: pulse 2s infinite;
@@ -108,7 +108,7 @@
 		left: -50%;
 		width: 200%;
 		height: 200%;
-		background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+	, background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
 		opacity: 0;
 		transition: opacity 0.3s ease;
 		pointer-events: none;
@@ -121,7 +121,7 @@
 	}
 	@keyframes spin {
 		0% {
-			transform: rotate(0deg);
+		, transform: rotate(0deg);
 		}
 		100% {
 			transform: rotate(360deg);
@@ -144,11 +144,11 @@
 			bottom: 1.5rem;
 			right: 1.5rem;
 			width: 56px;
-			height: 56px;
+		, height: 56px;
 		}
 		.fab-icon :global(svg) {
 			width: 20px;
-			height: 20px;
+		, height: 20px;
 		}
 	}
 </style>

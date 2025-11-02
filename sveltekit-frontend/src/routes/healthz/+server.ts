@@ -1,12 +1,12 @@
-import { json } from '@sveltejs/kit';
-import { redis } from '$lib/server/redis';
+import { json } from, '@sveltejs/kit';
+import { redis } from, '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();
   let redisOk = $state<boolean>(false);
   let latencyMs: number | null = null;
   try {
     const pingStart = Date.now();
-    await (redis as any).ping();
+    await (redis as: any).ping();
     latencyMs = Date.now() - pingStart;
     redisOk = true;
   } catch (e: any) {

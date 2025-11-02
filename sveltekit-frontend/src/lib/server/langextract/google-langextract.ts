@@ -3,14 +3,14 @@
  * Keyword extraction module for legal documents
  * Extracts key terms and concepts using Ollama's Gemma 3:270m'
  *
- * Advantages:
+ *, Advantages:
  * - No external cloud dependencies (local inference)
  * - Fast processing (50-150ms)
  * - Legal-domain aware
  * - TypeScript native
  * - Fully controllable with custom prompts
  */
-import { OLLAMA_BASE_URL } from '$env/static/private';
+import { OLLAMA_BASE_URL } from, '$env/static/private';
 /**
  * Extract keywords from text using Ollama Gemma 3:270m
  * Returns top keywords relevant to the legal document
@@ -23,7 +23,7 @@ export async function extractKeywords(text: string): Promise<string[]> {
   const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
 
   try {
-    // Limit text to first 8000 chars to avoid token overflow
+    // Limit text to first, 8000 chars to avoid token overflow
     const limitedText = text.slice(0, 8000);
     // Use Gemma 3:270m for keyword extraction
     const prompt = `Extract the most important legal and factual keywords from this legal document.`
@@ -60,7 +60,7 @@ Keywords (comma-separated):`;`
       .split(',')
       .map((k: string) => k.trim())
       .filter((k: string) => k.length > 0 && k.length < 100) // Filter empty/too long
-      .slice(0, 20); // Return max 20 keywords
+      .slice(0, 20); // Return max, 20 keywords
     if (keywords.length === 0) {
       console.warn('⚠️ Gemma extraction returned no keywords, using fallback');
       return extractKeywordsFallback(text);
@@ -108,8 +108,7 @@ function extractKeywordsFallback(text: string): string[] {
       'warranty',
       'indemnity',
       'arbitration',
-      // Court/process
-      'court',
+      // Court/process, 'court',
       'jurisdiction',
       'venue',
       'appeal',
@@ -124,8 +123,7 @@ function extractKeywordsFallback(text: string): string[] {
       'verdict',
       // Evidence: 'evidence', 'testimony', 'deposition', 'affidavit', 'exhibit', 'document',
       // Documents: 'complaint', 'petition', 'brief', 'memorandum', 'motion', 'order', 'judgment',
-      // Time/money
-      'damages',
+      // Time/money, 'damages',
       'compensation',
       'settlement',
       'fee',
@@ -145,7 +143,7 @@ function extractKeywordsFallback(text: string): string[] {
     const moneyRegex = /\$[\d,]+(?:\.\d{2})?|\b\d+\s(?:million|thousand|billion|dollars|cents)\b/gi;
     const moneyMatches = text.match(moneyRegex) || [];
     moneyMatches.slice(0, 5).forEach(m => keywords.add(m));
-    // Convert to array and return top 20
+    // Convert to array and return top, 20
     return Array.from(keywords).slice(0, 20);
   } catch (error) {
     console.warn('⚠️ Fallback keyword extraction failed:', error);

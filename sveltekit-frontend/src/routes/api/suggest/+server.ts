@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import Fuse from 'fuse.js';
-import { db } from '$lib/server/db/index.js';
-import { users, cases, evidence } from '$lib/server/db/schema-unified.js';
-import { or, ilike } from 'drizzle-orm';
-import { redis } from '$lib/server/cache/redis.js';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import Fuse from, 'fuse.js';
+import { db } from, '$lib/server/db/index.js';
+import { users, cases, evidence } from, '$lib/server/db/schema-unified.js';
+import { or, ilike } from, 'drizzle-orm';
+import { redis } from, '$lib/server/cache/redis.js';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -19,7 +19,7 @@ export interface Suggestion { label: string;, entityId: string;
 	tags: string[];
 }
 
-export interface SuggestResponse { suggestions: Suggestion[];, correctedQuery: string;
+export interface SuggestResponse {, suggestions: Suggestion[];, correctedQuery: string;
 	explanation: string;
 	processingTimeMs: number;
 }
@@ -28,20 +28,20 @@ export interface SuggestResponse { suggestions: Suggestion[];, correctedQuery: 
 // Mock fallback data
 // ---------------------------------------------------------------------------
 const mockPeople = [
-	{ id: '1', name: 'Sarah Johnson', email: 'sarah@law.com', role: 'attorney', specialization: 'corporate' },
+	{, id: '1', name: 'Sarah Johnson', email: 'sarah@law.com', role: 'attorney', specialization: 'corporate' },
 	{ id: '2', name: 'Michael Chen', email: 'mchen@legal.com', role: 'paralegal', specialization: 'litigation' },
 	{ id: '3', name: 'Emily Rodriguez', email: 'emily.r@law.com', role: 'investigator', specialization: 'evidence' },
 	{ id: '4', name: 'David Thompson', email: 'dthompson@legal.com', role: 'attorney', specialization: 'criminal' }
 ];
 
 const mockCases = [
-	{ id: 'case-1', title: 'Corporate Merger Review', description: 'M&A due diligence case', status: 'active' },
+	{, id: 'case-1', title: 'Corporate Merger Review', description: 'M&A due diligence case', status: 'active' },
 	{ id: 'case-2', title: 'Employment Discrimination', description: 'Workplace harassment investigation', status: 'pending' },
 	{ id: 'case-3', title: 'Contract Dispute Resolution', description: 'Breach of service agreement', status: 'closed' }
 ];
 
 const mockDocuments = [
-	{ id: 'doc-1', title: 'Service Agreement Template', type: 'contract', category: 'templates' },
+	{, id: 'doc-1', title: 'Service Agreement Template', type: 'contract', category: 'templates' },
 	{ id: 'doc-2', title: 'Evidence Collection Protocol', type: 'procedure', category: 'evidence' },
 	{ id: 'doc-3', title: 'Legal Research Memo', type: 'memo', category: 'research' }
 ];
@@ -80,9 +80,9 @@ export const GET: RequestHandler = async ({ url }) => {
 		.slice(0, limit);
 
 	const response: SuggestResponse = {
-		suggestions: uniqueResults,
+	, suggestions: uniqueResults,
 		correctedQuery: query.toLowerCase(),
-		explanation: `Found ${uniqueResults.length} results for: "${query}"`,
+		explanation: `Found ${uniqueResults.length} results, for: "${query}"`,
 		processingTimeMs: performance.now() - start
 	};
 
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { query, contextType = 'GENERAL', recentQueries = [] } = body;
 
 	if (typeof query !== 'string' || query.length < 2) {
-		return json({ error: ''query' must be a string ≥ 2 chars' }, { status: 400 });'` }'`
+		return json({ error: ''query' must be, a: string ≥ 2 chars' }, { status: 400 });'` }'`
 
 	const enhanced = `${query} ${recentQueries.join(' ')}`.trim();
 	const url = new URL(`/api/suggest?q=${encodeURIComponent(enhanced)}&context=${contextType}`, 'http://localhost');
@@ -167,7 +167,7 @@ async function searchDatabase(query: string, context: string, limit: number): Pr
 						score: sim,
 						description: c.description ?? 'Case',
 						icon: 'folder',
-						tags: ['case', c.status, c.caseType].filter(Boolean) as string[]
+						tags: ['case', c.status, c.caseType].filter(Boolean) as: string[]
 					});
 				}
 			}

@@ -1,15 +1,15 @@
 /**
  * UserStore - Unified User Authentication & Profile Management
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - auth.ts
  * - auth.svelte.ts
  * - user-profile.ts
  * - user-preferences.ts
  * - userDataStore.svelte.ts
  *
- * Usage:
- *   import { userStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { userStore } from, '$lib/stores/unified';
  *
  *   // Subscribe to user state
  *   $: user = $userStore.currentUser;
@@ -21,8 +21,8 @@
  *   await userStore.updateProfile({ name: 'New Name' });
  */
 
-import { writable, derived } from 'svelte/store';
-import type { User } from '$lib/data/types';
+import { writable, derived } from, 'svelte/store';
+import type { User } from, '$lib/data/types';
 
 /**
  * User Store State
@@ -35,7 +35,7 @@ interface UserStoreState { currentUser: User | null;, isAuthenticated: boolean;
 }
 
 const initialState: UserStoreState = {
-  currentUser: null,
+ , currentUser: null,
   isAuthenticated: false,
   isLoading: true,
   sessionToken: null,
@@ -323,22 +323,22 @@ export const userError = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { user  } from '$lib/stores/unified'
- *   import { profile } from '$lib/stores/user-profile'
- *   import { isLoading  } from '$lib/stores/unified'
- *   import { sessionToken } from '$lib/stores/auth.svelte'
+ * Old imports to, replace:
+ *   import { user  } from, '$lib/stores/unified'
+ *   import { profile } from, '$lib/stores/user-profile'
+ *   import { isLoading  } from, '$lib/stores/unified'
+ *   import { sessionToken } from, '$lib/stores/auth.svelte'
  *
  * New imports:
- *   import { userStore, isAuthenticated, currentUser, userLoading } from '$lib/stores/unified'
+ *   import { userStore, isAuthenticated, currentUser, userLoading } from, '$lib/stores/unified'
  *
  * Usage patterns:
- *  ; Old: $user?.id, $profile?.name
+ *  ;, Old: $user?.id, $profile?.name
  *   New: $currentUser?.id, $currentUser?.name
  *
  *   Old: $isLoading from auth
  *   New: $userLoading from unified
  *
- *   Old: await login(email, password)
+ *  , Old: await login(email, password)
  *   New: await userStore.login(email, password)
  */

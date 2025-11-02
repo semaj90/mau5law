@@ -1,9 +1,9 @@
 /**
  * TensorRT-LLM QUIC Client for Sub-1ms Legal AI Processing
- * Optimized for Svelte 5 with HTTP/3, streaming, and connection pooling
+ * Optimized for Svelte, 5 with HTTP/3, streaming, and connection pooling
  */
-import { browser } from '$app/environment';
-import { writable, derived } from 'svelte/store';
+import { browser } from, '$app/environment';
+import { writable, derived } from, 'svelte/store';
 // Performance monitoring
 export const performanceMetrics = writable({
 	requestCount: 0,
@@ -39,9 +39,9 @@ export interface LegalAIRequest {
   legalDomain?: string;
 }
 
-export interface LegalAIResponse { text: string;, tokens: number;
+export interface LegalAIResponse {, text: string;, tokens: number;
   latencyMs: number;
-  throughputTps: number;
+ , throughputTps: number;
   sessionId?: string;
   metadata?: Record<string, unknown>;
   isStreaming?: boolean;
@@ -55,7 +55,7 @@ export interface StreamingChunk { delta: string;, tokenIndex: number;
 }
 class TensorRTQuicClient {
   private baseUrl: string;
-  private connectionPool: Map<string, Connection> = new Map();
+  private, connectionPool: Map<string, Connection> = new Map();
   private maxConnections = 10;
   private metrics = {
     requests: 0,
@@ -115,7 +115,7 @@ class TensorRTQuicClient {
           'X-Request-ID': crypto.randomUUID(),
           'Connection': 'keep-alive' },'`'`
         body: JSON.stringify({
-          prompt: request.prompt,
+         , prompt: request.prompt,
           max_tokens: request.maxTokens || 512,
           temperature: request.temperature || 0.1,
           top_k: request.topK || 40,
@@ -207,7 +207,7 @@ class TensorRTQuicClient {
                 };
                 // Update real-time stream store
                 responseStream.update(current => ({
-                  text: (current?.text || '') + delta,
+                 , text: (current?.text || '') + delta,
                   tokens: tokenIndex,
                   latencyMs: performance.now() - startTime,
                   throughputTps: tokenIndex / ((performance.now() - startTime) / 1000),
@@ -241,7 +241,7 @@ class TensorRTQuicClient {
           'Content-Type': 'application/json',
           'X-Batch-Size': requests.length.toString()
         },
-        body: JSON.stringify({ requests: requests.map(req => ({, prompt: req.prompt,
+        body: JSON.stringify({, requests: requests.map(req => ({, prompt: req.prompt,
             max_tokens: req.maxTokens || 512,
             temperature: req.temperature || 0.1,
             top_k: req.topK || 40,
@@ -322,7 +322,7 @@ class TensorRTQuicClient {
       throughput,
       errorRate,
       connectionPool: {
-        active: this.connectionPool.size,
+       , active: this.connectionPool.size,
         idle: 0,
         total: this.connectionPool.size
       }
@@ -350,7 +350,7 @@ class TensorRTQuicClient {
           connected: false
         }));
       }
-    }, 10000); // Every 10 seconds
+    }, 10000); // Every, 10 seconds
   }
   /**
    * Generate unique session ID
@@ -361,7 +361,7 @@ class TensorRTQuicClient {
 }
 interface Connection { id: string;, created: number;
   lastUsed: number;
-  requests: number;
+ , requests: number;
 }
 // Singleton client instance
 export const tensorrtClient = new TensorRTQuicClient();
@@ -369,7 +369,7 @@ export const tensorrtClient = new TensorRTQuicClient();
 export const isConnected = derived(connectionStatus, $status => $status.connected);
 export const currentLatency = derived(performanceMetrics, $metrics => $metrics.avgLatency);
 export const requestThroughput = derived(performanceMetrics, $metrics => $metrics.throughput);
-// Utility functions for Svelte 5 components
+// Utility functions for Svelte, 5 components
 export function createLegalCompletion() {
   const loading = writable(false);
   const error = writable<string | null>(null);

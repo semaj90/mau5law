@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { optimizedQdrantService } from, '$lib/services/optimized-qdrant-service';
 
 // --- NEW: Stronger local types to satisfy TypeScript / lint rules ---
 type HealthInfo = {
@@ -11,7 +11,7 @@ type HealthInfo = {
   [key: string]: any;
 };
 
-export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
+export interface TestResult {, test: string;, status: 'success' | 'error' | 'warning';
   data?: any;
   error?: string;
   duration?: number;
@@ -25,7 +25,7 @@ interface QdrantSearchResult { results: any[];, stats: {
   [key: string]: any;
 }
 
-interface UpsertVector { id: string;, vector: number[];
+interface UpsertVector {, id: string;, vector: number[];
   payload?: Record<string, unknown>;
 }
 
@@ -47,12 +47,12 @@ interface OptimizedQdrantServiceType {
 }
 
 // Create a typed alias for calls in this module
-const qdrant: OptimizedQdrantServiceType = optimizedQdrantService as unknown as OptimizedQdrantServiceType;
+const qdrant: OptimizedQdrantServiceType = optimizedQdrantService as: unknown as OptimizedQdrantServiceType;
 
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
 
-// NOTE: If you; encounter: "Property 'methodName' does not exist on; type: 'OptimizedQdrantService'" errors,
+// NOTE: If you;, encounter: "Property, 'methodName' does not exist on; type: 'OptimizedQdrantService'" errors,
 // it means the type definition for `optimizedQdrantService` in `$lib/services/optimized-qdrant-service.ts`
 // needs to be updated to include the missing methods (e.g., healthCheck, searchVectors, upsertVectors, syncFromPostgreSQL).
 // This fix cannot be applied from this file.
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
   const results: TestResult[] = [];
   try {
-    // Test 1: Health Check
+    // Test, 1: Health Check
     if (testType === 'all' || testType === 'health') {
       const startTime = Date.now();
       try {
@@ -137,10 +137,10 @@ export const GET: RequestHandler = async ({ url }) => {
       try {
         const sampleVectors: UpsertVector[] = [
           {
-            id: `test_${Date.now()}_1`,
-            vector: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
+           , id: `test_${Date.now()}_1`,
+            vector: Array.from({, length: 768 }, () => Math.random() * 2 - 1),
             payload: {
-              type: 'test',
+             , type: 'test',
               title: 'Test Document 1',
               content: 'Sample legal document for testing vector operations',
               created_at: new Date().toISOString()
@@ -148,9 +148,9 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           {
             id: `test_${Date.now()}_2`,
-            vector: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
+            vector: Array.from({, length: 768 }, () => Math.random() * 2 - 1),
             payload: {
-              type: 'test',
+             , type: 'test',
               title: 'Test Document 2',
               content: 'Another sample legal document for testing',
               created_at: new Date().toISOString()
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Simulate multiple search operations to test caching
         const searchPromises = Array.from({ length: 3 }, async () => {
           // Removed unused: 'i' parameter
-          const vector = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
+          const vector = Array.from({, length: 768 }, () => Math.random() * 2 - 1);
           return await qdrant.searchVectors(vector, {
             limit: 3,
             useCache: true,
@@ -249,14 +249,14 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'optimized_qdrant_service',
       tests: results,
       summary: {
-        total: results.length,
+       , total: results.length,
         passed: results.filter(item => item.status === 'success'), // Corrected filter logic
         failed: results.filter(item => item.status === 'error'), // Corrected filter logic
         warnings: results.filter(item => item.status === 'warning'), // Corrected filter logic
         avg_duration: Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length)
       },
       configuration: {
-        vector_dimensions: 384,
+       , vector_dimensions: 384,
         embedding_model: 'embeddinggemma:latest',
         som_clustering: 'enabled',
         nes_cache: 'enabled',
@@ -277,13 +277,13 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // POST handler: use typed sync call
-export const POST: RequestHandler = async ({ request, url }) => {
+export const, POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action');
   if (action === 'sync') {
     try {
       const body = await request.json();
       const options: SyncOptions = {
-        fullSync: body.fullSync || false,
+       , fullSync: body.fullSync || false,
         batchSize: body.batchSize || 50,
         sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined
       };
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   return json(
     {
       success: false,
-      error: 'Invalid action. Supported; actions: sync',
+      error: 'Invalid action. Supported;, actions: sync',
       timestamp: new Date().toISOString()
     },
     { status: 400 }

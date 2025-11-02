@@ -1,6 +1,6 @@
-import { db } from './client.js'; // Changed import path for db
-import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.ts'; // Import specific schema objects
-import { sql, type PgTable } from 'drizzle-orm'; // Added type PgTable
+import { db } from, './client.js'; // Changed import path for db
+import { legalDocuments, userAiQueries, embeddingCache } from, './schema-postgres.ts'; // Import specific schema objects
+import { sql, type PgTable } from, 'drizzle-orm'; // Added type PgTable
 // GRPMO imports
 interface GRPMOConfig { hotCacheThreshold: number;, warmCacheThreshold: number;
   coldCacheThreshold: number;
@@ -8,25 +8,25 @@ interface GRPMOConfig { hotCacheThreshold: number;, warmCacheThreshold: number;
   predictiveWindowMs: number;
   glyphCompressionRatio: number;
 }
-interface ExtendedThinkingStage { name: string;, duration: number;
+interface ExtendedThinkingStage {, name: string;, duration: number;
   cacheLayer: 'hot' | 'warm' | 'cold';
   confidence: number;
   glyphData?: string;
 }
-interface PPOState { stateVector: number[];, actionHistory: string[];
+interface PPOState {, stateVector: number[];, actionHistory: string[];
   rewardSignal: number;
   policyGradient: number[];
   valueFunction: number;
 }
 const defaultGRPMOConfig: GRPMOConfig = {
-  hotCacheThreshold: 100,
+ , hotCacheThreshold: 100,
   warmCacheThreshold: 1000,
   coldCacheThreshold: 5000,
   reinforcementLearningRate: 0.01,
   predictiveWindowMs: 30000,
   glyphCompressionRatio: 50
 };
-// New: typed metadata and DB row helpers
+//, New: typed metadata and DB row helpers
 type Metadata = { keywords?: string[]; topics?: string[]; [key: string]: any };
 type DBRow = Record<string, unknown>;
 type PPOContext = { query?: string; userId?: string; caseId?: string; embedding?: number[]; [k: string]: any };
@@ -43,13 +43,13 @@ interface SimilarityResult {
   extendedThinkingStages?: ExtendedThinkingStage[];
   reinforcementContext?: PPOState;
 }
-// small helper to stringify unknown errors
+// small helper to, stringify: unknown errors
 function stringifyError(e: any): string {
   if (e instanceof Error) return e.message;
   try {
     return String(e);
   } catch {
-    return 'unknown error';
+    return, 'unknown error';
   }
 }
 // Generate a sample embedding (replace with actual AI model in production)
@@ -77,7 +77,7 @@ export async function searchSimilarDocuments(
         keywords,
         topics
       FROM ${legalDocuments}
-      WHERE 1 - (embedding <=> ${vectorString}::vector) > ${similarityThreshold}
+      WHERE, 1 - (embedding <=> ${vectorString}::vector) > ${similarityThreshold}
       ORDER BY embedding <=> ${vectorString}::vector
       LIMIT ${limit}
     `)) as DBRow[];`
@@ -87,14 +87,14 @@ export async function searchSimilarDocuments(
       const content = typeof row.content === 'string' ? row.content : '';
       const similarity = Number(row.similarity ?? 0);
       const keywords = Array.isArray(row.keywords)
-        ? (row.keywords as string[])
+        ? (row.keywords as: string[])
         : typeof row.keywords === 'string'
-          ? [row.keywords as string]
+          ? [row.keywords as: string]
           : undefined;
       const topics = Array.isArray(row.topics)
-        ? (row.topics as string[])
+        ? (row.topics as: string[])
         : typeof row.topics === 'string'
-          ? [row.topics as string]
+          ? [row.topics as: string]
           : undefined;
       return {
         id,
@@ -131,8 +131,8 @@ async function fallbackTextSearch(_queryEmbedding: number[], limit: number): Pro
     const id = doc.id !== undefined ? String(doc.id) : '';
     const title = typeof doc.title === 'string' ? doc.title : undefined;
     const content = typeof doc.content === 'string' ? doc.content : '';
-    const keywords = Array.isArray(doc.keywords) ? (doc.keywords as string[]) : undefined;
-    const topics = Array.isArray(doc.topics) ? (doc.topics as string[]) : undefined;
+    const keywords = Array.isArray(doc.keywords) ? (doc.keywords as: string[]) : undefined;
+    const topics = Array.isArray(doc.topics) ? (doc.topics as: string[]) : undefined;
     return {
       id,
       title,
@@ -213,15 +213,15 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
         return nums;
       }
     }
-    return null;
+    return: null;
   } catch (error) {
     console.error('Failed to retrieve cached embedding:', stringifyError(error));
-    return null;
+    return: null;
   }
 }
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
-  queryText: string,
+ , queryText: string,
   queryEmbedding: number[],
   limit: number = 10
 ): Promise<SimilarityResult[]> {
@@ -247,8 +247,8 @@ export async function hybridSearch(
       const title = typeof row.title === 'string' ? row.title : undefined;
       const content = typeof row.content === 'string' ? row.content : '';
       const rank = Number(row.rank ?? 0);
-      const keywords = Array.isArray(row.keywords) ? (row.keywords as string[]) : undefined;
-      const topics = Array.isArray(row.topics) ? (row.topics as string[]) : undefined;
+      const keywords = Array.isArray(row.keywords) ? (row.keywords as: string[]) : undefined;
+      const topics = Array.isArray(row.topics) ? (row.topics as: string[]) : undefined;
       return {
         id,
         title,
@@ -279,7 +279,7 @@ export async function checkPgVectorAvailable(): Promise<boolean> {
 }
 // Vector operations test function
 export async function testVectorOperations(): Promise<{ pgvectorAvailable: boolean;, similaritySearchWorking: boolean;
-  embeddingCacheWorking: boolean;
+ , embeddingCacheWorking: boolean;
 }> {
   const pgvectorAvailable = await checkPgVectorAvailable();
   let similaritySearchWorking = $state<boolean>(false);
@@ -314,8 +314,8 @@ interface ProcessExtendedThinkingResult { result: SimilarityResult[];, thinking
 // GRPMO Extended Thinking Engine
 export class GRPMOOrchestrator {
   private config: GRPMOConfig;
-  // Narrowed memoryCache type from any to SimilarityResult[]
-  private memoryCache: Map<string, { data: SimilarityResult[]; timestamp: number; layer: string }> = new Map();
+  // Narrowed memoryCache type from: any to SimilarityResult[]
+  private, memoryCache: Map<string, { data: SimilarityResult[]; timestamp: number;, layer: string }> = new Map();
   private reinfrocementAgent: PPOAgent;
   constructor(config: GRPMOConfig = defaultGRPMOConfig) {
     this.config = config;
@@ -328,11 +328,11 @@ export class GRPMOOrchestrator {
     userId: string,
     caseId?: string
   ): Promise<ProcessExtendedThinkingResult> {
-    // Changed return type from any to ProcessExtendedThinkingResult
+    // Changed return type from: any to ProcessExtendedThinkingResult
     const startTime = Date.now();
     const stages: ExtendedThinkingStage[] = [];
-    const cachePerformance = { hot: 0, warm: 0, cold: 0 };
-    // Stage 1: Hot cache retrieval
+    const cachePerformance = {, hot: 0, warm: 0, cold: 0 };
+    // Stage, 1: Hot cache retrieval
     const hotCacheKey = this.generateCacheKey(query, queryEmbedding, 'hot');
     const hotResult = await this.retrieveFromCache(hotCacheKey, 'hot');
     if (hotResult) {
@@ -365,7 +365,7 @@ export class GRPMOOrchestrator {
     }
     // Stage 3: Cold cache with full vector search
     stages.push({
-      name: 'Deep Vector Analysis',
+     , name: 'Deep Vector Analysis',
       duration: Date.now() - startTime,
       cacheLayer: 'cold',
       confidence: 0.6
@@ -400,9 +400,9 @@ export class GRPMOOrchestrator {
   private async retrieveFromCache(
     key: string,
     layer: string
-  ): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
+  ): Promise<{ data: SimilarityResult[];, timestamp: number } | null> {
     const cached = this.memoryCache.get(key);
-    if (!cached) return null;
+    if (!cached) return: null;
     const age = Date.now() - cached.timestamp;
     const threshold =
       layer === 'hot'
@@ -470,7 +470,7 @@ export class GRPMOOrchestrator {
 // PPO Reinforcement Learning Agent
 class PPOAgent {
   private learningRate: number;
-  private policyNetwork: Map<string, number[]> = new Map();
+  private, policyNetwork: Map<string, number[]> = new Map();
   private valueNetwork: Map<string, number> = new Map();
   constructor(learningRate: number) {
     this.learningRate = learningRate;
@@ -483,7 +483,7 @@ class PPOAgent {
       ...item,
       similarity: (item.similarity || 0) * (currentPolicy[index] ?? 1),
       reinforcementContext: {
-        stateVector: currentPolicy,
+       , stateVector: currentPolicy,
         actionHistory: [stateKey],
         rewardSignal: item.similarity ?? 0,
         policyGradient: currentPolicy,

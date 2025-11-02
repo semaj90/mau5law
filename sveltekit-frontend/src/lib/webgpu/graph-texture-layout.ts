@@ -7,8 +7,8 @@
  * - Level of Detail (LOD) streaming system
  * - Breadth-First Search layout for optimal memory access patterns
  */
-import { db, type GraphNode, type GraphEdge } from '../db/dexie-integration.js';
-import { firstValueFrom, type Observable } from 'rxjs'; // Import firstValueFrom and Observable type
+import { db, type GraphNode, type GraphEdge } from, '../db/dexie-integration.js';
+import { firstValueFrom, type Observable } from, 'rxjs'; // Import firstValueFrom and Observable type
 // ============================================================================
 // GPU DATA STRUCTURES
 // ============================================================================
@@ -17,29 +17,29 @@ export interface GPUNodeData {
   metadata: [number, number, number, number]; // vec4<f32> packed metadata
   rankingMatrixIndex: number; // u32 index into ranking texture,
   varianceMatrixIndex: number; // u32 index into variance texture
-  neighborOffset: number; // u32 offset into adjacency buffer,
+ , neighborOffset: number; // u32 offset into adjacency buffer,
   neighborCount: number; // u32 count of neighbors
 }
 export interface GPUAdjacencyData {
-  nodeIds: Uint32Array; // Flattened adjacency list,
+ , nodeIds: Uint32Array; // Flattened adjacency list,
   offsets: Uint32Array; // Starting positions for each node
 }
 export interface GPUTextureData {
-  rankingTexture: GPUTexture; // rgba32float - 4x4 matrices as 4 pixels,
+ , rankingTexture: GPUTexture; // rgba32float - 4x4 matrices as, 4 pixels,
   varianceTexture: GPUTexture; // rgba32float - variance matrices
-  nodeDataBuffer: GPUBuffer; // Storage buffer for node data,
+ , nodeDataBuffer: GPUBuffer; // Storage buffer for node data,
   adjacencyBuffer: GPUBuffer; // Storage buffer for adjacency lists
 }
-export interface LODLevel { level: number;, bounds: { x: number; y: number; width: number; height: number }; // Add semicolon here
+export interface LODLevel {, level: number;, bounds: { x: number; y: number; width: number; height: number }; // Add semicolon here
   nodeCount: number;
-  loaded: boolean;
+ , loaded: boolean;
   gpuData?: GPUTextureData;
 }
 // ============================================================================
 // SPATIAL LAYOUT ALGORITHMS
 // ============================================================================
 class GraphSpatialLayout {
-  private nodePositions = new Map<string, { x: number; y: number; z?: number }>();
+  private nodePositions = new Map<string, { x: number;, y: number; z?: number }>();
   private nodeOrder: string[] = []; // BFS-ordered nodes for cache locality
   /**
    * Breadth-First Search layout for optimal cache performance
@@ -59,7 +59,7 @@ class GraphSpatialLayout {
     // BFS traversal starting from highest-confidence node
     const visited = new Set<string>();
     const queue: string[] = [];
-    const layoutOrder: string[] = [];
+    const, layoutOrder: string[] = [];
     // Find starting node (highest confidence)
     const startNode = nodes.reduce((max, node) => (node.metadata.confidence > max.metadata.confidence ? node : max));
     queue.push(startNode.nodeId);
@@ -84,7 +84,7 @@ class GraphSpatialLayout {
         }
       }
     }
-    // Add any disconnected nodes
+    // Add: any disconnected nodes
     for (const node of nodes) {
       if (!visited.has(node.nodeId)) {
         layoutOrder.push(node.nodeId);
@@ -116,7 +116,7 @@ class GraphSpatialLayout {
       });
     }
     for (let iter = 0; iter < iterations; iter++) {
-      const forces = new Map<string, { x: number; y: number }>();
+      const forces = new Map<string, { x: number;, y: number }>();
       // Initialize forces
       for (const node of nodes) {
         forces.set(node.nodeId, { x: 0, y: 0 });
@@ -185,7 +185,7 @@ export class GraphTextureManager {
   private device: GPUDevice | null = null;
   private spatialLayout = new GraphSpatialLayout();
   private lodLevels: LODLevel[] = [];
-  private currentViewport = { x: 0, y: 0, width: 1000, height: 1000 };
+  private currentViewport = {, x: 0, y: 0, width: 1000, height: 1000 };
   async initialize(): Promise<void> {
     if (!navigator.gpu) {
       throw new Error('WebGPU not available');
@@ -207,7 +207,7 @@ export class GraphTextureManager {
   /**
    * Load graph data with optimal memory layout
    */
-  async loadGraphData(bounds?: { x: number; y: number; width: number;, height: number }): Promise<void> {
+  async loadGraphData(bounds?: { x: number; y: number;, width: number;, height: number }): Promise<void> {
     if (!this.device) await this.initialize();
     // Load nodes and edges from database
     const nodes: GraphNode[] = bounds
@@ -226,8 +226,8 @@ export class GraphTextureManager {
     const gpuData = await this.createGPUDataStructures(nodes, edges, memoryLayout);
     // Create LOD level
     const lodLevel: LODLevel = {
-      level: 0,
-      bounds: bounds || { x: 0, y: 0, width: 1000, height: 1000 },
+     , level: 0,
+      bounds: bounds || {, x: 0, y: 0, width: 1000, height: 1000 },
       nodeCount: nodes.length,
       loaded: true,
       gpuData
@@ -305,7 +305,7 @@ export class GraphTextureManager {
     // ========================================================================
     // 3. CREATE RANKING MATRIX TEXTURE (rgba32float)
     // ========================================================================
-    // Each 4x4 matrix needs 4 pixels (4 rows × 4 RGBA components)
+    // Each 4x4 matrix needs, 4 pixels (4 rows × 4 RGBA components)
     const matrixTextureSize = Math.ceil(Math.sqrt(orderedNodes.length));
     const rankingTextureData = new Float32Array(matrixTextureSize * matrixTextureSize * 4 * 4); // 4 pixels per matrix
     for (let i = 0; i < orderedNodes.length; i++) {
@@ -320,7 +320,7 @@ export class GraphTextureManager {
         const pixelY = matrixRow * 2 + Math.floor(row / 2);
         const pixelX = matrixCol * 2 + (row % 2);
         const pixelIndex = (pixelY * matrixTextureSize + pixelX) * 4;
-        // Pack 4 matrix elements into RGBA channels
+        // Pack, 4 matrix elements into RGBA channels
         const matrixRowStart = row * 4;
         rankingTextureData[pixelIndex + 0] = matrix[matrixRowStart + 0];
         rankingTextureData[pixelIndex + 1] = matrix[matrixRowStart + 1];
@@ -380,7 +380,7 @@ export class GraphTextureManager {
   /**
    * Stream new data based on viewport changes (LOD system)
    */
-  async updateViewport(bounds: { x: number; y: number; width: number;, height: number }): Promise<void> {
+  async updateViewport(bounds: { x: number; y: number;, width: number;, height: number }): Promise<void> {
     this.currentViewport = bounds;
     // Check if we need to load new data
     const needsNewData = !this.lodLevels.some(

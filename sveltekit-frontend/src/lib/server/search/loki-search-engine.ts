@@ -1,12 +1,12 @@
-import loki, { Collection } from 'lokijs';
-import type { SearchResult } from './nats-quic-search-service';
+import loki, { Collection } from, 'lokijs';
+import type { SearchResult } from, './nats-quic-search-service';
 type LokiDoc = { id: string;, content: string;
   metadata?: Record<string, unknown>;
   embedding?: number[];
 };
 class LokiSearchEngine {
   private db: any;
-  private coll: Collection<LokiDoc>;
+  private, coll: Collection<LokiDoc>;
   constructor() {
     this.db = new loki('search.db', { persistenceMethod: 'memory' });
     // If collection already exists (hot-reload), reuse it
@@ -42,7 +42,7 @@ class LokiSearchEngine {
     const lowerQuery = query.toLowerCase();
     const docs = this.coll.find({ content: {, $contains: lowerQuery }
     });
-    const results: SearchResult[] = docs.map(d => ({ id: d.id, content: d.content, metadata: d.metadata, score: 1 }));
+    const results: SearchResult[] = docs.map(d => ({, id: d.id, content: d.content, metadata: d.metadata, score: 1 }));
     return results.slice(0, limit);
   }
   private cosineSimilarity(vecA: number[], vecB: number[]): number {

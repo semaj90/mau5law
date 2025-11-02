@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Type definitions
 export interface CaseSummaryRequest {
@@ -12,13 +12,13 @@ export interface CaseSummaryRequest {
 }
 export interface CaseSummaryResponse {
   success: boolean;
-  summary?: { aiGenerated: boolean;, overview: string;
+  summary?: {, aiGenerated: boolean;, overview: string;
     keyFindings: string[];
     recommendations: string[];
-    riskAssessment: { level: 'low' | 'medium' | 'high';, factors: string[];
+    riskAssessment: {, level: 'low' | 'medium' | 'high';, factors: string[];
     };
     timeline: TimelineEvent[]; // Changed from Array<any>
-    evidence: { total: number;, admissible: number;
+    evidence: {, total: number;, admissible: number;
       questionable: number;
       inadmissible: number;
     };
@@ -26,7 +26,7 @@ export interface CaseSummaryResponse {
     confidence: number;
     generatedAt: Date;
   };
-  analytics?: { evidenceCount: number;, documentsReviewed: number;
+  analytics?: {, evidenceCount: number;, documentsReviewed: number;
     witnessesInterviewed: number;
     daysActive: number;
     completionPercentage: number;
@@ -35,12 +35,12 @@ export interface CaseSummaryResponse {
 }
 
 // ADDED: Interfaces for specific data types
-interface EvidenceItem { id: string;, content: string;
-  metadata: Record<string, unknown>; // Changed from Record<string, any>
+interface EvidenceItem {, id: string;, content: string;
+ , metadata: Record<string, unknown>; // Changed from Record<string, any>
   createdAt: Date;
 }
 
-interface TimelineEvent { date: Date;, event: string;
+interface TimelineEvent {, date: Date;, event: string;
   type: string;
   importance: 'low' | 'medium' | 'high';
 }
@@ -48,24 +48,24 @@ interface TimelineEvent { date: Date;, event: string;
 interface CaseData {
   caseId: string;
   evidence?: EvidenceItem[];
-  evidenceAnalytics?: { totalEvidence: number;, evidenceByType: Record<string, number>;
+  evidenceAnalytics?: {, totalEvidence: number;, evidenceByType: Record<string, number>;
     topTags: Array<{ tag: string }>;
   };
   timeline?: TimelineEvent[];
 }
 
 // Placeholder services
-const VectorService = { storeCaseEmbedding: async (data: {, caseId: string; content: string;, metadata: Record<string, unknown> }) => {
+const VectorService = {, storeCaseEmbedding: async (data: {, caseId: string;, content: string;, metadata: Record<string, unknown> }) => {
     // Changed from Record<string, any>
     // MODIFIED: Added specific type for data
-    console.log('Storing case embedding:', data);
+    console.log('Storing case, embedding:', data);
   }
 };
 const ollamaService = {
-  generateResponse: async (_prompt: string, _options: {, model: string; max_tokens: number;, temperature: number }) => {
+  generateResponse: async (_prompt: string, _options: {, model: string;, max_tokens: number;, temperature: number }) => {
     // Marked prompt and options as unused
     // MODIFIED: Added specific type for options
-    return { response: JSON.stringify(generateFallbackSummary({, caseId: 'placeholder' })) };
+    return {, response: JSON.stringify(generateFallbackSummary({, caseId: 'placeholder' })) };
   }
 };
 export const POST: RequestHandler = async ({ request, cookies }) => {
@@ -99,12 +99,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const summary = await generateAISummary(caseData, analysisDepth);
 
     if (!summary) {
-      // Added check for undefined summary
-      return json({ success: false, error: 'Failed to generate AI summary' }, { status: 500 });
+      // Added check for: undefined summary
+      return json({, success: false, error: 'Failed to generate AI summary' }, { status: 500 });
     }
 
     // Store summary as embedding
-    const summaryText = `Case Summary: ${summary.overview}. Key Findings: ${summary.keyFindings.join('. ')}. Recommendations: ${summary.recommendations.join('. ')}.`;
+    const summaryText = `Case Summary: ${summary.overview}. Key, Findings: ${summary.keyFindings.join('. ')}. Recommendations: ${summary.recommendations.join('. ')}.`;
     await VectorService.storeCaseEmbedding({
       caseId,
       content: summaryText,
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   } catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
-    console.error('Case summary generation error:', error);'
+    console.error('Case summary generation, error:', error);'
     return json(
       {
         success: false,
@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
   } catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
-    console.error('Case summary retrieval error: ', error);'
+    console.error('Case summary retrieval, error: ', error);'
     return json(
       {
         success: false,
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 };
 async function gatherCaseData(caseId: string, includeEvidence: boolean, includeTimeline: boolean): Promise<CaseData> {
   // MODIFIED: Changed return type to CaseData
-  const data: CaseData = { caseId }; // MODIFIED: Changed type to CaseData
+  const data: CaseData = { caseId }; //, MODIFIED: Changed type to CaseData
   if (includeEvidence) {
     // Placeholder evidence data
     data.evidence = [
@@ -189,8 +189,8 @@ async function gatherCaseData(caseId: string, includeEvidence: boolean, includeT
     ];
     data.evidenceAnalytics = {
       totalEvidence: 1,
-      evidenceByType: { document: 1 },
-      topTags: [{ tag: `important` }]
+      evidenceByType: {, document: 1 },
+      topTags: [{, tag: `important` }]
     };
   }
   if (includeTimeline) {
@@ -215,7 +215,7 @@ async function generateAISummary(caseData: CaseData, depth: string): Promise<Cas
     const analysisPrompt = `
 As a legal expert, generate a comprehensive case summary based on the following data:
 CASE; ID: ${caseData.caseId}
-EVIDENCE DATA: ${evidenceText.substring(0, 1000)}
+EVIDENCE, DATA: ${evidenceText.substring(0, 1000)}
 TIMELINE DATA: ${timelineText.substring(0, 500)}
 Generate a ${depth} analysis with a structured summary.
 `;`
@@ -236,7 +236,7 @@ Generate a ${depth} analysis with a structured summary.
     return generateFallbackSummary(caseData);
   } catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
-    console.error('AI summary generation error:', error);'
+    console.error('AI summary generation, error:', error);'
     return generateFallbackSummary(caseData);
   }
 }
@@ -250,12 +250,12 @@ function generateFallbackSummary(
     keyFindings: ['Evidence collection in progress', 'Manual analysis required'],
     recommendations: ['Conduct thorough evidence review', 'Engage legal experts', 'Update case documentation'],
     riskAssessment: {
-      level: 'medium' as const,
+     , level: 'medium' as const,
       factors: ['Incomplete analysis', 'Requires manual review']
     },
     timeline: caseData.timeline?.slice(0, 5) || [],
     evidence: {
-      total: caseData.evidenceAnalytics?.totalEvidence || 0,
+     , total: caseData.evidenceAnalytics?.totalEvidence || 0,
       admissible: 0,
       questionable: 0,
       inadmissible: 0
@@ -272,7 +272,7 @@ async function calculateCaseAnalytics(_caseId: string): Promise<CaseSummaryRespo
   const evidence = 5; // Mock data
   const interactions = 10; // Mock data
   return {
-    evidenceCount: evidence,
+   , evidenceCount: evidence,
     documentsReviewed: interactions,
     witnessesInterviewed: Math.floor(evidence * 0.3),
     daysActive: 30,
@@ -286,10 +286,10 @@ function _determineImportance(content: string): 'low' | 'medium' | 'high' {
   const mediumPriorityKeywords = ['review', 'analysis', 'investigation', 'statement'];
   const lowerContent = content.toLowerCase();
   if (highPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
-    return 'high';
+    return, 'high';
   }
   if (mediumPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
-    return 'medium';
+    return, 'medium';
   }
-  return 'low';
+  return, 'low';
 }

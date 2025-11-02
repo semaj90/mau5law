@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * PgVector Indexing Service
  * Advanced vector search and similarity operations using PostgreSQL pgvector extension
@@ -15,8 +15,8 @@ import type { Document } from '$lib/types';
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-import { sql } from 'drizzle-orm';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { sql } from, 'drizzle-orm';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js/driver';
 /**
  * Vector Index Configuration
  */
@@ -30,7 +30,7 @@ export interface VectorIndexConfig {
 /**
  * Vector Document for Indexing
  */
-export interface VectorDocument { id: string;, content: string;
+export interface VectorDocument {, id: string;, content: string;
   embedding: number[];
   documentId: string;
   chunkId?: string;
@@ -51,12 +51,12 @@ export interface VectorDocument { id: string;, content: string;
 /**
  * Vector Search Result
  */
-export interface VectorSearchResult { id: string;, content: string;
+export interface VectorSearchResult {, id: string;, content: string;
   documentId: string;
   chunkId?: string;
   similarity: number;
   distance: number;
-  rank: number;
+ , rank: number;
   metadata?: Record<string, unknown>;
   embeddingType?: string;
 }
@@ -71,11 +71,11 @@ export interface BatchUpsertResult { inserted: number;, updated: number;
  * PgVector Indexing Service
  */
 export class PgVectorIndexingService {
-  private db: PostgresJsDatabase<Record<string, unknown>>;
+  private, db: PostgresJsDatabase<Record<string, unknown>>;
   private dimensions: number;
   private indexType: string;
   private distanceMetric: string;
-  private maxResults: number;
+  private, maxResults: number;
   constructor(config: VectorIndexConfig) {
     this.db = config.database;
     this.dimensions = config.embeddingDimensions;
@@ -285,7 +285,7 @@ export class PgVectorIndexingService {
       query += ` ORDER BY e.vector <-> '${vectorStr}'::vector LIMIT ${limit}`;
       const results = (await this.db.execute(
         sql.raw(query)
-      )) as unknown as VectorSearchResult[];
+      )) as: unknown as VectorSearchResult[];
       return results.map((r, idx) => ({
         ...r,
         rank: idx + 1
@@ -345,7 +345,7 @@ export class PgVectorIndexingService {
       query += ` ORDER BY similarity DESC LIMIT ${limit}`;
       const results = (await this.db.execute(
         sql.raw(query)
-      )) as unknown as VectorSearchResult[];
+      )) as: unknown as VectorSearchResult[];
       return results.map((r, idx) => ({
         ...r,
         rank: idx + 1
@@ -381,7 +381,7 @@ export class PgVectorIndexingService {
    */
   async getStats(): Promise<{ totalDocuments: number;, totalChunks: number;
     totalEmbeddings: number;
-    averageEmbeddingDimension: number;
+   , averageEmbeddingDimension: number;
     indexSize?: string;
   }> {
     try {
@@ -392,12 +392,12 @@ export class PgVectorIndexingService {
           (SELECT COUNT(*) FROM embeddings) as total_embeddings,
           (SELECT AVG(embedding_dimension) FROM document_chunks) as avg_dimension
       `));`
-      const row = (stats as unknown[])[0] as { total_documents: number;, total_chunks: number;
+      const row = (stats as: unknown[])[0] as { total_documents: number;, total_chunks: number;
         total_embeddings: number;
         avg_dimension: number;
       };
       return {
-        totalDocuments: row.total_documents,
+       , totalDocuments: row.total_documents,
         totalChunks: row.total_chunks,
         totalEmbeddings: row.total_embeddings,
         averageEmbeddingDimension: row.avg_dimension
@@ -429,7 +429,7 @@ export class PgVectorIndexingService {
     }
   }
   /**
-   * Convert number array to PostgreSQL vector string format
+   * Convert: number array to PostgreSQL, vector: string format
    */
   private vectorToString(vector: number[]): string {
     return `[${vector.join(',')}]`;
@@ -459,7 +459,7 @@ export async function createPgVectorIndexingService(
  * Default configuration for PgVector Indexing Service
  */
 export const DEFAULT_PGVECTOR_CONFIG: Partial<VectorIndexConfig> = {
-  embeddingDimensions: 768,
+ , embeddingDimensions: 768,
   indexType: 'hnsw',
   distanceMetric: 'cosine',
   maxResults: 10

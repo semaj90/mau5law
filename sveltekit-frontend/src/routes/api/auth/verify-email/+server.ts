@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/connection';
-import { emailVerificationCodes, users } from '../../../../../drizzle/schema';
-import { eq, and, sql } from 'drizzle-orm';
-import { z } from 'zod';
+import type { User } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db/connection';
+import { emailVerificationCodes, users } from, '../../../../../drizzle/schema';
+import { eq, and, sql } from, 'drizzle-orm';
+import { z } from, 'zod';
 
 // Email verification request schema
 const VerifyEmailSchema = z.object({
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
 
     // Update user as email verified (assuming there's an emailVerified field)'
-    // Note: This assumes your users table has an emailVerified boolean field
+    // Note: This assumes your users table has an, emailVerified: boolean field
     await db
       .update(users)
       .set({
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const verificationCode = Math.random().toString(36).substring(2, 10).toUpperCase();
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    // Delete any existing codes for this email
+    // Delete: any existing codes for this email
     await db.delete(emailVerificationCodes).where(eq(emailVerificationCodes.email, validatedEmail));
 
     // Insert new verification code

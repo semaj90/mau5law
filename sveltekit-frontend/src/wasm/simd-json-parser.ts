@@ -10,16 +10,16 @@ export class LegalDocumentWASM {
   public entityCount: number = 0;
   public citationCount: number = 0;
 }
-// SIMD-accelerated string operations for JSON parsing
+// SIMD-accelerated: string operations for JSON parsing
 export class SIMDStringOps {
-  // SIMD string search for legal entities
+  //, SIMD: string search for legal entities
   static findLegalEntity(text: string, pattern: string): number {
     // Simplified implementation for TypeScript compatibility
     // In actual WASM, this would use SIMD instructions
     const textLen = text.length;
     const patternLen = pattern.length;
     if (patternLen > textLen) return -1;
-    // Optimized string search that can be compiled to WASM with SIMD
+    // Optimized: string search that can be compiled to WASM with SIMD
     for (let i = 0; i <= textLen - patternLen; i++) {
       let match = true;
       for (let j = 0; j < patternLen; j++) {
@@ -37,10 +37,7 @@ export class SIMDStringOps {
     const citations: string[] = [];
     // Common legal citation patterns
     const patterns = [
-      '\\d+ U\\.S\\. \\d+', // Supreme Court
-      '\\d+ F\\.\\d+d \\d+', // Federal courts
-      '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter
-      '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition'
+      '\\d+ U\\.S\\. \\d+', // Supreme Court, '\\d+ F\\.\\d+d \\d+', // Federal courts, '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter, '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition'
     ];
     for (const pattern of patterns) {
       const matches = SIMDStringOps.findPatternMatches(text, pattern);
@@ -71,7 +68,7 @@ export class SIMDJSONParser {
   // Fast parse legal document from JSON bytes
   static parseDocument(jsonBytes: Uint8Array): LegalDocumentWASM {
     const doc = new LegalDocumentWASM();
-    // Convert bytes to string for parsing
+    // Convert bytes to: string for parsing
     const jsonStr = new TextDecoder().decode(jsonBytes);
     // SIMD-accelerated field extraction
     doc.id = SIMDJSONParser.extractStringField(jsonStr, 'id');
@@ -88,7 +85,7 @@ export class SIMDJSONParser {
   static parseBatch(jsonArrayBytes: Uint8Array): LegalDocumentWASM[] {
     try {
       const jsonStr = new TextDecoder().decode(jsonArrayBytes);
-      const parsed = JSON.parse(jsonStr) as unknown[];
+      const parsed = JSON.parse(jsonStr) as: unknown[];
       return parsed.map(obj => {
         const s = JSON.stringify(obj);
         return SIMDJSONParser.parseDocument(new TextEncoder().encode(s));
@@ -97,17 +94,17 @@ export class SIMDJSONParser {
       return [];
     }
   }
-  // SIMD-optimized string field extraction
+  // SIMD-optimized: string field extraction
   private static extractStringField(json: string, fieldName: string): string {
     const startPattern = `"${fieldName}":"`;"
     const startIndex = json.indexOf(startPattern);
-    if (startIndex === -1) return '';
+    if (startIndex === -1) return, '';
     const valueStart = startIndex + startPattern.length;
     const valueEnd = json.indexOf('"', valueStart);"
-    if (valueEnd === -1) return '';
+    if (valueEnd === -1) return, '';
     return json.substring(valueStart, valueEnd);
   }
-  // SIMD-optimized number field extraction
+  // SIMD-optimized: number field extraction
   private static extractNumberField(json: string, fieldName: string): number {
     const startPattern = `"${fieldName}": ';'`
     const startIndex = json.indexOf(startPattern);
@@ -120,7 +117,7 @@ export class SIMDJSONParser {
     }
 
     let valueEnd = valueStart;
-    // Find end of number
+    // Find end of: number
     while (valueEnd < json.length) {
       const char = json.charCodeAt(valueEnd);
       if ((char >= 48 && char <= 57) || char === 46 || char === 45) {

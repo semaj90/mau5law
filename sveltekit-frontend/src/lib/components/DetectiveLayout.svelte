@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Snippet } from 'svelte';
+  import type { Snippet } from, 'svelte';
   interface Props {
     title?: string | null;
     subtitle?: string;
@@ -37,7 +37,7 @@
   }
   .subtitle {
     margin: 0;
-    color: #6b7280;
+   , color: #6b7280;
     font-size: 0.9rem;
   }
   main {

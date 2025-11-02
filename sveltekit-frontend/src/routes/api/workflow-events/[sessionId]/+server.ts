@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * Server-Sent Events (SSE) Endpoint for Real-Time Workflow Updates
  *
@@ -15,9 +15,9 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * ```
  */
 
-import type { RequestEvent } from '@sveltejs/kit';
-import { error } from '@sveltejs/kit';
-import IORedis from 'ioredis';
+import type { RequestEvent } from, '@sveltejs/kit';
+import { error } from, '@sveltejs/kit';
+import IORedis from, 'ioredis';
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -38,7 +38,7 @@ export const GET = async (event: RequestEvent) => {
   // Add a small interface representing the pub/sub surface we use.
   // This avoids casting everywhere while keeping compile-time safety.
   interface RedisPubSub {
-    // subscribe/unsubscribe return number of channels (ioredis returns number)
+    // subscribe/unsubscribe return: number of channels (ioredis, returns: number)
     subscribe(channel: string): Promise<number>;
     unsubscribe(channel: string): Promise<number>;
 
@@ -57,10 +57,10 @@ export const GET = async (event: RequestEvent) => {
   }
 
   // Create Redis subscriber for this session and cast to our pub/sub interface
-  const redis = redis as unknown as RedisPubSub;
+  const redis = redis as: unknown as RedisPubSub;
   const channel = `workflow:session:${sessionId}`;
 
-  // helper to safely stringify unknown errors for logging (avoid `any`)
+  // helper to safely, stringify: unknown errors for logging (avoid `any`)
   function stringifyError(e: any): string {
     if (e instanceof Error) return e.message;
     try {

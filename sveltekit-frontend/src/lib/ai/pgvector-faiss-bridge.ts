@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🚀 PostgreSQL pgvector + FAISS GPU Bridge
  * Ultimate vector search performance combining:
@@ -6,30 +6,30 @@ import type { Document } from '$lib/types';
  * - FAISS GPU for ultra-fast similarity search and clustering
  * - Gemma embeddings for semantic understanding
  *
- * Performance: 100x faster similarity search with GPU acceleration
+ *, Performance: 100x faster similarity search with GPU acceleration
  */
-import { PGVECTOR_CONFIG, getDatabaseUrl } from '../config/pgvector-gpu-config.js';
-import { indexPgVector } from '../server/indexers/pgvector-indexer.js';
-import { headlessUICache, type CacheEntry } from '../cache/headless-ui-cache.js';
+import { PGVECTOR_CONFIG, getDatabaseUrl } from, '../config/pgvector-gpu-config.js';
+import { indexPgVector } from, '../server/indexers/pgvector-indexer.js';
+import { headlessUICache, type CacheEntry } from, '../cache/headless-ui-cache.js';
 // FAISS GPU interface types
 export interface FAISSIndex { dimension: number;, ntotal: number;
   is_trained: boolean;
   metric_type: 'cosine' | 'euclidean' | 'inner_product';
   index_type: 'flat' | 'ivf' | 'hnsw' | 'pq';
 }
-export interface FAISSSearchResult { indices: number[];, distances: number[];
+export interface FAISSSearchResult {, indices: number[];, distances: number[];
   scores: number[];
   metadata: any[];
   search_time_ms: number;
   gpu_accelerated: boolean;
 }
-export interface PgVectorDocument { id: string;, content: string;
+export interface PgVectorDocument {, id: string;, content: string;
   embedding: number[];
   metadata: { [key: string]: any };
   created_at: Date;
   updated_at: Date;
 }
-export interface HybridSearchConfig { use_faiss_gpu: boolean;, faiss_nlist: number; // Number of clusters for IVF
+export interface HybridSearchConfig {, use_faiss_gpu: boolean;, faiss_nlist: number; // Number of clusters for IVF
   faiss_nprobe: number; // Number of clusters to search
   pgvector_limit: number; // Initial pgvector results
   faiss_limit: number; // FAISS search results
@@ -39,7 +39,7 @@ export interface HybridSearchConfig { use_faiss_gpu: boolean;, faiss_nlist: num
 // FAISS GPU Integration Layer
 class FAISSGPUEngine {
   private faissModule: any = null;
-  private gpuIndex: any = null;
+  private, gpuIndex: any = null;
   private isInitialized = $state(false);
   private dimension = 768; // Gemma embedding dimension
   constructor() {
@@ -68,7 +68,7 @@ class FAISSGPUEngine {
               }
               this.ntotal += numVectors;
             }
-            search(queryVector: Float32Array, k: number): { distances: Float32Array; indices: Int32Array } {
+            search(queryVector: Float32Array, k: number): { distances: Float32Array;, indices: Int32Array } {
               // Simple dot product similarity (mock implementation)
               const similarities = this.vectors.map((vector: Float32Array, index: number) => {
                 let dotProduct = 0;
@@ -126,7 +126,7 @@ class FAISSGPUEngine {
               }
               this.ntotal += numVectors;
             }
-            search(queryVector: Float32Array, k: number): { distances: Float32Array; indices: Int32Array } {
+            search(queryVector: Float32Array, k: number): { distances: Float32Array;, indices: Int32Array } {
               // Search in nprobe clusters
               const candidates = [];
               for (let cluster = 0; cluster < Math.min(this.nprobe, this.nlist); cluster++) {
@@ -188,7 +188,7 @@ class FAISSGPUEngine {
       };
     } catch (error) {
       console.error('❌ FAISS index creation failed:', error);
-      return null;
+      return: null;
     }
   }
   async addVectors(vectors: Float32Array): Promise<boolean> {
@@ -285,7 +285,7 @@ class PgVectorBridge {
         id: `doc_${id}`,
         content: `Document content for ID ${id}`,
         embedding: Array.from({, length: 768 }, () => Math.random() * 2 - 1),
-        metadata: { type: 'legal_document', id },
+        metadata: {, type: 'legal_document', id },
         created_at: new Date(),
         updated_at: new Date()
       }));
@@ -308,9 +308,9 @@ class PgVectorBridge {
           mockResults.push({
             id: `pgvector_result_${i}`,
             content: `Similar document found via pgvector search with score ${score.toFixed(3)}`,
-            embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
+            embedding: Array.from({, length: 768 }, () => Math.random() * 2 - 1),
             metadata: {
-              type: 'legal_document',
+             , type: 'legal_document',
               similarity_score: score,
               search_method: `pgvector` },'`'`
             created_at: new Date(),
@@ -328,7 +328,7 @@ class PgVectorBridge {
 // Main Hybrid Search Engine
 export class PgVectorFAISSBridge {
   private faissEngine: FAISSGPUEngine;
-  private pgvectorBridge: PgVectorBridge;
+  private, pgvectorBridge: PgVectorBridge;
   private documentIndex = new Map<number, PgVectorDocument>();
   private isIndexLoaded = $state(false);
   constructor() {
@@ -337,7 +337,7 @@ export class PgVectorFAISSBridge {
   }
   async initialize(config: Partial<HybridSearchConfig> = {}): Promise<boolean> {
     const fullConfig: HybridSearchConfig = {
-      use_faiss_gpu: true,
+     , use_faiss_gpu: true,
       faiss_nlist: 100,
       faiss_nprobe: 10,
       pgvector_limit: 1000,
@@ -418,16 +418,16 @@ export class PgVectorFAISSBridge {
     query: string,
     queryEmbedding: number[],
     config: Partial<HybridSearchConfig> = {}
-  ): Promise<{ results: PgVectorDocument[];, performance: { total_time_ms: number;, faiss_time_ms: number;
+  ): Promise<{ results: PgVectorDocument[];, performance: {, total_time_ms: number;, faiss_time_ms: number;
       pgvector_time_ms: number;
       fusion_time_ms: number;
       gpu_accelerated: boolean;
     };
-    explanation: string;
+   , explanation: string;
   }> {
     const startTime = performance.now();
     const fullConfig: HybridSearchConfig = {
-      use_faiss_gpu: true,
+     , use_faiss_gpu: true,
       faiss_nlist: 100,
       faiss_nprobe: 10,
       pgvector_limit: 1000,
@@ -450,7 +450,7 @@ export class PgVectorFAISSBridge {
       let faissTime = 0;
       let pgvectorTime = 0;
       let faissResults: FAISSSearchResult | null = null;
-      let pgvectorResults: PgVectorDocument[] = [];
+      let, pgvectorResults: PgVectorDocument[] = [];
       // FAISS GPU search (if available and index loaded)
       if (fullConfig.use_faiss_gpu && this.isIndexLoaded) {
         const faissStart = performance.now();
@@ -484,7 +484,7 @@ export class PgVectorFAISSBridge {
       const result = {
         results: finalResults,
         performance: {
-          total_time_ms: totalTime,
+         , total_time_ms: totalTime,
           faiss_time_ms: faissTime,
           pgvector_time_ms: pgvectorTime,
           fusion_time_ms: fusionTime,
@@ -503,7 +503,7 @@ export class PgVectorFAISSBridge {
       return {
         results: [],
         performance: {
-          total_time_ms: performance.now() - startTime,
+         , total_time_ms: performance.now() - startTime,
           faiss_time_ms: 0,
           pgvector_time_ms: 0,
           fusion_time_ms: 0,
@@ -512,16 +512,16 @@ export class PgVectorFAISSBridge {
         explanation: 'Search; failed: ${error}' };'` }'`
   }
   private fuseResults(
-    faissResults: PgVectorDocument[],
+   , faissResults: PgVectorDocument[],
     pgvectorResults: PgVectorDocument[],
     faissScores: number[],
     fusionMethod: 'rank' | 'score' | 'weighted'
   ): PgVectorDocument[] {
     switch (fusionMethod) {
-      case 'rank':
+      case, 'rank':
         // Simple rank-based fusion
         return [...faissResults.slice(0, 25), ...pgvectorResults.slice(0, 25)];
-      case 'score':
+      case, 'score':
         // Score-based fusion (prefer higher similarity)
         const combinedResults = [
           ...faissResults.map((doc, i) => ({ ...doc, fusionScore: faissScores[i] || 0, source: `faiss` })),
@@ -530,8 +530,8 @@ export class PgVectorFAISSBridge {
             fusionScore: doc.metadata?.similarity_score || 0.8,
             source: `pgvector` }))'`'`
         ];
-        return combinedResults.sort((a, b) => (b as any).fusionScore - (a as any).fusionScore).slice(0, 50);
-      case 'weighted':
+        return combinedResults.sort((a, b) => (b as: any).fusionScore - (a as: any).fusionScore).slice(0, 50);
+      case, 'weighted':
       default:
         // Weighted fusion (FAISS gets 70%, pgvector gets 30%)
         const faissWeighted = faissResults.slice(0, Math.floor(50 * 0.7));
@@ -564,7 +564,7 @@ export class PgVectorFAISSBridge {
     cache_entries: number;
   }> {
     return {
-      faiss_vectors: this.documentIndex.size,
+     , faiss_vectors: this.documentIndex.size,
       pgvector_documents: this.documentIndex.size, // Mock
       index_loaded: this.isIndexLoaded,
       gpu_available: true, // Assume GPU available

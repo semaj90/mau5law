@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from, './$types';
 
 // Local placeholder implementations (replace with real module imports when available)
 export interface Alert { message: string;, timestamp: string;
@@ -8,7 +8,7 @@ export interface Baseline {
 }
 
 // Simple in-memory history for placeholders
-const alertHistory: Alert[] = [];
+const, alertHistory: Alert[] = [];
 
 // Make helpers internal (non-exported) and remove leading: '_' to avoid unnecessary exported symbols
 function getAlertHistory(): Alert[] {
@@ -31,7 +31,7 @@ function diffBaselines(prev: Baseline, curr: Baseline) {
 
 let lastBaseline: Baseline | null = null;
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const mode = url.searchParams.get('mode');
   if (mode === 'baseline') {
     // use internal helpers here

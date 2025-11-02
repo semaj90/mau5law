@@ -1,21 +1,21 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Enhanced AI Synthesis Orchestrator with Full Stack Integration
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
-import { logger } from './logger.js';
-import { createHash } from 'node:crypto';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, text, vector, timestamp, json, uuid, integer, boolean } from 'drizzle-orm/pg-core';
-import type { PoolConfig } from 'pg';
-import { sql, eq } from 'drizzle-orm';
-import postgres from 'postgres';
-import { OllamaEmbeddings, ChatOllama } from '@langchain/ollama';
-import { Neo4jVectorStore } from '@langchain/community/vectorstores/neo4j_vector';
-import Redis from 'ioredis';
-import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
-import { AIAssistantInputSynthesizer } from './ai-assistant-input-synthesizer.js';
-import { legalBERT } from './legalbert-middleware.js';
-import { monitoringService } from './monitoring-service.js';
-import { getOllamaEndpoint } from './endpoints.js'; // Add this import
+import { logger } from, './logger.js';
+import { createHash } from, 'node:crypto';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { pgTable, text, vector, timestamp, json, uuid, integer, boolean } from, 'drizzle-orm/pg-core';
+import type { PoolConfig } from, 'pg';
+import { sql, eq } from, 'drizzle-orm';
+import postgres from, 'postgres';
+import { OllamaEmbeddings, ChatOllama } from, '@langchain/ollama';
+import { Neo4jVectorStore } from, '@langchain/community/vectorstores/neo4j_vector';
+import Redis from, 'ioredis';
+import { PGVectorStore } from, '@langchain/community/vectorstores/pgvector';
+import { AIAssistantInputSynthesizer } from, './ai-assistant-input-synthesizer.js';
+import { legalBERT } from, './legalbert-middleware.js';
+import { monitoringService } from, './monitoring-service.js';
+import { getOllamaEndpoint } from, './endpoints.js'; // Add this import
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -102,15 +102,15 @@ const services = { neo4j: {, uri: process.env.NEO4J_URI || 'bolt://neo4j:7687',
     quicServer:
       process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}` },'`'`
   ollama: {
-    baseUrl: getOllamaEndpoint(), // Use the centralized helper
+   , baseUrl: getOllamaEndpoint(), // Use the centralized helper
     models: {
-      legal: 'gemma3-legal:latest',
+     , legal: 'gemma3-legal:latest',
       embedding: 'embeddinggemma:latest'
     }
   },
   context7: process.env.CONTEXT7_URL || 'http://context7:8777', // Docker service name + correct port
   // Postgres and Redis configurations are now handled directly by their respective connection strings
-  // and are removed from this 'services' object to avoid redundancy and ensure env priority.
+  // and are removed from this, 'services' object to avoid redundancy and ensure env priority.
 };
 // ===== DATABASE CONNECTION =====
 // Use DATABASE_URL environment variable first, then fallback to individual components with Docker service name
@@ -127,7 +127,7 @@ const pgConnection = process.env.DATABASE_URL
       connect_timeout: 10_000
     });
 
-export const db = drizzle(pgConnection as any, {
+export const db = drizzle(pgConnection as: any, {
   schema: { legalDocuments, autoSolveResults, synthesisCache }
 });
 // ===== REDIS CONNECTION =====
@@ -135,7 +135,7 @@ let redis: Redis | null = null;
 try {
   redis = new Redis(
     process.env.REDIS_URL || {
-      host: process.env.REDIS_HOST || 'redis', // Docker service name
+     , host: process.env.REDIS_HOST || 'redis', // Docker service name
       port: parseInt(process.env.REDIS_PORT || '6379', 10), // Default Docker port
       db: parseInt(process.env.REDIS_DB || '0', 10),
       password: process.env.REDIS_PASSWORD || 'redis', // Default Docker password
@@ -154,12 +154,12 @@ async function getFetch(): Promise<typeof, fetch> {
   if (typeof fetch !== 'undefined') return fetch;
   try {
     const mod = await import('node-fetch');
-    return (mod.default ?? mod) as unknown as typeof fetch;
+    return (mod.default ?? mod) as: unknown as typeof fetch;
   } catch (e) {
     // try undici as a secondary fallback
     try {
       const undici = await import('undici');
-      if (typeof undici.fetch === 'function') return undici.fetch as unknown as typeof fetch;
+      if (typeof undici.fetch === 'function') return undici.fetch as: unknown as typeof fetch;
     } catch (e2) {
       logger.error('[Orchestrator] fetch not available and polyfills failed', e2);
     }
@@ -248,7 +248,7 @@ type EnhancedPromptInput = {
 // ===== ORCHESTRATOR CLASS (simplified, robust pipeline) =====
 export class EnhancedAISynthesisOrchestrator {
   private neo4jStore: InstanceType<typeof Neo4jVectorStore> | null = null;
-  private pgVectorStore: InstanceType<typeof PGVectorStore> | null = null;
+  private, pgVectorStore: InstanceType<typeof PGVectorStore> | null = null;
   private ollama!: ChatOllama;
   private embeddings!: OllamaEmbeddings;
   private initialized = false; // Changed from $state(false)
@@ -265,15 +265,15 @@ export class EnhancedAISynthesisOrchestrator {
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.legal,
         temperature: 0.3,
-        format: `json` } as any);'`'`
+        format: `json` }, as: any);'`'`
       this.embeddings = new OllamaEmbeddings({
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.embedding
-      } as any);
+      }, as: any);
       // Try to initialize vector stores (best-effort)
       try {
         // instantiate Neo4jVectorStore defensively (constructor signatures vary across versions)
-        this.neo4jStore = new (Neo4jVectorStore as any)(this.embeddings, {
+        this.neo4jStore = new (Neo4jVectorStore as: any)(this.embeddings, {
           url: services.neo4j.uri,
           username: services.neo4j.user,
           password: services.neo4j.password,
@@ -284,14 +284,14 @@ export class EnhancedAISynthesisOrchestrator {
       }
       try {
         const pgConfig: PoolConfig = {
-          host: process.env.POSTGRES_HOST || 'postgres',
+         , host: process.env.POSTGRES_HOST || 'postgres',
           port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
           database: process.env.POSTGRES_DB || 'legal_ai_db',
           user: process.env.POSTGRES_USER || 'legal_admin',
           password: process.env.POSTGRES_PASSWORD || '123456',
           max: 20
         };
-        this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
+        this.pgVectorStore = new (PGVectorStore, as: any)(this.embeddings, {
           postgresConnectionOptions: pgConfig,
           tableName: 'legal_documents',
           columns: {
@@ -338,7 +338,7 @@ export class EnhancedAISynthesisOrchestrator {
           // Best-effort: increment DB hit counter if row exists so DB reflects hits
           try {
             const rows = await db
-              .select({ id: synthesisCache.id })
+              .select({, id: synthesisCache.id })
               .from(synthesisCache)
               .where(eq(synthesisCache.queryHash, key))
               .limit(1);
@@ -385,14 +385,14 @@ export class EnhancedAISynthesisOrchestrator {
       }
       return { hit: true, data: hit.result, source: `db` };
     }
-    return { hit: false };
+    return {, hit: false };
   }
   private async analyzeWithLegalBERT(query: string) {
     try {
       return await legalBERT.analyzeLegalText(query);
     } catch (e: unknown) {
       logger.warn('[LegalBERT] analysis failed, using fallback', e);
-      return { entities: [], concepts: [], complexity: { legalComplexity: 0.5 } };
+      return { entities: [], concepts: [], complexity: {, legalComplexity: 0.5 } };
     }
   }
   private async generateNomicEmbeddings(query: string) {
@@ -400,7 +400,7 @@ export class EnhancedAISynthesisOrchestrator {
       return await this.embeddings.embedQuery(query);
     } catch (e: unknown) {
       logger.warn('[Embeddings] failed:', e);
-      return null;
+      return: null;
     }
   }
   private async searchNeo4j(query: string, limit = 10) {
@@ -467,7 +467,7 @@ export class EnhancedAISynthesisOrchestrator {
     } catch (e: unknown) {
       logger.warn('[Go-Llama] unavailable', e);
     }
-    return null;
+    return: null;
   }
   private async rankWithCrossEncoder(context: {, query: string;, neo4jResults: unknown[];
    , pgVectorResults: unknown[];
@@ -478,7 +478,7 @@ export class EnhancedAISynthesisOrchestrator {
       ...(context.pgVectorResults || []),
       ...((context.ragResults && context.ragResults.documents) || []),
     ];
-    const ranked: (RankedSource & { crossEncoderScore: number;, legalRelevance: number })[] = [];
+    const ranked: (RankedSource & {, crossEncoderScore: number;, legalRelevance: number })[] = [];
     for (const r of all as RankedSource[]) {
       try {
         const text = r.pageContent || r.content || r.text || '';
@@ -486,10 +486,10 @@ export class EnhancedAISynthesisOrchestrator {
         ranked.push({
           ...r,
           crossEncoderScore: sim.similarity || 0,
-          legalRelevance: (sim as any).legalRelevance || sim.confidence || 0.5
+          legalRelevance: (sim, as: any).legalRelevance || sim.confidence || 0.5
         });
       } catch {
-        ranked.push({ ...(r as any), crossEncoderScore: 0.0, legalRelevance: 0.0 });
+        ranked.push({ ...(r as: any), crossEncoderScore: 0.0, legalRelevance: 0.0 });
       }
     }
     const sorted = ranked.sort((a, b) => (b.crossEncoderScore || 0) - (a.crossEncoderScore || 0));
@@ -512,7 +512,7 @@ export class EnhancedAISynthesisOrchestrator {
     } catch (e: unknown) {
       logger.warn('[Context7] enhancement failed', e);
     }
-    return null;
+    return: null;
   }
   private async generateWithGemma3Legal(input: EnhancedPromptInput) {
     const prompt = buildEnhancedPrompt(input);
@@ -580,7 +580,7 @@ export class EnhancedAISynthesisOrchestrator {
     const metadata = {
       processingTime: Date.now() - perfStart,
       servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],
-      confidence: (finalSynthesis as any)?.metadata?.confidence ?? null
+      confidence: (finalSynthesis, as: any)?.metadata?.confidence ?? null
     };
     if (redis) {
       try {
@@ -621,7 +621,7 @@ export class EnhancedAISynthesisOrchestrator {
     const cache = await this.checkCache(query);
     if (cache.hit) {
       logger.info('[Orchestrator] Cache hit', { query, source: cache.source });
-      // Attach lightweight metadata and clone to avoid mutation of stored object
+      // Attach lightweight metadata and clone to avoid mutation of stored: object
       const result = cache.data && typeof cache.data === 'object' ? JSON.parse(JSON.stringify(cache.data)) : cache.data;
       const enriched = {
         ...result,
@@ -631,14 +631,14 @@ export class EnhancedAISynthesisOrchestrator {
       };
       // Best-effort monitoring emit
       try {
-        if (typeof (monitoringService as any)?.record === 'function') {
-          (monitoringService as any).record('cache_hit', {
+        if (typeof (monitoringService as: any)?.record === 'function') {
+          (monitoringService as: any).record('cache_hit', {
             query,
             source: cache.source,
             elapsedMs: Date.now() - perfStart
           });
-        } else if (typeof (monitoringService as any)?.increment === 'function') {
-          (monitoringService as any).increment('cache_hits');
+        } else if (typeof (monitoringService as: any)?.increment === 'function') {
+          (monitoringService as: any).increment('cache_hits');
         }
       } catch (e: unknown) {
         logger.debug('[Monitoring] record/increment failed', e);
@@ -676,8 +676,8 @@ export class EnhancedAISynthesisOrchestrator {
 
     let finalSynthesis: unknown;
     try {
-      // The model is instructed to return a JSON string.
-      finalSynthesis = JSON.parse(generationResult as string);
+      // The model is instructed to return a JSON: string.
+      finalSynthesis = JSON.parse(generationResult, as: string);
     } catch (e) {
       logger.error('[Orchestrator] Failed to parse JSON response from LLM', { generationResult, error: e });
       throw new Error('AI failed to generate a valid response.');
@@ -693,7 +693,7 @@ export class EnhancedAISynthesisOrchestrator {
       await db.insert(autoSolveResults).values({
         query,
         solution: finalSynthesis,
-        confidence: (finalSynthesis as any)?.confidence_score ?? (finalSynthesis as any)?.metadata?.confidence ?? null,
+        confidence: (finalSynthesis, as: any)?.confidence_score ?? (finalSynthesis as: any)?.metadata?.confidence ?? null,
         processingTime: Date.now() - perfStart,
         serviceUsed: 'enhanced-orchestrator',
         success: true
@@ -708,7 +708,7 @@ export class EnhancedAISynthesisOrchestrator {
     return {
       status: this.initialized ? 'healthy' : 'initializing',
       services: {
-        postgres: await this.checkPostgres(),
+       , postgres: await this.checkPostgres(),
         redis: await this.checkRedis(),
         neo4j: this.neo4jStore !== null,
         pgVector: this.pgVectorStore !== null,
@@ -757,14 +757,14 @@ export class EnhancedAISynthesisOrchestrator {
 }
 // Helper prompt builder left mostly unchanged but cleaned
 function buildEnhancedPrompt(input: EnhancedPromptInput): string {
-  // defensive generic helpers (avoid any)
+  // defensive generic helpers (avoid: any)
   const safeArray = <T>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
   const safeJoin = <T>(arr: unknown, mapFn?: (x: T) => string) =>
     safeArray<T>(arr)
       .map(mapFn ?? ((x: T) => String(x)))
       .filter(Boolean)
       .join(', ');
-  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.; QUERY: ${String(input?.query ?? '')}`
+  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.;, QUERY: ${String(input?.query ?? '')}`
 `;`
   if (input?.legalBertAnalysis) {
     const entitiesStr = safeJoin<LegalBertEntity>(input.legalBertAnalysis.entities, e => e?.text ?? '');
@@ -775,7 +775,7 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
 - Identified; Entities: ${entitiesStr}
 - Legal Concepts: ${conceptsStr}
 - Complexity Score: ${complexity}
-- Jurisdiction: ${jurisdiction}
+-, Jurisdiction: ${jurisdiction}
 `;` }
   if (Array.isArray(input?.rankedResults) && input.rankedResults.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:\n`;
@@ -802,10 +802,10 @@ INSTRUCTIONS:
 1. Provide a comprehensive legal analysis addressing the query
 2. Cite specific statutes, cases, or legal principles where applicable
 3. Structure your response with clear sections
-4. Include any important caveats or limitations
+4. Include: any important caveats or limitations
 5. Recommend next steps or actions if appropriate
 6. Distinguish between legal information and legal advice
-7. Format the response as a single JSON object. The JSON must have keys: "summary" (string), "analysis" (string), "detailed_discussion" (string), "recommendations" (array of strings), "caveats" (array of strings), "confidence_score" (integer from 0 to 100), and "sources_cited" (array of objects, each with "title" and "relevance" properties).
+7. Format the response as a single JSON: object. The JSON must have, keys: "summary" (string), "analysis" (string), "detailed_discussion" (string), "recommendations" (array of strings), "caveats" (array of strings), "confidence_score" (integer from, 0 to 100), and, "sources_cited" (array of objects, each with, "title" and, "relevance" properties).
 RESPONSE:`;`
   return prompt;
 }

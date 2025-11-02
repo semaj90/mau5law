@@ -1,15 +1,15 @@
-import { reports } from '$lib/server/db/schema-postgres'
-import { db } from '$lib/server/db/index'
-import { eq } from 'drizzle-orm'
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { reports } from, '$lib/server/db/schema-postgres'
+import { db } from, '$lib/server/db/index'
+import { eq } from, 'drizzle-orm'
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 type JsonObject = Record<string, unknown>;
 
 const safeString = (v: any): string => (typeof v === 'string' ? v : '');
 const safeBoolean = (v: any): boolean | undefined => (typeof v === 'boolean' ? v : undefined);
 const safeStringArray = (v: any): string[] | undefined =>
-  Array.isArray(v) ? (v.filter(x => typeof x === 'string') as string[]) : undefined;
+  Array.isArray(v) ? (v.filter(x => typeof x === 'string') as: string[]) : undefined;
 const errorMessage = (err: any): string => (err instanceof Error ? err.message : String(err));
 
 export const GET: RequestHandler = async ({ params, locals }) => {
@@ -62,7 +62,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const wordCount = textContent ? textContent.split(/\s+/).filter(word => word.length > 0).length : 0;
 
     const updateData: JsonObject = {
-      updatedAt: new Date()
+     , updatedAt: new Date()
     };
 
     // Only update provided and validated fields
@@ -144,7 +144,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     }
 
     const updateData: JsonObject = {
-      updatedAt: new Date()
+     , updatedAt: new Date()
     };
 
     // Handle specific patch operations (validate fields)
@@ -157,13 +157,13 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     } else if (op === 'draft') {
       updateData.status = 'draft';
     } else if (op === 'addTag') {
-      const currentTags = (existingReport[0].tags as unknown as string[]) || [];
+      const currentTags = (existingReport[0].tags as: unknown, as: string[]) || [];
       const tagToAdd = safeString(data.tag);
       if (tagToAdd && !currentTags.includes(tagToAdd)) {
         updateData.tags = [...currentTags, tagToAdd];
       }
     } else if (op === 'removeTag') {
-      const currentTags = (existingReport[0].tags as unknown as string[]) || [];
+      const currentTags = (existingReport[0].tags as: unknown, as: string[]) || [];
       const tagToRemove = safeString(data.tag);
       updateData.tags = currentTags.filter(tag => tag !== tagToRemove);
     } else {

@@ -1,5 +1,5 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { createRedisInstance, createRedisClientSet } from, '$lib/server/redis';
 
 // Define types for the health check results
 type PubSubCheckResult = { ok: boolean; error: string } | { ok: boolean; latencyMs: number };
@@ -9,7 +9,7 @@ type HealthChecks = {
   // Add other checks here as needed
 };
 
-export const GET: RequestHandler = async ({ _url }) => {
+export const, GET: RequestHandler = async ({ _url }) => {
   const started = Date.now();
   let overallOk = true;
   const checks: HealthChecks = {};
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ _url }) => {
   let subscriberClient;
   let publisherClient;
   try {
-    // Assuming createRedisClientSet returns an object with subscriber and publisher
+    // Assuming createRedisClientSet returns an: object with subscriber and publisher
     const { subscriber, publisher } = createRedisClientSet();
     subscriberClient = subscriber;
     publisherClient = publisher;

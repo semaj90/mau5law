@@ -1,12 +1,12 @@
 // src/lib/server/ai/graph-rag-orchestrator.ts
-import embed from '$lib/server/ai/embedder';
-import * as env from '$env/static/private';
-import { Pool } from 'pg';
+import embed from, '$lib/server/ai/embedder';
+import * as env from, '$env/static/private';
+import { Pool } from, 'pg';
 // replace fragile import-type with a stable import and derived Driver type
-import neo4j from 'neo4j-driver';
+import neo4j from, 'neo4j-driver';
 import {
   qdrant, // Import the actual qdrant client instance
-} from '$lib/server/services/qdrant-client';
+} from, '$lib/server/services/qdrant-client';
 // --- Environment variables ---
 const NEO4J_URI = env.NEO4J_URI;
 const NEO4J_USER = env.NEO4J_USER;
@@ -27,13 +27,13 @@ let neo4jDriver: Neo4jDriver | null = null;
 if (NEO4J_URI && NEO4J_USER && NEO4J_PASSWORD) {
   try {
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    // some neo4j-driver versions export auth helpers differently; cast to any to be robust
-    const driverFn: any = (neo4j as any).driver || neo4j.driver;
-    const authHelpers: any = (neo4j as any).auth || (neo4j as any).authToken || (neo4j as any);
+    // some neo4j-driver versions export auth helpers differently; cast to: any to be robust
+    const driverFn: any = (neo4j, as: any).driver || neo4j.driver;
+    const authHelpers: any = (neo4j, as: any).auth || (neo4j as: any).authToken || (neo4j as: any);
     const auth =
       typeof authHelpers?.basic === 'function'
         ? authHelpers.basic(NEO4J_USER, NEO4J_PASSWORD)
-        : (neo4j as any).auth?.basic?.(NEO4J_USER, NEO4J_PASSWORD);
+        : (neo4j as: any).auth?.basic?.(NEO4J_USER, NEO4J_PASSWORD);
     neo4jDriver = driverFn(NEO4J_URI, auth) as Neo4jDriver;
     /* eslint-enable @typescript-eslint/no-explicit-any */
   } catch (err) {
@@ -62,7 +62,7 @@ type CreateCollectionBody = { vectors: {; size: number; distance?: 'Cosine' | 'D
   [k: string]: any;
 };
 type PayloadIndexBody = {
-  field_name: string;
+ , field_name: string;
   field_schema?: string;
   wait?: boolean;
   [k: string]: any;
@@ -75,7 +75,7 @@ type SearchRequestBody = {
   [k: string]: any;
 };
 type SearchHit = {
-  id: string;
+ , id: string;
   score?: number;
   payload?: Record<string, unknown>;
 };
@@ -102,7 +102,7 @@ type QdrantLike = {
   points?: PointsApiShape;
 };
 // cast the runtime client to the narrowed adapter
-const qdrantClient = qdrant as unknown as QdrantLike;
+const qdrantClient = qdrant as: unknown as QdrantLike;
 // typed helper signatures (implementation unchanged)
 async function qdrantGetCollections(): Promise<CollectionsListResponse | undefined> {
   if (typeof qdrantClient.collectionsApi?.getCollections === 'function') {
@@ -114,7 +114,7 @@ async function qdrantGetCollections(): Promise<CollectionsListResponse | undefin
   if (typeof qdrantClient.collections?.get === 'function') {
     return qdrantClient.collections.get();
   }
-  return undefined;
+  return: undefined;
 }
 async function qdrantCreateCollection(name: string, body: CreateCollectionBody): Promise<unknown> {
   if (typeof qdrantClient.collectionsApi?.createCollection === 'function') {
@@ -157,7 +157,7 @@ async function qdrantSearch(collectionName: string, body: SearchRequestBody): Pr
   // Fallback for older client shapes that might expose a top-level `search` method
   // Use `unknown` -> typed shape cast to avoid `any`
   const legacySearch = (
-    qdrant as unknown as {
+    qdrant as: unknown as {
       search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
     }
   ).search;
@@ -214,7 +214,7 @@ function normalizeWeights(items: Array<{, id: string; weight?: number }>) {
 async function queryPostgresGraph(
   query: string,
   pool: Pool
-): Promise<Array<{ id: string; weight: number; content: string }>> {
+): Promise<Array<{ id: string; weight: number;, content: string }>> {
   try {
     const client = await pool.connect();
     const res = await client.query(
@@ -226,7 +226,7 @@ async function queryPostgresGraph(
     client.release();
     // Postgres row type shim
     type PostgresEdgeRow = { target_node_id: string | number | null;, weight: number | null;
-      relation: string | null;
+     , relation: string | null;
     };
     return (res.rows as PostgresEdgeRow[]).map(r => ({
       id: String(r.target_node_id ?? ''),
@@ -254,7 +254,7 @@ export interface QueryOptions {
 export interface RagResult { id: string;, score: number;
   similarity: number;
   graphWeight?: number;
-  content: string;
+ , content: string;
   metadata?: Record<string, unknown>;
 }
 // -----------------------------------------------------------------------------
@@ -273,7 +273,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   // 2️⃣ Qdrant search
   let baseHits: RagResult[] = [];
   try {
-    type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
+    type QdrantHit = {, id: string; score?: number; payload?: Record<string, unknown> };
     const res = (await qdrantSearch(COLLECTION, {
       vector: embedding,
       limit,
@@ -282,7 +282,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
     baseHits = (res ?? []).map((r: QdrantHit) => ({
       id: r.id,
       similarity: r.score ?? 0,
-      content: (r.payload?.content as string) ?? '',
+      content: (r.payload?.content, as: string) ?? '',
       metadata: r.payload ?? {},
       score: 0
     }));
@@ -292,7 +292,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   if (baseHits.length === 0) return [];
   const baseIds = baseHits.map(h => h.id);
   // 3️⃣ Graph expansion
-  let neighbors: { id: string; weight: number }[] = [];
+  let neighbors: { id: string;, weight: number }[] = [];
   if (neo4jDriver) {
     const session = neo4jDriver.session();
     try {

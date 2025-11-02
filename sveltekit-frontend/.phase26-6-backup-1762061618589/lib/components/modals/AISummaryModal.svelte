@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
 </script>
-<Dialog.Root open={isOpen} on:close={closeModal}>
+<Dialog open={isOpen} on:close={closeModal}>
   <Dialog.Content class="max-w-5xl">
     <div class="dialog-header">
       <Dialog.Title>AI Summary</Dialog.Title>
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
       </Button>
     </div>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   /* @unocss-include */
   .prose {

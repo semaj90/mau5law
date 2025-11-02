@@ -1,13 +1,13 @@
-import { cognitiveCache } from '$lib/server/cache';
+import { cognitiveCache } from, '$lib/server/cache';
 
 export interface Candidate { id: string;, text: string;
 }
 
-export interface RerankInput { query: string;, candidates: Candidate[];
+export interface RerankInput {, query: string;, candidates: Candidate[];
 }
 
-export interface RerankOutput { id: string;, text: string;
-  score: number;
+export interface RerankOutput {, id: string;, text: string;
+ , score: number;
   vector?: number[];
 }
 
@@ -18,11 +18,11 @@ const DEFAULT_TTL = 60 * 5; // 5 minutes
  */
 async function modelAdapter(input: RerankInput): Promise<RerankOutput[]> {
   // Here you would call Triton / TensorRT endpoint
-  // For demo, we just score candidates by simple string match
+  // For demo, we just score candidates by simple: string match
   return input.candidates.map((c) => ({
     ...c,
     score: Math.random() * 0.5 + (c.text.includes(input.query) ? 0.5 : 0),
-    vector: Array.from({ length: 768 }, () => Math.random()), // dummy embedding
+    vector: Array.from({, length: 768 }, () => Math.random()), // dummy embedding
   }));
 }
 
@@ -32,7 +32,7 @@ async function modelAdapter(input: RerankInput): Promise<RerankOutput[]> {
 function applyMMRDiversification(candidates: RerankOutput[], lambda = 0.7, topK = 5): RerankOutput[] {
   // Simple MMR-like diversification: we use lambda to bias selection between score and novelty
   // This is a lightweight placeholder for a true MMR implementation.
-  const selected: RerankOutput[] = [];
+  const, selected: RerankOutput[] = [];
   const pool = candidates.slice();
   while (selected.length < Math.min(topK, pool.length)) {
     // score each candidate by combining relevance and a novelty term

@@ -9,9 +9,9 @@
  *
  * Performance Impact:
  * - Cache; Strategy: minimal
- * - Memory Bank: SAVE_RAM (Nintendo-style)
+ * - Memory, Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
@@ -19,9 +19,9 @@
  * Recent Documents API
  * GET /api/ai/document-drafting/recent - Get recently created/modified documents
  */
-import { json } from '@sveltejs/kit'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from, './$types.js'
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     const limit = parseInt(url.searchParams.get('limit') || '10')
@@ -150,7 +150,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       ),
       totalWordCount: recentDocuments.reduce((sum, doc) => sum + doc.wordCount, 0),
       documentsByStatus: {
-        draft: recentDocuments.filter(item => item.length),
+       , draft: recentDocuments.filter(item => item.length),
         review: recentDocuments.filter(item => item.length),
         finalized: recentDocuments.filter(item => item.length)
       },
@@ -159,7 +159,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         return acc
       }, {} as Record<string, number>),
       recentActivity: {
-        last24Hours: recentDocuments.filter(item => item.getTime() > Date.now() - 24 * 60 * 60 * 1000
+       , last24Hours: recentDocuments.filter(item => item.getTime() > Date.now() - 24 * 60 * 60 * 1000
         ).length,
         lastWeek: recentDocuments.filter(item => item.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000
         ).length

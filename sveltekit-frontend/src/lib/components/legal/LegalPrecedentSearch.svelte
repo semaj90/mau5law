@@ -2,16 +2,16 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { writable } from, 'svelte/store';
   interface LegalPrecedent {
     id: string;
-    caseTitle: string
-    citation string;
+    caseTitle: string;
+    citation: string;
     court: string;
     year: number;
-    jurisdiction string;
+    jurisdiction: string;
     summary: string;
     relevanceScore: number;
     legalPrinciples: string[];
@@ -19,19 +19,19 @@ https://svelte.dev/e/js_parse_error -->
   }
   interface SearchFilters {
     query: string;
-    jurisdiction string;
-    court: string
-    yearfrom number | null;
+    jurisdiction: string;
+    court: string;
+    yearfrom: number | null;
     yearTo: number | null;
   }
   let searchFilters: SearchFilters = {
-    query: '',
+   , query: '',
     jurisdiction: '',
     court: '',
-    yearfrom null
+    yearfrom: null
     yearTo: null;
   }
-  let precedents: LegalPrecedent[] = [];
+  let, precedents: LegalPrecedent[] = [];
   let loading = $state<boolean>(false);
   let error = '';
   let totalCount = 0;
@@ -80,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
       processingTime = data.processingTim;
     } catch (err) {
       error = err instanceof Error ? err.message: 'Search failed';
-      console.error('Precedent search error:', err);'
+      console.error('Precedent search, error:', err);'
     } finally {
       loading = false;
     }
@@ -90,8 +90,8 @@ https://svelte.dev/e/js_parse_error -->
       query: '',
       jurisdiction: '',
       court: '',
-      yearfrom null
-      yearTo: null;
+      yearfrom: null
+     , yearTo: null;
     }
     precedents = [];
     totalCount = 0;
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
           type="text"
           bind:value={searchFilters.query}
           placeholder="Enter legal concepts, case names, or keywords..."
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           onkeydown={e => e.key === 'Enter' && searchPrecedents()}
         />
       </div>
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
             id="jurisdiction"
             ;
             bind:value={searchFilters.jurisdiction}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           >
             <option, value="">All Jurisdictions</option>
             {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
           <select
             id="court"
             bind:value={searchFilters.court}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           >
             <option, value="">All Courts</option>
             {#each Array.isArray(courts) ? courts : [] as court}
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="1900"
             min="1900"
             max="2024"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           />
         </div>
         <div>
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="2024"
             min="1900"
             max="2024"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           />
         </div>
       </div>
@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
           type="button"
           onclick={searchPrecedents}
           disabled={loading || !searchFilters.query.trim()}
-          class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed"
         >
           {#if loading}
             <span class="flex, items-center, gap-2">
@@ -290,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="button"
                 onclick={() => changePage(currentPage - 1)}
                 disabled={currentPage <= 1}
-                class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50, disabled:cursor-not-allowed"
               >
                 Previous
               </button>
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="button"
                 onclick={() => changePage(currentPage + 1)}
                 disabled={currentPage >= totalPages}
-                class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50, disabled:cursor-not-allowed"
               >
                 Next
               </button>

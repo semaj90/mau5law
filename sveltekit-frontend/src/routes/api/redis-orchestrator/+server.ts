@@ -2,8 +2,8 @@
  * Redis Orchestrator Management API
  * Provides control and monitoring for the Redis-based legal AI optimization system
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json, error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 import {
   RedisLLMCache,
   RedisAgentMemory,
@@ -12,8 +12,8 @@ import {
   type LLMCacheStats,
   type AgentMemoryStats,
   type TaskQueueStats
-} from '$lib/services/redis-orchestrator'; // Import all necessary components and types
-import { createRedisInstance } from '$lib/server/redis.js'; // Assuming this exists for general Redis info
+} from, '$lib/services/redis-orchestrator'; // Import all necessary components and types
+import { createRedisInstance } from, '$lib/server/redis.js'; // Assuming this exists for general Redis info
 
 // Global Redis client for general info, if not already available via the classes
 const redisClient = createRedisInstance({
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const redisMemoryInfo: string = await redisClient.info('memory'); // Get raw Redis memory info
 
     const comprehensiveStats: RedisOrchestratorStats = {
-      llm_cache: llmCacheStats,
+     , llm_cache: llmCacheStats,
       agent_memory: agentMemoryStats,
       task_queue: taskQueueStats,
       redis_memory_info: redisMemoryInfo
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
         agent_memory_detailed: agentMemoryStats,
         task_queue_detailed: taskQueueStats,
         performance_metrics: {
-          cache_efficiency: llmCacheStats.hit_rate_estimate,
+         , cache_efficiency: llmCacheStats.hit_rate_estimate,
           memory_optimization: agentMemoryStats.memory_usage, // Using agent memory for overall memory optimization
           async_task_throughput: taskQueueStats.total_tasks_processed
         }
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     return json({
-      status: 'healthy',
+     , status: 'healthy',
       timestamp: new Date().toISOString(),
       redis_stats: comprehensiveStats, // Pass the comprehensive stats
       ...detailedStats,
@@ -128,7 +128,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     });
   } catch (err: any) {
     // Changed: 'err'; to: 'err: any' for type safety
-    console.error('🎮 Cache clear failed:', err);
+    console.error('🎮 Cache clear, failed:', err);
     throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };
 // handleTaskQuery removed for brevity and to resolve errors. Re-implement as needed.
@@ -143,7 +143,7 @@ function generatePerformanceRecommendations(stats: RedisOrchestratorStats): stri
     recommendations.push('LLM cache hit rate is below 70% - consider warming cache with common queries');
   }
   if (stats.agent_memory.active_sessions > 1000) {
-    recommendations.push('High number of active sessions - consider implementing session cleanup');
+    recommendations.push('High: number of active sessions - consider implementing session cleanup');
   }
   if (stats.task_queue.queued_tasks > 50) {
     recommendations.push('Task queue is building up - consider scaling worker processes');
@@ -197,7 +197,7 @@ function generateTaskQueueRecommendations(queueStats: TaskQueueStats): string[] 
 /**
  * Estimate processing time based on task type and query complexity
  * @param taskType - The type of task (e.g., 'complex_legal')
- * @param query - The query string for complexity estimation
+ * @param query - The query: string for complexity estimation
  */
 function $estimateProcessingTime(taskType: string, query: string): string {
   const baseTimesByType = {

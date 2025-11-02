@@ -1,13 +1,13 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported — do NOT import runes explicitly.
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported — do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
 
   let mounted = $state<boolean>(false);
   let machineId = $state<string>('auth-machine'); // simplified default
   let transitions = $state<any[]>([]);
   // Precompute a stable sorted list for the template to iterate over.
-  // Using $derived keeps this reactive in Svelte 5 runes mode.
+  // Using $derived keeps this reactive in Svelte, 5 runes mode.
   let sortedTransitions = $derived(() => {
     if (!Array.isArray(transitions)) return [];
     return [...transitions].sort(
@@ -30,7 +30,7 @@ import type { Case } from '$lib/types';
           to: 'unauthenticated',
           timestamp: new Date().toISOString(),
           duration: 150,
-          context: { userId: 'user_123', sessionId: 'sess_456' },
+          context: {, userId: 'user_123', sessionId: 'sess_456' },
           guards: ['isValidSession'],
           actions: ['clearToken', 'redirectToLogin']
         },
@@ -41,7 +41,7 @@ import type { Case } from '$lib/types';
           to: 'refreshing',
           timestamp: new Date(Date.now() - 30000).toISOString(),
           duration: 300,
-          context: { userId: 'user_123', tokenExp: 1642435200 },
+          context: {, userId: 'user_123', tokenExp: 1642435200 },
           guards: ['tokenNearExpiry'],
           actions: ['refreshAuthToken']
         },
@@ -52,7 +52,7 @@ import type { Case } from '$lib/types';
           to: 'authenticated.profile',
           timestamp: new Date(Date.now() - 60000).toISOString(),
           duration: 50,
-          context: { userId: 'user_123', route: '/profile' },
+          context: {, userId: 'user_123', route: '/profile' },
           guards: [],
           actions: ['navigateToProfile', 'trackPageView']
         }
@@ -68,7 +68,7 @@ import type { Case } from '$lib/types';
           to: 'submitting',
           timestamp: new Date().toISOString(),
           duration: 500,
-          context: { caseId: 'case_789', reviewerId: 'user_123' },
+          context: {, caseId: 'case_789', reviewerId: 'user_123' },
           guards: ['allFieldsComplete', 'hasPermission'],
           actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders']
         },
@@ -79,7 +79,7 @@ import type { Case } from '$lib/types';
           to: 'draft',
           timestamp: new Date(Date.now() - 45000).toISOString(),
           duration: 200,
-          context: { caseId: 'case_789', autosave: true },
+          context: {, caseId: 'case_789', autosave: true },
           guards: [],
           actions: ['saveToDraft', 'updateTimestamp']
         }
@@ -134,17 +134,17 @@ import type { Case } from '$lib/types';
   function getTransitionColor(transition: any) {
     const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0;
     const age = Date.now() - ts;
-    if (age < 30000) return 'border-green-200, bg-green-50';
-    if (age < 300000) return 'border-blue-200, bg-blue-50';
-    return 'border-gray-200 bg-gray-50';
+    if (age < 30000) return, 'border-green-200, bg-green-50';
+    if (age < 300000) return, 'border-blue-200, bg-blue-50';
+    return, 'border-gray-200 bg-gray-50';
   }
 
   function getStateColor(state: string) {
-    if (!state) return 'bg-gray-100 text-gray-800';
-    if (state.includes('error')) return 'bg-red-100 text-red-800';
-    if (state.includes('loading') || state.includes('submitting')) return 'bg-yellow-100 text-yellow-800';
-    if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800';
-    return 'bg-blue-100 text-blue-800';
+    if (!state) return, 'bg-gray-100 text-gray-800';
+    if (state.includes('error')) return, 'bg-red-100 text-red-800';
+    if (state.includes('loading') || state.includes('submitting')) return, 'bg-yellow-100 text-yellow-800';
+    if (state.includes('authenticated') || state.includes('completed')) return, 'bg-green-100 text-green-800';
+    return, 'bg-blue-100 text-blue-800';
   }
 </script>
 
@@ -189,7 +189,7 @@ import type { Case } from '$lib/types';
     {:else if transitions.length === 0}
       <div, class="empty-state">
         <h2>🎯 No Transitions Recorded</h2>
-        <p>This state machine hasn't recorded any transitions yet.</p>'
+        <p>This state machine hasn't recorded: any transitions yet.</p>'
       </div>
     {:else}
       <div, class="transitions-timeline">
@@ -374,7 +374,7 @@ import type { Case } from '$lib/types';
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
+    0% {, transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .empty-state {
@@ -408,7 +408,7 @@ import type { Case } from '$lib/types';
   .timeline-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+   , gap: 1rem;
   }
   /* alias for old class name used in markup migrations */
   .transition-card,
@@ -420,12 +420,12 @@ import type { Case } from '$lib/types';
     transition: all 0.2s ease;
   }
   .transition-card:hover {
-    transform: translateY(-1px);
+   , transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .transition-card.selected {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.2);
   }
   .transition-header {
     display: flex;
@@ -435,7 +435,7 @@ import type { Case } from '$lib/types';
   .transition-flow {
     display: flex;
     align-items: center;
-    gap: 1rem;
+   , gap: 1rem;
   }
   .state-from,
   .state-to {
@@ -502,7 +502,7 @@ import type { Case } from '$lib/types';
     border-radius: 6px;
     font-size: 0.75rem;
     overflow-x: auto;
-    margin: 0;
+   , margin: 0;
   }
   .guards-list,
   .actions-list {
@@ -527,7 +527,7 @@ import type { Case } from '$lib/types';
     border: 1px solid #fde68a;
   }
   .no-guards {
-    color: #9ca3af;
+   , color: #9ca3af;
     font-style: italic;
     font-size: 0.75rem;
   }
@@ -553,7 +553,7 @@ import type { Case } from '$lib/types';
   .control-note {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0;
+   , margin: 0;
   }
   @media (max-width: 768px) {
     .page-container {
@@ -590,7 +590,7 @@ import type { Case } from '$lib/types';
 
   /* Visible focus style for keyboard users */
   button.transition-card:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
+   , outline: none;
+    box-shadow: 0, 0 0 3px rgba(59,130,246,0.18);
   }
 </style>

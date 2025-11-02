@@ -1,13 +1,13 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching
  * Provides RAG operations with edge caching, metrics, and JSON optimization
  * Port: 8451 (QUIC), 8452 (HTTP/2 fallback)
  * Backend: Upload Service (8093), Enhanced RAG (8094)
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
 const RAG_QUIC_CONFIG = {
   primaryPort: 8451, // QUIC HTTP/3
   fallbackPort: 8452, // HTTP/2
@@ -34,7 +34,7 @@ export interface SourceMetadata {
   documentType?: string; // e.g., 'contract', 'brief', 'statute'
   caseId?: string;
   author?: string;
-  datePublished?: string; // ISO 8601 format
+  datePublished?: string; // ISO, 8601 format
   sourceUrl?: string;
   pageNumber?: number;
   section?: string;
@@ -44,12 +44,12 @@ export interface SourceMetadata {
   [key: string]: any;
 }
 
-export interface Source { id: string;, content: string;
+export interface Source {, id: string;, content: string;
   metadata?: SourceMetadata; // Use the new specific metadata interface
   score?: number;
 }
 
-export interface RAGResponse { answer: string;, sources: Source[];
+export interface RAGResponse {, answer: string;, sources: Source[];
   model: string;
   confidence: number;
   executionTime: number;
@@ -64,8 +64,8 @@ export interface RAGProxyHealthResponse {
   [key: string]: any; // Allow for additional properties if the health check response is dynamic
 }
 
-// Removed: import { goServiceManager } from '$lib/services/goMicroservice';
-import crypto from 'crypto';
+//, Removed: import { goServiceManager } from, '$lib/services/goMicroservice';
+import crypto from, 'crypto';
 
 /*
  * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics
@@ -162,14 +162,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error(400, ensureError({ message: 'Query is required and cannot be empty' })); // Added: '))'
     }
     if (ragRequest.maxResults && (ragRequest.maxResults < 1 || ragRequest.maxResults > 100)) {
-      error(400, ensureError({ message: 'Max results must be between 1 and 100' })); // Added: '))'
+      error(400, ensureError({ message: 'Max results must be between, 1 and 100' })); // Added: '))'
     }
     if (ragRequest.threshold && (ragRequest.threshold < 0 || ragRequest.threshold > 1)) {
-      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added: `))` }'`'`
+      error(400, ensureError({ message: 'Threshold must be between, 0 and 1' })); // Added: `))` }'`'`
     // Placeholder: Enhanced RAG go client is not available; use HTTP path or future client
     // Prepare request payload for Go service
     const requestPayload = {
-      query: ragRequest.query,
+     , query: ragRequest.query,
       context: ragRequest.context || [],
       documentIds: ragRequest.documentIds || [],
       maxResults: ragRequest.maxResults || 10,
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       useCache: ragRequest.useCache !== false && !bypassCache,
       model: ragRequest?.model || 'gemma3-legal',
       meta: {
-        requestId: crypto.randomUUID(),
+       , requestId: crypto.randomUUID(),
         timestamp: Date.now(),
         protocol: useHttp3 ? 'HTTP/3' : `HTTP/2` }
     };
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     let response: Response;
     let protocol: string;
     try {
-      const headers: Record<string, string> = {
+      const, headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'X-Request-ID': requestPayload.meta.requestId,
         'X-Use-Cache': String(requestPayload.useCache),
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           error: quicError instanceof Error ? quicError.message : `Unknown error` })
       );
     }
-    // Handle 304 Not Modified (cached response)
+    // Handle, 304 Not Modified (cached response)
     if (response.status === 304) {
       return json({
         success: true,
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     const responseData = await response.json();
     const ragResponse: RAGResponse = {
-      answer: responseData.answer || responseData.response,
+     , answer: responseData.answer || responseData.response,
       sources: responseData.sources || responseData.context || [],
       model: responseData?.model || requestPayload?.model || 'unknown',
       confidence: responseData.confidence || 0.8,
@@ -240,14 +240,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       cached: responseData.cached || false
     };
     return json({
-      success: true,
+     , success: true,
       data: ragResponse, // Added comma
       protocol,
       source: 'rag-quic-proxy',
       etag: response.headers.get('ETag') || requestHash,
       timestamp: new Date().toISOString(),
       metrics: {
-        queryLength: ragRequest.query.length,
+       , queryLength: ragRequest.query.length,
         resultsCount: ragResponse.sources.length,
         executionTimeMs: ragResponse.executionTime,
         confidence: ragResponse.confidence,
@@ -285,7 +285,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: 'Document '${document.id}' updated in RAG index`,'`
+      message: 'Document, '${document.id}' updated in RAG index`,'`
       result,
       timestamp: new Date().toISOString()
     });
@@ -323,7 +323,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: 'Document '${documentId}' removed from RAG index`,'`
+      message: 'Document, '${documentId}' removed from RAG index`,'`
       result,
       timestamp: new Date().toISOString()
     });

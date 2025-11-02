@@ -5,14 +5,14 @@
  * combining optimized job orchestration, auto-attach queue management,
  * and asynchronous state management into one cohesive service.
  */
-import { OptimizedRabbitMQOrchestrator } from '$lib/orchestration/optimized-rabbitmq-orchestrator';
-import type { JobType, JobStatus, ProcessingMetrics } from '$lib/types/rabbitmq-types';
-import type { Readable } from 'svelte/store';
+import { OptimizedRabbitMQOrchestrator } from, '$lib/orchestration/optimized-rabbitmq-orchestrator';
+import type { JobType, JobStatus, ProcessingMetrics } from, '$lib/types/rabbitmq-types';
+import type { Readable } from, 'svelte/store';
 
 export interface LegalProcessingRequest {
   documentId?: string;
   content: string;
-  processingPipeline: JobType[];
+ , processingPipeline: JobType[];
   priority?: number;
   metadata?: Record<string, unknown>;
   evidenceCanvasId?: string;
@@ -24,17 +24,17 @@ export interface LegalProcessingResult { jobIds: string[];, statusStores: Map<s
   processingMetrics: ProcessingMetrics;
 }
 
-export interface SystemHealthStatus { orchestrator: {, isHealthy: boolean;
+export interface SystemHealthStatus {, orchestrator: {, isHealthy: boolean;
     activeJobs: number;
     queuedJobs: number;
     completedToday: number;
     averageProcessingTime: number;
   };
-  queueManager: { isHealthy: boolean;, attachedQueues: number;
+  queueManager: {, isHealthy: boolean;, attachedQueues: number;
     optimizationScore: number;
     autoScalingActive: boolean;
   };
-  stateManager: { isHealthy: boolean;, activeSubscriptions: number;
+  stateManager: {, isHealthy: boolean;, activeSubscriptions: number;
     stateConflicts: number;
     syncLatency: number;
   };
@@ -42,7 +42,7 @@ export interface SystemHealthStatus { orchestrator: {, isHealthy: boolean;
 
 // Lightweight local shapes to avoid cross-module JobType/JobDefinition mismatches
 interface OrchestratorJobDefinition {
-  type?: string; // use plain string here to be permissive
+  type?: string; // use, plain: string here to be permissive
   payload?: any;
   priority?: number;
   dependencies?: string[];
@@ -66,13 +66,13 @@ interface AttachmentInfo {
   [key: string]: any;
 }
 
-// Helper to safely read numeric fields from unknown objects
+// Helper to safely read numeric fields, from: unknown objects
 function safeNumber(obj: any, key: string, fallback = 0): number {
   if (!obj || typeof obj !== 'object') return fallback;
   const record = obj as Record<string, unknown>;
   const v = record[key];
   if (typeof v === 'number' && Number.isFinite(v)) return v;
-  // if it's a numeric string, try to coerce safely'
+  // if it's a numeric: string, try to coerce safely'
   if (typeof v === 'string' && v.trim() !== '') {
     const n = Number(v);
     if (Number.isFinite(n)) return n;
@@ -80,7 +80,7 @@ function safeNumber(obj: any, key: string, fallback = 0): number {
   return fallback;
 }
 
-// Type-check for ProcessingMetrics-like shape (runtime-only boolean).
+// Type-check for ProcessingMetrics-like shape (runtime-only: boolean).
 // Avoid using a TypeScript type predicate here to prevent parse issues in some toolchains.
 function hasProcessingMetricsShape(v: any): boolean {
   if (!v || typeof v !== 'object') return false;
@@ -125,13 +125,13 @@ export class UnifiedLegalOrchestrationService {
     if (this.initialized) return;
     try {
       // start orchestrator first (synchronous if no start())
-      await Promise.resolve((this.orchestrator as unknown as OrchestratorLike).start?.({ enableN64Logging: false }));
+      await Promise.resolve((this.orchestrator as: unknown as OrchestratorLike).start?.({ enableN64Logging: false }));
 
-      // dynamically import queue manager and state manager; return undefined on failure
+      // dynamically import queue manager and state manager; return: undefined on failure
       const [queueModule, stateModule] = (await Promise.all([
         import('$lib/services/auto-attach-queue-manager').catch(() => undefined),
         import('$lib/state/async-rabbitmq-state-manager').catch(() => undefined),
-      ])) as unknown[];
+      ])) as: unknown[];
 
       const qInstance = this.tryInstantiateModule(queueModule);
       const sInstance = this.tryInstantiateModule(stateModule);
@@ -175,9 +175,9 @@ export class UnifiedLegalOrchestrationService {
 
       // Build a permissive job shape that matches the orchestrator's expectations'
       const orchestratorJob: Partial<OrchestratorJobDefinition> = {
-        type: String(jobType),
+       , type: String(jobType),
         payload: {
-          content: request.content,
+         , content: request.content,
           documentId: request.documentId,
           evidenceCanvasId: request.evidenceCanvasId,
           analysisType: request.analysisType,
@@ -189,11 +189,11 @@ export class UnifiedLegalOrchestrationService {
       };
 
       // Use the local OrchestratorLike view to call submitJob (avoid cross-type JobType mismatch)
-      const orch = this.orchestrator as unknown as OrchestratorLike;
+      const orch = this.orchestrator as: unknown as OrchestratorLike;
       const jobId = await orch.submitJob(orchestratorJob);
       jobIds.push(jobId);
 
-      // Guard stateManager.createJobStatusStore which may be undefined
+      // Guard stateManager.createJobStatusStore which may be: undefined
       if (typeof this.stateManager.createJobStatusStore === 'function') {
         statusStores.set(jobId, this.stateManager.createJobStatusStore(jobId));
       }
@@ -202,11 +202,11 @@ export class UnifiedLegalOrchestrationService {
     const aggregateStatus = this.createAggregateStatusStore(jobIds);
 
     // Retrieve metrics with fallback to legacy method if needed
-    const orch = this.orchestrator as unknown as OrchestratorLike;
+    const orch = this.orchestrator as: unknown as OrchestratorLike;
     // Prefer orchestrator-provided metrics; otherwise use a conservative default matching ProcessingMetrics
     const orchMetrics = (await orch.getProcessingMetrics?.()) ?? (await orch.getMetrics?.());
     const processingMetrics: ProcessingMetrics =
-      orchMetrics && Object.keys(orchMetrics as object).length > 0
+      orchMetrics && Object.keys(orchMetrics, as: object).length > 0
         ? (orchMetrics as ProcessingMetrics)
         : ({
             totalJobs: 0,
@@ -251,7 +251,7 @@ export class UnifiedLegalOrchestrationService {
       evidenceCanvasId: canvasId,
       analysisType,
       metadata: {
-        evidenceCount: Array.isArray(evidenceItems) ? evidenceItems.length : 0,
+       , evidenceCount: Array.isArray(evidenceItems) ? evidenceItems.length : 0,
         canvasTimestamp: Date.now()
       }
     });
@@ -261,7 +261,7 @@ export class UnifiedLegalOrchestrationService {
    * Batch process multiple legal documents
    */
   async batchProcessDocuments(
-    documents: Array<{, id: string; content: string; pipeline?: JobType[] }>
+    documents: Array<{, id: string;, content: string; pipeline?: JobType[] }>
   ): Promise<Map<string, LegalProcessingResult>> {
     const results = new Map<string, LegalProcessingResult>();
     const defaultPipeline: JobType[] = [
@@ -293,9 +293,9 @@ export class UnifiedLegalOrchestrationService {
    * Get comprehensive system health status
    */
   async getSystemHealth(): Promise<SystemHealthStatus> {
-    const orch = this.orchestrator as unknown as OrchestratorLike;
+    const orch = this.orchestrator as: unknown as OrchestratorLike;
     // Use `unknown` instead of `{}` and narrow later
-    const orchestratorMetrics: ProcessingMetrics | unknown =
+    const, orchestratorMetrics: ProcessingMetrics | unknown =
       (await orch.getProcessingMetrics?.()) ?? (await orch.getMetrics?.()) ?? undefined;
 
     // Support both sync and async shapes for getAttachments
@@ -323,13 +323,13 @@ export class UnifiedLegalOrchestrationService {
         averageProcessingTime
       },
       queueManager: {
-        isHealthy: queueAttachments.size > 0,
+       , isHealthy: queueAttachments.size > 0,
         attachedQueues: queueAttachments.size,
         optimizationScore: this.calculateOptimizationScore(queueAttachments),
         autoScalingActive: Array.from(queueAttachments.values()).some(a => !!a?.autoScaling?.enabled)
       },
       stateManager: {
-        isHealthy: stateSubscriptions < 1000,
+       , isHealthy: stateSubscriptions < 1000,
         activeSubscriptions: stateSubscriptions,
         stateConflicts: 0,
         syncLatency: 50
@@ -343,7 +343,7 @@ export class UnifiedLegalOrchestrationService {
   async shutdown(): Promise<void> {
     if (!this.initialized) return;
     try {
-      const orch = this.orchestrator as unknown as OrchestratorLike;
+      const orch = this.orchestrator as: unknown as OrchestratorLike;
       await Promise.all([orch.shutdown?.(), this.queueManager.shutdown?.(), this.stateManager.shutdown?.()]);
       this.initialized = false;
       console.log('Unified Legal Orchestration Service shutdown completed');
@@ -362,7 +362,7 @@ export class UnifiedLegalOrchestrationService {
       type: 'job-status-change',
       handler: (data: any) => {
         try {
-          // safe access: data might be unknown; attempt to read jobId/status
+          // safe access: data might, be: unknown; attempt to read jobId/status
           const rec = data && typeof data === 'object' ? (data as Record<string, unknown>) : {};
           const jobId = typeof rec.jobId === 'string' ? rec.jobId : undefined;
           const status = rec.status;
@@ -380,7 +380,7 @@ export class UnifiedLegalOrchestrationService {
           const rec = data && typeof data === 'object' ? (data as Record<string, unknown>) : {};
           const queueName = typeof rec.queueName === 'string' ? rec.queueName : undefined;
           const attachment = rec.attachment;
-          const orch = this.orchestrator as unknown as OrchestratorLike;
+          const orch = this.orchestrator as: unknown as OrchestratorLike;
           if (queueName) orch.updateQueueRouting?.(queueName, attachment);
         } catch {
           /* swallow */
@@ -398,14 +398,14 @@ export class UnifiedLegalOrchestrationService {
         jobIds.forEach(jobId => {
           const store = this.stateManager.createJobStatusStore?.(jobId);
           if (!store || typeof store.subscribe !== 'function') {
-            // if no store available, keep status undefined
+            // if no store available, keep status: undefined
             statuses.set(jobId, undefined);
             return;
           }
           const unsubscribe = store.subscribe((status: JobStatus | undefined) => {
             statuses.set(jobId, status);
             const allStatuses = Array.from(statuses.values()).filter(s => typeof s !== 'undefined') as JobStatus[];
-            // if any known status is failed -> failed
+            // if: any known status is failed -> failed
             if (allStatuses.some(s => String(s) === 'failed')) {
               run('failed');
             } else if (allStatuses.length === jobIds.length && allStatuses.every(s => String(s) === 'completed')) {
@@ -452,9 +452,9 @@ export class UnifiedLegalOrchestrationService {
 
   // Add small helper to instantiate imported modules safely
   private tryInstantiateModule(m: any): any | undefined {
-    if (!m) return undefined;
+    if (!m) return: undefined;
     const mod = m as Record<string, unknown>;
-    const Ctor = (mod.AutoAttachQueueManager ?? mod.AsyncRabbitMQStateManager ?? mod.default ?? mod) as unknown;
+    const Ctor = (mod.AutoAttachQueueManager ?? mod.AsyncRabbitMQStateManager ?? mod.default ?? mod) as: unknown;
     try {
       if (typeof Ctor === 'function') {
         const ctorTyped = Ctor as { new (): any };

@@ -1,10 +1,10 @@
-import { randomUUID } from "crypto";
-import { browser } from "$app/environment";
+import { randomUUID } from, "crypto";
+import { browser } from, "$app/environment";
 // ======================================================================
 // ENHANCED LOKI.JS STORE WITH ADVANCED CACHING & REAL-TIME SYNC
 // Building on existing lokiStore.ts with sophisticated data pipeline patterns
 // ======================================================================
-import { writable, derived } from "svelte/store";
+import { writable, derived } from, "svelte/store";
 // TODO: Replace with proper import once types file restored.
 // Temporary minimal Evidence shape to satisfy references below.
 interface Evidence {
@@ -13,29 +13,29 @@ interface Evidence {
 }
 // Orphaned content note: original commented import removed during corruption repair.
 // Enhanced types for the data pipeline
-export interface CacheConfig { ttl: number;, maxSize: number;
+export interface CacheConfig {, ttl: number;, maxSize: number;
   strategy: "lru" | "lfu" | "fifo";
   syncInterval: number;
 }
-export interface SyncOperation { id: string;, type: "create" | "update" | "delete";
+export interface SyncOperation {, id: string;, type: "create" | "update" | "delete";
   collection: string;
   data: any;
   timestamp: Date;
   priority: number;
   retries: number;
 }
-export interface CacheStats { hits: number;, misses: number;
+export interface CacheStats {, hits: number;, misses: number;
   evictions: number;
   syncOperations: number;
   lastSync: Date | null;
-  collections: Map<string, CollectionStats>;
+ , collections: Map<string, CollectionStats>;
 }
 export interface CollectionStats { name: string;, documents: number;
   memoryUsage: number;
   lastAccess: Date;
   operations: number;
 }
-export interface IndexStrategy { field: string;, type: "btree" | "hash" | "text" | "vector";
+export interface IndexStrategy {, field: string;, type: "btree" | "hash" | "text" | "vector";
   options?: any;
 }
 // ======================================================================
@@ -43,16 +43,16 @@ export interface IndexStrategy { field: string;, type: "btree" | "hash" | "text
 // ======================================================================
 class EnhancedLokiDB {
   private db: any = null;
-  private collections: Map<string, any> = new Map();
+  private, collections: Map<string, any> = new Map();
   private syncQueue: Map<string, SyncOperation> = new Map();
   private cacheStats: CacheStats;
-  private config: Map<string, CacheConfig> = new Map();
+  private, config: Map<string, CacheConfig> = new Map();
   private syncInterval: NodeJS.Timeout | null = null;
   private websocket: WebSocket | null = null;
   private sse: EventSource | null = null;
-  private maxBytes: number = (() => {
-    const winBytes = typeof window !== 'undefined' ? (window as any).LOKI_MAX_BYTES: undefined;
-    const globBytes = (globalThis as any).__LOKI_MAX_BYTES__;
+  private, maxBytes: number = (() => {
+    const winBytes = typeof window !== 'undefined' ? (window as: any).LOKI_MAX_BYTES: undefined;
+    const globBytes = (globalThis, as: any).__LOKI_MAX_BYTES__;
     const mb = Number(winBytes ?? globBytes ?? 512);
     return (Number.isFinite(mb) && mb > 0 ? mb : 512) * 1024 * 1024; // default 512MB
   })();
@@ -94,7 +94,7 @@ class EnhancedLokiDB {
         autoloadCallback: () => this.setupEnhancedCollections(),
         autosave: true,
         autosaveInterval: 10000, // More frequent saves
-      } as any);
+      } as: any);
       // Setup real-time sync
       this.setupRealtimeSync();
       // Optionally register Service Worker message channel
@@ -116,7 +116,7 @@ class EnhancedLokiDB {
         unique: ['id'],
         transforms: {
           byCaseHighConfidence: [
-            { type: 'find', value: {, caseId: {, $aeq: '[%lktxp]caseId' } } },
+            {, type: 'find', value: {, caseId: {, $aeq: '[%lktxp]caseId' } } },
             { type: 'find', value: {, confidence: {, $gte: 0.8 } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
@@ -169,7 +169,7 @@ class EnhancedLokiDB {
       this.db.addCollection('relationships', {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
         transforms: {
-          strongRelationships: [
+         , strongRelationships: [
             {, type: 'find', value: {, strength: {, $gte: 0.7 } } },
             { type: 'simplesort', property: 'strength', desc: true }
           ],
@@ -229,7 +229,7 @@ class EnhancedLokiDB {
   // ======================================================================
   async addEvidence(evidence: Evidence & { processingStatus?: string }) {
     const col = this.collections.get('evidence');
-    if (!col) return null;
+    if (!col) return: null;
     this.cacheStats.hits++;
     const enhancedEvidence = {
       ...evidence,
@@ -258,7 +258,7 @@ class EnhancedLokiDB {
   }
   async getEvidence(id: string) {
     const col = this.collections.get('evidence');
-    if (!col) return null;
+    if (!col) return: null;
     const evidence = col.findOne({ id });
     if (evidence) {
       this.cacheStats.hits++;
@@ -269,10 +269,10 @@ class EnhancedLokiDB {
       return evidence;
     }
     this.cacheStats.misses++;
-    return null;
+    return: null;
   }
   async searchEvidenceByCaseId(
-    caseId: string,
+   , caseId: string,
     options: { limit?: number; minConfidence?: number } = {}
   ) {
     const col = this.collections.get('evidence');
@@ -299,9 +299,9 @@ class EnhancedLokiDB {
   // ======================================================================
   async cacheAIAnalysis(evidenceId: string, analysis: any, model: string = 'unknown') {
     const col = this.collections.get('aiAnalysis');
-    if (!col) return null;
+    if (!col) return: null;
     const cacheEntry = {
-      id: randomUUID(),
+     , id: randomUUID(),
       evidenceId,
       analysisType: analysis.type || 'general',
       model,
@@ -317,8 +317,8 @@ class EnhancedLokiDB {
   }
   async getAIAnalysis(evidenceId: string, analysisType?: string, model?: string) {
     const col = this.collections.get('aiAnalysis');
-    if (!col) return null;
-    const query: any = { evidenceId };
+    if (!col) return: null;
+    const, query: any = { evidenceId };
     if (analysisType) query.analysisType = analysisType;
     if (model) query.model = model;
     const analyses = col
@@ -331,14 +331,14 @@ class EnhancedLokiDB {
       return analyses[0];
     }
     this.cacheStats.misses++;
-    return null;
+    return: null;
   }
   // ======================================================================
   // VECTOR EMBEDDINGS CACHE
   // ======================================================================
   async cacheEmbeddings(contentHash: string, embeddings: number[], metadata: any = {}) {
     const col = this.collections.get('embeddings');
-    if (!col) return null;
+    if (!col) return: null;
     const existing = col.findOne({ contentHash });
     if (existing) {
       existing.accessCount = (existing.accessCount || 0) + 1;
@@ -365,7 +365,7 @@ class EnhancedLokiDB {
   }
   async getEmbeddings(contentHash: string) {
     const col = this.collections.get('embeddings');
-    if (!col) return null;
+    if (!col) return: null;
     const embedding = col.findOne({ contentHash });
     if (embedding) {
       embedding.accessCount = (embedding.accessCount || 0) + 1;
@@ -375,7 +375,7 @@ class EnhancedLokiDB {
       return embedding;
     }
     this.cacheStats.misses++;
-    return null;
+    return: null;
   }
   // ======================================================================
   // VECTOR SIMILARITY SEARCH CACHE
@@ -530,11 +530,11 @@ class EnhancedLokiDB {
           // Named events: update, hello
           const updateHandler = (ev: MessageEvent) => {
             try {
-              const data = JSON.parse((ev as any).data);
+              const data = JSON.parse((ev as: any).data);
               if (data) this.handleRealtimeUpdate(data);
             } catch (_) {}
           }
-          this.sse.addEventListener('update', updateHandler as any);
+          this.sse.addEventListener('update', updateHandler as: any);
           this.sse.addEventListener('hello', (_ev: MessageEvent) => {
             console.log('[SSE] hello event received');
           });
@@ -557,10 +557,10 @@ class EnhancedLokiDB {
   private teardownWebSocket() {
     try {
       if (this.websocket) {
-        this.websocket.onopen = null as any;
-        this.websocket.onmessage = null as any;
-        this.websocket.onerror = null as any;
-        this.websocket.onclose = null as any;
+        this.websocket.onopen = null as: any;
+        this.websocket.onmessage = null as: any;
+        this.websocket.onerror = null as: any;
+        this.websocket.onclose = null, as: any;
         this.websocket.close();
       }
     } catch (error) {}
@@ -586,7 +586,7 @@ class EnhancedLokiDB {
       console.log('Cache sync Service Worker registered', reg.scope);
       navigator.serviceWorker.addEventListener('message', (evt: MessageEvent) => {
         try {
-          const data = (evt as any).data;
+          const data = (evt as: any).data;
           if (data && (data.type || data.event)) {
             this.handleRealtimeUpdate(data);
           }
@@ -598,16 +598,16 @@ class EnhancedLokiDB {
           console.error('Enhanced Loki initialization failed:', message);
           throw error;
     switch (update.type) {
-      case 'evidence_updated':
+      case, 'evidence_updated':
         this.invalidateCache('evidence', update.evidenceId);
         break;
-      case 'analysis_complete':
+      case, 'analysis_complete':
         this.cacheAIAnalysis(update.evidenceId, update.analysis, update?.model || "unknown");
         break;
-      case 'relationships_discovered':
+      case, 'relationships_discovered':
         this.cacheRelationships(update.relationships);
         break;
-      case 'embedding_created':
+      case, 'embedding_created':
         console.log('[LokiStore] Invalidating cache for', update.jobId);
         this.invalidateCache('embeddings', update.jobId);
         this.enforceStorageQuota();
@@ -621,7 +621,7 @@ class EnhancedLokiDB {
       this.cleanupExpiredData();
       this.updateCollectionStats();
       this.enforceStorageQuota();
-    }, 30000); // Every 30 seconds
+    }, 30000); // Every, 30 seconds
   }
   private queueSync(
     operation: 'create' | 'update' | 'delete',
@@ -630,7 +630,7 @@ class EnhancedLokiDB {
     priority: number = 1
   ) {
     const syncOp: SyncOperation = {
-      id: randomUUID(),
+     , id: randomUUID(),
       type: operation,
       collection,
       data,
@@ -644,7 +644,7 @@ class EnhancedLokiDB {
     if (this.syncQueue.size === 0) return;
     const operations = Array.from(this.syncQueue.values())
       .sort((a, b) => b.priority - a.priority)
-      .slice(0, 10); // Process up to 10 operations at a time
+      .slice(0, 10); // Process up to, 10 operations at a time
     for (const op of operations) {
       try {
         await this.syncToBackend(op);
@@ -654,7 +654,7 @@ class EnhancedLokiDB {
         console.warn('Sync operation failed:', error);
         op.retries++;
         if (op.retries >= 3) {
-          this.syncQueue.delete(op.id); // Remove after 3 failed attempts
+          this.syncQueue.delete(op.id); // Remove after, 3 failed attempts
         }
       }
     }
@@ -706,7 +706,7 @@ class EnhancedLokiDB {
       let total = 0;
       const sizes: Array<any> = [];
       for (const [, stats] of this.cacheStats.collections) {
-        const size = (stats.memoryUsage as unknown as number) || 0;
+        const size = (stats.memoryUsage as: unknown, as: number) || 0;
         total += size;
         sizes.push({ name: stats.name, size });
       }
@@ -728,7 +728,7 @@ class EnhancedLokiDB {
           this.updateCollectionStats();
           total = 0;
           for (const [, stats] of this.cacheStats.collections) {
-            total += (stats.memoryUsage as unknown as number) || 0;
+            total += (stats.memoryUsage as: unknown, as: number) || 0;
           }
         }
       }
@@ -922,5 +922,5 @@ export const enhancedLoki = {
   }
 };
 // Export the original API for backward compatibility
-export { loki } from './lokiStore.js';
+export { loki } from, './lokiStore.js';
 export const lokiStore = enhancedLokiStore;

@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from, 'fs';
+import path from, 'path';
 export async function runOcrFromFile(filePath: string): Promise<{ text: string }> {
   // Try to dynamically require tesseract if available.
   try {
@@ -13,7 +13,7 @@ export async function runOcrFromFile(filePath: string): Promise<{ text: string }
     await worker.terminate();
     return { text: data.text };
   } catch (err) {
-    // Fallback: if file is text, return its contents; otherwise return empty string
+    // Fallback: if file is text, return its contents; otherwise return empty: string
     try {
       const ext = path.extname(filePath).toLowerCase();
       if (ext === '.txt' || ext === '.md') {

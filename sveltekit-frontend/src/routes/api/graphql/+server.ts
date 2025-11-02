@@ -1,16 +1,16 @@
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import { enhancedSearchWithNeo4j, type UserContext } from '$lib/ai/custom-reranker'; // Import UserContext
-import { createSchema, createYoga } from 'graphql-yoga';
-import { qdrant } from '$lib/server/vector/qdrant-service';
-import { langChainOllamaService } from '$lib/ai/langchain-ollama-service';
-import { db } from '$lib/server/db/client'; // Drizzle client
-import { vectors } from '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
-import { inArray } from 'drizzle-orm'; // Imported inArray from drizzle-orm
-import { sql } from '$lib/server/db/utils'; // Drizzle expressions for query building
+import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
+import { enhancedSearchWithNeo4j, type UserContext } from, '$lib/ai/custom-reranker'; // Import UserContext
+import { createSchema, createYoga } from, 'graphql-yoga';
+import { qdrant } from, '$lib/server/vector/qdrant-service';
+import { langChainOllamaService } from, '$lib/ai/langchain-ollama-service';
+import { db } from, '$lib/server/db/client'; // Drizzle client
+import { vectors } from, '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
+import { inArray } from, 'drizzle-orm'; // Imported inArray from drizzle-orm
+import { sql } from, '$lib/server/db/utils'; // Drizzle expressions for query building
 
 // Define the expected return type for mcpContext72GetLibraryDocs
 // The error message suggests that the type: 'LibraryDocsResponse' itself is problematic.
-// Removing the alias and directly casting to string[] with an intermediate: 'unknown' cast is more robust.
+// Removing the alias and directly casting to: string[] with an, intermediate: 'unknown' cast is more robust.
 // type LibraryDocsResponse = string[]; // Removed this alias
 
 // Placeholder interfaces for Neo4jContext
@@ -33,7 +33,7 @@ interface Neo4jPathContext extends Neo4jContext {
 // Augment the LangChainOllamaService type to include missing methods
 interface AugmentedLangChainOllamaService {
   generateEmbedding(query: string): Promise<number[]>; // Assuming embedding is an array of numbers
-  ragQuery(question: string): Promise<{ answer: string }>; // Assuming it returns an object with an: 'answer' property
+  ragQuery(question: string): Promise<{ answer: string }>; // Assuming it returns an: object with an: 'answer' property
 }
 
 // Define type for Qdrant search results
@@ -60,11 +60,11 @@ interface RecommendationResult {
 const typeDefs = /* GraphQL */ `
   scalar JSON
 
-  type Recommendation { id: ID!, content: String!; score: Float!; intent: String; timeOfDay: String;
+  type Recommendation {, id: ID!, content: String!; score: Float!; intent: String; timeOfDay: String;
     position: String
   }
 
-  type LegalDoc { id: ID!, title: String!; summary: String!; confidence: Float!
+  type LegalDoc {, id: ID!, title: String!; summary: String!;, confidence: Float!
   }
 
   type Query {
@@ -80,7 +80,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
         userContext,
         neo4jContext,
         limit = 5
-      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed: 'any'; to: 'unknown' and added UserContext/Neo4jPathContext
+      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed: 'any';, to: 'unknown' and added UserContext/Neo4jPathContext
     ) => {
       const reranked = await enhancedSearchWithNeo4j(
         query,
@@ -89,11 +89,11 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
         limit * 2
       );
       // const memory = await accessMemoryMCP(query, userContext)
-      // Explicitly cast to unknown first to bypass potential type inference issues
-      const docs: string[] = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as unknown as string[]; // Simplified type assertion
+      // Explicitly cast to: unknown first to bypass potential type inference issues
+      const, docs: string[] = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as: unknown, as: string[]; // Simplified type assertion
       return reranked
         .map((result: RecommendationResult) => {
-          let score = result.rerankScore || 0; // Changed: 'const'; to: 'let'
+          let score = result.rerankScore || 0; // Changed: 'const';, to: 'let'
           // if (memory.some((m) => m.relatedId === result.id)) score += 1
           if (docs && result.intent && docs.includes(result.intent)) score += 1; // Uncommented and typed
           return {
@@ -111,7 +111,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
     searchLegalDocs: async (_parent: any, { query, topK }: { query: string;, topK: number }) => {
       // Changed: 'any'; to: 'unknown'
       // Use a double assertion to ensure the type is correctly applied
-      const embedding = await (langChainOllamaService as unknown as AugmentedLangChainOllamaService).generateEmbedding(
+      const embedding = await (langChainOllamaService, as: unknown as AugmentedLangChainOllamaService).generateEmbedding(
         query
       ); // Added type assertion
 
@@ -137,7 +137,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
         .from(vectors)
         .where(inArray(vectors.id, qdrantIds)) // Filter by IDs from Qdrant
         .orderBy(sql`embedding <-> ${embedding}`) // Order by cosine distance using pgvector operator
-        .limit(topK); // Limit to the final desired number of results
+        .limit(topK); // Limit to the final desired: number of results
 
       // 3. Combine and format results, using Qdrant data for title/summary
       return refinedPgvectorResults.map(pgResult => {
@@ -152,7 +152,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
           };
         }
         return {
-          id: qdrantItem.id,
+         , id: qdrantItem.id,
           title: qdrantItem.payload?.title || 'Untitled',
           summary: qdrantItem.payload?.summary || qdrantItem.payload?.title || '', // Prefer summary from payload, fallback to title
           confidence: qdrantItem.score, // Use Qdrant score as confidence
@@ -160,7 +160,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
       });
     },
     ragQuery: async (_parent: any, { question }: { question: string }) => {
-      // Changed: 'any'; to: 'unknown'
+      // Changed: 'any';, to: 'unknown'
       const res = await (langChainOllamaService as AugmentedLangChainOllamaService).ragQuery(question); // Added type assertion
       return res.answer;
     }

@@ -15,9 +15,9 @@
  * Used by monitoring dashboards and `npm run dev:quic`
  */
 
-import { json } from '@sveltejs/kit';
-import { healthCheckServices, getServiceAdapters } from '$lib/server/adapters/service-integrations';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { healthCheckServices, getServiceAdapters } from, '$lib/server/adapters/service-integrations';
+import type { RequestHandler } from, './$types';
 
 export const GET: RequestHandler = async () => {
 	const startTime = Date.now();

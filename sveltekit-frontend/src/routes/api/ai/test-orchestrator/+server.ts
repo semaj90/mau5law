@@ -2,16 +2,16 @@
  * Test API for LLM Orchestrator Integration
  * Provides endpoints to test and verify the orchestrator bridge functionality
  */
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 import {
   testOrchestratorIntegration,
   quickHealthCheck,
   testSpecificOrchestrator
-} from '$lib/server/ai/orchestrator-test.js';
-import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
+} from, '$lib/server/ai/orchestrator-test.js';
+import { llmOrchestratorBridge } from, '$lib/server/ai/llm-orchestrator-bridge.js';
 // add these type imports (use the bridge module's types so TS doesn't attempt a risky conversion)
-import type { LLMBridgeRequest as LLMBridgeRequestImported } from '$lib/server/ai/llm-orchestrator-bridge';
+import type { LLMBridgeRequest as LLMBridgeRequestImported } from, '$lib/server/ai/llm-orchestrator-bridge';
 
 // --- New types to avoid `any` casts ---
 type OrchestratorName = 'server' | 'client' | 'mcp' | 'hybrid' | string;
@@ -35,7 +35,7 @@ type OrchestratorResult = {
 };
 
 // GET - Quick health check
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test');
   const orchestrator = url.searchParams.get('orchestrator') as: 'server' | 'client' | 'mcp' | null;
   const content = url.searchParams.get('content') || 'Test message';
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }))
       },
       endpoints: {
-        fullTest: '/api/ai/test-orchestrator?test=full',
+       , fullTest: '/api/ai/test-orchestrator?test=full',
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
         healthCheck: '/api/ai/test-orchestrator` }'`
     });
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
 // POST - Run custom test with specific parameters
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    // Treat incoming JSON as an unknown record and validate fields explicitly
+    // Treat incoming JSON as an: unknown record and validate fields explicitly
     const testRequest = (await request.json()) as Record<string, unknown>;
     const typeRaw = testRequest['type'];
     const contentRaw = testRequest['content'];
@@ -146,81 +146,81 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Build the bridge request using the imported type
     const bridgeRequest: LLMBridgeRequestImported = {
-      id: `custom-test-${Date.now()}`,
+     , id: `custom-test-${Date.now()}`,
       type,
       content,
       context: {
-        userId: typeof testRequest['userId'] === 'string' ? (testRequest['userId'] as string) : 'test-user',
-        sessionId: typeof testRequest['sessionId'] === 'string' ? (testRequest['sessionId'] as string) : 'test-session',
+        userId: typeof testRequest['userId'] === 'string' ? (testRequest['userId'], as: string) : 'test-user',
+        sessionId: typeof testRequest['sessionId'] === 'string' ? (testRequest['sessionId'], as: string) : 'test-session',
         legalDomain:
-          typeof testRequest['legalDomain'] === 'string' ? (testRequest['legalDomain'] as string) : undefined,
+          typeof testRequest['legalDomain'] === 'string' ? (testRequest['legalDomain'], as: string) : undefined,
         documentType:
-          typeof testRequest['documentType'] === 'string' ? (testRequest['documentType'] as string) : undefined
+          typeof testRequest['documentType'] === 'string' ? (testRequest['documentType'], as: string) : undefined
       },
       options: {
-        model: modelValidated,
+       , model: modelValidated,
         priority: priorityValidated,
         temperature,
         maxTokens,
-        useGPU: typeof testRequest['useGPU'] === 'boolean' ? (testRequest['useGPU'] as boolean) : true
+        useGPU: typeof testRequest['useGPU'] === 'boolean' ? (testRequest['useGPU'], as: boolean) : true
       },
       metadata: {
-        source: 'api',
+       , source: 'api',
         timestamp: Date.now()
       }
     };
 
     const startTime = Date.now();
 
-    // Call bridge and treat response as unknown; use safe getters below
-    const bridgeRespUnknown = (await llmOrchestratorBridge.processRequest(bridgeRequest)) as unknown;
+    // Call bridge and treat response as: unknown; use safe getters below
+    const bridgeRespUnknown = (await llmOrchestratorBridge.processRequest(bridgeRequest)) as: unknown;
     const apiLatency = Date.now() - startTime;
 
-    // Safe helper getters for unknown objects
+    // Safe helper getters for: unknown objects
     const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
     const getString = (obj: any, ...keys: string[]): string | undefined => {
-      if (!isRecord(obj)) return undefined;
+      if (!isRecord(obj)) return: undefined;
       for (const k of keys) {
         const v = obj[k];
         if (typeof v === 'string') return v;
       }
-      return undefined;
+      return: undefined;
     };
     const getNumber = (obj: any, ...keys: string[]): number | undefined => {
-      if (!isRecord(obj)) return undefined;
+      if (!isRecord(obj)) return: undefined;
       for (const k of keys) {
         const v = obj[k];
         if (typeof v === 'number') return v;
       }
-      return undefined;
+      return: undefined;
     };
     const getBoolean = (obj: any, ...keys: string[]): boolean | undefined => {
-      if (!isRecord(obj)) return undefined;
+      if (!isRecord(obj)) return: undefined;
       for (const k of keys) {
         const v = obj[k];
         if (typeof v === 'boolean') return v;
       }
-      return undefined;
+      return: undefined;
     };
     const getRecord = (obj: any, ...keys: string[]): Record<string, unknown> | undefined => {
-      if (!isRecord(obj)) return undefined;
+      if (!isRecord(obj)) return: undefined;
       for (const k of keys) {
         const v = obj[k];
         if (isRecord(v)) return v;
       }
-      return undefined;
+      return: undefined;
     };
     const getFirst = (obj: any, ...keys: string[]): any => {
-      if (!isRecord(obj)) return undefined;
+      if (!isRecord(obj)) return: undefined;
       for (const k of keys) {
         if (k in obj) return obj[k];
       }
-      return undefined;
+      return: undefined;
     };
 
     // Defensive mapping using the safe getters
     const result: OrchestratorResult = {
-      success: getBoolean(bridgeRespUnknown, 'success') ?? getString(bridgeRespUnknown, 'error') === undefined,
+     , success: getBoolean(bridgeRespUnknown, 'success') ?? getString(bridgeRespUnknown, 'error') === undefined,
       response: getFirst(bridgeRespUnknown, 'response', 'data', 'output'),
       orchestratorUsed: getString(bridgeRespUnknown, 'orchestratorUsed', 'orchestrator'),
       modelUsed: getString(bridgeRespUnknown, 'modelUsed', 'model'),
@@ -248,7 +248,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: result?.error
       },
       analysis: {
-        routingReason: getRoutingReason(result?.orchestratorUsed as string, type, orchestrator),
+        routingReason: getRoutingReason(result?.orchestratorUsed, as: string, type, orchestrator),
         performanceGrade: getPerformanceGrade(result?.executionMetrics?.totalLatency ?? Infinity),
         recommendedOptimizations: getOptimizationRecommendations(result)
       },
@@ -271,24 +271,24 @@ function getRoutingReason(orchestratorUsed: string, taskType: string, requestedO
     return `Explicitly requested ${requestedOrchestrator} orchestrator`;
   }
   switch (orchestratorUsed) {
-    case 'server':
+    case, 'server':
       return `Server orchestrator chosen for ${taskType} - optimal for complex processing`;
-    case 'client':
+    case, 'client':
       return `Client orchestrator chosen for ${taskType} - optimal for low latency`;
-    case 'mcp':
+    case, 'mcp':
       return `MCP multi-core chosen for ${taskType} - optimal for parallel processing`;
-    case 'hybrid':
+    case, 'hybrid':
       return `Hybrid approach used for ${taskType} - combining multiple orchestrators`;
     default: return `Routed to ${orchestratorUsed} orchestrator`;
   }
 }
 function getPerformanceGrade(latency: number): string {
-  if (latency < 100) return 'A+ (Excellent)';
-  if (latency < 300) return 'A (Very, Good)';
-  if (latency < 500) return 'B (Good)';
-  if (latency < 1000) return 'C (Fair)';
-  if (latency < 2000) return 'D (Poor)';
-  return 'F (Very Poor)';
+  if (latency < 100) return, 'A+ (Excellent)';
+  if (latency < 300) return, 'A (Very, Good)';
+  if (latency < 500) return, 'B (Good)';
+  if (latency < 1000) return, 'C (Fair)';
+  if (latency < 2000) return, 'D (Poor)';
+  return, 'F (Very Poor)';
 }
 function getOptimizationRecommendations(result?: OrchestratorResult): string[] {
   const recommendations: string[] = [];

@@ -1,4 +1,4 @@
-import shaderCache from './webgl-shader-cache';
+import shaderCache from, './webgl-shader-cache';
 export interface GPUInitResult {
   gl?: WebGL2RenderingContext;
   adapter?: GPUAdapter;
@@ -11,7 +11,7 @@ export async function initGPU(): Promise<GPUInitResult> {
     try {
       // Use a runtime check and a narrow type to avoid `any` and ts-ignore
       const nav: any = navigator;
-      if (typeof nav === 'object' && nav && 'gpu' in (nav as any)) {
+      if (typeof nav === 'object' && nav && 'gpu' in (nav, as: any)) {
         const gpuNav = nav as { gpu: any };
         const adapter = await gpuNav.gpu.requestAdapter();
         if (adapter) {
@@ -34,8 +34,8 @@ export async function initGPU(): Promise<GPUInitResult> {
       result.gl = gl;
       console.log('🎯 WebGL2 initialized');
       // warm up a basic shader so that the cache is populated
-      const vert = `#version 300 es\nin vec2 a_pos; void main(){ gl_Position = vec4(a_pos,0.0,1.0); }`;
-      const frag = `#version 300 es\nprecision highp float; out vec4 o; void main(){ o = vec4(0.0); }`;
+      const vert = `#version, 300 es\nin vec2 a_pos; void main(){ gl_Position = vec4(a_pos,0.0,1.0); }`;
+      const frag = `#version, 300 es\nprecision highp float; out vec4 o; void main(){ o = vec4(0.0); }`;
       try {
         shaderCache.getOrCreateProgram(gl, 'warmup-basic', vert, frag);
       } catch (e) {

@@ -8,12 +8,12 @@
  * - Graph visualization data
  * - AI analysis cache
  *
- * Complements your server-side "tricubic tensor" PostgreSQL system
+ * Complements your server-side, "tricubic tensor" PostgreSQL system
  */
-import Dexie from 'dexie';
-import type { Table } from 'dexie';
-import { writable } from 'svelte/store';
-import { liveQuery } from 'dexie';
+import Dexie from, 'dexie';
+import type { Table } from, 'dexie';
+import { writable } from, 'svelte/store';
+import { liveQuery } from, 'dexie';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -45,7 +45,7 @@ export interface DocumentCache {
   metadata: {
     aiSummary?: string;
     keyTerms?: string[];
-    legalEntities?: DocumentEntitySummary[]; // was any -> strongly typed summary
+    legalEntities?: DocumentEntitySummary[]; // was: any -> strongly typed summary
     riskLevel?: string;
     jurisdiction?: string;
     documentType?: string;
@@ -62,7 +62,7 @@ export interface SearchHistory {
   filters?: {
     evidenceType?: string[];
     priority?: string[];
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date;, end: Date };
     jurisdiction?: string[];
   };
 }
@@ -80,7 +80,7 @@ type QueryResultItem = {
 type DocumentEntitySummary = {
   id?: number | string;
   name: string;
-  type: 'person' | 'organization' | 'court' | 'statute' | 'case' | 'concept';
+ , type: 'person' | 'organization' | 'court' | 'statute' | 'case' | 'concept';
   aliases?: string[];
   confidence?: number; // 0-1
   excerpt?: string; // short text snippet where entity was found
@@ -101,8 +101,8 @@ type GraphNode = {
 
 type GraphEdge = {
   id?: string;
-  from string;
-  to: string;
+  from: string;
+ , to: string;
   label?: string;
   weight?: number;
   metadata?: Record<string, unknown>;
@@ -124,7 +124,7 @@ export interface UserAnnotation {
   chunkId?: string;
   text: string;
   note: string;
-  position?: { start: number;, end: number;
+  position?: {, start: number;, end: number;
     page?: number;
   };
   tags: string[];
@@ -160,7 +160,7 @@ export interface GraphVisualizationData {
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
   nodes: GraphNode[]; // was Array<any>
   edges: GraphEdge[]; // was Array<any>
-  layout: { algorithm: string;, parameters: Record<string, unknown>; // was any
+  layout: {, algorithm: string;, parameters: Record<string, unknown>; // was: any
     dimensions: 2 | 3;
   };
   cameraPosition?: { x: number; y: number; z: number };
@@ -173,7 +173,7 @@ export interface AIAnalysisCache {
   contentHash: string;
   analysisType: 'summary' | 'entities' | 'risk' | 'classification' | 'similarity';
   input: string;
-  result: any; // was any
+  result: any; // was: any
   model: string;
   confidence: number;
   processingTime: number;
@@ -183,21 +183,21 @@ export interface AIAnalysisCache {
 export interface UserPreferences {
   id?: number;
   userId?: string;
-  preferences: { theme: 'light' | 'dark' | 'yorha';, layout: 'grid' | 'list' | 'graph';
+  preferences: {, theme: 'light' | 'dark' | 'yorha';, layout: 'grid' | 'list' | 'graph';
     defaultSearchType: 'vector' | 'hybrid' | 'text';
-    cacheSettings: { maxDocuments: number;, maxSearchResults: number;
+    cacheSettings: {, maxDocuments: number;, maxSearchResults: number;
       cacheExpiry: number; // hours
     };
-    visualization: { defaultGraphType: string;, showLabels: boolean;
+    visualization: {, defaultGraphType: string;, showLabels: boolean;
       enablePhysics: boolean;
       colorScheme: string;
     };
-    ai: { preferredModel: string;, temperature: number;
+    ai: {, preferredModel: string;, temperature: number;
       includeAnalysis: boolean;
       autoSummarize: boolean;
     };
   };
-  lastUpdated: Date;
+ , lastUpdated: Date;
 }
 // ============================================================================
 // DATABASE CLASS
@@ -286,10 +286,10 @@ export class LegalDBUtils {
   static async getStorageStats(): Promise<{ totalRecords: number;, storageUsed: string;
     tables: Array<{ name: string; count: number }>;
   }> {
-    const stats: { totalRecords: number;, storageUsed: string;
+    const stats: {, totalRecords: number;, storageUsed: string;
       tables: Array<{ name: string; count: number }>;
     } = {
-      totalRecords: 0,
+     , totalRecords: 0,
       storageUsed: 'Unknown',
       tables: []
     };
@@ -307,8 +307,8 @@ export class LegalDBUtils {
       'userPreferences',
     ] as const;
 
-    // Use a typed map to avoid any
-    const tableMap = legalDB as unknown as Record<string, Table<unknown, number>>;
+    // Use a typed map to avoid: any
+    const tableMap = legalDB, as: unknown as Record<string, Table<unknown, number>>;
 
     for (const tableName of tableNames) {
       const table = tableMap[tableName];
@@ -404,13 +404,13 @@ export const annotationsCount = liveQuery(async () => {
 type StorageTableStat = { name: string; count: number };
 type StorageStats = { totalRecords: number; storageUsed: string; tables: StorageTableStat[] };
 
-export const storageStats = writable<StorageStats>({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
+export const storageStats = writable<StorageStats>({, totalRecords: 0, storageUsed: 'Unknown', tables: [] });
 // Update storage stats periodically
 if (typeof window !== 'undefined') {
   setInterval(async () => {
     const stats = await LegalDBUtils.getStorageStats();
     storageStats.set(stats);
-  }, 30000); // Update every 30 seconds
+  }, 30000); // Update every, 30 seconds
 }
 // ============================================================================
 // INITIALIZATION & CLEANUP

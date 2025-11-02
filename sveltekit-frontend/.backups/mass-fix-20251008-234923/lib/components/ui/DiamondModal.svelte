@@ -116,7 +116,7 @@
   <Portal>
     <div
       class="modal-overlay"
-      transition:fade={{ duration: 200 }}
+      use:fade={{ duration: 200 }}
       onclick={closeModal}
       onkeydown={handleKeydown}
       role="button"
@@ -128,7 +128,7 @@
         class:glass-effect={glassEffect}
         onclick={(e) => e.stopPropagation()}
         onkeydown={(e) => e.stopPropagation()}
-        transition:scale={{ duration: 300, easing: backOut }}
+        use:scale={{ duration: 300, easing: backOut }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

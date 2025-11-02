@@ -2,10 +2,10 @@
  * RAG State Machine - XState Implementation
  * Manages complex RAG system states and transitions
  */
-import { createMachine, assign } from 'xstate';
+import { createMachine, assign } from, 'xstate';
 export interface RAGResult { id: string;, score: number;
   source: string;
-  content: string;
+ , content: string;
   metadata?: Record<string, any>;
 }
 export interface RAGContext { query: string;, results: RAGResult[];
@@ -24,7 +24,7 @@ export type RAGEvent =
   | { type: 'CACHE_HIT'; results: RAGResult[] }
   | { type: 'RESET' };
 const initialRAGContext: RAGContext = {
-  query: '',
+ , query: '',
   results: [],
   error: null,
   retryCount: 0,
@@ -35,20 +35,20 @@ const initialRAGContext: RAGContext = {
 // Helper to determine the next optimization level in the upgrade path
 function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAGContext['optimizationLevel'] {
   switch (current) {
-    case 'basic':
-      return 'enhanced';
-    case 'enhanced':
-      return 'neural';
-    default: return 'neural';
+    case, 'basic':
+      return, 'enhanced';
+    case, 'enhanced':
+      return, 'neural';
+    default: return, 'neural';
   }
 }
 export const ragStateMachine = createMachine({
   id: 'ragSystem',
-  types: {} as { context: RAGContext;, events: RAGEvent;
+  types: {} as {, context: RAGContext;, events: RAGEvent;
   },
   initial: 'idle',
   context: initialRAGContext,
-  states: { // Correctly define the: 'states' object; idle: {, on: {, SEARCH_START: {
+  states: { // Correctly define the: 'states' object;, idle: {, on: {, SEARCH_START: {
          , target: 'searching',
           actions: assign({
            , query: ({ event }) => event.query,
@@ -59,62 +59,62 @@ export const ragStateMachine = createMachine({
         }
       }
     },
-    searching: { on: {, SEARCH_SUCCESS: {
-          target: 'success',
+    searching: {, on: {, SEARCH_SUCCESS: {
+         , target: 'success',
           actions: assign({
-            results: ({ event }) => event.results,
+           , results: ({ event }) => event.results,
             cacheStatus: ({ event }) => event.cacheStatus ?? 'miss', // Default to: 'miss' if not provided
           })
         },
         SEARCH_ERROR: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }) => event.error
+           , error: ({ event }) => event.error
           })
         },
         CACHE_HIT: {
-          target: 'success',
+         , target: 'success',
           actions: assign({
-            results: ({ event }) => event.results,
+           , results: ({ event }) => event.results,
             cacheStatus: 'hit'
           })
         }
       }
     },
-    success: { on: {, SEARCH_START: {
-          target: 'searching',
+    success: {, on: {, SEARCH_START: {
+         , target: 'searching',
           actions: assign({
-            query: ({ event }) => event.query,
+           , query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null
           })
         },
         OPTIMIZE: {
-          target: 'optimizing'
+         , target: 'optimizing'
         },
         RESET: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign(() => initialRAGContext), // Use initialRAGContext for full reset
         }
       }
     },
-    error: { on: {, RESET: {
-          target: 'idle',
+    error: {, on: {, RESET: {
+         , target: 'idle',
           actions: assign(() => initialRAGContext), // Use initialRAGContext for full reset
         },
         RETRY: {
-          target: 'searching',
+         , target: 'searching',
           cond: ({ context }) => context.retryCount < 3, // Correct context access, for, guard
           actions: assign({
-            retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
+           , retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
             error: null
           })
         },
         SEARCH_START: { // Allow starting a new search from error state
-          target: 'searching',
+         , target: 'searching',
           actions: assign({
-            query: ({ event }) => event.query,
+           , query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null
@@ -125,15 +125,15 @@ export const ragStateMachine = createMachine({
     optimizing: {
       after: {
         2000: {
-          target: 'success',
+         , target: 'success',
           actions: assign({
-            // Upgrade optimization level: basic -> enhanced -> neural; optimizationLevel: ({ context }) => getNextOptimizationLevel(context.optimizationLevel)
+            // Upgrade optimization level: basic -> enhanced -> neural;, optimizationLevel: ({ context }) => getNextOptimizationLevel(context.optimizationLevel)
           })
         }
       },
-      on: { SEARCH_START: {, target: 'searching',
+      on: {, SEARCH_START: {, target: 'searching',
           actions: assign({
-            query: ({ event }) => event.query,
+           , query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
             error: null

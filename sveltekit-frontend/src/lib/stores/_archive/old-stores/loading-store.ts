@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from, 'svelte/store';
 
 declare global {
   interface Window {
@@ -15,7 +15,7 @@ export interface LoadingOperation { id: string;, title: string;
   estimatedTime?: number;
 }
 interface LoadingState {
-  operations: Map<string, LoadingOperation>;
+ , operations: Map<string, LoadingOperation>;
   isAnyLoading: boolean;
 }
 function createLoadingStore() {
@@ -25,7 +25,7 @@ function createLoadingStore() {
   });
   return {
     subscribe,
-    startOperation: (; id: string,
+    startOperation: (;, id: string,
       title: string,
       operation: LoadingOperation['operation'] = 'processing',
       description?: string,

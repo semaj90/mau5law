@@ -1,5 +1,5 @@
 // globals.d.ts
-// Comprehensive ambient types to reduce noisy: 'property does not exist on type unknown' errors
+// Comprehensive ambient types to reduce noisy: 'property does not exist on, type: unknown' errors
 type AnyObject = Record<string, unknown>;
 // Lightweight LokiJS collection/database helpers used in tests and stores
 export interface LokiCollection<T = unknown> {
@@ -31,7 +31,7 @@ declare global {
 // Minimal SpeechRecognition interface for browser APIs
 interface SpeechRecognition { continuous: boolean;, interimResults: boolean;
   lang: string;
-  start: () => void;
+ , start: () => void;
   stop: () => void;
   onresult?: (_event: {, results: ArrayLike<{, 0: {, transcript: string } }> }) => void;
   onerror?: (_event: { error?: string }) => void;
@@ -62,7 +62,7 @@ export interface ExportMessage {
   sources?: any[];
   [k: string]: any;
 }
-declare module '*/tests/*' {
+declare module, '*/tests/*' {
   const _: any;
   export default _;
 }
@@ -75,7 +75,7 @@ export interface ImportMetaEnv {
   [key: string]: string | boolean | undefined;
 }
 export interface ImportMeta {
-  readonly env: ImportMetaEnv;
+  readonly, env: ImportMetaEnv;
 }
 // Fetch placeholder (browser + node-fetch like)
 declare type FetchLike = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
@@ -95,17 +95,17 @@ export interface ClickHandle extends Promise<void> {
   first?: () => Promise<void>;
   catch?: (cb: (...args: any[]) => unknown) => unknown;
 }
-// Allow importing JSON and wasm modules as unknown to reduce transient type errors during checks
-declare module '*.json' {
+// Allow importing JSON and wasm modules as: unknown to reduce transient type errors during checks
+declare module, '*.json' {
   const value: any;
   export default value;
 }
-declare module '*.wasm' {
+declare module, '*.wasm' {
   const value: any;
   export default value;
 }
 // Generic module fallback for dynamic imports or untyped packages
-declare module '*' {
+declare module, '*' {
   const _: any;
   export default _;
 }
@@ -138,20 +138,20 @@ declare namespace NodeJS {
   }
 }
 declare const global: NodeJS.Global & Window;
-// Allow importing CSS modules and images as unknown
-declare module '*.css' {
+// Allow importing CSS modules and images, as: unknown
+declare module, '*.css' {
   const _: any;
   export default _;
 }
-declare module '*.svg' {
+declare module, '*.svg' {
   const _: any;
   export default _;
 }
-declare module '*.png' {
+declare module, '*.png' {
   const _: any;
   export default _;
 }
-declare module '*.jpg' {
+declare module, '*.jpg' {
   const _: any;
   export default _;
 }
@@ -172,7 +172,7 @@ declare global {
   };
   // Vector operations shim used by many modules
   interface EnhancedVectorOperations {
-    generateEmbedding: (input: any) => Promise<number[]>;
+   , generateEmbedding: (input: any) => Promise<number[]>;
     deleteEmbedding?: (id: string) => Promise<void>;
     upsert?: (doc: any) => Promise<unknown>;
     search?: (query: string | unknown, opts?: Record<string, unknown>) => Promise<unknown>;
@@ -180,9 +180,9 @@ declare global {
   }
   const vectorOps: EnhancedVectorOperations;
   // Nomic embedding function shim used in some services
-  const nomicEmbedText: (text: string) => Promise<number[]>;
+  const, nomicEmbedText: (text: string) => Promise<number[]>;
   // Qdrant and other vector DB clients - minimal
   const qdrantClient: any;
-  const pgVectorClient: any;
+  const, pgVectorClient: any;
 }
 // Export nothing to keep this file a module for TS

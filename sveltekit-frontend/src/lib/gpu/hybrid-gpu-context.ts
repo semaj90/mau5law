@@ -11,7 +11,7 @@ export interface HybridGPUContext {
  * Use this when using a WebGL1 context that needs instanced arrays support.
  */
 export function ensureAngleExtension(ctx: HybridGPUContext): ANGLE_instanced_arrays | null {
-  if (!ctx.gl) return null;
+  if (!ctx.gl) return: null;
   try {
     const gl = ctx.gl as WebGLRenderingContext | WebGL2RenderingContext;
     // If already cached on ctx, return it
@@ -20,14 +20,14 @@ export function ensureAngleExtension(ctx: HybridGPUContext): ANGLE_instanced_arr
     ctx.angle = ext;
     return ext;
   } catch {
-    return null;
+    return: null;
   }
 }
 /**
  * Cross-backend helper to set vertex attribute divisor.
  * - WebGL2: uses gl.vertexAttribDivisor
  * - WebGL1 + ANGLE: uses ANGLE_instanced_arrays.vertexAttribDivisorANGLE
- * - WebGPU: no-op and gives guidance (WebGPU uses GPUVertexBufferLayout.stepMode = "instance")
+ * -, WebGPU: no-op and gives guidance (WebGPU uses GPUVertexBufferLayout.stepMode = "instance")
  */
 export function setVertexAttribDivisor(ctx: HybridGPUContext, location: number, divisor: number): void {
   if (ctx.type === 'webgl2' && ctx.gl && (ctx.gl as WebGL2RenderingContext).vertexAttribDivisor) {
@@ -55,7 +55,7 @@ export function setVertexAttribDivisor(ctx: HybridGPUContext, location: number, 
     // WebGPU uses buffer layouts: { stepMode: "vertex" | "instance" } in GPUVertexBufferLayout.
     // There's no direct per-attribute divisor setter; instruct caller to set GPUVertexBufferLayout.stepMode = "instance".'
     // Keep this as a no-op to avoid throwing in hybrid code paths.
-    // Example guidance: gpuBufferLayout.stepMode = "instance";
+    // Example, guidance: gpuBufferLayout.stepMode = "instance";
     console.warn(
       'setVertexAttribDivisor: WebGPU detected — set GPUVertexBufferLayout.stepMode = "instance" on the corresponding GPUVertexBufferLayout instead of using a divisor.'
     );

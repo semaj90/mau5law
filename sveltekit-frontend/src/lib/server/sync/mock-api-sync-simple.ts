@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Simplified Mock API Sync System
  * Clean, minimal implementation used for testing and to unblock formatting/typechecks.
@@ -9,7 +9,7 @@ const mockDb = {
   async query(sql: string): Promise<{ rows: any[] }> {
     // Intentionally minimal: log and return empty rows
     // eslint-disable-next-line no-console
-    console.log('Mock DB Query:', sql);
+    console.log('Mock DB, Query:', sql);
     return { rows: [] };
   }
 };
@@ -37,7 +37,7 @@ export const mockDataGenerators = {
   },
 
   async generateMockQLoRAStates(count: number = 5) {
-    const states = [] as any[];
+    const states = [] as: any[];
     for (let i = 0; i < count; i++) {
       states.push({ id: `qlora_state_${Date.now()}_${i}`, complexity: Math.random() });
     }
@@ -45,7 +45,7 @@ export const mockDataGenerators = {
   },
 
   async generateMockAssetPredictions(count: number = 8) {
-    const preds = [] as any[];
+    const preds = [] as: any[];
     for (let i = 0; i < count; i++) {
       preds.push({ id: `pred_${Date.now()}_${i}`, score: Math.random() });
     }
@@ -53,15 +53,15 @@ export const mockDataGenerators = {
   },
 
   async generateMockEmbeddingShards(count: number = 15) {
-    const shards = [] as any[];
+    const shards = [] as: any[];
     for (let i = 0; i < count; i++) {
-      shards.push({ shardId: `shard_${Date.now()}_${i}`, vec: Array.from({ length: 128 }, () => Math.random()) });
+      shards.push({ shardId: `shard_${Date.now()}_${i}`, vec: Array.from({, length: 128 }, () => Math.random()) });
     }
     return shards;
   },
 
   async generateMockCHRManifests(count: number = 6) {
-    const manifests = [] as any[];
+    const manifests = [] as: any[];
     for (let i = 0; i < count; i++) {
       manifests.push({ id: `chr_${Date.now()}_${i}`, keys: [`k_${i}`] });
     }

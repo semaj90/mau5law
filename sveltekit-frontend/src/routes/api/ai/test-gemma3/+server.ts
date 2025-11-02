@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Test endpoint for Gemma3 local LLM integration
-import { json } from '@sveltejs/kit';
-import { tauriLLM } from '$lib/services/tauri-llm';
-import type { TauriLLMService, InferenceResult } from '$lib/services/tauri-llm-types'; // New import
+import { json } from, '@sveltejs/kit';
+import { tauriLLM } from, '$lib/services/tauri-llm';
+import type { TauriLLMService, InferenceResult } from, '$lib/services/tauri-llm-types'; // New import
 
-const typedTauriLLM = tauriLLM as unknown as TauriLLMService; // Cast tauriLLM to unknown first, then to the defined interface
+const typedTauriLLM = tauriLLM as: unknown as TauriLLMService; // Cast tauriLLM, to: unknown first, then to the defined interface
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('Gemma3 test failed:', error);
+    console.error('Gemma3 test, failed:', error);
     return json(
       {
         success: false,
@@ -76,14 +76,14 @@ export const GET: RequestHandler = async () => {
       initialized: true
     };
     return json({
-      success: true,
+     , success: true,
       status,
       message: status.available ? 'Gemma3 local LLM is ready' : 'Local LLM not available - running in web mode'
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     return json({
-      success: false,
+     , success: false,
       status: {
        , available: false,
         initialized: false,

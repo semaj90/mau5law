@@ -6,12 +6,12 @@ Integrity Verification Component
 Displays detailed integrity verification results with AI analysis
 -->
 <script, lang="ts">
-  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
-  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
-  import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from 'lucide-svelte';
-  import { SvelteComponent } from 'svelte';
+  import  Badge  from, "$lib/components/ui/badge/Badge.svelte";
+  import  Progress  from, "$lib/components/ui/progress/Progress.svelte";
+  import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from, 'lucide-svelte';
+  import { SvelteComponent } from, 'svelte';
   // Ensure TypeScript sees a constructor/Component type for dynamic usage
-  const BadgeComponent = Badge as unknown as typeof SvelteComponent;
+  const BadgeComponent = Badge as: unknown as typeof SvelteComponent;
   // Types
   type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
   type VerificationResults = {
@@ -30,7 +30,7 @@ Displays detailed integrity verification results with AI analysis
     relevance: number;
     riskLevel: RiskLevel;
     recommendations: string[];
-    flaggedAnomalies: string[];
+   , flaggedAnomalies: string[];
   };
   // Exported props (clean, typed)
   const { integrityStatus } = $props<{ integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention' }>()
@@ -42,41 +42,41 @@ Displays detailed integrity verification results with AI analysis
   // Helpers
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'verified':
+      case, 'verified':
         return CheckCircle;
-      case 'compromised':
+      case, 'compromised':
         return XCircle;
-      case 'requires-attention':
+      case, 'requires-attention':
         return AlertTriangle;
-      case 'pending':
+      case, 'pending':
         return Clock;
       default: return Shield;
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'verified':
-        return 'text-green-600 bg-green-50 border-green-200';
-      case 'compromised':
-        return 'text-red-600 bg-red-50 border-red-200';
-      case 'requires-attention':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'pending':
-        return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case, 'verified':
+        return, 'text-green-600 bg-green-50 border-green-200';
+      case, 'compromised':
+        return, 'text-red-600 bg-red-50 border-red-200';
+      case, 'requires-attention':
+        return, 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case, 'pending':
+        return, 'text-blue-600 bg-blue-50 border-blue-200';
+      default: return, 'text-gray-600 bg-gray-50 border-gray-200';
     }
   }
   function getRiskLevelColor(riskLevel: string) {
     switch (riskLevel) {
-      case 'low':
-        return 'text-green-600';
-      case 'medium':
-        return 'text-yellow-600';
-      case 'high':
-        return 'text-orange-600';
-      case 'critical':
-        return 'text-red-600';
-      default: return 'text-gray-600';
+      case, 'low':
+        return, 'text-green-600';
+      case, 'medium':
+        return, 'text-yellow-600';
+      case, 'high':
+        return, 'text-orange-600';
+      case, 'critical':
+        return, 'text-red-600';
+      default: return, 'text-gray-600';
     }
   }
   function getVerificationIcon(passed: boolean) {
@@ -86,7 +86,7 @@ Displays detailed integrity verification results with AI analysis
     return passed ? 'text-green-600' : 'text-red-600';
   }
   function formatHash(hash?: string) {
-    if (!hash) return 'N/A';
+    if (!hash) return, 'N/A';
     return `${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}`;
   }
   function getOverallScore() {
@@ -335,11 +335,11 @@ Displays detailed integrity verification results with AI analysis
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(10px);
+     , transform: translateY(10px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+     , transform: translateY(0);
     }
   }
 </style>

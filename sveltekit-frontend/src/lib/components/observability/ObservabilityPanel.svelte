@@ -3,9 +3,9 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- Observability Panel: Real-time alerts + sustained, monitoring, dashboard -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import type { ObservabilityState } from '$lib/services/observability-persistence';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import type { ObservabilityState } from, '$lib/services/observability-persistence';
   interface Alert {
     id: string;
     type: 'p99_breach' | 'error_spike' | 'anomaly_spike' | 'baseline_drift';
@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // State
   let state: ObservabilityState | null = null;
-  let alerts: Alert[] = $state([]);
+  let, alerts: Alert[] = $state([]);
   let isConnected = $state<boolean>(false);
   let ws = $state<WebSocket | null >(null);
   let autoScroll = $state<boolean>(true);
@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
           // Handle different message types
           if (data.type === 'observability.alert') {
             const alert: Alert = {
-              id: crypto.randomUUID(),
+             , id: crypto.randomUUID(),
               type: data.alert_type,
               message: data.message,
               timestamp: new Date().toISOString(),
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
               value: data.value,
               threshold: data.threshold;
             }
-            alerts = [alert, ...alerts].slice(0, 100); // Keep last 100 alerts
+            alerts = [alert, ...alerts].slice(0, 100); // Keep last, 100 alerts
             // Auto-scroll if enabled
             if (autoScroll) {
               setTimeout(() => {
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
       ws.onclose=() => {
         isConnected = false;
         console.log('[observability-panel] WebSocket disconnected');
-        // Reconnect after 5 seconds
+        // Reconnect after, 5 seconds
         setTimeout(connectWebSocket, 5000);
       }
       ws.onerror = (error) => {
@@ -131,23 +131,23 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getBadgeClass(status: string): string {
     switch (status) {
-      case 'critical': return 'badge-critical';
-      case 'warning': return 'badge-warning';
-      default: return 'badge-normal';
+      case, 'critical': return, 'badge-critical';
+      case, 'warning': return, 'badge-warning';
+      default: return, 'badge-normal';
     }
   }
   function getAlertClass(severity: string): string {
     switch (severity) {
-      case 'critical': return 'alert-critical';
-      case 'warning': return 'alert-warning';
-      default: return 'alert-info';
+      case, 'critical': return, 'alert-critical';
+      case, 'warning': return, 'alert-warning';
+      default: return, 'alert-info';
     }
   }
   $effect(() => {
     (async () => {
 await loadState();
     connectWebSocket();
-    // Refresh state every 30 seconds
+    // Refresh state every, 30 seconds
     const stateInterval = setInterval(loadState, 30000);
     return () => {
       clearInterval(stateInterval);
@@ -261,12 +261,12 @@ await loadState();
     border: 1px solid var(--border-color, #333);
     border-radius: 8px;
     padding: 1rem;
-    margin: 1rem 0;
+   , margin: 1rem 0;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
   }
   .panel-header {
-    display: flex;
+   , display: flex;
     justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
@@ -275,7 +275,7 @@ await loadState();
   }
   .panel-header h3 {
     margin: 0;
-    color: var(--text-primary, #fff);
+   , color: var(--text-primary, #fff);
     font-size: 1.1rem;
   }
   .header-controls {
@@ -288,13 +288,13 @@ await loadState();
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
   }
   .status-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--error-color, #ff4757);
+   , background: var(--error-color, #ff4757);
   }
   .status-indicator.connected {
     background: var(--success-color, #2ed573);
@@ -309,7 +309,7 @@ await loadState();
     font-size: 0.75rem;
   }
   .badges-row {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
@@ -320,7 +320,7 @@ await loadState();
     text-align: center;
   }
   .badge-normal {
-    background: var(--success-bg, #2ed57320);
+   , background: var(--success-bg, #2ed57320);
     border: 1px solid var(--success-color, #2ed573);
   }
   .badge-warning {
@@ -344,7 +344,7 @@ await loadState();
   }
   .badge-progress {
     height: 4px;
-    background: var(--bg-primary, #000);
+   , background: var(--bg-primary, #000);
     border-radius: 2px;
     overflow: hidden;
   }
@@ -354,18 +354,18 @@ await loadState();
     transition: width: 0.3s ease;
   }
   .details-section {
-    background: var(--bg-primary, #000);
+   , background: var(--bg-primary, #000);
     padding: 1rem;
     border-radius: 6px;
     margin-bottom: 1rem;
   }
   .details-section h4 {
-    margin: 0 0 0.75rem 0;
+   , margin: 0, 0 0.75rem 0;
     color: var(--text-primary, #fff);
     font-size: 0.9rem;
   }
   .baselines-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.5rem;
     margin-bottom: 0.75rem;
@@ -376,7 +376,7 @@ await loadState();
     padding: 0.25rem 0;
   }
   .baseline-item .label {
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
   }
   .baseline-item .value {
     color: var(--text-primary, #fff);
@@ -386,7 +386,7 @@ await loadState();
     display: flex;
     gap: 1rem;
     font-size: 0.7rem;
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
   }
   .alerts-section {
     margin-top: 1rem;
@@ -399,7 +399,7 @@ await loadState();
   }
   .alerts-header h4 {
     margin: 0;
-    color: var(--text-primary, #fff);
+   , color: var(--text-primary, #fff);
     font-size: 0.9rem;
   }
   .alerts-controls {
@@ -412,11 +412,11 @@ await loadState();
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
     cursor: pointer;
   }
   .btn-clear {
-    background: var(--error-color, #ff4757);
+   , background: var(--error-color, #ff4757);
     color: white;
     border: none;
     padding: 0.25rem 0.5rem;
@@ -425,18 +425,18 @@ await loadState();
     font-size: 0.75rem;
   }
   .alerts-list {
-    background: var(--bg-primary, #000);
+   , background: var(--bg-primary, #000);
     border-radius: 6px;
-    border: 1px solid var(--border-color, #333);
+   , border: 1px solid var(--border-color, #333);
   }
   .no-alerts {
     padding: 2rem;
     text-align: center;
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
     font-style: italic;
   }
   .alert-item {
-    padding: 0.75rem;
+   , padding: 0.75rem;
     border-bottom: 1px solid var(--border-color, #333);
     border-left: 4px solid;
   }
@@ -454,22 +454,22 @@ await loadState();
   }
   .alert-timestamp {
     font-size: 0.7rem;
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
     margin-bottom: 0.25rem;
   }
   .alert-type {
     font-weight: bold;
     text-transform: capitaliz;
-    color: var(--text-primary, #fff);
+   , color: var(--text-primary, #fff);
     margin-bottom: 0.25rem;
   }
   .alert-message {
-    color: var(--text-secondary, #ccc);
+   , color: var(--text-secondary, #ccc);
     margin-bottom: 0.25rem;
   }
   .alert-value {
     font-size: 0.75rem;
-    color: var(--text-muted, #999);
+   , color: var(--text-muted, #999);
     font-family: monospace;
   }
   @media (max-width: 768px) {
@@ -485,7 +485,7 @@ await loadState();
     }
     .metadata {
       flex-direction: column;
-      gap: 0.25rem;
+     , gap: 0.25rem;
     }
   }
 </style>

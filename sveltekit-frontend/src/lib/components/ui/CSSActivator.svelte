@@ -1,11 +1,11 @@
 <script, lang="ts">
   // Hidden component that activates all NES.css selectors to prevent unused warnings
   // This component is invisible but contains all HTML elements that NES.css styles
-  import  NESElementsShowcase  from "./NESElementsShowcase.svelte";
+  import  NESElementsShowcase  from, "./NESElementsShowcase.svelte";
 </script>
 <!-- Hidden showcase that activates all, CSS, selectors -->
 <div
-  style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;"
+  style="position: absolute; left: -9999px; top: -9999px;, visibility: hidden; pointer-events: none;"
   aria-hidden="true"
 >
   <NESElementsShowcase, visible={true} />
@@ -108,7 +108,7 @@
   <button, class="nes-btn" style="opacity: 0;"></button>
   <button, style="opacity: 0;"></button>
   <!-- Mozilla specific, button, element -->
-  <button, style="border: none; outline: none;"></button>
+  <button, style="border: none;, outline: none;"></button>
   <!-- Form, elements -->
   <textarea, class="nes-textarea" style="opacity: 0;"></textarea>
   <fieldset, style="opacity: 0;">
@@ -163,6 +163,6 @@
     opacity: 0 !important;
     width: 1px !important;
     height: 1px !important;
-    overflow: hidden !important;
+   , overflow: hidden !important;
   }
 </style>

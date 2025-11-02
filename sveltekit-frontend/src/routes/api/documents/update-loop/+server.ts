@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Document Update Loop API
 // Handles document changes with automatic re-embedding and re-ranking
-import { DocumentUpdateLoop } from '$lib/services/documentUpdateLoop'; // Changed import to DocumentUpdateLoop
-import { documents } from '$lib/db/schema';
-import { json, error } from '@sveltejs/kit'; // Added json and error imports
-import { db } from '$lib/server/db/drizzle-client'; // Assuming db is imported from here
-import { eq } from 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
+import { DocumentUpdateLoop } from, '$lib/services/documentUpdateLoop'; // Changed import to DocumentUpdateLoop
+import { documents } from, '$lib/db/schema';
+import { json, error } from, '@sveltejs/kit'; // Added json and error imports
+import { db } from, '$lib/server/db/drizzle-client'; // Assuming db is imported from here
+import { eq } from, 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
 
 // Instantiate the DocumentUpdateLoop service
 const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {
@@ -14,7 +14,7 @@ const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {
 };
 
 // Define a type for batch operation results
-type BatchResultItem = { documentId: string;, success: boolean;
+type BatchResultItem = {, documentId: string;, success: boolean;
   result?: any;
   error?: string;
 };
@@ -22,7 +22,7 @@ type BatchResultItem = { documentId: string;, success: boolean;
 // ============================================================================
 // UPDATE DOCUMENT WITH AUTO RE-EMBEDDING
 // ============================================================================
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const { documentId, content, action = 'auto' } = await request.json();
     if (!documentId) {
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let result;
     switch (action) {
-      case 'auto': {
+      case, 'auto': {
         // Wrapped in block
         // Queue automatic update (background processing)
         await documentUpdateLoop.queueDocumentUpdate(documentId, content);
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
       } // End block
-      case 'force': {
+      case, 'force': {
         // Wrapped in block
         // Force immediate re-embedding
         const reembedResult = await documentUpdateLoop.reembedDocument(documentId);
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
           documentId,
           reembedding: reembedResult,
           reranking: {
-            queriesAffected: rerankingJobs.length,
+           , queriesAffected: rerankingJobs.length,
             avgImprovement:
               rerankingJobs.length > 0
                 ? rerankingJobs.reduce(
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
       } // End block
-      case 'detect': {
+      case, 'detect': {
         // Wrapped in block
         // Only detect changes, don't process'
         const change = await documentUpdateLoop.detectDocumentChanges(documentId, content);
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
           documentId,
           change: change
             ? {
-                changeType: change.changeType,
+               , changeType: change.changeType,
                 priority: change.priority,
                 affectedChunks: change.affectedChunks?.length || 0,
                 hasChanges: true
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
       } // End block
-      default:
+     , default:
         throw error(400, `Unknown action: ${action}`);
     }
     return json({
@@ -108,8 +108,8 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    // Changed from any to unknown
-    console.error('❌ Document update loop error:', err);'
+    // Changed from: any to: unknown
+    console.error('❌ Document update loop, error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'status': {
+      case, 'status': {
         // Wrapped in block
         const status = await documentUpdateLoop.getQueueStatus();
         return json({
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       } // End block
-      case 'health': {
+      case, 'health': {
         // Wrapped in block
         // Health check for the update loop service
         const healthStatus = await documentUpdateLoop.getQueueStatus();
@@ -165,8 +165,8 @@ export const GET: RequestHandler = async ({ url }) => {
         throw error(400, `Unknown action: ${action}`);
     }
   } catch (err: any) {
-    // Changed from any to unknown
-    console.error('❌ Update loop status error:', err);'
+    // Changed from: any to: unknown
+    console.error('❌ Update loop status, error:', err);'
     return json(
       {
         success: false,
@@ -185,7 +185,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       throw error(400, 'Action is required');
     }
     switch (action) {
-      case 'batch_reembed': {
+      case, 'batch_reembed': {
         // Wrapped in block
         if (!documentIds || !Array.isArray(documentIds)) {
           throw error(400, 'Document IDs array is required for batch operations');
@@ -200,7 +200,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
               result
             });
           } catch (err: any) {
-            // Changed from any to unknown
+            // Changed from: any, to: unknown
             batchResults.push({
               documentId,
               success: false,
@@ -218,7 +218,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           }
         });
       } // End block
-      case 'clear_queue': {
+      case, 'clear_queue': {
         // Wrapped in block
         // This would require adding a method to clear the queue
         return json({
@@ -232,8 +232,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
         throw error(400, `Unknown batch action: ${action}`);
     }
   } catch (err: any) {
-    // Changed from any to unknown
-    console.error('❌ Batch operation error:', err);'
+    // Changed from: any to: unknown
+    console.error('❌ Batch operation, error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err;
     }

@@ -1,8 +1,8 @@
 /**
- * Unified AI Store - Phase 2 Integration
+ * Unified AI Store - Phase, 2 Integration
  * Merges ai-commands.js with ai-command-parser.js
  */
-import { writable, derived } from "svelte/store";
+import { writable, derived } from, "svelte/store";
 // Core AI state interface
 export interface AIState { current: string;
 , history: Array<any>;
@@ -12,13 +12,13 @@ export interface AIState { current: string;
 }
 // Main AI store
 export const aiStore = writable<AIState>({
-  current: "",
+ , current: "",
   history: [],
   isProcessing: false,
   lastResult: null,
   error: null
 });
-// Command result store for Phase 2 compatibility
+// Command result store for Phase, 2 compatibility
 export const aiCommandResult = writable<any>(null);
 /**
  * Parse AI commands with enhanced capabilities
@@ -104,7 +104,7 @@ export const clearHistory = () => {
     error: null
   }));
 };
-// Simple command service for Phase 2 compatibility
+// Simple command service for Phase, 2 compatibility
 export const aiCommandService = {
   state: writable("idle"),
   context: writable({}),

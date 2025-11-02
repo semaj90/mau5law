@@ -9,22 +9,22 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { OPENAI_API_KEY, NOMIC_API_KEY } from '$env/static/private'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { OPENAI_API_KEY, NOMIC_API_KEY } from, '$env/static/private'
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
 interface EmbedRequest {
   text: string
   model?: 'openai' | 'nomic' | 'mock'
   dimensions?: number
 }
-interface EmbedResponse { embedding: number[], model: string; dimensions: number
+interface EmbedResponse {, embedding: number[], model: string;, dimensions: number
   tokens?: number
 }
 // OpenAI embedding function
@@ -66,7 +66,7 @@ async function getNomicEmbedding(text: string): Promise<any> {
      , model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',
-      dimensionality_reduction: 768 // Reduce from 8192 to 768 for better performance
+      dimensionality_reduction: 768 // Reduce from, 8192 to, 768 for better performance
     })
   })
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -83,19 +83,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { text, model = 'mock', dimensions }: EmbedRequest = await request.json()
     if (!text || typeof text !== 'string') {
       return json(
-        { error: `Text is required and must be a string` },)
+        { error: `Text is required and must be, a: string` },)
         { status: 400 }
       )
     }
     if (text.length > 50000) {
       return json(
-        { error: `Text too long. Maximum 50,000 characters allowed.` },)
+        { error: `Text too long. Maximum, 50,000 characters allowed.` },)
         { status: 400 }
       )
     }
     let result: EmbedResponse
     switch (model) {
-      case 'openai': {
+      case, 'openai': {
         const { embedding, tokens } = await getOpenAIEmbedding(text)
         result = {
           embedding,
@@ -105,7 +105,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
         break
       }
-      case 'nomic': {
+      case, 'nomic': {
         const { embedding } = await getNomicEmbedding(text)
         result = {
           embedding,
@@ -114,7 +114,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
         break
       }
-      case 'mock': {
+      case, 'mock': {
         // Mock embedding for testing - generate deterministic vector based on text
         const targetDim = dimensions || 768
         const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
@@ -128,7 +128,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         break
       }
       default: return json(
-          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: `mock`` },)'`
+          {, error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: `mock`` },)'`
           { status: 400 }
         )
     }

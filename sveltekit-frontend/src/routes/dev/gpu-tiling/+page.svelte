@@ -2,14 +2,14 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  import { embedText } from '$lib/ai/tensor-client';
+  import { embedText } from, '$lib/ai/tensor-client';
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true;
   let gpuTile = true;
   let result: any = null;
   let ocrBusy = $state<boolean>(false);
   let runBusy = $state<boolean>(false);
-  let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+  let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as: any).gpu;
   async function run(): Promise<any> {
     runBusy = true;
     result = null;
@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .actions {
     display: flex;
-    gap: 0.75rem;
+   , gap: 0.75rem;
     align-items: center;
   }
 </style>

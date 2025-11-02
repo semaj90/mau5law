@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Use the canonical DB barrel: provides db, sql, and table exports
-import { db, sql, legalDocuments } from '$lib/server/db';
+import { db, sql, legalDocuments } from, '$lib/server/db';
 // YoRHa Database Test API
 // Tests JSON/JSONB data flow and database connectivity
 export const POST: RequestHandler = async ({ request }) => {
@@ -9,21 +9,21 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action = 'test-connection' } = await request.json();
     // Loosely type results to avoid noisy structural typing errors
     const results: any = {
-      timestamp: new Date(),
+     , timestamp: new Date(),
       action,
       results: {} as { [key: string]: any },
       success: true,
       service: 'yorha-db-test'
     };
     switch (action) {
-      case 'test-connection':
+      case, 'test-connection':
         // Test basic database connectivity
         const connectionTest = await db.execute(sql`SELECT version(), current_database(), current_user`);
         results.results.connection = {
           database: connectionTest[0],
           status: `connected` };
         break;
-      case 'test-pgvector':
+      case, 'test-pgvector':
         // Test pgvector extension
         try {
           const vectorTest = await db.execute(sql`SELECT extname FROM pg_extension WHERE extname = 'vector'`);
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
             status: `error` };
         }
         break;
-      case 'test-json':
+      case, 'test-json':
         // Test JSONB functionality
         const testDoc = {
           title: 'YoRHa Test Document',
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           keywords: ['yorha', 'test', 'integration', 'legal-ai'],
           topics: ['system-testing', 'database-integration'],
           metadata: {
-            testRun: true,
+           , testRun: true,
             timestamp: new Date(),
             version: '4.0.0',
             system: `yorha-legal-ai` }
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
           jsonQuery: jsonTest[0],
           status: `success` };
         break;
-      case 'test-vector':
+      case, 'test-vector':
         // Test vector operations (if available)
         try {
           // Create a test vector
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
             FROM legal_documents
             WHERE embedding IS NOT NULL
             ORDER BY similarity DESC
-            LIMIT 3
+            LIMIT, 3
           `);`
           results.results.vector = {
             inserted: vectorInsert[0],
@@ -125,11 +125,11 @@ export const POST: RequestHandler = async ({ request }) => {
             status: `error` };
         }
         break;
-      case 'test-full-stack':
+      case, 'test-full-stack':
         // Comprehensive test of all functionality
         const fullStackResults: any = {};
         // 1. Connection test
-        const conn = await db.execute(sql`SELECT 'connection_ok' as status`);
+        const conn = await db.execute(sql`SELECT, 'connection_ok' as status`);
         fullStackResults.connection = conn[0];
         // 2. JSON operations
         const jsonDoc = await db
@@ -153,8 +153,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const complexQuery = await db.execute(sql`
           SELECT
             COUNT(*) as total_docs,
-            COUNT(CASE WHEN keywords @> '["yorha"]' THEN 1 END) as yorha_docs,
-            COUNT(CASE WHEN document_type = 'test' THEN 1 END) as test_docs,
+            COUNT(CASE WHEN keywords @> '["yorha"]' THEN, 1 END) as yorha_docs,
+            COUNT(CASE WHEN document_type = 'test' THEN, 1 END) as test_docs,
             AVG(jsonb_array_length(keywords)) as avg_keywords,
             MAX(created_at) as latest_doc
           FROM legal_documents
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
             OR content, ILIKE: '%yorha%'
             OR keywords @> '["test"]'
           ORDER BY created_at DESC
-          LIMIT 5
+          LIMIT, 5
         `);`
         fullStackResults.json = {
           document: jsonDoc[0],
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: perfEnd - perfStart < 100 ? 'excellent' : `acceptable` };
         results.results.fullStack = fullStackResults;
         break;
-      case 'cleanup':
+      case, 'cleanup':
         // Clean up test data
         const cleanupResult = await db.execute(sql`
           DELETE FROM legal_documents
@@ -193,10 +193,10 @@ export const POST: RequestHandler = async ({ request }) => {
           OR document_type = 'integration-test'
         `);`
         results.results.cleanup = {
-          deletedRows: (cleanupResult as any)?.rowCount ?? (Array.isArray(cleanupResult) ? cleanupResult.length : 0),
+          deletedRows: (cleanupResult, as: any)?.rowCount ?? (Array.isArray(cleanupResult) ? cleanupResult.length : 0),
           status: `completed` };
         break;
-      default:
+     , default:
         results.success = $state(false);
         results.error = `Unknown action: ${action}`;
     }

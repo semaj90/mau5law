@@ -2,13 +2,13 @@
  * Gemma Embeddings Service with PostgreSQL pgvector Integration
  * High-performance embedding generation and vector indexing
  */
-import { createServiceConfig } from '$lib/config/redis-config';
-import { db } from '$lib/server/db/connection';
-import createRedisInstance from '$lib/server/redis';
-import { sql } from 'drizzle-orm';
-import { env } from '$env/dynamic/private';
-import { createHash } from 'crypto';
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { createServiceConfig } from, '$lib/config/redis-config';
+import { db } from, '$lib/server/db/connection';
+import createRedisInstance from, '$lib/server/redis';
+import { sql } from, 'drizzle-orm';
+import { env } from, '$env/dynamic/private';
+import { createHash } from, 'crypto';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
 // Configuration
 const OLLAMA_ENDPOINT = getOllamaEndpoint();
 const GEMMA_EMBEDDING_MODEL = env.GEMMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
@@ -18,7 +18,7 @@ const gemmaRedis = createRedisInstance(createServiceConfig('GEMMA_EMBEDDINGS'));
 // Local Redis key helper (avoid depending on external redisKeys that lacks gemmaEmbedding)
 const gemmaEmbeddingKey = (textHash: string) => `gemma:embedding:${textHash}`;
 export interface EmbeddingRequest {
-  text: string;
+ , text: string;
   model?: string;
   normalize?: boolean;
   document_type?: 'legal_document' | 'evidence' | 'case' | 'note';
@@ -35,7 +35,7 @@ export interface EmbeddingResponse {
   text_hash?: string;
 }
 export interface VectorSearchRequest {
-  query_embedding: number[];
+ , query_embedding: number[];
   limit?: number;
   similarity_threshold?: number;
   document_types?: string[];
@@ -43,13 +43,13 @@ export interface VectorSearchRequest {
 }
 export interface VectorSearchResult { id: string;, similarity: number;
   content: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   document_type: string;
 }
-export interface VectorIndexStats { total_vectors: number;, dimensions: number;
+export interface VectorIndexStats {, total_vectors: number;, dimensions: number;
   index_size: string;
   avg_similarity: number;
-  last_updated: Date;
+ , last_updated: Date;
 }
 class GemmaEmbeddingsService {
   private isInitialized = $state(false);
@@ -164,7 +164,7 @@ class GemmaEmbeddingsService {
       // Generate new embedding using Ollama/Gemma
       const embedding = await this.generateGemmaEmbedding(request.text, request.model);
       const response: EmbeddingResponse = {
-        success: true,
+       , success: true,
         embedding,
         dimensions: EMBEDDING_DIMENSIONS,
         model: request.model || GEMMA_EMBEDDING_MODEL,
@@ -200,7 +200,7 @@ class GemmaEmbeddingsService {
           document_type,
           1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')}]'::vector`)}) as similarity
         FROM embeddings
-        WHERE 1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')}]'::vector`)}) > ${threshold}
+        WHERE, 1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')}]'::vector`)}) > ${threshold}
       `;`
       // Add document type filter
       if (request.document_types && request.document_types.length > 0) {
@@ -250,12 +250,12 @@ class GemmaEmbeddingsService {
         FROM embeddings e1
         CROSS JOIN embeddings e2
         WHERE e1.id != e2.id
-        LIMIT 1000
+        LIMIT, 1000
       `);`
       const row = stats.rows[0] as { total_vectors: string; index_size: string; last_updated: string };
       const avgRow = avgSimilarity.rows[0] as { avg_similarity: string };
       return {
-        total_vectors: parseInt(row.total_vectors),
+       , total_vectors: parseInt(row.total_vectors),
         dimensions: EMBEDDING_DIMENSIONS,
         index_size: row.index_size,
         avg_similarity: parseFloat(avgRow.avg_similarity) || 0,
@@ -284,7 +284,7 @@ class GemmaEmbeddingsService {
     } = {}
   ): Promise<EmbeddingResponse[]> {
     const results: EmbeddingResponse[] = [];
-    // Process in batches of 10 to avoid overwhelming the model
+    // Process in batches of, 10 to avoid overwhelming the model
     const batchSize = 10;
     for (let i = 0; i < texts.length; i += batchSize) {
       const batch = texts.slice(i, i + batchSize);
@@ -348,7 +348,7 @@ class GemmaEmbeddingsService {
       return cached ? JSON.parse(cached) : null;
     } catch (error) {
       console.warn('Failed to get cached embedding:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -374,14 +374,14 @@ class GemmaEmbeddingsService {
         SELECT embedding, model, document_type, metadata
         FROM embeddings
         WHERE text_hash = ${textHash}
-        LIMIT 1
+        LIMIT, 1
       `);`
       if (result.rows.length === 0) {
-        return null;
+        return: null;
       }
-      const row = result.rows[0] as { embedding: string;, model: string;
+      const row = result.rows[0] as {, embedding: string;, model: string;
         document_type: string;
-        metadata: Record<string, unknown>;
+       , metadata: Record<string, unknown>;
       };
       return {
         success: true,
@@ -391,14 +391,14 @@ class GemmaEmbeddingsService {
       };
     } catch (error) {
       console.warn('Failed to get existing embedding:', error);
-      return null;
+      return: null;
     }
   }
   /**
    * Store embedding in PostgreSQL
    */
   private async storeEmbedding(
-    textHash: string,
+   , textHash: string,
     content: string,
     embedding: number[],
     request: EmbeddingRequest

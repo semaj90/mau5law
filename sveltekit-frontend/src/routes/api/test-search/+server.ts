@@ -1,6 +1,6 @@
 // Simple test endpoint to validate our setup
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || 'test';

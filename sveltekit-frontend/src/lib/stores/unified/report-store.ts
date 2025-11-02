@@ -1,20 +1,20 @@
 /**
  * ReportStore - Unified Report Generation & Management
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - reports.ts
  * - reportStore.ts
  * - report-builder.ts
  * - report-export.ts
  *
- * Usage:
- *   import { reportStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { reportStore } from, '$lib/stores/unified';
  *
  *   await reportStore.createReport('legal_memo');
  *   $: reports = $reportStore.reports;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -25,7 +25,7 @@ export type ExportFormat = 'pdf' | 'docx' | 'html' | 'markdown' | 'json';
 export interface ReportSection { id: string;, title: string;
   content: string;
   order: number;
-  type: 'text' | 'table' | 'image' | 'code' | 'divider';
+ , type: 'text' | 'table' | 'image' | 'code' | 'divider';
   metadata?: Record<string, unknown>;
 }
 
@@ -41,7 +41,7 @@ export interface Report { id: string;, title: string;
   isShared: boolean;
   sharedWith?: string[];
   citations: string[];
-  evidenceReferences: string[];
+ , evidenceReferences: string[];
   metadata?: Record<string, unknown>;
 }
 
@@ -51,7 +51,7 @@ export interface Report { id: string;, title: string;
 interface ReportStoreState {
   // Report library
   reports: Report[];
-  reportsByType: Map<ReportType, Report[]>;
+ , reportsByType: Map<ReportType, Report[]>;
 
   // Active report
   activeReportId: string | null;
@@ -80,7 +80,7 @@ interface ReportStoreState {
 }
 
 const initialState: ReportStoreState = {
-  reports: [],
+ , reports: [],
   reportsByType: new Map(),
   activeReportId: null,
   activeReport: null,
@@ -280,7 +280,7 @@ function createReportStore() {
       update(s => ({ ...s, isSaving: true }));
 
       try {
-        const state: { editorContent: ReportSection[] } = { editorContent: [] };
+        const state: { editorContent: ReportSection[] } = {, editorContent: [] };
         subscribe(s => {
           state.editorContent = s.editorContent;
         })();
@@ -491,10 +491,10 @@ export const editorContent = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { reports, createReport } from '$lib/stores/reports'
- *   import { reportStore } from '$lib/stores/reportStore'
+ * Old imports to, replace:
+ *   import { reports, createReport } from, '$lib/stores/reports'
+ *   import { reportStore } from, '$lib/stores/reportStore'
  *
  * New imports:
- *   import { reportStore, reports, activeReport } from '$lib/stores/unified'
+ *   import { reportStore, reports, activeReport } from, '$lib/stores/unified'
  */

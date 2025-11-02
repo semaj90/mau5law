@@ -1,23 +1,23 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * User Activity Detection Store for GPU Lifecycle Management
  * Tracks user interactions to trigger GPU memory optimization
  */
-import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, get } from, 'svelte/store';
+import { browser } from, '$app/environment';
 interface UserActivityMetrics { lastActivity: number;, idleTimeMs: number;
   interactionCount: number;
   activityScore: number;
   isActive: boolean;
   sessionStartTime: number;
 }
-interface ActivityEvent { type: string;, timestamp: number;
+interface ActivityEvent {, type: string;, timestamp: number;
   target?: string;
   data?: any;
 }
 class UserActivityDetector {
   private activityStore = writable<UserActivityMetrics>({
-    lastActivity: Date.now(),
+   , lastActivity: Date.now(),
     idleTimeMs: 0,
     interactionCount: 0,
     activityScore: 0,
@@ -30,7 +30,7 @@ class UserActivityDetector {
   private activityTimer: number | null = null;
   private idleTimer: number | null = null;
   private gpuBridgeUrl = 'ws://localhost:8098/ws/tensorrt'
-  private wsConnection: WebSocket | null = null;
+  private, wsConnection: WebSocket | null = null;
   // Events to track for user activity
   private readonly TRACKED_EVENTS = [
     'mousedown', 'mousemove', 'mouseup', 'click',
@@ -69,9 +69,9 @@ class UserActivityDetector {
     const now = Date.now();
     // Create activity event
     const activityEvent: ActivityEvent = {
-      type: eventType,
+     , type: eventType,
       timestamp: now;
-      target: event?.target ? (event.target as Element).tagName: undefined
+     , target: event?.target ? (event.target as Element).tagName: undefined
     }
     // Add to history
     this.eventHistory.push(activityEvent);
@@ -157,7 +157,7 @@ class UserActivityDetector {
       }
       this.wsConnection.onclose = () => {
         console.log('📡 Disconnected from GPU bridge, attempting reconnect...');
-        // Attempt reconnection after 5 seconds
+        // Attempt reconnection after, 5 seconds
         setTimeout(() => this.connectToGPUBridge(), 5000);
       }
       this.wsConnection.onerror = (error) => {
@@ -180,7 +180,7 @@ class UserActivityDetector {
     const recentLogs = this.eventHistory.filter(
       event => event.type === eventType && Date.now() - event.timestamp < 5000
     );
-    return recentLogs.length === 1; // Only log first occurrence in 5 seconds
+    return recentLogs.length === 1; // Only log first occurrence in, 5 seconds
   }
   // Public methods
   public getActivityStore() {
@@ -193,9 +193,9 @@ class UserActivityDetector {
         Math.floor($activity.idleTimeMs / 1000)
       ),
       activityLevel: derived(this.activityStore, $activity => {
-        if ($activity.activityScore > 7) return 'high';
-        if ($activity.activityScore > 3) return 'medium';
-        return 'low';
+        if ($activity.activityScore > 7) return, 'high';
+        if ($activity.activityScore > 3) return, 'medium';
+        return, 'low';
       }),
       sessionDuration: derived(this.activityStore, $activity =>
         Date.now() - $activity.sessionStartTime

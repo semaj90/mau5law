@@ -91,7 +91,7 @@
   class:shadow-2xl={isHovered}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
-  transition:scale={{ duration: 200, easing: quintOut }}
+  use:scale={{ duration: 200, easing: quintOut }}
 >
   <!-- Header -->
   <div class="flex items-center justify-between px-3 py-3 bg-gray-50 border-b border-gray-200">

@@ -1,4 +1,4 @@
-// import type { Document } from '$lib/types';
+// import type { Document } from, '$lib/types';
 /**
  * 🧠 RAG Knowledge Base Pipeline
  *
@@ -6,18 +6,18 @@
  * Integrates with MCP multi-core server and advanced SIMD pipeline
  *
  * Features:
- * -; embeddinggemma:latest (384-dim) embeddings
+ * -;, embeddinggemma:latest (384-dim) embeddings
  * - Gemma function calling for structured extraction
  * - Synthesis ranking with ripgrep + awk keyword scoring
  * - Multi-stage processing: embed → summarize → index → rank
  */
 
-import { vectorService } from '$lib/server/vector/EnhancedVectorService';
-import { cache } from '$lib/server/cache/redis';
-import { LokiEvidenceService } from '$lib/utils/loki-evidence';
-import Fuse from 'fuse.js';
-import { getOllamaEndpoint } from '$lib/utils/endpoints';
-// import type { StreamingResult } from './advanced-simd-pipeline';
+import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
+import { cache } from, '$lib/server/cache/redis';
+import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
+import Fuse from, 'fuse.js';
+import { getOllamaEndpoint } from, '$lib/utils/endpoints';
+// import type { StreamingResult } from, './advanced-simd-pipeline';
 
 // ============================================================================
 // Types & Interfaces
@@ -26,7 +26,7 @@ import { getOllamaEndpoint } from '$lib/utils/endpoints';
 export interface RAGDocument { id: string;, content: string;
   title: string;
   source: string;
-  createdAt: Date;
+ , createdAt: Date;
   metadata?: Record<string, unknown>;
 }
 
@@ -40,7 +40,7 @@ export interface SummarizedDocument extends EmbeddedDocument {
   summary: string;                  // Document-level summary
   chunkSummaries?: string[];        // Chunk-level summaries
   keyPoints: string[];              // Extracted key points
-  keywords: string[];               // Extracted keywords (gemma function calling)
+ , keywords: string[];               // Extracted keywords (gemma function calling)
   entities: {                       // Named entity extraction
     people: string[];
     organizations: string[];
@@ -50,41 +50,41 @@ export interface SummarizedDocument extends EmbeddedDocument {
   };
 }
 
-export interface GemmaExtractionResult { summary: string;, keyPoints: string[];
+export interface GemmaExtractionResult {, summary: string;, keyPoints: string[];
 	keywords: string[];
-	entities: { people: string[];, organizations: string[];
+	entities: {, people: string[];, organizations: string[];
 		locations: string[];
 		dates: string[];
 		legalCitations: string[];
 	};
 }
 
-export interface IndexedDocument extends SummarizedDocument { lokiId: number;                   // LokiJS document ID, fuseScore: number;                // Fuse.js fuzzy match score
+export interface IndexedDocument extends SummarizedDocument {, lokiId: number;                   // LokiJS document ID, fuseScore: number;                // Fuse.js fuzzy match score
   ripgrepKeywords: string[];        // Keywords from ripgrep extraction
   searchableText: string;           // Combined searchable content
 }
 
-export interface RankedDocument extends IndexedDocument { relevanceScore: number;           // 0-1 relevance score, keywordScore: number;             // Keyword match quality
+export interface RankedDocument extends IndexedDocument {, relevanceScore: number;           // 0-1 relevance score, keywordScore: number;             // Keyword match quality
   synthesisScore: number;           // Cross-document synthesis quality
   combinedScore: number;            // Weighted final score
   ranking: number;                  // Final position in results
 }
 
-export interface SynthesisRankingConfig { weights: {, relevance: number;              // Weight for semantic relevance (default: 0.5); keywords: number;               // Weight for keyword matching (default: 0.3); synthesis: number;              // Weight for synthesis quality (default: 0.2)
+export interface SynthesisRankingConfig {, weights: {, relevance: number;              // Weight for semantic relevance (default: 0.5); keywords: number;               // Weight for keyword matching (default: 0.3); synthesis: number;              // Weight for synthesis quality (default: 0.2)
   };
   keywordExtractor: 'ripgrep' | 'awk' | 'hybrid';
   enableGemmaFunctionCalling: boolean;
   cacheResults: boolean;
 }
 
-export interface RAGPipelineResult { documents: RankedDocument[];, totalProcessed: number;
-  timing: { embedding: number;, summarization: number;
+export interface RAGPipelineResult {, documents: RankedDocument[];, totalProcessed: number;
+  timing: {, embedding: number;, summarization: number;
     indexing: number;
     ranking: number;
     total: number;
   };
   cacheHits: number;
-  metadata: { embeddingModel: string;, synthesisModel: string;
+  metadata: {, embeddingModel: string;, synthesisModel: string;
     rankingAlgorithm: string;
   };
 }
@@ -99,7 +99,7 @@ export class RAGKnowledgePipeline {
   private readonly EMBEDDING_MODEL = 'embeddinggemma:latest';
   private readonly SYNTHESIS_MODEL = 'gemma3:legal-latest';
 
-  private defaultRankingConfig: SynthesisRankingConfig = { weights: {, relevance: 0.5,
+  private defaultRankingConfig: SynthesisRankingConfig = {, weights: {, relevance: 0.5,
       keywords: 0.3,
       synthesis: 0.2
     },
@@ -141,7 +141,7 @@ export class RAGKnowledgePipeline {
           // Generate fresh embedding with embeddinggemma:latest
           embedding = await vectorService.generateEmbedding(doc.content);
 
-          // Cache for 24 hours
+          // Cache for, 24 hours
           await cache.set(cacheKey, embedding, 86400);
         }
 
@@ -192,7 +192,7 @@ export class RAGKnowledgePipeline {
           // Use Gemma function calling for structured extraction
           summaryData = await this.callGemmaStructuredExtraction(doc);
 
-          // Cache for 24 hours
+          // Cache for, 24 hours
           await cache.set(cacheKey, summaryData, 86400);
         }
 
@@ -230,27 +230,27 @@ export class RAGKnowledgePipeline {
       name: 'extract_document_metadata',
       description: 'Extract structured metadata from a legal document',
       parameters: {
-        type: 'object',
-        properties: { summary: {, type: 'string',
+       , type: 'object',
+        properties: {, summary: {, type: 'string',
             description: 'A concise 2-3 sentence summary of the document'
           },
           keyPoints: {
-            type: 'array',
-            items: { type: 'string' },
+           , type: 'array',
+            items: {, type: 'string' },
             description: 'List of key points or main ideas (max 5)'
           },
           keywords: {
-            type: 'array',
-            items: { type: 'string' },
+           , type: 'array',
+            items: {, type: 'string' },
             description: 'Important keywords and phrases for search'
           },
           entities: {
-            type: 'object',
-            properties: { people: {, type: 'array', items: { type: 'string' } },
-              organizations: { type: 'array', items: { type: 'string' } },
-              locations: { type: 'array', items: { type: `string` } },'`'`
-              dates: { type: 'array', items: { type: `string` } },
-              legalCitations: { type: 'array', items: { type: `string` } }
+           , type: 'object',
+            properties: {, people: {, type: 'array', items: {, type: 'string' } },
+              organizations: {, type: 'array', items: {, type: 'string' } },
+              locations: {, type: 'array', items: {, type: `string` } },'`'`
+              dates: {, type: 'array', items: {, type: `string` } },
+              legalCitations: {, type: 'array', items: {, type: `string` } }
             }
           }
         },
@@ -263,14 +263,14 @@ export class RAGKnowledgePipeline {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: this.SYNTHESIS_MODEL,
+       , model: this.SYNTHESIS_MODEL,
         messages: [
           {,
             role: 'system',
             content: `You are a legal AI assistant. Extract structured metadata from documents.` },
           {
             role: 'user',
-            content: `Extract metadata from this; document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...` }
+            content: `Extract metadata from this;, document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...` }
         ],
         tools: [functionDefinition],
         stream: false
@@ -286,11 +286,11 @@ export class RAGKnowledgePipeline {
 
     // Fallback: basic extraction
     return {
-      summary: doc.content.substring(0, 200) + '...',
+     , summary: doc.content.substring(0, 200) + '...',
       keyPoints: [doc.title],
       keywords: doc.title.split(' ').filter(w => w.length > 3),
       entities: {
-        people: [],
+       , people: [],
         organizations: [],
         locations: [],
         dates: [],
@@ -300,7 +300,7 @@ export class RAGKnowledgePipeline {
   }
 
   // ==========================================================================
-  // STAGE 3: INDEXING (LokiJS + Fuse.js + Ripgrep)
+  // STAGE, 3: INDEXING (LokiJS + Fuse.js + Ripgrep)
   // ==========================================================================
 
   /**
@@ -327,7 +327,7 @@ export class RAGKnowledgePipeline {
           updatedAt: new Date(),
           attachments: [],
           metadata: {
-            embedding: doc.embedding,
+           , embedding: doc.embedding,
             entities: doc.entities,
             keyPoints: doc.keyPoints,
             source: doc.source
@@ -349,7 +349,7 @@ export class RAGKnowledgePipeline {
 
         const indexedDoc: IndexedDocument = {
           ...doc,
-          lokiId: lokiDoc.$loki as number,
+          lokiId: lokiDoc.$loki, as: number,
           fuseScore: 0, // Will be set during search
           ripgrepKeywords,
           searchableText
@@ -377,7 +377,7 @@ export class RAGKnowledgePipeline {
    */
   private async extractRipgrepKeywords(doc: SummarizedDocument): Promise<string[]> {
     // Simulated ripgrep pattern matching
-    // In production, this would shell out to: rg -o '\b[A-Z][a-z]+\b' | sort | uniq
+    // In production, this would shell out to: rg -o, '\b[A-Z][a-z]+\b' | sort | uniq
 
     const patterns = [
       /\b[A-Z][a-z]{3}\b/g,           // Capitalized words (names, places)
@@ -397,7 +397,7 @@ export class RAGKnowledgePipeline {
     // Also include Gemma-extracted keywords
     doc.keywords.forEach(kw => keywords.add(kw));
 
-    return Array.from(keywords).slice(0, 50); // Top 50 keywords
+    return Array.from(keywords).slice(0, 50); // Top, 50 keywords
   }
 
   // ==========================================================================
@@ -535,11 +535,11 @@ export class RAGKnowledgePipeline {
     return Math.max(0, Math.min(1, score));
   }
 
-  // =================================================================import { vectorService } from '$lib/server/vector/EnhancedVectorService';
-import { cache } from '$lib/server/cache/redis';
-import { LokiEvidenceService } from '$lib/utils/loki-evidence';
-import Fuse from 'fuse.js';
-import { getOllamaEndpoint } from '$lib/utils/endpoints';
+  // =================================================================import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
+import { cache } from, '$lib/server/cache/redis';
+import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
+import Fuse from, 'fuse.js';
+import { getOllamaEndpoint } from, '$lib/utils/endpoints';
 
 // ============================================================================
 // Types & Interfaces
@@ -548,7 +548,7 @@ import { getOllamaEndpoint } from '$lib/utils/endpoints';
 export interface RAGDocument { id: string;, content: string;
   title: string;
   source: string;
-  createdAt: Date;
+ , createdAt: Date;
   metadata?: Record<string, unknown>;
 }
 
@@ -562,7 +562,7 @@ export interface SummarizedDocument extends EmbeddedDocument {
   summary: string;                  // Document-level summary
   chunkSummaries?: string[];        // Chunk-level summaries
   keyPoints: string[];              // Extracted key points
-  keywords: string[];               // Extracted keywords (gemma function calling)
+ , keywords: string[];               // Extracted keywords (gemma function calling)
   entities: {                       // Named entity extraction
     people: string[];
     organizations: string[];
@@ -572,41 +572,41 @@ export interface SummarizedDocument extends EmbeddedDocument {
   };
 }
 
-export interface GemmaExtractionResult { summary: string;, keyPoints: string[];
+export interface GemmaExtractionResult {, summary: string;, keyPoints: string[];
 	keywords: string[];
-	entities: { people: string[];, organizations: string[];
+	entities: {, people: string[];, organizations: string[];
 		locations: string[];
 		dates: string[];
 		legalCitations: string[];
 	};
 }
 
-export interface IndexedDocument extends SummarizedDocument { lokiId: number;                   // LokiJS document ID, fuseScore: number;                // Fuse.js fuzzy match score
+export interface IndexedDocument extends SummarizedDocument {, lokiId: number;                   // LokiJS document ID, fuseScore: number;                // Fuse.js fuzzy match score
   ripgrepKeywords: string[];        // Keywords from ripgrep extraction
   searchableText: string;           // Combined searchable content
 }
 
-export interface RankedDocument extends IndexedDocument { relevanceScore: number;           // 0-1 relevance score, keywordScore: number;             // Keyword match quality
+export interface RankedDocument extends IndexedDocument {, relevanceScore: number;           // 0-1 relevance score, keywordScore: number;             // Keyword match quality
   synthesisScore: number;           // Cross-document synthesis quality
   combinedScore: number;            // Weighted final score
   ranking: number;                  // Final position in results
 }
 
-export interface SynthesisRankingConfig { weights: {, relevance: number;              // Weight for semantic relevance (default: 0.5); keywords: number;               // Weight for keyword matching (default: 0.3); synthesis: number;              // Weight for synthesis quality (default: 0.2)
+export interface SynthesisRankingConfig {, weights: {, relevance: number;              // Weight for semantic relevance (default: 0.5); keywords: number;               // Weight for keyword matching (default: 0.3); synthesis: number;              // Weight for synthesis quality (default: 0.2)
   };
   keywordExtractor: 'ripgrep' | 'awk' | 'hybrid';
   enableGemmaFunctionCalling: boolean;
   cacheResults: boolean;
 }
 
-export interface RAGPipelineResult { documents: RankedDocument[];, totalProcessed: number;
-  timing: { embedding: number;, summarization: number;
+export interface RAGPipelineResult {, documents: RankedDocument[];, totalProcessed: number;
+  timing: {, embedding: number;, summarization: number;
     indexing: number;
     ranking: number;
     total: number;
   };
   cacheHits: number;
-  metadata: { embeddingModel: string;, synthesisModel: string;
+  metadata: {, embeddingModel: string;, synthesisModel: string;
     rankingAlgorithm: string;
   };
 }
@@ -621,7 +621,7 @@ export class RAGKnowledgePipeline {
   private readonly EMBEDDING_MODEL = 'embeddinggemma:latest';
   private readonly SYNTHESIS_MODEL = 'gemma3:legal-latest';
 
-  private defaultRankingConfig: SynthesisRankingConfig = { weights: {, relevance: 0.5,
+  private defaultRankingConfig: SynthesisRankingConfig = {, weights: {, relevance: 0.5,
       keywords: 0.3,
       synthesis: 0.2
     },
@@ -663,7 +663,7 @@ export class RAGKnowledgePipeline {
           // Generate fresh embedding with embeddinggemma:latest
           embedding = await vectorService.generateEmbedding(doc.content);
 
-          // Cache for 24 hours
+          // Cache for, 24 hours
           await cache.set(cacheKey, embedding, 86400);
         }
 
@@ -714,7 +714,7 @@ export class RAGKnowledgePipeline {
           // Use Gemma function calling for structured extraction
           summaryData = await this.callGemmaStructuredExtraction(doc);
 
-          // Cache for 24 hours
+          // Cache for, 24 hours
           await cache.set(cacheKey, summaryData, 86400);
         }
 
@@ -752,27 +752,27 @@ export class RAGKnowledgePipeline {
       name: 'extract_document_metadata',
       description: 'Extract structured metadata from a legal document',
       parameters: {
-        type: 'object',
-        properties: { summary: {, type: 'string',
+       , type: 'object',
+        properties: {, summary: {, type: 'string',
             description: 'A concise 2-3 sentence summary of the document'
           },
           keyPoints: {
-            type: 'array',
-            items: { type: 'string' },
+           , type: 'array',
+            items: {, type: 'string' },
             description: 'List of key points or main ideas (max 5)'
           },
           keywords: {
-            type: 'array',
-            items: { type: 'string' },
+           , type: 'array',
+            items: {, type: 'string' },
             description: 'Important keywords and phrases for search'
           },
           entities: {
-            type: 'object',
-            properties: { people: {, type: 'array', items: { type: 'string' } },
-              organizations: { type: 'array', items: { type: 'string' } },
-              locations: { type: 'array', items: { type: `string` } },'`'`
-              dates: { type: 'array', items: { type: `string` } },
-              legalCitations: { type: 'array', items: { type: `string` } }
+           , type: 'object',
+            properties: {, people: {, type: 'array', items: {, type: 'string' } },
+              organizations: {, type: 'array', items: {, type: 'string' } },
+              locations: {, type: 'array', items: {, type: `string` } },'`'`
+              dates: {, type: 'array', items: {, type: `string` } },
+              legalCitations: {, type: 'array', items: {, type: `string` } }
             }
           }
         },
@@ -785,14 +785,14 @@ export class RAGKnowledgePipeline {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: this.SYNTHESIS_MODEL,
+       , model: this.SYNTHESIS_MODEL,
         messages: [
           {,
             role: 'system',
             content: `You are a legal AI assistant. Extract structured metadata from documents.` },
           {
             role: 'user',
-            content: `Extract metadata from this; document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...` }
+            content: `Extract metadata from this;, document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...` }
         ],
         tools: [functionDefinition],
         stream: false
@@ -808,11 +808,11 @@ export class RAGKnowledgePipeline {
 
     // Fallback: basic extraction
     return {
-      summary: doc.content.substring(0, 200) + '...',
+     , summary: doc.content.substring(0, 200) + '...',
       keyPoints: [doc.title],
       keywords: doc.title.split(' ').filter(w => w.length > 3),
       entities: {
-        people: [],
+       , people: [],
         organizations: [],
         locations: [],
         dates: [],
@@ -822,7 +822,7 @@ export class RAGKnowledgePipeline {
   }
 
   // ==========================================================================
-  // STAGE 3: INDEXING (LokiJS + Fuse.js + Ripgrep)
+  // STAGE, 3: INDEXING (LokiJS + Fuse.js + Ripgrep)
   // ==========================================================================
 
   /**
@@ -849,7 +849,7 @@ export class RAGKnowledgePipeline {
           updatedAt: new Date(),
           attachments: [],
           metadata: {
-            embedding: doc.embedding,
+           , embedding: doc.embedding,
             entities: doc.entities,
             keyPoints: doc.keyPoints,
             source: doc.source
@@ -871,7 +871,7 @@ export class RAGKnowledgePipeline {
 
         const indexedDoc: IndexedDocument = {
           ...doc,
-          lokiId: lokiDoc.$loki as number,
+          lokiId: lokiDoc.$loki, as: number,
           fuseScore: 0, // Will be set during search
           ripgrepKeywords,
           searchableText
@@ -899,7 +899,7 @@ export class RAGKnowledgePipeline {
    */
   private async extractRipgrepKeywords(doc: SummarizedDocument): Promise<string[]> {
     // Simulated ripgrep pattern matching
-    // In production, this would shell out to: rg -o '\b[A-Z][a-z]+\b' | sort | uniq
+    // In production, this would shell out to: rg -o, '\b[A-Z][a-z]+\b' | sort | uniq
 
     const patterns = [
       /\b[A-Z][a-z]{3}\b/g,           // Capitalized words (names, places)
@@ -919,7 +919,7 @@ export class RAGKnowledgePipeline {
     // Also include Gemma-extracted keywords
     doc.keywords.forEach(kw => keywords.add(kw));
 
-    return Array.from(keywords).slice(0, 50); // Top 50 keywords
+    return Array.from(keywords).slice(0, 50); // Top, 50 keywords
   }
 
   // ==========================================================================

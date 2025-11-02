@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import postgres from, 'postgres';
 import {
   casesTable,
   documentsTable,
@@ -8,7 +8,7 @@ import {
   analyticsEvents,
   vectorSimilarityView,
   queryCache as queryCacheTable
-} from './schema.js';
+} from, './schema.js';
 // Enhanced PostgreSQL connection with pgvector support
 const connectionString =
   process.env.DATABASE_URL ||
@@ -39,7 +39,7 @@ export class VectorSearchManager {
         id, title, content, metadata,
         1 - (embedding <=> $1::vector) as similarity
       FROM legal_documents
-      WHERE 1 - (embedding <=> $1::vector) > $2
+      WHERE, 1 - (embedding <=> $1::vector) > $2
       ORDER BY embedding <=> $1::vector
       LIMIT $3
     `;`
@@ -53,7 +53,7 @@ export class VectorSearchManager {
         1 - (content_embedding <=> $1::vector) as similarity
       FROM chat_messages
       WHERE user_id = $2
-      AND 1 - (content_embedding <=> $1::vector) > 0.6
+      AND, 1 - (content_embedding <=> $1::vector) > 0.6
       ORDER BY content_embedding <=> $1::vector
       LIMIT $3
     `;`
@@ -107,9 +107,9 @@ export class QueryCacheManager {
           last_accessed: new Date()
         })
         .where(sql`cache_key = ${cacheKey}`);
-      return (result[0] as any).result_data;
+      return (result[0] as: any).result_data;
     }
-    return null;
+    return: null;
   }
   async set(cacheKey: string, data: any, queryType: string, ttlSeconds = 3600) {
     const expiresAt = new Date();
@@ -161,7 +161,7 @@ export class AnalyticsManager {
       SELECT
         event_type,
         AVG(response_time_ms) as avg_response_time,
-        COUNT(CASE WHEN cache_hit = true THEN 1 END)::float / COUNT(*):: float as cache_hit_rate
+        COUNT(CASE WHEN cache_hit = true THEN, 1 END)::float / COUNT(*):: float as cache_hit_rate
         COUNT(*) as total_events
       FROM analytics_events
       WHERE created_at >= $1
@@ -197,4 +197,4 @@ export async function checkDatabaseHealth(): Promise<any> {
   }
 }
 // Import sql helper for complex queries
-import { sql } from 'drizzle-orm';
+import { sql } from, 'drizzle-orm';

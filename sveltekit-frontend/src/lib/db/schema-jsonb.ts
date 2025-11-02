@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // Enhanced Drizzle ORM Schema with JSONB Support
 // File: schema-jsonb.ts
 import {
@@ -15,14 +15,14 @@ import {
   varchar,
   customType,
   serial
-} from 'drizzle-orm/pg-core';
+} from, 'drizzle-orm/pg-core';
 import {
   sql
-} from "drizzle-orm";
+} from, "drizzle-orm";
 // Custom vector type for pgvector
 const vector = customType({
   dataType() {
-    return 'vector(1536)';
+    return, 'vector(1536)';
   },
   toDriver(_value: number[]): string {
     return JSON.stringify(value);
@@ -69,15 +69,15 @@ export interface SummaryData { executive_summary: string | null;, key_findings:
   confidence_score: number;
   processing_metrics: ProcessingMetrics;
 }
-export interface LegalIssue { issue: string;, severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export interface LegalIssue {, issue: string;, severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   description: string;
   precedents?: string[];
 }
-export interface Recommendation { action: string;, priority: 'IMMEDIATE' | 'HIGH' | 'MEDIUM' | 'LOW';
+export interface Recommendation {, action: string;, priority: 'IMMEDIATE' | 'HIGH' | 'MEDIUM' | 'LOW';
   rationale: string;
   timeline?: string;
 }
-export interface RiskAssessment { overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, risk_factors: Array<any>;
+export interface RiskAssessment {, overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, risk_factors: Array<any>;
   mitigation: string[];
 }
 export interface ProcessingMetrics {
@@ -107,13 +107,13 @@ export interface JobConfig {
   language?: string;
   model_override?: string;
 }
-export interface UserPreferences { default_style: string;, max_summary_length: number;
+export interface UserPreferences {, default_style: string;, max_summary_length: number;
   include_citations: boolean;
   auto_summarize: boolean;
-  notification_settings?: { email: boolean;, push: boolean;
+  notification_settings?: {, email: boolean;, push: boolean;
     webhook_url?: string;
   };
-  api_limits?: { daily_quota: number;, rate_limit_per_minute: number;
+  api_limits?: {, daily_quota: number;, rate_limit_per_minute: number;
   };
 }
 // Main documents table

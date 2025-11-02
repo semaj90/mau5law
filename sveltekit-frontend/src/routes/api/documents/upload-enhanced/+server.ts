@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import legalRAG from '$lib/ai/langchain-rag';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import legalRAG from, '$lib/ai/langchain-rag';
 /**
  * Enhanced document upload endpoint with LangChain RAG integration
  * Provides immediate text extraction and semantic indexing
@@ -20,9 +20,9 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const caseId = formData.get('caseId') as string;
-    const documentType = formData.get('documentType') as string;
-    const title = formData.get('title') as string;
+    const caseId = formData.get('caseId') as: string;
+    const documentType = formData.get('documentType') as: string;
+    const title = formData.get('title') as: string;
     if (!file) {
       return json(
         {
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Unsupported file type. Supported; formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
+          error: `Unsupported file type. Supported;, formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
         { status: 400 }
       );
     }
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
 
     // Cast once to a well-defined type and reuse
-    const resultTyped = rawResult as unknown as DocumentUploadResult;
+    const resultTyped = rawResult as: unknown as DocumentUploadResult;
 
     if (resultTyped.success) {
       console.log(
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
   } catch (error: any) {
-    // Normalize unknown error to a string message
+    // Normalize: unknown error to, a: string message
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Enhanced document upload error:', errorMessage);'
     return json(
@@ -151,7 +151,7 @@ export const GET: RequestHandler = async () => {
       'Automatic title generation from document content',
     ],
     aiCapabilities: {
-      textExtraction: 'Advanced multi-format extraction',
+     , textExtraction: 'Advanced multi-format extraction',
       documentClassification: 'Legal-specific ML classification',
       semanticIndexing: 'Vector-based semantic chunking',
       searchIntegration: 'Real-time enhanced search integration',

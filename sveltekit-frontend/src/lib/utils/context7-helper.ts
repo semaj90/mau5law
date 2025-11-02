@@ -1,5 +1,5 @@
 // Context7 Helper - Maps legacy API to MCP Context7.2 implementation
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
+import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
 /**
  * Legacy API compatibility for resolveLibraryId
  * Maps library names to Context7.2 compatible library IDs
@@ -37,4 +37,4 @@ export async function getLibraryDocs(libraryId: string, topic?: string, tokens?:
     return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message : 'Unknown error' }`;'' }
 }
 // Re-export MCP functions for direct usage
-export { mcpContext72GetLibraryDocs, getSvelte5Docs, getBitsUIv2Docs, getMeltUIDocs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
+export { mcpContext72GetLibraryDocs, getSvelte5Docs, getBitsUIv2Docs, getMeltUIDocs, getXStateDocs } from, '$lib/mcp-context72-get-library-docs';

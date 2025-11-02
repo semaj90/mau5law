@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * User-Owned Data Store (Svelte 5)
  * Manages all user-specific data: AI assistant history, reports, citations, cases, evidence, etc.
  * Integrates with session store and provides drizzle-orm ready structure
  */
 // Session data is now passed from server via SvelteKit data flow
-import { browser } from '$app/environment';
-import { formatRelativeTime, formatDetailedTimestamp } from '$lib/utils/formatting';
+import { browser } from, '$app/environment';
+import { formatRelativeTime, formatDetailedTimestamp } from, '$lib/utils/formatting';
 // ===== TYPES =====
 export interface UserCase { id: string;, title: string;
   description?: string;
@@ -21,7 +21,7 @@ export interface UserCase { id: string;, title: string;
   citationCount: number;
   reportCount: number;
 }
-export interface UserEvidence { id: string;, caseId: string;
+export interface UserEvidence {, id: string;, caseId: string;
   filename: string;
   fileType: string;
   fileSize: number;
@@ -33,7 +33,7 @@ export interface UserEvidence { id: string;, caseId: string;
   metadata: { [key: string]: any };
   aiAnalysisStatus: 'pending' | 'processing' | 'completed' | 'failed';
 }
-export interface UserCitation { id: string;, userId: string;
+export interface UserCitation {, id: string;, userId: string;
   caseId?: string;
   title: string;
   source: string;
@@ -46,7 +46,7 @@ export interface UserCitation { id: string;, userId: string;
   updatedAt: Date;
   isFavorite: boolean;
 }
-export interface UserReport { id: string;, userId: string;
+export interface UserReport {, id: string;, userId: string;
   caseId?: string;
   title: string;
   reportType: 'analysis' | 'summary' | 'timeline' | 'evidence_review' | 'legal_memo' | 'custom';
@@ -58,7 +58,7 @@ export interface UserReport { id: string;, userId: string;
   wordCount: number;
   tags: string[];
 }
-export interface AIAssistantMessage { id: string;, userId: string;
+export interface AIAssistantMessage {, id: string;, userId: string;
   conversationId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -68,7 +68,7 @@ export interface AIAssistantMessage { id: string;, userId: string;
   tokens?: number;
   model?: string;
 }
-export interface AIConversation { id: string;, userId: string;
+export interface AIConversation {, id: string;, userId: string;
   title: string;
   contextType?: 'case' | 'evidence' | 'citation' | 'general';
   contextId?: string;
@@ -78,7 +78,7 @@ export interface AIConversation { id: string;, userId: string;
   isArchived: boolean;
   tags: string[];
 }
-export interface UserActivity { id: string;, userId: string;
+export interface UserActivity {, id: string;, userId: string;
   action: string;
   resourceType: 'case' | 'evidence' | 'citation' | 'report' | 'ai_chat' | 'system';
   resourceId?: string;
@@ -87,14 +87,14 @@ export interface UserActivity { id: string;, userId: string;
   ipAddress?: string;
   userAgent?: string;
 }
-export interface UserDataState { cases: UserCase[];, evidence: UserEvidence[];
+export interface UserDataState {, cases: UserCase[];, evidence: UserEvidence[];
   citations: UserCitation[];
   reports: UserReport[];
   aiConversations: AIConversation[];
   recentActivity: UserActivity[];
   isLoading: boolean;
   lastSyncAt: number;
-  cachedAt: number;
+ , cachedAt: number;
 }
 // ===== STORE IMPLEMENTATION =====
 const createUserDataStore = () => {
@@ -305,7 +305,7 @@ const createUserDataStore = () => {
         const parsedCache = JSON.parse(cached);
         if (parsedCache.userId === userId && parsedCache.data) {
           const cacheAge = Date.now() - (parsedCache.cachedAt || 0);
-          // Use cache if less than 10 minutes old
+          // Use cache if less than, 10 minutes old
           if (cacheAge < 10 * 60 * 1000) {
             Object.assign(userDataState, {
               ...parsedCache.data,

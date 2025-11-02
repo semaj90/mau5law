@@ -1,11 +1,11 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { z } from 'zod';
-import { simpleAuthService } from '$lib/server/auth-simple';
-import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
-import { db, users, helpers } from '$lib/server/db';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { fail, redirect } from, '@sveltejs/kit';
+import { superValidate } from, 'sveltekit-superforms/server';
+import { zod } from, 'sveltekit-superforms/adapters';
+import { z } from, 'zod';
+import { simpleAuthService } from, '$lib/server/auth-simple';
+import { createUserSession, setSessionCookie, verifyPassword } from, '$lib/server/lucia';
+import { db, users, helpers } from, '$lib/server/db';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-  default: async ({ request, cookies }) => {
+ , default: async ({ request, cookies }) => {
     const form = await superValidate(request, zod(loginSchema));
 
     if (!form.valid) {

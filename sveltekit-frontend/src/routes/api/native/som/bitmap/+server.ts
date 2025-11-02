@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { encodeEmbeddingToBitmap, bitmapToDataUrl } from '$lib/server/ai/som-bitmap-visualizer';
-import type { SOMBitmapPalette } from '$lib/server/ai/som-bitmap-visualizer';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { encodeEmbeddingToBitmap, bitmapToDataUrl } from, '$lib/server/ai/som-bitmap-visualizer';
+import type { SOMBitmapPalette } from, '$lib/server/ai/som-bitmap-visualizer';
 
 const palettes: SOMBitmapPalette[] = ['viridis', 'magma', 'blueprint', 'legal', 'grayscale'];
 

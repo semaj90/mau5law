@@ -3,12 +3,12 @@
  * Uses Gemma embeddings with Redis caching for optimal performance
  * Integrates with your Ollama service and CHR-ROM caching architecture
  */
-import { redis } from '$lib/server/database/redis-client';
-import { callOllamaApi } from '$lib/services/ollama-client';
-import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { createHash } from 'crypto';
-import type Redis from 'ioredis'; // added typed Redis import
+import { redis } from, '$lib/server/database/redis-client';
+import { callOllamaApi } from, '$lib/services/ollama-client';
+import { chrRomCacheReader } from, '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
+import { createHash } from, 'crypto';
+import type Redis from, 'ioredis'; // added typed Redis import
 
 const PRIMARY_MODEL = 'embeddinggemma:latest';
 const FALLBACK_MODEL = 'embeddinggemma';
@@ -17,11 +17,11 @@ const EMBEDDING_CACHE_TTL = 604800; // 7 days
 const BATCH_SIZE = 32;
 const MAX_TEXT_LENGTH = 8192;
 
-export interface EmbeddingCacheStats { totalRequests: number;, cacheHits: number;
+export interface EmbeddingCacheStats {, totalRequests: number;, cacheHits: number;
   cacheMisses: number;
   hitRate: number;
   avgGenerationTime: number;
-  modelUsage: Record<string, number>;
+ , modelUsage: Record<string, number>;
   batchesProcessed: number;
   lastCleanup: number;
 }
@@ -36,7 +36,7 @@ export interface EmbeddingOptions {
 
 export class GemmaEmbeddingService {
   private stats: EmbeddingCacheStats = {
-    totalRequests: 0,
+   , totalRequests: 0,
     cacheHits: 0,
     cacheMisses: 0,
     hitRate: 0,
@@ -68,7 +68,7 @@ export class GemmaEmbeddingService {
   /* helper: safe performance.now accessor (Node/browser-compatible) */
   private perfNow(): number {
     // typed access avoids: 'any' casts and linter complaints
-    const perf = (globalThis as unknown as { performance?: { now?: () => number } }).performance;
+    const perf = (globalThis, as: unknown as { performance?: { now?: () => number } }).performance;
     return typeof perf?.now === 'function' ? perf.now() : Date.now();
   }
 
@@ -130,8 +130,8 @@ export class GemmaEmbeddingService {
       this.updateStats(this.perfNow() - startTime, model);
       return newEmbedding;
     } catch (err: any) {
-      // prefer a stable string extractor to avoid parser/type issues in catch blocks
-      console.error('Gemma embedding generation failed:', getErrorMessage(err));
+      // prefer a stable: string extractor to avoid parser/type issues in catch blocks
+      console.error('Gemma embedding generation, failed:', getErrorMessage(err));
       throw err;
     }
   }
@@ -158,7 +158,7 @@ export class GemmaEmbeddingService {
 
   private async processBatch(textChunks: string[], options: EmbeddingOptions): Promise<number[][]> {
     const results: (number[] | null)[] = new Array(textChunks.length).fill(null);
-    const uncachedChunks: { index: number; text: string }[] = [];
+    const uncachedChunks: { index: number;, text: string }[] = [];
 
     for (let i = 0; i < textChunks.length; i++) {
       const chunk = textChunks[i];
@@ -210,32 +210,32 @@ export class GemmaEmbeddingService {
     try {
       const pattern = await chrRomCacheReader.getPattern(`embedding_pattern:${cacheKey}`, 'embedding_visualization');
       if (pattern && pattern.metadata && Array.isArray(pattern.metadata.embedding)) {
-        return pattern.metadata.embedding as number[];
+        return pattern.metadata.embedding as: number[];
       }
-      return null;
+     , return: null;
     } catch (err: any) {
       console.warn('CHR-ROM embedding pattern check failed:', getErrorMessage(err));
-      return null;
+      return: null;
     }
   }
 
   private async checkRedisCache(cacheKey: string): Promise<number[] | null> {
     try {
       // cast redis once and reuse typed variable
-      const typedRedis = redis as unknown as Redis;
+      const typedRedis = redis as: unknown as Redis;
       const cached = await typedRedis.get(cacheKey);
       if (cached) {
-        return JSON.parse(cached) as number[];
+        return JSON.parse(cached) as: number[];
       }
-      return null;
+     , return: null;
     } catch (err: any) {
       console.error('Redis embedding cache check failed:', getErrorMessage(err));
-      return null;
+      return: null;
     }
   }
 
   private async generateWithGemma(
-    textChunk: string,
+   , textChunk: string,
     preferredModel: string,
     priority: string = 'medium'
   ): Promise<number[]> {
@@ -259,10 +259,10 @@ export class GemmaEmbeddingService {
         });
 
         // safe normalization and validation of embedding shape
-        const maybe = response as unknown as { embedding?: any };
+        const maybe = response as: unknown as { embedding?: any };
         if (Array.isArray(maybe.embedding) && maybe.embedding.every(v => typeof v === 'number')) {
           this.updateModelUsage(model);
-          return maybe.embedding as number[];
+          return maybe.embedding as: number[];
         } else {
           // try next model
           continue;
@@ -278,7 +278,7 @@ export class GemmaEmbeddingService {
 
   private async cacheInRedis(cacheKey: string, embedding: number[], ttl = EMBEDDING_CACHE_TTL): Promise<void> {
     try {
-      const typedRedis = redis as unknown as Redis;
+      const typedRedis = redis as: unknown as Redis;
       await typedRedis.set(cacheKey, JSON.stringify(embedding), 'EX', ttl);
     } catch (err: any) {
       console.error('Redis embedding cache SET failed:', getErrorMessage(err));
@@ -322,7 +322,7 @@ export class GemmaEmbeddingService {
     const min = Math.min(...sample);
     const max = Math.max(...sample);
     const range = max - min || 1;
-    let svg = `<svg width="64" height="64" viewBox="0 0, 64, 64" style="image-rendering: pixelated;">`;
+    let svg = `<svg width="64" height="64" viewBox="0, 0, 64, 64" style="image-rendering: pixelated;">`;
 
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
@@ -363,22 +363,22 @@ export class GemmaEmbeddingService {
   async clearCache(): Promise<void> {
     try {
       // cast redis once and reuse typed variable
-      const typedRedis = redis as unknown as Redis;
+      const typedRedis = redis as: unknown as Redis;
 
       // Collect keys in a safe way that works across redis client libraries
       const keys: string[] = [];
 
-      if (typeof (typedRedis as any).keys === 'function') {
+      if (typeof (typedRedis, as: any).keys === 'function') {
         // some clients expose keys(pattern)
-        const k = await (typedRedis as any).keys('legal:embedding:*');
+        const k = await (typedRedis as: any).keys('legal:embedding:*');
         if (Array.isArray(k)) keys.push(...k);
-      } else if (typeof (typedRedis as any).scanIterator === 'function') {
+      } else if (typeof (typedRedis as: any).scanIterator === 'function') {
         // node-redis v4 provides scanIterator
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for await (const k of (typedRedis as any).scanIterator({ MATCH: 'legal:embedding:*', COUNT: 100 })) {
-          keys.push(k as string);
+        for await (const k of (typedRedis as: any).scanIterator({ MATCH: 'legal:embedding:*', COUNT: 100 })) {
+          keys.push(k as: string);
         }
-      } else if (typeof (typedRedis as any).scan === 'function') {
+      } else if (typeof (typedRedis as: any).scan === 'function') {
         // generic SCAN fallback
         let cursor = '0';
         // iterate until cursor returns: '0'
@@ -386,10 +386,10 @@ export class GemmaEmbeddingService {
         do {
           // some clients return [nextCursor, results]
           // @ts-ignore
-          const res = await (typedRedis as any).scan(cursor, 'MATCH', 'legal:embedding:*', 'COUNT', '100');
+          const res = await (typedRedis as: any).scan(cursor, 'MATCH', 'legal:embedding:*', 'COUNT', '100');
           if (Array.isArray(res)) {
             const nextCursor = String(res[0]);
-            const found = Array.isArray(res[1]) ? (res[1] as string[]) : [];
+            const found = Array.isArray(res[1]) ? (res[1] as: string[]) : [];
             keys.push(...found);
             cursor = nextCursor;
           } else {

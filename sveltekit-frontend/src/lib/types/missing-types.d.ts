@@ -1,5 +1,5 @@
-import type { TextChunk } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { TextChunk } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // TypeScript declarations for missing types across the codebase
 // This file resolves many TS2304: "Cannot find name" errors
 // Engine/Graphics types
@@ -21,22 +21,22 @@ declare interface RAGSearchResult { id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
 }
-declare interface TextChunk { text: string;, index: number;
+declare interface TextChunk {, text: string;, index: number;
   metadata?: { [key: string]: any };
 }
-declare interface RAGDocument { id: string;, content: string;
+declare interface RAGDocument {, id: string;, content: string;
   embedding?: number[];
   metadata?: { [key: string]: any };
 }
 // Store types
-declare const enhancedRAGStore: { search: (query: string) => Promise<RAGSearchResult[]>;, add: (doc: RAGDocument) => Promise<void>;
+declare const enhancedRAGStore: {, search: (query: string) => Promise<RAGSearchResult[]>;, add: (doc: RAGDocument) => Promise<void>;
 };
 declare const documentVectors: any;
 // Routing types
-declare interface DynamicRouteConfig { path: string;, component: any;
+declare interface DynamicRouteConfig {, path: string;, component: any;
   metadata?: { [key: string]: any };
 }
-declare interface GeneratedRoute { path: string;, handler: any;
+declare interface GeneratedRoute {, path: string;, handler: any;
 }
 declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
 // Document processing types
@@ -71,10 +71,10 @@ declare global {
   const tauriLLM: any;
   const metrics: any;
   const z: any;
-  const prisma: any;
+  const, prisma: any;
 }
 // Langchain missing exports
-declare module '@langchain/community/vectorstores/pgvector' {
+declare module, '@langchain/community/vectorstores/pgvector' {
   export class PGVectorStore {
     static initialize(config: any): Promise<PGVectorStore>;
     static fromExistingIndex(config: any): Promise<PGVectorStore>;
@@ -87,7 +87,7 @@ declare module '@langchain/community/vectorstores/pgvector' {
     INNER_PRODUCT = 'innerProduct'
   }
 }
-declare module '@langchain/community/vectorstores/neo4j_vector' {
+declare module, '@langchain/community/vectorstores/neo4j_vector' {
   export class Neo4jVectorStore {
     constructor(config: any);
     static fromExistingIndex(config: any): Promise<Neo4jVectorStore>;
@@ -95,7 +95,7 @@ declare module '@langchain/community/vectorstores/neo4j_vector' {
   }
 }
 // XState v5 compatibility stubs
-declare module 'xstate' {
+declare module, 'xstate' {
   export interface StateId {
     [key: string]: any;
   }
@@ -120,7 +120,7 @@ declare module 'xstate' {
   export function createActor<T>(machine: any): Actor<T>;
 }
 // Redis stub
-declare module 'ioredis' {
+declare module, 'ioredis' {
   export default class Redis {
     constructor(config?: any);
     get(_key: string): Promise<string | null>;
@@ -155,7 +155,7 @@ export interface GenericLegalAnalysisResult { score: number;, confidence: numbe
   recommendations: string[];
   legalRelevance?: number;
 }
-export interface LegalEmbeddingResult { embedding: number[];, model: string;
+export interface LegalEmbeddingResult {, embedding: number[];, model: string;
   dimensions: number;
   processingTime: number;
 }
@@ -163,7 +163,7 @@ export interface MetricData {
   id?: string;
   metric: string;
   value: number;
-  timestamp: Date;
+ , timestamp: Date;
   labels?: { [key: string]: any };
   source?: string;
   level?: string;

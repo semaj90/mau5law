@@ -1,22 +1,22 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidenceBoardItems, evidenceBoards } from '$lib/database/enhanced-schema';
-import { eq, and } from 'drizzle-orm';
-import { z } from 'zod';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidenceBoardItems, evidenceBoards } from, '$lib/database/enhanced-schema';
+import { eq, and } from, 'drizzle-orm';
+import { z } from, 'zod';
 
 const createBoardItemSchema = z.object({
   evidenceId: cuidSchema.optional(),
   poiId: cuidSchema.optional(),
   itemType: z.enum(['evidence', 'poi', 'note', 'connection', 'image']),
   position: z.object({
-    x: z.number(),
+   , x: z.number(),
     y: z.number()
   }),
   size: z
     .object({
-      width: z.number(),
+     , width: z.number(),
       height: z.number()
     })
     .optional(),

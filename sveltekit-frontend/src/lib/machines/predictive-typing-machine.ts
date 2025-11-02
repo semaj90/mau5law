@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * XState Machine for Predictive Typing with Topology-Aware Analytics
  *
@@ -6,12 +6,12 @@ import type { User } from '$lib/types';
  * real-time typing predictions, user intent analysis, and contextual suggestions
  * using compressed glyph patterns and LOD caching for sub-millisecond responses.
  */
-import { setup, assign, fromPromise, type ActorRefFrom } from 'xstate';
+import { setup, assign, fromPromise, type ActorRefFrom } from, 'xstate';
 import {
   topologyPredictiveAnalyticsEngine,
   type PredictiveAnalyticsResult
-} from '$lib/ai/topology-predictive-analytics-engine.js';
-import { enhancedRAGGlyphSystem, type GlyphContext } from '$lib/ai/enhanced-rag-glyph-system.js';
+} from, '$lib/ai/topology-predictive-analytics-engine.js';
+import { enhancedRAGGlyphSystem, type GlyphContext } from, '$lib/ai/enhanced-rag-glyph-system.js';
 // removed unused `lodCacheEngine` import
 // Local minimal DoneInvokeEvent type to avoid relying on a removed xstate export.
 // The file only needs `type` and `output` so keep the alias intentionally small.
@@ -40,7 +40,7 @@ interface PredictiveTypingContext {
   analyticsAccuracy: number;
   userSatisfactionScore: number;
   // Configuration
-  config: { debounceMs: number;, minQueryLength: number;
+  config: {, debounceMs: number;, minQueryLength: number;
     maxSuggestions: number;
     enableRealTimeLearning: boolean;
     enableTopologyNavigation: boolean;
@@ -50,7 +50,7 @@ interface PredictiveTypingContext {
   // Error handling
   error: string | null;
   retryCount: number;
-  lastErrorTime: number;
+ , lastErrorTime: number;
 }
 // Add a small, conservative SessionStats type to avoid `any`
 type SessionStats = {
@@ -69,8 +69,8 @@ type PredictiveTypingEvent =
   | { type: 'CLEAR'; timestamp: number }
   | { type: 'SELECT_SUGGESTION'; suggestion: string; confidence: number }
   | { type: 'SUBMIT_QUERY'; query: string; timestamp: number }
-  | { type: 'PROVIDE_FEEDBACK'; feedback: {, score: number; selectedResult?: string } }
-  | { type: 'SESSION_START'; sessionData: {, sessionId: string; userId?: string } }
+  | { type: 'PROVIDE_FEEDBACK';, feedback: {, score: number; selectedResult?: string } }
+  | { type: 'SESSION_START';, sessionData: {, sessionId: string; userId?: string } }
   // Replaced `any` with SessionStats
   | { type: 'SESSION_END'; sessionStats?: SessionStats }
   | { type: 'UPDATE_CONFIG'; config: Partial<PredictiveTypingContext['config']> }
@@ -78,7 +78,7 @@ type PredictiveTypingEvent =
   | { type: 'ANALYTICS_ERROR'; error: string }
   | { type: `RETRY` }
   | { type: `RESET` };
-// Accept DoneInvokeEvent shapes too so actions can receive actor onDone events without: 'any'
+// Accept DoneInvokeEvent shapes too so actions can receive actor onDone events, without: 'any'
 type MachineEvent = PredictiveTypingEvent | DoneInvokeEvent<unknown>;
 // --- Add these small, conservative types to avoid `any` ---
 // Moved SessionContext up so actors can reference it
@@ -93,8 +93,8 @@ type SessionContext = {
   [k: string]: any;
 };
 // Engine expects these fields as required — define a narrow type for that
-type EngineSessionContext = { session_id: string;, interaction_timestamp: number;
-  session_quality: number;
+type EngineSessionContext = {, session_id: string;, interaction_timestamp: number;
+ , session_quality: number;
   [k: string]: any;
 };
 type UserFeedback = {
@@ -106,13 +106,13 @@ type UserFeedback = {
   outcome_satisfaction?: number; // newly added explicit field
   [k: string]: any;
 };
-type FeedbackLearningResult = { learning_applied: boolean;, model_updates: any[];
+type FeedbackLearningResult = {, learning_applied: boolean;, model_updates: any[];
   confidence_adjustments: any[];
   topology_updates: any[];
   [k: string]: any;
 };
 // NEW: explicit type for interaction patterns collected by the machine
-type InteractionPattern = { timestamp: number;, eventType: string;
+type InteractionPattern = {, timestamp: number;, eventType: string;
   query: string;
   suggestionsAvailable: number;
   confidence: number;
@@ -121,7 +121,7 @@ type InteractionPattern = { timestamp: number;, eventType: string;
 };
 // --- Add this new payload type after EngineSessionContext ---
 type EngineSessionPayload = EngineSessionContext & {
-  // engine requires query_history as string[]
+  // engine requires query_history as: string[];
   query_history: string[];
   // interaction_patterns use the typed InteractionPattern[] to avoid `any`
   interaction_patterns: InteractionPattern[];
@@ -133,7 +133,7 @@ type EngineSessionPayload = EngineSessionContext & {
 const predictiveAnalyticsActor = fromPromise(
   async ({
     input
-  }: { input: {, query: string;
+  }: {, input: {, query: string;
      , glyphContext: GlyphContext[];
      , sessionData: SessionContext; // <- replaced `any` with, SessionContext
      , enableRealTimeLearning: boolean;
@@ -142,7 +142,7 @@ const predictiveAnalyticsActor = fromPromise(
     try {
       // Build a session payload satisfying both engine shape and EngineSessionContext
       const sessionPayload: EngineSessionPayload = {
-        session_id: String(input.sessionData.sessionId ?? input.sessionData.session_id ?? ''),
+       , session_id: String(input.sessionData.sessionId ?? input.sessionData.session_id ?? ''),
         // Ensure EngineSessionContext required fields exist
         interaction_timestamp: Number(input.sessionData.interaction_timestamp ?? Date.now()),
         session_quality: Number(input.sessionData.session_quality ?? 0),
@@ -194,7 +194,7 @@ const glyphContextActor = fromPromise(
       const resp = result as GlyphSystemResponse;
       return Array.isArray(resp.glyph_context) ? (resp.glyph_context as GlyphContext[]) : [];
     } catch (error: any) {
-      // Use unknown and normalize for logging to avoid `any`
+      // Use: unknown and normalize for logging to avoid `any`
       const err = error instanceof Error ? error : new Error(String(error));
       console.warn('Glyph context retrieval failed, using empty context: ', err);'`'`
       return [];
@@ -216,7 +216,7 @@ type CompletionItem = {
 const queryCompletionActor = fromPromise(
   async ({
     input
-  }: { input: {, partialQuery: string;
+  }: {, input: {, partialQuery: string;
      , glyphContext: GlyphContext[];
      , sessionData: SessionContext; // <- replaced `any` with, SessionContext
      , maxCompletions: number;
@@ -254,7 +254,7 @@ const queryCompletionActor = fromPromise(
 type FeedbackPayload = { selected_predictions: string[];, feedback_scores: number[];
   actual_query?: string;
   outcome_satisfaction: number;
-  specific_feedback?: { prediction_type: string;, prediction_id: string;
+  specific_feedback?: {, prediction_type: string;, prediction_id: string;
     feedback_text: string;
     correction: string;
   }[];
@@ -264,7 +264,7 @@ type FeedbackPayload = { selected_predictions: string[];, feedback_scores: numb
 const feedbackLearningActor = fromPromise(
   async ({
     input
-  }: { input: {, originalQuery: string;
+  }: {, input: {, originalQuery: string;
      , predictiveResults: PredictiveAnalyticsResult;
      , userFeedback: UserFeedback;
      , sessionContext: SessionContext; // still accept loose shape from callers
@@ -296,7 +296,7 @@ const feedbackLearningActor = fromPromise(
         return 0;
       })();
       const normalized: FeedbackPayload = {
-        selected_predictions: selectedPredictions,
+       , selected_predictions: selectedPredictions,
         feedback_scores: feedbackScores,
         actual_query: input.originalQuery ?? undefined,
         outcome_satisfaction: outcomeSatisfaction,
@@ -313,10 +313,10 @@ const feedbackLearningActor = fromPromise(
       };
       // Normalize session context into the exact required shape for the engine
       const engineSessionContext: EngineSessionContext = {
-        session_id: String(input.sessionContext.session_id ?? input.sessionContext.sessionId ?? ''),
+       , session_id: String(input.sessionContext.session_id ?? input.sessionContext.sessionId ?? ''),
         interaction_timestamp: Number(input.sessionContext.interaction_timestamp ?? Date.now()),
         session_quality: Number(input.sessionContext.session_quality ?? 0),
-        // include any extra fields if present
+        // include: any extra fields if present
         ...(input.sessionContext as Record<string, unknown>)
       };
       const learningResults = (await topologyPredictiveAnalyticsEngine.learnFromUserFeedback(
@@ -347,7 +347,7 @@ type Suggestion = { text: string;, confidence: number;
 };
 // Main predictive typing XState machine
 export const predictiveTypingMachine = setup({
-  // --- fixed types: use empty objects cast to the intended TS types ---; types: {
+  // --- fixed types: use empty objects cast to the intended TS types ---;, types: {
    , context: {} as PredictiveTypingContext,
     events: {} as PredictiveTypingEvent,
     input: {} as {
@@ -383,8 +383,8 @@ export const predictiveTypingMachine = setup({
     }
   },
   actions: {
-    // updateQuery: use functional assign with explicit narrowing to avoid type conflicts; updateQuery: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+    // updateQuery: use functional assign with explicit narrowing to avoid type conflicts;, updateQuery: assign((context, event) => {
+      const ctx = context as: unknown as PredictiveTypingContext;
       const e = event as PredictiveTypingEvent;
       const prev = ctx.currentQuery;
       let current = ctx.currentQuery;
@@ -402,14 +402,14 @@ export const predictiveTypingMachine = setup({
           : ctx.keystrokePattern;
       return { previousQuery: prev, currentQuery: current, lastKeystroke, keystrokePattern };
     }),
-    // recordAnalyticsSuccess: handle DoneInvokeEvent output or ANALYTICS_SUCCESS event; recordAnalyticsSuccess: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
-      const maybe = event as unknown as { output?: any; type?: string };
+    // recordAnalyticsSuccess: handle DoneInvokeEvent output or ANALYTICS_SUCCESS event;, recordAnalyticsSuccess: assign((context, event) => {
+      const ctx = context as: unknown as PredictiveTypingContext;
+      const maybe = event, as: unknown as { output?: any; type?: string };
       if (maybe.output !== undefined) {
         const out = maybe.output as PredictiveAnalyticsResult;
-        const latency = (out as unknown as { analytics_performance?: { total_analysis_time?: number } })
+        const latency = (out as: unknown as { analytics_performance?: { total_analysis_time?: number } })
           ?.analytics_performance?.total_analysis_time;
-        const accuracy = (out as unknown as { prediction_confidence?: { overall_confidence?: number } })
+        const accuracy = (out as: unknown as { prediction_confidence?: { overall_confidence?: number } })
           ?.prediction_confidence?.overall_confidence;
         return {
           predictiveResults: out,
@@ -421,9 +421,9 @@ export const predictiveTypingMachine = setup({
       }
       if ((event as PredictiveTypingEvent).type === 'ANALYTICS_SUCCESS') {
         const res = (event as PredictiveTypingEvent & { results: PredictiveAnalyticsResult }).results;
-        const latency = (res as unknown as { analytics_performance?: { total_analysis_time?: number } })
+        const latency = (res as: unknown as { analytics_performance?: { total_analysis_time?: number } })
           ?.analytics_performance?.total_analysis_time;
-        const accuracy = (res as unknown as { prediction_confidence?: { overall_confidence?: number } })
+        const accuracy = (res as: unknown as { prediction_confidence?: { overall_confidence?: number } })
           ?.prediction_confidence?.overall_confidence;
         return {
           predictiveResults: res,
@@ -435,8 +435,8 @@ export const predictiveTypingMachine = setup({
       }
       return {};
     }),
-    // recordAnalyticsError: functional assign with explicit narrowing; recordAnalyticsError: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+    // recordAnalyticsError: functional assign with explicit narrowing;, recordAnalyticsError: assign((context, event) => {
+      const ctx = context as: unknown as PredictiveTypingContext;
       const ev = event as PredictiveTypingEvent;
       if (ev.type === 'ANALYTICS_ERROR') {
         return {
@@ -446,13 +446,13 @@ export const predictiveTypingMachine = setup({
           predictiveResults: null
         };
       }
-      return { error: null };
+      return {, error: null };
     }),
     // updateSuggestions: functional assign, handle actor output or domain event
     updateSuggestions: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+      const ctx = context as: unknown as PredictiveTypingContext;
       let suggestions = ctx.suggestions;
-      const maybe = event as unknown as { output?: any; type?: string };
+      const maybe = event, as: unknown as { output?: any; type?: string };
       if (maybe.output !== undefined) {
         const doneOutput = maybe.output as { predicted_queries?: any[] };
         if (Array.isArray(doneOutput.predicted_queries)) {
@@ -488,16 +488,16 @@ export const predictiveTypingMachine = setup({
       return {};
     }),
     updateGlyphContext: assign(context => {
-      const ctx = context as unknown as PredictiveTypingContext;
-      // No-op placeholder: glyphContext is set by glyphContextActor onDone.
+      const ctx = context as: unknown as PredictiveTypingContext;
+      // No-op, placeholder: glyphContext is set by glyphContextActor onDone.
       return {, glyphContext: ctx.glyphContext };
     }),
     selectSuggestion: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+      const ctx = context as: unknown as PredictiveTypingContext;
       const e = event as PredictiveTypingEvent;
       return e.type === 'SELECT_SUGGESTION'
         ? {
-            currentQuery: e.suggestion,
+           , currentQuery: e.suggestion,
             lastKeystroke: Date.now(),
             queryHistory: [...ctx.queryHistory, e.suggestion]
           }
@@ -508,31 +508,31 @@ export const predictiveTypingMachine = setup({
           };
     }),
     submitQuery: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+      const ctx = context as: unknown as PredictiveTypingContext;
       const e = event as PredictiveTypingEvent;
       return e.type === 'SUBMIT_QUERY'
         ? {
-            queryHistory: [...ctx.queryHistory, e.query],
+           , queryHistory: [...ctx.queryHistory, e.query],
             currentQuery: '',
             suggestions: [],
             predictiveResults: null
           }
         : {
-            queryHistory: ctx.queryHistory,
+           , queryHistory: ctx.queryHistory,
             currentQuery: '',
             suggestions: [],
             predictiveResults: null
           };
     }),
     updateConfig: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+      const ctx = context as: unknown as PredictiveTypingContext;
       const e = event as PredictiveTypingEvent;
       return {
-        config: e.type === 'UPDATE_CONFIG' ? { ...ctx.config, ...(e.config ?? {}) } : ctx.config
+       , config: e.type === 'UPDATE_CONFIG' ? { ...ctx.config, ...(e.config ?? {}) } : ctx.config
       };
     }),
     startSession: assign((context, event) => {
-      const ctx = context as unknown as PredictiveTypingContext;
+      const ctx = context as: unknown as PredictiveTypingContext;
       const e = event as PredictiveTypingEvent;
       if (e.type === 'SESSION_START') {
         return {
@@ -547,7 +547,7 @@ export const predictiveTypingMachine = setup({
         };
       }
       return {
-        sessionId: ctx.sessionId,
+       , sessionId: ctx.sessionId,
         userId: ctx.userId,
         typingStartTime: Date.now(),
         queryHistory: ctx.queryHistory,
@@ -569,7 +569,7 @@ export const predictiveTypingMachine = setup({
       analyticsAccuracy: 0
     })),
     recordInteractionPattern: assign((ctx, ev) => {
-      const context = ctx as unknown as PredictiveTypingContext;
+      const context = ctx as: unknown as PredictiveTypingContext;
       const event = ev as MachineEvent;
       type LocalSuggestion = { confidence?: number; [k: string]: any };
       const confidence =
@@ -617,7 +617,7 @@ export const predictiveTypingMachine = setup({
     userSatisfactionScore: 0.5,
     // Configuration
     config: {
-      debounceMs: 200,
+     , debounceMs: 200,
       minQueryLength: 3,
       maxSuggestions: 5,
       enableRealTimeLearning: true,
@@ -632,44 +632,44 @@ export const predictiveTypingMachine = setup({
     lastErrorTime: 0
   }),
   initial: 'idle',
-  states: { idle: {, description: 'Waiting for user input',
-      on: { SESSION_START: {, actions: ['startSession'],
+  states: {, idle: {, description: 'Waiting for user input',
+      on: {, SESSION_START: {, actions: ['startSession'],
           target: 'active'
         },
         UPDATE_CONFIG: {
-          actions: ['updateConfig']
+         , actions: ['updateConfig']
         }
       }
     },
     active: {
-      description: 'Active typing session with predictions',
+     , description: 'Active typing session with predictions',
       initial: 'waiting',
-      states: { waiting: {, description: 'Waiting for typing input',
-          on: { TYPE: {, actions: ['updateQuery', 'recordInteractionPattern'],
+      states: {, waiting: {, description: 'Waiting for typing input',
+          on: {, TYPE: {, actions: ['updateQuery', 'recordInteractionPattern'],
               target: 'debouncing'
             },
             DELETE: {
-              actions: ['updateQuery', 'recordInteractionPattern'],
+             , actions: ['updateQuery', 'recordInteractionPattern'],
               target: 'debouncing'
             },
             CLEAR: {
-              actions: ['updateQuery', 'recordInteractionPattern'],
+             , actions: ['updateQuery', 'recordInteractionPattern'],
               target: 'waiting'
             },
             SELECT_SUGGESTION: {
-              actions: ['selectSuggestion', 'recordInteractionPattern'],
+             , actions: ['selectSuggestion', 'recordInteractionPattern'],
               target: 'waiting'
             },
             SUBMIT_QUERY: {
-              actions: ['submitQuery', 'recordInteractionPattern'],
+             , actions: ['submitQuery', 'recordInteractionPattern'],
               target: 'waiting'
             }
           }
         },
         debouncing: {
-          description: 'Debouncing typing input before predictions',
+         , description: 'Debouncing typing input before predictions',
           after: {
-            200: [
+           , 200: [
               {,
                 // inline predicate equivalent to shouldGeneratePredictions guard
                 cond: ctx =>
@@ -687,21 +687,21 @@ export const predictiveTypingMachine = setup({
               },
             ]
           },
-          on: { TYPE: {, actions: ['updateQuery'],
+          on: {, TYPE: {, actions: ['updateQuery'],
               target: 'debouncing', // Reset debounce timer
               reenter: true
             },
             DELETE: {
-              actions: ['updateQuery'],
+             , actions: ['updateQuery'],
               target: 'debouncing',
               reenter: true
             }
           }
         },
         analyzingContext: {
-          description: 'Analyzing context and generating glyph data',
+         , description: 'Analyzing context and generating glyph data',
           invoke: {
-            id: 'glyphContextActor',
+           , id: 'glyphContextActor',
             src: 'glyphContextActor',
             input: ({ context }) => ({
               query: context.currentQuery,
@@ -714,7 +714,7 @@ export const predictiveTypingMachine = setup({
               }
             }),
             onDone: {
-              actions: [
+             , actions: [
                 assign({,
                   glyphContext: (_context, event) => (event as DoneInvokeEvent<GlyphContext[]>).output
                 }),
@@ -723,14 +723,14 @@ export const predictiveTypingMachine = setup({
             },
             onError: {
               // Continue without glyph context if it fails
-              target: 'generatingPredictions'
+             , target: 'generatingPredictions'
             }
           }
         },
         generatingPredictions: {
-          description: 'Generating predictive analytics',
+         , description: 'Generating predictive analytics',
           invoke: {
-            id: 'predictiveAnalyticsActor',
+           , id: 'predictiveAnalyticsActor',
             src: 'predictiveAnalyticsActor',
             input: ({ context }) => ({
               query: context.currentQuery,
@@ -744,22 +744,22 @@ export const predictiveTypingMachine = setup({
               enableRealTimeLearning: context.config.enableRealTimeLearning
             }),
             onDone: {
-              actions: [
+             , actions: [
                 // when actor finishes, onDone provides DoneInvokeEvent -> use recordAnalyticsSuccess/action will handle the DoneInvokeEvent union: 'recordAnalyticsSuccess',
                 'updateSuggestions',
               ],
               target: 'suggestionsReady'
             },
             onError: {
-              actions: ['recordAnalyticsError'],
+             , actions: ['recordAnalyticsError'],
               target: 'error'
             }
           }
         },
         generatingCompletions: {
-          description: 'Generating quick query completions',
+         , description: 'Generating quick query completions',
           invoke: {
-            id: 'queryCompletionActor',
+           , id: 'queryCompletionActor',
             src: 'queryCompletionActor',
             input: ({ context }) => ({
               partialQuery: context.currentQuery,
@@ -772,7 +772,7 @@ export const predictiveTypingMachine = setup({
               maxCompletions: context.config.maxSuggestions
             }),
             onDone: {
-              actions: [
+             , actions: [
                 // replaced problematic assign<...> with a functional assign to satisfy xstate v5 typing,
                 assign((_, event) => {
                   const doneEvent = event as DoneInvokeEvent<Suggestion[]>;
@@ -785,17 +785,17 @@ export const predictiveTypingMachine = setup({
               target: 'suggestionsReady'
             },
             onError: {
-              target: 'waiting', // Fail silently for completions
+             , target: 'waiting', // Fail silently for completions
             }
           }
         },
         suggestionsReady: {
-          description: 'Predictions ready, displaying suggestions',
+         , description: 'Predictions ready, displaying suggestions',
           entry: [
-            // use a functional, typed assign to avoid AssignArgs typing issue and implicit any
+            // use a functional, typed assign to avoid AssignArgs typing issue and implicit: any
             assign(context => {
-              const contextTyped = context as unknown as PredictiveTypingContext;
-              const recentInteractions = (contextTyped.interactionPatterns ?? []).slice(-10) as unknown[];
+              const contextTyped = context, as: unknown as PredictiveTypingContext;
+              const recentInteractions = (contextTyped.interactionPatterns ?? []).slice(-10) as: unknown[];
               const cacheHits = recentInteractions.filter((item: any) =>
                 Boolean(item && (item as Record<string, unknown>).cacheHit)
               );
@@ -803,26 +803,26 @@ export const predictiveTypingMachine = setup({
               return { cacheHitRate };
             }),
           ],
-          on: { TYPE: {, actions: ['updateQuery'],
+          on: {, TYPE: {, actions: ['updateQuery'],
               target: 'debouncing'
             },
             DELETE: {
-              actions: ['updateQuery'],
+             , actions: ['updateQuery'],
               target: 'debouncing'
             },
             SELECT_SUGGESTION: {
-              actions: ['selectSuggestion', 'recordInteractionPattern'],
+             , actions: ['selectSuggestion', 'recordInteractionPattern'],
               target: 'waiting'
             },
             SUBMIT_QUERY: {
-              actions: ['submitQuery', 'recordInteractionPattern'],
+             , actions: ['submitQuery', 'recordInteractionPattern'],
               target: 'waiting` },'`
             PROVIDE_FEEDBACK: {
-              target: 'learningFromFeedback' }
+             , target: 'learningFromFeedback' }
           },
           // Auto-refresh suggestions after some time;
           after: {
-            5000: [
+           , 5000: [
               {,
                 guard: 'isTypingActivelyCheck',
                 target: 'waiting' }
@@ -830,9 +830,9 @@ export const predictiveTypingMachine = setup({
           }
         },
         learningFromFeedback: {
-          description: 'Learning from user feedback',
+         , description: 'Learning from user feedback',
           invoke: {
-            id: 'feedbackLearningActor',
+           , id: 'feedbackLearningActor',
             src: 'feedbackLearningActor',
             input: ({ context, event }) => ({
               originalQuery: context.previousQuery,
@@ -848,13 +848,13 @@ export const predictiveTypingMachine = setup({
                 return {} as Record<string, unknown>;
               })(),
               sessionContext: {
-                session_id: context.sessionId,
+               , session_id: context.sessionId,
                 interaction_timestamp: Date.now(),
                 session_quality: context.userSatisfactionScore
               }
             }),
             onDone: {
-              actions: [
+             , actions: [
                 assign({,
                   userSatisfactionScore: ({ context, event }) => {
                     // Update satisfaction score based on learning success
@@ -868,14 +868,14 @@ export const predictiveTypingMachine = setup({
             },
             onError: {
               // Learning failure doesn't break the flow'
-              target: 'waiting'
+             , target: 'waiting'
             }
           }
         },
         error: {
-          description: 'Error state with retry capability',
+         , description: 'Error state with retry capability',
           on: {
-            RETRY: [
+           , RETRY: [
               {,
                 guard: 'shouldRetry',
                 target: 'analyzingContext'
@@ -885,17 +885,17 @@ export const predictiveTypingMachine = setup({
               },
             ],
             TYPE: {
-              actions: ['updateQuery', 'resetState'],
+             , actions: ['updateQuery', 'resetState'],
               target: 'debouncing'
             },
             CLEAR: {
-              actions: ['resetState'],
+             , actions: ['resetState'],
               target: 'waiting'
             }
           },
           // Auto-retry after delay;
           after: {
-            2000: [
+           , 2000: [
               {,
                 guard: 'shouldRetry',
                 target: 'analyzingContext'
@@ -904,18 +904,18 @@ export const predictiveTypingMachine = setup({
           }
         }
       },
-      on: { UPDATE_CONFIG: {, actions: ['updateConfig']
+      on: {, UPDATE_CONFIG: {, actions: ['updateConfig']
         },
         RESET: {
-          actions: ['resetState'],
+         , actions: ['resetState'],
           target: '.waiting` },'`
         SESSION_END: {
-          target: `idle` }
+         , target: `idle` }
       }
     }
   },
   // Global error recovery
-  on: { RESET: {, actions: ['resetState'],
+  on: {, RESET: {, actions: ['resetState'],
       target: `idle` }
   }
 });
@@ -933,7 +933,7 @@ export function createPredictiveTypingMachine(
     userId,
     initialConfig
   };
-  // Build a small implementations object and cast it to the exact parameter type expected
+  // Build a small implementations: object and cast it to the exact parameter type expected
   // by predictiveTypingMachine.provide to avoid using `any`.
   const impl = {
     input,

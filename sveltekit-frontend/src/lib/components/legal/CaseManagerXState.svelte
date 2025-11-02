@@ -1,14 +1,14 @@
 <script, lang="ts">
   /// <reference, types="vite/client" />
-  // Svelte 5 runes are auto-imported
-  import { page } from '$app/state';
+  // Svelte, 5 runes are auto-imported
+  import { page } from, '$app/state';
   // @ts-ignore - some environments lack @xstate/svelte types during migration
-  import { useMachine } from '@xstate/svelte';
-  import { legalCaseMachine, legalCaseSelectors } from '$lib/state/legal-case-machine.js';
-  import type { LegalCaseContext } from '$lib/state/legal-case-machine.js';
-  import  Button  from "$lib/components/ui/Button.svelte";
+  import { useMachine } from, '@xstate/svelte';
+  import { legalCaseMachine, legalCaseSelectors } from, '$lib/state/legal-case-machine.js';
+  import type { LegalCaseContext } from, '$lib/state/legal-case-machine.js';
+  import  Button  from, "$lib/components/ui/Button.svelte";
   // Get caseId from route params
-  let caseId = $state(null as string | null);
+  let caseId = $state(null as: string | null);
   // Initialize XState machine (rename `state` to `machineState` to avoid $state rune conflict)
   const { state: machineState, send } = useMachine(legalCaseMachine, {
     context: {
@@ -51,7 +51,7 @@
       caseNumber: newCaseNumber,
       status: 'active'
     };
-    send({ type: 'UPDATE_CASE_FORM', data: caseData });
+    send({, type: 'UPDATE_CASE_FORM', data: caseData });
     send({ type: 'CREATE_CASE', caseData });
     newCaseTitle = '';
     newCaseDescription = '';
@@ -127,7 +127,7 @@
               id="case-title"
               type="text"
               bind:value={newCaseTitle}
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               placeholder="Enter case title..."
             />
           </div>
@@ -138,7 +138,7 @@
               type="text"
               bind:value={newCaseNumber}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter case number..."
+              placeholder="Enter, case: number..."
             />
           </div>
           <div>
@@ -147,7 +147,7 @@
               id="case-description"
               bind:value={newCaseDescription}
               rows="4"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               placeholder="Describe the case..."
             ></textarea>
           </div>
@@ -170,7 +170,7 @@
             <div class="flex, items-center, gap-2">
               <select
                 value={$workflowStage}
-                onchange={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as any)}
+                onchange={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as: any)}
                 class="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option, value="investigation">Investigation</option>
@@ -210,7 +210,7 @@
             <button
               class={ $activeTab === tab
                 ? 'py-2 px-1 border-b-2 font-medium text-sm border-blue-500 text-blue-600'
-                : 'py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700, hover:border-gray-300'
               }
               onclick={() => handleTabSwitch(tab)}
             >
@@ -344,7 +344,7 @@
                 <input
                   type="text"
                   placeholder="Enter search query..."
-                  class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
                 />
                 <Button.Root, class="bits-btn">Search</Button>
               </div>
@@ -375,7 +375,7 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
+    from {, transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
 </style>

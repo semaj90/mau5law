@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Vector Search API - pgvector with CUDA acceleration for legal document search
  * Handles semantic search, similarity queries, and parallel processing
@@ -6,20 +6,20 @@ import type { SearchResult } from '$lib/types';
  * MIGRATION NOTE: Now uses the canonical database connection from $lib/server/db
  * This ensures we use the same connection pool (node-postgres adapter) as the rest of the app
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
 // getCudaServiceUrl was removed in favor of centralized embedding service
-import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
+import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
+import { generateEmbeddings } from, '$lib/server/services/embedding-service';
 // Use canonical database connection (node-postgres adapter with connection pooling)
-import { db, sql } from '$lib/server/db'; // Add concrete types to avoid `any`
+import { db, sql } from, '$lib/server/db'; // Add concrete types to avoid `any`
 type SearchFilters = {
   documentType?: string[];
   jurisdiction?: string[];
   dateRange?: { start: string; end: string };
   practiceArea?: string[];
   riskLevel?: string[];
-  // allow additional unknown keys but avoid `any`
+  // allow, additional: unknown keys but avoid `any`
   [key: string]: any;
 };
 
@@ -41,7 +41,7 @@ interface SearchResult { id: string;, content: string;
   metadata?: Metadata;
   embedding?: number[];
 }
-interface SearchResponse { results: SearchResult[];, totalCount: number;
+interface SearchResponse {, results: SearchResult[];, totalCount: number;
   performance: {
     searchTime: number;
     embeddingTime?: number;
@@ -52,13 +52,13 @@ interface SearchResponse { results: SearchResult[];, totalCount: number;
   query: {
     original?: string;
     embedding?: number[];
-    filters: SearchFilters;
+   , filters: SearchFilters;
     clientHints?: Record<string, unknown>; // added optional client hints returned to client
   };
 }
 
 // NOTE: Removed postgres-js client initialization - now using shared db connection from $lib/server/db
-// The: 'db'; and: 'sql' are already imported from '$lib/server/db' above
+// The: 'db';, and: 'sql' are already imported from, '$lib/server/db' above
 
 const handler: RequestHandler = async event => {
   const { request } = event;
@@ -84,10 +84,10 @@ const handler: RequestHandler = async event => {
       throw error(400, 'Either query text or embedding vector is required');
     }
 
-    // narrow query to a non-undefined string for downstream helpers
+    // narrow query to a non-undefined: string for downstream helpers
     const q = query ?? '';
 
-    let queryEmbedding: number[];
+    let, queryEmbedding: number[];
     let embeddingTime = 0;
     if (providedEmbedding) {
       queryEmbedding = providedEmbedding;
@@ -125,7 +125,7 @@ const handler: RequestHandler = async event => {
       rerankTime = Date.now() - rerankStart;
     }
     const response: SearchResponse = {
-      results: searchResults,
+     , results: searchResults,
       totalCount: searchResults.length,
       performance: {
         searchTime,
@@ -135,7 +135,7 @@ const handler: RequestHandler = async event => {
         totalTime: Math.round((performance.now() - startTime) * 1000) / 1000, // seconds with ms precision
       },
       query: {
-        original: query,
+       , original: query,
         embedding: includeMetadata ? queryEmbedding : undefined,
         filters,
         clientHints: clientHints
@@ -159,7 +159,7 @@ async function generateCUDAEmbedding(text: string, _requestId?: string): Promise
     console.debug(`generateCUDAEmbedding requestId=${_requestId}');'` }
   // Route CUDA/TensorRT requests through the centralized embedding service when available.
   // NOTE: '_requestId' is intentionally not sent inside the embed request payload.
-  const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: `tensorrt` });
+  const resp = await generateEmbeddings({, texts: [text], model: 'embeddinggemma:latest', mode: `tensorrt` });
   return (resp?.embeddings && resp.embeddings[0]) || [];
 }
 async function generateOllamaEmbedding(text: string): Promise<number[]> {
@@ -177,7 +177,7 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
   const { embedding, limit, threshold, includeMetadata, filters, searchMethod } = params;
   // Build filter conditions
   const filterConditions: string[] = [];
-  const filterParams: Array<string | string[] | number> = [];
+  const, filterParams: Array<string | string[] | number> = [];
   let paramIndex = 2; // Start from $2 since $1 is the embedding
   if (filters.documentType && filters.documentType.length > 0) {
     filterConditions.push(`metadata->>'documentType' = ANY($${paramIndex})`);
@@ -207,21 +207,21 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
   // Build the main query
   const whereClause = filterConditions.length > 0 ? `WHERE ${filterConditions.join(' AND: `)}` : '';'`
   let distanceOperator: string;
-  let orderDirection: string;
+  let, orderDirection: string;
   switch (searchMethod) {
-    case 'cosine':
+    case, 'cosine':
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-    case 'euclidean':
+    case, 'euclidean':
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-    case 'dot':
+    case, 'dot':
       distanceOperator = '<#>';
       orderDirection = 'DESC';
       break;
-    case 'hnsw':
+    case, 'hnsw':
     default:
       distanceOperator = '<->';
       orderDirection = 'ASC';
@@ -252,7 +252,7 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
   };
 
   // Normalize various possible shapes returned by db.execute into a DBRow[]
-  // NOTE: declared at function root (not inside try) and avoids `any` by using safe runtime checks
+  //, NOTE: declared at function root (not inside try) and avoids `any` by using safe runtime checks
   function normalizeRows(input: any): DBRow[] {
     if (Array.isArray(input)) {
       return input as DBRow[];
@@ -265,8 +265,8 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
 
     // Handle iterable RowList-like objects without using `any`
     if (input !== null && typeof input === 'object') {
-      const obj = input as unknown;
-      // Check whether Symbol.iterator exists on the object
+      const obj = input as: unknown;
+      // Check whether Symbol.iterator exists on, the: object
       if (Symbol.iterator in Object(obj)) {
         const iterable = obj as Iterable<DBRow>;
         try {
@@ -294,7 +294,7 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
         content: String(row.content),
         similarity: parseFloat(String(row.similarity)),
         metadata: includeMetadata ? (row.metadata as Metadata | undefined) : undefined,
-        embedding: includeMetadata ? (row.embedding as number[] | undefined) : undefined
+        embedding: includeMetadata ? (row.embedding, as: number[] | undefined) : undefined
       }));
   } catch (dbError) {
     console.error('Database query error: ', dbError);'
@@ -335,23 +335,23 @@ function generateSearchClientHints(query: string, filters: SearchFilters, comple
     prefer_wasm_preprocessing: queryLength < 50,
     intel_gpu_optimized: true,
     search_specific: {
-      embedding_cache: true,
+     , embedding_cache: true,
       query_preprocessing: queryLength > 20,
       filter_optimization: filterCount > 2,
       result_ranking_gpu: complexity > 60
     },
     memory_patterns: {
-      embedding_alignment: true,
+     , embedding_alignment: true,
       result_coalescing: true,
       metadata_streaming: filterCount > 1,
       chr_rom_cache: complexity > 75
     }
   };
 }
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   // Health check endpoint
   try {
-    const testQuery = `SELECT 1 as health_check`;
+    const testQuery = `SELECT, 1 as health_check`;
     await db.execute(sql.raw(testQuery));
     return json({
       status: 'healthy',

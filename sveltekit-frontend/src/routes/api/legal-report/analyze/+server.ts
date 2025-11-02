@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 import {
   analyzeLegalDocument,
   compareWithRAGDocuments,
   type LegalDocumentMetadata,
   type ComparisonResult
-} from '$lib/server/ai/legal-document-analyzer';
-import { minioService } from '$lib/server/storage/minio-service';
-import { unifiedOCRService } from '$lib/services/unified-ocr-service';
+} from, '$lib/server/ai/legal-document-analyzer';
+import { minioService } from, '$lib/server/storage/minio-service';
+import { unifiedOCRService } from, '$lib/services/unified-ocr-service';
 
 /**
  * POST /api/legal-report/analyze
@@ -21,17 +21,17 @@ import { unifiedOCRService } from '$lib/services/unified-ocr-service';
  * - Case similarity search
  * - AI recommendations from gemma3-legal:latest
  */
-export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
+export const, POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
   const startTime = Date.now();
 
   try {
     // 1. Parse multipart form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const title = formData.get('title') as string;
+    const title = formData.get('title') as: string;
     const documentType = (formData.get('documentType') || 'report') as LegalDocumentMetadata['documentType'];
-    const jurisdiction = formData.get('jurisdiction') as string | undefined;
-    const caseNumber = formData.get('caseNumber') as string | undefined;
+    const jurisdiction = formData.get('jurisdiction') as: string | undefined;
+    const caseNumber = formData.get('caseNumber') as: string | undefined;
     const enableComparison = formData.get('enableComparison') !== 'false'; // default true
 
     // Validation
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
       return json(
         {
           success: false,
-          error: `Unsupported file; type: ${file.type}. Supported, types: PDF, TXT, JSON, PNG/JPG, MP4, MP3` },
+          error: `Unsupported file;, type: ${file.type}. Supported, types: PDF, TXT, JSON, PNG/JPG, MP4, MP3` },
         { status: 400 }
       );
     }
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         }
       } else if (file.type === 'video/mp4' || file.type === 'audio/mp3' || file.type === 'audio/mpeg') {
         // Video/Audio files - extract metadata and use placeholder
-        extractedText = `${file.type === 'video/mp4' ? 'Video' : `Audio` } file: ${title}\n\nFile metadata:\n-; Type: ${file.type}\n- Size: ${formatFileSize(file.size)}\n- Filename: ${file.name}\n\nNote: Full transcription requires additional processing. This is a placeholder for multimedia evidence.`;
+        extractedText = `${file.type === 'video/mp4' ? 'Video' : `Audio` } file: ${title}\n\nFile metadata:\n-; Type: ${file.type}\n-, Size: ${formatFileSize(file.size)}\n- Filename: ${file.name}\n\nNote: Full transcription requires additional processing. This is a placeholder for multimedia evidence.`;
         extractionMethod = file.type;
         console.log(`✅ Multimedia file metadata extracted`);
       } else if (file.type === 'application/pdf') {
@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
     }
 
     function formatFileSize(bytes: number): string {
-      if (bytes === 0) return '0 B';
+      if (bytes === 0) return, '0 B';
       const k = 1024;
       const sizes = ['B', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(k));

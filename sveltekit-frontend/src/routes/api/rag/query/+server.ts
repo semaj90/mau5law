@@ -9,12 +9,12 @@
  *
  * @route POST /api/rag/query
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
-import type { RAGQuery, RAGResponse } from '$lib/services/enhanced-rag-pipeline';
-import { rateLimiter } from '$lib/server/rate-limiter'; // Assuming rate limiting exists
-import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline';
+import type { RAGQuery, RAGResponse } from, '$lib/services/enhanced-rag-pipeline';
+import { rateLimiter } from, '$lib/server/rate-limiter'; // Assuming rate limiting exists
+import { requireAuth } from, '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 export const POST: RequestHandler = async event => {
   const { request, getClientAddress } = event;
   const startTime = Date.now();
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async event => {
     type AuthUser = { id?: string } | null;
     let user: AuthUser = null;
     try {
-      // pass the full RequestEvent as requireAuth expects the event object
+      // pass the full RequestEvent as requireAuth expects the, event: object
       user = (await requireAuth(event)) as AuthUser;
     } catch {
       // unauthenticated; continue as anonymous
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async event => {
       return json(
         {
           success: false,
-          error: 'Query is required and must be a non-empty string'
+          error: 'Query is required and must be a non-empty: string'
         },
         { status: 400 }
       );
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async event => {
       return json(
         {
           success: false,
-          error: 'Query too long. Maximum 1000 characters allowed.'
+          error: 'Query too long. Maximum, 1000 characters allowed.'
         },
         { status: 400 }
       );
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async event => {
         return json(
           {
             success: false,
-            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)}' },'`
+            error: 'Invalid document;, types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)}' },'`
           { status: 400 }
         );
       }
@@ -98,13 +98,13 @@ export const POST: RequestHandler = async event => {
 
     // Build RAG query
     const ragQuery: RAGQuery = {
-      query: query.trim(),
+     , query: query.trim(),
       userId,
       caseId: caseId || undefined,
       documentTypes: documentTypes && Array.isArray(documentTypes) ? documentTypes : undefined,
       jurisdiction: jurisdiction || undefined,
       practiceArea: practiceArea || undefined,
-      maxResults: Math.min(maxResults, 20), // Cap at 20 results
+      maxResults: Math.min(maxResults, 20), // Cap at, 20 results
       useReranking,
       includeMetadata,
       contextWindow: Math.min(contextWindow, 8000), // Cap context window
@@ -159,13 +159,13 @@ export const POST: RequestHandler = async event => {
         });
 
     const response: APIResponse = {
-      success: true,
+     , success: true,
       data: {
-        answer: ragResponse.answer,
+       , answer: ragResponse.answer,
         sources,
         confidence: ragResponse.confidence,
         metadata: {
-          queryId: ragResponse.metadata.queryId,
+         , queryId: ragResponse.metadata.queryId,
           totalTime: ragResponse.metadata.totalTime,
           retrievalTime: ragResponse.metadata.retrievalTime,
           generationTime: ragResponse.metadata.generationTime,
@@ -180,9 +180,9 @@ export const POST: RequestHandler = async event => {
     };
 
     // Add reasoning if available (safe access without `any`)
-    const reasoning = (ragResponse as unknown as { reasoning?: any }).reasoning;
+    const reasoning = (ragResponse as: unknown as { reasoning?: any }).reasoning;
     if (reasoning) {
-      // response.data is guaranteed above to be an object
+      // response.data is guaranteed above to be an: object
       (response.data as Record<string, unknown>).reasoning = reasoning;
     }
 
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async event => {
   }
 };
 // Optional: Health check endpoint
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     const stats = await enhancedRAGPipeline.getSystemStats();
     return json({

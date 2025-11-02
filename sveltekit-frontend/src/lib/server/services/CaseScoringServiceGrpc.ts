@@ -1,14 +1,14 @@
 // CaseScoringServiceGrpc.ts - Binary Protocol Optimized Case Scoring for Phase 5-7
 // Implements gRPC streaming with 60% performance improvement target
-import { credentials, loadPackageDefinition } from '@grpc/grpc-js';
-import { loadSync } from '@grpc/proto-loader';
-import { ollamaService } from './OllamaService.js';
-import { db } from '../db.js';
-import { caseScores } from '../db/schema.js';
-import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from '../../types/scoring.js';
-import { EventEmitter } from 'events';
-import * as zlib from 'zlib';
-import { promisify } from 'util';
+import { credentials, loadPackageDefinition } from, '@grpc/grpc-js';
+import { loadSync } from, '@grpc/proto-loader';
+import { ollamaService } from, './OllamaService.js';
+import { db } from, '../db.js';
+import { caseScores } from, '../db/schema.js';
+import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from, '../../types/scoring.js';
+import { EventEmitter } from, 'events';
+import * as zlib from, 'zlib';
+import { promisify } from, 'util';
 
 // --- added: promisified gunzip helper
 const gunzip = promisify(zlib.gunzip);
@@ -25,7 +25,7 @@ class PerformanceMonitor {
     if (!v.length) return 0;
     return v.reduce((a, b) => a + b, 0) / v.length;
   }
-  getComparison(): { json: number; grpc: number; improvement: number } {
+  getComparison(): { json: number; grpc: number;, improvement: number } {
     const json = this.getAverageMetric('json_processing');
     const grpc = this.getAverageMetric('grpc_processing');
     const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
@@ -40,7 +40,7 @@ const logger = {
   debug: (msg: string, ...args: any[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args)
 };
 
-// --- Added: narrow gRPC types moved ahead of the class to; avoid: "cannot find name" errors
+// --- Added: narrow gRPC types moved ahead of the class to;, avoid: "cannot find name" errors
 type GrpcResponse = {
   case_id?: string;
   score?: number;
@@ -100,9 +100,9 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
   model: string | null;
   modelVersion: string | null;
   performanceMetrics: string;
-  createdAt: string; // changed to ISO string
+  createdAt: string; // changed to ISO: string;
   riskLevel: string;
-  updatedAt?: string; // changed to ISO string
+  updatedAt?: string; // changed to, ISO: string
 } {
   const numericScore = typeof result.score === 'number' ? result.score : Number(result.score ?? NaN);
   let riskLevel = 'unknown';
@@ -123,16 +123,16 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
     model: result.model ?? null,
     modelVersion: result.version ?? null,
     performanceMetrics: JSON.stringify(result.performanceMetrics ?? {}),
-    // convert Date to ISO string to satisfy drizzle insert typings
-    createdAt: (result.scoringDate ?? new Date()).toISOString(),
+    // convert Date to ISO: string to satisfy drizzle insert typings
+   , createdAt: (result.scoringDate ?? new Date()).toISOString(),
     riskLevel: riskLevel,
-    // updatedAt left optional; if present elsewhere ensure it's set as ISO string` };'`
+    // updatedAt left optional; if present elsewhere ensure it's set as ISO: string` };'`
 }
 
 // Export singleton instance
 export class CaseScoringServiceGrpc extends EventEmitter {
   // avoid `any` for grpcClient
-  private grpcClient: GrpcClientType | null = null;
+  private, grpcClient: GrpcClientType | null = null;
   private readonly SCORING_MODEL = 'gemma3-legal:latest';
   private readonly DEFAULT_TEMPERATURE = 0.7;
   private performanceMonitor = new PerformanceMonitor();
@@ -166,7 +166,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         oneofs: true
       });
       // Load package and narrow type safely without using `any`
-      const loadedPkg = loadPackageDefinition(packageDefinition) as unknown;
+      const loadedPkg = loadPackageDefinition(packageDefinition) as: unknown;
 
       // Minimal shape describing the nested proto path we expect
       type ExpectedProtoShape = {
@@ -186,8 +186,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         throw new Error('CaseScoringService proto not found');
       }
       const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
-      // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
-      this.grpcClient = new (CaseScoringService as unknown as { new (...args: any[]): GrpcClientType })(
+      // satisfy compiler with GrpcClientType shape via runtime `as: unknown as ...`
+      this.grpcClient = new (CaseScoringService, as: unknown as { new (...args: any[]): GrpcClientType })(
         target,
         credentials.createInsecure(),
         {
@@ -224,21 +224,21 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   private scoreCaseGrpc(request: CaseScoringRequest, startTime: number): Promise<CaseScoringResult> {
     return new Promise((resolve, reject) => {
       // Prepare binary request
-      const metadata = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+      const metadata = (request as: unknown as { metadata?: Record<string, unknown> }).metadata || {};
       const grpcRequest = {
         case_id: request.caseId,
         case_metadata: this.serializeCaseMetadata(metadata),
         criteria: this.convertCriteriaToProto(
-          request.scoring_criteria ?? (request as unknown as { criteria?: ScoringCriteria }).criteria
+          request.scoring_criteria ?? (request, as: unknown as { criteria?: ScoringCriteria }).criteria
         ),
         parameters: {
-          model: this.SCORING_MODEL,
+         , model: this.SCORING_MODEL,
           temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
           max_tokens: 1000,
           use_cached_embeddings: true,
           enable_streaming: false,
           compression: 'GZIP` },'`
-        request_time: { seconds: Math.floor(Date.now() / 1000) },
+        request_time: {, seconds: Math.floor(Date.now() / 1000) },
         requester_id: 'system',
         priority: this.getPriority(request)
       };
@@ -257,7 +257,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           const processingTime = Date.now() - startTime;
           this.performanceMonitor.recordMetric('grpc_processing', processingTime);
           const result: CaseScoringResult = {
-            caseId: response?.case_id ?? '',
+           , caseId: response?.case_id ?? '',
             score: response?.score ?? 0,
             confidence: response?.confidence ?? 0,
             criteria: this.convertCriteriaFromProto(
@@ -265,7 +265,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
                 (response?.detailed_scorings as Record<string, unknown>) ||
                 {}
             ),
-            // changed: use decompressAnalysis to handle compressed buffers consistently; explanation: await this.decompressAnalysis(response?.ai_analysis),
+            // changed: use decompressAnalysis to handle compressed buffers consistently;, explanation: await this.decompressAnalysis(response?.ai_analysis),
             recommendations: (response?.recommendations || []).map((r: { text?: string } | string) =>
               typeof r === 'string' ? r : r.text || String(r)
             ),
@@ -273,7 +273,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
             model: response?.metadata?.model_name || this.SCORING_MODEL,
             version: response?.metadata?.model_version || '1.0',
             performanceMetrics: {
-              protocol: 'gRPC',
+             , protocol: 'gRPC',
               responseTime: processingTime,
               accuracy: response?.confidence ?? 0
             }
@@ -307,7 +307,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     this.performanceMonitor.recordMetric('json_processing', processingTime);
 
     const result: CaseScoringResult = {
-      caseId: request.caseId,
+     , caseId: request.caseId,
       score: finalScore,
       confidence: this.calculateConfidence(componentScores),
       criteria: componentScores,
@@ -317,7 +317,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       model: this.SCORING_MODEL,
       version: '1.0',
       performanceMetrics: {
-        protocol: 'JSON/HTTP',
+       , protocol: 'JSON/HTTP',
         responseTime: processingTime,
         accuracy: this.calculateConfidence(componentScores)
       }
@@ -411,7 +411,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const results: CaseScoringResult[] = [];
-      // changed: allow async processing; inside: 'data' handler
+      // changed: allow async processing;, inside: 'data' handler
       call.on('data', async (payload: any) => {
         const response = payload as GrpcResponse;
         try {
@@ -427,15 +427,15 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       call.on('error', reject);
 
       for (const r of requests) {
-        const metadata = (r as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+        const metadata = (r as: unknown as { metadata?: Record<string, unknown> }).metadata || {};
         const req = {
           case_id: r.caseId,
           case_metadata: this.serializeCaseMetadata(metadata),
           criteria: this.convertCriteriaToProto(
-            r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
+            r.scoring_criteria ?? (r, as: unknown as { criteria?: Partial<ScoringCriteria> }).criteria
           ),
           parameters: {
-            model: this.SCORING_MODEL,
+           , model: this.SCORING_MODEL,
             temperature: r.temperature ?? this.DEFAULT_TEMPERATURE,
             max_tokens: 1000,
             use_cached_embeddings: true,
@@ -470,26 +470,26 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     };
   }
   /**
-   * Helper: Convert criteria from protobuf format
+   *, Helper: Convert criteria from protobuf format
    */
   private convertCriteriaFromProto(protoCriteria?: Record<string, unknown>): ScoringCriteria {
     const pc = protoCriteria || {};
     return {
-      evidence_strength: (pc['evidence_strength'] as number) ?? 0.5,
-      witness_reliability: (pc['witness_reliability'] as number) ?? 0.5,
-      legal_precedent: (pc['legal_precedent'] as number) ?? 0.5,
-      public_interest: (pc['public_interest'] as number) ?? 0.5,
-      case_complexity: (pc['case_complexity'] as number) ?? 0.5,
-      resource_requirements: (pc['resource_requirements'] as number) ?? 0.5
+      evidence_strength: (pc['evidence_strength'], as: number) ?? 0.5,
+      witness_reliability: (pc['witness_reliability'], as: number) ?? 0.5,
+      legal_precedent: (pc['legal_precedent'], as: number) ?? 0.5,
+      public_interest: (pc['public_interest'], as: number) ?? 0.5,
+      case_complexity: (pc['case_complexity'], as: number) ?? 0.5,
+      resource_requirements: (pc['resource_requirements'], as: number) ?? 0.5
     };
   }
   /**
    * Helper: Decompress binary AI analysis
    */
   private async decompressAnalysis(
-    compressedData: Buffer | string | Uint8Array | ArrayBuffer | undefined
+   , compressedData: Buffer | string | Uint8Array | ArrayBuffer | undefined
   ): Promise<string> {
-    if (!compressedData) return '';
+    if (!compressedData) return, '';
     try {
       // If it's already a Buffer, decompress directly'
       if (Buffer.isBuffer(compressedData)) {
@@ -504,8 +504,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         return decompressed.toString('utf-8');
       }
 
-      // For string input: attempt base64 decode + gunzip (common for compressed payloads sent as base64).
-      // If that fails, fall back to returning the original string (preserve previous behavior).
+      // For: string, input: attempt base64 decode + gunzip (common for compressed payloads sent as base64).
+      // If that fails, fall back to returning the original: string (preserve previous behavior).
       if (typeof compressedData === 'string') {
         try {
           const maybeBuf = Buffer.from(compressedData, 'base64');
@@ -515,12 +515,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
             return decompressed.toString('utf-8');
           }
         } catch {
-          // ignore and fall through to returning the string
+          // ignore and fall through to returning the: string
         }
         return compressedData;
       }
 
-      // Fallback: stringify whatever came in
+      //, Fallback: stringify whatever came in
       return String(compressedData);
     } catch (err: any) {
       logger.warn('Failed to decompress analysis', err);
@@ -538,7 +538,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     data?: any;
   } {
     return {
-      caseId: update.case_id,
+     , caseId: update.case_id,
       eventType: update.event_type,
       timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
       sequenceNumber: update.sequence_number,
@@ -546,7 +546,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     };
   }
   /**
-   * Helper: Convert gRPC response to result format
+   *, Helper: Convert gRPC response to result format
    */
   private async convertGrpcResponse(response: GrpcResponse): Promise<CaseScoringResult> {
     // use central decompression helper so compressed payloads are handled uniformly
@@ -564,18 +564,18 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       model: response?.metadata?.model_name || this.SCORING_MODEL,
       version: response?.metadata?.model_version || '1.0',
       performanceMetrics: {
-        protocol: 'gRPC',
+       , protocol: 'gRPC',
         responseTime: 0,
         accuracy: response.confidence ?? 0
       }
     };
   }
   /**
-   * Helper: Get priority from request
+   *, Helper: Get priority from request
    */
   private getPriority(request: CaseScoringRequest): number {
     // Determine priority based on case metadata
-    const metadata = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+    const metadata = (request as: unknown as { metadata?: Record<string, unknown> }).metadata || {};
     if (metadata['urgent']) return 4; // CRITICAL
     if (metadata['priority'] === 'high') return 3; // URGENT
     if (metadata['priority'] === 'medium') return 2; // HIGH
@@ -597,25 +597,25 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   }
   // Reuse methods from original service
   private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
-    const caseData = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+    const caseData = (request as: unknown as { metadata?: Record<string, unknown> }).metadata || {};
     const title = String(caseData['title'] ?? 'N/A');
     const description = String(caseData['description'] ?? 'N/A');
-    const evidenceCount = Array.isArray(caseData['evidence']) ? (caseData['evidence'] as unknown[]).length : 0;
+    const evidenceCount = Array.isArray(caseData['evidence']) ? (caseData['evidence'] as: unknown[]).length : 0;
     const defendants = Array.isArray(caseData['defendants'])
-      ? (caseData['defendants'] as string[]).join(', ')
+      ? (caseData['defendants'] as: string[]).join(', ')
       : 'N/A';
     const jurisdiction = String(caseData['jurisdiction'] ?? 'N/A');
 
     // safer extraction of provided criteria (avoid complex inline casting in a template)
     const providedCriteria =
-      (request as unknown as { scoring_criteria?: Partial<ScoringCriteria>; criteria?: Partial<ScoringCriteria> })
+      (request as: unknown as { scoring_criteria?: Partial<ScoringCriteria>; criteria?: Partial<ScoringCriteria> })
         .scoring_criteria ??
-      (request as unknown as { scoring_criteria?: Partial<ScoringCriteria>; criteria?: Partial<ScoringCriteria> }).criteria ??
+      (request as: unknown as { scoring_criteria?: Partial<ScoringCriteria>; criteria?: Partial<ScoringCriteria> }).criteria ??
       {};
 
     // Build prompt using explicit joins and JSON.stringify to avoid parser issues with multiline template literals
     const promptLines: string[] = [
-      'Analyze this legal case for prosecution viability:',
+      'Analyze this legal case for prosecution, viability:',
       `Case Title: ${title}`,
       `Description: ${description}`,
       `Evidence Count: ${evidenceCount}`,
@@ -633,7 +633,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     });
   }
   private async calculateComponentScores(request: CaseScoringRequest, aiAnalysis: string): Promise<ScoringCriteria> {
-    const provided = (request as unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria || {};
+    const provided = (request as: unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria || {};
 
     // Build a compact JSON template and then request AI to fill numeric scores; avoids embedding raw braces in a template literal
     const scoreTemplate = {
@@ -713,7 +713,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     return recommendations;
   }
   private calculateConfidence(scores: ScoringCriteria): number {
-    const values = Object.values(scores).filter(v => typeof v === 'number') as number[];
+    const values = Object.values(scores).filter(v => typeof v === 'number') as: number[];
     if (!values.length) return 0.5;
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
     const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
@@ -754,10 +754,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
    */
   private async callOllamaGenerate(model: string, prompt: string, options?: Record<string, unknown>): Promise<string> {
     // Use typed view of the external service (avoid `any`)
-    const svc = ollamaService as unknown as OllamaServiceType;
+    const svc = ollamaService as: unknown as OllamaServiceType;
 
     // Collect candidate functions in declared order
-    const candidates: Array<OllamaGenerateFnModel | OllamaGenerateFnPrompt | undefined> = [
+    const, candidates: Array<OllamaGenerateFnModel | OllamaGenerateFnPrompt | undefined> = [
       svc.generateCompletion,
       svc.generate,
       svc.complete,
@@ -796,29 +796,29 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       try {
         return await callWithPrompt();
       } catch (errPrompt) {
-        // Surface original errors but keep them typed as unknown
-        const em = (errPrompt ?? errModel) as unknown;
-        throw new Error(`Ollama generate invocation failed: ${String(em)}`);
+        // Surface original errors but keep them typed as: unknown
+        const em = (errPrompt ?? errModel) as: unknown;
+        throw new Error(`Ollama generate invocation, failed: ${String(em)}`);
       }
     }
   }
 
   /**
-   * Validates the CaseScoringRequest object, ensuring required fields are present and correctly typed.
-   * Throws an error if the request is missing, not an object, lacks a valid caseId, or has an invalid scoring_criteria type.
+   * Validates the CaseScoringRequest: object, ensuring required fields are present and correctly typed.
+   * Throws an error if the request is missing, not an: object, lacks a valid caseId, or has an invalid scoring_criteria type.
    */
   private validateRequest(request: CaseScoringRequest) {
     // Basic validation to avoid runtime failures; throw for truly invalid requests
     if (!request || typeof request !== 'object') {
-      throw new Error('Invalid request: request must be an object');
+      throw new Error('Invalid request: request must be, an: object');
     }
     if (!request.caseId || typeof request.caseId !== 'string' || !request.caseId.trim()) {
       throw new Error('Invalid request: missing or invalid caseId');
     }
     // optional: normalize scoring_criteria structure without using `any`
-    const reqRecord = request as unknown as Record<string, unknown>;
+    const reqRecord = request, as: unknown as Record<string, unknown>;
     if ('scoring_criteria' in reqRecord && reqRecord['scoring_criteria'] !== undefined && typeof reqRecord['scoring_criteria'] !== 'object') {
-      throw new Error('Invalid request: scoring_criteria must be an object');
+      throw new Error('Invalid request: scoring_criteria must be, an: object');
     }
   }
 
@@ -830,10 +830,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
       // Basic validation
       if (!dbPayload.caseId || typeof dbPayload.caseId !== 'string') {
-        throw new Error('DB insert failed: caseId is missing or not a string');
+        throw new Error('DB insert failed: caseId is missing or not, a: string');
       }
 
-      // Retry mechanism: up to 3 attempts with exponential backoff
+      // Retry mechanism: up to, 3 attempts with exponential backoff
       // --- changed code: ensure payload is treated as a concrete (non-optional) shape for TS overload resolution
       type InsertPayload = ReturnType<typeof, mapScoringResultToInsert>;
       let attempt = 0;
@@ -843,7 +843,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         try {
           // Build a concrete payload with required fields (avoid optional-indexed Insertable typing)
           const insertPayload: InsertPayload = {
-            caseId: dbPayload.caseId!,
+           , caseId: dbPayload.caseId!,
             score: dbPayload.score!,
             confidence: dbPayload.confidence!,
             criteria: dbPayload.criteria!,
@@ -878,14 +878,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           code: 'DB_PERSIST_ERROR_CRITICAL',
           timestamp: new Date().toISOString(),
           payloadSummary: {
-            caseId: dbPayload.caseId,
+           , caseId: dbPayload.caseId,
             score: dbPayload.score,
             confidence: dbPayload.confidence
           },
           error: String(lastError)
         };
         try {
-          const g = globalThis as unknown as {
+          const g = globalThis as: unknown as {
             redisLogger?: { logError?: (payload: any) => Promise<void> | void };
             monitoringService?: { alertCritical?: (payload: any) => Promise<void> | void };
           };
@@ -907,7 +907,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         code: 'DB_PERSIST_ERROR',
         timestamp: new Date().toISOString(),
         payloadSummary: {
-          caseId: result.caseId,
+         , caseId: result.caseId,
           score: result.score,
           confidence: result.confidence
         },
@@ -915,7 +915,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       };
 
       try {
-        const g = globalThis as unknown as {
+        const g = globalThis as: unknown as {
           redisLogger?: { logError?: (payload: any) => Promise<void> | void };
         };
         if (g.redisLogger && typeof g.redisLogger.logError === 'function') {
@@ -931,7 +931,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   }
 }
 
-// NOTE: removed duplicate helper definitions that were previously declared below saveScoring
+//, NOTE: removed duplicate helper definitions that were previously declared below saveScoring
 
 // { changed code } - re-introduce singleton after class declaration
 export const caseScoringServiceGrpc = new CaseScoringServiceGrpc();

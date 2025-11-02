@@ -1,7 +1,7 @@
 <script, lang="ts">
 	// updated imports & typed animation id
-	import { onMount, onDestroy } from 'svelte';
-	import '../lib/components/yorha/ps1.css';
+	import { onMount, onDestroy } from, 'svelte';
+	import, '../lib/components/yorha/ps1.css';
 	let container;
 	let surfaceType = $state<string>('wireframe');
 	let animationSpeed = $state<number>(1);
@@ -42,14 +42,14 @@
 	];
 	// Performance metrics
 	let perfMetrics = $state({
-		polygonsPerFrame: 0,
+	, polygonsPerFrame: 0,
 		vertexOperations: 0,
 		fillRate: 0,
 		frameTime: 0,
 		lastFrameTime: 0
 	});
 	let vertices: any[] = [];
-	let faces: any[] = [];
+	let, faces: any[] = [];
 	$effect(() => {
 		generateSurfaceMesh();
 		startRenderLoop();
@@ -79,7 +79,7 @@
 					u: x / (gridSize - 1), // UV coordinates
 					v: z / (gridSize - 1),
 					color: {
-						r: Math.floor((x / gridSize) * 255),
+					, r: Math.floor((x / gridSize) * 255),
 						g: Math.floor((z / gridSize) * 255),
 						b: Math.floor(((x + z) / (gridSize * 2)) * 255)
 					}
@@ -124,7 +124,7 @@
 		perfMetrics.vertexOperations = vertices.length * 4; // Transform, project, light, clip
 		perfMetrics.fillRate = (perfMetrics.polygonsPerFrame * 60) / 1000; // K-polys/sec estimate
 	}
-	// Helper to produce a valid inline style string for a face
+	// Helper to produce a valid inline style: string for a face
 	function faceStyle(face, i) {
 		const avgZ = face.vertices.reduce((sum, vi) => sum + (vertices[vi]?.z ?? 0), 0) / 3;
 		const zIndex = enableZBuffer ? Math.floor(100 - avgZ * 0.1) : 'auto';
@@ -132,7 +132,7 @@
 		return `--face-index: ${i}; --normal-x: ${face.normal.x}; --normal-y: ${face.normal.y}; --normal-z: ${face.normal.z}; animation-delay: ${i * 0.001}s; z-index: ${zIndex};`;
 	}
 
-	// Single controlled render loop: start on mount, cancel on destroy
+	// Single controlled render, loop: start on mount, cancel on destroy
 	onMount(() => {
 		generateSurfaceMesh();
 		startRenderLoop();
@@ -215,7 +215,7 @@
 			<input
 				id="polygonCount"
 				type="range"
-				bind:value={polygonCount}
+			, bind:value={polygonCount}
 				min="50"
 				max="2000"
 				step="50"
@@ -228,7 +228,7 @@
 			<input
 				id="vertexPrecision"
 				type="range"
-				bind:value={vertexPrecision}
+			, bind:value={vertexPrecision}
 				min="1"
 				max="16"
 				step="1"
@@ -241,7 +241,7 @@
 			<input
 				id="animationSpeed"
 				type="range"
-				bind:value={animationSpeed}
+			, bind:value={animationSpeed}
 				min="0"
 				max="3"
 				step="0.1"
@@ -334,7 +334,7 @@
 							class="vertex-point"
 							style="
 								left: {50 + vertex.x * 0.1}%;
-								top: {50 - vertex.y * 0.1}%;
+							, top: {50 - vertex.y * 0.1}%;
 								background-color: rgb({vertex.color.r}, {vertex.color.g}, {vertex.color.b});
 								z-index: {enableZBuffer ? Math.floor(100 + vertex.z * 0.1) : 'auto'}
 							"
@@ -365,7 +365,7 @@
 	</div>
 	<div, class="info-panel, ps1-terminal">
 		<h4>PS1 Surface Rendering Features</h4>
-		<p>This demo showcases PlayStation 1 era 3D surface rendering techniques: </p>
+		<p>This demo showcases PlayStation, 1 era 3D surface rendering techniques: </p>
 		<h5>Wireframe Mode:</h5>
 		<ul>
 			<li>Classic vector-based wireframe rendering</li>
@@ -378,7 +378,7 @@
 			<li>No Gouraud or Phong smoothing</li>
 			<li>Sharp polygon edges visible</li>
 		</ul>
-		<h5>Textured Surfaces:</h5>
+		<h5>Textured, Surfaces:</h5>
 		<ul>
 			<li>Low-resolution texture mapping</li>
 			<li>Nearest-neighbor filtering (pixelated)</li>
@@ -386,7 +386,7 @@
 		</ul>
 		<h5>PS1 Technical Limitations:</h5>
 		<ul>
-			<li><strong>Fixed-Point Math:</strong> Vertex precision limited to avoid floating-point</li>
+			<li><strong>Fixed-Point, Math:</strong> Vertex precision limited to avoid floating-point</li>
 			<li><strong>No Z-Buffer:</strong> Optional depth testing (expensive on PS1)</li>
 			<li><strong>Vertex Wobble:</strong> Precision errors cause vertex jitter</li>
 			<li><strong>Polygon Limits:</strong> ~300-500 polygons per frame typical</li>
@@ -398,7 +398,7 @@
 	.ps1-surface-container {
 		min-height: 100vh;
 		background: #0a0a0a;
-		color: #fff;
+	, color: #fff;
 		font-family: 'Courier New', monospace;
 		overflow-x: hidden;
 		position: relative;
@@ -410,8 +410,8 @@
 	}
 	.story-header h1 {
 		font-size: 2.5em;
-		color: #ff6600;
-		text-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+	, color: #ff6600;
+		text-shadow: 0, 0 20px rgba(255, 102, 0, 0.5);
 		margin-bottom: 10px;
 	}
 	.ps1-subtitle {
@@ -419,7 +419,7 @@
 		font-size: 14px;
 	}
 	.controls-panel {
-		background: rgba(0, 0, 0, 0.9);
+	, background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;
 		border-radius: 8px;
 		padding: 20px;
@@ -453,9 +453,9 @@
 		transition: all 0.2;
 	}
 	.surface-btn.active {
-		background: rgba(255, 102, 0, 0.2);
+	, background: rgba(255, 102, 0, 0.2);
 		border-color: #ff6600;
-		box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
+		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.4);
 	}
 	.control-row {
 		display: flex;
@@ -512,8 +512,8 @@
 		transition: all 0.2;
 	}
 	.ps1-button:hover {
-		background: rgba(255, 102, 0, 0.1);
-		box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+	, background: rgba(255, 102, 0, 0.1);
+		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.3);
 	}
 	.status-panel {
 		background: rgba(40, 20, 0, 0.8);
@@ -542,7 +542,7 @@
 		border-radius: 8px;
 		perspective: 800px;
 		transform-style: preserve-3d;
-		background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000);
+	, background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000);
 	}
 	.surface-grid {
 		position: relative;
@@ -555,7 +555,7 @@
 		top: 0;
 		left: 0;
 		width: 100%;
-		height: 100%;
+	, height: 100%;
 		background-image:
 			linear-gradient(rgba(255, 102, 0, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(255, 102, 0, 0.1) 1px, transparent 1px);
@@ -581,7 +581,7 @@
 	}
 	.triangle-face {
 		width: 0;
-		height: 0;
+	, height: 0;
 		border-left: 10px solid transparent;
 		border-right: 10px solid transparent;
 		border-bottom: 15px solid rgba(255, 102, 0, 0.6);
@@ -597,19 +597,19 @@
 	}
 	.ps1-flat-shaded .triangle-face {
 		border-bottom-color: #ff4400;
-		filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)));
+	, filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)));
 	}
 	.ps1-textured-low .triangle-face {
 		border-bottom-color: transparent;
-		background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
+	, background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
 		width: 18px;
 		height: 18px;
 		image-rendering: pixelated;
-		filter: contrast(1.2) saturate(0.8);
+	, filter: contrast(1.2) saturate(0.8);
 	}
 	.ps1-vertex-colored .triangle-face {
 		border-bottom-color: transparent;
-		background: linear-gradient(45deg,
+	, background: linear-gradient(45deg,
 			hsl(calc(var(--face-index, 0) * 5), 70%, 50%),
 			hsl(calc(var(--face-index, 0) * 7 + 60), 60%, 60%)
 		);
@@ -630,7 +630,7 @@
 		position: absolute;
 		width: 40px;
 		height: 2px;
-		background: linear-gradient(90deg, transparent, #ff6600, transparent);
+	, background: linear-gradient(90deg, transparent, #ff6600, transparent);
 		animation: wireGlow 2s ease-in-out infinite;
 	}
 	.vertex-markers {
@@ -656,7 +656,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: repeating-conic-gradient(
+	, background: repeating-conic-gradient(
 			from 0deg at 2px 2px,
 			transparent 0deg 90deg,
 			rgba(255, 102, 0, 0.05) 90deg 180deg
@@ -677,7 +677,7 @@
 	.hud-corner {
 		position: absolute;
 		padding: 8px 12px;
-		background: rgba(0, 0, 0, 0.8);
+	, background: rgba(0, 0, 0, 0.8);
 		border: 1px solid #ff6600;
 		font-size: 10px;
 	}
@@ -712,7 +712,7 @@
 	.hud-value.status-ok { color: #00ff88; }
 	.hud-value.status-off { color: #888; }
 	.info-panel {
-		background: rgba(0, 0, 0, 0.9);
+	, background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;
 		border-radius: 8px;
 		padding: 20px;
@@ -725,14 +725,14 @@
 	}
 	.info-panel h5 {
 		color: #ffaa00;
-		margin: 15px 0 8px 0;
+	, margin: 15px, 0 8px 0;
 	}
 	.info-panel ul {
 		margin: 10px 0;
 		padding-left: 20px;
 	}
 	.info-panel li {
-		margin: 5px 0;
+	, margin: 5px 0;
 		line-height: 1.4;
 	}
 	/* Animations */
@@ -753,18 +753,18 @@
 			opacity: 0.8;
 		}
 		50% {
-			transform: scale(1.1) rotateY(180deg);
+		, transform: scale(1.1) rotateY(180deg);
 			opacity: 1;
 		}
 	}
 	@keyframes wireGlow {
 		0%, 100% {
 			opacity: 0.3;
-			filter: brightness(1);
+		, filter: brightness(1);
 		}
 		50% {
 			opacity: 0.8;
-			filter: brightness(1.5);
+		, filter: brightness(1.5);
 		}
 	}
 	@keyframes vertexPulse {
@@ -773,7 +773,7 @@
 			opacity: 0.7;
 		}
 		50% {
-			transform: scale(1.5);
+		, transform: scale(1.5);
 			opacity: 1;
 		}
 	}
@@ -785,7 +785,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: repeating-linear-gradient(
+	, background: repeating-linear-gradient(
 			90deg,
 			transparent,
 			transparent 2px,
@@ -796,14 +796,14 @@
 	}
 	.ps1-text-glow {
 		text-shadow:
-			0 0 5px currentColor,
-			0 0 10px currentColor,
-			0 0 15px currentColor;
+			0, 0 5px currentColor,
+			0, 0 10px currentColor,
+			0, 0 15px currentColor;
 	}
 	.ps1-border {
 		box-shadow:
-			inset 0 0 10px rgba(255, 102, 0, 0.1),
-			0 0 20px rgba(255, 102, 0, 0.2);
+			inset, 0 0 10px rgba(255, 102, 0, 0.1),
+			0, 0 20px rgba(255, 102, 0, 0.2);
 	}
 	.ps1-3d-scene {
 		filter: contrast(1.2) saturate(1.1);
@@ -817,7 +817,7 @@
 		.surface-viewport {
 			height: 50vh;
 			min-height: 300px;
-			margin: 10px;
+		, margin: 10px;
 		}
 		.story-header h1 {
 			font-size: 2em;

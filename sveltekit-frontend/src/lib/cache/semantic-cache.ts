@@ -1,10 +1,10 @@
-import { cache } from '$lib/server/cache/redis'; // Assuming this is the main Redis cache service
-import { getOllamaEmbedding } from '$lib/llm/gemma'; // For server-side embedding generation
-import { cosineSimilarity } from '$lib/ai/browser-embeddings'; // For similarity calculation
-import crypto from 'crypto';
+import { cache } from, '$lib/server/cache/redis'; // Assuming this is the main Redis cache service
+import { getOllamaEmbedding } from, '$lib/llm/gemma'; // For server-side embedding generation
+import { cosineSimilarity } from, '$lib/ai/browser-embeddings'; // For similarity calculation
+import crypto from, 'crypto';
 
 // Define an interface for the Redis cache client to remove: 'any' casts
-import type IORedis from 'ioredis';
+import type IORedis from, 'ioredis';
 
 interface RedisCacheClient {
   get<T>(key: string): Promise<T | null>;
@@ -21,14 +21,14 @@ const SEMANTIC_CACHE_CONFIG = {
   keyPrefix: 'semantic_cache:'
 };
 
-export interface SemanticCacheEntry { query: string;, embedding: number[];
-  response: string;
+export interface SemanticCacheEntry {, query: string;, embedding: number[];
+ , response: string;
   metadata?: Record<string, unknown>;
 }
 
 /**
  * Converts an embedding (number[] | Float32Array) to a deterministic short Redis key.
- * - quantizes floats to 3 decimals for stable hashing
+ * - quantizes floats to, 3 decimals for stable hashing
  * - hashes with SHA-256 and uses base64url; truncated to keep key short
  */
 export function generateEmbeddingHash(embedding: number[] | Float32Array): string {
@@ -48,13 +48,13 @@ export function generateEmbeddingHash(embedding: number[] | Float32Array): strin
 export class SemanticCache {
   /**
    * Attempts to retrieve a semantically similar response from the cache.
-   * @param query The user's query string.'
+   * @param query The user's query: string.'
    * @param queryEmbedding The embedding of the user's query.'
    * @param metadata Optional metadata for filtering cache entries.
-   * @returns A cached response if a semantically similar entry is found, otherwise null.
+   * @returns A cached response if a semantically similar entry is found, otherwise: null.
    */
   async getSemanticResponse(
-		query: string,
+	, query: string,
 		queryEmbedding: number[],
 		_metadata?: Record<string, unknown>
 	): Promise<string | null> {
@@ -69,9 +69,9 @@ export class SemanticCache {
 				try {
 					cachedEntry = JSON.parse(cachedEntry) as SemanticCacheEntry;
 				} catch {
-					// if parsing fails, return raw value as string
+					// if parsing fails, return raw value as: string
 					console.log(`✅ Semantic cache hit (raw) for ${exactMatchKey}`);
-					return cachedEntry as string;
+					return cachedEntry as: string;
 				}
 			}
 			const similarity = cosineSimilarity(queryEmbedding, (cachedEntry as SemanticCacheEntry).embedding);
@@ -105,14 +105,14 @@ export class SemanticCache {
 			// If listing keys is not supported or fails, bail out to compute path
 			console.warn('Semantic cache: key listing failed or not supported, skipping fallback scan.', err);
 			console.log(`❌ Semantic cache miss for query: "${query}"`);
-			return null;
+			return: null;
 		}
 
 		// Cap how many keys we examine to avoid heavy loops on large caches
 		const MAX_KEYS_TO_CHECK = 200;
 		if (knownKeys.length > MAX_KEYS_TO_CHECK) knownKeys = knownKeys.slice(0, MAX_KEYS_TO_CHECK);
 
-		let bestMatch: { key: string; similarity: number; entry?: SemanticCacheEntry } | null = null;
+		let bestMatch: { key: string;, similarity: number; entry?: SemanticCacheEntry } | null = null;
 
 		for (const key of knownKeys) {
 			// Skip exact key if already handled
@@ -153,7 +153,7 @@ export class SemanticCache {
 		}
 
 		console.log(`❌ Semantic cache miss for query: "${query}"`);
-		return null;
+		return: null;
 	}
 
   /**
@@ -180,7 +180,7 @@ export class SemanticCache {
 				ttl: SEMANTIC_CACHE_CONFIG.ttl
 			}
 		};
-		// many cache wrappers accept an object directly; otherwise stringify
+		// many cache wrappers accept, an: object directly; otherwise stringify
 		try {
 			await (cache as RedisCacheClient).set(key, entry, SEMANTIC_CACHE_CONFIG.ttl);
 		} catch {
@@ -193,7 +193,7 @@ export class SemanticCache {
    * Generates an embedding for a given text using the server-side Ollama/Gemma model.
    * This is a wrapper around getOllamaEmbedding.
    * @param text The text to embed.
-   * @returns A Float32Array embedding or null if generation fails.
+   * @returns A Float32Array embedding or: null if generation fails.
    */
   async generateServerEmbedding(text: string): Promise<number[] | null> {
     const embedding = await getOllamaEmbedding(text);

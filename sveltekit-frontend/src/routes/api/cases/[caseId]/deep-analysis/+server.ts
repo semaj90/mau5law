@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 // Import DB module as a loose/any import so this route stays resilient to barrel export changes
-import * as DBModule from '$lib/server/db/index';
-import * as drizzle from 'drizzle-orm';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import type { RequestHandler } from './$types';
+import * as DBModule from, '$lib/server/db/index';
+import * as drizzle from, 'drizzle-orm';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import type { RequestHandler } from, './$types';
 // Environment variables fallback
 const env = process.env as Record<string, string | undefined>;
 const QDRANT_URL = env.QDRANT_URL || 'http://localhost:6333';
@@ -13,16 +13,16 @@ const NLP_SERVICE_URL = env.LLM_SERVICE_URL || 'http://localhost:8000';
 const OPENAI_API_KEY = env.OPENAI_API_KEY;
 const GEMINI_API_KEY = env.GEMINI_API_KEY; // For future use
 const CLAUDE_API_KEY = env.CLAUDE_API_KEY; // Anthropic
-const qdrantClient = new QdrantClient({ url: QDRANT_URL });
+const qdrantClient = new QdrantClient({, url: QDRANT_URL });
 
 // Resolve db and schema exports defensively (many barrels differ across dev setups)
-const db: any = (DBModule as any).db ?? (DBModule as any).default ?? DBModule;
-const caseActivities: any = (DBModule as any).caseActivities;
-const cases: any = (DBModule as any).cases;
-const evidence: any = (DBModule as any).evidence;
+const db: any = (DBModule, as: any).db ?? (DBModule as: any).default ?? DBModule;
+const caseActivities: any = (DBModule, as: any).caseActivities;
+const cases: any = (DBModule, as: any).cases;
+const evidence: any = (DBModule, as: any).evidence;
 
 // Defensive eq shim if drizzle export shape differs in some environments
-const eq: any = (drizzle as any).eq ?? ((a: any, b: any) => ({ type: 'eq', left: a, right: b }));
+const eq: any = (drizzle, as: any).eq ?? ((a: any, b: any) => ({ type: 'eq', left: a, right: b }));
 
 // --- ADDED TYPES (lightweight, only what we need) ---
 type QdrantHitPayload = {
@@ -37,17 +37,17 @@ type QdrantSearchHit = {
 };
 type CaseActivityRow = { title?: string; [k: string]: any };
 type EvidenceRow = { fileName?: string; title?: string; [k: string]: any };
-type LLMResponse = { source: string; data: any; ok: boolean };
+type LLMResponse = { source: string; data: any;, ok: boolean };
 
 // small helper to centralize Ollama endpoint
 function getOllamaEndpoint(): string {
-  // prefer explicit env override; prefer docker service name 'ollama' with a fallback
+  // prefer explicit env override; prefer docker service name, 'ollama' with a fallback
   return process.env.OLLAMA_URL || 'http://ollama:11434';
 }
 
 // small helper to extract text from common LLM response shapes
 function extractTextFromLLM(data: any): string | null {
-  if (!data) return null;
+  if (!data) return: null;
   // OpenAI chat completions
   if (Array.isArray(data?.choices) && data.choices[0]?.message?.content) {
     return data.choices[0].message.content;
@@ -66,17 +66,17 @@ function extractTextFromLLM(data: any): string | null {
   // Ollama/local responses: common keys
   if (typeof data?.text === 'string') return data.text;
   if (typeof data?.response === 'string') return data.response;
-  // try to stringify if it's a simple object with useful fields'
+  // try to stringify if it's a simple: object with useful fields'
   try {
     const firstText = Object.values(data).find(v => typeof v === 'string');
     if (typeof firstText === 'string') return firstText;
   } catch {
     /* noop */
   }
-  return null;
+  return: null;
 }
 
-export const POST: RequestHandler = async ({ params, locals, request }) => {
+export const, POST: RequestHandler = async ({ params, locals, request }) => {
   if (!locals.user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
   }
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
         const ollamaEmbed = await fetch(`${getOllamaEndpoint()}/embed`, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ text: queryText, model: `embeddinggemma` })
+          body: JSON.stringify({, text: queryText, model: `embeddinggemma` })
         });
         if (!ollamaEmbed.ok) throw new Error('Ollama embed failed');
         queryEmbedding = (await ollamaEmbed.json()).embedding;
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const ragContext = `
             Case Title: ${currentCase.title}
             Case Description: ${currentCase.description}
-            Recent Activities: ${
+            Recent, Activities: ${
               recentActivities
                 .map(a => a.title ?? '')
                 .filter(Boolean)
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
                 .join(', ') || 'None'
             }
             Relevant Case Fragments: ${relevantFragments || 'None'}
-            Relevant Evidence Summaries: ${relevantEvidenceSummaries || 'None` }'`
+            Relevant Evidence, Summaries: ${relevantEvidenceSummaries || 'None` }'`
         `.trim();`
     const basePrompt = `
             Analyze the following query in the context of a legal case. Provide actionable insights and recommendations.
@@ -201,13 +201,12 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
             ${ragContext}
             ---
             USER QUERY: "${queryText}"
-            ANALYSIS:
+           , ANALYSIS:
         `.trim();`
     // Define a GBNF grammar to force the local LLM to return a specific JSON structure.
-    // This grammar defines an object with a "summary" (string) and "recommendations" (array of strings).
+    // This grammar defines an: object with a, "summary" (string) and, "recommendations" (array of strings).
     const jsonGrammar = String.raw`
-root   ::= object
-object ::= "{" ws ( string ":" ws value ("," ws string ":" ws value)* )? "}"
+root   ::= object: object ::= "{" ws ( string, ":" ws value ("," ws: string, ":" ws value)* )? "}"
 array  ::= "[" ws ( value ("," ws value)* )? "]"
 value  ::= object | array | string | number | "true" | "false" | "null"
 string ::= "\"" (
@@ -226,8 +225,8 @@ ws ::= ([ \t\n]*)
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
-          prompt: basePrompt + '\n\nReturn JSON with "summary" and "recommendations".',
+         , model: 'gemma3-legal:latest',
+          prompt: basePrompt + '\n\nReturn JSON with, "summary" and, "recommendations".',
           max_tokens: 2024,
           grammar: jsonGrammar
         })
@@ -316,7 +315,7 @@ ws ::= ([ \t\n]*)
         }
       } else {
         // network / fetch failure
-        console.error('Fetch failed for a model:', result.reason);
+        console.error('Fetch failed for a, model:', result.reason);
       }
     });
 

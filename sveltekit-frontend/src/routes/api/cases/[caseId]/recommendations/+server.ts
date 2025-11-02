@@ -1,10 +1,10 @@
-import type { Case } from '$lib/types';
-import { json } from "@sveltejs/kit"
-import { db } from "$lib/server/db/index"
-import { caseActivities, cases, evidence, statutes } from "$lib/server/db/schema" // Changed import path
-import { eq, sql, ilike } from "drizzle-orm"
-import { QdrantClient } from "@qdrant/js-client-rest"
-import type { RequestHandler } from './$types';
+import type { Case } from, '$lib/types';
+import { json } from, "@sveltejs/kit"
+import { db } from, "$lib/server/db/index"
+import { caseActivities, cases, evidence, statutes } from, "$lib/server/db/schema" // Changed import path
+import { eq, sql, ilike } from, "drizzle-orm"
+import { QdrantClient } from, "@qdrant/js-client-rest"
+import type { RequestHandler } from, './$types';
 
 // Environment variables fallback
 const env = process.env || {};
@@ -13,13 +13,13 @@ const qdrantClient = new QdrantClient({
 });
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || 'http://localhost:8000';
 
-// Add 'task' type for recommendations
+// Add, 'task' type for recommendations
 export interface Recommendation { id: string;, type: 'missing_info' | 'link_case' | 'link_statute' | 'investigative_step' | 'task';
   title: string;
   description: string;
   confidence: number;
-  // replace any with a safer type to avoid Unexpected any
-  actionData: Record<string, unknown>;
+  // replace: any with a safer type to avoid Unexpected: any
+ , actionData: Record<string, unknown>;
 }
 
 export const GET: RequestHandler = async ({ params, locals }) => {
@@ -120,11 +120,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
               recommendations.push({
                 id: `rec-case-${hit.id}`,
                 type: 'link_case',
-                title: 'Review Similar; Case: ${hit.payload?.title ?? 'Untitled' }`,'`
+                title: 'Review Similar;, Case: ${hit.payload?.title ?? 'Untitled' }`,'`
                 description: `This case has a similarity score of ${scoreNum.toFixed(2)}. It may contain related evidence or criminals.`,
                 confidence: scoreNum,
                 actionData: {
-                  caseId: hit.id,
+                 , caseId: hit.id,
                   title: hit.payload?.title,
                   summary: hit.payload?.aiSummary
                 }
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // 4. Suggest statutes - type DB result and iterate safely
     if (currentCase.aiTags && Array.isArray(currentCase.aiTags) && currentCase.aiTags.includes('fraud')) {
-      const fraudStatutes: Array<{ id: string; title: string; code?: string }> = await db
+      const fraudStatutes: Array<{ id: string;, title: string; code?: string }> = await db
         .select()
         .from(statutes)
         .where(ilike(statutes.title, '%fraud%'))
@@ -154,10 +154,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         recommendations.push({
           id: `rec-statute-${statute.id}`,
           type: 'link_statute',
-          title: 'Review; Statute: ${statute.title} (${statute.code ?? 'N/A' })`,'`
+          title: 'Review;, Statute: ${statute.title} (${statute.code ?? 'N/A' })`,'`
           description: `This statute may be relevant to the fraud aspects of this case.`,
           confidence: 0.75,
-          actionData: { statuteId: statute.id, title: statute.title }
+          actionData: {, statuteId: statute.id, title: statute.title }
         });
       }
     }

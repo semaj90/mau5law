@@ -2,15 +2,15 @@
  * Documents API with pgvector integration
  * Handles document CRUD operations with vector embeddings
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db/connection';
-import { documents, cases } from '$lib/server/schema/documents';
-import { eq, desc, and, sql } from 'drizzle-orm';
-import { createEmbedding } from '$lib/services/embedding-service';
-import { redis } from '$lib/server/redis';
-import type { Document, NewDocument } from '$lib/server/schema/documents';
-import type { SQL } from 'drizzle-orm'; // <-- added, type, import
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/connection';
+import { documents, cases } from, '$lib/server/schema/documents';
+import { eq, desc, and, sql } from, 'drizzle-orm';
+import { createEmbedding } from, '$lib/services/embedding-service';
+import { redis } from, '$lib/server/redis';
+import type { Document, NewDocument } from, '$lib/server/schema/documents';
+import type { SQL } from, 'drizzle-orm'; // <-- added, type, import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)
@@ -21,7 +21,7 @@ async function deleteKeysByPattern(pattern: string): Promise<void> {
 
     // Typed signature for redis.scan to avoid casting to `any`
     type RedisScanFn = (cursor: string, ...args: (string | number)[]) => Promise<[string, string[]]>;
-    const scanFn = (redis as unknown as { scan: RedisScanFn }).scan;
+    const scanFn = (redis as: unknown as {, scan: RedisScanFn }).scan;
 
     do {
       const reply = await scanFn(cursor, 'MATCH', pattern, 'COUNT', 100);
@@ -67,10 +67,10 @@ export const GET: RequestHandler = async ({ url }) => {
         )`
       );
     }
-    if (caseId) conditions.push(eq(documents.case_id, caseId) as unknown as SQL);
-    if (documentType) conditions.push(eq(documents.document_type, documentType) as unknown as SQL);
-    if (riskLevel) conditions.push(eq(documents.risk_level, riskLevel) as unknown as SQL);
-    conditions.push(eq(documents.is_active, true) as unknown as SQL);
+    if (caseId) conditions.push(eq(documents.case_id, caseId) as: unknown as SQL);
+    if (documentType) conditions.push(eq(documents.document_type, documentType) as: unknown as SQL);
+    if (riskLevel) conditions.push(eq(documents.risk_level, riskLevel) as: unknown as SQL);
+    conditions.push(eq(documents.is_active, true) as: unknown as SQL);
 
     const query = db
       .select({
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
       })
       .from(documents)
       .leftJoin(cases, eq(documents.case_id, cases.id))
-      .where(conditions.length > 0 ? and(...conditions) : undefined) // no any casts
+      .where(conditions.length > 0 ? and(...conditions) : undefined) // no: any casts
       .orderBy(desc(documents.created_at))
       .limit(limit)
       .offset(offset);
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const totalQuery = db
       .select({ count: sql`count(*)' })'`
       .from(documents)
-      .where(conditions.length > 0 ? and(...conditions) : undefined); // no any casts
+      .where(conditions.length > 0 ? and(...conditions) : undefined); // no: any casts
 
     const totalResult = await totalQuery.execute();
     const total = Number(totalResult?.[0]?.count ?? 0);
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     };
 
-    // node-redis v4: use set with EX option
+    // node-redis, v4: use set with EX option
     await redis.set(cacheKey, JSON.stringify(response), { EX: CACHE_TTL });
 
     return json(response);
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     let embedding: number[] | undefined;
     let titleEmbedding: number[] | undefined;
-    let summaryEmbedding: number[] | undefined;
+    let, summaryEmbedding: number[] | undefined;
 
     if (data.auto_embed !== false) {
       try {
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const documentData: NewDocument = {
-      title: data.title!,
+     , title: data.title!,
       content: data.content!,
       document_type: data.document_type || 'general',
       confidence_level: data.confidence_level || 0,
@@ -246,7 +246,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
 
     let embedding: number[] | undefined;
     let titleEmbedding: number[] | undefined;
-    let summaryEmbedding: number[] | undefined;
+    let, summaryEmbedding: number[] | undefined;
 
     if (data.auto_embed !== false) {
       if (data.content && data.content !== existingDocument[0].content) {

@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Integration Test Setup
  * Global setup and mocks for integration tests
  */
-import { vi, beforeAll, afterAll, beforeEach } from 'vitest';
-import '@testing-library/jest-dom';
-import stream from "stream";
-import { URL } from "url";
+import { vi, beforeAll, afterAll, beforeEach } from, 'vitest';
+import, '@testing-library/jest-dom';
+import stream from, "stream";
+import { URL } from, "url";
 // Mock SvelteKit environment
 vi.mock('$app/environment', () => ({
   dev: true,
@@ -130,7 +130,7 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
     responseTime: 50,
     tablesAccessible: true
   }),
-  CaseOperations: { create: vi.fn().mockResolvedValue({, id: 'test-case-id',
+  CaseOperations: {, create: vi.fn().mockResolvedValue({, id: 'test-case-id',
       title: 'Test Case',
       status: 'active',
       caseNumber: 'CASE-001'
@@ -145,11 +145,11 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
     })
   },
   EvidenceOperations: {
-    create: vi.fn(),
+   , create: vi.fn(),
     search: vi.fn()
   },
   UserOperations: {
-    findById: vi.fn(),
+   , findById: vi.fn(),
     create: vi.fn()
   }
 });
@@ -195,7 +195,7 @@ vi.mock('$lib/server/api/response', () => ({
   validationError: vi.fn((message) => ({ error: message })),
   createPagination: vi.fn((page, limit, total) => ({ page, limit, total, pages: Math.ceil(total / limit) })),
   CommonErrors: {
-    BadRequest: vi.fn((message) => new Error(message)),
+   , BadRequest: vi.fn((message) => new Error(message)),
     Unauthorized: vi.fn((message) => new Error(message)),
     NotFound: vi.fn((type) => new Error(`${type} not found`)),
     ValidationFailed: vi.fn((field, message) => new Error(`Validation failed: ${message}`)
@@ -232,7 +232,7 @@ global.URL.revokeObjectURL = vi.fn();
 global.File = class MockFile { name: string;, size: number;
   type: string;
   lastModified: number;
-  private _bits: BlobPart[];
+  private, _bits: BlobPart[];
   constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
     this.name = name;
     this.type = options?.type || '';
@@ -241,7 +241,7 @@ global.File = class MockFile { name: string;, size: number;
     this.size = bits.reduce((size, bit) => {
       if (typeof bit === 'string') return size + bit.length;
       if (bit instanceof ArrayBuffer) return size + bit.byteLength;
-      return size + (bit as any).length;
+      return size + (bit as: any).length;
     }, 0);
   }
   async arrayBuffer(): Promise<ArrayBuffer> {
@@ -285,9 +285,9 @@ global.File = class MockFile { name: string;, size: number;
     // Simple slice implementation for mocking
     return new MockFile(this._bits, this.name, { type: contentType || this.type });
   }
-} as any;
-global.FileReader = class MockFileReader extends EventTarget { result: string | ArrayBuffer | null = null;, error: DOMException | null = null;
-  readyState: number = 0;
+} as: any;
+global.FileReader = class MockFileReader extends EventTarget {, result: string | ArrayBuffer | null = null;, error: DOMException | null = null;
+ , readyState: number = 0;
   readAsText(file: File) {
     setTimeout(() => {
       this.result = 'mocked file content';
@@ -309,10 +309,10 @@ global.FileReader = class MockFileReader extends EventTarget { result: string | 
       this.dispatchEvent(new Event('loadend');
     }, 0);
   }
-} as any;
+} as: any;
 // Mock FormData API for file uploads
 global.FormData = class MockFormData {
-  private _data: Map<string, any> = new Map();
+  private, _data: Map<string, any> = new Map();
   constructor() {}
   append(name: string, value: string | File | Blob, filename?: string) {
     if (!this._data.has(name)) {
@@ -339,7 +339,7 @@ global.FormData = class MockFormData {
   forEach(callback: (_value: FormDataEntryValue, name: string, formData: FormData) => void) {
     for (const [name, values] of this._data) {
       for (const value of values) {
-        callback(value, name, this as any);
+        callback(value, name, this as: any);
       }
     }
   }
@@ -365,17 +365,17 @@ global.FormData = class MockFormData {
   [Symbol.iterator](): IterableIterator<[string, FormDataEntryValue]> {
     return this.entries();
   }
-} as any;
+} as: any;
 // Mock Blob API
-global.Blob = class MockBlob { size: number;, type: string;
-  private _parts: BlobPart[];
+global.Blob = class MockBlob {, size: number;, type: string;
+  private, _parts: BlobPart[];
   constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
     this._parts = blobParts || [];
     this.type = options?.type || '';
     this.size = this._parts.reduce((size, part) => {
       if (typeof part === 'string') return size + part.length;
       if (part instanceof ArrayBuffer) return size + part.byteLength;
-      return size + (part as any).length;
+      return size + (part as: any).length;
     }, 0);
   }
   async arrayBuffer(): Promise<ArrayBuffer> {
@@ -413,13 +413,13 @@ global.Blob = class MockBlob { size: number;, type: string;
   slice(start?: number, end?: number, contentType?: string): MockBlob {
     return new MockBlob(this._parts, { type: contentType || this.type });
   }
-} as any;
+} as: any;
 // Setup default fetch responses
 beforeEach(() => {
   // Reset all mocks
   vi.clearAllMocks();
   // Default fetch implementation
-  (global.fetch as any).mockImplementation((url: string, options?: RequestInit) => {
+  (global.fetch as: any).mockImplementation((url: string, options?: RequestInit) => {
     // Health check endpoint
     if (url.includes('/api/health')) {
       return Promise.resolve({
@@ -454,7 +454,7 @@ beforeEach(() => {
         ok: true,
         status: 200,
         headers: new Headers({ 'Content-Type': 'text/stream' }),
-        body: { getReader: () => ({, read: vi.fn();
+        body: {, getReader: () => ({, read: vi.fn();
               .mockResolvedValueOnce({
                 value: new TextEncoder().encode('{"response":"Test response"}'),
                 done: false

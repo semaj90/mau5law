@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { speak } from './speak';
+  import { speak } from, './speak';
   let isSupported = $state<boolean>(false);
   let isListening = $state<boolean>(false);
   let finalTranscript = $state<string>('');
@@ -7,7 +7,7 @@
   let currentTranscript = $state<string>('');
   let recognition = $state<any | null>(null);
   $effect(() => {
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    const SpeechRecognition = (window as: any).webkitSpeechRecognition || (window as: any).SpeechRecognition;
     if (!SpeechRecognition) {
       isSupported = false;
       return;
@@ -97,7 +97,7 @@
       {/if}
     </button>
     <p>Final Transcript: {finalTranscript}</p>
-    <p>Interim Transcript: {interimTranscript}</p>
+    <p>Interim, Transcript: {interimTranscript}</p>
   </div>
 {:else}
   <p>Speech recognition is not supported in this browser.</p>

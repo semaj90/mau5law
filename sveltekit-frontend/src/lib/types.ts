@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // Central shared type definitions (incremental widening to unblock svelte-check)
 export type ButtonVariant =
   | 'default'
@@ -21,7 +21,7 @@ export type ButtonVariant =
   | 'evidence'
   | 'legal';
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
-// Transitional FormField type: allow known union plus fallback string to avoid blocking builds
+// Transitional FormField type: allow known union plus fallback: string to avoid blocking builds
 export type FormFieldType =
   | 'text'
   | 'number'
@@ -33,13 +33,13 @@ export type FormFieldType =
   | 'password'
   | 'checkbox'
   | 'radio';
-export interface FormField { id: string;, label: string;
-  type: string; // Changed from FormFieldType | (string & {})
+export interface FormField {, id: string;, label: string;
+ , type: string; // Changed from FormFieldType | (string & {})
   required?: boolean;
   options?: { value: string; label: string }[];
 }
 export interface ModalProps {
-  isOpen: boolean;
+ , isOpen: boolean;
   title?: string;
   subtitle?: string;
   submitLabel?: string;
@@ -68,7 +68,7 @@ export interface APIResponse<T> {
 }
 export interface FormSubmissionResult<T = unknown> {
   // Changed from T = any
-  success: boolean;
+ , success: boolean;
   data?: T;
   errors?: Record<string, string[]>;
   metadata?: { requestId: string; timestamp: string; processingTimeMs: number };
@@ -93,15 +93,15 @@ export type WorkerMessageType =
   | 'TASK_ERROR'
   | 'TASK_CANCELLED'
   | 'STATUS_UPDATE';
-export interface AITask { taskId: string;, type: AITaskType;
+export interface AITask {, taskId: string;, type: AITaskType;
   providerId: string;
   model: string;
   prompt: string;
   timestamp: number;
   priority: 'low' | 'medium' | 'high';
-  [key: string]: any; // Changed from any
+  [key: string]: any; // Changed from: any
 }
-export interface WorkerStatus { status: 'idle' | 'processing' | 'error';, activeRequests: number;
+export interface WorkerStatus {, status: 'idle' | 'processing' | 'error';, activeRequests: number;
   queueLength: number;
   providers: { id: string; status: ServiceStatus }[];
   maxConcurrent: number;
@@ -119,7 +119,7 @@ export interface WorkerMessage {
 }
 // Copilot & RAG
 export type CopilotSource = 'context7_mcp' | 'enhanced_local_index' | 'basic_index';
-export interface CopilotIndexEntry { id: string;, content: string;
+export interface CopilotIndexEntry {, id: string;, content: string;
   score: number;
   source: CopilotSource;
   type: 'case' | 'document' | 'evidence' | 'statute';
@@ -131,11 +131,11 @@ export interface CopilotIndexEntry { id: string;, content: string;
   language: string;
   tags: string[];
 }
-export interface SimilarityResult { id: string;, documentId: string;
+export interface SimilarityResult {, id: string;, documentId: string;
   documentType: string;
   chunkIndex: number;
   content: string;
-  score: number;
+ , score: number;
 }
 // Database / Evidence / Document (narrow versions - keep existing User above)
 export interface Case { id: string;, title: string;
@@ -144,38 +144,38 @@ export interface Case { id: string;, title: string;
   status: string;
   createdAt: Date;
 }
-export interface Evidence { id: string;, name: string;
+export interface Evidence {, id: string;, name: string;
   caseId: string;
   contentText: string | null;
   filePath: string | null;
-  metadata: Record<string, unknown>; // Changed from { [key: string]: any }
+ , metadata: Record<string, unknown>; // Changed from { [key: string]: any }
   createdAt: Date;
 }
-export interface DocumentChunk { id: string;, evidenceId: string;
+export interface DocumentChunk {, id: string;, evidenceId: string;
   chunkText: string;
   chunkSequence: number;
 }
 // Canvas / NES engine
-export interface CanvasState { id: string;, animation: string;
+export interface CanvasState {, id: string;, animation: string;
   frame: number;
   fabricJSON: object;
   metadata: { duration?: number; transitions?: string[]; userContext?: string[]; confidence?: number };
 }
-export interface CanvasAnimation { name: string;, frames: CanvasState[];
+export interface CanvasAnimation {, name: string;, frames: CanvasState[];
   loop: boolean;
 }
-export interface UserActivityLog { timestamp: number;, action: string;
-  context: Record<string, unknown>; // Changed from { [key: string]: any }
+export interface UserActivityLog {, timestamp: number;, action: string;
+ , context: Record<string, unknown>; // Changed from { [key: string]: any }
   sessionId: string;
 }
 // GPU / Tensor
 export type GPUTaskType = 'matrix_multiply' | 'convolution' | 'attention' | 'fft';
-export interface GPUTaskRequest { taskId: string;, type: GPUTaskType;
+export interface GPUTaskRequest {, taskId: string;, type: GPUTaskType;
   inputs: number[][];
   use_gpu: boolean;
   cache_key?: string;
 }
-export interface VertexBuffer { name: string;, data: Float32Array;
+export interface VertexBuffer {, name: string;, data: Float32Array;
 }
 // Global app state machine
 export interface GlobalAppContext { user: { id: string; email: string } | null;
@@ -189,7 +189,7 @@ export type GlobalAppEvent =
   | { type: 'SET_THEME'; theme: 'light' | 'dark' };
 
 // New types for Rerank functionality
-export interface Candidate { id: string;, text: string;
+export interface Candidate {, id: string;, text: string;
   relevanceScore?: number; // Added for MMR/Cross-encoder context
   diversityScore?: number;
   rerankedScore?: number;

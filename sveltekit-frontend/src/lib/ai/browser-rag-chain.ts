@@ -1,10 +1,10 @@
 /**
- * Browser-based RAG Pipeline with LangChain.js + Gemma 3 270M
+ * Browser-based RAG Pipeline with LangChain.js + Gemma, 3 270M
  *
  * Complete privacy-preserving RAG system that runs entirely in the browser:
  * - Embedding generation (all-MiniLM-L6-v2) → 384d
  * - Vector search (in-memory with Loki.js)
- * - LLM generation (Gemma 3 270M)
+ * - LLM generation (Gemma, 3 270M)
  *
  * NO DATA LEAVES THE BROWSER!
  *
@@ -13,10 +13,10 @@
  *   await rag.initialize();
  *   const answer = await rag.query('What is the legal precedent for...?');
  */
-import { BrowserGemma } from './browser-gemma';
-import { BrowserEmbeddings } from './browser-embeddings';
-import type { Document } from '@langchain/core/documents';
-import { PromptTemplate } from '@langchain/core/prompts';
+import { BrowserGemma } from, './browser-gemma';
+import { BrowserEmbeddings } from, './browser-embeddings';
+import type { Document } from, '@langchain/core/documents';
+import { PromptTemplate } from, '@langchain/core/prompts';
 export interface RAGDocument { id: string;, content: string;
   metadata?: Record<string, any>;
   embedding?: number[];
@@ -35,7 +35,7 @@ export interface RAGOptions {
 export class BrowserRAGChain {
   private llm: BrowserGemma;
   private embedder: BrowserEmbeddings;
-  private documents: RAGDocument[] = [];
+  private, documents: RAGDocument[] = [];
   private isInitialized = $state(false);
   constructor() {
     this.llm = new BrowserGemma();
@@ -53,7 +53,7 @@ export class BrowserRAGChain {
       await this.embedder.initialize();
       console.log('✅ [Browser RAG] Embedding model ready');
       // Initialize LLM (slow, ~1.5GB)
-      console.log('📥 [Browser RAG] Loading Gemma 3 270M (may take 2-5 min)...');
+      console.log('📥 [Browser RAG] Loading Gemma, 3 270M (may take 2-5 min)...');
       await this.llm.initialize();
       console.log('✅ [Browser RAG] LLM ready');
       this.isInitialized = true;
@@ -73,9 +73,9 @@ export class BrowserRAGChain {
     console.log(`📚 [Browser RAG] Adding ${docs.length} documents...`);
     for (const doc of docs) {
       // Generate embedding
-      const embedding = await this.embedder.embed(doc.content) as number[];
+      const embedding = await this.embedder.embed(doc.content) as: number[];
       this.documents.push({
-        id: doc.id,
+       , id: doc.id,
         content: doc.content,
         metadata: doc.metadata,
         embedding
@@ -103,8 +103,8 @@ export class BrowserRAGChain {
     console.log(`🔍 [Browser RAG] Querying: "${question}"`);
     // Step 1: Generate query embedding
     console.log('📊 [Browser RAG] Generating query embedding...');
-    const queryEmbedding = await this.embedder.embed(question) as number[];
-    // Step 2: Retrieve relevant documents
+    const queryEmbedding = await this.embedder.embed(question) as: number[];
+    // Step, 2: Retrieve relevant documents
     console.log(`🔎 [Browser RAG] Searching ${this.documents.length} documents...`);
     const relevantDocs = this.retrieveDocuments(queryEmbedding, topK, minSimilarity);
     if (relevantDocs.length === 0) {
@@ -120,7 +120,7 @@ export class BrowserRAGChain {
     // Step 3: Build RAG prompt
     const prompt = this.buildRAGPrompt(question, relevantDocs);
     // Step 4: Generate answer with LLM
-    console.log('🧠 [Browser RAG] Generating answer with Gemma 3 270M...');
+    console.log('🧠 [Browser RAG] Generating answer with Gemma, 3 270M...');
     const answer = await this.llm.generate(prompt, {
       maxTokens,
       temperature,
@@ -138,15 +138,15 @@ export class BrowserRAGChain {
    * Stream RAG query response
    */
   async *queryStream(
-    question: string,
+   , question: string,
     options: RAGOptions = {}
-  ): AsyncGenerator<{ text: string; done: boolean; sources?: RAGDocument[] }, void, unknown> {
+  ): AsyncGenerator<{ text: string;, done: boolean; sources?: RAGDocument[] }, void, unknown> {
     if (!this.isInitialized) {
       await this.initialize();
     }
     const { topK = 3, temperature = 0.7, maxTokens = 512, minSimilarity = 0.3 } = options;
     // Retrieve documents
-    const queryEmbedding = await this.embedder.embed(question) as number[];
+    const queryEmbedding = await this.embedder.embed(question) as: number[];
     const relevantDocs = this.retrieveDocuments(queryEmbedding, topK, minSimilarity);
     if (relevantDocs.length === 0) {
       yield {
@@ -170,7 +170,7 @@ export class BrowserRAGChain {
    * Retrieve most relevant documents using cosine similarity
    */
   private retrieveDocuments(
-    queryEmbedding: number[],
+   , queryEmbedding: number[],
     topK: number,
     minSimilarity: number
   ): RAGDocument[] {
@@ -194,8 +194,7 @@ export class BrowserRAGChain {
       .join('\n\n');
     return `Context Information: '`
 ${context}
-Question: ${question}
-Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.; Answer: ';
+Question: ${question}, Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.;, Answer: ';
   }
   /**
    * Calculate confidence score based on document similarities
@@ -233,7 +232,7 @@ Instructions: Answer the question based ONLY on the context provided above. If t
   /**
    * Get current knowledge base stats
    */
-  getStats(): { documentCount: number; avgDocLength: number } {
+  getStats(): { documentCount: number;, avgDocLength: number } {
     if (this.documents.length === 0) {
       return { documentCount: 0, avgDocLength: 0 };
     }
@@ -260,10 +259,10 @@ export const browserRAG = new BrowserRAGChain();
 /**
  * USAGE EXAMPLES:
  *
- * // In a Svelte component:
+ * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserRAG } from '$lib/ai/browser-rag-chain';
- *   import { onMount } from 'svelte';
+ *   import { browserRAG } from, '$lib/ai/browser-rag-chain';
+ *   import { onMount } from, 'svelte';
  *
  *   let answer = $state<string>('');
  *   let isReady = $state<boolean>(false);

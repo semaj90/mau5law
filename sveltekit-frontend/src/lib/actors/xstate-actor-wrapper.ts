@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues
  * Proper fromPromise usage with typed context and error handling
  */
-import { fromPromise, createActor, type ActorRefFrom } from 'xstate';
-import { fetchWithTimeout } from '$lib/utils';
+import { fromPromise, createActor, type ActorRefFrom } from, 'xstate';
+import { fetchWithTimeout } from, '$lib/utils';
 // ===== EMBEDDING ACTOR =====
 export interface EmbeddingActorInput {
   text: string;
@@ -12,12 +12,12 @@ export interface EmbeddingActorInput {
   caseId?: string;
   chunkIndex?: number;
 }
-export interface EmbeddingActorOutput { embedding: number[];, dimensions: number;
+export interface EmbeddingActorOutput {, embedding: number[];, dimensions: number;
   model: string;
   processingTime: number;
   tokenCount?: number;
 }
-export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingActorInput }) => {
+export const embeddingActor = fromPromise(async ({ input }: {, input: EmbeddingActorInput }) => {
   const startTime = Date.now();
   try {
     const response = await fetchWithTimeout('/api/ai/embed', {
@@ -60,7 +60,7 @@ export interface DocumentProcessingOutput {
   processingTime: number;
   success: boolean;
 }
-export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
+export const documentProcessingActor = fromPromise(async ({ input }: {, input: DocumentProcessingInput }) => {
   const startTime = Date.now();
   try {
     const response = await fetchWithTimeout('/api/ai/process-document', {
@@ -92,13 +92,13 @@ export interface LegalAnalysisInput {
   jurisdiction?: string;
   priority?: 'high' | 'medium' | 'low';
 }
-export interface LegalAnalysisOutput { riskScore: number;, riskFactors: string[];
+export interface LegalAnalysisOutput {, riskScore: number;, riskFactors: string[];
   recommendations: string[];
   precedents: Array<any>;
   confidence: number;
   processingTime: number;
 }
-export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
+export const legalAnalysisActor = fromPromise(async ({ input }: {, input: LegalAnalysisInput }) => {
   const startTime = Date.now();
   try {
     const response = await fetchWithTimeout('/api/ai/legal-analysis', {
@@ -131,11 +131,11 @@ export interface RAGSearchInput {
   limit?: number;
   threshold?: number;
 }
-export interface RAGSearchOutput { results: Array<any>;, totalResults: number;
+export interface RAGSearchOutput {, results: Array<any>;, totalResults: number;
   processingTime: number;
   model: string;
 }
-export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
+export const ragSearchActor = fromPromise(async ({ input }: {, input: RAGSearchInput }) => {
   const startTime = Date.now();
   try {
     const response = await fetchWithTimeout('/api/ai/rag-search', {
@@ -183,10 +183,10 @@ export interface WorkflowOutput {
   success: boolean;
   errors: Array<any>;
 }
-export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
+export const workflowActor = fromPromise(async ({ input }: {, input: WorkflowInput }) => {
   const startTime = Date.now();
   const results: { [key: string]: any } = {};
-  const errors: Array<any> = [];
+  const, errors: Array<any> = [];
   try {
     if (input.parallel) {
       // Execute steps in parallel
@@ -195,20 +195,20 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
           let actor: any; // XState v5 actor type
           const stepId = `step_${index}`;
           switch (step.type) {
-            case 'embedding':
+            case, 'embedding':
               actor = createEmbeddingActor(step.input);
               break;
-            case 'document_processing':
+            case, 'document_processing':
               actor = createDocumentProcessingActor(step.input);
               break;
-            case 'legal_analysis':
+            case, 'legal_analysis':
               actor = createLegalAnalysisActor(step.input);
               break;
-            case 'rag_search':
+            case, 'rag_search':
               actor = createRAGSearchActor(step.input);
               break;
             default:
-              throw new Error(`Unknown step; type: ${step.type}`);
+              throw new Error(`Unknown step;, type: ${step.type}`);
           }
           actor.start();
           const result = await new Promise((resolve, reject) => {
@@ -236,20 +236,20 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
         try {
           let actor: any; // XState v5 actor type
           switch (step.type) {
-            case 'embedding':
+            case, 'embedding':
               actor = createEmbeddingActor(step.input);
               break;
-            case 'document_processing':
+            case, 'document_processing':
               actor = createDocumentProcessingActor(step.input);
               break;
-            case 'legal_analysis':
+            case, 'legal_analysis':
               actor = createLegalAnalysisActor(step.input);
               break;
-            case 'rag_search':
+            case, 'rag_search':
               actor = createRAGSearchActor(step.input);
               break;
             default:
-              throw new Error(`Unknown step; type: ${step.type}`);
+              throw new Error(`Unknown step;, type: ${step.type}`);
           }
           actor.start();
           const result = await new Promise((resolve, reject) => {

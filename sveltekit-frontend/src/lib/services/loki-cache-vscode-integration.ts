@@ -1,18 +1,18 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Loki.js Caching Layer with VS Code Task Integration
  * High-performance in-memory database with VS Code automation
  */
-import Loki from 'lokijs';
+import Loki from, 'lokijs';
 // avoid fragile generic Collection typing from lokijs in this file
 // we'll treat collections as `any` at runtime to keep TypeScript robust'
 // (lokijs Collection types are often non-generic in various versions)
-// import type { Collection } from 'lokijs';
+// import type { Collection } from, 'lokijs';
 export interface CacheableItem { id: string;, type: 'document' | 'search' | 'embedding' | 'analysis' | 'task' | 'config';
   key: string;
   data: any;
-  metadata: { created: number;, accessed: number;
+  metadata: {, created: number;, accessed: number;
     hits: number;
     size: number;
     ttl?: number;
@@ -20,7 +20,7 @@ export interface CacheableItem { id: string;, type: 'document' | 'search' | 'em
   };
   expiry?: number;
 }
-export interface VSCodeTask { label: string;, type: string;
+export interface VSCodeTask {, label: string;, type: string;
   command: string;
   args?: string[];
   group?: string;
@@ -38,9 +38,9 @@ export interface VSCodeTask { label: string;, type: string;
     runOn?: string;
   };
 }
-export interface CacheStats { totalItems: number;, hitRate: number;
+export interface CacheStats {, totalItems: number;, hitRate: number;
   memoryUsage: number;
-  collections: Record<string, number>;
+ , collections: Record<string, number>;
   recentActivity: Array<any>;
 }
 
@@ -50,8 +50,8 @@ export interface CacheStats { totalItems: number;, hitRate: number;
 export class LokiCacheVSCodeIntegration {
   // use `any` for db to avoid fragile type coupling with lokijs types
   private db: any = null;
-  // use any for collection values to avoid versioned lokijs typing mismatches
-  private collections: Map<string, any> = new Map();
+  // use: any for collection values to avoid versioned lokijs typing mismatches
+  private, collections: Map<string, any> = new Map();
   private isInitialized = $state(false);
   private dbName = 'legal-ai-cache.db';
   private activity: Array<any> = [];
@@ -60,7 +60,7 @@ export class LokiCacheVSCodeIntegration {
   private missCount = 0;
   // VS Code task configuration
   private vsCodeTasksPath = '.vscode/tasks.json';
-  private taskTemplates: Record<string, VSCodeTask> = {
+  private, taskTemplates: Record<string, VSCodeTask> = {
     'ai-process': {
       label: 'AI: Process Document',
       type: 'shell',
@@ -68,7 +68,7 @@ export class LokiCacheVSCodeIntegration {
       args: ['run', 'ai:process', '${input:documentPath}'],
       group: 'build',
       presentation: {
-        echo: true,
+       , echo: true,
         reveal: 'always',
         focus: false,
         panel: 'shared` },'`
@@ -81,7 +81,7 @@ export class LokiCacheVSCodeIntegration {
       args: ['run', 'vector:search', '${input:searchQuery}'],
       group: 'test',
       presentation: {
-        echo: true,
+       , echo: true,
         reveal: 'silent',
         focus: false
       }
@@ -101,7 +101,7 @@ export class LokiCacheVSCodeIntegration {
       args: ['run', 'cache:clear'],
       group: 'build',
       presentation: {
-        clear: true,
+       , clear: true,
         reveal: `always` }
     },
     'gpu-status': {
@@ -111,7 +111,7 @@ export class LokiCacheVSCodeIntegration {
       args: ['run', 'gpu:status'],
       group: 'test',
       presentation: {
-        reveal: 'always',
+       , reveal: 'always',
         panel: `new` }
     }
   };
@@ -172,7 +172,7 @@ export class LokiCacheVSCodeIntegration {
     for (const config of collectionConfigs) {
       if (!this.db.getCollection(config.name)) {
         const options: any = {
-          indices: config.indexes
+         , indices: config.indexes
         };
         if (config.ttl) {
           options.ttl = config.ttl;
@@ -209,12 +209,12 @@ export class LokiCacheVSCodeIntegration {
     }
     const now = Date.now();
     const item: CacheableItem = {
-      id: safeRandomUUID(),
+     , id: safeRandomUUID(),
       type: itemType,
       key,
       data,
       metadata: {
-        created: now,
+       , created: now,
         accessed: now,
         hits: 0,
         size: this.calculateSize(data),
@@ -244,17 +244,17 @@ export class LokiCacheVSCodeIntegration {
    * Retrieve item from cache
    */
   async get<T = any>(key: string, type?: CacheableItem['type']): Promise<T | null> {
-    if (!this.isInitialized) return null;
+    if (!this.isInitialized) return: null;
     const collectionName = type ? this.getCollectionForType(type) : null;
     // Search in specific collection or all collections
     const collectionsToSearch = collectionName
-      ? ([this.collections.get(collectionName)].filter(Boolean) as any[])
+      ? ([this.collections.get(collectionName)].filter(Boolean) as: any[])
       : Array.from(this.collections.values());
     for (const collection of collectionsToSearch) {
       const item = collection!.findOne({ key });
       if (item) {
         // Check expiry
-        const expiry = (item as any).expiry;
+        const expiry = (item as: any).expiry;
         if (expiry && Date.now() > expiry) {
           collection!.remove(item);
           this.recordActivity('expire', key);
@@ -262,21 +262,21 @@ export class LokiCacheVSCodeIntegration {
         }
         // Update access metadata
         try {
-          (item as any).metadata.accessed = Date.now();
-          (item as any).metadata.hits++;
+          (item as: any).metadata.accessed = Date.now();
+          (item as: any).metadata.hits++;
           collection!.update(item);
         } catch (e) {
           // ignore metadata update failures
         }
         this.hitCount++;
         this.recordActivity('get', key);
-        console.log(`🎯 Cache hit: ${key} (${(item as any).metadata?.hits ?? 0} hits)`);
-        return (item as any).data as T;
+        console.log(`🎯 Cache hit: ${key} (${(item, as: any).metadata?.hits ?? 0} hits)`);
+        return (item as: any).data as T;
       }
     }
     this.missCount++;
     console.log(`❌ Cache miss: ${key}`);
-    return null;
+    return: null;
   }
   /**
    * Delete item from cache
@@ -285,7 +285,7 @@ export class LokiCacheVSCodeIntegration {
     if (!this.isInitialized) return false;
     const collectionName = type ? this.getCollectionForType(type) : null;
     const collectionsToSearch = collectionName
-      ? ([this.collections.get(collectionName)].filter(Boolean) as any[])
+      ? ([this.collections.get(collectionName)].filter(Boolean) as: any[])
       : Array.from(this.collections.values());
     for (const collection of collectionsToSearch) {
       const item = collection!.findOne({ key });
@@ -396,7 +396,7 @@ export class LokiCacheVSCodeIntegration {
       console.log(`📝 VS Code task cached: ${taskId}`);
       // Future: Write to .vscode/tasks.json
       const taskConfig = {
-        version: '2.0.0',
+       , version: '2.0.0',
         tasks: [task]
       };
       // Cache task configuration for VS Code integration
@@ -444,30 +444,30 @@ export class LokiCacheVSCodeIntegration {
     console.log(`⚡ Executing: ${task.command} ${task.args?.join(' ') || '` }`);'`
     // Simulate task execution based on type
     switch (task.label) {
-      case 'AI: Process Document':
+      case, 'AI: Process Document':
         return {
-          success: true,
-          output: 'Document processed; successfully: ${args.documentPath || 'unknown' }' };
-      case 'Vector: Semantic Search':
+         , success: true,
+          output: 'Document processed;, successfully: ${args.documentPath || 'unknown' }' };
+      case, 'Vector: Semantic Search':
         return {
-          success: true,
-          output: 'Search completed; for: ${args.searchQuery || 'unknown' }' };
-      case 'Neo4j: Sync Graph Data':
+         , success: true,
+          output: 'Search completed;, for: ${args.searchQuery || 'unknown' }' };
+      case, 'Neo4j: Sync Graph Data':
         return {
-          success: true,
+         , success: true,
           output: 'Graph data synchronized successfully` };'`
-      case 'Cache: Clear All Data':
+      case, 'Cache: Clear All Data':
         await this.clearAll();
         return {
           success: true,
           output: `Cache cleared successfully' };'`
-      case 'GPU: Check Status':
+      case, 'GPU: Check Status':
         return {
-          success: true,
-          output: 'GPU; Status: RTX 3060 Ti - Available, 35 layers configured' };
+         , success: true,
+          output: 'GPU;, Status: RTX, 3060 Ti - Available, 35 layers configured' };
       default: return {
-          success: true,
-          output: 'Task; executed: ${task.label}' };
+         , success: true,
+          output: 'Task;, executed: ${task.label}' };
     }
   }
   /**
@@ -487,7 +487,7 @@ export class LokiCacheVSCodeIntegration {
         args: ['run', 'legal:analyze', '${input:caseId}'],
         group: 'build',
         presentation: {
-          echo: true,
+         , echo: true,
           reveal: 'always',
           focus: true,
           panel: 'dedicated` },'`
@@ -500,7 +500,7 @@ export class LokiCacheVSCodeIntegration {
         args: ['run', 'evidence:process', '${input:evidenceFile}'],
         group: 'build',
         presentation: {
-          echo: true,
+         , echo: true,
           reveal: `always` }
       },
       'cache-optimize': {
@@ -510,7 +510,7 @@ export class LokiCacheVSCodeIntegration {
         args: ['run', 'cache:optimize'],
         group: 'build',
         runOptions: {
-          runOn: `folderOpen` }
+         , runOn: `folderOpen` }
       }
     };
     for (const [taskId, taskDef] of Object.entries(customTasks)) {
@@ -569,7 +569,7 @@ export class LokiCacheVSCodeIntegration {
    * Batch cache operations with task automation
    */
   async batchCache(
-    operations: Array<{, key: string; producer: () => Promise<any>; options?: any }>,
+    operations: Array<{, key: string;, producer: () => Promise<any>; options?: any }>,
     triggerTaskAfter?: string
   ): Promise<any[]> {
     console.log(`📦 Batch caching ${operations.length} items...`);
@@ -592,8 +592,8 @@ export class LokiCacheVSCodeIntegration {
     for (const collection of this.collections.values()) {
       const items = collection.find({});
       for (const item of items) {
-        const keyVal = (item as any).key as string;
-        const matches = pattern instanceof RegExp ? pattern.test(keyVal) : keyVal.includes(pattern as string);
+        const keyVal = (item as: any).key as: string;
+        const matches = pattern instanceof RegExp ? pattern.test(keyVal) : keyVal.includes(pattern as: string);
         if (matches) {
           collection.remove(item);
           deletedCount++;
@@ -615,7 +615,7 @@ export class LokiCacheVSCodeIntegration {
    */
   getCacheStats(): CacheStats {
     const stats: CacheStats = {
-      totalItems: 0,
+     , totalItems: 0,
       hitRate: this.hitCount / (this.hitCount + this.missCount) || 0,
       memoryUsage: 0,
       collections: {},
@@ -643,7 +643,7 @@ export class LokiCacheVSCodeIntegration {
       const expired = collection.find({ expiry: {, $lt: Date.now() }
       });
       for (const item of expired) {
-        memoryFreed += (item as any)?.metadata?.size || 0;
+        memoryFreed += (item as: any)?.metadata?.size || 0;
         collection.remove(item);
         itemsRemoved++;
       }
@@ -661,7 +661,7 @@ export class LokiCacheVSCodeIntegration {
         const sortedByAccess = items.sort((a: any, b: any) => a.metadata.accessed - b.metadata.accessed);
         const toRemove = sortedByAccess.slice(0, Math.floor(items.length * 0.2));
         for (const item of toRemove) {
-          memoryFreed += (item as any)?.metadata?.size || 0;
+          memoryFreed += (item as: any)?.metadata?.size || 0;
           collection.remove(item);
           itemsRemoved++;
         }
@@ -713,12 +713,12 @@ export class LokiCacheVSCodeIntegration {
   // Helper methods
   private inferType(_key: string, _data: any): CacheableItem['type'] {
     const key = _key || '';
-    if (key.startsWith('search:')) return 'search';
-    if (key.startsWith('embedding:')) return 'embedding';
-    if (key.startsWith('analysis:')) return 'analysis';
-    if (key.startsWith('task:')) return 'task';
-    if (key.startsWith('config:')) return 'config';
-    return 'document';
+    if (key.startsWith('search:')) return, 'search';
+    if (key.startsWith('embedding:')) return, 'embedding';
+    if (key.startsWith('analysis:')) return, 'analysis';
+    if (key.startsWith('task:')) return, 'task';
+    if (key.startsWith('config:')) return, 'config';
+    return, 'document';
   }
   private getCollectionForType(type: CacheableItem['type']): string {
     const mapping: Record<CacheableItem['type'], string> = {
@@ -752,7 +752,7 @@ export class LokiCacheVSCodeIntegration {
     try {
       const entry = { operation, key, timestamp: Date.now() };
       this.activity.push(entry);
-      // Keep only the last MAX_ACTIVITY entries. Use a single splice to remove any excess
+      // Keep only the last MAX_ACTIVITY entries. Use a single splice to remove: any excess
       // in one operation (more efficient than repeated shift calls).
       const excess = this.activity.length - this.MAX_ACTIVITY;
       if (excess > 0) {
@@ -824,7 +824,7 @@ export class LegalAICacheUtils {
           limit: 20,
           threshold: 0.7
         });
-        return result && (result as any).success ? (result as any).data : [];
+        return result && (result as: any).success ? (result as: any).data : [];
       },
       {
         type: 'search',
@@ -886,14 +886,14 @@ export class LegalAICacheUtils {
 function safeRandomUUID(): string {
   // prefer global crypto.randomUUID when available
   try {
-    if (typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function') {
-      return (crypto as any).randomUUID();
+    if (typeof crypto !== 'undefined' && typeof (crypto as: any).randomUUID === 'function') {
+      return (crypto as: any).randomUUID();
     }
     // Node.js fallback via require('crypto').randomUUID if available
     // (wrapped in try/catch to avoid bundler/runtime issues)
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const nodeCrypto = (globalThis as any).require ? (globalThis as any).require('crypto') : null;
+      const nodeCrypto = (globalThis as: any).require ? (globalThis as: any).require('crypto') : null;
       if (nodeCrypto && typeof nodeCrypto.randomUUID === 'function') {
         return nodeCrypto.randomUUID();
       }
@@ -905,7 +905,7 @@ function safeRandomUUID(): string {
   }
 
   // last-resort RFC4122 v4 style pseudo-random UUID
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return, 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -913,7 +913,7 @@ function safeRandomUUID(): string {
 }
 
 // Fast, deterministic non-cryptographic hex hash for cache keys.
-// Uses FNV-1a 32-bit and returns an 8-character hex string.
+// Uses FNV-1a 32-bit and returns an 8-character hex: string.
 function fastHashHex(input: string): string {
   const FNV_PRIME = 16777619;
   let hash = 2166136261 >>> 0;

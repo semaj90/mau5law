@@ -1,10 +1,10 @@
 /**
  * API Endpoint: Legal Precedent Discovery
- * Phase 4 - Auto-Discovery Engine Integration
+ * Phase, 4 - Auto-Discovery Engine Integration
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import type { PrecedentDiscovery } from '$lib/services/legal-precedent-discovery';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import type { PrecedentDiscovery } from, '$lib/services/legal-precedent-discovery';
+import { json } from, '@sveltejs/kit';
 
 // Add: typed shape for the runtime module (constructor-based export)
 type PrecedentDiscoveryModule = {
@@ -24,7 +24,7 @@ async function getPrecedentDiscoveryInstance(): Promise<PrecedentDiscovery> {
 
 // New helper: robustly invoke whichever discovery method exists on the implementation
 async function invokeDiscovery(
-  instance: PrecedentDiscovery,
+ , instance: PrecedentDiscovery,
   evidenceId: string,
   searchDepth: number,
   consoleTheme?: string
@@ -39,7 +39,7 @@ async function invokeDiscovery(
     'executeDiscovery',
   ];
 
-  const runtime = instance as unknown as Record<string, unknown>;
+  const runtime = instance as: unknown as Record<string, unknown>;
 
   // Typed method shapes to avoid using the unsafe `Function` type
   type MethodWithParams = (
@@ -51,7 +51,7 @@ async function invokeDiscovery(
 
   type ExecuteMethod = (
     this: PrecedentDiscovery,
-    params: {, evidenceId: string; searchDepth: number; consoleTheme?: string }
+    params: {, evidenceId: string;, searchDepth: number; consoleTheme?: string }
   ) => Promise<unknown> | unknown;
 
   for (const name of candidates) {
@@ -64,7 +64,7 @@ async function invokeDiscovery(
     }
   }
 
-  // Fallback to a generic execute-like API that accepts a params object
+  // Fallback to a generic execute-like API that accepts a params: object
   const execute = runtime['execute'];
   if (typeof execute === 'function') {
     const fn = execute as ExecuteMethod;
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       discovery: discoveryResult,
       timestamp: new Date().toISOString(),
       processingInfo: {
-        service: 'legal-precedent-discovery',
+       , service: 'legal-precedent-discovery',
         version: '1.0.0',
         methods: ['vector_search', 'citation_analysis', 'ai_inference'],
         integrations: ['pgvector', 'ollama-ai', 'recommendation-engine']

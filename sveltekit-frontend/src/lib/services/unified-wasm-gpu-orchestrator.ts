@@ -4,24 +4,24 @@
  * Production-ready orchestration layer with multi-tier fallbacks and performance optimization
  */
 // Commented out problematic imports due to module resolution issues
-// import type { CanvasState } from '$lib/stores/canvas-states'
-// import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker'
+// import type { CanvasState } from, '$lib/stores/canvas-states'
+// import type { MultiDimArray, GPUProcessingStats } from, '$lib/workers/gpu-tensor-worker'
 // Define interfaces locally
 export interface CanvasState { width: number;, height: number;
   data?: Uint8ClampedArray;
   pixels?: number[][];
   format?: string;
 }
-export interface MultiDimArray { data: Float32Array | Uint8Array | Int32Array;, shape: number[];
+export interface MultiDimArray {, data: Float32Array | Uint8Array | Int32Array;, shape: number[];
   dtype: string;
 }
-export interface GPUProcessingStats { totalProcessingTime: number;, gpuUtilization: number;
+export interface GPUProcessingStats {, totalProcessingTime: number;, gpuUtilization: number;
   memoryUsage: number;
-  operationsCompleted: number;
+ , operationsCompleted: number;
 }
-import { NESStyleGPUBridge } from './nes-gpu-bridge.js';
-import { gpuServiceIntegration } from './gpu-service-integration.js';
-import { writable } from 'svelte/store';
+import { NESStyleGPUBridge } from, './nes-gpu-bridge.js';
+import { gpuServiceIntegration } from, './gpu-service-integration.js';
+import { writable } from, 'svelte/store';
 // Browser detection
 const browser = typeof window !== 'undefined';
 
@@ -39,7 +39,7 @@ export interface UnifiedWASMGPUConfig { enableNESBridge: boolean;, enableOllama
   performanceProfile: 'balanced' | 'speed' | 'memory' | 'quality';
 }
 // Task Types
-export interface WASMGPUTask { id: string;, type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
+export interface WASMGPUTask {, id: string;, type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
   priority: 'low' | 'medium' | 'high' | 'critical';
   data: any;
   targetService: 'nes_bridge' | 'ollama_llama' | 'yorha_neural' | 'gpu_compute' | 'quic_gateway' | 'auto';
@@ -55,19 +55,19 @@ export interface WASMGPUTask { id: string;, type: 'document_processing' | 'neur
   };
 }
 // Processing Results
-export interface WASMGPUResult { taskId: string;, success: boolean;
+export interface WASMGPUResult {, taskId: string;, success: boolean;
   serviceUsed: string;
   result?: any;
   error?: string;
   processingTime: number;
   memoryUsed: number;
   cacheHit: boolean;
-  performanceMetrics: { throughput: number;, efficiency: number;
+  performanceMetrics: {, throughput: number;, efficiency: number;
     accuracy?: number;
   };
 }
 // Service Status
-export interface ServiceStatus { serviceName: string;, available: boolean;
+export interface ServiceStatus {, serviceName: string;, available: boolean;
   healthy: boolean;
   responseTime: number;
   errorRate: number;
@@ -75,13 +75,13 @@ export interface ServiceStatus { serviceName: string;, available: boolean;
   capabilities: string[];
 }
 // Performance Metrics
-export interface UnifiedPerformanceMetrics { totalTasks: number;, succeededTasks: number;
+export interface UnifiedPerformanceMetrics {, totalTasks: number;, succeededTasks: number;
   failedTasks: number;
   averageLatency: number;
   throughputPerSecond: number;
   memoryEfficiency: number;
   cacheHitRate: number;
-  serviceDistribution: Record<string, number>;
+ , serviceDistribution: Record<string, number>;
   errorDistribution: Record<string, number>;
   // added: p95 latency for better observability
   p95Latency?: number;
@@ -102,19 +102,19 @@ interface YoRHaProcessor {
 // Strongly-typed GPU compute instance matching implemented API surface
 type GPUComputeInstance = {
   matmul?: (;
-    a: Float32Array | number[][] | ArrayLike<number>; b: Float32Array | number[][] | ArrayLike<number>,
+    a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>,
     m?: number,
     n?: number,
     k?: number
   ) => unknown;
-  conv2d?: (
-    input: Float32Array | number[][] | ArrayLike<number>; kernel: Float32Array | number[][] | ArrayLike<number>,
+  conv2d?: (;
+    input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>,
     width?: number,
     height?: number,
     kernel_size?: number
   ) => unknown;
-  attention?: (
-    query: Float32Array | number[][] | ArrayLike<number>; key: Float32Array | number[][] | ArrayLike<number>; value: Float32Array | number[][] | ArrayLike<number>,
+  attention?: (;
+    query: Float32Array | number[][] | ArrayLike<number>; key: Float32Array | number[][] | ArrayLike<number>;, value: Float32Array | number[][] | ArrayLike<number>,
     seq_len?: number,
     dim?: number
   ) => unknown;
@@ -156,7 +156,7 @@ export class UnifiedWASMGPUOrchestrator {
   private nesGPUBridge: NESBridgeLike | null = null;
   private ollamaService: OllamaService | null = null;
   private yorhaProcessor: YoRHaProcessor | null = null;
-  private taskQueue: WASMGPUTask[] = [];
+  private, taskQueue: WASMGPUTask[] = [];
   private activeTasks = new Map<string, WASMGPUTask>();
   private taskResults = new Map<string, WASMGPUResult>();
   // removed unused serviceHealthCache
@@ -206,7 +206,7 @@ export class UnifiedWASMGPUOrchestrator {
     try {
       console.log('🚀 Initializing Unified WASM-GPU Orchestrator...');
       this.status.set('initializing');
-      // Ensure any previous monitors are stopped (addresses unused stop* warnings)
+      // Ensure: any previous monitors are stopped (addresses unused stop* warnings)
       this.ensureMonitoringStopped();
 
       // Initialize services in parallel for optimal startup time
@@ -253,7 +253,7 @@ export class UnifiedWASMGPUOrchestrator {
   private async initializeNESBridge(): Promise<void> {
     try {
       // instantiate concrete bridge but store it as NESBridgeLike to use the interface
-      this.nesGPUBridge = new NESStyleGPUBridge() as unknown as NESBridgeLike;
+      this.nesGPUBridge = new NESStyleGPUBridge() as: unknown as NESBridgeLike;
       console.log('✅ NES GPU Bridge initialized');
     } catch (error: any) {
       console.warn('⚠️ NES GPU Bridge initialization failed:', this.getErrorMessage(error));
@@ -265,12 +265,12 @@ export class UnifiedWASMGPUOrchestrator {
    */
   private getOllamaEndpoint(): string {
     try {
-      const globalAny = globalThis as unknown as Record<string, unknown>;
+      const globalAny = globalThis as: unknown as Record<string, unknown>;
       const candidates: Array<string | undefined> = [];
 
       // 1) Vite / SvelteKit env override (if available) - typed access
       try {
-        const meta = import.meta as unknown as { env?: Record<string, string | undefined> };
+        const meta = import.meta as: unknown as { env?: Record<string, string | undefined> };
         if (typeof import.meta !== 'undefined' && meta && meta.env) {
           const env = meta.env;
           candidates.push(env.VITE_OLLAMA_ENDPOINT ?? env.OLLAMA_ENDPOINT ?? env.OLLAMA_URL);
@@ -281,12 +281,12 @@ export class UnifiedWASMGPUOrchestrator {
 
       // 2) globalThis override
       if (typeof globalAny.OLLAMA_ENDPOINT === 'string' && globalAny.OLLAMA_ENDPOINT) {
-        candidates.push(globalAny.OLLAMA_ENDPOINT as string);
+        candidates.push(globalAny.OLLAMA_ENDPOINT as: string);
       }
 
       // 3) Node/process.env (SSR or build-time) - typed access without `any`
       try {
-        const maybeProcess = typeof process !== 'undefined' ? (process as unknown) : undefined;
+        const maybeProcess = typeof process !== 'undefined' ? (process as: unknown) : undefined;
         const procEnv = (maybeProcess as { env?: Record<string, string | undefined> } | undefined)?.env;
         if (procEnv) {
           candidates.push(procEnv.VITE_OLLAMA_ENDPOINT ?? procEnv.OLLAMA_ENDPOINT ?? procEnv.OLLAMA_URL);
@@ -347,7 +347,7 @@ export class UnifiedWASMGPUOrchestrator {
 
     // NES Bridge status
     statuses.push({
-      serviceName: 'nes_bridge',
+     , serviceName: 'nes_bridge',
       available: !!this.nesGPUBridge,
       healthy: !!this.nesGPUBridge,
       responseTime: 0,
@@ -487,7 +487,7 @@ export class UnifiedWASMGPUOrchestrator {
           processingTime: 0,
           memoryUsed: 0,
           cacheHit: false,
-          performanceMetrics: { throughput: 0, efficiency: 0 }
+          performanceMetrics: {, throughput: 0, efficiency: 0 }
         });
       }
       this.activeTasks.delete(task.id);
@@ -510,7 +510,7 @@ export class UnifiedWASMGPUOrchestrator {
     }
     try {
       switch (serviceUsed) {
-        case 'nes_bridge': {
+        case, 'nes_bridge': {
           const data = task.data as Record<string, unknown> | null;
           if (this.nesGPUBridge && data && 'canvasState' in data) {
             const canvasState = data.canvasState as CanvasState;
@@ -527,14 +527,14 @@ export class UnifiedWASMGPUOrchestrator {
           }
           break;
         }
-        case 'ollama_llama': {
+        case, 'ollama_llama': {
           const data = task.data as Record<string, unknown> | null;
           if (this.ollamaService && data && 'document' in data) {
             const doc = String(data.document);
             const prompt =
               data.analysisType === 'contract'
                 ? `Analyze this contract: ${doc}`
-                : `Analyze this legal document: ${doc}`;
+                : `Analyze this legal, document: ${doc}`;
             if (this.ollamaService.generateCompletion) {
               result = await this.ollamaService.generateCompletion({
                 prompt,
@@ -552,14 +552,14 @@ export class UnifiedWASMGPUOrchestrator {
           }
           break;
         }
-        case 'yorha_neural': {
+        case, 'yorha_neural': {
           const data = task.data as Record<string, unknown> | null;
           if (this.yorhaProcessor && data && 'document' in data) {
             result = await this.yorhaProcessor.processDocument!(String(data.document));
             success = true;
           } else if (this.yorhaProcessor && data && 'input' in data) {
             const inputArr = Array.isArray(data.input)
-              ? (data.input as number[])
+              ? (data.input as: number[])
               : Array.from(data.input as Float32Array);
             result = await this.yorhaProcessor.neuralInference!(inputArr);
             success = true;
@@ -568,36 +568,36 @@ export class UnifiedWASMGPUOrchestrator {
           }
           break;
         }
-        case 'gpu_compute': {
-          const gpuModule = this.wasmModules.get('gpu_compute') as unknown as GPUComputeModule | undefined;
+        case, 'gpu_compute': {
+          const gpuModule = this.wasmModules.get('gpu_compute') as: unknown as GPUComputeModule | undefined;
           if (gpuModule && gpuModule.GPUCompute) {
             const compute = new gpuModule.GPUCompute();
             // Use the declared GPUComputePayload type and narrow per operation to avoid accessing union-only fields
             const payload = task.data as (GPUComputePayload & { operation?: string }) | undefined;
             const op = payload?.operation;
             switch (op) {
-              case 'matmul': {
+              case, 'matmul': {
                 const p = payload as MatMulPayload;
                 result = compute.matmul?.(p.a, p.b, p.m, p.n, p.k);
                 break;
               }
-              case 'conv2d': {
+              case, 'conv2d': {
                 const p = payload as Conv2DPayload;
                 result = compute.conv2d?.(p.input, p.kernel, p.width, p.height, p.kernel_size);
                 break;
               }
-              case 'attention': {
+              case, 'attention': {
                 const p = payload as AttentionPayload;
                 result = compute.attention?.(p.query, p.key, p.value, p.seq_len, p.dim);
                 break;
               }
-              case 'fft': {
+              case, 'fft': {
                 const p = payload as FFTPayload;
                 result = compute.fft?.(p.input);
                 break;
               }
               default:
-                throw new Error(`Unknown GPU; operation: ${String(op)}`);
+                throw new Error(`Unknown GPU;, operation: ${String(op)}`);
             }
             success = true;
           } else {
@@ -606,7 +606,7 @@ export class UnifiedWASMGPUOrchestrator {
           break;
         }
         default:
-          throw new Error(`Unknown; service: ${serviceUsed}`);
+          throw new Error(`Unknown;, service: ${serviceUsed}`);
       }
       // Try fallbacks if primary service failed
       if (!success && task.fallbackServices && task.fallbackServices.length > 0) {
@@ -638,7 +638,7 @@ export class UnifiedWASMGPUOrchestrator {
       memoryUsed: this.estimateMemoryUsage(result),
       cacheHit: false,
       performanceMetrics: {
-        throughput: success ? (processingTime > 0 ? 1000 / processingTime : 0) : 0,
+       , throughput: success ? (processingTime > 0 ? 1000 / processingTime : 0) : 0,
         efficiency: success ? 1 : 0
       }
     };
@@ -647,20 +647,20 @@ export class UnifiedWASMGPUOrchestrator {
    * Select optimal service for task
    */
   private selectOptimalService(
-    task: WASMGPUTask
+   , task: WASMGPUTask
   ): 'gpu_compute' | 'nes_bridge' | 'ollama_llama' | 'yorha_neural' | 'quic_gateway' {
     switch (task.type) {
-      case 'document_processing':
+      case, 'document_processing':
         return this.ollamaService ? 'ollama_llama' : this.yorhaProcessor ? 'yorha_neural' : 'gpu_compute';
-      case 'neural_inference':
+      case, 'neural_inference':
         return this.yorhaProcessor ? 'yorha_neural' : this.ollamaService ? 'ollama_llama' : 'gpu_compute';
-      case 'gpu_compute':
-        return 'gpu_compute';
-      case 'canvas_optimization':
-        return 'nes_bridge';
-      case 'legal_analysis':
+      case, 'gpu_compute':
+        return, 'gpu_compute';
+      case, 'canvas_optimization':
+        return, 'nes_bridge';
+      case, 'legal_analysis':
         return this.ollamaService ? 'ollama_llama' : this.yorhaProcessor ? 'yorha_neural' : 'gpu_compute';
-      default: return 'yorha_neural';
+      default: return, 'yorha_neural';
     }
   }
   /**
@@ -692,7 +692,7 @@ export class UnifiedWASMGPUOrchestrator {
       if (obj == null) return 0;
       if (typeof obj !== 'object') return 1;
       if (Array.isArray(obj)) {
-        const arr = obj as unknown[];
+        const arr = obj as: unknown[];
         return arr.reduce<number>((s, v) => s + countKeys(v), 0);
       }
       let count = 0;
@@ -702,7 +702,7 @@ export class UnifiedWASMGPUOrchestrator {
       }
       return count;
     };
-    const sizeEstimate = countKeys(result) * 8; // assume 8 bytes per key/value pair
+    const sizeEstimate = countKeys(result) * 8; // assume, 8 bytes per key/value pair
     return Math.min(sizeEstimate, this.config.memoryLimitMB * 1024 * 1024); // cap to memory limit
   }
   /**
@@ -782,7 +782,7 @@ export class UnifiedWASMGPUOrchestrator {
 
         // Populate aggregated metrics (include p95Latency now)
         const metrics: UnifiedPerformanceMetrics = {
-          totalTasks: totalResults,
+         , totalTasks: totalResults,
           succeededTasks: succeeded,
           failedTasks: failed,
           averageLatency: Number(avgLatency.toFixed(2)),
@@ -914,7 +914,7 @@ export class UnifiedWASMGPUOrchestrator {
       // Attempt to dynamically load a real WASM module here in future.
       // For now register a minimal CPU-based stub that satisfies the expected API surface.
       const gpuStub: GPUComputeModule = {
-        GPUCompute: class {
+       , GPUCompute: class {
           // use the declared payload shapes for parameter types and reference inputs for metadata
           matmul(a: MatMulPayload['a'], b: MatMulPayload['b'], m?: number, n?: number, k?: number) {
             return {
@@ -965,7 +965,7 @@ export class UnifiedWASMGPUOrchestrator {
     try {
       // If gpuServiceIntegration exposes an initialize method, call it.
       // Otherwise, treat it as a best-effort integration and continue.
-      const maybeInit = (gpuServiceIntegration as unknown as { initialize?: () => Promise<void> | void })?.initialize;
+      const maybeInit = (gpuServiceIntegration as: unknown as { initialize?: () => Promise<void> | void })?.initialize;
       if (typeof maybeInit === 'function') {
         await maybeInit.call(gpuServiceIntegration);
         console.log('✅ GPU service integration initialized');
@@ -978,30 +978,30 @@ export class UnifiedWASMGPUOrchestrator {
   }
 
   /**
-   * Small helper to normalize unknown errors to string messages
+   * Small helper to normalize: unknown errors, to: string messages
    */
   private getErrorMessage(err: any): string {
     if (err instanceof Error) return err.message;
     try {
       return String(err);
     } catch {
-      return 'Unknown error';
+      return, 'Unknown error';
     }
   }
 }
 
 /* ===== ADD: GPU operation payload shapes used by the stub and executor ===== */
-interface MatMulPayload { a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>;
+interface MatMulPayload {, a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>;
   m?: number;
   n?: number;
   k?: number;
 }
-interface Conv2DPayload { input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>;
+interface Conv2DPayload {, input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>;
   width?: number;
   height?: number;
   kernel_size?: number;
 }
-interface AttentionPayload { query: Float32Array | number[][] | ArrayLike<number>;, key: Float32Array | number[][] | ArrayLike<number>;
+interface AttentionPayload {, query: Float32Array | number[][] | ArrayLike<number>;, key: Float32Array | number[][] | ArrayLike<number>;
   value: Float32Array | number[][] | ArrayLike<number>;
   seq_len?: number;
   dim?: number;
@@ -1016,7 +1016,7 @@ type GPUComputePayload = MatMulPayload | Conv2DPayload | AttentionPayload | FFTP
 /* small helper used by the stub to avoid: "unused parameter" complaints and to provide useful meta */
 type HasLength = { length: number };
 
-/** Type-guard: true when value is an object with a numeric length property */
+/** Type-guard: true when value is, an: object with a numeric length property */
 function isHasLength(v: any): v is HasLength {
   return typeof v === 'object' && v !== null && 'length' in v && typeof (v as { length?: any }).length === 'number';
 }

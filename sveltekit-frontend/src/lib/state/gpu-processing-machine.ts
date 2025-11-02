@@ -2,17 +2,17 @@
  * GPU Processing Machine - XState v5 powered document processing orchestration
  * Manages batch processing, concurrent execution, and error recovery for legal documents
  */
-import { createActor, setup } from 'xstate';
+import { createActor, setup } from, 'xstate';
 // Types
 export interface DocumentInput { documentId: string;, content: string;
   title?: string;
-  options?: { processType: 'full' | 'extract' | 'analyze' | 'vectorize';, priority: number;
+  options?: {, processType: 'full' | 'extract' | 'analyze' | 'vectorize';, priority: number;
     timeout: number;
     retries: number;
     batchSize: number;
   }
 }
-export interface ProcessingResult { documentId: string;, status: 'completed' | 'failed' | 'processing';
+export interface ProcessingResult {, documentId: string;, status: 'completed' | 'failed' | 'processing';
   result?: {
     extractedText?: string;
     embeddings?: number[];
@@ -23,24 +23,24 @@ export interface ProcessingResult { documentId: string;, status: 'completed' | 
   processingTime?: number;
   timestamp: Date;
 }
-export interface ServiceHealth { gpu: 'healthy' | 'degraded' | 'offline';, webgpu: 'healthy' | 'degraded' | 'offline';
+export interface ServiceHealth {, gpu: 'healthy' | 'degraded' | 'offline';, webgpu: 'healthy' | 'degraded' | 'offline';
   vectorDb: 'healthy' | 'degraded' | 'offline';
   lastCheck: Date;
 }
-export interface ProcessingMetrics { totalProcessed: number;, successRate: number;
+export interface ProcessingMetrics {, totalProcessed: number;, successRate: number;
   averageTime: number;
   concurrentJobs: number;
   queueLength: number;
   gpuUtilization: number;
 }
 // Machine Context
-interface GPUProcessingContext { processingQueue: DocumentInput[];, activeProcessing: Map<string, DocumentInput>;
+interface GPUProcessingContext {, processingQueue: DocumentInput[];, activeProcessing: Map<string, DocumentInput>;
   completedDocuments: ProcessingResult[];
   errorDocuments: ProcessingResult[];
   serviceHealth: ServiceHealth;
   metrics: ProcessingMetrics;
   maxConcurrent: number;
-  retryCount: Map<string, number>;
+ , retryCount: Map<string, number>;
 }
 // Events
 type GPUProcessingEvent =
@@ -55,7 +55,7 @@ type GPUProcessingEvent =
   | { type: 'SERVICE_HEALTH_CHECK' }
   | { type: 'UPDATE_METRICS' }
 // Guards
-const canProcessMore = ({ context }: { context: GPUProcessingContext }) => {
+const canProcessMore = ({ context }: {, context: GPUProcessingContext }) => {
   return context.activeProcessing.size < context.maxConcurrent && context.processingQueue.length > 0;
 }
 const hasQueuedDocuments = ({ context }: { context: GPUProcessingContext }) => {
@@ -91,13 +91,13 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
       const success = Math.random() > 0.1; // 90% success rate
       if (success) {
         const result: ProcessingResult = {
-          documentId: document.documentId,
+         , documentId: document.documentId,
           status: 'completed',
           result: {
-            extractedText: `Processed: ${document.content.substring(0, 100)}...`,
-            embeddings: Array.from({ length: 768 }, () => Math.random()),
-            analysis: { sentiment: Math.random(), complexity: Math.random() * 10 },
-            metadata: { processedAt: new Date().toISOString(), type: document.options?.processType }
+           , extractedText: `Processed: ${document.content.substring(0, 100)}...`,
+            embeddings: Array.from({, length: 768 }, () => Math.random()),
+            analysis: {, sentiment: Math.random(), complexity: Math.random() * 10 },
+            metadata: {, processedAt: new Date().toISOString(), type: document.options?.processType }
           },
           processingTime: Math.random() * 5000 + 1000, // 1-6 seconds;
           timestamp: new Date()
@@ -109,7 +109,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
       } else {
         const error = 'GPU processing failed due to memory constraints';
         const result: ProcessingResult = {
-          documentId: document.documentId,
+         , documentId: document.documentId,
           status: 'failed',
           error,
           timestamp: new Date()
@@ -183,13 +183,13 @@ export const gpuProcessingMachine = setup({ types: {, context: { [key,: strin,g
     completedDocuments: [],
     errorDocuments: [],
     serviceHealth: {
-      gpu: 'healthy',
+     , gpu: 'healthy',
       webgpu: 'healthy',
       vectorDb: 'healthy',
       lastCheck: new Date()
     },
     metrics: {
-      totalProcessed: 0,
+     , totalProcessed: 0,
       successRate: 100,
       averageTime: 0,
       concurrentJobs: 0,
@@ -199,42 +199,42 @@ export const gpuProcessingMachine = setup({ types: {, context: { [key,: strin,g
     maxConcurrent: 5,
     retryCount: new Map()
   },
-  states: { idle: {, on: { PROCESS_DOCUMENT: {, target: 'processing',
+  states: {, idle: {, on: {, PROCESS_DOCUMENT: {, target: 'processing',
           actions: ['addToQueue', 'startProcessing']
         },
         BATCH_PROCESS: {
-          target: 'processing',
+         , target: 'processing',
           actions: ['addToQueue', 'startProcessing']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth']
+         , actions: ['checkServiceHealth']
         }
       }
     },
     processing: {
-      entry: ['updateMetrics'],
-      on: { PROCESS_DOCUMENT: {, actions: ['addToQueue', 'startProcessing']
+     , entry: ['updateMetrics'],
+      on: {, PROCESS_DOCUMENT: {, actions: ['addToQueue', 'startProcessing']
         },
         BATCH_PROCESS: {
-          actions: ['addToQueue', 'startProcessing']
+         , actions: ['addToQueue', 'startProcessing']
         },
         DOCUMENT_COMPLETED: {
-          actions: ['updateMetrics'],
+         , actions: ['updateMetrics'],
           target: 'processing',
           guard: 'hasQueuedDocuments' },'`'`
         DOCUMENT_FAILED: {
-          actions: ['updateMetrics']
+         , actions: ['updateMetrics']
         },
         PAUSE_PROCESSING: {
-          target: 'paused',
+         , target: 'paused',
           actions: ['pauseProcessing']
         },
         CLEAR_QUEUE: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['clearQueue']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth']
+         , actions: ['checkServiceHealth']
         }
       },
       always: [
@@ -244,16 +244,16 @@ export const gpuProcessingMachine = setup({ types: {, context: { [key,: strin,g
         }
       ]
     },
-    paused: { on: {, RESUME_PROCESSING: {
-          target: 'processing',
+    paused: {, on: {, RESUME_PROCESSING: {
+         , target: 'processing',
           actions: ['startProcessing']
         },
         CLEAR_QUEUE: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['clearQueue']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth']
+         , actions: ['checkServiceHealth']
         }
       }
     }

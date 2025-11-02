@@ -1,7 +1,7 @@
-import { json } from "@sveltejs/kit"
-import { z } from "zod"
-import type { RequestHandler } from './$types';
-import crypto from "crypto"
+import { json } from, "@sveltejs/kit"
+import { z } from, "zod"
+import type { RequestHandler } from, './$types';
+import crypto from, "crypto"
 
 // Validation schemas
 const evidenceNodeSchema = z.object({
@@ -14,7 +14,7 @@ const evidenceNodeSchema = z.object({
   filePath: z.string().optional(),
   fileSize: z.number().optional(),
   metadata: z.object({
-    x: z.number(),
+   , x: z.number(),
     y: z.number(),
     width: z.number(),
     height: z.number(),
@@ -38,7 +38,7 @@ function getErrorMessage(err: any): string {
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -53,11 +53,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { action = 'save_node', data } = body;
 
     switch (action) {
-      case 'save_node':
+      case, 'save_node':
         return await saveEvidenceNode(data, user.id);
-      case 'save_canvas_state':
+      case, 'save_canvas_state':
         return await saveCanvasState(data, user.id);
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (err: any) {
     console.error('Save API error:', getErrorMessage(err));'
@@ -137,11 +137,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const action = url.searchParams.get("action")
     const caseId = url.searchParams.get("caseId")
     switch (action) {
-      case "load_evidence":
+      case, "load_evidence":
         return json({ success: true, evidence: [], caseId });
-      case "load_canvas_state":
+      case, "load_canvas_state":
         return json({ success: true, canvasState: null, caseId });
-      default: return json({ error: "Invalid action" }, { status: 400 })
+      default: return json({, error: "Invalid action" }, { status: 400 })
     }
   } catch (err: any) {
     console.error("Load API error:", getErrorMessage(err))"

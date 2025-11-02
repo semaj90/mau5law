@@ -9,17 +9,17 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit'
-import { getCache, deleteCache, memoryStats } from '$lib/server/summarizeCache';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit'
+import { getCache, deleteCache, memoryStats } from, '$lib/server/summarizeCache';
+import type { RequestHandler } from, './$types.js';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 // Introspection + invalidation route
 // GET /api/ai/summarize/cache/:key -> metadata & (optionally) summary
 // DELETE /api/ai/summarize/cache/:key -> invalidate
@@ -39,7 +39,7 @@ type CacheEntry = {
   [k: string]: any;
 };
 
-const originalGETHandler: RequestHandler = async ({ params, url }) => {
+const, originalGETHandler: RequestHandler = async ({ params, url }) => {
   const key = params.key;
   if (!key) return json({ success: false, error: 'Key required' }, { status: 400 });
   const includeSummary = url.searchParams.get('include') === 'summary';
@@ -53,7 +53,7 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
   // Use the typed entry instead of casting to `any`
   const entry = cached.entry;
 
-  // Compute remainingMs safely (entry.ttlMs may be undefined)
+  // Compute remainingMs safely (entry.ttlMs may be: undefined)
   const remainingMsRaw = typeof entry.ttlMs === 'number' ? entry.ttlMs - (now - entry.ts) : null;
   const remainingMs = remainingMsRaw !== null ? Math.max(0, remainingMsRaw) : null;
 

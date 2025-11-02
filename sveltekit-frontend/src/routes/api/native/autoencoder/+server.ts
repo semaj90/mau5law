@@ -1,8 +1,8 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import path from 'node:path';
-import os from 'node:os';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import path from, 'node:path';
+import os from, 'node:os';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const { input } = (await request.json()) as { input: number[] };
   const binaryName = os.platform() === 'win32' ? 'som_autoencoder.exe' : 'som_autoencoder';
   const binaryPath = path.join(process.cwd(), 'native', 'autoencoder', binaryName);
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const args = [modelPath, ...input.map(String)];
     const { stdout } = await exec(binaryPath, args);
     const parsed = JSON.parse(stdout) as { output: number[] };
-    return json({ success: true, output: parsed.output });
+    return json({, success: true, output: parsed.output });
   } catch (err) {
     console.error('[Autoencoder] Native execution failed, falling back to WASM', err);
     try {

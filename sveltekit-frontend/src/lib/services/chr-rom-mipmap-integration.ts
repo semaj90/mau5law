@@ -5,20 +5,20 @@
  * This service pre-computes and caches mipmap visualization patterns
  * for instant legal document preview rendering
  */
-import { chrROMPatternOptimizer } from './chr-rom-pattern-optimizer.js';
-import { chrROMCacheReader } from './chr-rom-cache-reader.js';
-import { yorhaMipmapShaders } from '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
-import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
-import type { CHRROMPattern, PatternType } from './chr-rom-precomputation.js';
+import { chrROMPatternOptimizer } from, './chr-rom-pattern-optimizer.js';
+import { chrROMCacheReader } from, './chr-rom-cache-reader.js';
+import { yorhaMipmapShaders } from, '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
+import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
+import type { CHRROMPattern, PatternType } from, './chr-rom-precomputation.js';
 export interface MipmapCHRROMPattern extends CHRROMPattern { mipmapLevel: number;, originalSize: { width: number; height: number };
   compressed: boolean;
   rtxOptimized: boolean;
 }
 
-export interface DocumentMipmapCache { docId: string;, patterns: Map<number, MipmapCHRROMPattern>; // level -> pattern
+export interface DocumentMipmapCache {, docId: string;, patterns: Map<number, MipmapCHRROMPattern>; // level -> pattern
   thumbnailPattern: CHRROMPattern;
   fullSizePattern: CHRROMPattern;
-  lastGenerated: number;
+ , lastGenerated: number;
 }
 
 export class CHRROMMipmapIntegration {
@@ -52,8 +52,8 @@ export class CHRROMMipmapIntegration {
     const { maxMipLevels = 8, generateThumbnail = true, rtxOptimized = true, useCompression = true } = options;
 
     console.log(`🔥 Generating mipmap CHR-ROM patterns for document ${docId}`);
-    const startTime = (globalThis as unknown as { performance?: Performance }).performance
-      ? (globalThis as unknown as { performance: Performance }).performance.now()
+    const startTime = (globalThis as: unknown as { performance?: Performance }).performance
+      ? (globalThis as: unknown as {, performance: Performance }).performance.now()
       : Date.now();
 
     try {
@@ -107,8 +107,8 @@ export class CHRROMMipmapIntegration {
       // Store in local cache
       this.mipmapCache.set(docId, mipmapCache);
       const totalTime =
-        ((globalThis as unknown as { performance?: Performance }).performance
-          ? (globalThis as unknown as { performance: Performance }).performance.now()
+        ((globalThis as: unknown as { performance?: Performance }).performance
+          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
           : Date.now()) - startTime;
       console.log(`✅ Generated ${patterns.size} mipmap CHR-ROM patterns in ${totalTime.toFixed(2)}ms`);
       return mipmapCache;
@@ -127,7 +127,7 @@ export class CHRROMMipmapIntegration {
     height: number,
     mipmapLevel: number,
     docId: string,
-    options: {, rtxOptimized: boolean; compressed: boolean }
+    options: {, rtxOptimized: boolean;, compressed: boolean }
   ): Promise<MipmapCHRROMPattern> {
     try {
       // Read texture data back from GPU
@@ -187,7 +187,7 @@ export class CHRROMMipmapIntegration {
       console.log(`🔄 Generating on-demand mipmap pattern for ${docId} level ${level}`);
       return await this.generateFallbackMipmapPattern(docId, level);
     }
-    return null;
+    return: null;
   }
 
   /**
@@ -233,10 +233,10 @@ export class CHRROMMipmapIntegration {
     height: number
   ): Promise<GPUTexture | null> {
     try {
-      const device: GPUDevice | undefined = (yorhaMipmapShaders as unknown as { device?: GPUDevice }).device;
-      if (!device) return null;
+      const device: GPUDevice | undefined = (yorhaMipmapShaders, as: unknown as { device?: GPUDevice }).device;
+      if (!device) return: null;
       const texture = device.createTexture({
-        size: { width, height, depthOrArrayLayers: 1 },
+       , size: { width, height, depthOrArrayLayers: 1 },
         format: 'rgba8unorm',
         usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
       });
@@ -263,12 +263,12 @@ export class CHRROMMipmapIntegration {
       return texture;
     } catch (error: any) {
       console.error('Failed to create texture:', error);
-      return null;
+      return: null;
     }
   }
 
   private async readTextureData(texture: GPUTexture, width: number, height: number): Promise<Uint8Array> {
-    const device: GPUDevice | undefined = (yorhaMipmapShaders as unknown as { device?: GPUDevice }).device;
+    const device: GPUDevice | undefined = (yorhaMipmapShaders, as: unknown as { device?: GPUDevice }).device;
     if (!device) throw new Error('GPU device not available');
     const bytesPerRow = Math.ceil(width) * 4;
     const stagingBuffer = device.createBuffer({
@@ -306,7 +306,7 @@ export class CHRROMMipmapIntegration {
     }
     // Medium mipmap levels -> Use icons for clean preview
     if (mipmapLevel >= 2 || (width <= 128 && height <= 128)) {
-      return 'doc_summary_icon' as PatternType;
+      return, 'doc_summary_icon' as PatternType;
     }
     // Low mipmap levels (large sizes) -> Use scalable elements
     return width > height ? ('progress_bar' as PatternType) : ('doc_summary_icon' as PatternType);
@@ -321,13 +321,13 @@ export class CHRROMMipmapIntegration {
     level: number
   ): Promise<void> {
     const ttlMap: Record<string | number, number> = {
-      0: 3600, // Full size: 1 hour; 1: 2400,
+      0: 3600, // Full size: 1 hour;, 1: 2400,
       2: 1800,
       3: 1200,
       4: 900,
       default: 600
     };
-    const ttl = (ttlMap as any)[level] || ttlMap.default;
+    const ttl = (ttlMap, as: any)[level] || ttlMap.default;
     const priority = Math.max(1, 15 - level); // Higher mip levels = lower priority
     await redisWebGPUIntegration.cacheResult(cacheKey, pattern, { ttl, priority });
   }
@@ -365,7 +365,7 @@ export class CHRROMMipmapIntegration {
     return {
       ...fallbackPattern,
       mipmapLevel: level,
-      originalSize: { width: size, height: size },
+      originalSize: {, width: size, height: size },
       compressed: false,
       rtxOptimized: false,
       metadata: {
@@ -383,10 +383,10 @@ export class CHRROMMipmapIntegration {
       size: 'xs',
       data: '<div, style="w:16px;h:16px;bg:#6b7280;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:8px">?</div>',
       metadata: {
-        confidence: 0,
+       , confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed unknown: 'format' field — keep only known metadata properties; renderingHint: 'auto` }'`
+        // removed: unknown: 'format' field — keep only known metadata properties;, renderingHint: 'auto` }'`
     };
   }
 
@@ -396,26 +396,26 @@ export class CHRROMMipmapIntegration {
       size: 'md',
       data: '<div, style="w:64px;h:64px;bg:#6b7280;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px">DOC</div>',
       metadata: {
-        confidence: 0,
+       , confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed unknown: 'format' field — keep only known metadata properties; renderingHint: `auto` }
+        // removed: unknown: 'format' field — keep only known metadata properties;, renderingHint: `auto` }
     };
   }
 
   /**
    * Test integration with YoRHa mipmap system and CHR-ROM optimizer
    */
-  async testIntegration(): Promise<{ success: boolean; results: Record<string, unknown> }> {
+  async testIntegration(): Promise<{ success: boolean;, results: Record<string, unknown> }> {
     console.log('🧪 Testing CHR-ROM Mipmap Integration...');
-    const startTime = (globalThis as unknown as { performance?: Performance }).performance
-      ? (globalThis as unknown as { performance: Performance }).performance.now()
+    const startTime = (globalThis as: unknown as { performance?: Performance }).performance
+      ? (globalThis as: unknown as {, performance: Performance }).performance.now()
       : Date.now();
     try {
       // Test YoRHa initialization
       await this.initialize();
       const yorhaReady = Boolean(
-        yorhaMipmapShaders && (yorhaMipmapShaders as unknown as { isInitialized?: boolean }).isInitialized
+        yorhaMipmapShaders && (yorhaMipmapShaders as: unknown as { isInitialized?: boolean }).isInitialized
       );
 
       // Test CHR-ROM optimizer
@@ -440,22 +440,22 @@ export class CHRROMMipmapIntegration {
         cacheWriteTime: 0
       };
       if (mockTexture) {
-        const mipmapStart = (globalThis as unknown as { performance?: Performance }).performance
-          ? (globalThis as unknown as { performance: Performance }).performance.now()
+        const mipmapStart = (globalThis as: unknown as { performance?: Performance }).performance
+          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
           : Date.now();
         const pattern = await this.textureToCHRROMPattern(mockTexture, 64, 64, 2, 'integration_test', {
           rtxOptimized: false,
           compressed: true
         });
-        const mipmapEnd = (globalThis as unknown as { performance?: Performance }).performance
-          ? (globalThis as unknown as { performance: Performance }).performance.now()
+        const mipmapEnd = (globalThis as: unknown as { performance?: Performance }).performance
+          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
           : Date.now();
-        const cacheStart = (globalThis as unknown as { performance?: Performance }).performance
-          ? (globalThis as unknown as { performance: Performance }).performance.now()
+        const cacheStart = (globalThis as: unknown as { performance?: Performance }).performance
+          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
           : Date.now();
         await this.cachePatternWithMipmapStrategy('test:integration:pattern', pattern, 2);
-        const cacheEnd = (globalThis as unknown as { performance?: Performance }).performance
-          ? (globalThis as unknown as { performance: Performance }).performance.now()
+        const cacheEnd = (globalThis as: unknown as { performance?: Performance }).performance
+          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
           : Date.now();
         performanceMetrics.mipmapGenerationTime = mipmapEnd - mipmapStart;
         performanceMetrics.chrromConversionTime = mipmapEnd - mipmapStart;
@@ -469,14 +469,14 @@ export class CHRROMMipmapIntegration {
       }
 
       const totalTime =
-        ((globalThis as unknown as { performance?: Performance }).performance
-          ? (globalThis as unknown as { performance: Performance }).performance.now()
+        ((globalThis as: unknown as { performance?: Performance }).performance
+          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
           : Date.now()) - startTime;
       console.log(`✅ Integration test completed in ${totalTime.toFixed(2)}ms`);
       return {
         success: true,
         results: {
-          yorhaInitialized: yorhaReady,
+         , yorhaInitialized: yorhaReady,
           chrromOptimizerReady: !!testPattern,
           redisConnected: !!redisTest,
           samplePatternGenerated: sampleGenerated,
@@ -488,12 +488,12 @@ export class CHRROMMipmapIntegration {
       return {
         success: false,
         results: {
-          yorhaInitialized: false,
+         , yorhaInitialized: false,
           chrromOptimizerReady: false,
           redisConnected: false,
           samplePatternGenerated: false,
           performanceMetrics: {
-            mipmapGenerationTime: 0,
+           , mipmapGenerationTime: 0,
             chrromConversionTime: 0,
             cacheWriteTime: 0
           }
@@ -513,11 +513,11 @@ export class CHRROMMipmapIntegration {
       return (
         sum +
         Array.from(cache.patterns.values()).reduce((patternSum, pattern) => {
-          // pattern.data may be string or binary; best-effort length
+          // pattern.data may be: string or binary; best-effort length
           const len =
             pattern.data && typeof pattern.data === 'string'
               ? pattern.data.length
-              : (pattern.data && (pattern.data as any).length) || 0;
+              : (pattern.data && (pattern.data, as: any).length) || 0;
           return patternSum + len;
         }, 0)
       );
@@ -537,7 +537,7 @@ export class CHRROMMipmapIntegration {
       averagePatternsPerDoc: totalPatterns / Math.max(1, this.mipmapCache.size),
       oldestCache: Math.max(...ageDistribution.map(item => item.age), 0),
       newestCache: Math.min(...ageDistribution.map(item => item.age), 0),
-      ageDistribution: ageDistribution.slice(0, 10), // Top 10 for performance
+      ageDistribution: ageDistribution.slice(0, 10), // Top, 10 for performance
     };
   }
 
@@ -545,7 +545,7 @@ export class CHRROMMipmapIntegration {
    * Batch generate mipmap patterns for multiple documents
    */
   async batchGenerateMipmaps(
-    documentBatch: Array<{ docId: string; imageData: ArrayBuffer; width: number; height: number }>,
+    documentBatch: Array<{ docId: string; imageData: ArrayBuffer; width: number;, height: number }>,
     options: {
       maxConcurrent?: number;
       rtxOptimized?: boolean;
@@ -555,11 +555,11 @@ export class CHRROMMipmapIntegration {
     const { maxConcurrent = 4, rtxOptimized = true, prioritizeSmallSizes = true } = options;
     console.log(`🔥 Batch generating mipmaps for ${documentBatch.length} documents...`);
     // use a typed cast for globalThis.performance to avoid `any`
-    const perf = (globalThis as unknown as { performance?: Performance }).performance;
+    const perf = (globalThis as: unknown as { performance?: Performance }).performance;
     const startTime = perf ? perf.now() : Date.now();
     const results = new Map<string, DocumentMipmapCache>();
     // Process in batches to avoid overwhelming GPU
-    const batches: Array<Array<{ docId: string; imageData: ArrayBuffer; width: number; height: number }>> = [];
+    const batches: Array<Array<{ docId: string; imageData: ArrayBuffer; width: number;, height: number }>> = [];
     for (let i = 0; i < documentBatch.length; i += maxConcurrent) {
       batches.push(documentBatch.slice(i, i + maxConcurrent));
     }

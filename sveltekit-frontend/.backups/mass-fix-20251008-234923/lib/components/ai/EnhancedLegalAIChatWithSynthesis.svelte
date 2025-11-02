@@ -1304,7 +1304,7 @@ copyToClipboard(message.content)}>
       </div>
     {/each}
     {#if isProcessing}
-      <div class="flex items-center justify-center py-4" transition:fade>
+      <div class="flex items-center justify-center py-4" use:fade>
         <div class="flex items-center gap-2 text-gray-600">
           <Loader2 class="w-4 h-4 animate-spin" />
           <span>Processing with advanced AI pipeline...</span>

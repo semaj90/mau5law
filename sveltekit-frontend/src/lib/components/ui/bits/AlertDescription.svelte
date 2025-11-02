@@ -3,8 +3,8 @@ Enhanced-Bits AlertDescription Component
 Description content for alerts with NES styling
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { cn } from '$lib/utils';
+  // Svelte, 5 runes are auto-imported
+  import { cn } from, '$lib/utils';
   interface AlertDescriptionProps {
     class?: string;
     children?: import('svelte').Snippet;
@@ -51,7 +51,7 @@ Description content for alerts with NES styling
     color: inherit;
   }
   .bits-alert-description code {
-    background: rgba(0, 0, 0, 0.1);
+   , background: rgba(0, 0, 0, 0.1);
     padding: 0.125rem 0.25rem;
     border-radius: 2px;
     font-family: 'Courier New', monospace;

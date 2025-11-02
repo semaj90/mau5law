@@ -1,19 +1,19 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from '$lib/components/ui/Dialog.svelte';
-  import LoadingButton from '$lib/headless/LoadingButton.svelte';
-  import OptimisticList from '$lib/headless/OptimisticList.svelte';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { page } from, '$app/stores';
+  import { nesGPUBridge } from, '$lib/gpu/nes-gpu-memory-bridge';
+  import * as Dialog from, '$lib/components/ui/Dialog.svelte';
+  import LoadingButton from, '$lib/headless/LoadingButton.svelte';
+  import OptimisticList from, '$lib/headless/OptimisticList.svelte';
   // Icons
   import {
     Brain, Scale, FileText, Users, Target, Lightbulb,
     TrendingUp, AlertTriangle, CheckCircle, Clock,
     Layers, Network, Eye, Plus, Edit, Trash, Save,
     ArrowRight, BarChart3, Zap, Search, Link2
-  } from 'lucide-svelte';
+  } from, 'lucide-svelte';
 
   // Type Definitions
   interface Theory {
@@ -65,7 +65,7 @@ import type { Case } from '$lib/types';
 
   interface StrengthAnalysis {
     overall: number;
-    components: Record<string, number>;
+   , components: Record<string, number>;
   }
 
   interface NewTheoryForm {
@@ -73,10 +73,10 @@ import type { Case } from '$lib/types';
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
     description: string;
-    errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
+   , errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
   }
 
-  // Svelte 5 runes
+  // Svelte, 5 runes
   let caseId = $state<string>('');
   let caseTitle = $state<string>('');
   let theories = $state<Theory[]>([]);
@@ -109,7 +109,7 @@ import type { Case } from '$lib/types';
     { id: 'alternative', label: 'Alternative Theory', icon: Lightbulb }
   ];
   const strategyTypes = [
-    { id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
+    {, id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
     { id: 'precedent-based', label: 'Precedent-Driven', description: 'Leverage existing case law' },
     { id: 'narrative-based', label: 'Narrative-Driven', description: 'Construct compelling story' },
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
@@ -160,7 +160,7 @@ import type { Case } from '$lib/types';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: caseTitle,
+         , query: caseTitle,
           mode: 'semantic',
           filters: {},
           sort: 'relevance',
@@ -222,7 +222,7 @@ import type { Case } from '$lib/types';
         const result = await response.json();
         // Update theory with AI analysis
         const builtTheory: Theory = {
-          id: `theory_${Date.now()}`,
+         , id: `theory_${Date.now()}`,
           ...theoryData,
           legalArguments: result.legalArguments || [],
           counterarguments: result.counterarguments || [],
@@ -276,14 +276,14 @@ import type { Case } from '$lib/types';
         'Jury perception risks identified'
       ],
       logicalChain: [
-        { step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp 10:23 PM' },
+        {, step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp, 10:23 PM' },
         { step: 2, premise: 'Reasonable person would fear harm', evidence: 'Expert testimony on threat assessment' },
         { step: 3, premise: 'Response was proportional', evidence: 'Medical examiner report on injuries' },
         { step: 4, conclusion: 'Self-defense claim is justified', confidence: 0.87 }
       ],
       strength: 0.75 + Math.random() * 0.2,
       riskAssessment: {
-        overallRisk: 'Medium',
+       , overallRisk: 'Medium',
         strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],
         weaknesses: ['Procedural complexity', 'Jury unpredictability'],
         recommendations: ['Strengthen witness prep', 'Consider plea alternatives']
@@ -308,7 +308,7 @@ import type { Case } from '$lib/types';
     strengthAnalysis = {
       overall: theory.strength || 0,
       components: {
-        evidence: 0.8,
+       , evidence: 0.8,
         precedent: 0.7,
         logic: 0.9,
         presentation: 0.6
@@ -323,7 +323,7 @@ import type { Case } from '$lib/types';
     }
     newTheoryForm.errors = {};
     await buildTheoryWithAI({
-      name: newTheoryForm.name,
+     , name: newTheoryForm.name,
       type: newTheoryForm.type,
       strategy: newTheoryForm.strategy,
       description: newTheoryForm.description
@@ -343,21 +343,21 @@ import type { Case } from '$lib/types';
   }
   function getTheoryTypeColor(type: Theory['type']) {
     switch (type) {
-      case 'prosecution':
-        return 'text-red-600 bg-red-100';
-      case 'defense':
-        return 'text-blue-600 bg-blue-100';
-      case 'civil':
-        return 'text-green-600 bg-green-100';
-      case 'alternative':
-        return 'text-purple-600 bg-purple-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case, 'prosecution':
+        return, 'text-red-600 bg-red-100';
+      case, 'defense':
+        return, 'text-blue-600 bg-blue-100';
+      case, 'civil':
+        return, 'text-green-600 bg-green-100';
+      case, 'alternative':
+        return, 'text-purple-600 bg-purple-100';
+      default: return, 'text-gray-600 bg-gray-100';
     }
   }
   function getStrengthColor(strength: number) {
-    if (strength >= 0.8) return 'text-green-600';
-    if (strength >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (strength >= 0.8) return, 'text-green-600';
+    if (strength >= 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
   function generateMockEvidence() {
     return [
@@ -379,20 +379,20 @@ import type { Case } from '$lib/types';
         id: '3',
         title: 'Medical Examiner Report',
        <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from '$lib/components/ui/Dialog.svelte';
-  import LoadingButton from '$lib/headless/LoadingButton.svelte';
-  import OptimisticList from '$lib/headless/OptimisticList.svelte';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { page } from, '$app/stores';
+  import { nesGPUBridge } from, '$lib/gpu/nes-gpu-memory-bridge';
+  import * as Dialog from, '$lib/components/ui/Dialog.svelte';
+  import LoadingButton from, '$lib/headless/LoadingButton.svelte';
+  import OptimisticList from, '$lib/headless/OptimisticList.svelte';
   // Icons
   import {
     Brain, Scale, FileText, Users, Target, Lightbulb,
     TrendingUp, AlertTriangle, CheckCircle, Clock,
     Layers, Network, Eye, Plus, Edit, Trash, Save,
     ArrowRight, BarChart3, Zap, Search, Link2
-  } from 'lucide-svelte';
+  } from, 'lucide-svelte';
 
   // Type Definitions
   interface Theory {
@@ -444,7 +444,7 @@ import type { Case } from '$lib/types';
 
   interface StrengthAnalysis {
     overall: number;
-    components: Record<string, number>;
+   , components: Record<string, number>;
   }
 
   interface NewTheoryForm {
@@ -452,10 +452,10 @@ import type { Case } from '$lib/types';
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
     description: string;
-    errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
+   , errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
   }
 
-  // Svelte 5 runes
+  // Svelte, 5 runes
   let caseId = $state<string>('');
   let caseTitle = $state<string>('');
   let theories = $state<Theory[]>([]);
@@ -488,7 +488,7 @@ import type { Case } from '$lib/types';
     { id: 'alternative', label: 'Alternative Theory', icon: Lightbulb }
   ];
   const strategyTypes = [
-    { id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
+    {, id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
     { id: 'precedent-based', label: 'Precedent-Driven', description: 'Leverage existing case law' },
     { id: 'narrative-based', label: 'Narrative-Driven', description: 'Construct compelling story' },
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
@@ -539,7 +539,7 @@ import type { Case } from '$lib/types';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: caseTitle,
+         , query: caseTitle,
           mode: 'semantic',
           filters: {},
           sort: 'relevance',
@@ -601,7 +601,7 @@ import type { Case } from '$lib/types';
         const result = await response.json();
         // Update theory with AI analysis
         const builtTheory: Theory = {
-          id: `theory_${Date.now()}`,
+         , id: `theory_${Date.now()}`,
           ...theoryData,
           legalArguments: result.legalArguments || [],
           counterarguments: result.counterarguments || [],
@@ -655,14 +655,14 @@ import type { Case } from '$lib/types';
         'Jury perception risks identified'
       ],
       logicalChain: [
-        { step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp 10:23 PM' },
+        {, step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp, 10:23 PM' },
         { step: 2, premise: 'Reasonable person would fear harm', evidence: 'Expert testimony on threat assessment' },
         { step: 3, premise: 'Response was proportional', evidence: 'Medical examiner report on injuries' },
         { step: 4, conclusion: 'Self-defense claim is justified', confidence: 0.87 }
       ],
       strength: 0.75 + Math.random() * 0.2,
       riskAssessment: {
-        overallRisk: 'Medium',
+       , overallRisk: 'Medium',
         strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],
         weaknesses: ['Procedural complexity', 'Jury unpredictability'],
         recommendations: ['Strengthen witness prep', 'Consider plea alternatives']
@@ -687,7 +687,7 @@ import type { Case } from '$lib/types';
     strengthAnalysis = {
       overall: theory.strength || 0,
       components: {
-        evidence: 0.8,
+       , evidence: 0.8,
         precedent: 0.7,
         logic: 0.9,
         presentation: 0.6
@@ -702,7 +702,7 @@ import type { Case } from '$lib/types';
     }
     newTheoryForm.errors = {};
     await buildTheoryWithAI({
-      name: newTheoryForm.name,
+     , name: newTheoryForm.name,
       type: newTheoryForm.type,
       strategy: newTheoryForm.strategy,
       description: newTheoryForm.description
@@ -722,21 +722,21 @@ import type { Case } from '$lib/types';
   }
   function getTheoryTypeColor(type: Theory['type']) {
     switch (type) {
-      case 'prosecution':
-        return 'text-red-600 bg-red-100';
-      case 'defense':
-        return 'text-blue-600 bg-blue-100';
-      case 'civil':
-        return 'text-green-600 bg-green-100';
-      case 'alternative':
-        return 'text-purple-600 bg-purple-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case, 'prosecution':
+        return, 'text-red-600 bg-red-100';
+      case, 'defense':
+        return, 'text-blue-600 bg-blue-100';
+      case, 'civil':
+        return, 'text-green-600 bg-green-100';
+      case, 'alternative':
+        return, 'text-purple-600 bg-purple-100';
+      default: return, 'text-gray-600 bg-gray-100';
     }
   }
   function getStrengthColor(strength: number) {
-    if (strength >= 0.8) return 'text-green-600';
-    if (strength >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (strength >= 0.8) return, 'text-green-600';
+    if (strength >= 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
   function generateMockEvidence() {
     return [

@@ -1,12 +1,12 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { AIResponse } from, '$lib/types';
+import type { Case } from, '$lib/types';
 // Missing type definitions shim for common global types
-// Progressive replacement: Using proper Svelte 5 TypeScript patterns
+// Progressive replacement: Using proper Svelte, 5 TypeScript patterns
 import type {
   AITask as ProperAITask,
   AIResponse as ProperAIResponse,
   WorkerStatus as ProperWorkerStatus
-} from '../types/svelte5-patterns';
+} from, '../types/svelte5-patterns';
 // AI/LLM Types - Using proper definitions
 declare global {
   type LLMProvider = 'ollama' | 'openai' | 'anthropic' | 'huggingface';
@@ -20,7 +20,7 @@ declare global {
     timestamp: Date;
   };
   type EnhancedRAGEngine = {
-    query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
+   , query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
     embed: (text: string) => Promise<number[]>;
     similaritySearch: (query: string, options?: { limit?: number }) => Promise<unknown[]>;
   };
@@ -41,7 +41,7 @@ declare global {
     fallbackUsed?: boolean;
     error?: string;
   };
-  type ErrorProcessingPipeline = { processErrors: (errors: Error[]) => Promise<Array<unknown>>;, analyzeError: (error: Error) => Promise<unknown>;
+  type ErrorProcessingPipeline = {, processErrors: (errors: Error[]) => Promise<Array<unknown>>;, analyzeError: (error: Error) => Promise<unknown>;
   };
 }
 // API Request/Response Types - Using proper definitions
@@ -54,7 +54,7 @@ import type {
   EvidenceSearchRequest as ProperEvidenceSearchRequest,
   BulkOperationResponse as ProperBulkOperationResponse,
   FormSubmissionResult as ProperFormSubmissionResult
-} from '../types/svelte5-patterns';
+} from, '../types/svelte5-patterns';
 declare global {
   type CaseCreateRequest = ProperCaseCreateRequest;
   type CaseUpdateRequest = ProperCaseUpdateRequest;
@@ -78,21 +78,21 @@ import type {
   EvidenceState,
   VectorSearchResult as ProperVectorSearchResult,
   VectorSearchOptions as ProperVectorSearchOptions
-} from '../types/svelte5-patterns';
-declare module '$lib/types/database' {
+} from, '../types/svelte5-patterns';
+declare module, '$lib/types/database' {
   export type LegalDocument = { id: string;, title: string;
     content: string;
     fileType: 'PDF' | 'TEXT' | 'DOCX' | 'HTML';
     uploadedAt: Date;
     processedAt?: Date;
-    metadata: Record<string, unknown>;
+   , metadata: Record<string, unknown>;
     embedding?: number[];
   };
   export type DocumentChunk = { id: string;, documentId: string;
     chunkIndex: number;
     content: string;
     embedding?: number[];
-    metadata: Record<string, unknown>;
+   , metadata: Record<string, unknown>;
   };
   export type UserAiQuery = { id: string;, userId: string;
     query: string;
@@ -100,11 +100,11 @@ declare module '$lib/types/database' {
     createdAt: Date;
     embedding?: number[];
   };
-  export type AutoTag = { id: string;, entityId: string;
+  export type AutoTag = {, id: string;, entityId: string;
     entityType: 'case' | 'evidence' | 'document';
     tag: string;
     confidence: number;
-    createdAt: Date;
+   , createdAt: Date;
   };
   export type Case = CaseState;
   export type Evidence = EvidenceState;
@@ -122,7 +122,7 @@ declare global {
     delete?: (options?: any) => Promise<void>;
     [key: string]: any;
   };
-  type QueryResult = { content: string;, score: number;
+  type QueryResult = {, content: string;, score: number;
     sources?: any[];
   };
 }
@@ -137,11 +137,11 @@ declare global {
   type WorkerResult = unknown;
 }
 // External Library Types
-declare module '$lib/types' {
+declare module, '$lib/types' {
   // Duplicate removed: // Duplicate; removed: export type Case = any
 }
 declare global {
-  type GGUFInferenceRequest = { prompt: string;, maxTokens: number;
+  type GGUFInferenceRequest = {, prompt: string;, maxTokens: number;
     temperature: number;
     topP: number;
     topK: number;
@@ -153,6 +153,6 @@ declare global {
 // Row/Database result types
 declare global {
   interface RowList<T> {
-    rows: T;
+   , rows: T;
   }
 }

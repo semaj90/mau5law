@@ -1,23 +1,23 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { requireAuth } from '$lib/server/auth-helpers';
-import { legalRAG } from '$lib/ai/langchain-rag';
-import { z } from 'zod';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { requireAuth } from, '$lib/server/auth-helpers';
+import { legalRAG } from, '$lib/ai/langchain-rag';
+import { z } from, 'zod';
 
 // Validation schema for RAG search requests
 const ragSearchSchema = z.object({
   query: z.string().min(1, 'Query is required').max(1000, 'Query too long'),
   filters: z
     .object({
-      documentType: z.string().optional(),
+     , documentType: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional()
     })
     .optional(),
   options: z
     .object({
-      thinkingMode: z.boolean().optional(),
+     , thinkingMode: z.boolean().optional(),
       verbose: z.boolean().optional(),
       maxRetrievedDocs: z.number().min(1).max(50).optional(),
       confidenceThreshold: z.number().min(0).max(1).optional(),
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async event => {
       content: doc.pageContent,
       relevance: doc.metadata?.score || result.confidence,
       metadata: {
-        documentType: doc.metadata?.documentType,
+       , documentType: doc.metadata?.documentType,
         jurisdiction: doc.metadata?.jurisdiction,
         practiceArea: doc.metadata?.practiceArea,
         chunkIndex: doc.metadata?.chunkIndex,

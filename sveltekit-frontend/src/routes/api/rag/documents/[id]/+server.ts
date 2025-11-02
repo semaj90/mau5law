@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq } from 'drizzle-orm';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { documents, documentChunks } from, '$lib/server/db/enhanced-embedding-schema';
+import { eq } from, 'drizzle-orm';
 
 /**
  * GET /api/rag/documents/[id]

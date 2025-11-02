@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/client';
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db/client';
 
 export const POST: RequestHandler = async () => {
   try {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async () => {
         "document_id" uuid NOT NULL REFERENCES: "documents"("id") ON DELETE cascade,
         "chunk_index" integer NOT NULL,
         "parent_chunk_id" uuid,
-        "level" integer DEFAULT 0 NOT NULL,
+        "level" integer DEFAULT, 0 NOT NULL,
         "text" text NOT NULL,
         "tokens" integer,
         "start_offset" integer,
@@ -91,10 +91,10 @@ export const POST: RequestHandler = async () => {
     await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_filename";, ON: "documents"("filename")');
     await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_created";, ON: "documents"("created_at")');
     await db.execute(
-      'CREATE INDEX IF NOT EXISTS: "idx_chunks_document"; ON: "document_chunks"("document_id", "chunk_index")'
+      'CREATE INDEX IF NOT EXISTS: "idx_chunks_document";, ON: "document_chunks"("document_id", "chunk_index")'
     );
     await db.execute(
-      'CREATE INDEX IF NOT EXISTS: "idx_chunks_hierarchy"; ON: "document_chunks"("parent_chunk_id", "level")'
+      'CREATE INDEX IF NOT EXISTS: "idx_chunks_hierarchy";, ON: "document_chunks"("parent_chunk_id", "level")'
     );
     await db.execute('CREATE INDEX IF NOT EXISTS: "idx_chunks_created";, ON: "document_chunks"("created_at")');
     await db.execute(

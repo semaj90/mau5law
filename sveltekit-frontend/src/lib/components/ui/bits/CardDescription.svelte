@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { cn } from '$lib/utils/cn';
+  import { cn } from, '$lib/utils/cn';
   interface CardDescriptionProps {
     class?: string;
     children?: import('svelte').Snippet;
@@ -15,7 +15,7 @@
 <style>
   :global(.shadcn-card-description) {
     font-size: 0.875rem;
-    color: var(--color-muted-foreground, hsl(var(--muted-foreground)));
+   , color: var(--color-muted-foreground, hsl(var(--muted-foreground)));
     margin-top: 0.5rem;
   }
 </style>

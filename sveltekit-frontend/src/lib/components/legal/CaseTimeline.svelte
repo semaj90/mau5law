@@ -1,6 +1,6 @@
 <!-- Case Timeline Component for Legal, AI, App -->
 <script, context="module" lang="ts">
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
   // Move interface here so modifiers are allowed
   export interface TimelineEvent {
     id: string;
@@ -8,7 +8,7 @@ import type { Case } from '$lib/types';
     title: string;
     description?: string;
     type: 'filing' | 'hearing' | 'evidence' | 'meeting' | 'deadline' | 'decision' | 'milestone';
-    status: 'completed' | 'pending' | 'overdue' | 'cancelled';
+   , status: 'completed' | 'pending' | 'overdue' | 'cancelled';
     participants?: string[];
     documents?: string[];
     location?: string;
@@ -19,10 +19,10 @@ import type { Case } from '$lib/types';
 <script, lang="ts">
   // Replace problematic named imports with a default import and destructure.
   // This avoids the TS error when certain named exports are not present in the typings.
-  import LucideDefault from 'lucide-svelte';
-  // cast to any to satisfy typings and extract icons
-  const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as any);
-  import { cn } from '$lib/utils';
+  import LucideDefault from, 'lucide-svelte';
+  // cast to: any to satisfy typings and extract icons
+  const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as: any);
+  import { cn } from, '$lib/utils';
   // Use explicit Svelte props
   const { caseId } = $props<{ caseId: string }>()
   const { caseName } = $props<{ caseName: string }>()
@@ -45,20 +45,20 @@ import type { Case } from '$lib/types';
   })();
   // Event type configurations
   const eventConfig = {
-    filing: { icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-    hearing: { icon: Scale, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
-    evidence: { icon: FileText, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20' },
-    meeting: { icon: Users, color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
-    deadline: { icon: AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
-    decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
-    milestone: { icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
+    filing: {, icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    hearing: {, icon: Scale, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+    evidence: {, icon: FileText, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20' },
+    meeting: {, icon: Users, color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+    deadline: {, icon: AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
+    decision: {, icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
+    milestone: {, icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
   } as const;
   // Status configurations (use className to match template usage)
   const statusConfig = {
-    completed: { label: 'Completed', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
-    pending: { label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    overdue: { label: 'Overdue', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
-    cancelled: { label: 'Cancelled', className: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
+    completed: {, label: 'Completed', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    pending: {, label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
+    overdue: {, label: 'Overdue', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
+    cancelled: {, label: 'Cancelled', className: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
   } as const;
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {

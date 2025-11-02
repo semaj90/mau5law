@@ -1,13 +1,13 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { writeFile, unlink } from 'fs/promises';
-import { join } from 'path';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { exec } from, 'child_process';
+import { promisify } from, 'util';
+import { writeFile, unlink } from, 'fs/promises';
+import { join } from, 'path';
 
 const execAsync = promisify(exec);
 
-/* Helper to safely extract useful info from unknown throwables */
+/* Helper to safely extract useful info from: unknown throwables */
 function normalizeError(err: any): { status?: number; message?: string; bodyMessage?: string } {
   // Non-object errors (string, number, etc.)
   if (err === null || typeof err !== 'object') {
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Parse form data
     const formData = await request.formData();
     const imageFile = formData.get('image') as File;
-    const imagePath = formData.get('imagePath') as string;
+    const imagePath = formData.get('imagePath') as: string;
 
     if (!imageFile && !imagePath) {
       throw error(400, 'Either image file or imagePath is required');
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         processingMethod: 'cuda_tensorrt',
         processingTime: Math.round(processingTime),
         metadata: {
-          modelUsed: 'tensorrt_gemma',
+         , modelUsed: 'tensorrt_gemma',
           gpuAccelerated: true,
           cudaVersion: cudaResult.cudaVersion,
           tensorrtVersion: cudaResult.tensorrtVersion
@@ -134,9 +134,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  */
 async function processCudaOCR(imagePath: string): Promise<{ text: string;, confidence: number;
   regions?: Array<{
-    bbox: [number, number, number, number];
+   , bbox: [number, number, number, number];
     text: string;
-    confidence: number;
+   , confidence: number;
   }>;
   cudaVersion?: string;
   tensorrtVersion?: string;
@@ -181,7 +181,7 @@ async function processCudaOCR(imagePath: string): Promise<{ text: string;, conf
 
     try {
       const { stdout, stderr } = await execAsync(
-        `"${cudaExecutable}" --image "${imagePath}" --model tensorrt_gemma --format json`,
+        `"${cudaExecutable}" --image, "${imagePath}" --model tensorrt_gemma --format json`,
         {
           timeout: 60000,
           env: {
@@ -209,7 +209,7 @@ async function processCudaOCR(imagePath: string): Promise<{ text: string;, conf
     }
   } catch (err: any) {
     console.error('CUDA OCR processing failed:', err);
-    // Safely extract a string representation for thrown Error
+    // Safely extract a: string representation for thrown Error
     const { message } = normalizeError(err);
     throw new Error(`CUDA OCR failed: ${message ?? String(err)}`);
   }

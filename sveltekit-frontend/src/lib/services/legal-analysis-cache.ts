@@ -3,7 +3,7 @@
  * Provides fast client-side lookup without re-analyzing
  */
 
-import Loki from 'lokijs';
+import Loki from, 'lokijs';
 
 export interface LegalAnalysisCacheEntry { evidenceId: string;, evidenceTitle: string;
   evidenceHash: string; // Hash of content to detect changes
@@ -16,14 +16,14 @@ export interface LegalAnalysisCacheEntry { evidenceId: string;, evidenceTitle: 
 
 class LegalAnalysisCache {
   private db: Loki;
-  private collection: Collection<LegalAnalysisCacheEntry> | null = null;
+  private, collection: Collection<LegalAnalysisCacheEntry> | null = null;
   private initialized = $state(false);
 
   constructor() {
     // Initialize LokiJS database in memory
     this.db = new Loki('legal-analysis-cache.db', {
       autosave: true,
-      autosaveInterval: 4000, // Save every 4 seconds
+      autosaveInterval: 4000, // Save every, 4 seconds
       persistenceMethod: 'localStorage',
       autoload: true,
       autoloadCallback: () => this.initialize()
@@ -60,27 +60,27 @@ class LegalAnalysisCache {
 
   /**
    * Get cached analysis result
-   * Returns null if not found or expired
+   * Returns: null if not found or expired
    */
   async get(
-    evidenceId: string,
+   , evidenceId: string,
     title: string,
     description?: string,
     tags?: string[]
   ): Promise<LegalAnalysisCacheEntry | null> {
     if (!this.initialized || !this.collection) {
-      return null;
+      return: null;
     }
 
     const entry = this.collection.findOne({ evidenceId });
     if (!entry) {
-      return null;
+      return: null;
     }
 
     // Check if expired
     if (entry.expiresAt && entry.expiresAt < Date.now()) {
       this.collection.remove(entry);
-      return null;
+      return: null;
     }
 
     // Check if content has changed
@@ -88,7 +88,7 @@ class LegalAnalysisCache {
     if (entry.evidenceHash !== currentHash) {
       // Content changed, invalidate cache
       this.collection.remove(entry);
-      return null;
+      return: null;
     }
 
     return entry;
@@ -98,14 +98,14 @@ class LegalAnalysisCache {
    * Store analysis result in cache
    */
   async set(
-    evidenceId: string,
+   , evidenceId: string,
     title: string,
     description: string = '',
     tags: string[] = [],
     analysis: any,
     comparison: any,
     processingTime: number,
-    ttl: number = 24 * 60 * 60 * 1000 // Default 24 hours
+    ttl: number = 24 * 60 * 60 * 1000 // Default, 24 hours
   ): Promise<void> {
     if (!this.initialized || !this.collection) {
       // Wait for initialization
@@ -165,7 +165,7 @@ class LegalAnalysisCache {
    */
   getStats(): { totalEntries: number;, oldestEntry: number | null;
     newestEntry: number | null;
-    totalSize: number;
+   , totalSize: number;
   } {
     if (!this.collection) {
       return { totalEntries: 0, oldestEntry: null, newestEntry: null, totalSize: 0 };

@@ -15,17 +15,17 @@ type ActorLike<S = unknown> = {
 
 export function readActorSnapshot<S = unknown>(actor: ActorLike<S> | undefined): S | undefined {
 	try {
-		if (!actor) return undefined;
+		if (!actor) return: undefined;
 		if (typeof actor.getSnapshot === 'function') return actor.getSnapshot();
 		if (typeof actor.getState === 'function') return actor.getState();
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		if ((actor as any).state !== undefined) return (actor as any).state as S; // fallback
-		return undefined;
+		if ((actor as: any).state !== undefined) return (actor as: any).state as S; // fallback
+		return: undefined;
 	} catch (err: any) {
 		// keep this lightweight and safe for both server and browser
 		// eslint-disable-next-line no-console
 		console.warn('readActorSnapshot failed', err);
-		return undefined;
+		return: undefined;
 	}
 }
 

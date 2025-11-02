@@ -1,6 +1,6 @@
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { SearchResult } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 // Legal AI Form State Machines with XState
 // Advanced state management for legal document processing workflows
 import {
@@ -10,8 +10,8 @@ import {
   type ActorRefFrom,
   type ErrorActorEvent,
   type DoneActorEvent
-} from 'xstate';
-import { z } from 'zod';
+} from, 'xstate';
+import { z } from, 'zod';
 // ============================================================================
 // ZOD VALIDATION SCHEMAS
 // ============================================================================
@@ -34,7 +34,7 @@ export const DocumentUploadSchema = z.object({
   file: z.any().refine(file => file instanceof File, 'File is required'),
   aiProcessing: z
     .object({
-      generateSummary: z.boolean().default(true),
+     , generateSummary: z.boolean().default(true),
       extractEntities: z.boolean().default(true),
       riskAssessment: z.boolean().default(true),
       compareWithRAG: z.boolean().default(true),
@@ -53,7 +53,7 @@ export const DocumentUploadSchema = z.object({
 });
 export const CaseCreationSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(255, 'Title too long'),
-  description: z.string().min(10, 'Description must be at least 10 characters').max(5000, 'Description too long'),
+  description: z.string().min(10, 'Description must be at least, 10 characters').max(5000, 'Description too long'),
   caseNumber: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   status: z.enum(['active', 'pending', 'closed', 'archived']).default('active'),
@@ -67,7 +67,7 @@ export const SearchQuerySchema = z.object({
   query: z.string().min(1, 'Search query is required').max(500, 'Query too long'),
   filters: z
     .object({
-      documentTypes: z.array(z.string()).default([]),
+     , documentTypes: z.array(z.string()).default([]),
       jurisdictions: z.array(z.string()).default([]),
       dateRange: z
         .object({
@@ -89,7 +89,7 @@ export const AIAnalysisSchema = z.object({
   analysisType: z.enum(['summary', 'entities', 'risk', 'recommendations', 'precedents', 'compliance']),
   options: z
     .object({
-      model: z.string().default('gemma3-legal:latest'),
+     , model: z.string().default('gemma3-legal:latest'),
       temperature: z.number().min(0).max(2).default(0.7),
       maxTokens: z.number().min(100).max(8000).default(2000),
       includeConfidence: z.boolean().default(true),
@@ -116,7 +116,7 @@ export interface UploadedFile { id: string;, filename: string;
 export interface AIResults {
   summary?: string;
   entities?: { type: string; value: string }[];
-  riskAssessment?: { level: 'low' | 'medium' | 'high'; details: string };
+  riskAssessment?: { level: 'low' | 'medium' | 'high';, details: string };
   comparison?: any; // Add comparison property here
   [key: string]: any;
 }
@@ -125,7 +125,7 @@ export interface CreatedCase extends z.infer<typeof, CaseCreationSchema> { id: s
   updatedAt: string;
 }
 // Placeholder for a search result item
-export interface SearchResult { id: string;, title: string;
+export interface SearchResult {, id: string;, title: string;
   documentType: string;
   snippet: string;
   score: number;
@@ -135,7 +135,7 @@ export interface SearchResult { id: string;, title: string;
 export interface AIAnalysisResult {
   summary?: string;
   entities?: { type: string; value: string }[];
-  risk?: { level: string; details: string };
+  risk?: { level: string;, details: string };
   recommendations?: string[];
   [key: string]: any;
 }
@@ -157,7 +157,7 @@ interface ProcessDocumentOutput { results: AIResults;, processingTime: number;
 // ============================================================================
 // STATE MACHINE CONTEXTS
 // ============================================================================
-export interface DocumentUploadContext { formData: z.infer<typeof DocumentUploadSchema> | null;, validationErrors: Record<string, string[]>;
+export interface DocumentUploadContext {, formData: z.infer<typeof DocumentUploadSchema> | null;, validationErrors: Record<string, string[]>;
   uploadProgress: number;
   uploadedFile: UploadedFile | null;
   processingProgress: number;
@@ -166,27 +166,27 @@ export interface DocumentUploadContext { formData: z.infer<typeof DocumentUpload
   retryCount: number;
   maxRetries: number;
 }
-export interface CaseCreationContext { formData: z.infer<typeof CaseCreationSchema> | null;, validationErrors: Record<string, string[]>;
+export interface CaseCreationContext {, formData: z.infer<typeof CaseCreationSchema> | null;, validationErrors: Record<string, string[]>;
   createdCase: CreatedCase | null;
   relatedDocuments: UploadedFile[];
   error: string | null;
   isAutoSaving: boolean;
   lastSaved: Date | null;
 }
-export interface SearchContext { query: z.infer<typeof SearchQuerySchema> | null;, results: SearchResult[];
-  validationErrors: Record<string, string[]>;
+export interface SearchContext {, query: z.infer<typeof SearchQuerySchema> | null;, results: SearchResult[];
+ , validationErrors: Record<string, string[]>;
   isSearching: boolean;
   searchHistory: string[];
-  filters: z.infer<typeof, SearchQuerySchema>['filters'];
-  pagination: { page: number;, pageSize: number;
+ , filters: z.infer<typeof, SearchQuerySchema>['filters'];
+  pagination: {, page: number;, pageSize: number;
     total: number;
   };
-  analytics: { searchTime: number;, resultCount: number;
+  analytics: {, searchTime: number;, resultCount: number;
     cacheHit: boolean;
   } | null;
   error: string | null;
 }
-export interface AIAnalysisContext { analysisData: z.infer<typeof AIAnalysisSchema> | null;, validationErrors: Record<string, string[]>;
+export interface AIAnalysisContext {, analysisData: z.infer<typeof AIAnalysisSchema> | null;, validationErrors: Record<string, string[]>;
   analysisResults: AIAnalysisResult | null;
   confidence: number;
   processingTime: number;
@@ -212,7 +212,7 @@ type DocumentUploadEvent =
 
 export const documentUploadMachine = createMachine(
   {
-    id: 'documentUpload',
+   , id: 'documentUpload',
     initial: 'idle',
     context: {
      , formData: null,
@@ -235,47 +235,47 @@ export const documentUploadMachine = createMachine(
               retryCount: 0
             })
           },
-          UPDATE_FORM: { actions: assign({, formData: ({ event }) => (event as DocumentUploadEvent & { type: 'UPDATE_FORM' }).data
+          UPDATE_FORM: {, actions: assign({, formData: ({ event }) => (event as DocumentUploadEvent & { type: 'UPDATE_FORM' }).data
             })
           }
         }
       },
-      validating: { invoke: {, id: 'validateDocumentForm',
+      validating: {, invoke: {, id: 'validateDocumentForm',
           src: 'validateDocumentForm',
           input: ({ context }) => context.formData,
           onDone: {
-            target: 'uploading',
+           , target: 'uploading',
             actions: assign({
-              validationErrors: {}, // Clear errors on success
+             , validationErrors: {}, // Clear errors on success
             })
           },
           onError: {
-            target: 'idle', // Go back to idle or a specific validationError state
+           , target: 'idle', // Go back to idle or a specific validationError state
             actions: assign({
-              validationErrors: ({ event }) => event.error as Record<string, string[]>,
+             , validationErrors: ({ event }) => event.error as Record<string, string[]>,
               error: () => 'Form validation failed.'
             })
           }
         }
       },
-      uploading: { invoke: {, id: 'uploadDocument',
+      uploading: {, invoke: {, id: 'uploadDocument',
           src: 'uploadDocument',
           input: ({ context }) => context.formData,
           onDone: {
-            target: 'uploaded',
+           , target: 'uploaded',
             actions: assign({
-              uploadedFile: ({ event }) => (event as DoneActorEvent<UploadedFile>).output,
+             , uploadedFile: ({ event }) => (event as DoneActorEvent<UploadedFile>).output,
               uploadProgress: () => 100
             })
           },
           onError: {
-            target: 'uploadError',
+           , target: 'uploadError',
             actions: assign({
-              error: ({ event }) => (event as ErrorActorEvent<Error>).error.message
+             , error: ({ event }) => (event as ErrorActorEvent<Error>).error.message
             })
           }
         },
-        on: { UPLOAD_PROGRESS: {, actions: assign(({ event }) => ({
+        on: {, UPLOAD_PROGRESS: {, actions: assign(({ event }) => ({
               // Removed explicit cast, event is now typed
               uploadProgress: event.progress
             }))
@@ -283,11 +283,11 @@ export const documentUploadMachine = createMachine(
         }
       },
       uploaded: {
-        always: [
+       , always: [
           {,
-            // explicitly type ctx to avoid implicit any
-            target: 'processing',
-            cond: (; ctx: DocumentUploadContext // Explicitly type ctx
+            // explicitly type ctx to avoid implicit: any
+           , target: 'processing',
+            cond: (;, ctx: DocumentUploadContext // Explicitly type ctx
             ) =>
               !!ctx.formData?.aiProcessing &&
               (ctx.formData.aiProcessing.generateSummary ||
@@ -297,7 +297,7 @@ export const documentUploadMachine = createMachine(
           { target: 'completed' }
         ]
       },
-      processing: { invoke: {, id: 'processDocument',
+      processing: {, invoke: {, id: 'processDocument',
           src: 'processDocument',
           input: ({ context }): ProcessDocumentActorInput => ({
             // Explicitly type the input
@@ -309,17 +309,17 @@ export const documentUploadMachine = createMachine(
             tags: context.formData?.tags
           }),
           onDone: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign({
-              aiResults: ({ event }) =>
+             , aiResults: ({ event }) =>
                 ((event as DoneActorEvent<ProcessDocumentOutput>).output?.results ?? null) as AIResults | null, // Use ProcessDocumentOutput
               processingProgress: () => 100
             })
           },
           onError: {
-            target: 'processingError',
+           , target: 'processingError',
             actions: assign({
-              error: ({ event }) => {
+             , error: ({ event }) => {
                 const err = (event as ErrorActorEvent<unknown>).error;
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
@@ -330,14 +330,14 @@ export const documentUploadMachine = createMachine(
             })
           }
         },
-        on: { PROCESSING_PROGRESS: {, actions: assign(({ event }) => ({
+        on: {, PROCESSING_PROGRESS: {, actions: assign(({ event }) => ({
               // Removed explicit cast, event is now typed
               processingProgress: event.progress
             }))
           }
         }
       },
-      uploadError: { on: {, RETRY: [
+      uploadError: {, on: {, RETRY: [
             {,
               // use functional assign to ensure correct typing for ctx modifications (see retry logic)
               cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly, type, ctx
@@ -355,7 +355,7 @@ export const documentUploadMachine = createMachine(
           RESET: 'idle'
         }
       },
-      processingError: { on: {, RETRY: [
+      processingError: {, on: {, RETRY: [
             {,
               target: 'processing',
               cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly, type, ctx
@@ -371,11 +371,11 @@ export const documentUploadMachine = createMachine(
           RESET: 'idle'
         }
       },
-      completed: { on: {, RESET: 'idle',
+      completed: {, on: {, RESET: 'idle',
           NEW_UPLOAD: 'idle'
         }
       },
-      failed: { on: {, RESET: 'idle'
+      failed: {, on: {, RESET: 'idle'
         }
       }
     }
@@ -422,10 +422,10 @@ export const documentUploadMachine = createMachine(
         return await response.json();
       }),
       processDocument: fromPromise(
-        async ({ input }: { input: ProcessDocumentActorInput }): Promise<ProcessDocumentOutput> => {
+        async ({ input }: {, input: ProcessDocumentActorInput }): Promise<ProcessDocumentOutput> => {
           // Use the new interface here and specify return type
           const started = Date.now();
-          let baseResults: AIResults | null = null; // Changed from 'unknown' to AIResults | null
+          let baseResults: AIResults | null = null; // Changed from, 'unknown' to AIResults | null
           // 1) Keep existing processing endpoint (best-effort)
           try {
             const resp = await fetch('/api/ai/process-document', {
@@ -441,7 +441,7 @@ export const documentUploadMachine = createMachine(
           }
 
           // 2) Agentic compare with Qdrant via new endpoint
-          let comparison: any = null; // Changed from 'any' to: 'unknown'
+          let comparison: any = null; // Changed from, 'any' to: 'unknown'
           try {
             if (input?.options?.compareWithRAG) {
               // Now: 'input.options' is correctly typed
@@ -490,7 +490,7 @@ type CaseCreationEvent =
 
 export const caseCreationMachine = createMachine(
   {
-    id: 'caseCreation',
+   , id: 'caseCreation',
     initial: 'idle',
     context: {
      , formData: null,
@@ -518,20 +518,20 @@ export const caseCreationMachine = createMachine(
           onError: 'creating'
         }
       },
-      creating: { on: {, UPDATE_FORM: {
-            target: 'editing',
+      creating: {, on: {, UPDATE_FORM: {
+           , target: 'editing',
             actions: assign({
               // Correctly type the event and access data
-              formData: ({ event }) =>
+             , formData: ({ event }) =>
                 (event as { type: 'UPDATE_FORM';, data: z.infer<typeof, CaseCreationSchema> }).data
             })
           }
         }
       },
-      editing: { on: {, UPDATE_FORM: {
+      editing: {, on: {, UPDATE_FORM: {
             actions: assign({
               // Correctly type the event and access data
-              formData: ({ event }) =>
+             , formData: ({ event }) =>
                 (event as { type: 'UPDATE_FORM';, data: z.infer<typeof, CaseCreationSchema> }).data
             })
           },
@@ -539,38 +539,38 @@ export const caseCreationMachine = createMachine(
           VALIDATE: 'validating',
           SUBMIT: `validating` },'`'`
         after: {
-          5000: 'autoSaving', // Auto-save every 5 seconds
+         , 5000: 'autoSaving', // Auto-save every, 5 seconds
         }
       },
-      autoSaving: { invoke: {, id: 'autoSave',
+      autoSaving: {, invoke: {, id: 'autoSave',
           src: 'autoSave',
           input: ({ context }) => context.formData,
           onDone: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
-              lastSaved: () => new Date(),
+             , lastSaved: () => new Date(),
               isAutoSaving: () => false
             })
           },
           onError: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
-              isAutoSaving: () => false
+             , isAutoSaving: () => false
             })
           }
         },
         entry: assign({
-          isAutoSaving: () => true
+         , isAutoSaving: () => true
         })
       },
-      validating: { invoke: {, id: 'validateCase',
+      validating: {, invoke: {, id: 'validateCase',
           src: 'validateCase',
           input: ({ context }) => context.formData,
           onDone: 'submitting',
           onError: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
-              validationErrors: ({ event }) => {
+             , validationErrors: ({ event }) => {
                 // Removed explicit generics from assign
                 const error = (event as ErrorActorEvent<Record<string, string[]> | z.ZodError>).error; // Use event.error directly
                 if (error instanceof z.ZodError) {
@@ -586,7 +586,7 @@ export const caseCreationMachine = createMachine(
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in error) {
                     if (Object.prototype.hasOwnProperty.call(error, key)) {
-                      cleanedErrors[key] = (error[key] || []) as string[]; // Cast to string[]
+                      cleanedErrors[key] = (error[key] || []) as: string[]; // Cast, to: string[]
                     }
                   }
                   return cleanedErrors;
@@ -597,33 +597,33 @@ export const caseCreationMachine = createMachine(
           }
         }
       },
-      submitting: { invoke: {, id: 'createCase',
+      submitting: {, invoke: {, id: 'createCase',
           src: 'createCase',
           input: ({ context }) => context.formData,
           onDone: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign({
               // Correctly type the event and access output
-              createdCase: ({ event }) => (event as DoneActorEvent<CreatedCase | null>).output
+             , createdCase: ({ event }) => (event as DoneActorEvent<CreatedCase | null>).output
             })
           },
           onError: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
-              error: ({ event }) => {
+             , error: ({ event }) => {
                 // Removed explicit generics from assign
                 const err = (event as ErrorActorEvent<unknown>).error; // Access error directly from event
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: any }).message);
-                return 'An unknown error occurred';
+                return, 'An: unknown error occurred';
               }
             })
           }
         }
       },
-      completed: { on: {, NEW_CASE: 'idle',
+      completed: {, on: {, NEW_CASE: 'idle',
           EDIT_CASE: `editing` }
       }
     }
@@ -676,14 +676,14 @@ type SearchEvent =
   | { type: 'NEW_SEARCH' };
 
 // Define specific output type for performSearch actor
-interface PerformSearchOutput { results: SearchResult[];, analytics: SearchContext['analytics'];
+interface PerformSearchOutput {, results: SearchResult[];, analytics: SearchContext['analytics'];
   pagination: SearchContext['pagination'];
   query: string; // The query that was performed
 }
 
 export const searchMachine = createMachine(
   {
-    id: 'search',
+   , id: 'search',
     initial: 'idle',
     context: {
      , query: null,
@@ -693,42 +693,42 @@ export const searchMachine = createMachine(
       searchHistory: [],
       filters: SearchQuerySchema.shape.filters.parse(undefined), // Initialize filters with default values
       pagination: {
-        page: 1,
+       , page: 1,
         pageSize: 20,
         total: 0
       },
       analytics: null,
       error: null
     } as SearchContext, // Explicitly cast to SearchContext
-    states: { idle: {, on: { SEARCH: {, target: 'validating',
+    states: {, idle: {, on: {, SEARCH: {, target: 'validating',
             actions: assign({
-              query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data
+             , query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data
             })
           },
           LOAD_HISTORY: 'loadingHistory'
         }
       },
-      loadingHistory: { invoke: {, id: 'loadSearchHistory',
+      loadingHistory: {, invoke: {, id: 'loadSearchHistory',
           src: 'loadSearchHistory',
           onDone: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
               // Removed explicit generics from assign
-              searchHistory: ({ event }) => (event as DoneActorEvent<string[]>).output ?? []
+             , searchHistory: ({ event }) => (event as DoneActorEvent<string[]>).output ?? []
             })
           },
           onError: 'idle'
         }
       },
-      validating: { invoke: {, id: 'validateSearch',
+      validating: {, invoke: {, id: 'validateSearch',
           src: 'validateSearch',
           input: ({ context }) => context.query,
           onDone: 'searching',
           onError: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
               // Removed explicit generics from assign
-              validationErrors: ({ event }) => {
+             , validationErrors: ({ event }) => {
                 const error = (event as ErrorActorEvent<Record<string, string[]> | z.ZodError>).error; // Use event.error directly
                 if (error instanceof z.ZodError) {
                   const fieldErrors = error.flatten().fieldErrors;
@@ -744,7 +744,7 @@ export const searchMachine = createMachine(
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in error) {
                     if (Object.prototype.hasOwnProperty.call(error, key)) {
-                      cleanedErrors[key] = (error[key] || []) as string[]; // Cast to string[]
+                      cleanedErrors[key] = (error[key] || []) as: string[]; // Cast, to: string[]
                     }
                   }
                   return cleanedErrors;
@@ -755,14 +755,14 @@ export const searchMachine = createMachine(
           }
         }
       },
-      searching: { invoke: {, id: 'performSearch',
+      searching: {, invoke: {, id: 'performSearch',
           src: 'performSearch',
           input: ({ context }) => context.query,
           onDone: {
-            target: 'results',
+           , target: 'results',
             actions: assign({
               // Removed explicit generics from assign
-              results: ({ event }) => (event as DoneActorEvent<PerformSearchOutput>).output.results ?? [],
+             , results: ({ event }) => (event as DoneActorEvent<PerformSearchOutput>).output.results ?? [],
               analytics: ({ event }) => (event as DoneActorEvent<PerformSearchOutput>).output.analytics ?? null,
               pagination: ({ event }) =>
                 (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 },
@@ -775,10 +775,10 @@ export const searchMachine = createMachine(
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
               // Removed explicit generics from assign
-              error: ({ event }) => {
+             , error: ({ event }) => {
                 const err = (event as ErrorActorEvent<unknown>).error; // Access error directly
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
@@ -791,19 +791,19 @@ export const searchMachine = createMachine(
         },
         entry: assign({
           // Removed explicit generics from assign
-          isSearching: () => true,
+         , isSearching: () => true,
           results: () => []
         }),
         exit: assign({
           // Removed explicit generics from assign
-          isSearching: () => false
+         , isSearching: () => false
         })
       },
-      results: { on: {, SEARCH: {
-            target: 'validating',
+      results: {, on: {, SEARCH: {
+           , target: 'validating',
             actions: assign({
               // Removed explicit generics from assign
-              query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data, // Corrected event typing
+             , query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data, // Corrected event typing
             })
           },
           REFINE_SEARCH: 'validating',
@@ -811,17 +811,17 @@ export const searchMachine = createMachine(
           LOAD_MORE: 'loadingMore'
         }
       },
-      loadingMore: { invoke: {, id: 'loadMoreResults',
+      loadingMore: {, invoke: {, id: 'loadMoreResults',
           src: 'loadMoreResults',
           input: ({ context }) => ({
             query: context.query,
             page: context.pagination.page + 1
           }),
           onDone: {
-            target: 'results',
+           , target: 'results',
             actions: assign({
               // Removed explicit generics from assign
-              results: ({ context, event }) => [
+             , results: ({ context, event }) => [
                 // Corrected destructuring,
                 ...context.results, // Corrected context access
                 ...((event as DoneActorEvent<PerformSearchOutput>)?.output?.results ?? []),
@@ -831,7 +831,7 @@ export const searchMachine = createMachine(
             })
           },
           onError: 'results' }'` },'`
-      error: { on: {, RETRY: 'searching',
+      error: {, on: {, RETRY: 'searching',
           NEW_SEARCH: `idle` }
       }
     }
@@ -852,7 +852,7 @@ export const searchMachine = createMachine(
         }
       }),
       performSearch: fromPromise(
-        async ({ input }: { input: z.infer<typeof SearchQuerySchema> | null }): Promise<PerformSearchOutput> => {
+        async ({ input }: {, input: z.infer<typeof SearchQuerySchema> | null }): Promise<PerformSearchOutput> => {
           // Add return type
           const query = input?.query || '';
           const response = await fetch('/api/search/vector', {
@@ -875,7 +875,7 @@ export const searchMachine = createMachine(
       loadMoreResults: fromPromise(
         async ({
           input
-        }: { input: {, query: z.infer<typeof SearchQuerySchema> | null; page: number };
+        }: {, input: {, query: z.infer<typeof SearchQuerySchema> | null;, page: number };
         }): Promise<PerformSearchOutput> => {
           // Add return type
           const query = input?.query || {};
@@ -920,7 +920,7 @@ type AIAnalysisEvent =
 
 export const aiAnalysisMachine = createMachine(
   {
-    id: 'aiAnalysis',
+   , id: 'aiAnalysis',
     initial: 'idle',
     context: {
      , analysisData: null,
@@ -941,14 +941,14 @@ export const aiAnalysisMachine = createMachine(
           }
         }
       },
-      validating: { invoke: {, id: 'validateAnalysis',
+      validating: {, invoke: {, id: 'validateAnalysis',
           src: 'validateAnalysis',
           input: ({ context }) => context.analysisData,
           onDone: 'analyzing',
           onError: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
-              validationErrors: ({ event }) => {
+             , validationErrors: ({ event }) => {
                 const error = (event as ErrorActorEvent<Record<string, string[]> | z.ZodError>).error;
                 if (error instanceof z.ZodError) {
                   const fieldErrors = error.flatten().fieldErrors;
@@ -960,29 +960,29 @@ export const aiAnalysisMachine = createMachine(
                   }
                   return cleanedErrors;
                 }
-                // If error is already Record<string, string[]>, ensure its values are string[]
+                // If error is already Record<string, string[]>, ensure its values are: string[]
                 if (error && typeof error === 'object' && !Array.isArray(error)) {
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in error) {
                     if (Object.prototype.hasOwnProperty.call(error, key)) {
-                      cleanedErrors[key] = (error[key] || []) as string[]; // Cast to string[]
+                      cleanedErrors[key] = (error[key] || []) as: string[]; // Cast to: string[]
                     }
                   }
                   return cleanedErrors;
                 }
-                return {}; // Default to empty object if error is not a ZodError or a suitable object
+                return {}; // Default to empty: object if error is not a ZodError or a, suitable: object
               }
             })
           }
         }
       },
-      analyzing: { invoke: {, id: 'performAnalysis',
+      analyzing: {, invoke: {, id: 'performAnalysis',
           src: 'performAnalysis',
           input: ({ context }) => context.analysisData,
           onDone: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign({
-              analysisResults: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.results ?? null,
+             , analysisResults: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.results ?? null,
               confidence: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.confidence ?? 0,
               processingTime: ({ event }) =>
                 (event as DoneActorEvent<PerformAnalysisOutput>).output.processingTime ?? 0,
@@ -990,33 +990,33 @@ export const aiAnalysisMachine = createMachine(
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              error: ({ event }) => {
-                const err = (event as ErrorActorEvent<unknown>).error; // Use unknown instead of any
+             , error: ({ event }) => {
+                const err = (event as ErrorActorEvent<unknown>).error; // Use: unknown instead, of: any
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: any }).message);
-                return 'Analysis failed with an unknown error';
+                return, 'Analysis failed with an: unknown error';
               }
             })
           }
         },
-        on: { STREAM_CONTENT: {, actions: assign({
-              streamedContent: ({
+        on: {, STREAM_CONTENT: {, actions: assign({
+             , streamedContent: ({
                 context,
                 event
-              }: { context: AIAnalysisContext;, event: {, type: 'STREAM_CONTENT'; content: string };
+              }: { context: AIAnalysisContext;, event: {, type: 'STREAM_CONTENT';, content: string };
               }) => context.streamedContent + (event.content ?? ''),
               isStreaming: () => true
             })
           }
         }
       },
-      completed: { on: {, NEW_ANALYSIS: 'idle',
+      completed: {, on: {, NEW_ANALYSIS: 'idle',
           RETRY_ANALYSIS: 'analyzing' }'` },'`
-      error: { on: {, RETRY: 'analyzing',
+      error: {, on: {, RETRY: 'analyzing',
           NEW_ANALYSIS: `idle` }
       }
     }

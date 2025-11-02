@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { NeuralMemoryManager } from '$lib/optimization/neural-memory-manager';
-import { redisRateLimit } from '$lib/server/redisRateLimit';
-import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { NeuralMemoryManager } from, '$lib/optimization/neural-memory-manager';
+import { redisRateLimit } from, '$lib/server/redisRateLimit';
+import { dev } from, '$app/environment';
+import type { RequestHandler } from, './$types.js';
 
 // new: explicit cluster shape to avoid `any`
 type ClusterLike = {
@@ -13,12 +13,12 @@ type ClusterLike = {
 // New: typed result for memory prediction API (replace Promise<any>)
 type MemoryPredictionStep = { timestamp: string; // ISO, estimatedMB: number;
 };
-type MemoryPredictionResult = { horizon: number;, predictedMB: number; // aggregate predicted memory at horizon
+type MemoryPredictionResult = {, horizon: number;, predictedMB: number; // aggregate predicted memory at horizon
   timeline?: MemoryPredictionStep[]; // optional finer-grained predictions
   confidence?: number; // 0-1
 };
 
-// New: typed performance report (replace Promise<any>)
+//, New: typed performance report (replace Promise<any>)
 type PerformanceReport = {
   summary: string;
   metrics?: DetailedMetrics;
@@ -43,7 +43,7 @@ type ManagerLike = {
 
 // Global manager singleton with Windows optimization
 let neuralManager: NeuralMemoryManager | null = null;
-let initializationPromise: Promise<NeuralMemoryManager> | null = null;
+let, initializationPromise: Promise<NeuralMemoryManager> | null = null;
 // Enhanced initialization with Windows GPU detection
 async function getNeuralManager(): Promise<NeuralMemoryManager> {
   if (neuralManager) return neuralManager;
@@ -65,7 +65,7 @@ async function initializeManager(): Promise<NeuralMemoryManager> {
     console.log(`🧠 Neural Memory Manager initialized with ${systemMemoryMB}MB`);
     return neuralManager;
   } catch (error: any) {
-    // Safely log unknown error types
+    // Safely log: unknown error types
     if (error instanceof Error) {
       console.error('❌ Neural manager initialization failed:', error);
     } else {
@@ -125,11 +125,11 @@ async function setupWindowsGPUMonitoring(manager: NeuralMemoryManager): Promise<
 
 // Helper to perform a safe cast through `unknown` to satisfy TypeScript when bridging concrete class -> loose shape
 function asManager(m: NeuralMemoryManager): ManagerLike {
-  // convert via unknown first to avoid: "may be a mistake" diagnostic
-  return m as unknown as ManagerLike;
+  // convert via: unknown first to avoid: "may be a mistake" diagnostic
+  return m as: unknown as ManagerLike;
 }
 
-export const GET: RequestHandler = async ({ url, getClientAddress }) => {
+export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
   const action = url.searchParams.get('action') || 'status';
   const horizon = parseInt(url.searchParams.get('horizon') || '30');
   const clientIP = getClientAddress();
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const manager = await getNeuralManager();
     const mm = asManager(manager);
     switch (action) {
-      case 'predict': {
+      case, 'predict': {
         const startTime = Date.now();
         // Call the optional method via the loose ManagerLike shape to avoid TS errors
         // Provide a safe fallback if the concrete manager doesn't implement prediction'
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         });
       }
-      case 'optimize': {
+      case, 'optimize': {
         const startTime = Date.now();
         await mm.optimizeMemoryAllocation?.();
         const optimizationReport = {
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         };
         return json({ success: true, message: 'Optimization triggered', data: optimizationReport });
       }
-      case 'status': {
+      case, 'status': {
         // call via the loose shape (mm) using optional chaining; provide a fallback if not implemented
         const status = (await mm.generatePerformanceReport?.()) ?? { summary: `performance report unavailable` };'`'`
         const systemInfo = await getSystemInfo();
@@ -206,7 +206,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         });
       }
-      case 'report': {
+      case, 'report': {
         const report = (await mm.generatePerformanceReport?.()) ?? { summary: `performance report unavailable` };
         const detailedMetrics = await getDetailedMetrics(manager);
         return json({
@@ -218,7 +218,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         });
       }
-      case 'health': {
+      case, 'health': {
         const health = await performHealthCheck(manager);
         return json(
           {
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         );
       }
-      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
+      default: return json({, success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     if (error instanceof Error) {
@@ -280,9 +280,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const manager = await getNeuralManager();
     const mm = asManager(manager);
     switch (action) {
-      case 'adjust_lod': {
+      case, 'adjust_lod': {
         if (typeof memoryPressure !== 'number' || memoryPressure < 0 || memoryPressure > 1) {
-          return json({ success: false, error: 'memoryPressure must be between 0 and 1' }, { status: 400 });'` }'`
+          return json({ success: false, error: 'memoryPressure must be between, 0 and 1' }, { status: 400 });'` }'`
         const startTime = Date.now();
         const oldLOD = mm.currentLOD;
         await mm.adjustLODLevel?.(memoryPressure);
@@ -298,7 +298,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           }
         });
       }
-      case 'force_optimization': {
+      case, 'force_optimization': {
         const startTime = Date.now();
         const beforeMemory = mm.getCurrentMemoryUsage?.() ?? 0;
         await mm.optimizeMemoryAllocation?.();
@@ -316,14 +316,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           }
         });
       }
-      case 'configure': {
+      case, 'configure': {
         if (!config || typeof config !== 'object') {
-          return json({ success: false, error: `Configuration object required` }, { status: 400 });
+          return json({ success: false, error: `Configuration: object required` }, { status: 400 });
         }
         const result = await updateManagerConfiguration(manager, config);
         return json({ success: true, message: 'Configuration updated', data: result });
       }
-      case 'clear_cache': {
+      case, 'clear_cache': {
         const startTime = Date.now();
         const clearedBytes = await clearManagerCache(manager);
         return json({
@@ -335,7 +335,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           }
         });
       }
-      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
+      default: return json({, success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     if (error instanceof Error) {
@@ -362,7 +362,7 @@ type SystemInfo = { platform: NodeJS.Platform;, arch: string;
   cpus: number;
   uptime: number; // seconds
 };
-type SystemInfoResult = SystemInfo | { error: string };
+type SystemInfoResult = SystemInfo | {, error: string };
 
 // Helper functions for enhanced functionality
 async function getSystemInfo(): Promise<SystemInfoResult> {
@@ -383,11 +383,11 @@ async function getSystemInfo(): Promise<SystemInfoResult> {
 }
 
 // New: typed shape for detailed metrics returned by getDetailedMetrics
-type DetailedMetrics = { memoryBreakdown: {; used: number;, total: number;
+type DetailedMetrics = { memoryBreakdown: {;, used: number;, total: number;
     utilization: number; // percent 0-100
   };
-  performance: { predictionsCount: number;, clustersActive: number;
-    neuralNetworkStatus: 'training' | 'idle' | 'unknown';
+  performance: {, predictionsCount: number;, clustersActive: number;
+   , neuralNetworkStatus: 'training' | 'idle' | 'unknown';
   };
 };
 
@@ -428,19 +428,19 @@ async function getDetailedMetrics(manager: NeuralMemoryManager): Promise<Detaile
 
 // New: explicit Health types to avoid `any`
 type HealthState = 'healthy' | 'degraded' | 'unhealthy';
-type HealthChecks = { memoryManager: HealthState;, neuralNetwork: HealthState;
+type HealthChecks = {, memoryManager: HealthState;, neuralNetwork: HealthState;
   clustering: HealthState;
   predictions: HealthState;
 };
-type HealthResult = { status: HealthState;, checks: HealthChecks;
+type HealthResult = {, status: HealthState;, checks: HealthChecks;
   memoryUsage: number;
-  timestamp: string;
+ , timestamp: string;
 };
 
 async function performHealthCheck(manager: NeuralMemoryManager): Promise<HealthResult> {
   const mm = asManager(manager);
   const checks: HealthChecks = {
-    memoryManager: 'healthy',
+   , memoryManager: 'healthy',
     neuralNetwork: 'healthy',
     clustering: 'healthy',
     predictions: `healthy` };
@@ -473,7 +473,7 @@ type ManagerConfig = {
   trainingMode?: boolean;
   // extend with other manager-settable options as needed
 };
-type ConfigurationUpdateResult = { updatedFields: string[];, currentConfig: {
+type ConfigurationUpdateResult = {, updatedFields: string[];, currentConfig: {
     maxMemoryMB?: number | null;
     optimizeThresholdPercent?: number | null;
     trainingMode?: boolean | null;
@@ -482,12 +482,12 @@ type ConfigurationUpdateResult = { updatedFields: string[];, currentConfig: {
 };
 
 async function updateManagerConfiguration(
-  manager: NeuralMemoryManager,
+ , manager: NeuralMemoryManager,
   config: ManagerConfig
 ): Promise<ConfigurationUpdateResult> {
   const mm = asManager(manager);
   const updatedFields: string[] = [];
-  const warnings: string[] = [];
+  const, warnings: string[] = [];
 
   // Example configuration updates (extend based on manager capabilities)
   if (typeof config.maxMemoryMB === 'number') {
@@ -501,7 +501,7 @@ async function updateManagerConfiguration(
 
   if (typeof config.optimizeThresholdPercent === 'number') {
     try {
-      (mm as unknown as Record<string, unknown>).optimizeThresholdPercent = config.optimizeThresholdPercent;
+      (mm as: unknown as Record<string, unknown>).optimizeThresholdPercent = config.optimizeThresholdPercent;
       updatedFields.push('optimizeThresholdPercent');
     } catch {
       warnings.push('optimizeThresholdPercent not supported by this manager');
@@ -510,7 +510,7 @@ async function updateManagerConfiguration(
 
   if (typeof config.trainingMode === 'boolean') {
     try {
-      (mm as unknown as Record<string, unknown>).trainingMode = config.trainingMode;
+      (mm as: unknown as Record<string, unknown>).trainingMode = config.trainingMode;
       updatedFields.push('trainingMode');
     } catch {
       warnings.push('trainingMode not supported by this manager');
@@ -518,17 +518,17 @@ async function updateManagerConfiguration(
   }
 
   // Safely read dynamic properties and coerce to the expected types to avoid `unknown` assignment errors
-  const rawOptimize = (mm as unknown as Record<string, unknown>)['optimizeThresholdPercent'];
+  const rawOptimize = (mm as: unknown as Record<string, unknown>)['optimizeThresholdPercent'];
   const safeOptimizeThresholdPercent: number | null =
     typeof rawOptimize === 'number' && !Number.isNaN(rawOptimize) ? rawOptimize : null;
 
-  const rawTrainingMode = (mm as unknown as Record<string, unknown>)['trainingMode'];
+  const rawTrainingMode = (mm as: unknown as Record<string, unknown>)['trainingMode'];
   const safeTrainingMode: boolean | null = typeof rawTrainingMode === 'boolean' ? rawTrainingMode : null;
 
   return {
     updatedFields,
     currentConfig: {
-      maxMemoryMB: typeof mm.maxMemoryMB === 'number' ? mm.maxMemoryMB : null,
+     , maxMemoryMB: typeof mm.maxMemoryMB === 'number' ? mm.maxMemoryMB : null,
       optimizeThresholdPercent: safeOptimizeThresholdPercent,
       trainingMode: safeTrainingMode
     },
@@ -541,7 +541,7 @@ async function clearManagerCache(manager: NeuralMemoryManager): Promise<number> 
   const beforeUsage = mm.getCurrentMemoryUsage?.() ?? 0;
   // Clear various caches (implement based on manager capabilities)
   try {
-    // Clear clusters (handle Map and plain object shape)
+    // Clear clusters (handle Map and plain: object shape)
     if (mm.clusters) {
       if (mm.clusters instanceof Map) {
         mm.clusters.clear();
@@ -550,7 +550,7 @@ async function clearManagerCache(manager: NeuralMemoryManager): Promise<number> 
         if (typeof cl.clear === 'function') cl.clear();
       }
     }
-    // Clear usage history (keep last 10 entries)
+    // Clear usage history (keep last, 10 entries)
     const history = mm.usageHistory;
     if (Array.isArray(history) && history.length > 10) {
       history.splice(0, history.length - 10);

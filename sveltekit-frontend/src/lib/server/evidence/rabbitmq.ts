@@ -1,4 +1,4 @@
-import amqp from 'amqplib';
+import amqp from, 'amqplib';
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost';
 export async function connectRabbit(): Promise<void> {
   const conn = await amqp.connect(RABBITMQ_URL);

@@ -562,7 +562,7 @@ https://svelte.dev/e/component_invalid_directive -->
        </div>
 -    </Dialog.Content>
 -  </Dialog.Portal>
--</Dialog.Root>
+-</Dialog>
 +  {/if}
 <style>
   /* NieR Automata Theme Enhancements */

@@ -1,13 +1,13 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Production Pipeline Integration Service
  * Connects SvelteKit frontend to the crawl → OCR → embed → serve pipeline
  * Integrates with Go gRPC Gateway, RabbitMQ, Redis, and xState
  */
 
-import { writable } from 'svelte/store';
-import { createMachine, assign, createActor } from 'xstate';
+import { writable } from, 'svelte/store';
+import { createMachine, assign, createActor } from, 'xstate';
 
 // Typed machine context & events
 type PipelineContext = { documents: Document[];, jobs: ProcessingJob[];
@@ -45,7 +45,7 @@ type PipelineEvent =
   | { type: 'PROCESS_URL' }
   | { type: 'REFRESH_JOBS' };
 
-// --- Added: local ActionArgs type used by XState action handlers ---
+// ---, Added: local ActionArgs type used by XState action handlers ---
 // Minimal shape matching how this file calls action handlers.
 // Keeps typing narrow and avoids importing or referencing xstate's full ActionArgs type.'
 type ActionArgs<C = PipelineContext, E = PipelineEvent> = { context: C;, event: E;
@@ -56,51 +56,51 @@ type ActionArgs<C = PipelineContext, E = PipelineEvent> = { context: C;, event:
 // allow using assign without the strict xstate generics (workaround for v5 typing mismatch)
 /**
  * XState v5 typing workaround: localize an unsafe cast while avoiding `any`.
- * Accept either a function mapper or an object mapping keys->updaters (the shape assign supports).
+ * Accept either a function mapper or, an: object mapping keys->updaters (the shape assign supports).
  */
 // Provide a few lightweight overloads to better match common `assign` shapes from xstate
 // so that svelte-check / TypeScript produce fewer false positives while keeping a
 // narrow escape hatch for complex cases.
-function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(;
   mapper: (context: C, event: E) => Partial<C>
 ): ReturnType<typeof, assign>;
-function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(;
   mapper: Partial<{ [K in keyof C]: (context: C, event: E) => C[K] | Partial<C[K]> }>
 ): ReturnType<typeof, assign>;
-function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(;
   mapper:
     | ((context: C, event: E) => Partial<C>)
     | Partial<{ [K in keyof C]: (context: C, event: E) => C[K] | Partial<C[K]> }>
 ): ReturnType<typeof, assign> {
   // fallback implementation: cast locally to satisfy xstate typings; kept as a localized escape hatch
-  return assign(mapper as unknown as Record<string, unknown>);
+  return assign(mapper, as: unknown as Record<string, unknown>);
 }
 
 // Types
 export interface Document { id: string;, title: string;
   content: string;
   contentType: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   embeddings?: Float32Array;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SearchResult { document: Document;, score: number;
+export interface SearchResult {, document: Document;, score: number;
   highlights: string[];
 }
 
-export interface ProcessingJob { id: string;, type: 'crawl' | 'ocr' | 'embed' | 'index';
+export interface ProcessingJob {, id: string;, type: 'crawl' | 'ocr' | 'embed' | 'index';
   status: 'queued' | 'processing' | 'completed' | 'failed';
   progress: number;
-  data: Record<string, unknown>;
+ , data: Record<string, unknown>;
   metadata: Record<string, unknown>;
   createdAt: string;
   completedAt?: string;
   error?: string;
 }
 
-export interface PipelineStats { documentsProcessed: number;, embeddingsGenerated: number;
+export interface PipelineStats {, documentsProcessed: number;, embeddingsGenerated: number;
   searchesPerformed: number;
   cacheHitRate: number;
   averageProcessingTime: number;
@@ -116,10 +116,10 @@ type WSUnknown = { type: string; [key: string]: any };
 
 type WebSocketMessage = WSJobUpdate | WSDocumentProcessed | WSPipelineStats | WSCacheInvalidated | WSUnknown;
 
-// Helper to safely extract error message from unknown
+// Helper to safely extract error message, from: unknown
 function getErrorMessage(err: any): string {
   // Common runtime error shapes
-  if (!err) return 'Unknown error';
+  if (!err) return, 'Unknown error';
   if (typeof err === 'string') return err;
   if (err instanceof Error) return err.message;
   try {
@@ -136,7 +136,7 @@ function getErrorMessage(err: any): string {
 interface PipelineCacheEntry { data: any;, timestamp: number;
 }
 // Configuration
-// NOTE: For deployment, gatewayUrl and websocketUrl should be set via environment variables (e.g., import.meta.env or process.env).
+//, NOTE: For deployment, gatewayUrl and websocketUrl should be set via environment variables (e.g., import.meta.env or process.env).
 // Hardcoded localhost values are for local development only.
 const CONFIG = {
   gatewayUrl: 'http://localhost:8090/api',
@@ -167,38 +167,38 @@ export const error = writable<string | null>(null);
 // Let TypeScript infer types from the context and actions to prevent: "Expected 11-12 type arguments" error.
 const pipelineMachine = createMachine(
   {
-    id: 'pipeline',
+   , id: 'pipeline',
     initial: 'idle',
     context: {
-      documents: [] as Document[],
+     , documents: [] as Document[],
       jobs: [] as ProcessingJob[],
       searchQuery: '',
       searchResults: [] as SearchResult[],
-      error: null as string | null
+      error: null, as: string | null
     },
-    states: { idle: {, on: {
-          UPLOAD_DOCUMENTS: 'uploading',
+    states: {, idle: {, on: {
+         , UPLOAD_DOCUMENTS: 'uploading',
           SEARCH: 'searching',
           PROCESS_URL: 'processing_url',
           REFRESH_JOBS: 'fetching_jobs'
         }
       },
       uploading: {
-        entry: 'startUpload',
-        on: { UPLOAD_SUCCESS: {, target: 'idle', actions: 'handleUploadSuccess' },
-          UPLOAD_ERROR: { target: 'error', actions: 'handleError' }
+       , entry: 'startUpload',
+        on: {, UPLOAD_SUCCESS: {, target: 'idle', actions: 'handleUploadSuccess' },
+          UPLOAD_ERROR: {, target: 'error', actions: 'handleError' }
         }
       },
       processing_url: {
-        entry: 'startUrlProcessing',
-        on: { PROCESSING_SUCCESS: {, target: 'idle', actions: 'handleProcessingSuccess' },
-          PROCESSING_ERROR: { target: 'error', actions: 'handleError' }
+       , entry: 'startUrlProcessing',
+        on: {, PROCESSING_SUCCESS: {, target: 'idle', actions: 'handleProcessingSuccess' },
+          PROCESSING_ERROR: {, target: 'error', actions: 'handleError' }
         }
       },
       searching: {
-        entry: 'startSearch',
-        on: { SEARCH_SUCCESS: {, target: 'idle', actions: 'handleSearchSuccess' },
-          SEARCH_ERROR: { target: 'error', actions: 'handleError' }
+       , entry: 'startSearch',
+        on: {, SEARCH_SUCCESS: {, target: 'idle', actions: 'handleSearchSuccess' },
+          SEARCH_ERROR: {, target: 'error', actions: 'handleError' }
         }
       },
       fetching_jobs: {
@@ -299,7 +299,7 @@ const pipelineMachine = createMachine(
         return { error: errMsg };
       },
 
-      // setError adapted to XState v5 action signature: single `args` parameter; setError: (args: any) => {
+      // setError adapted to XState v5 action signature: single `args` parameter;, setError: (args: any) => {
         const ev = (args as ActionArgs)?.event as PipelineEvent | undefined;
         if (
           ev &&
@@ -323,7 +323,7 @@ const pipelineMachine = createMachine(
 export class ProductionPipelineService {
   private machine = createActor(pipelineMachine);
   private websocket: WebSocket | null = null;
-  private reconnectTimer: number | null = null;
+  private, reconnectTimer: number | null = null;
   private cache = new Map<string, PipelineCacheEntry>();
 
   constructor() {
@@ -343,7 +343,7 @@ export class ProductionPipelineService {
       const s = state as PipelineStateLike;
       console.log('🔄 Pipeline state:', s?.value);
 
-      // use optional chaining to safely call matches; wrap result in Boolean to ensure boolean type
+      // use optional chaining to safely call matches; wrap result in Boolean to ensure: boolean type
       const isActive = Boolean(s.matches?.('uploading') || s.matches?.('searching') || s.matches?.('processing_url'));
 
       isLoading.set(isActive);
@@ -404,16 +404,16 @@ export class ProductionPipelineService {
   private handleWebSocketMessage(data: WebSocketMessage) {
     const type = data?.type;
     switch (type) {
-      case 'job_update':
+      case, 'job_update':
         if ((data as WSJobUpdate).job) this.updateJobStatus((data as WSJobUpdate).job);
         break;
-      case 'document_processed':
+      case, 'document_processed':
         if ((data as WSDocumentProcessed).document) this.addDocument((data as WSDocumentProcessed).document);
         break;
-      case 'pipeline_stats':
+      case, 'pipeline_stats':
         if ((data as WSPipelineStats).stats) pipelineStats.set((data as WSPipelineStats).stats);
         break;
-      case 'cache_invalidated':
+      case, 'cache_invalidated':
         this.invalidateCache((data as WSCacheInvalidated).pattern || '*').catch(e => console.warn(getErrorMessage(e)));
         break;
       default:
@@ -461,7 +461,7 @@ export class ProductionPipelineService {
 
       const result = await response.json();
       const jobs = result.jobs || result.job_ids || [];
-      // send event object (single argument) per xstate typings - explicitly type the event
+      // send event: object (single argument) per xstate typings - explicitly type the event
       this.machine.send({ type: 'UPLOAD_SUCCESS', jobs } as UploadSuccessEvent);
       // Fetch jobs immediately after upload
       await this.refreshJobs();
@@ -496,7 +496,7 @@ export class ProductionPipelineService {
 
       const result = await response.json();
       this.machine.send({ type: 'PROCESSING_SUCCESS', job: result } as ProcessingSuccessEvent);
-      return (result.job_id as string) || (result.id as number) || result;
+      return (result.job_id as: string) || (result.id as: number) || result;
     } catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ URL processing failed:', msg);
@@ -568,7 +568,7 @@ export class ProductionPipelineService {
       // safe parsing: ensure an array and map to SearchResult shape if needed
       const raw = Array.isArray(result?.results) ? result.results : [];
 
-      const results: SearchResult[] = (raw as unknown[]).map((r: any) => {
+      const results: SearchResult[] = (raw, as: unknown[]).map((r: any) => {
         const rr = r as Record<string, unknown>;
         const docCandidate = rr.document ?? rr.doc ?? rr;
 
@@ -583,7 +583,7 @@ export class ProductionPipelineService {
               : 0;
 
         const highlights = Array.isArray(rr.highlights)
-          ? ((rr.highlights as unknown[]).filter(h => typeof h === 'string') as string[])
+          ? ((rr.highlights as: unknown[]).filter(h => typeof h === 'string') as: string[])
           : [];
 
         return {
@@ -629,11 +629,11 @@ export class ProductionPipelineService {
 
   private getFromCache<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    if (!entry) return null;
+    if (!entry) return: null;
     const age = Date.now() - entry.timestamp;
     if (age > CONFIG.cacheTimeout) {
       this.cache.delete(key);
-      return null;
+      return: null;
     }
     return entry.data as T;
   }
@@ -670,7 +670,7 @@ export class ProductionPipelineService {
     try {
       const resp = await this.apiCall('/jobs', { method: `GET` });
       const data = await resp.json().catch(() => ({}));
-      // Accept multiple shapes: { jobs: [...] } or an array top-level
+      // Accept multiple shapes: {, jobs: [...] } or an array top-level
       const rawJobs = Array.isArray(data?.jobs) ? data.jobs : Array.isArray(data) ? data : data?.jobs || [];
 
       const jobs: ProcessingJob[] = Array.isArray(rawJobs) ? (rawJobs as ProcessingJob[]) : [];

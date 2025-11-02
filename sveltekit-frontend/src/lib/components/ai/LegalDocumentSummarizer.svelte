@@ -4,14 +4,14 @@ Uses Gemma3 summarization service for converting 200-page legal documents into c
 Enhanced-bits UI integration with real-time progress and quality metrics
 -->
 <script, lang="ts">
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
-  import { Label } from '$lib/components/ui/label';
-  import { Button } from '$lib/components/ui/button';
-import type { Message } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
+  import { Label } from, '$lib/components/ui/label';
+  import { Button } from, '$lib/components/ui/button';
+import type { Message } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from, '$lib/components/ui/enhanced-bits.svelte';
   interface SummarizationRequest {
     document_id: string;
     title: string;
@@ -42,7 +42,7 @@ import type { Document } from '$lib/types';
       clarity_score: number;
       overall_rating: string;
     }
-    metadata: { [key: string]: any }
+   , metadata: { [key: string]: any }
   }
   // Component props
   interface Props {
@@ -55,7 +55,7 @@ import type { Document } from '$lib/types';
     onSummaryGenerated,
     serviceUrl = '/api/gemma3-summarization'
   }: Props = $props();
-  // State management using Svelte 5 runes
+  // State management using Svelte, 5 runes
   let documentTitle = $state<string>('');
   let documentContent = $state(defaultContent);
   let documentType = $state<'contract' | 'judgment' | 'brief' | 'statute'>('contract');
@@ -135,7 +135,7 @@ await checkServiceHealth();
         }
       }, 500);
       const request: SummarizationRequest = {
-        document_id: `doc_${Date.now()}`,
+       , document_id: `doc_${Date.now()}`,
         title: documentTitle,
         content: documentContent,
         document_type: documentType,
@@ -143,7 +143,7 @@ await checkServiceHealth();
         max_length: maxLength,
         focus: focusAreas,
         metadata: {
-          generated_at: new Date().toISOString(),
+         , generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
           content_length: documentContent.length
         }
@@ -190,9 +190,9 @@ await checkServiceHealth();
   }
   // Get quality color based on score
   function getQualityColor(score: number): string {
-    if (score >= 0.8) return 'text-green-600';
-    if (score >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 0.8) return, 'text-green-600';
+    if (score >= 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
   // Copy summary to clipboard
   async function copySummary(): Promise<void> {

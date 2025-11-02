@@ -2,16 +2,16 @@
  * QUIC-Go Integration Test API
  * Tests the integration between SvelteKit QUIC endpoints and Go microservices
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { ensureError } from '$lib/utils/ensure-error'
+import { json, error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { ensureError } from, '$lib/utils/ensure-error'
 
 // --- New Interfaces for Mock Responses ---
 interface EnhancedRAGResult { id: string;, content: string;
   score: number;
 }
 
-interface EnhancedRAGResponse { success: boolean;, results: EnhancedRAGResult[];
+interface EnhancedRAGResponse {, success: boolean;, results: EnhancedRAGResult[];
   query: string;
   totalResults: number;
   responseTime?: number;
@@ -19,7 +19,7 @@ interface EnhancedRAGResponse { success: boolean;, results: EnhancedRAGResult[]
   error?: string | null;
 }
 
-interface SemanticSearchResponse { success: boolean;, results: EnhancedRAGResult[];
+interface SemanticSearchResponse {, success: boolean;, results: EnhancedRAGResult[];
   query: string;
   totalResults: number;
   responseTime?: number;
@@ -27,13 +27,13 @@ interface SemanticSearchResponse { success: boolean;, results: EnhancedRAGResul
   error?: string | null;
 }
 
-interface UploadDocumentResponse { success: boolean;, documentId: string;
+interface UploadDocumentResponse {, success: boolean;, documentId: string;
   filename: string;
   size: number;
   processed: boolean;
 }
 
-interface UploadServiceHealthResponse { success: boolean;, status: string;
+interface UploadServiceHealthResponse {, success: boolean;, status: string;
   uptime: string;
   activeConnections: number;
   protocol: string;
@@ -41,7 +41,7 @@ interface UploadServiceHealthResponse { success: boolean;, status: string;
   error?: string | null;
 }
 
-interface GoClientRequestResponse { success: boolean;, service: string;
+interface GoClientRequestResponse {, success: boolean;, service: string;
   method: string;
   mockResponse: boolean;
   timestamp: string;
@@ -49,13 +49,13 @@ interface GoClientRequestResponse { success: boolean;, service: string;
 
 // --- New Interfaces for POST request payload and result ---
 
-interface EnhancedRagQueryPayload { query: string;, options: { maxResults: number; threshold: number };
+interface EnhancedRagQueryPayload {, query: string;, options: { maxResults: number; threshold: number };
 }
 
-interface EnhancedRagSemanticSearchPayload { query: string;, options: { collection: string; limit: number };
+interface EnhancedRagSemanticSearchPayload {, query: string;, options: { collection: string;, limit: number };
 }
 
-// Generic payload for other services, using unknown for values for better type safety than: 'any'
+// Generic payload for other services, using: unknown for values for better type safety, than: 'any'
 interface GenericClientPayload extends Record<string, unknown> {}
 
 // Union type for the payload in the POST request
@@ -63,17 +63,17 @@ type PostRequestPayload = EnhancedRagQueryPayload | EnhancedRagSemanticSearchPay
 
 // Interface for the POST request body (testConfig)
 interface PostTestConfig { service: string;, endpoint: string;
-  payload: PostRequestPayload;
+ , payload: PostRequestPayload;
 }
 
 // Union type for the result of the POST request (testResult)
 type PostTestResult = EnhancedRAGResponse | SemanticSearchResponse | UploadServiceHealthResponse | GoClientRequestResponse;
 
 interface GoServiceManager {
-  healthCheck(): Promise<{ success: boolean; message: string }>;
+  healthCheck(): Promise<{ success: boolean;, message: string }>;
   checkAllServices(): Promise<{ enhancedRAG: { success: boolean; status: string };
     uploadService: { success: boolean; status: string };
-    vectorDB: { success: boolean; status: string };
+    vectorDB: { success: boolean;, status: string };
   }>;
   getEnhancedRAG(): {
     ragQuery(query: string, options: {, maxResults: number;, threshold: number }): Promise<EnhancedRAGResponse>;
@@ -95,8 +95,8 @@ const goServiceManager: GoServiceManager = {
   },
   async checkAllServices() {
     return { enhancedRAG: {, success: true, status: 'healthy' },
-      uploadService: { success: true, status: 'healthy' },
-      vectorDB: { success: true, status: 'healthy' }
+      uploadService: {, success: true, status: 'healthy' },
+      vectorDB: {, success: true, status: 'healthy' }
     };
   },
   getEnhancedRAG() {
@@ -105,7 +105,7 @@ const goServiceManager: GoServiceManager = {
         return {
           success: true,
           results: [
-            { id: '1', content: 'Mock legal document result', score: 0.95 },
+            {, id: '1', content: 'Mock legal document result', score: 0.95 },
             { id: '2', content: 'Mock case law result', score: 0.87 }
           ],
           query,
@@ -117,12 +117,12 @@ const goServiceManager: GoServiceManager = {
       },
       async semanticSearch(
         query: string,
-        _options: {, collection: string; limit: number }
+        _options: {, collection: string;, limit: number }
       ): Promise<SemanticSearchResponse> {
         return {
           success: true,
           results: [
-            { id: '1', content: 'Mock semantic search result', score: 0.92 },
+            {, id: '1', content: 'Mock semantic search result', score: 0.92 },
             { id: '2', content: 'Mock legal context result', score: 0.84 }
           ],
           query,
@@ -178,7 +178,7 @@ const goServiceManager: GoServiceManager = {
 /*
  * GET /api/test/quic-go-integration - Test all QUIC-Go integrations
  */
-export const GET: RequestHandler = async ({ url: _url }) => {
+export const GET: RequestHandler = async ({, url: _url }) => {
   interface TestResultEntry { test: string;, status: 'PASS' | 'FAIL' | 'ERROR' | 'PARTIAL';
     details?: any;
     responseTime?: number;
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
     httpStatus?: number;
     statusText?: string;
   }
-  const testResults: Record<string, TestResultEntry> = {};
+  const, testResults: Record<string, TestResultEntry> = {};
   let overallSuccess = true;
   try {
     // Test 1: Go Service Manager Health Check
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       status: Object.values(servicesHealth).every(s => s.success) ? 'PASS' : 'PARTIAL',
       details: servicesHealth
     };
-    // Test 2: Enhanced RAG Service
+    // Test, 2: Enhanced RAG Service
     console.log('Testing Enhanced RAG service...');
     try {
       const enhancedRagClient = goServiceManager.getEnhancedRAG();
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       };
       overallSuccess = false;
     }
-    // Test 3: Vector Service via Enhanced RAG
+    // Test, 3: Vector Service via Enhanced RAG
     console.log('Testing Vector service...');
     try {
       const enhancedRagClient = goServiceManager.getEnhancedRAG();
@@ -249,7 +249,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       };
       overallSuccess = false;
     }
-    // Test 4: Upload Service
+    // Test, 4: Upload Service
     console.log('Testing Upload service...');
     try {
       const uploadClient = goServiceManager.getUploadService();
@@ -270,7 +270,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       };
       overallSuccess = false;
     }
-    // Test 5: QUIC Endpoints Integration Test
+    // Test, 5: QUIC Endpoints Integration Test
     console.log('Testing QUIC endpoints...');
     try {
       // Test RAG proxy endpoint
@@ -301,7 +301,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
     }
     // Summary
     const summary = {
-      overallStatus: overallSuccess ? 'ALL_TESTS_PASSED' : 'SOME_TESTS_FAILED',
+     , overallStatus: overallSuccess ? 'ALL_TESTS_PASSED' : 'SOME_TESTS_FAILED',
       timestamp: new Date().toISOString(),
       testsRun: Object.keys(testResults).length,
       testsPassed: Object.values(testResults).filter(t => t.status === 'PASS').length,
@@ -345,7 +345,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let testResult: PostTestResult;
     switch (service) {
-      case 'enhancedRag': {
+      case, 'enhancedRag': {
         const enhancedRagClient = goServiceManager.getEnhancedRAG();
         if (endpoint === 'ragQuery') {
           // Type assertion to narrow down the payload for ragQuery
@@ -362,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error(400, ensureError({ message: 'Unknown endpoint for enhancedRag, service: ${endpoint}' }));'' }
         break;
       }
-      case 'uploadService': {
+      case, 'uploadService': {
         const uploadClient = goServiceManager.getUploadService();
         if (endpoint === 'health') {
           // Health endpoint typically doesn't require a specific payload, or it's ignored

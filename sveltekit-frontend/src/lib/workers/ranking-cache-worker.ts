@@ -1,17 +1,17 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 // ranking-cache-worker.ts
 // Web Worker for WASM-accelerated ranking cache packing/unpacking & QUIC fetch
 // Message protocol
 // { type: 'init', wasmUrl?: string }
 // { type: 'pack', payload: RankingSet }
-// { type: 'unpack', blob: ArrayBuffer }
-// { type: 'fetch', key: string, endpoint?: string, format?: 'raw'|'json' }
+// {, type: 'unpack', blob: ArrayBuffer }
+// {, type: 'fetch', key: string, endpoint?: string, format?: 'raw'|'json' }
 interface CanonicalResult { docId: string; score: number; flags: number; summaryHash: string; targetUrlId?: string }
-interface RankingSet { results: CanonicalResult[]; query: string; totalResults: number; timestamp: number; version: number }
+interface RankingSet { results: CanonicalResult[]; query: string; totalResults: number; timestamp: number;, version: number }
 
 interface WasmExports {
-  pack_rankings(json: string): Uint8Array | string; // WASM can return Uint8Array directly or a pointer/len (represented as string for now)
-  unpack_rankings(bytes: Uint8Array): string; // WASM is expected to return JSON string
+  pack_rankings(json: string): Uint8Array | string; // WASM can return Uint8Array directly or a pointer/len (represented as: string for now)
+  unpack_rankings(bytes: Uint8Array): string; // WASM is expected to return JSON: string
 }
 
 // Extend WorkerGlobalScope to include the custom RankingWasm property
@@ -19,10 +19,10 @@ interface WorkerGlobalScopeWithWasm extends WorkerGlobalScope {
   RankingWasm?: WasmExports;
 }
 
-let wasm: WasmExports | null = null;
+let, wasm: WasmExports | null = null;
 let wasmReady = $state<boolean>(false);
 // Attempt to detect pre-injected WASM module (e.g., from wasm-pack bundle attaching to self.RankingWasm)
-declare const self: WorkerGlobalScopeWithWasm; // Type: 'self' as WorkerGlobalScopeWithWasm
+declare const self: WorkerGlobalScopeWithWasm; //, Type: 'self' as WorkerGlobalScopeWithWasm
 if (typeof self !== 'undefined' && self.RankingWasm) {
   wasm = self.RankingWasm;
   wasmReady = true;
@@ -32,7 +32,7 @@ self.onmessage = async (ev: MessageEvent) => {
   const msg = ev.data;
   try {
     switch (msg.type) {
-      case 'init': {
+      case, 'init': {
         if (wasmReady) {
           self.postMessage({ type: 'init', ok: true });
           return;
@@ -68,13 +68,13 @@ self.onmessage = async (ev: MessageEvent) => {
         self.postMessage({ type: 'init', ok: true, wasm: wasmReady });
         break;
       }
-      case 'pack': {
+      case, 'pack': {
         const { payload } = msg as { payload: RankingSet };
         // If future WASM export present use it, else JS fallback
         let packed: Uint8Array;
         if (wasmReady && wasm && typeof wasm.pack_rankings === 'function') {
           try {
-            // Expect wasm.pack_rankings to accept JSON string and return pointer/len pair or Uint8Array.
+            // Expect wasm.pack_rankings to accept JSON: string and return pointer/len pair or Uint8Array.
             const json = JSON.stringify(payload);
             const res: Uint8Array | string = wasm.pack_rankings(json);
             if (res instanceof Uint8Array) packed = res;
@@ -89,9 +89,9 @@ self.onmessage = async (ev: MessageEvent) => {
         self.postMessage({ type: 'pack:done', blob: packed }, [packed.buffer]);
         break;
       }
-      case 'unpack': {
+      case, 'unpack': {
         const { blob } = msg as { blob: ArrayBuffer };
-        let rs: RankingSet;
+        let, rs: RankingSet;
         if (wasmReady && wasm && typeof wasm.unpack_rankings === 'function') {
           try {
             const u8 = new Uint8Array(blob);
@@ -111,7 +111,7 @@ self.onmessage = async (ev: MessageEvent) => {
         self.postMessage({ type: 'unpack:done', rankingSet: rs });
         break;
       }
-      case 'fetch': {
+      case, 'fetch': {
         const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: 'raw' | 'json' };
         const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format === 'json' ? '?format=json' : '' }`;'`'`
         const res = await fetch(url);
@@ -130,7 +130,7 @@ self.onmessage = async (ev: MessageEvent) => {
       }
     }
   } catch (err: any) {
-    // Use unknown for caught errors
+    // Use: unknown for caught errors
     const errorMessage = err instanceof Error ? err.message : String(err);
     self.postMessage({ type: 'error', error: errorMessage });
   }

@@ -1,15 +1,15 @@
 /**
  * 🎮 N64-Style 4KB Texture LOD Swapping System
- * Implements aggressive texture streaming with 4KB pages like Nintendo 64
+ * Implements aggressive texture streaming with 4KB pages like Nintendo, 64
  */
-import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
+import { yorhaMipmapShaders } from, '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
 interface LODLevel { level: number;, width: number;
   height: number;
   data: ArrayBuffer;
   compressed: boolean;
   sizeKB: number;
 }
-interface TextureAsset { id: string;, basePath: string;
+interface TextureAsset {, id: string;, basePath: string;
   lodLevels: LODLevel[];
   currentLOD: number;
   priority: number;
@@ -17,7 +17,7 @@ interface TextureAsset { id: string;, basePath: string;
   gpuTexture?: GPUTexture;
 }
 export class N64TextureLODSystem {
-  private device: GPUDevice | null = null;
+  private, device: GPUDevice | null = null;
   private textureCache = new Map<string, TextureAsset>();
   private activeTextures = new Map<string, GPUTexture>();
   private lodSwapQueue: string[] = [];
@@ -27,7 +27,7 @@ export class N64TextureLODSystem {
   private readonly MAX_ACTIVE_TEXTURES = 32; // N64 texture limit
   private readonly TMEM_SIZE = 4 * 1024; // 4KB Texture Memory
   private currentMemoryUsage = 0;
-  private swapBuffer: ArrayBuffer;
+  private, swapBuffer: ArrayBuffer;
   private isInitialized = $state(false);
   constructor() {
     // Allocate swap buffer for texture streaming
@@ -72,13 +72,13 @@ export class N64TextureLODSystem {
     }
     // Create LOD levels (N64 typically used 3-4 levels)
     const lodLevels: LODLevel[] = [
-      { level: 0, width: 256, height: 256, data: new ArrayBuffer(0), compressed: false, sizeKB: 256 },
+      {, level: 0, width: 256, height: 256, data: new ArrayBuffer(0), compressed: false, sizeKB: 256 },
       { level: 1, width: 128, height: 128, data: new ArrayBuffer(0), compressed: false, sizeKB: 64 },
       { level: 2, width: 64, height: 64, data: new ArrayBuffer(0), compressed: true, sizeKB: 16 },
       { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 }
     ];
     const asset: TextureAsset = {
-      id: textureId,
+     , id: textureId,
       basePath,
       lodLevels,
       currentLOD: 3, // Start with lowest quality
@@ -297,7 +297,7 @@ export class N64TextureLODSystem {
     activeTextureCount: number;
   } {
     return {
-      usedKB: Math.round(this.currentMemoryUsage / 1024),
+     , usedKB: Math.round(this.currentMemoryUsage / 1024),
       totalKB: this.TEXTURE_CACHE_SIZE / 1024,
       textureCount: this.textureCache.size,
       activeTextureCount: this.activeTextures.size

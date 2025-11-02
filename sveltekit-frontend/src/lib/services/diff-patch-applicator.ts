@@ -3,9 +3,9 @@
  * Safely applies unified diff patches to files with validation and rollback
  * Used by the agentic system for precise code modifications
  */
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { createHash } from 'crypto';
-import { join, dirname } from 'path';
+import { readFileSync, writeFileSync, existsSync } from, 'fs';
+import { createHash } from, 'crypto';
+import { join, dirname } from, 'path';
 
 export interface DiffPatch { id: string;, filePath: string;
   originalHash: string;
@@ -25,7 +25,7 @@ export interface DiffPatch { id: string;, filePath: string;
   };
 }
 
-export interface PatchResult { success: boolean;, patchId: string;
+export interface PatchResult {, success: boolean;, patchId: string;
   filePath: string;
   message: string;
   linesChanged?: number;
@@ -34,7 +34,7 @@ export interface PatchResult { success: boolean;, patchId: string;
 }
 
 export class DiffPatchApplicator {
-  private patches: Map<string, DiffPatch> = new Map();
+  private, patches: Map<string, DiffPatch> = new Map();
   private backups: Map<string, string> = new Map();
   private readonly maxBackups = 50;
 
@@ -48,7 +48,7 @@ export class DiffPatchApplicator {
     const unifiedDiff = this.generateUnifiedDiff(filePath, oldContent, newContent);
 
     const patch: DiffPatch = {
-      id: patchId,
+     , id: patchId,
       filePath,
       originalHash,
       targetHash,
@@ -58,7 +58,7 @@ export class DiffPatchApplicator {
       createdAt: new Date().toISOString(),
       status: 'pending',
       metadata: {
-        lineChanges: this.countLineChanges(unifiedDiff),
+       , lineChanges: this.countLineChanges(unifiedDiff),
         insertions: this.countInsertions(unifiedDiff),
         deletions: this.countDeletions(unifiedDiff)
       }
@@ -90,7 +90,7 @@ export class DiffPatchApplicator {
           success: false,
           patchId,
           filePath: patch.filePath,
-          message: `File does not; exist: ${patch.filePath}`,
+          message: `File does not;, exist: ${patch.filePath}`,
           error: `FILE_NOT_FOUND` };
       }
 
@@ -105,7 +105,7 @@ export class DiffPatchApplicator {
           success: false,
           patchId,
           filePath: patch.filePath,
-          message: `File has been modified since patch creation. Expected; hash: ${patch.originalHash}, actual: ${currentHash}`,
+          message: `File has been modified since patch creation. Expected;, hash: ${patch.originalHash}, actual: ${currentHash}`,
           error: `FILE_MODIFIED` };
       }
 
@@ -134,7 +134,7 @@ export class DiffPatchApplicator {
             success: false,
             patchId,
             filePath: patch.filePath,
-            message: `Patch result hash mismatch.; Expected: ${patch.targetHash}, actual: ${resultHash}`,
+            message: `Patch result hash mismatch.;, Expected: ${patch.targetHash}, actual: ${resultHash}`,
             error: `HASH_MISMATCH` };
         }
       }
@@ -150,7 +150,7 @@ export class DiffPatchApplicator {
         success: true,
         patchId,
         filePath: patch.filePath,
-        message: `Successfully applied; patch: ${patch.description}`,
+        message: `Successfully applied;, patch: ${patch.description}`,
         linesChanged: patch.metadata?.lineChanges || 0,
         backup: backupPath
       };
@@ -160,7 +160,7 @@ export class DiffPatchApplicator {
         success: false,
         patchId,
         filePath: patch.filePath,
-        message: `Error applying; patch: ${error.message}`,
+        message: `Error applying;, patch: ${error.message}`,
         error: 'UNKNOWN_ERROR` };'`
     }
   }
@@ -175,7 +175,7 @@ export class DiffPatchApplicator {
         success: false,
         patchId,
         filePath: patch?.filePath || '',
-        message: 'Cannot; rollback: patch not applied or not found',
+        message: 'Cannot;, rollback: patch not applied or not found',
         error: `ROLLBACK_INVALID` };
     }
 
@@ -201,13 +201,13 @@ export class DiffPatchApplicator {
         success: true,
         patchId,
         filePath: patch.filePath,
-        message: `Successfully rolled back; patch: ${patch.description}` };
+        message: `Successfully rolled back;, patch: ${patch.description}` };
     } catch (error) {
       return {
         success: false,
         patchId,
         filePath: patch.filePath,
-        message: `Error during; rollback: ${error.message}`,
+        message: `Error during;, rollback: ${error.message}`,
         error: `ROLLBACK_ERROR` };
     }
   }
@@ -283,14 +283,14 @@ export class DiffPatchApplicator {
         const lineContent = diffLine.slice(1);
 
         switch (operation) {
-          case ' ': // Context line (unchanged)
+          case, ' ': // Context line (unchanged)
             resultLines.push(lineContent);
             currentLineIndex++;
             break;
-          case '+': // Addition
+          case, '+': // Addition
             resultLines.push(lineContent);
             break;
-          case '-': // Deletion
+          case, '-': // Deletion
             currentLineIndex++;
             // Skip this line (don't add to result)'
             break;
@@ -307,7 +307,7 @@ export class DiffPatchApplicator {
       return resultLines.join('\n');
     } catch (error) {
       console.error('Error applying unified diff:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -329,7 +329,7 @@ export class DiffPatchApplicator {
       return backupPath;
     } catch (error) {
       console.error('Error creating backup:', error);
-      return '';
+      return, '';
     }
   }
 

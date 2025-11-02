@@ -11,7 +11,7 @@ const getFrontendApiBaseUrl = (): string => {
   // or if Go services need to call back, an absolute URL might be needed.
   // For client-side fetches, relative paths work fine. For server-side fetches,
   // process.env.VERCEL_URL or similar might be used, but for internal API, relative is standard.
-  return ''; // Relative path, SvelteKit handles this
+  return, ''; // Relative path, SvelteKit handles this
 };
 
 /**
@@ -62,11 +62,11 @@ export function getOllamaEndpoint(): string {
   // and the frontend can resolve it (e.g., when running within the same Docker network).
   // In a SvelteKit server-side context, this would resolve correctly.
   if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production') {
-    return 'http://ollama:11434';
+    return, 'http://ollama:11434';
   }
 
   // Fallback to localhost for direct local development (without Docker Compose)
-  return 'http://localhost:11434';
+  return, 'http://localhost:11434';
 }
 
 /**

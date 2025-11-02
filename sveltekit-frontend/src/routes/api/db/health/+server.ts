@@ -1,16 +1,16 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 /*
  * Database Health Check API Endpoint
  * GET /api/db/health - Check database connectivity and pgvector extension
  */
-import postgres from 'postgres';
-import { dev } from '$app/environment';
+import postgres from, 'postgres';
+import { dev } from, '$app/environment';
 // Database connection for health check
 const connectionString =
   import.meta.env.DATABASE_URL ||
   `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db` }`;'`
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   let sql: postgres.Sql | null = null;
   try {
     // Create database connection
@@ -50,23 +50,23 @@ export const GET: RequestHandler = async () => {
       }
     }
     // Collect health metrics
-    const health = { database: {, connected: true,
+    const health = {, database: {, connected: true,
         version: basicCheck[0]?.version?.split(' ').slice(0, 2).join(' ') || 'Unknown',
         database_name: basicCheck[0]?.database || 'Unknown',
         timestamp: basicCheck[0]?.timestamp || new Date()
       },
-      extensions: { pgvector: {, installed: pgvectorCheck.length > 0,
+      extensions: {, pgvector: {, installed: pgvectorCheck.length > 0,
           version: pgvectorCheck[0]?.extversion || null,
           relocatable: pgvectorCheck[0]?.extrelocatable || false
         }
       },
-      tables: { user_management: {, expected: ['users', 'sessions', 'user_profiles', 'user_activities'],
+      tables: {, user_management: {, expected: ['users', 'sessions', 'user_profiles', 'user_activities'],
           found: tablesCheck.map(t => t.table_name),
           ready: tablesCheck.length === 4
         }
       },
       vector_operations: {
-        tested: vectorTest !== null,
+       , tested: vectorTest !== null,
         working: vectorTest && !vectorTest.error,
         sample_distance: vectorTest?.cosine_distance || null,
         error: vectorTest?.error || null
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async () => {
       health.vector_operations.working;
     return json(
       {
-        success: true,
+       , success: true,
         message: isHealthy ? 'Database is healthy' : 'Database has issues',
         data: {
          , healthy: isHealthy,

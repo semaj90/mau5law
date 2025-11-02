@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { EventEmitter } from 'events';
-import { OLLAMA_CONFIG, isLegalTask } from '../services/providers/ollama/config.js';
+import type { Document } from, '$lib/types';
+import { EventEmitter } from, 'events';
+import { OLLAMA_CONFIG, isLegalTask } from, '../services/providers/ollama/config.js';
 import type {
   OllamaGenerateRequest,
   OllamaResponse,
@@ -8,18 +8,18 @@ import type {
   LegalDocument,
   AnalysisResult,
   UserQuery
-} from './types.js';
-import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchestrator.js';
+} from, './types.js';
+import type { SelfPromptingSuggestion } from, '../../ai/intelligent-model-orchestrator.js';
 /**
  * Clean, single-definition EnhancedOllamaService that preserves the public API surface
  * and provides deterministic stub implementations so the codebase can compile and run.
  */
 class EnhancedOllamaService extends EventEmitter {
   private baseUrl: string = OLLAMA_CONFIG.baseUrl;
-  // avoid `any` — use unknown and cast on read when needed
+  // avoid `any` —, use: unknown and cast on read when needed
   private cache = new Map<string, unknown>();
   private availableModels: string[] = [];
-  private requestQueue: Array<() => Promise<void>> = [];
+  private, requestQueue: Array<() => Promise<void>> = [];
   private activeRequests = 0;
   constructor() {
     super();
@@ -61,14 +61,14 @@ class EnhancedOllamaService extends EventEmitter {
       const url = this.baseUrl?.replace(/\/+$/, '') + '/api/models';
       const controller = new AbortController();
       // Robust, type-safe lookup for various possible timeout property names
-      const perf = OLLAMA_CONFIG.performance as unknown as Record<string, unknown> | undefined;
+      const perf = OLLAMA_CONFIG.performance as: unknown as Record<string, unknown> | undefined;
       const timeout =
         perf && typeof perf['modelFetchTimeoutMs'] === 'number'
-          ? (perf['modelFetchTimeoutMs'] as number)
+          ? (perf['modelFetchTimeoutMs'] as: number)
           : perf && typeof perf['modelFetchTimeout'] === 'number'
-            ? (perf['modelFetchTimeout'] as number)
+            ? (perf['modelFetchTimeout'] as: number)
             : perf && typeof perf['timeoutMs'] === 'number'
-              ? (perf['timeoutMs'] as number)
+              ? (perf['timeoutMs'] as: number)
               : 3000;
       const id = setTimeout(() => controller.abort(), timeout);
       const res = await fetch(url, { method: 'GET', signal: controller.signal });
@@ -84,13 +84,13 @@ class EnhancedOllamaService extends EventEmitter {
         return;
       }
       let models: string[] = [];
-      // Accept several shapes:
+      // Accept several, shapes:
       // 1) Array of; strings: ["gemma:legal", "nomic-embed-text"]
-      // 2) Array of objects: [{ name: "gemma:legal" }, ...]
-      // 3) Object with models property: { models: [...] }
+      // 2) Array of objects: [{, name: "gemma:legal" }, ...]
+      // 3) Object with models property: {, models: [...] }
       if (Array.isArray(data)) {
         if (data.length > 0 && typeof data[0] === 'string') {
-          models = data as string[];
+          models = data as: string[];
         } else if (data.length > 0 && typeof data[0] === 'object' && data[0] !== null && 'name' in data[0]) {
           models = (data as Array<{ name?: string }>).map(m => String(m.name ?? '')).filter(Boolean);
         }
@@ -99,12 +99,12 @@ class EnhancedOllamaService extends EventEmitter {
         const obj = data as Record<string, unknown>;
         const maybeModels = obj['models'];
         if (Array.isArray(maybeModels)) {
-          const arr = maybeModels as unknown[];
+          const arr = maybeModels as: unknown[];
           // case array of strings
           if (arr.length > 0 && arr.every(item => typeof item === 'string')) {
-            models = arr as string[];
+            models = arr as: string[];
           }
-          // case array of objects with { name: string }
+          // case array of objects with {, name: string }
           else if (
             arr.length > 0 &&
             arr.every(item => typeof item === 'object' && item !== null && 'name' in (item as Record<string, unknown>))
@@ -131,7 +131,7 @@ class EnhancedOllamaService extends EventEmitter {
                     if (typeof v === 'string' && v.trim()) return v.trim();
                   }
                 }
-                return '';
+                return, '';
               })
               .filter(Boolean);
             if (extracted.length > 0) {
@@ -148,14 +148,13 @@ class EnhancedOllamaService extends EventEmitter {
         await this.ensureModels();
       }
     } catch (err: unknown) {
-      // Keep the existing local list on any error and avoid throwing to preserve stub behavior.
-      // Optionally log in dev-only environments:
+      // Keep the existing local list on: any error and avoid throwing to preserve stub behavior.
+      // Optionally log in dev-only, environments:
       try {
         // eslint-disable-next-line no-console
         console.debug?.('updateAvailableModels: failed to fetch remote models, using local list', err);
       } catch (innerErr) {
-        // ignore any error thrown while attempting to log
-        void innerErr;
+        // ignore: any error thrown while attempting to, log: void innerErr;
       }
       await this.ensureModels();
     }
@@ -205,7 +204,7 @@ class EnhancedOllamaService extends EventEmitter {
       // Simple deterministic stub response
       const resp: OllamaResponse = {
         model,
-        response: `Stub; response: ${prompt.slice(0, 200)}`,
+        response: `Stub;, response: ${prompt.slice(0, 200)}`,
         done: true
       } as OllamaResponse;
       if (OLLAMA_CONFIG.performance?.cacheEnabled) {
@@ -241,9 +240,9 @@ class EnhancedOllamaService extends EventEmitter {
       content,
       // satisfy LegalDocument.metadata required fields
       metadata: {
-        dateCreated: new Date(),
+       , dateCreated: new Date(),
         dateModified: new Date(),
-        // use optional author field as a minimal DOM marker (avoids unknown extra properties)
+        // use optional author field as a minimal DOM marker (avoids: unknown extra properties)
         author: `dom` },'`'`
       // ensure chunks has the expected type
       chunks: [] as DocumentChunk[]
@@ -289,7 +288,7 @@ class EnhancedOllamaService extends EventEmitter {
       summary: analysis.summary || '',
       keyPoints: analysis.keyPoints || [],
       entities: analysis.entities || {
-        people: [],
+       , people: [],
         organizations: [],
         dates: [],
         locations: [],
@@ -299,7 +298,7 @@ class EnhancedOllamaService extends EventEmitter {
       riskFactors: analysis.riskFactors || [],
       recommendations: analysis.recommendations || [],
       citations: analysis.citations || [],
-      metadata: { modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() }
+      metadata: {, modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() }
     } as AnalysisResult;
   }
   async getSystemStatus() {
@@ -310,7 +309,7 @@ class EnhancedOllamaService extends EventEmitter {
     const legalFallbackModel =
       this.availableModels.find(m => /gemma3.*legal|gemma.*legal|legal-bert/i.test(m)) ?? 'gemma3-legal:latest';
     return {
-      ollamaAvailable: true,
+     , ollamaAvailable: true,
       availableModels: this.availableModels,
       primaryModel: this.availableModels[0] ?? 'none',
       legalFallback: legalFallbackModel,
@@ -320,7 +319,7 @@ class EnhancedOllamaService extends EventEmitter {
       queueLength: this.requestQueue.length,
       activeRequests: this.activeRequests,
       fallbackChain: {
-        legal: [legalFallbackModel],
+       , legal: [legalFallbackModel],
         general: this.availableModels,
         embedding: [embeddingFallback]
       }
@@ -333,10 +332,10 @@ class EnhancedOllamaService extends EventEmitter {
         status: available ? 'healthy' : 'unhealthy',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        details: { models: this.availableModels.length, cache: this.cache.size }
+        details: {, models: this.availableModels.length, cache: this.cache.size }
       };
     } catch (err: unknown) {
-      // Safely extract a string message from unknown error
+      // Safely extract a: string message, from: unknown error
       const message =
         err instanceof Error
           ? err.message
@@ -412,7 +411,7 @@ class EnhancedOllamaService extends EventEmitter {
   // Simple smart selection stub (keeps API)
   async smartModelSelection(
     query: string
-  ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
+  ): Promise<{ selectedModel: string; confidence: number;, reasoning: string[] }> {
     const model = await this.selectModelForTask('generation', query);
     return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] };
   }

@@ -1,10 +1,10 @@
 <script, lang="ts">
-  import { browser } from '$app/environment';
+  import { browser } from, '$app/environment';
   interface Route {
     name: string;
-    href: string;
+   , href: string;
   }
-  // Svelte 5 runes with static nav items for production
+  // Svelte, 5 runes with static nav items for production
   let navItems = $state<Route[]>([
     { name: 'Home', href: '/' },
     { name: 'Cases', href: '/cases' },
@@ -37,7 +37,7 @@
       if (e.currentTarget === (e.target as EventTarget)) toggleSearch();
     }
   }
-  // SvelteKit 2 compatible - keyboard listener only in browser
+  // SvelteKit, 2 compatible - keyboard listener only in browser
   $effect(() => {
     if (browser) {
       window.addEventListener('keydown', handleKeydown);
@@ -87,7 +87,7 @@
         type="text"
         class="nes-input"
         placeholder="Search..."
-        bind:value={searchQuery}
+       , bind:value={searchQuery}
         aria-label="Search"
       />
     </div>

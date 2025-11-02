@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types.js';
-import { eq } from 'drizzle-orm';
+import type { Document } from, '$lib/types';
+import { db } from, '$lib/server/db/index';
+import type { RequestHandler } from, './$types.js';
+import { eq } from, 'drizzle-orm';
 // Individual Legal Document API - SvelteKit Server Endpoint
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 // Import with fallback for different schema files
 let schema: Record<string, unknown> = {};
 try {
@@ -18,9 +18,9 @@ try {
 // Minimal table-like shape used for Drizzle operations
 type TableLike = { id?: any; [k: string]: any } | undefined;
 const { legalDocuments } = schema as { legalDocuments?: any };
-const table = legalDocuments as unknown as TableLike;
+const table = legalDocuments as: unknown as TableLike;
 // GET - Get specific legal document
-export const GET: RequestHandler = async ({ params }) => {
+export const, GET: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
     if (!documentId) {
@@ -43,8 +43,8 @@ export const GET: RequestHandler = async ({ params }) => {
     // Get document
     const [document] = await db
       .select()
-      .from(table as unknown as never)
-      .where(eq((table as unknown as TableLike).id, documentId));
+      .from(table as: unknown as never)
+      .where(eq((table as: unknown as TableLike).id, documentId));
     if (!document) {
       return json({ error: 'Document not found' }, { status: 404 });
     }
@@ -89,9 +89,9 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     }
     // Update document
     const [updatedDocument] = await db
-      .update(table as unknown as never)
-      .set(updateData as unknown as never)
-      .where(eq((table as unknown as TableLike).id, documentId))
+      .update(table as: unknown as never)
+      .set(updateData as: unknown as never)
+      .where(eq((table as: unknown as TableLike).id, documentId))
       .returning();
     if (!updatedDocument) {
       return json({ error: 'Document not found' }, { status: 404 });
@@ -116,8 +116,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
     }
     // Delete document
     const deleteResult = await db
-      .delete(table as unknown as never)
-      .where(eq((table as unknown as TableLike).id, documentId))
+      .delete(table as: unknown as never)
+      .where(eq((table as: unknown as TableLike).id, documentId))
       .returning();
     const deletedDocument = Array.isArray(deleteResult) ? deleteResult[0] : deleteResult;
     if (!deletedDocument) {

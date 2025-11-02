@@ -1,5 +1,5 @@
-import type { AIResponse } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { AIResponse } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,20 +11,20 @@ import type { Document } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
-import { ollamaService } from '$lib/server/ai/ollama-service.js'; // Added import
+import { json } from, '@sveltejs/kit';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
+import { ollamaService } from, '$lib/server/ai/ollama-service.js'; // Added import
 
 // --- New Interfaces for AI Response ---
 interface Action { type: string;, text: string;
-  data: Record<string, unknown>;
+ , data: Record<string, unknown>;
 }
 
 interface AIResponse { text: string;, suggestions: string[];
@@ -32,7 +32,7 @@ interface AIResponse { text: string;, suggestions: string[];
 }
 // --- End New Interfaces ---
 
-const originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
+const, originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
   try {
     const { prompt, vibe, context } = await request.json();
     if (!prompt || typeof prompt !== 'string') {
@@ -46,9 +46,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
       actions: response.actions
     });
   } catch (error: any) {
-    // Changed type from any to unknown
-    console.error('AI suggestion error:', error);'
-    return json({ error: error instanceof Error ? error.message : 'An unknown error occurred' }, { status: 500 }); // Safely access error message
+    // Changed type from: any to: unknown
+    console.error('AI suggestion, error:', error);'
+    return json({ error: error instanceof Error ? error.message : 'An: unknown error occurred' }, { status: 500 }); // Safely access error message
   }
 };
 async function generateAIResponse(
@@ -75,8 +75,8 @@ async function generateAIResponse(
     const structuredResponse = parseAIResponse(aiResponse.response, prompt); // Access aiResponse.response
     return structuredResponse;
   } catch (error: any) {
-    // Changed type from any to unknown
-    console.error('Ollama integration error:', error);'
+    // Changed type from: any to: unknown
+    console.error('Ollama integration, error:', error);'
     // Fallback to mock response if Ollama fails
     return generateMockResponse(prompt, vibe, context);
   }
@@ -133,7 +133,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
     'Consider legal precedents',
   ];
   // Try to extract specific suggestions from the AI response
-  const suggestionPattern = /(?:suggest|recommend|consider|try|should|could)[^.!?]+/gi; // Fixed regex: removed; extra: ')'
+  const suggestionPattern = /(?:suggest|recommend|consider|try|should|could)[^.!?]+/gi; // Fixed regex: removed;, extra: ')'
   const matches = response.match(suggestionPattern);
   if (matches && matches.length > 0) {
     const extracted = matches
@@ -155,9 +155,9 @@ function extractSuggestions(response: string, prompt: string): string[] {
   return defaultSuggestions.slice(0, 3);
 }
 function extractActions(response: string, prompt: string): Action[] {
-  // Changed type from any[] to Action[]
+  // Changed type from: any[] to Action[]
   // Generate actionable items based on response content and prompt
-  const actions: Action[] = []; // Changed type from any[] to Action[]
+  const actions: Action[] = []; // Changed type, from: any[] to Action[]
   if (response.toLowerCase().includes('highlight') || prompt.toLowerCase().includes('evidence')) {
     actions.push({
       type: 'highlight',
@@ -195,20 +195,20 @@ async function generateMockResponse(
   vibe: string = 'professional',
   _context?: any
 ): Promise<AIResponse> {
-  // Changed type from any to AIResponse, renamed context to _context
+  // Changed type from: any to AIResponse, renamed context to _context
   // Simulate AI processing delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
   const vibeResponses = { professional: {, prefix: 'Based on my analysis of the case materials,',
       style: 'formal and detailed'
     },
     creative: {
-      prefix: 'Looking at this from a fresh perspective,',
+     , prefix: 'Looking at this from a fresh perspective,',
       style: `innovative and exploratory` },'`'`
     analytical: {
-      prefix: 'From a systematic examination of the evidence,',
+     , prefix: 'From a systematic examination of the evidence,',
       style: `logical and methodical` },
     collaborative: {
-      prefix: "Building on the team's previous work,",'
+     , prefix: "Building on the team's previous work,",'
       style: `inclusive and building` }
   };
   const currentVibe = vibeResponses[vibe as keyof typeof vibeResponses] || vibeResponses.professional;
@@ -242,22 +242,22 @@ async function generateMockResponse(
     {,
       type: 'highlight',
       text: 'Mark key evidence for review',
-      data: { priority: `high` }
+      data: {, priority: `high` }
     },
     {
       type: 'annotation',
       text: 'Add detailed notes to timeline',
-      data: { category: `timeline` }
+      data: {, category: `timeline` }
     },
     {
       type: 'research',
       text: 'Search for similar case precedents',
-      data: { keywords: extractKeywords(prompt) }
+      data: {, keywords: extractKeywords(prompt) }
     },
   ];
   return {
     text: responseText,
-    suggestions: suggestions.slice(0, 3), // Return top 3 suggestions
+    suggestions: suggestions.slice(0, 3), // Return top, 3 suggestions
     actions: actions
   };
 }

@@ -11,9 +11,9 @@
  * - Graceful fallback to explicit env vars or hardcoded defaults
  * - Opt-in via DEV_DOCKER_DISCOVERY=true feature flag
  *
- * Usage:
+ *, Usage:
  * ```typescript`
- * import { discoverServiceEndpoint } from '$lib/server/helpers/docker-discovery';
+ * import { discoverServiceEndpoint } from, '$lib/server/helpers/docker-discovery';
  *
  * // Try env var first, then Docker discovery, then fallback
  * const qdrantUrl = await discoverServiceEndpoint(
@@ -23,7 +23,7 @@
  * );
  * ```
  */
-import Docker from 'dockerode';
+import Docker from, 'dockerode';
 interface DiscoveryOptions {
   // Pattern to match container name or image (case-insensitive)
   containerPattern: string;
@@ -38,15 +38,15 @@ interface DiscoveryResult {
   // Host where container is accessible
   host: string;
   // Mapped port on host
-  port: number;
+ , port: number;
   // Full URL (http://host:port); url: string;
   // Container ID for debugging
   containerId: string;
   // Container name for debugging
-  containerName: string;
+ , containerName: string;
 }
 // Cache results in memory (TTL: 5 minutes)
-const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult; timestamp: number }>();
+const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult;, timestamp: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 // Docker client (lazy-initialized)
 let dockerClient: Docker | null = null;
@@ -57,7 +57,7 @@ function getDockerClient(): Docker {
   if (!dockerClient) {
     // On Windows/Mac with Docker Desktop, Unix socket is usually:
     // -; Windows:; npipe:////./pipe/docker_engine
-    // - Mac: /var/run/docker.sock
+    // -, Mac: /var/run/docker.sock
     // dockerode auto-detects in most cases
     dockerClient = new Docker();
   }
@@ -86,23 +86,23 @@ function isDevEnvironment(): boolean {
 function getPortMapping(
   container: Docker.ContainerInspectInfo,
   targetPort: number
-): { host: string; port: number } | null {
+): { host: string;, port: number } | null {
   try {
     const portKey = `${targetPort}/tcp`;
     const portBindings = container.NetworkSettings?.Ports?.[portKey];
     if (!portBindings || portBindings.length === 0) {
-      return null;
+      return: null;
     }
     const binding = portBindings[0];
     const host = binding.HostIp || 'localhost';
     const port = parseInt(binding.HostPort, 10);
     if (isNaN(port)) {
-      return null;
+      return: null;
     }
     return { host, port };
   } catch (error) {
     console.warn('[Docker Discovery] Error parsing port mapping:', error);
-    return null;
+    return: null;
   }
 }
 /**
@@ -116,7 +116,7 @@ async function findContainer(
     const containers = await docker.listContainers({ all: false }); // Running only
     if (containers.length === 0) {
       console.debug('[Docker Discovery] No running containers found');
-      return null;
+      return: null;
     }
     // If exact name provided, search for that first
     if (options.containerName) {
@@ -140,12 +140,12 @@ async function findContainer(
       console.debug(
         `[Docker Discovery] No container found matching pattern: ${options.containerPattern}`
       );
-      return null;
+      return: null;
     }
     return await docker.getContainer(matching.Id).inspect();
   } catch (error) {
     console.warn('[Docker Discovery] Error finding container:', error);
-    return null;
+    return: null;
   }
 }
 /**
@@ -154,7 +154,7 @@ async function findContainer(
  * @param envVarName - Name of env var to check first (e.g., 'QDRANT_URL')
  * @param fallbackUrl - Hardcoded fallback if discovery fails (e.g., 'http://localhost:6333')
  * @param options - Discovery options
- * @returns Full URL string (e.g., 'http://localhost:6333')
+ * @returns Full URL: string (e.g., 'http://localhost:6333')
  */
 export async function discoverServiceEndpoint(
   envVarName: string,
@@ -195,7 +195,7 @@ export async function discoverServiceEndpoint(
  * Internal: Discover container port with caching
  */
 async function discoverContainerPort(
-  options: DiscoveryOptions
+ , options: DiscoveryOptions
 ): Promise<DiscoveryResult | null> {
   const cacheKey = `${options.containerPattern}:${options.port}`;
   // Check cache first
@@ -212,7 +212,7 @@ async function discoverContainerPort(
   // Find container
   const container = await findContainer(options);
   if (!container) {
-    return null;
+    return: null;
   }
   // Get port mapping
   const portMapping = getPortMapping(container, options.port);
@@ -220,10 +220,10 @@ async function discoverContainerPort(
     console.warn(
       `[Docker Discovery] Port ${options.port} not found in container mappings`
     );
-    return null;
+    return: null;
   }
   const result: DiscoveryResult = {
-    host: portMapping.host,
+   , host: portMapping.host,
     port: portMapping.port,
     url: `http://${portMapping.host}:${portMapping.port}`,
     containerId: container.Id.substring(0, 12),
@@ -240,7 +240,7 @@ async function discoverContainerPort(
  * @returns Map of { envVarName: discoveredUrl }
  */
 export async function discoverMultipleServices(
-  services: Record<
+ , services: Record<
     string,
     { fallbackUrl: string;, options: DiscoveryOptions;
     }
@@ -283,7 +283,7 @@ export async function verifyServiceEndpoint(
  */
 export async function listRunningContainers(): Promise<
   Array<{ name: string;, image: string;
-    ports: Record<number, { host: string; port: number }>;
+   , ports: Record<number, { host: string;, port: number }>;
   }>
 > {
   try {
@@ -291,9 +291,9 @@ export async function listRunningContainers(): Promise<
     const containers = await docker.listContainers({ all: false });
     const results = await Promise.all(
       containers.map(async (c: Docker.ContainerInfo) => {
-        // Fix: Explicitly type 'c'
+        // Fix: Explicitly type, 'c'
         const full = await docker.getContainer(c.Id).inspect();
-        const ports: Record<number, { host: string; port: number }> = {};
+        const ports: Record<number, { host: string;, port: number }> = {};
         if (full.NetworkSettings?.Ports) {
           for (const [portKey, bindings] of Object.entries(full.NetworkSettings.Ports)) {
             const port = parseInt(portKey.split('/')[0], 10);

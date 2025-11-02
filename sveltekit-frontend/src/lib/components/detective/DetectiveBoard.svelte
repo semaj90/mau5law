@@ -1,35 +1,35 @@
 <!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css, integration -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-	import { onMount } from 'svelte';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+	import { onMount } from, 'svelte';
 
 	// UI libraries
-	import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
-	import  Badge  from "$lib/components/ui/Badge.svelte";
-	import 'nes.css/css/nes.min.css';
+	import  Button, Card, CardContent, CardHeader, CardTitle, Input  from, "$lib/components/ui/enhanced-bits.svelte";
+	import  Badge  from, "$lib/components/ui/Badge.svelte";
+	import, 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
-	import * as Tooltip from 'bits-ui';
+	import * as Tooltip from, 'bits-ui';
 
 	// utils & services
-	import Fuse from 'fuse.js';
-	import { dndzone } from 'svelte-dnd-action';
+	import Fuse from, 'fuse.js';
+	import { dndzone } from, 'svelte-dnd-action';
 
 	// App stores & AI
-	import { evidenceStore  } from '$lib/stores/unified';
-	import { aiAssistant  } from '$lib/stores/unified';
-	import  AIAssistantPanel  from "../ai/AIAssistantPanel.svelte";
-	import  EvidenceCard  from "./EvidenceCard.svelte";
-	import  UploadZone  from "./UploadZone.svelte";
-	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
-	import { rabbitMQService } from '$lib/services/rabbitmq-service';
-	import { VectorService } from '$lib/services/vector-service';
-	import { gpuAccelerationService, as gpuService } from '$lib/services/gpu-acceleration-service';
+	import { evidenceStore  } from, '$lib/stores/unified';
+	import { aiAssistant  } from, '$lib/stores/unified';
+	import  AIAssistantPanel  from, "../ai/AIAssistantPanel.svelte";
+	import  EvidenceCard  from, "./EvidenceCard.svelte";
+	import  UploadZone  from, "./UploadZone.svelte";
+	import { analyzeEvidence, findEvidenceConnections } from, '$lib/ai/ai-service';
+	import { rabbitMQService } from, '$lib/services/rabbitmq-service';
+	import { VectorService } from, '$lib/services/vector-service';
+	import { gpuAccelerationService, as gpuService } from, '$lib/services/gpu-acceleration-service';
 
 	const vectorService = new VectorService();
 
-	// Svelte 5 runes (assumes project configured for runes)
+	// Svelte, 5 runes (assumes project configured for runes)
 	let evidenceStoreState = $state<any>({ evidence: [], isLoading: false, error: null, isConnected: false });
 	let allEvidence = $derived(evidenceStoreState.evidence || []);
 	let caseId = $state<string>('case-001');
@@ -46,12 +46,12 @@ import type { Case } from '$lib/types';
 	let canvasEvidence = $state<any[]>([]);
 	let activeUsers = $state<any[]>([]);
 	let systemStatus = $state({
-		rabbitMQ: { connected: false, health: 'unknown' },
-		postgreSQL: { connected: false, vectorCount: 0 },
-		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
-		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
+		rabbitMQ: {, connected: false, health: 'unknown' },
+		postgreSQL: {, connected: false, vectorCount: 0 },
+		gpu: {, available: false, utilization: 0, model: 'RTX, 3060 Ti' },
+		processingStats: {, totalFiles: 0, processed: 0, queued: 0 }
 	});
-	let findModal = $state({ show: false, query: '', results: [] as any[], loading: false, error: '', suggestions: [] as any[] });
+	let findModal = $state({ show: false, query: '', results: [], as: any[], loading: false, error: '', suggestions: [], as: any[] });
 	// add miniModal state (was referenced but not declared)
 	let miniModal = $state({ show: false, x: 0, y: 0, type: '' });
 	// Remove reliance on ToggleGroup and namespace-based ContextMenu/Tooltip APIs.
@@ -204,10 +204,10 @@ import type { Case } from '$lib/types';
 	function handleAIActionTrigger(payload: any) {
 		const { type, data } = payload ?? {};
 		switch (type) {
-			case 'suggestions':
+			case, 'suggestions':
 				console.log('AI suggestions', data);
 				break;
-			case 'evidence-connect':
+			case, 'evidence-connect':
 				console.log('Evidence connections', data);
 				break;
 		}
@@ -253,7 +253,7 @@ import type { Case } from '$lib/types';
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					userId: null,
+				, userId: null,
 					evidenceId: item.id,
 					action: 'save',
 					target
@@ -297,7 +297,7 @@ import type { Case } from '$lib/types';
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						query: findModal.query || item?.title || ''
+					, query: findModal.query || item?.title || ''
 					})
 				});
 				if (resp.ok) {
@@ -365,7 +365,7 @@ import type { Case } from '$lib/types';
 	}
 
 	// Workaround: render EvidenceCard via svelte:component to avoid TS complaining about event-like attributes on props
-	const EvidenceCardAny = EvidenceCard as unknown as any;
+	const EvidenceCardAny = EvidenceCard as: unknown, as: any;
 </script>
 
 <svelte:window, onkeydown={handleGlobalKeydown} />
@@ -462,14 +462,14 @@ import type { Case } from '$lib/types';
 				</div>
 			</div>
 		</CardHeader>
-	</Card.Root>
+	</Card>
 
 	<main class="flex-1, flex, gap-6">
 		<div, class="flex-1, min-w-0">
 			{#if viewMode === 'columns'}
 				<div class="grid grid-cols-1 md:grid-cols-3, gap-6, h-full">
 					{#each columns as column (column.id)}
-						<Card.Root class="h-fit, nes-container, is-rounded">
+						<Card class="h-fit, nes-container, is-rounded">
 							<div, class="yorha-panel-header, pb-3">
 								<div class="flex, justify-between, items-center">
 									<h3 class="nes-text is-primary text-lg flex, items-center, gap-2">
@@ -492,7 +492,7 @@ import type { Case } from '$lib/types';
 
 								<div
 									class="space-y-3 min-h-[200px]"
-									use:dndzone={{ items: column.items, flipDurationMs: 200, dropTargetStyle: { background: 'hsl(var(--muted))', border: '2px dashed hsl(var(--primary))', borderRadius: '8px' } }}
+									use:dndzone={{, items: column.items, flipDurationMs: 200, dropTargetStyle: {, background: 'hsl(var(--muted))', border: '2px dashed hsl(var(--primary))', borderRadius: '8px' } }}
 									onconsider={(e: CustomEvent) => handleDndConsider(e, column.id)}
 									onfinalize={(e: CustomEvent<{, items: any[] }>) => handleDndFinalize(e, column.id)}
 								>
@@ -501,7 +501,7 @@ import type { Case } from '$lib/types';
 										<div, class="relative">
 											<div
 												class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
-												class:highlighted={aiHighlightedEvidence.includes(item.id)}
+											, class:highlighted={aiHighlightedEvidence.includes(item.id)}
 												class:selected={selectedEvidenceIds.includes(item.id)}
 												onclick={() => handleEvidenceSelect(item.id)}
 												onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
@@ -541,15 +541,15 @@ import type { Case } from '$lib/types';
 									{/each}
 								</div>
 							</div>
-						</Card.Root>
+						</Card>
 					{/each}
 				</div>
 			{:else}
-				<Card.Root class="h-[calc(100vh-200px)] nes-container is-rounded bits-card, p-0, uno-stack">
+				<Card class="h-[calc(100vh-200px)] nes-container is-rounded bits-card, p-0, uno-stack">
 					<div class="yorha-panel-content, p-0, h-full">
 						<div
 							bind:this={canvasContainer}
-							class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto p-4"
+							class="relative w-full h-full bg-slate-50, dark:bg-slate-900 overflow-auto p-4"
 							role="region"
 							aria-label="Canvas Drop Zone"
 							ondrop={handleCanvasDrop}
@@ -563,7 +563,7 @@ import type { Case } from '$lib/types';
 										class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move transition-shadow nes-container is-rounded bits-draggable"
 										class:highlighted={aiHighlightedEvidence.includes(item.id)}
 										class:selected={selectedEvidenceIds.includes(item.id)}
-										style="left: {item.x || 100}px; top: {item.y || 100}px; min-width: 200px;"
+										style="left: {item.x || 100}px;, top: {item.y || 100}px; min-width: 200px;"
 										draggable="true"
 										data-evidence-id={item.id}
 										ondragstart={(e: DragEvent) => handleCanvasDragStart(e, item)}
@@ -574,7 +574,7 @@ import type { Case } from '$lib/types';
 										tabindex="0"
 									>
 										<svelte:component, this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}}>
-											<Card.Root class="nes-container is-rounded p-2, w-full, mt-2">
+											<Card class="nes-container is-rounded p-2, w-full, mt-2">
 												<CardHeader class="flex, items-center, justify-between">
 													<div class="flex, items-center, gap-2">
 														<div class="w-3 h-3, bg-primary, rounded-full"></div>
@@ -605,7 +605,7 @@ import type { Case } from '$lib/types';
 														</div>
 													</div>
 												</CardContent>
-											</Card.Root>
+											</Card>
 										</svelte:component>
 									</div>
 
@@ -627,7 +627,7 @@ import type { Case } from '$lib/types';
 								</div>
 							{/each}
 
-							<svg class="absolute, inset-0, pointer-events-none" style="width: 100%; height: 100%;">
+							<svg class="absolute, inset-0, pointer-events-none" style="width: 100%;, height: 100%;">
 								{#each Array.isArray(getConnections()) ? getConnections() : [] as connection}
 									<line, x1={connection.x1} y1={connection.y1} x2={connection.x2} y2={connection.y2} stroke="currentColor" stroke-width="2" stroke-dasharray="5,5" opacity="0.3" />
 								{/each}
@@ -642,7 +642,7 @@ import type { Case } from '$lib/types';
 								{/if}
 						</div>
 					</div>
-				</Card.Root>
+				</Card>
 			{/if}
 		</div>
 
@@ -701,10 +701,10 @@ import type { Case } from '$lib/types';
 	{/if}
 
 {#if miniModal.show}
-	<div, class="fixed, z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
+	<div, class="fixed, z-40" style="left: {miniModal.x}px;, top: {miniModal.y}px;">
 		<div class="bg-background border border-border rounded-md shadow px-3, py-2, text-sm">
 {#if miniModal.show}
-	<div, class="fixed, z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
+	<div, class="fixed, z-40" style="left: {miniModal.x}px;, top: {miniModal.y}px;">
 		<div class="bg-background border border-border rounded-md shadow px-3, py-2, text-sm">
 			{miniModal.type}
 		</div>
@@ -723,20 +723,20 @@ import type { Case } from '$lib/types';
 		background-image:
 			linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-	}box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	}box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
 		animation: pulse-highlight 2s ease-in-out;
 	:global(.highlighted) {
-		box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+		box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
 		animation: pulse-highlight 2s ease-in-out; 0.75);
 	}background-color: hsl(var(--primary) / 0.05);
 	:global(.selected) {
-		box-shadow: 0 0 0 2px hsl(var(--primary) / 0.75);
+		box-shadow: 0, 0 0 2px hsl(var(--primary) / 0.75);
 		background-color: hsl(var(--primary) / 0.05);
-	}	box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	}	box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
 	@keyframes pulse-highlight {
 		0%, 100% {
-			box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+			box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
 		}transform: scale(1.02);
 		50% {
-			box-shadow: 0 0 0 2px rgb(251 191 36), 0 25px 25px -5px rgb(0 0 0 / 0.25), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+			box-shadow: 0, 0 0 2px rgb(251, 191 36), 0 25px 25px -5px rgb(0, 0 0 / 0.25), 0 10px 10px -5px rgb(0, 0 0 / 0.04);
 			transform: scale(1.02);		}	}</style>

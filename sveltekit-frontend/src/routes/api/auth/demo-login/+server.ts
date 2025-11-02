@@ -1,9 +1,9 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema-unified';
-import { eq } from 'drizzle-orm';
-import { lucia } from '$lib/server/auth';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { users } from, '$lib/server/db/schema-unified';
+import { eq } from, 'drizzle-orm';
+import { lucia } from, '$lib/server/auth';
 
 /**
  * POST /api/auth/demo-login
@@ -11,7 +11,7 @@ import { lucia } from '$lib/server/auth';
  *
  * ⚠️ SECURITY: Only enabled when DEV_BYPASS_AUTH=true
  */
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const, POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Check if demo login is enabled
     const devBypassAuth = process.env.DEV_BYPASS_AUTH === 'true';
@@ -75,14 +75,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       success: true,
       message: `Logged in as ${email} (${role})`,
       user: {
-        id: user.id,
+       , id: user.id,
         email: user.email,
         username: user.username,
         role: user.role,
         isActive: user.isActive
       },
       session: {
-        id: session.id,
+       , id: session.id,
         userId: session.userId
       },
       timestamp: new Date().toISOString()

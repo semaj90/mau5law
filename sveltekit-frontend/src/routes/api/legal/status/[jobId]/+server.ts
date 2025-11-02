@@ -3,9 +3,9 @@
  *
  * Provides real-time status updates for individual legal processing jobs
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { unifiedLegalOrchestrationService } from, '$lib/services/unified-legal-orchestration-service.js';
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const { jobId } = params;
@@ -54,22 +54,22 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // Initialize service if needed
     await unifiedLegalOrchestrationService.initialize();
     switch (action) {
-      case 'cancel':
+      case, 'cancel':
         // TODO: Implement job cancellation
         return json({
-          success: true,
+         , success: true,
           message: 'Job cancellation requested',
           jobId
         });
-      case 'retry':
+      case, 'retry':
         // TODO: Implement job retry
         return json({
-          success: true,
+         , success: true,
           message: 'Job retry requested',
           jobId
         });
       default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+        return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
     console.error('Job action error:', error);'

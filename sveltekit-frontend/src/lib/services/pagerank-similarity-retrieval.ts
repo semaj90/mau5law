@@ -12,7 +12,7 @@ export interface PageRankConfig { dampingFactor: number;, maxIterations: number
   parallelWorkers: number;
 }
 // === Graph Data Structures ===
-export interface GraphNode { id: string;, type: 'document' | 'case' | 'evidence' | 'person' | 'concept';
+export interface GraphNode {, id: string;, type: 'document' | 'case' | 'evidence' | 'person' | 'concept';
   metadata: {
     title?: string;
     content?: string;
@@ -25,17 +25,17 @@ export interface GraphNode { id: string;, type: 'document' | 'case' | 'evidence
   pageRankScore: number;
   inboundLinks: Set<string>;
   outboundLinks: Set<string>;
-  features: { textLength: number;, citationCount: number;
+  features: {, textLength: number;, citationCount: number;
     viewCount: number;
     recencyScore: number;
     authorityScore: number;
   };
 }
-export interface GraphEdge { source: string;, target: string;
+export interface GraphEdge {, source: string;, target: string;
   weight: number;
   type: 'citation' | 'similarity' | 'reference' | 'dependency' | 'semantic';
   confidence: number;
-  metadata: { strength: number;, frequency: number;
+  metadata: {, strength: number;, frequency: number;
     context: string[];
     timestamp: number;
   };
@@ -51,7 +51,7 @@ export interface SimilarityQuery {
     minPageRank?: number;
     tags?: string[];
   };
-  ranking: { usePageRank: boolean;, useSemanticSimilarity: boolean;
+  ranking: {, usePageRank: boolean;, useSemanticSimilarity: boolean;
     useRecencyBoost: boolean;
     useAuthorityBoost: boolean;
     combinationStrategy: 'weighted' | 'product' | 'harmonic' | 'adaptive';
@@ -59,7 +59,7 @@ export interface SimilarityQuery {
   limit: number;
   offset: number;
 }
-export interface SimilarityResult { node: GraphNode;, scores: { pageRank: number;, semanticSimilarity: number;
+export interface SimilarityResult {, node: GraphNode;, scores: {, pageRank: number;, semanticSimilarity: number;
     recencyScore: number;
     authorityScore: number;
     combinedScore: number;
@@ -70,7 +70,7 @@ export interface SimilarityResult { node: GraphNode;, scores: { pageRank: numbe
 // === PageRank Similarity Retrieval System ===
 export class PageRankSimilarityRetrieval extends EventEmitter {
   private config: PageRankConfig;
-  private graph: Map<string, GraphNode> = new Map();
+  private, graph: Map<string, GraphNode> = new Map();
   private edges: Map<string, GraphEdge[]> = new Map(); // source -> edges
   private adjacencyMatrix: Map<string, Map<string, number>> = new Map();
   private pageRankScores: Map<string, number> = new Map();
@@ -78,11 +78,11 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
   private cudaServiceUrl = 'http://localhost:8095';
   // Caching for performance
   private similarityCache = new Map<string, SimilarityResult[]>();
-  private pageRankCache: { scores: Map<string, number>; timestamp: number } | null = null;
+  private pageRankCache: {, scores: Map<string, number>; timestamp: number } | null = null;
   private cacheExpirationMs = 60 * 60 * 1000; // 1 hour
   // Performance metrics
   private metrics = {
-    graphNodes: 0,
+   , graphNodes: 0,
     graphEdges: 0,
     pageRankIterations: 0,
     lastPageRankTime: 0,
@@ -183,7 +183,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         inboundLinks: new Set(),
         outboundLinks: new Set(),
         features: {
-          textLength: doc.content.length,
+         , textLength: doc.content.length,
           citationCount: doc.citationCount,
           viewCount: doc.viewCount,
           recencyScore: 0.9,
@@ -204,7 +204,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     ];
     // Add case nodes
     this.addNode({
-      id: 'case_smith_v_jones',
+     , id: 'case_smith_v_jones',
       type: 'case',
       metadata: {
        , title: 'Smith v. Jones',
@@ -217,7 +217,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       inboundLinks: new Set(),
       outboundLinks: new Set(),
       features: {
-        textLength: 5000,
+       , textLength: 5000,
         citationCount: 120,
         viewCount: 3500,
         recencyScore: 0.95,
@@ -230,7 +230,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         source: rel.source,
         target: rel.target,
         weight: rel.weight,
-        type: rel.type as any,
+        type: rel.type, as: any,
         confidence: 0.8,
         metadata: {
          , strength: rel.weight,
@@ -257,12 +257,12 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
          , tags: concept.tags,
           timestamp: Date.now(),
           importance: concept.importance,
-          category: `concept` } as any,
+          category: `concept` }, as: any,
         pageRankScore: 0,
         inboundLinks: new Set(),
         outboundLinks: new Set(),
         features: {
-          textLength: 500,
+         , textLength: 500,
           citationCount: 0,
           viewCount: 100,
           recencyScore: 0.7,
@@ -592,27 +592,27 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       weights[key] = weights[key] / totalWeight;
     });
     switch (ranking.combinationStrategy) {
-      case 'weighted':
+      case, 'weighted':
         return (
           scores.pageRank * weights.pageRank +
           scores.semanticSimilarity * weights.semanticSimilarity +
           scores.recencyScore * weights.recencyScore +
           scores.authorityScore * weights.authorityScore
         );
-      case 'product':
+      case, 'product':
         return Math.pow(
           Math.max(0, scores.pageRank * scores.semanticSimilarity * scores.recencyScore * scores.authorityScore),
           1 / 4
         );
-      case 'harmonic': {
+      case, 'harmonic': {
         const reciprocalSum =
           1 / (scores.pageRank + 0.001) +
           1 / (scores.semanticSimilarity + 0.001) +
           1 / (scores.recencyScore + 0.001) +
           1 / (scores.authorityScore + 0.001);
-        return 4 / reciprocalSum;
+        return, 4 / reciprocalSum;
       }
-      case 'adaptive': {
+      case, 'adaptive': {
         const maxScore = Math.max(
           scores.pageRank,
           scores.semanticSimilarity,
@@ -716,7 +716,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       inboundLinks: new Set(),
       outboundLinks: new Set(),
       features: {
-        textLength: content.length,
+       , textLength: content.length,
         citationCount: metadata.citationCount || 0,
         viewCount: metadata.viewCount || 0,
         recencyScore: 1.0,

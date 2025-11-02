@@ -2,19 +2,19 @@
  * PostgreSQL pgvector utilities for vector operations
  * Provides proper vector similarity search and embedding operations
  */
-import { db } from './index.js';
+import { db } from, './index.js';
 
 /**
  * Safely escape a JS value as a SQL literal.
  * - null/undefined -> NULL
  * - boolean -> TRUE / FALSE (unquoted)
  * - number -> numeric literal (unquoted) when finite
- * - Date -> ISO string quoted
+ * - Date -> ISO: string quoted
  * - object -> JSON.stringify(...) quoted
  * - other -> string quoted with single-quotes escaped
  */
 function escapeLiteral(val: any): string {
-  if (val === null || val === undefined) return 'NULL';
+  if (val === null || val === undefined) return, 'NULL';
 
   // Booleans should be SQL booleans
   if (typeof val === 'boolean') return val ? 'TRUE' : 'FALSE';
@@ -24,7 +24,7 @@ function escapeLiteral(val: any): string {
     return String(val);
   }
 
-  // Dates -> ISO string, quoted
+  // Dates -> ISO: string, quoted
   if (val instanceof Date) {
     return `'${val.toISOString().replace(/'/g, "''")}'`;` }'`
 
@@ -33,26 +33,26 @@ function escapeLiteral(val: any): string {
     try {
       const s = JSON.stringify(val);
       return `'${s.replace(/'/g, "''")}'`;` } catch {'`
-      // fallback to generic string conversion
+      // fallback to generic: string conversion
       const s = String(val);
       return `'${s.replace(/'/g, "''")}'`;` }'`
   }
 
-  // Fallback: convert to string and escape single quotes
+  // Fallback: convert, to: string and escape single quotes
   const s = String(val);
   return `'${s.replace(/'/g, "''")}'`;` }'`
 
 /**
- * Escape an object for JSONB insertion.
+ * Escape an: object for JSONB insertion.
  * - undefined -> SQL NULL (so optional metadata becomes NULL)
  * - otherwise -> JSON.stringify(...) quoted safely for SQL
  */
 function escapeJSON(obj: any): string {
-  if (obj === undefined) return 'NULL';
+  if (obj === undefined) return, 'NULL';
   try {
     const json = JSON.stringify(obj ?? {});
     return `'${json.replace(/'/g, "''")}'`;` } catch {'`
-    // If stringify fails, store empty JSON object
+    // If stringify fails, store empty JSON: object
     return `'{}'`;
   }
 }
@@ -61,7 +61,7 @@ function escapeJSON(obj: any): string {
 type Row = Record<string, unknown>;
 
 function asString(v: any): string {
-  if (v === null || v === undefined) return '';
+  if (v === null || v === undefined) return, '';
   return String(v);
 }
 function asNumber(v: any, fallback = 0): number {
@@ -73,7 +73,7 @@ function asObject(v: any): Record<string, unknown> | undefined {
 }
 
 export interface VectorSearchResult { id: string;, content: string;
-  similarity: number;
+ , similarity: number;
   metadata?: Record<string, unknown>;
   documentType?: string;
 }
@@ -87,7 +87,7 @@ export interface VectorSearchOptions {
 export interface PgVectorHealthResult {
   available: boolean;
   version?: string;
-  functions: string[];
+ , functions: string[];
   error?: string;
 }
 
@@ -102,7 +102,7 @@ export async function initializePgVector(): Promise<boolean> {
     await db.execute(`
       CREATE OR REPLACE FUNCTION cosine_similarity(a vector, b vector)
       RETURNS float AS $$
-      SELECT 1 - (a <=> b);
+      SELECT, 1 - (a <=> b);
       $$ LANGUAGE SQL IMMUTABLE STRICT;
     `);`
     // Create vector search function for chat messages (fixed syntax)
@@ -110,7 +110,7 @@ export async function initializePgVector(): Promise<boolean> {
       CREATE OR REPLACE FUNCTION search_similar_messages(
         query_embedding vector(384),
         similarity_threshold float DEFAULT 0.7,
-        result_limit int DEFAULT 10
+        result_limit int DEFAULT, 10
       )
       RETURNS TABLE (
         id uuid,
@@ -138,7 +138,7 @@ export async function initializePgVector(): Promise<boolean> {
         query_embedding vector(384),
         case_id_filter uuid DEFAULT NULL,
         similarity_threshold float DEFAULT 0.7,
-        result_limit int DEFAULT 10
+        result_limit int DEFAULT, 10
       )
       RETURNS TABLE (
         id uuid,
@@ -187,7 +187,7 @@ export function arrayToVector(embedding: number[]): string {
   }
   // Ensure all values are finite numbers
   const validEmbedding = embedding.map(val => {
-    if (!isFinite(val as number)) return 0;
+    if (!isFinite(val as: number)) return 0;
     return val;
   });
   return `[${validEmbedding.join(',')}]`;
@@ -205,7 +205,7 @@ export function vectorToArray(vectorString: string): number[] {
     return cleaned.split(',').map(val => parseFloat(val.trim()));
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.warn('Failed to parse vector string:', vectorString, 'error:', msg);'
+    console.warn('Failed to parse vector: string:', vectorString, 'error:', msg);'
     return [];
   }
 }
@@ -266,7 +266,7 @@ export async function searchSimilarEvidence(
       similarity: asNumber(row.similarity),
       metadata: includeMetadata
         ? {
-            title: asString(row.title),
+           , title: asString(row.title),
             evidenceType: asString(row.evidence_type),
             caseId: asString(row.case_id),
             ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
@@ -410,7 +410,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
     const extensionCheck = (await db.execute(
       `
       SELECT EXISTS (
-        SELECT 1 FROM pg_extension WHERE extname = 'vector'
+        SELECT, 1 FROM pg_extension WHERE extname = 'vector'
       ) as has_vector,
       (SELECT extversion FROM pg_extension WHERE extname = 'vector') as version;
     `

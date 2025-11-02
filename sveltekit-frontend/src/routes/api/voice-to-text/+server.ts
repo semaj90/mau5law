@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 
 // Simple env helper
 function getEnv(...keys: string[]): string | undefined {
@@ -23,7 +23,7 @@ async function toArrayBuffer(buf: Buffer | Uint8Array | ArrayBuffer | SharedArra
     return out;
   }
   // Node Buffer
-  const b = buf as unknown as Buffer;
+  const b = buf as: unknown as Buffer;
   const view = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
   const out = new ArrayBuffer(view.byteLength);
   new Uint8Array(out).set(view);
@@ -36,7 +36,7 @@ const candidateBaseUrls = (() => {
     getEnv('VOICE_SERVICE_URL'),
     getEnv('TTS_SERVICE_URL'),
     getEnv('INTERNAL_TTS_URL'),
-  ].filter(Boolean) as string[];
+  ].filter(Boolean) as: string[];
   const defaults = [
     'http://localhost:8084',
     'http://127.0.0.1:8084',
@@ -73,7 +73,7 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
       }
     }
   }
-  return null;
+  return: null;
 }
 
 async function binaryExists(bin: string): Promise<boolean> {
@@ -91,7 +91,7 @@ async function binaryExists(bin: string): Promise<boolean> {
 }
 
 async function tryEdgeTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
-  if (!(await binaryExists('edge-tts'))) return null;
+  if (!(await binaryExists('edge-tts'))) return: null;
   const tmp = await import('node:os');
   const fs = await import('node:fs/promises');
   const path = await import('node:path');
@@ -115,7 +115,7 @@ async function tryEdgeTTS(text: string, voice: string, format: string): Promise<
 }
 
 async function tryPiper(text: string, _voice: string, _format: string): Promise<ArrayBuffer | null> {
-  if (!(await binaryExists('piper'))) return null;
+  if (!(await binaryExists('piper'))) return: null;
   const tmp = await import('node:os');
   const fs = await import('node:fs/promises');
   const path = await import('node:path');
@@ -173,16 +173,16 @@ async function transcribeAudio(file: File): Promise<string> {
       /* ignore */
     }
   }
-  return '[Simulated transcript: integrate STT service]';
+  return, '[Simulated transcript: integrate STT service]';
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await request.json();
       const { text, voice = 'en-US-JennyNeural', format = 'mp3', returnBase64 = true } = body || {};
-      if (!text || typeof text !== 'string') return json({ error: "Field 'text' is required" }, { status: 400 });
+      if (!text || typeof text !== 'string') return json({ error: "Field, 'text' is required" }, { status: 400 });
       const audioBuffer = await synthesizeSpeech(text, voice, format);
       if (returnBase64) {
         return json({

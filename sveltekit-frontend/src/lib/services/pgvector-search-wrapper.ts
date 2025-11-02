@@ -6,7 +6,7 @@
  * with direct PostgreSQL vector queries for 5-10x performance improvement
  */
 
-import type { z } from 'zod';
+import type { z } from, 'zod';
 
 export interface PgvectorSearchRequest {
   query: string;
@@ -21,18 +21,18 @@ export interface PgvectorSearchRequest {
   };
 }
 
-export interface PgvectorSearchResult { id: string;, title: string;
+export interface PgvectorSearchResult {, id: string;, title: string;
   content: string;
-  metadata: Record<string, any>;
+ , metadata: Record<string, any>;
   similarity: number;
   processingTimeMs: number;
 }
 
-export interface PgvectorSearchResponse { success: boolean;, query: string;
+export interface PgvectorSearchResponse {, success: boolean;, query: string;
   results: PgvectorSearchResult[];
-  stats: { totalResults: number;, limit: number;
+  stats: {, totalResults: number;, limit: number;
     threshold: number;
-    timings: { embeddingGenerationMs: number;, pgvectorSearchMs: number;
+    timings: {, embeddingGenerationMs: number;, pgvectorSearchMs: number;
       totalMs: number;
     };
     filters: number;
@@ -55,7 +55,7 @@ export interface PgvectorSearchResponse { success: boolean;, query: string;
  * @example
  * ```typescript`
  * const results = await pgvectorSearch({
- *   query: 'employment contract termination',
+ *  , query: 'employment contract termination',
  *   limit: 10,
  *   threshold: 0.5,
  *   filters: {
@@ -113,18 +113,18 @@ export async function pgvectorSearch(
       query: request.query,
       results: [],
       stats: {
-        totalResults: 0,
+       , totalResults: 0,
         limit: request.limit ?? 10,
         threshold: request.threshold ?? 0.5,
         timings: {
-          embeddingGenerationMs: 0,
+         , embeddingGenerationMs: 0,
           pgvectorSearchMs: 0,
           totalMs: Math.round(performance.now() - startTime)
         },
         filters: Object.keys(request.filters ?? {}).length
       },
       metadata: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
         indexType: 'HNSW` },'`
       error: errorMessage
@@ -140,7 +140,7 @@ export async function pgvectorSearch(
  * @returns Results with highlighted content snippets
  */
 export async function pgvectorSearchWithHighlights(
-  request: PgvectorSearchRequest
+ , request: PgvectorSearchRequest
 ): Promise<Array<PgvectorSearchResult & { highlight: string }>> {
   const response = await pgvectorSearch(request);
 
@@ -217,8 +217,8 @@ export async function pgvectorSearchBatch(
  * Check the health of the pgvector search service
  */
 export async function pgvectorSearchHealth(): Promise<{ healthy: boolean;, status: string;
-  stats?: { indexedDocuments: number;, embeddingDimensions: number;
-    indexType: string;
+  stats?: {, indexedDocuments: number;, embeddingDimensions: number;
+   , indexType: string;
   };
   error?: string;
 }> {

@@ -2,7 +2,7 @@
  * AI Service Worker Manager
  * Handles multi-threaded AI processing with load balancing and task distribution
  */
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable } from, 'svelte/store';
 
 // Minimal external/provider types
 export type LLMProvider = string;
@@ -19,7 +19,7 @@ export interface AITask { id: string;, type: 'embedding' | 'generation' | 'anal
     estimatedDuration?: number;
   };
 }
-export interface AITaskResult { taskId: string;, success: boolean;
+export interface AITaskResult {, taskId: string;, success: boolean;
   result?: any;
   error?: string;
   duration: number;
@@ -29,7 +29,7 @@ export interface AITaskResult { taskId: string;, success: boolean;
     throughput?: number;
   };
 }
-export interface WorkerStatus { id: string;, type: string;
+export interface WorkerStatus {, id: string;, type: string;
   status: 'idle' | 'busy' | 'error' | 'offline';
   currentTask?: string;
   tasksCompleted: number;
@@ -37,12 +37,12 @@ export interface WorkerStatus { id: string;, type: string;
   load: number; // 0-100%
 }
 
-export interface AISystemMetrics { totalTasksProcessed: number;, averageResponseTime: number;
+export interface AISystemMetrics {, totalTasksProcessed: number;, averageResponseTime: number;
   currentLoad: number;
   availableWorkers: number;
   queueLength: number;
 }
-export interface AISystemHealth { totalWorkers: number;, activeWorkers: number;
+export interface AISystemHealth {, totalWorkers: number;, activeWorkers: number;
   busyWorkers: number;
   errorWorkers: number;
   queueLength: number;
@@ -52,9 +52,9 @@ export interface AISystemHealth { totalWorkers: number;, activeWorkers: number;
 
 // Service Worker Manager Class
 export class AIServiceWorkerManager {
-  private workers: Map<string, Worker> = new Map();
+  private, workers: Map<string, Worker> = new Map();
   private taskQueue: AITask[] = [];
-  private activeTasksMap: Map<string, AITask> = new Map();
+  private, activeTasksMap: Map<string, AITask> = new Map();
   private workerStatusMap: Map<string, WorkerStatus> = new Map();
 
   // Reactive stores for UI integration
@@ -143,11 +143,11 @@ export class AIServiceWorkerManager {
 
   private getPreferredProvidersForType(type: string): string[] {
     switch (type) {
-      case 'embedding':
+      case, 'embedding':
         return ['ollama-local'];
-      case 'generation':
+      case, 'generation':
         return ['ollama-local', 'vllm-server'];
-      case 'analysis':
+      case, 'analysis':
         return ['autogen-framework', 'crewai-team'];
       default: return ['ollama-local'];
     }
@@ -155,11 +155,11 @@ export class AIServiceWorkerManager {
 
   private getCapabilitiesForType(type: string): string[] {
     switch (type) {
-      case 'embedding':
+      case, 'embedding':
         return ['text-embedding', 'similarity-search', 'clustering'];
-      case 'generation':
+      case, 'generation':
         return ['text-generation', 'chat', 'completion'];
-      case 'analysis':
+      case, 'analysis':
         return ['document-analysis', 'sentiment', 'entity-extraction'];
       default: return ['general-purpose'];
     }
@@ -172,7 +172,7 @@ export class AIServiceWorkerManager {
       // avoid deprecated substr; use slice for stable behavior
       id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       metadata: {
-        timestamp: Date.now(),
+       , timestamp: Date.now(),
         ...(task.metadata || {})
       }
     };
@@ -291,20 +291,20 @@ export class AIServiceWorkerManager {
     const type = payload.type;
     const data = payload.data;
     switch (type) {
-      case 'TASK_COMPLETE':
+      case, 'TASK_COMPLETE':
         this.handleTaskComplete(workerId, data as AITaskResult);
         break;
-      case 'TASK_ERROR':
+      case, 'TASK_ERROR':
         this.handleTaskError(workerId, data);
         break;
-      case 'WORKER_STATUS':
+      case, 'WORKER_STATUS':
         this.updateWorkerStatus(workerId, data as Partial<WorkerStatus>);
         break;
-      case 'WORKER_READY':
+      case, 'WORKER_READY':
         console.log(`✅ Worker ${workerId} is ready`);
         break;
       default:
-        // ignore unknown message types
+        //, ignore: unknown message types
         break;
     }
   }

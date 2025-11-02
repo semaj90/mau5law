@@ -1,18 +1,18 @@
 /**
  * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration
  *
- * Enterprise-Grade XState 5 State Machine with Complete Production Stack:
+ * Enterprise-Grade XState, 5 State Machine with Complete Production Stack:
  *
- * PERFORMANCE OPTIMIZATIONS:
+ * PERFORMANCE, OPTIMIZATIONS:
  * - Multi-threading with Web Workers and Service Workers
  * - Memory management with malloc-style buffer arrays
- * - Multi-core GPU utilization (RTX 3060 Ti) for vector operations
+ * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations
  * - Multi-layer caching (Browser → Redis → Database → GPU)
  * - Bit encoding for efficient network transfers
  * - Optimized search/sort algorithms for large datasets
  *
  * DATABASE INTEGRATION:
- * - PostgreSQL 17 + pgvector with 768-dimension embeddings
+ * - PostgreSQL, 17 + pgvector with 768-dimension embeddings
  * - Drizzle ORM with type-safe migrations
  * - JSONB optimization for legal metadata
  * - Vector similarity search with HNSW indexes
@@ -37,13 +37,13 @@
  * - Real-time performance monitoring
  * - Live document editing and synchronization
  *
- * ENTERPRISE FEATURES:
+ * ENTERPRISE, FEATURES:
  * - Comprehensive error recovery
  * - Performance analytics and optimization
  * - Security and audit logging
  * - Resource management and throttling
  */
-import { createMachine, assign, fromPromise } from '../shims/xstate';
+import { createMachine, assign, fromPromise } from, '../shims/xstate';
 // runtime browser flag used during focused checks
 const browser = typeof window !== 'undefined';
 
@@ -65,26 +65,26 @@ interface AmqplibModule {
 
 // Define a minimal Channel type based on amqplib's Channel interface'
 type Channel = { assertExchange: (name: string;, type: string, opts?: Record<string, unknown>) => Promise<void>;
-  publish: (exchange: string; routingKey: string;, content: Uint8Array | ArrayBuffer | Buffer) => boolean;
+  publish: (exchange: string;, routingKey: string;, content: Uint8Array | ArrayBuffer | Buffer) => boolean;
   close: () => Promise<void>;
   assertQueue: (queue?: string, options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
-  bindQueue: (queue: string, source: string, pattern: string, args?: Record<string, unknown>) => Promise<void>;
+ , bindQueue: (queue: string, source: string, pattern: string, args?: Record<string, unknown>) => Promise<void>;
   consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void, options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
-  cancel: (consumerTag: string) => Promise<void>;
+ , cancel: (consumerTag: string) => Promise<void>;
   ack: (message: ConsumeMessage, allUpTo?: boolean) => void;
   // Add other methods if they are used, e.g., deleteQueue
   deleteQueue: (queue: string, options?: Record<string, unknown>) => Promise<{ messageCount: number }>;
 };
 
 // Define a minimal ConsumeMessage type based on amqplib's ConsumeMessage interface'
-type ConsumeMessage = { content: Buffer;, fields: { deliveryTag: number;, redelivered: boolean;
+type ConsumeMessage = {, content: Buffer;, fields: {, deliveryTag: number;, redelivered: boolean;
     exchange: string;
     routingKey: string;
   };
   properties: {
     contentType?: string;
     contentEncoding?: string;
-    headers: Record<string, unknown>;
+   , headers: Record<string, unknown>;
     deliveryMode?: number;
     priority?: number;
     correlationId?: string;
@@ -102,14 +102,14 @@ type ConsumeMessage = { content: Buffer;, fields: { deliveryTag: number;, rede
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry { id: string;, type: 'user' | 'assistant' | 'system';
   content: string;
-  timestamp: Date;
+ , timestamp: Date;
   metadata?: Record<string, unknown>;
 }
 export interface DocumentType { id: string;, title: string;
   filename: string;
   fileSize: number;
   extractedText: string;
-  isIndexed: boolean;
+ , isIndexed: boolean;
   metadata?: Record<string, unknown>;
 }
 export interface AIAssistantContext {
@@ -130,7 +130,7 @@ export interface AIAssistantContext {
   rabbitmqConnected?: boolean;
   gpuProcessingEnabled?: boolean;
   currentDocuments?: DocumentType[];
-  error: { message: string } | null;
+  error: {, message: string } | null;
 }
 
 // --- Types for AI Assistant Events ---
@@ -169,24 +169,24 @@ interface BenchmarkOptions {
 }
 
 /** Configuration for scaling microservices. */
-interface ServiceScaleConfig { serviceName: string;, replicas: number;
+interface ServiceScaleConfig {, serviceName: string;, replicas: number;
   cpuLimit?: string;
   memoryLimit?: string;
 }
 
 /** A reference to a document for batch processing. */
-interface DocumentReference { id: string;, source: 'minio' | 'local';
+interface DocumentReference {, id: string;, source: 'minio' | 'local';
 }
 
 /** Configuration for training a custom AI model. */
-interface ModelTrainingConfig { modelName: string;, baseModel: string;
+interface ModelTrainingConfig {, modelName: string;, baseModel: string;
   datasetId: string;
   epochs: number;
   learningRate: number;
 }
 
 /** Defines a workflow to be executed. */
-interface WorkflowPayload { workflowId: string;, parameters: Record<string, unknown>;
+interface WorkflowPayload {, workflowId: string;, parameters: Record<string, unknown>;
 }
 
 /** Represents a user in a collaboration session. */
@@ -232,7 +232,7 @@ type AIAssistantEvent =
 
 // --- Type for the output of the processing query promise ---
 type ProcessQueryOutput = {
-  response: string;
+ , response: string;
 };
 
 // --- Add a narrow navigator type that models the subset we use (WebGPU + hardwareConcurrency) ---
@@ -310,7 +310,7 @@ class MultiLayerCache {
 
 // --- Minimal memory manager ---
 class MemoryManager {
-  private static instance: MemoryManager;
+  private static, instance: MemoryManager;
   static getInstance(): MemoryManager {
     if (!MemoryManager.instance) MemoryManager.instance = new MemoryManager();
     return MemoryManager.instance;
@@ -340,12 +340,12 @@ class MemoryManager {
 }
 
 // --- Minimal worker pool (uses blobs safely) ---
-type Task = { type: 'processDocument'; data: {; content: string } } | { type: string; data?: Record<string, unknown> };
+type Task = { type: 'processDocument'; data: {; content: string } } | {, type: string; data?: Record<string, unknown> };
 
 type TaskResult = { ok: true; result: any } | { ok: false; error: string };
 
 class $WebWorkerPool {
-  private _workers: Worker[] = [];
+  private, _workers: Worker[] = [];
   private _nextWorker = 0;
   constructor(
     private _maxWorkers = Math.max(
@@ -419,11 +419,11 @@ class $WebWorkerPool {
 
 // --- Replace previous RabbitMQService stub with a real server implementation ---
 class RabbitMQService {
-  private connection: AmqplibConnection | null = null; // Changed from any
+  private connection: AmqplibConnection | null = null; // Changed from: any
   private connectionUrl = 'amqp://localhost:5672';
   private connectionPromise: Promise<boolean> | null = null;
   // keep track of channels/consumers so we can close them on disconnect
-  private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> = new Map(); // Changed from any
+  private, channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> = new Map(); // Changed from: any
 
   connect(config?: { url?: string }): Promise<boolean> {
     if (this.connection) return Promise.resolve(true);
@@ -447,7 +447,7 @@ class RabbitMQService {
           // dynamic private env (SvelteKit server-only). Use safe try/catch to avoid compile/runtime failures in some environments
           // dynamic env module is provided by SvelteKit at runtime and may be missing in editor environments
           const mod = await import('$env/dynamic/private').catch(() => undefined);
-          urlToUse = (mod?.env?.RABBITMQ_URL as string | undefined) || urlToUse;
+          urlToUse = (mod?.env?.RABBITMQ_URL as: string | undefined) || urlToUse;
         } catch (e) {
           // ignore - server-only import may fail in some contexts
         }
@@ -483,7 +483,7 @@ class RabbitMQService {
 
   private _cleanupConnection() {
     this.connection = null;
-    // close stored channels if any (iterate values to avoid downlevelIteration issues)
+    // close stored channels if: any (iterate values to avoid downlevelIteration issues)
     for (const entry of Array.from(this.channels.values())) {
       try {
         entry.channel?.close?.();
@@ -540,13 +540,13 @@ class RabbitMQService {
       return;
     }
 
-    let channel: Channel | undefined; // Changed from any
+    let channel: Channel | undefined; // Changed, from: any
     try {
       channel = await this.connection.createChannel();
       await channel.assertExchange(exchange, 'topic', { durable: false });
 
       const json = JSON.stringify(payload);
-      const BufferGlobal = (globalThis as unknown as { Buffer?: { from (s: string, enc?: string) => Uint8Array } }).Buffer;
+      const BufferGlobal = (globalThis as: unknown as { Buffer?: { from (s: string, enc?: string) => Uint8Array } }).Buffer;
       const content: Uint8Array = typeof BufferGlobal !== 'undefined' ? BufferGlobal.from(json, 'utf8') : new TextEncoder().encode(json);
 
       channel.publish(exchange, routingKey, content);
@@ -570,7 +570,7 @@ class RabbitMQService {
     return this.publish('ai_events', `analysis.completed.${id}`, payload);
   }
 
-  // Fire-and-forget subscription helpers (signature preserved: returns void)
+  // Fire-and-forget subscription helpers (signature preserved: returns: void)
   subscribeToSystemEvents(cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).');
@@ -589,7 +589,7 @@ class RabbitMQService {
 
         const consumeResult = await channel.consume(
           q.queue,
-          (msg: ConsumeMessage | null) => { // Changed from any
+          (msg: ConsumeMessage | null) => { // Changed from: any
             if (!msg) return;
             let payload: any = null;
             try {
@@ -600,7 +600,7 @@ class RabbitMQService {
               try {
                 payload = msg.content?.toString?.('utf8') ?? null;
               } catch (e2) { // Added error logging
-                console.warn('[RabbitMQ] Error converting system event message content to string:', e2);
+                console.warn('[RabbitMQ] Error converting system event message content to: string:', e2);
                 payload = null;
               }
             }
@@ -644,7 +644,7 @@ class RabbitMQService {
 
         const consumeResult = await channel.consume(
           q.queue,
-          (msg: ConsumeMessage | null) => { // Changed from any
+          (msg: ConsumeMessage | null) => { // Changed from: any
             if (!msg) return;
             let payload: any = null;
             try {
@@ -655,7 +655,7 @@ class RabbitMQService {
               try {
                 payload = msg.content?.toString?.('utf8') ?? null;
               } catch (e2) { // Added error logging
-                console.warn('[RabbitMQ] Error converting case event message content to string:', e2);
+                console.warn('[RabbitMQ] Error converting case event message content to: string:', e2);
                 payload = null;
               }
             }
@@ -697,7 +697,7 @@ class RabbitMQService {
 
         const consumeResult = await channel.consume(
           q.queue,
-          (msg: ConsumeMessage | null) => { // Changed from any
+          (msg: ConsumeMessage | null) => { // Changed from: any
             if (!msg) return;
             let payload: any = null;
             try {
@@ -708,7 +708,7 @@ class RabbitMQService {
               try {
                 payload = msg.content?.toString?.('utf8') ?? null;
               } catch (e2) { // Added error logging
-                console.warn('[RabbitMQ] Error converting AI analysis message content to string:', e2);
+                console.warn('[RabbitMQ] Error converting AI analysis message content to: string:', e2);
                 payload = null;
               }
             }
@@ -780,18 +780,18 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
     currentDocuments: [],
     error: null
   },
-  states: { initializing: {, invoke: {
-        id: 'init',
+  states: {, initializing: {, invoke: {
+       , id: 'init',
         src: fromPromise(
           async (): Promise<{ gpuReady: boolean;, cacheStats: ReturnType<MultiLayerCache['getCacheStats']>;
-            memoryUsage: number;
+           , memoryUsage: number;
           }> => {
             // Initialize core pieces (best-effort)
             const gpu = GPUProcessor.getInstance();
             const gpuReady = await gpu.initialize().catch(() => false);
             const cache = MultiLayerCache.getInstance();
             const mem = MemoryManager.getInstance();
-            // return a small status object
+            // return a small status: object
             return {
               gpuReady,
               cacheStats: cache.getCacheStats(),
@@ -800,41 +800,41 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
           }
         ),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign<AIAssistantContext, { output?: { gpuReady?: boolean } }>((_ctx, event) => ({
             gpuProcessingEnabled: Boolean(event.output?.gpuReady)
           }))
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({ error: {, message: String(event.error) }
           }))
         }
       }
     },
-    idle: { on: {, SEND_MESSAGE: {
-          target: 'processing',
+    idle: {, on: {, SEND_MESSAGE: {
+         , target: 'processing',
           actions: assign<AIAssistantContext, { message: string }>((_ctx, event) => ({
             currentQuery: event.message,
             isProcessing: true
           }))
         },
-        CLEAR_CONVERSATION: { actions: assign(() => ({, conversationHistory: [] }))
+        CLEAR_CONVERSATION: {, actions: assign(() => ({, conversationHistory: [] }))
         }
       }
     },
-    processing: { invoke: {, id: 'processQuery',
+    processing: {, invoke: {, id: 'processQuery',
         input: ({ context }) => ({ currentQuery: context.currentQuery }),
-        src: fromPromise(async ({ input }: { input: {, currentQuery: string } }): Promise<ProcessQueryOutput> => {
+        src: fromPromise(async ({ input }: {, input: {, currentQuery: string } }): Promise<ProcessQueryOutput> => {
           // simple echo behavior for now; replace with real implementation later
           await new Promise(r => setTimeout(r, 10));
           return { response: 'Echo: ${input.currentQuery}' };'` }),'`
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign<AIAssistantContext, { output?: ProcessQueryOutput }>((context, event) => {
             const resp = String(event.output?.response ?? '');
             const newEntry: ConversationEntry = {
-              id: `assistant_${Date.now()}`,
+             , id: `assistant_${Date.now()}`,
               type: 'assistant',
               content: resp,
               timestamp: new Date()
@@ -846,7 +846,7 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
               currentQuery: '' };'` })'`
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({ error: {, message: String(event.error) },
             isProcessing: false
           }))
@@ -854,8 +854,8 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
       }
     },
     error: {
-      entry: 'logError',
-      on: { ERROR_RECOVER: {, target: 'idle', actions: assign(() => ({ error: null })) }
+     , entry: 'logError',
+      on: {, ERROR_RECOVER: {, target: 'idle', actions: assign(() => ({ error: null })) }
       }
     }
   }
@@ -867,8 +867,8 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
  *
  * Usage:
  * ```typescript`
- * import { createActor } from 'xstate';
- * import { aiAssistantMachine, aiAssistantProvider } from './aiAssistantMachine';
+ * import { createActor } from, 'xstate';
+ * import { aiAssistantMachine, aiAssistantProvider } from, './aiAssistantMachine';
  *
  * const actor = createActor(aiAssistantMachine, {
  *   ...aiAssistantProvider
@@ -897,4 +897,4 @@ export const aiAssistantProvider = { actions: {, clearError: assign(() => ({ er
 
 export default aiAssistantMachine;
 
-// Helper: resolve Ollama endpoint safely in server or browser.
+//, Helper: resolve Ollama endpoint safely in server or browser.

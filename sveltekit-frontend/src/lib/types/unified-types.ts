@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Unified Types - Consolidates duplicate type exports across the application
  * Replaces scattered type definitions with single source of truth
@@ -9,7 +9,7 @@ export interface EmbeddingResponse { embedding: number[];, model: string;
   prompt_tokens?: number;
   total_duration?: number;
 }
-export interface GenerateResponse { response: string;, model: string;
+export interface GenerateResponse {, response: string;, model: string;
   created_at: string;
   done: boolean;
   context?: number[];
@@ -20,14 +20,14 @@ export interface GenerateResponse { response: string;, model: string;
   eval_count?: number;
   eval_duration?: number;
 }
-export interface OllamaModel { name: string;, size: number;
+export interface OllamaModel {, name: string;, size: number;
   digest: string;
-  details: { format: string;, family: string;
+  details: {, format: string;, family: string;
     families?: string[];
     parameter_size: string;
     quantization_level: string;
   };
-  modified_at: string;
+ , modified_at: string;
   embeddingDimension?: number; // Added for clarity on embedding models, e.g., 384 for embeddinggemma
 }
 export interface OllamaHealthCheck { status: 'healthy' | 'unhealthy';, embedModel: boolean;
@@ -47,7 +47,7 @@ export interface RAGQuery {
   limit?: number;
   threshold?: number;
 }
-export interface RAGSource { id: string;, content: string;
+export interface RAGSource {, id: string;, content: string;
   title: string;
   documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence' | 'case_law';
   embedding?: number[];
@@ -60,17 +60,17 @@ export interface RAGSource { id: string;, content: string;
     embeddingDimension?: number; // Added for clarity on embedding dimension in RAG sources
   };
 }
-export interface RAGResult { source: RAGSource;, score: number;
+export interface RAGResult {, source: RAGSource;, score: number;
   relevance: string;
   highlights?: string[];
 }
-export interface RAGSearchResponse { results: RAGResult[];, query: string;
+export interface RAGSearchResponse {, results: RAGResult[];, query: string;
   totalResults: number;
   processingTime: number;
   model: string;
 }
 // ===== LEGAL DOMAIN TYPES =====
-export interface LegalCase { id: string;, title: string;
+export interface LegalCase {, id: string;, title: string;
   description: string;
   status: 'active' | 'closed' | 'pending' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'critical';
@@ -83,7 +83,7 @@ export interface LegalCase { id: string;, title: string;
   dueDate?: Date;
   tags?: string[];
 }
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence {, id: string;, caseId: string;
   title: string;
   description?: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital';
@@ -104,7 +104,7 @@ export interface Evidence { id: string;, caseId: string;
   createdBy: string;
   chainOfCustody?: ChainOfCustodyEntry[];
 }
-export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
+export interface ChainOfCustodyEntry {, id: string;, evidenceId: string;
   userId: string;
   action: 'created' | 'accessed' | 'modified' | 'transferred' | 'analyzed';
   timestamp: Date;
@@ -113,7 +113,7 @@ export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   ipAddress?: string;
   userAgent?: string;
 }
-export interface LegalDocument { id: string;, caseId: string;
+export interface LegalDocument {, id: string;, caseId: string;
   evidenceId?: string;
   title: string;
   content: string;
@@ -128,14 +128,14 @@ export interface LegalDocument { id: string;, caseId: string;
   processedAt?: Date;
   embeddingDimension?: number; // Added for clarity on embedding dimension in legal documents
 }
-export interface LegalEntity { id: string;, type: 'person' | 'organization' | 'location' | 'date' | 'monetary' | 'legal_reference';
+export interface LegalEntity {, id: string;, type: 'person' | 'organization' | 'location' | 'date' | 'monetary' | 'legal_reference';
   text: string;
   startPos: number;
   endPos: number;
   confidence: number;
   metadata?: { [key: string]: any };
 }
-export interface LegalClause { id: string;, type: 'liability' | 'indemnification' | 'termination' | 'confidentiality' | 'payment' | 'dispute_resolution';
+export interface LegalClause {, id: string;, type: 'liability' | 'indemnification' | 'termination' | 'confidentiality' | 'payment' | 'dispute_resolution';
   text: string;
   startPos: number;
   endPos: number;
@@ -143,7 +143,7 @@ export interface LegalClause { id: string;, type: 'liability' | 'indemnificatio
   analysis?: string;
 }
 // ===== USER & AUTHENTICATION TYPES =====
-export interface User { id: string;, email: string;
+export interface User {, id: string;, email: string;
   username: string;
   fullName: string;
   role: 'admin' | 'prosecutor' | 'detective' | 'legal_assistant' | 'user';
@@ -155,17 +155,17 @@ export interface User { id: string;, email: string;
   lastLogin?: Date;
   isActive: boolean;
 }
-export interface Permission { resource: string;, actions: ('read' | 'write' | 'delete' | 'admin')[];
+export interface Permission {, resource: string;, actions: ('read' | 'write' | 'delete' | 'admin')[];
 }
 export interface UserPreferences { theme: 'light' | 'dark' | 'auto';, language: string;
   timezone: string;
-  notifications: { email: boolean;, push: boolean;
+  notifications: {, email: boolean;, push: boolean;
     sms: boolean;
   };
-  ui: { density: 'compact' | 'comfortable' | 'spacious';, sidebarCollapsed: boolean;
+  ui: {, density: 'compact' | 'comfortable' | 'spacious';, sidebarCollapsed: boolean;
   };
 }
-export interface AuthSession { id: string;, userId: string;
+export interface AuthSession {, id: string;, userId: string;
   token: string;
   refreshToken?: string;
   expiresAt: Date;
@@ -182,18 +182,18 @@ export interface ApiResponse<T = unknown> {
   timestamp: string;
   requestId?: string;
 }
-export interface PaginatedResponse<T = unknown> { data: T[];, pagination: { page: number;, limit: number;
+export interface PaginatedResponse<T = unknown> {, data: T[];, pagination: {, page: number;, limit: number;
     total: number;
     pages: number;
     hasNext: boolean;
     hasPrev: boolean;
   };
 }
-export interface ValidationError { field: string;, message: string;
+export interface ValidationError {, field: string;, message: string;
   code: string;
   value?: any;
 }
-export interface ApiError { code: string;, message: string;
+export interface ApiError {, code: string;, message: string;
   details?: any;
   timestamp: string;
   requestId?: string;
@@ -203,9 +203,9 @@ export interface ApiError { code: string;, message: string;
 export interface SearchOptions {
   query?: string;
   filters?: { [key: string]: any };
-  sort?: { field: string;, direction: 'asc' | 'desc';
+  sort?: {, field: string;, direction: 'asc' | 'desc';
   };
-  pagination?: { page: number;, limit: number;
+  pagination?: {, page: number;, limit: number;
   };
 }
 export interface SearchResult<T = unknown> {
@@ -214,14 +214,14 @@ export interface SearchResult<T = unknown> {
   highlights?: string[];
   metadata?: { [key: string]: any };
 }
-export interface SearchResponse<T = unknown> { results: SearchResult<T>[];, total: number;
+export interface SearchResponse<T = unknown> {, results: SearchResult<T>[];, total: number;
   query: string;
   filters?: { [key: string]: any };
   processingTime: number;
   suggestions?: string[];
 }
 // ===== CACHING & PERFORMANCE TYPES =====
-export interface CacheEntry<T = unknown> { key: string;, value: T;
+export interface CacheEntry<T = unknown> {, key: string;, value: T;
   metadata: {
     createdAt: Date;
     expiresAt?: Date;
@@ -231,14 +231,14 @@ export interface CacheEntry<T = unknown> { key: string;, value: T;
     tags?: string[];
   };
 }
-export interface CacheStats { totalEntries: number;, totalSize: number;
+export interface CacheStats {, totalEntries: number;, totalSize: number;
   hitRate: number;
   missRate: number;
   evictionCount: number;
   averageAccessTime: number;
 }
 // ===== AI ANALYSIS TYPES =====
-export interface AIAnalysisRequest { content: string;, type: 'summary' | 'entities' | 'sentiment' | 'classification' | 'risk_assessment';
+export interface AIAnalysisRequest {, content: string;, type: 'summary' | 'entities' | 'sentiment' | 'classification' | 'risk_assessment';
   context?: {
     caseId?: string;
     documentType?: string;
@@ -250,13 +250,13 @@ export interface AIAnalysisRequest { content: string;, type: 'summary' | 'entit
     maxTokens?: number;
   };
 }
-export interface AIAnalysisResponse { result: string | object;, confidence: number;
+export interface AIAnalysisResponse {, result: string | object;, confidence: number;
   model: string;
   processingTime: number;
   tokensUsed?: number;
   metadata?: {
     entities?: LegalEntity[];
-    sentiment?: { score: number;, label: 'positive' | 'negative' | 'neutral';
+    sentiment?: {, score: number;, label: 'positive' | 'negative' | 'neutral';
     };
     riskScore?: number;
     tags?: string[];
@@ -281,7 +281,7 @@ export interface WorkflowEvent {
   userId: string;
 }
 // ===== MCP & INTEGRATION TYPES =====
-export interface MCPRequest { tool: string;, parameters: { [key: string]: any };
+export interface MCPRequest {, tool: string;, parameters: { [key: string]: any };
   context?: { [key: string]: any };
 }
 export interface MCPResponse<T = unknown> {
@@ -294,13 +294,13 @@ export interface MCPResponse<T = unknown> {
     tokens?: number;
   };
 }
-export interface Context7Integration { stackAnalysis: boolean;, bestPractices: boolean;
+export interface Context7Integration {, stackAnalysis: boolean;, bestPractices: boolean;
   integrationSuggestions: boolean;
   libraryDocs: boolean;
   performanceOptimization: boolean;
 }
 // ===== FORM & VALIDATION TYPES =====
-export interface FormField { name: string;, type: 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'textarea' | 'file';
+export interface FormField {, name: string;, type: 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'textarea' | 'file';
   label: string;
   placeholder?: string;
   required?: boolean;
@@ -314,7 +314,7 @@ export interface FormField { name: string;, type: 'text' | 'email' | 'password'
   options?: { value: string; label: string }[];
 }
 export interface FormSchema {
-  fields: FormField[];
+ , fields: FormField[];
   validation?: { [key: string]: any };
 }
 // ===== COMPONENT PROPS TYPES =====

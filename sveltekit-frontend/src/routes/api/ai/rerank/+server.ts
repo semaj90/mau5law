@@ -1,6 +1,6 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import type { RerankRequest } from '$lib/types';
-import { serverRerank, webgpuRerankFallback } from '$lib/server/ai/ai-assistant-input-synthesizer';
+import type { RequestHandler } from, '@sveltejs/kit';
+import type { RerankRequest } from, '$lib/types';
+import { serverRerank, webgpuRerankFallback } from, '$lib/server/ai/ai-assistant-input-synthesizer';
 
 export const POST: RequestHandler = async ({ request }) => {
   const body = (await request.json()) as RerankRequest;

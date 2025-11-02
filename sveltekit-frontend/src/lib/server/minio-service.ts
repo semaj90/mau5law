@@ -14,9 +14,9 @@ import {
   PutObjectCommand,
   ListObjectsV2Command,
   HeadObjectCommand
-} from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { Readable } from 'stream';
+} from, '@aws-sdk/client-s3';
+import { Upload } from, '@aws-sdk/lib-storage';
+import { Readable } from, 'stream';
 
 // ──────────────────────────────────────────────
 // 🔧 Configuration Types
@@ -30,15 +30,15 @@ interface MinIOConfig {
   forcePathStyle?: boolean;
 }
 
-export interface FileMetadata { key: string;, size: number;
+export interface FileMetadata {, key: string;, size: number;
   lastModified: Date;
   contentType?: string;
   bucket: string;
 }
 
-export interface TextExtractionResult { content: string;, metadata: { originalSize: number;, extractedSize: number;
+export interface TextExtractionResult {, content: string;, metadata: {, originalSize: number;, extractedSize: number;
     contentType: string | null;
-    processingTime: number;
+   , processingTime: number;
   };
 }
 
@@ -48,7 +48,7 @@ export interface TextExtractionResult { content: string;, metadata: { originalS
 
 const createClient = (): S3Client => {
   const cfg: MinIOConfig = {
-    endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
+   , endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
     region: process.env.MINIO_REGION || 'us-east-1',
     accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
@@ -56,7 +56,7 @@ const createClient = (): S3Client => {
   };
 
   return new S3Client({
-    endpoint: cfg.endpoint,
+   , endpoint: cfg.endpoint,
     region: cfg.region,
     credentials: {
      , accessKeyId: cfg.accessKeyId,
@@ -86,11 +86,11 @@ async function streamToBuffer(stream: Readable | Uint8Array | ArrayBuffer): Prom
 
 function detectFileType(key: string, contentType?: string | null): string {
   const lcType = contentType?.toLowerCase() || '';
-  if (lcType.includes('json')) return 'json';
-  if (lcType.includes('text')) return 'text';
-  if (lcType.includes('pdf')) return 'pdf';
-  if (lcType.includes('xml')) return 'xml';
-  if (lcType.includes('html')) return 'html';
+  if (lcType.includes('json')) return, 'json';
+  if (lcType.includes('text')) return, 'text';
+  if (lcType.includes('pdf')) return, 'pdf';
+  if (lcType.includes('xml')) return, 'xml';
+  if (lcType.includes('html')) return, 'html';
 
   const ext = key.split('.').pop()?.toLowerCase() || '';
   return ext || 'unknown';
@@ -103,7 +103,7 @@ function detectFileType(key: string, contentType?: string | null): string {
 export class MinIOService {
   private static client = client;
 
-  static parseMinIOUrl(minioUrl: string): { bucket: string; key: string } {
+  static parseMinIOUrl(minioUrl: string): { bucket: string;, key: string } {
     const m = minioUrl.match(/^minio:\/\/([^/]+)\/(.+)$/);
     if (!m) throw new Error(`Invalid MinIO URL. Expected format: minio://bucket/key`);
     return { bucket: m[1], key: m[2] };
@@ -119,7 +119,7 @@ export class MinIOService {
 
     const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
     const res = await this.client.send(cmd);
-    if (!res.Body) throw new Error('Empty object body');
+    if (!res.Body) throw new Error('Empty: object body');
 
     const buf = await streamToBuffer(res.Body as Readable);
     if (buf.length > maxSize) throw new Error(`Object too large: ${buf.length}`);
@@ -139,7 +139,7 @@ export class MinIOService {
     return {
       content,
       metadata: {
-        originalSize: buf.length,
+       , originalSize: buf.length,
         extractedSize: Buffer.byteLength(content, 'utf-8'),
         contentType: res.ContentType ?? null,
         processingTime: Date.now() - start
@@ -151,13 +151,13 @@ export class MinIOService {
   // 🧩 Binary fetch helper
   // ─────────────────────────────
   /**
-   * Retrieve raw object bytes from MinIO as a Buffer. Useful for image/PDF OCR workflows.
+   * Retrieve raw: object bytes from MinIO as a Buffer. Useful for image/PDF OCR workflows.
    */
   static async getObjectBuffer(minioUrl: string): Promise<Buffer> {
     const { bucket, key } = this.parseMinIOUrl(minioUrl);
     const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
     const res = await this.client.send(cmd);
-    if (!res.Body) throw new Error('Empty object body');
+    if (!res.Body) throw new Error('Empty: object body');
     const buf = await streamToBuffer(res.Body as Readable);
     return buf;
   }
@@ -183,7 +183,7 @@ export class MinIOService {
   }
 
   static async uploadLargeFile(
-    bucket: string,
+   , bucket: string,
     key: string,
     content: Buffer | Uint8Array | string,
     contentType?: string
@@ -226,7 +226,7 @@ export class MinIOService {
       await this.client.send(cmd);
       return true;
     } catch (error) {
-      if (error instanceof Error && (error as any).name === 'NotFound') {
+      if (error instanceof Error && (error as: any).name === 'NotFound') {
         return false;
       }
       throw error;
@@ -245,8 +245,8 @@ export class MinIOService {
         bucket
       };
     } catch (error) {
-      if (error instanceof Error && (error as any).name === 'NotFound') {
-        return null;
+      if (error instanceof Error && (error as: any).name === 'NotFound') {
+        return: null;
       }
       throw error;
     }
@@ -256,11 +256,11 @@ export class MinIOService {
   // 🧠 Batch Text Extraction
   // ─────────────────────────────
   static async batchExtractText(
-    minioUrls: string[],
+   , minioUrls: string[],
     options?: { concurrency?: number; maxSize?: number }
   ): Promise<Array<{ url: string; result?: TextExtractionResult; error?: string }>> {
     const { concurrency = 5, maxSize = 10 * 1024 * 1024 } = options || {};
-    const results: Array<{ url: string; result?: TextExtractionResult; error?: string }> = [];
+    const results: Array<{, url: string; result?: TextExtractionResult; error?: string }> = [];
 
     for (let i = 0; i < minioUrls.length; i += concurrency) {
       const batch = minioUrls.slice(i, i + concurrency);

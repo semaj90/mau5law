@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,36 +11,36 @@ import type { Document } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index.js';
-import { chatMessages, chatRecommendations } from '$lib/server/db/schema-unified.js';
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
-import { eq } from 'drizzle-orm';
-import { v4, as uuidv4 } from 'uuid';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestEvent } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index.js';
+import { chatMessages, chatRecommendations } from, '$lib/server/db/schema-unified.js';
+import { generateEnhancedEmbedding } from, '$lib/server/ai/embeddings-enhanced.js';
+import { eq } from, 'drizzle-orm';
+import { v4, as uuidv4 } from, 'uuid';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
 // Import our new AI suggestion services
-import { generateOllamaSuggestions, type OllamaSuggestion } from '$lib/services/ollama-suggestions-service.js';
+import { generateOllamaSuggestions, type OllamaSuggestion } from, '$lib/services/ollama-suggestions-service.js';
 import {
   generateVectorContextualSuggestions,
   type ContextualSuggestion
-} from '$lib/services/vector-suggestions-service.js';
+} from, '$lib/services/vector-suggestions-service.js';
 import {
   generateEnhancedRAGSuggestions,
   type RAGSuggestionResponse
-} from '$lib/services/enhanced-rag-suggestions-service.js';
+} from, '$lib/services/enhanced-rag-suggestions-service.js';
 import {
   aiSuggestionsClient,
   ReportTypeUtils,
   type SuggestionResponse
-} from '$lib/services/ai-suggestions-grpc-client.js';
+} from, '$lib/services/ai-suggestions-grpc-client.js';
 export interface EnhancedSuggestionRequest {
   content: string;
   reportType?:
@@ -74,11 +74,11 @@ export interface EnhancedSuggestionRequest {
   confidenceThreshold?: number;
   temperature?: number;
 }
-export interface UnifiedSuggestion { id: string;, content: string;
+export interface UnifiedSuggestion {, id: string;, content: string;
   type: string;
   confidence: number;
   reasoning: string;
-  metadata: { source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based';, category: string;
+  metadata: {, source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based';, category: string;
     priority?: number;
     keywords?: string[];
     supportingContext?: string[];
@@ -148,7 +148,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       },
       timestamp: new Date().toISOString(),
       metadata: {
-        contentLength: content.length,
+       , contentLength: content.length,
         suggestionsCount: suggestions.length,
         context: Object.keys(context).length > 0 ? context : undefined,
         processingServices: suggestions.map(s => s.metadata.source).filter((v, i, a) => a.indexOf(v) === i)
@@ -179,7 +179,7 @@ async function generateComprehensiveSuggestions({
   userId
 }: { content: string;, reportType: string;
   context: any;
-  useVectorSearch: boolean;
+ , useVectorSearch: boolean;
  , useOllamaAI: boolean;
  , useEnhancedRAG: boolean;
  , useProtobuf: boolean;
@@ -219,7 +219,7 @@ async function generateComprehensiveSuggestions({
               confidence: suggestion.confidence,
               reasoning: suggestion.metadata?.reasoning || 'Generated via Protocol Buffers gRPC service',
               metadata: {
-                source: 'protobuf_grpc',
+               , source: 'protobuf_grpc',
                 category: suggestion.category?.toString() || 'general',
                 priority: suggestion.priority,
                 keywords: suggestion.metadata?.source_documents || [],
@@ -396,7 +396,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
     if (contentLower.includes('witness')) {
       suggestions.push({
         content:
-          'Evaluate witness credibility and consider any potential impeachment issues that may arise during trial.',
+          'Evaluate witness credibility and, consider: any potential impeachment issues that may arise during trial.',
         type: 'witness_analysis',
         confidence: 0.82,
         reasoning: 'Witness mentioned - credibility assessment important',
@@ -422,7 +422,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       metadata: {, category: 'structure' }
     });
     suggestions.push({
-      content: 'Analyze any potential constitutional issues or procedural defenses.',
+      content: 'Analyze: any potential constitutional issues or procedural defenses.',
       type: 'constitutional_analysis',
       confidence: 0.73,
       reasoning: 'Case brief should address constitutional considerations',
@@ -437,7 +437,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
       metadata: {, category: 'organization' }
     });
     suggestions.push({
-      content: 'Note any chain of custody issues that need to be addressed.',
+      content: 'Note: any chain of custody issues that need to be addressed.',
       type: 'custody_chain',
       confidence: 0.8,
       reasoning: 'Chain of custody critical for evidence admissibility',
@@ -481,11 +481,11 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
       provider: 'nomic-embed',
       legalDomain: true,
       cache: true
-    })) as number[];
+    })) as: number[];
     // Search for similar chat messages and their recommendations
     const similarMessages = await db
       .select({
-        content: chatMessages.content,
+       , content: chatMessages.content,
         recommendations: chatRecommendations.content,
         confidence: chatRecommendations.confidence,
         type: chatRecommendations.recommendationType
@@ -603,7 +603,7 @@ async function storeRecommendations({
       provider: 'nomic-embed',
       legalDomain: true,
       cache: true
-    })) as number[];
+    })) as: number[];
     // Store the message
     const messageResult = await db
       .insert(chatMessages)
@@ -635,7 +635,7 @@ async function storeRecommendations({
           content: suggestion.content,
           confidence: suggestion.confidence,
           metadata: {
-            reasoning: suggestion.reasoning,
+           , reasoning: suggestion.reasoning,
             source: suggestion.metadata.source,
             category: suggestion.metadata.category,
             priority: suggestion.metadata.priority,

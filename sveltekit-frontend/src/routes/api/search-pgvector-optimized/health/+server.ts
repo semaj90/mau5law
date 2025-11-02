@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getDb } from '$lib/server/db';
-import { getRedisHealth } from '$lib/server/redis-cache';
-import { sql } from 'drizzle-orm';
-import { legalDocumentsJsonb } from '../../../../drizzle/schema';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getDb } from, '$lib/server/db';
+import { getRedisHealth } from, '$lib/server/redis-cache';
+import { sql } from, 'drizzle-orm';
+import { legalDocumentsJsonb } from, '../../../../drizzle/schema';
 
 /**
  * GET /api/search-pgvector-optimized/health
@@ -16,7 +16,7 @@ import { legalDocumentsJsonb } from '../../../../drizzle/schema';
  * - Indexed documents count
  * - Embedding dimensions
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   const checks = {
     timestamp: new Date().toISOString(),
     service: 'pgvector-optimized-search',
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async () => {
   }
 
   try {
-    // Check 2: pgvector extension
+    // Check, 2: pgvector extension
     const db = getDb();
     const pgvectorCheck = await db.execute(
       sql`SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'`
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async () => {
     checks.checks.pgvector = {
       status: 'ok',
       installed: true,
-      version: (pgvectorCheck as any)[0]?.extversion || 'unknown' };'` } catch (error) {'`
+      version: (pgvectorCheck, as: any)[0]?.extversion || 'unknown' };'` } catch (error) {'`
     checks.checks.pgvector = {
       status: 'error',
       installed: false,
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async () => {
   }
 
   try {
-    // Check 3: Redis cache
+    // Check, 3: Redis cache
     const redisHealth = await getRedisHealth();
     checks.checks.redis = {
       status: redisHealth.healthy ? 'ok' : 'error',

@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import createRedisInstance from '$lib/server/redis';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import createRedisInstance from, '$lib/server/redis';
 
 // Minimal typed shape for the redis client we need here (avoid `any`)
 type RedisClientLike = {
@@ -8,11 +8,11 @@ type RedisClientLike = {
   rpush?: (key: string, ...values: string[]) => Promise<number> | number;
 };
 
-// Create instance and cast via unknown to RedisClientLike (no `any`)
+// Create instance and cast via: unknown to RedisClientLike (no `any`)
 const redisInstance = createRedisInstance();
-const redis = redisInstance as unknown as RedisClientLike;
+const redis = redisInstance as: unknown as RedisClientLike;
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
   try {

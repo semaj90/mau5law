@@ -1,10 +1,10 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { $state, $derived } from 'svelte'; // Import Svelte 5 runes
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { $state, $derived } from, 'svelte'; // Import Svelte, 5 runes
 
 /**
- * Unified AI Assistant Global Store - SvelteKit 2 + Svelte 5 Runes
- * Replaces both ai-assistant.ts and ai-assistant.svelte.ts with proper Svelte 5 implementation
+ * Unified AI Assistant Global Store - SvelteKit, 2 + Svelte, 5 Runes
+ * Replaces both ai-assistant.ts and ai-assistant.svelte.ts with proper Svelte, 5 implementation
  */
 // Core types
 export interface AIMessage { id: string;, role: 'user' | 'assistant' | 'system';
@@ -27,7 +27,7 @@ export interface CaseAIContext {
   caseId: string;
   title?: string;
   messages: AIMessage[];
-  evidenceMap: Record<;
+ , evidenceMap: Record<;
     string,
     { id: string;, title: string;
       annotations: string[];
@@ -35,10 +35,10 @@ export interface CaseAIContext {
       aiSummary?: string;
     }
   >;
-  currentSession: { isActive: boolean;, lastActivity: number;
+  currentSession: {, isActive: boolean;, lastActivity: number;
     activeEvidenceId?: string;
   };
-  insights: Array<{ id: string;, type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
+  insights: Array<{, id: string;, type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
     confidence: number;
     evidenceIds: string[];
@@ -47,16 +47,16 @@ export interface CaseAIContext {
 }
 export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
 
-export interface AssistantConfig { temperature: number;, maxTokens: number;
+export interface AssistantConfig {, temperature: number;, maxTokens: number;
   model: string;
   systemPrompt: string;
   autoSwitchBackend: boolean;
   persistHistory: boolean;
-  enableAcceleration: boolean;
+ , enableAcceleration: boolean;
 }
-// Global AI Assistant Store using Svelte 5 Runes
+// Global AI Assistant Store using Svelte, 5 Runes
 class AIAssistantGlobalStore {
-  // Core state (now using Svelte 5 runes for reactivity)
+  // Core state (now using Svelte, 5 runes for reactivity)
   cases = $state<Record<string, CaseAIContext>>({});
   currentCaseId = $state<string | undefined>(undefined);
   isLoading = $state<boolean>(false);
@@ -85,7 +85,7 @@ class AIAssistantGlobalStore {
 
   // Performance metrics
   metrics = $state<{ totalQueries: number;, averageResponseTime: number;
-    backendLatency: Record<Backend, number>;
+   , backendLatency: Record<Backend, number>;
   }>({
     totalQueries: 0,
     averageResponseTime: 0,
@@ -102,7 +102,7 @@ class AIAssistantGlobalStore {
     Array<{ id: string;, type: 'trend' | 'pattern' | 'recommendation';
       description: string;
       affectedCases: string[];
-      timestamp: number;
+     , timestamp: number;
     }>
   >([]);
 
@@ -142,7 +142,7 @@ class AIAssistantGlobalStore {
           messages: [],
           evidenceMap: {},
           currentSession: {
-            isActive: false,
+           , isActive: false,
             lastActivity: Date.now()
           },
           insights: []
@@ -228,7 +228,7 @@ class AIAssistantGlobalStore {
       const assistantMessage: AIMessage = {
         id:
           typeof crypto !== 'undefined' && 'randomUUID' in crypto
-            ? (crypto as any).randomUUID()
+            ? (crypto, as: any).randomUUID()
             : `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         role: 'assistant',
         content: response.text || response.response || '',
@@ -338,14 +338,14 @@ class AIAssistantGlobalStore {
       prompt: content,
       maxTokens: 512,
       temperature: 0.3,
-      systemPrompt: `You are a legal AI assistant.; Context:\n${conversationContext}' });'`
+      systemPrompt: `You are a legal AI assistant.;, Context:\n${conversationContext}' });'`
     return {
       text: result.text,
       model: 'gemma3-270m-local',
       confidence: result.confidence,
       tokenCount: result.tokensGenerated,
       accelerationMetrics: {
-        totalProcessingTime: result.processingTime,
+       , totalProcessingTime: result.processingTime,
         accelerationUsed: 'browser-local',
         device: result.device,
         fromCache: result.fromCache
@@ -360,7 +360,7 @@ class AIAssistantGlobalStore {
       .join('\n');
     const systemPrompt = `You are a specialized legal AI assistant. Recent conversation context:\n${recentContext}`;
     const result = await cudaServiceWorker.generateText({
-      model: 'gemma3-legal-latest',
+     , model: 'gemma3-legal-latest',
       prompt: content,
       maxTokens: 2048,
       temperature: 0.2,
@@ -378,7 +378,7 @@ class AIAssistantGlobalStore {
       confidence: result.confidence,
       tokenCount: result.tokensGenerated,
       accelerationMetrics: {
-        totalProcessingTime: result.processingTime,
+       , totalProcessingTime: result.processingTime,
         queueTime: result.queueTime,
         accelerationUsed: 'cuda-tensorrt',
         gpuUtilization: result.gpuUtilization,
@@ -473,13 +473,13 @@ class AIAssistantGlobalStore {
       model: this.config.model
     };
     switch (backend) {
-      case 'vllm':
+      case, 'vllm':
         return { ...basePayload, openaiModel: `mistralai/Mistral-7B-Instruct-v0.3' };'`
-      case 'webasm':
+      case, 'webasm':
         return { ...basePayload, useWASM: true, enableGPU: true };
-      case 'go-micro':
+      case, 'go-micro':
         return { ...basePayload, service: 'legal-analysis', priority: `high' };'`
-      default: return basePayload;
+     , default: return basePayload;
     }
   }
   private parseBackendResponse(backend: Backend, data: any) {
@@ -497,9 +497,9 @@ class AIAssistantGlobalStore {
     const length = message.length;
     const hasLegalTerms = /\b(contract|deed|liability|statute|precedent|jurisdiction)\b/i.test(message);
     const hasComplexQuery = /\b(analyze|compare|summarize|explain)\b/i.test(message);
-    if (length > 500 || (hasLegalTerms && hasComplexQuery)) return 'complex';
-    if (length > 100 || hasLegalTerms || hasComplexQuery) return 'medium';
-    return 'simple';
+    if (length > 500 || (hasLegalTerms && hasComplexQuery)) return, 'complex';
+    if (length > 100 || hasLegalTerms || hasComplexQuery) return, 'medium';
+    return, 'simple';
   }
   private hasLegalContext(message: string, context?: string): boolean {
     const legalTerms = /\b(legal|law|contract|deed|court|judge|attorney|liability|statute|regulation|compliance)\b/i;
@@ -596,7 +596,7 @@ class AIAssistantGlobalStore {
   }
   exportConversation(caseId: string, format: 'json' | 'markdown' = 'json') {
     const caseData = this.cases[caseId];
-    if (!caseData) return null;
+    if (!caseData) return: null;
     const conversation = {
       caseId,
       title: caseData.title,

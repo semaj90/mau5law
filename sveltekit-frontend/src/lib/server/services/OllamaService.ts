@@ -2,7 +2,7 @@
  * Ollama Service for local LLM integration
  * Provides lightweight, typed wrappers for the local Ollama HTTP API.
  */
-import { logger } from '../logger.js';
+import { logger } from, '../logger.js';
 export interface OllamaModel {
   name: string;
   size?: string;
@@ -27,7 +27,7 @@ export interface OllamaResponse {
 }
 export class OllamaService {
   private readonly baseUrl: string;
-  private readonly timeout: number;
+  private readonly, timeout: number;
   constructor(baseUrl = process.env.OLLAMA_URL || 'http://localhost:11434', timeout = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = timeout;
@@ -67,7 +67,7 @@ export class OllamaService {
         prompt,
         stream: options.stream ?? false,
         options: {
-          temperature: options.temperature ?? 0.7,
+         , temperature: options.temperature ?? 0.7,
           num_predict: options.max_tokens ?? 1000
         }
       };
@@ -111,7 +111,7 @@ export class OllamaService {
       }
       const maybeData = (data as { data?: Array<{ embedding?: number[] }> }).data;
       if (Array.isArray(maybeData) && Array.isArray(maybeData[0]?.embedding)) {
-        return maybeData[0].embedding as number[];
+        return maybeData[0].embedding as: number[];
       }
       return [];
     } catch (err) {

@@ -1,7 +1,7 @@
 // Enhanced Case API Client
 // Integrates REST architecture with PostgreSQL-first workers and clustering
-import { restClient, type APIResponse } from './enhanced-rest-architecture.js';
-import type { CaseForm } from '../schemas/forms.js';
+import { restClient, type APIResponse } from, './enhanced-rest-architecture.js';
+import type { CaseForm } from, '../schemas/forms.js';
 export interface CaseCreationRequest {
   // Core case fields from CaseForm
   caseNumber: string;
@@ -24,7 +24,7 @@ export interface CaseCreationRequest {
     sessionId?: string;
   };
 }
-export interface CaseResponse { id: string;, caseNumber: string;
+export interface CaseResponse {, id: string;, caseNumber: string;
   title: string;
   description?: string;
   priority: string;
@@ -36,13 +36,13 @@ export interface CaseResponse { id: string;, caseNumber: string;
   createdAt: string;
   updatedAt: string;
 }
-export interface WorkerTriggerResponse { success: boolean;, data: { streamId: string;, correlationId: string;
+export interface WorkerTriggerResponse {, success: boolean;, data: {, streamId: string;, correlationId: string;
     triggerType: string;
     action: string;
     caseId?: string;
   };
-  metadata: { timestamp: string;, worker: string;
-    version: string;
+  metadata: {, timestamp: string;, worker: string;
+   , version: string;
   };
 }
 export class EnhancedCaseAPI {
@@ -90,7 +90,7 @@ export class EnhancedCaseAPI {
    * Trigger PostgreSQL-first worker processing
    */
   async triggerWorkerProcessing(
-    caseId: string,
+   , caseId: string,
     formData: CaseCreationRequest
   ): Promise<APIResponse<WorkerTriggerResponse>> {
     try {
@@ -183,7 +183,7 @@ export class EnhancedCaseAPI {
    * Get case analytics with clustering data
    */ async getCaseAnalytics(
     params: {
-      dateRange?: {, start: string; end: string };
+      dateRange?: {, start: string;, end: string };
       caseType?: string[];
       priority?: string[];
       includeClusterData?: boolean;
@@ -217,7 +217,7 @@ export class EnhancedCaseAPI {
     includeEmbeddings?: boolean;
   }): Promise<
     APIResponse<{ clusters: Array<any>;, silhouetteScore: number;
-      totalCases: number;
+     , totalCases: number;
     }>
   > {
     return restClient.post('/cases/cluster', {

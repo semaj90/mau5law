@@ -1,5 +1,5 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface Props {
     onFileSelected?: (files: File[]) => void;
     accept?: string;
@@ -48,7 +48,7 @@
   class:bg-blue-50={dragActive}
   on:drop|preventDefault={handleDrop}
   on:dragenter|preventDefault={handleDragEnter}
-  on:dragover|preventDefault={() => (dragActive = true)}
+ , on:dragover|preventDefault={() => (dragActive = true)}
   ondragleave={() => (dragActive = false)}
   onclick={() => fileInput?.click()}
   onkeydown={handleKeyDown}

@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from, './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const user = locals.user;
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       documents: [],
       recentQueries: [],
       stats: {
-        totalDocuments: 0,
+       , totalDocuments: 0,
         totalQueries: 0,
         avgResponseTime: 0
       }
@@ -20,10 +20,10 @@ export const load: PageServerLoad = async ({ locals }) => {
     // Fetch user's RAG documents and queries'
     // This would query your vectors table with pgvector
     return {
-      documents: [],
+     , documents: [],
       recentQueries: [],
       stats: {
-        totalDocuments: 0,
+       , totalDocuments: 0,
         totalQueries: 0,
         avgResponseTime: 0
       }
@@ -36,7 +36,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       documents: [],
       recentQueries: [],
       stats: {
-        totalDocuments: 0,
+       , totalDocuments: 0,
         totalQueries: 0,
         avgResponseTime: 0
       }

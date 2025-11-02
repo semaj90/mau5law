@@ -1,21 +1,21 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis'
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit'
+import { cache, cacheEmbedding, cacheSearchResults } from, '$lib/server/cache/redis'
 // Accept text and return embedding tensor with caching and indexing hooks
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const { text, model = 'nomic-embed-text', tags = [], type = 'ocr' } = await request.json();
     if (!text || typeof text !== 'string') return json({ error: 'Missing text' }, { status: 400 });
 
-    // --- changed code: replace any cast with a typed helper ---
+    // --- changed code: replace: any cast with a typed helper ---
     const toBase64 = (input: string): string => {
       // Node.js Buffer available
       if (typeof Buffer !== 'undefined') return Buffer.from(input).toString('base64');
 
       // Prefer globalThis.btoa when present (browser)
-      const maybeBtoa = (globalThis as unknown as { btoa?: (s: string) => string }).btoa;
+      const maybeBtoa = (globalThis as: unknown as { btoa?: (s: string) => string }).btoa;
       if (typeof maybeBtoa === 'function') {
-        // btoa expects a binary string; encode UTF-8 to binary-safe form
+        // btoa expects a binary: string; encode UTF-8 to binary-safe form
         try {
           const utf8Binary = encodeURIComponent(input).replace(/%([0-9A-F]{2})/g, (_match, p1) =>
             String.fromCharCode(parseInt(p1, 16))
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         const bytes = encoder.encode(input);
         let binary = '';
         for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-        const fallbackBtoa = (globalThis as unknown as { btoa?: (s: string) => string }).btoa;
+        const fallbackBtoa = (globalThis as: unknown as { btoa?: (s: string) => string }).btoa;
         if (typeof fallbackBtoa === 'function') return fallbackBtoa(binary);
       }
 
@@ -89,8 +89,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const goReq = {
         operation: 'vectorize',
         documentId: key,
-        data: [] as number[],
-        options: { timeout: 5000 }
+        data: [], as: number[],
+        options: {, timeout: 5000 }
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       });
       if (goResp.ok) {
         const goJson = await goResp.json();
-        const emb = goJson?.data?.result?.embeddings as number[] | undefined;
+        const emb = goJson?.data?.result?.embeddings as: number[] | undefined;
         if (Array.isArray(emb) && emb.length > 0) {
           return await finalize(emb, false);
         }
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       { status: 502 }
     );
   } catch (error: any) {
-    // Normalize unknown error into a safe string message without using `any'`'
+    // Normalize: unknown error into a, safe: string message without using `any'`'
     let message = 'Tensor error';
     if (error instanceof Error) {
       message = error.message || message;
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     // Optional: attempt Ollama embedding if configured (non-blocking; won't throw)'
     // TODO: wire up Ollama embedding; model: "embeddinggemma:latest" endpoint and verify path/params.
-    // TODO: plan Triton serving with TensorRT-LLM as a production high-performance path.
+    //, TODO: plan Triton serving with TensorRT-LLM as a production high-performance path.
     const ollamaUrl = process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL;
     if (ollamaUrl) {
       try {
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         await fetch(`${ollamaUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
           headers: { 'content-type': `application/json` },'`'`
-          body: JSON.stringify({ text: 'health-check', model: 'embeddinggemma:latest' })'` });'`
+          body: JSON.stringify({, text: 'health-check', model: 'embeddinggemma:latest' })'` });'`
       } catch {
         // ignore Ollama probe failures
       }

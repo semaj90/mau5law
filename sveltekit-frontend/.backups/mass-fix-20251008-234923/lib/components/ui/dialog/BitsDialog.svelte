@@ -39,7 +39,7 @@
   }
 </script>
 
-<Dialog.Root bind:open onOpenChange={handleOpenChange}>
+<Dialog bind:open onOpenChange={handleOpenChange}>
   <!-- Trigger (optional) -->
   {#if trigger}
     <Dialog.Trigger class="dialog-trigger">
@@ -96,7 +96,7 @@
       {/if}
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 
 <style>/* Legal AI App Specific Styling */ {}
   :global(.legal-dialog) {

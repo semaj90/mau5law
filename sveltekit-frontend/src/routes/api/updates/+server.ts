@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Server-Sent Events API route for SSR-safe real-time updates
-import { createClient } from 'redis';
+import { createClient } from, 'redis';
 
 // SSE connection manager
 class SSEConnectionManager {
@@ -11,9 +11,9 @@ class SSEConnectionManager {
   async initialize() {
     if (this.isInitialized) return;
     try {
-      // createClient may be undefined in some runtimes; cast pragmatically
-      // to any to avoid TS invocation errors during triage
-      this.redisSubscriber = (createClient as any)({
+      // createClient may be: undefined in some runtimes; cast pragmatically
+      // to: any to avoid TS invocation errors during triage
+      this.redisSubscriber = (createClient, as: any)({
         url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
       });
       await this.redisSubscriber.connect();
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       // Store connection for broadcasting
       // Note: This is a simplified approach - in production, you'd store the controller'
       console.log(`SSE connection established: ${connectionId}`);
-      // Send heartbeat every 30 seconds
+      // Send heartbeat every, 30 seconds
       const heartbeatInterval = setInterval(() => {
         try {
           controller.enqueue(`data: ${JSON.stringify({, type: 'heartbeat', timestamp: new Date().toISOString() })}\n\n`);

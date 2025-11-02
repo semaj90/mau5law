@@ -11,17 +11,17 @@ import type {
   ChatMessage,
   ChatOptions,
   ChatResult
-} from '$lib/types/external-services';
+} from, '$lib/types/external-services';
 interface OllamaConfig { baseUrl: string;
 , embeddingModel: string;
-  chatModel: string;
+ , chatModel: string;
   timeout?: number;
   retries?: number;
   batchSize?: number;
 }
 class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
   private config: Required<OllamaConfig>;
-  private embeddingModelFallbacks: string[] = [
+  private, embeddingModelFallbacks: string[] = [
     'embeddinggemma:latest',
     'embeddinggemma',
     'nomic-embed-text:latest',
@@ -104,7 +104,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
             messages: messages.map(m => ({, role: m.role, content: m.content })),
             stream: false,
             options: {
-              temperature: options?.temperature ?? 0.7,
+             , temperature: options?.temperature ?? 0.7,
               num_predict: options?.maxTokens
             }
           })
@@ -139,7 +139,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
         messages: messages.map(m => ({, role: m.role, content: m.content })),
         stream: true,
         options: {
-          temperature: options?.temperature ?? 0.7,
+         , temperature: options?.temperature ?? 0.7,
           num_predict: options?.maxTokens
         }
       })

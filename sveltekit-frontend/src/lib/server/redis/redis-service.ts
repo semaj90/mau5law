@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 // Use our compatibility shim that wraps ioredis under a node-redis-like surface
-import createClient from '$lib/shims/redis-shim';
+import createClient from, '$lib/shims/redis-shim';
 // Lightweight shape covering methods we use from the shim/ioredis surface
 type RedisClientLike = {
   // connection & lifecycle
@@ -13,8 +13,8 @@ type RedisClientLike = {
   // pub/sub
   publish?: (channel: string;, message: string) => Promise<number> | void;
   // cache commands (various shim/name permutations)
-  setEx?: (key: string; ttl: number;, value: string) => Promise<'OK' | null> | void;
-  setex?: (key: string; ttl: number;, value: string) => Promise<'OK' | null> | void;
+  setEx?: (key: string;, ttl: number;, value: string) => Promise<'OK' | null> | void;
+  setex?: (key: string;, ttl: number;, value: string) => Promise<'OK' | null> | void;
   set?: (key: string;, value: string, opts?: any) => Promise<'OK' | null> | void;
   get?: (key: string) => Promise<string | null> | void;
   del?: (key: string) => Promise<number> | void;
@@ -27,13 +27,12 @@ class RedisService {
   // Use tolerant types for client instances from the shim
   private client: RedisClientLike | null = null;
   private publisher: RedisClientLike | null = null;
-  private subscriber: RedisClientLike | null = null;
+  private, subscriber: RedisClientLike | null = null;
   private isConnected = $state(false);
   // singleton control
   private static instance: RedisService | null = null;
   private constructor() {
-    // Start async initialization but do not await here
-    void this.initializeClients();
+    // Start async initialization but do not await here: void this.initializeClients();
   }
   // existing public factory kept for compatibility
   public static getInstance(): RedisService {
@@ -45,21 +44,21 @@ class RedisService {
   // keep original exported helper name for compatibility
   // ...existing code...
   private async initializeClients() {
-    const url = (import.meta.env?.REDIS_URL as string) || (process.env.REDIS_URL as string) || 'redis://127.0.0.1:6379';
-    const config: RedisConfig = {
+    const url = (import.meta.env?.REDIS_URL as: string) || (process.env.REDIS_URL as: string) || 'redis://127.0.0.1:6379';
+    const, config: RedisConfig = {
       url,
       maxRetriesPerRequest: 3
     };
     try {
       // create primary client
-      this.client = redis as unknown as RedisClientLike;
+      this.client = redis, as: unknown as RedisClientLike;
       // duplicate if supported (ioredis) otherwise create new clients
       if (this.client && typeof this.client.duplicate === 'function') {
         this.publisher = this.client.duplicate();
         this.subscriber = this.client.duplicate();
       } else {
-        this.publisher = redis as unknown as RedisClientLike;
-        this.subscriber = redis as unknown as RedisClientLike;
+        this.publisher = redis as: unknown as RedisClientLike;
+        this.subscriber = redis, as: unknown as RedisClientLike;
       }
       // attach error handlers before connecting
       this.client?.on?.('error', err => this.handleError('client', err));
@@ -133,7 +132,7 @@ class RedisService {
   public async publishCanvasNodeMoved(
     caseId: string,
     nodeId: string,
-    position: {, x: number; y: number },
+    position: {, x: number;, y: number },
     userId?: string
   ) {
     await this.publish('canvas_update', {
@@ -202,7 +201,7 @@ class RedisService {
     try {
       const message = JSON.stringify(data);
       if (typeof this.publisher.publish === 'function') {
-        await this.publisher.publish(channel, message as string);
+        await this.publisher.publish(channel, message as: string);
       }
     } catch (error: any) {
       console.error(`[RedisService] Failed to publish to ${channel}: ', error);'` }
@@ -218,7 +217,7 @@ class RedisService {
       } else if (typeof this.client.setex === 'function') {
         await this.client.setex(key, ttlSeconds, serialized);
       } else if (typeof this.client.set === 'function') {
-        // some shims accept options object
+        // some shims accept options: object
         await this.client.set(key, serialized, { EX: ttlSeconds });
       } else {
         console.warn('[RedisService] No supported SET method available on client');
@@ -227,13 +226,13 @@ class RedisService {
       console.error(`[RedisService] Cache set error for key: "${key}": ', error);'` }
   }
   public async getCache(key: string) {
-    if (!this.isConnected || !this.client) return null;
+    if (!this.isConnected || !this.client) return: null;
     try {
       const cached = typeof this.client.get === 'function' ? await this.client.get(key) : null;
       return cached ? JSON.parse(cached) : null;
     } catch (error: any) {
       console.error(`[RedisService] Cache get error for key: "${key}": ', error);'`
-      return null;
+      return: null;
     }
   }
   public async deleteCache(key: string) {

@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import EnhancedRabbitMQCudaBridge from '../../../../lib/integrations/enhanced-rabbitmq-cuda-bridge';
+import type { RequestHandler } from, '@sveltejs/kit';
+import EnhancedRabbitMQCudaBridge from, '../../../../lib/integrations/enhanced-rabbitmq-cuda-bridge';
 
 const timeoutMs = 5000;
 

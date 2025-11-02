@@ -1,20 +1,20 @@
 /*
  * Recursive Evidence Chain Worker
- * Phase 1 Implementation: Deep hierarchical analysis of evidence chains
+ * Phase, 1 Implementation: Deep hierarchical analysis of evidence chains
  * Integrates with existing legal AI platform evidence processing
  */
 // Evidence Chain Interfaces
-interface EvidenceChainNode { evidenceId: string;, depth: number;
+interface EvidenceChainNode {, evidenceId: string;, depth: number;
   chainOfCustody: ChainEntry[];
    EvidenceChainNode[];
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   confidence: number;
-  metadata: { processingTime: number;, recursionPath: string[];
+  metadata: {, processingTime: number;, recursionPath: string[];
     analysisTimestamp: string;
   };
 }
-interface ChainEntry { officer_id: string;, officer_name: string;
+interface ChainEntry {, officer_id: string;, officer_name: string;
   timestamp: string;
   action: string;
   location: string;
@@ -22,15 +22,15 @@ interface ChainEntry { officer_id: string;, officer_name: string;
   notes?: string;
   equipment_used?: string;
 }
-interface EvidenceRelationship { relationshipType: 'temporal' | 'causal' | 'documentary' | 'witness' | 'location' | 'chain_link';, strength: number;
+interface EvidenceRelationship {, relationshipType: 'temporal' | 'causal' | 'documentary' | 'witness' | 'location' | 'chain_link';, strength: number;
   description: string;
   legalSignificance: 'critical' | 'high' | 'medium' | 'low';
   supportingEvidence: string[];
   confidence: number;
 }
-interface RelatedEvidence { evidenceId: string;, relationshipType: string;
+interface RelatedEvidence {, evidenceId: string;, relationshipType: string;
   strength: number;
-  metadata: Record<string, unknown>; // changed from `any` to safer type
+ , metadata: Record<string, unknown>; // changed from `any` to safer type
 }
 
 // New minimal response types for external APIs
@@ -54,7 +54,7 @@ type CorrelationResult = {
 
 // Main Recursive Evidence Chain Processor
 export class RecursiveEvidenceChainProcessor {
-  // exported to avoid: "defined but never used" lint error
+  // exported to, avoid: "defined but never used" lint error
   private maxDepth = 50;
   private visitedEvidence = new Set<string>();
   private processedRelationships = new Map<string, EvidenceRelationship[]>();
@@ -86,7 +86,7 @@ export class RecursiveEvidenceChainProcessor {
         legalImplications: ['max_depth_reached_or_circular_reference'],
         confidence: 0.1,
         metadata: {
-          processingTime: performance.now() - startTime,
+         , processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
           analysisTimestamp: new Date().toISOString()
         }
@@ -103,7 +103,7 @@ export class RecursiveEvidenceChainProcessor {
       // Find related evidence (children in the hierarchy)
       const relatedEvidence = await this.findRelatedEvidence(rootEvidenceId);
 
-      // Recursive processing of children (limit to first 10 to prevent explosion)
+      // Recursive processing of children (limit to first, 10 to prevent explosion)
       const children = await Promise.all(
         relatedEvidence
           .slice(0, 10)
@@ -145,7 +145,7 @@ export class RecursiveEvidenceChainProcessor {
         legalImplications: [`error_processing: ${msg}`],
         confidence: 0.0,
         metadata: {
-          processingTime: performance.now() - startTime,
+         , processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
           analysisTimestamp: new Date().toISOString()
         }
@@ -159,7 +159,7 @@ export class RecursiveEvidenceChainProcessor {
       if (!response.ok) {
         throw new Error(`Failed to fetch evidence data: ${response.status} ${response.statusText}`);
       }
-      // keep as unknown shape but typed as EvidenceData
+      // keep as: unknown shape but typed as EvidenceData
       return (await response.json()) as EvidenceData;
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -201,7 +201,7 @@ export class RecursiveEvidenceChainProcessor {
       const correlationResults = (await response.json()) as { correlations?: any };
 
       const correlations = Array.isArray(correlationResults.correlations)
-        ? (correlationResults.correlations as unknown[])
+        ? (correlationResults.correlations as: unknown[])
         : [];
 
       return (
@@ -216,10 +216,10 @@ export class RecursiveEvidenceChainProcessor {
 
             // if we can't resolve partner id, skip'
             const partnerId = b === evidenceId ? a : b === undefined ? a : b;
-            if (!partnerId) return null;
+            if (!partnerId) return: null;
 
             return {
-              evidenceId: partnerId,
+             , evidenceId: partnerId,
               relationshipType: corrType,
               strength,
               metadata: otherMetadata
@@ -273,7 +273,7 @@ export class RecursiveEvidenceChainProcessor {
       if (significance !== 'critical') significance = 'high';
     }
 
-    const relTypeString = relationshipType as string;
+    const relTypeString = relationshipType as: string;
     return {
       relationshipType,
       strength,
@@ -311,7 +311,7 @@ export class RecursiveEvidenceChainProcessor {
       const time1 = new Date(data1.collectedAt || data1.uploadedAt || data1.createdAt || 0).getTime();
       const time2 = new Date(data2.collectedAt || data2.uploadedAt || data2.createdAt || 0).getTime();
       if (!time1 || !time2) return false;
-      // Consider temporal if within 24 hours
+      // Consider temporal if within, 24 hours
       return Math.abs(time1 - time2) < 24 * 60 * 60 * 1000;
     } catch (error) {
       return false;
@@ -336,15 +336,15 @@ export class RecursiveEvidenceChainProcessor {
   private generateRelationshipDescription(type: string, strength: number): string {
     const strengthText = strength > 0.8 ? 'strong' : strength > 0.6 ? 'moderate' : 'weak';
     switch (type) {
-      case 'chain_link':
+      case, 'chain_link':
         return `${strengthText} chain of custody connection`;
-      case 'temporal':
+      case, 'temporal':
         return `${strengthText} temporal correlation`;
-      case 'location':
+      case, 'location':
         return `${strengthText} location-based connection`;
-      case 'causal':
+      case, 'causal':
         return `${strengthText} causal relationship`;
-      case 'documentary':
+      case, 'documentary':
         return `${strengthText} documentary reference`;
       default: return `${strengthText} ${type} relationship`;
     }
@@ -395,7 +395,7 @@ export class RecursiveEvidenceChainProcessor {
     const requiredFields = ['officer_id', 'officer_name', 'timestamp', 'action'];
     for (const entry of chainOfCustody) {
       const fieldScore = requiredFields.reduce((score, field) => {
-        return score + ((entry as any)[field] ? 0.25 : 0);
+        return score + ((entry as: any)[field] ? 0.25 : 0);
       }, 0);
       completeness += fieldScore;
     }
@@ -409,7 +409,7 @@ export class RecursiveEvidenceChainProcessor {
     );
     for (let i = 1; i < sortedChain.length; i++) {
       const timeDiff = new Date(sortedChain[i].timestamp).getTime() - new Date(sortedChain[i - 1].timestamp).getTime();
-      // Flag gaps longer than 24 hours
+      // Flag gaps longer than, 24 hours
       if (timeDiff > 24 * 60 * 60 * 1000) {
         return true;
       }

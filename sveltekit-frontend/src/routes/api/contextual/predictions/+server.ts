@@ -4,9 +4,9 @@
  * Get HMM-based next-step predictions for current conversation
  */
 
-import { json } from '@sveltejs/kit';
-import { contextualUnderstanding } from '$lib/server/ai/contextual-understanding-service';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { contextualUnderstanding } from, '$lib/server/ai/contextual-understanding-service';
+import type { RequestHandler } from, './$types';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

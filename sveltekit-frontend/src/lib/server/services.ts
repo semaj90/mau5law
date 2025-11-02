@@ -1,10 +1,10 @@
 /**
  * 🏭 Centralized Service Factory
  *
- * Import this file from any API endpoint to access production services:
+ * Import this file from: any API endpoint to access production, services:
  *
  * ```typescript`
- * import { services } from '$lib/server/services';
+ * import { services } from, '$lib/server/services';
  *
  * // Use Ollama for embeddings
  * const embedding = await services.ollama.embed('legal text');
@@ -19,13 +19,13 @@
  * All services are pre-configured from environment variables.
  */
 
-import { getServiceAdapters, getUnifiedLegalSystem } from './adapters/service-integrations';
-import type { UnifiedLegalSIMDPGVector } from '$lib/services/unified-legal-simd-pgvector-production';
+import { getServiceAdapters, getUnifiedLegalSystem } from, './adapters/service-integrations';
+import type { UnifiedLegalSIMDPGVector } from, '$lib/services/unified-legal-simd-pgvector-production';
 
 // ===== Singleton Service Instances =====
 
 let servicesInstance: ReturnType<typeof getServiceAdapters> | null = null;
-let legalSystemInstance: UnifiedLegalSIMDPGVector | null = null;
+let, legalSystemInstance: UnifiedLegalSIMDPGVector | null = null;
 
 /**
  * Get all production service adapters (singleton)
@@ -164,7 +164,7 @@ export async function indexDocument(doc: {, id: string;, content: string;
  * Helper: Generate chat response with Ollama
  */
 export async function generateChatResponse(
-	messages: Array<{, role: string; content: string }>,
+, messages: Array<{, role: string;, content: string }>,
 	stream: boolean = false
 ): Promise<any> {
 	return await ollama.chat?.(messages, {
@@ -177,7 +177,7 @@ export async function generateChatResponse(
  * Helper: Upload file to MinIO
  */
 export async function uploadFile(
-	bucket: string,
+, bucket: string,
 	key: string,
 	data: Buffer,
 	contentType?: string
@@ -310,4 +310,4 @@ export async function cleanupServices(): Promise<any> {
 
 // ===== Type Exports for Convenience =====
 
-export type { OllamaClient, QdrantClient, RedisCacheService, PgVectorClient, MinIOClient, Neo4jClient, RabbitMQClient } from '$lib/types/external-services';
+export type { OllamaClient, QdrantClient, RedisCacheService, PgVectorClient, MinIOClient, Neo4jClient, RabbitMQClient } from, '$lib/types/external-services';

@@ -1,13 +1,13 @@
 // @ts-nocheck
-import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import pgClient, { poolShim } from '$lib/server/db-shim';
-import postgres from 'postgres'; // derive runtime client type
-import { readFileSync, readdirSync, existsSync } from 'fs';
-import { join } from 'path';
-import { sql } from 'drizzle-orm';
+import, 'dotenv/config';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { migrate } from, 'drizzle-orm/postgres-js/migrator';
+import pgClient, { poolShim } from, '$lib/server/db-shim';
+import postgres from, 'postgres'; // derive runtime client type
+import { readFileSync, readdirSync, existsSync } from, 'fs';
+import { join } from, 'path';
+import { sql } from, 'drizzle-orm';
 // Minimal pool shape used by this script
 type PoolLike = {
   end?: () => Promise<void> | void;
@@ -16,7 +16,7 @@ type PoolLike = {
 // Derive concrete postgres-js client type
 type PostgresJsClient = ReturnType<typeof, postgres>;
 interface Migration { id: string;, filename: string;
-  // DB drivers commonly return timestamps as strings; accept both and allow null
+  // DB drivers commonly return timestamps as strings; accept both and, allow: null
   applied_at?: string | Date | null;
 }
 async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike): Promise<any> {
@@ -34,7 +34,7 @@ async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike): Pr
     SELECT id, filename, applied_at FROM migrations ORDER BY applied_at ASC
   `);`
   // drizzle/postgres-js clients sometimes return { rows: [...] } or an array directly
-  const rows = (result && (result as any).rows) ?? (Array.isArray(result) ? result : ((result as any)[0] ?? []));
+  const rows = (result && (result, as: any).rows) ?? (Array.isArray(result) ? result : ((result as: any)[0] ?? []));
   const appliedMigrations = (Array.isArray(rows) ? rows : []) as Migration[];
   // Get available migration files
   const migrationsDir = join(process.cwd(), 'src/lib/server/db/migrations');
@@ -101,7 +101,7 @@ async function runMigrations(): Promise<any> {
   }
   // Use postgres-js client via shim for migrations
   const pool: PoolLike = poolShim as PoolLike;
-  const db = drizzle(pgClient as unknown as PostgresJsClient) as PostgresJsDatabase<any>;
+  const db = drizzle(pgClient, as: unknown as PostgresJsClient) as PostgresJsDatabase<any>;
   console.log('⏳ Running database migrations (via postgres-js client)...');
   console.log('📍 Database URL:', process.env.DATABASE_URL.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'));
   try {
@@ -122,8 +122,8 @@ async function runMigrations(): Promise<any> {
     // Close the connection pool/shim if available
     try {
       if (pool && typeof pool.end === 'function') await pool.end();
-      else if (pool && typeof (pool as any).close === 'function') await (pool as any).close();
-      else if (typeof (poolShim as any).end === 'function') await (poolShim as any).end();
+      else if (pool && typeof (pool as: any).close === 'function') await (pool as: any).close();
+      else if (typeof (poolShim as: any).end === 'function') await (poolShim as: any).end();
     } catch (err) {
       console.warn('Error closing pool after migrations:', err);
     }

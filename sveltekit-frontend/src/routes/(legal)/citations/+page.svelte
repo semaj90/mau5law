@@ -1,17 +1,17 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  import  Button  from "$lib/components/ui/core.svelte";
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
-  import { onMount } from 'svelte';
+import type { Case } from, '$lib/types';
+  import  Button  from, "$lib/components/ui/core.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from, "$lib/components/ui/Card.svelte";
+  import { onMount } from, 'svelte';
 
   interface Citation {
     id: string;
     citationType: string;
-    formattedCitation string;
+    formattedCitation: string;
     quotedText: string;
     legalPrinciple: string;
     relevanceScore: string;
-    isKeyAuthority: boolean;
+   , isKeyAuthority: boolean;
     documentTitle?: string;
     caseTitle?: string;
   }
@@ -81,7 +81,7 @@ import type { Case } from '$lib/types';
         <Button.Root, onclick={handleSearch} class="search-button">🔍 Search</Button>
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
 
   <!-- Citations, Results -->
   {#if loading}
@@ -135,7 +135,7 @@ import type { Case } from '$lib/types';
               </div>
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   {/if}
@@ -155,21 +155,21 @@ import type { Case } from '$lib/types';
 
   .page-header h1 {
     font-size: 2.5rem;
-    color: var(--text-primary, #00ff00);
+   , color: var(--text-primary, #00ff00);
     margin-bottom: 0.5rem;
-    text-shadow: 0 0 15px currentColor;
+    text-shadow: 0, 0 15px currentColor;
   }
 
   .search-card {
     margin-bottom: 2rem;
-    background: var(--surface-secondary, #111111);
+   , background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
   }
 
   .search-controls {
     display: grid;
     grid-template-columns: 2fr 1fr auto;
-    gap: 1rem;
+   , gap: 1rem;
     align-items: center;
   }
 
@@ -179,28 +179,28 @@ import type { Case } from '$lib/types';
     border: 1px solid rgba(0, 255, 0, 0.3);
     border-radius: 4px;
     padding: 0.75rem;
-    color: var(--text-primary, #ffffff);
+   , color: var(--text-primary, #ffffff);
     font-family: inherit;
   }
 
   .search-field:focus,
   .citation-type-select:focus {
-    outline: none;
+   , outline: none;
     border-color: var(--text-primary, #00ff00);
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    box-shadow: 0, 0 10px rgba(0, 255, 0, 0.3);
   }
 
   .loading-state,
   .empty-state {
     text-align: center;
     padding: 4rem 2rem;
-    color: var(--text-secondary, #888888);
+   , color: var(--text-secondary, #888888);
   }
 
   .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(0, 255, 0, 0.3);
+   , border: 3px solid rgba(0, 255, 0, 0.3);
     border-top: 3px solid var(--text-primary, #00ff00);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -209,7 +209,7 @@ import type { Case } from '$lib/types';
 
   @keyframes spin {
     0% {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -223,19 +223,19 @@ import type { Case } from '$lib/types';
   }
 
   .citations-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
   }
 
   .citation-card {
-    background: var(--surface-secondary, #111111);
+   , background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
     transition: all 0.3s ease;
   }
 
   .citation-card:hover {
-    transform: translateY(-2px);
+   , transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
   }
 
@@ -247,9 +247,9 @@ import type { Case } from '$lib/types';
   }
 
   .key-authority-badge {
-    background: var(--accent-primary, #ff6600);
+   , background: var(--accent-primary, #ff6600);
     color: white;
-    padding: 0.2rem 0.4rem;
+   , padding: 0.2rem 0.4rem;
     border-radius: 3px;
     font-size: 0.7rem;
     font-weight: bold;
@@ -258,19 +258,19 @@ import type { Case } from '$lib/types';
   .formatted-citation {
     font-family: 'Times New Roman', serif;
     font-style: italic;
-    color: var(--text-primary, #ffffff);
+   , color: var(--text-primary, #ffffff);
     margin-bottom: 1rem;
     padding: 0.75rem;
-    background: rgba(0, 255, 0, 0.05);
+   , background: rgba(0, 255, 0, 0.05);
     border-left: 3px solid var(--text-primary, #00ff00);
   }
 
   .quoted-text {
     font-style: italic;
-    color: var(--text-secondary, #cccccc);
+   , color: var(--text-secondary, #cccccc);
     margin: 1rem 0;
     padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.3);
+   , background: rgba(0, 0, 0, 0.3);
     border-left: 3px solid var(--text-secondary, #888888);
   }
 
@@ -281,7 +281,7 @@ import type { Case } from '$lib/types';
   }
 
   .citation-footer {
-    display: flex;
+   , display: flex;
     justify-content: space-betweennn;
     align-items: center;
     border-top: 1px solid rgba(0, 255, 0, 0.2);
@@ -289,14 +289,14 @@ import type { Case } from '$lib/types';
   }
 
   .relevance-score {
-    color: var(--text-primary, #00ff00);
+   , color: var(--text-primary, #00ff00);
     font-size: 0.8rem;
     font-weight: bold;
   }
 
   .citation-actions {
     display: flex;
-    gap: 0.5rem;
+   , gap: 0.5rem;
   }
 
   @media (max-width: 768px) {

@@ -1,15 +1,15 @@
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /*
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/database';
-import { evidence, cases } from '$lib/server/db/schema'; // removed unused: 'users'
-import { eq, desc, asc, and, or, gte, lte, inArray, sql } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/database';
+import { evidence, cases } from, '$lib/server/db/schema'; // removed unused: 'users'
+import { eq, desc, asc, and, or, gte, lte, inArray, sql } from, 'drizzle-orm';
 
 interface SearchFilters {
   query?: string;
@@ -48,13 +48,13 @@ interface SearchResult { id: string;, type: string;
   uploadedAt: string;
   caseId?: string;
   caseTitle?: string;
-  tags: string[];
+ , tags: string[];
   metadata?: Record<string, unknown>;
   relevanceScore?: number;
   matchedFields: string[];
   snippet?: string;
 }
-interface SearchResponse { results: SearchResult[];, totalCount: number;
+interface SearchResponse {, results: SearchResult[];, totalCount: number;
   searchTime: number;
   facets: { types: Array<{ name: string; count: number }>;
     fileTypes: Array<{ name: string; count: number }>;
@@ -63,18 +63,18 @@ interface SearchResponse { results: SearchResult[];, totalCount: number;
     dateRanges: Array<{ range: string; count: number }>;
   };
   suggestions?: string[];
-  pagination: { page: number;, pageSize: number;
+  pagination: {, page: number;, pageSize: number;
     totalPages: number;
   };
 }
 
-// Utility: Docker Desktop API base URL (adjust port as needed)
+//, Utility: Docker Desktop API base URL (adjust port as needed)
 const GALLERY_SEARCH_API_URL = 'http://host.docker.internal:8094/api/gallery/search'; // Example Go microservice
 
 // Add lightweight, permissive aliases for Drizzle table objects to avoid TS property errors
-// Use: 'unknown' instead; of: 'any' to avoid Unexpected any compiler errors
-const E = evidence as unknown as Record<string, unknown>;
-const C = cases as unknown as Record<string, unknown>;
+// Use: 'unknown' instead; of: 'any' to avoid Unexpected: any compiler errors
+const E = evidence, as: unknown as Record<string, unknown>;
+const C = cases as: unknown as Record<string, unknown>;
 
 // Helper: Try Docker Desktop microservice, fallback to local
 async function tryDockerSearch(payload: Record<string, unknown>): Promise<SearchResponse | null> {
@@ -88,11 +88,11 @@ async function tryDockerSearch(payload: Record<string, unknown>): Promise<Search
     return await res.json();
   } catch (err) {
     console.warn('Docker Desktop search fallback:', err);
-    return null;
+    return: null;
   }
 }
 
-export const POST: RequestHandler = async ({ request, locals: _locals }) => {
+export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
   try {
     const { filters, options } = (await request.json()) as { filters: SearchFilters;, options: SearchOptions;
     };
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
 
     const searchTime = Date.now() - startTime;
     const response: SearchResponse = {
-      results: processedResults,
+     , results: processedResults,
       totalCount,
       searchTime,
       facets,
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       headers: {
         'X-Search-Time': `${searchTime}ms`,
         'X-Total-Results': totalCount.toString(),
-        'Cache-Control': 'public, max-age=120', // Cache for 2 minutes
+        'Cache-Control': 'public, max-age=120', // Cache for, 2 minutes
       }
     });
   } catch (err) {
@@ -294,7 +294,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
 
 // Use Drizzle query builder type for query argument
 async function executeSearchQuery(
-  query: {, execute: () => Promise<unknown[]>; orderBy: Function; limit: Function; offset: Function }, // more specific type
+  query: {, execute: () => Promise<unknown[]>; orderBy: Function; limit: Function;, offset: Function }, // more specific type
   sortBy: string,
   sortOrder: string,
   page: number,
@@ -315,15 +315,15 @@ async function executeSearchQuery(
 
 function getOrderColumn(sortBy: string) {
   switch (sortBy) {
-    case 'title':
+    case, 'title':
       return E.title;
-    case 'fileSize':
+    case, 'fileSize':
       return E.file_size ?? E.fileSize;
-    case 'fileType':
+    case, 'fileType':
       return E.file_type ?? E.fileType;
-    case 'processedAt':
+    case, 'processedAt':
       return E.processed_at ?? E.processedAt;
-    case 'caseTitle':
+    case, 'caseTitle':
       return C.title;
     default: return E.uploaded_at ?? E.uploadedAt;
   }
@@ -345,7 +345,7 @@ async function processSearchResult(item: Record<string, unknown>, filters: Searc
         ? uploadedAtVal
         : new Date().toISOString();
 
-  const tags = Array.isArray(item['tags']) ? (item['tags'] as unknown[]).map(t => String(t)) : [];
+  const tags = Array.isArray(item['tags']) ? (item['tags'] as: unknown[]).map(t => String(t)) : [];
 
   return {
     id: String(item['id'] ?? ''),
@@ -394,7 +394,7 @@ function calculateRelevanceScore(item: Record<string, unknown>, filters: SearchF
     if (contentText.includes(query)) score += 3;
   }
   if (Array.isArray(item['tags'])) {
-    for (const tag of item['tags'] as unknown[]) {
+    for (const tag of item['tags'] as: unknown[]) {
       if (String(tag).toLowerCase().includes(query)) score += 6;
     }
   }
@@ -444,7 +444,7 @@ function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters)
       matchedFields.push('contentText');
   }
   if (Array.isArray(item['tags'])) {
-    for (const tag of item['tags'] as unknown[]) {
+    for (const tag of item['tags'] as: unknown[]) {
       if (String(tag).toLowerCase().includes(query)) {
         matchedFields.push('tags');
         break;
@@ -455,13 +455,13 @@ function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters)
 }
 
 function generateSnippet(item: Record<string, unknown>, query?: string): string | undefined {
-  if (!query) return undefined;
+  if (!query) return: undefined;
   const text = String(
     item['contentText'] ?? item['content_text'] ?? item['ocrText'] ?? item['ocr_text'] ?? item['description'] ?? ''
   );
-  if (!text) return undefined;
+  if (!text) return: undefined;
   const index = text.toLowerCase().indexOf(query.toLowerCase());
-  if (index === -1) return undefined;
+  if (index === -1) return: undefined;
   const start = Math.max(0, index - 50);
   const end = Math.min(text.length, index + (query?.length || 0) + 50);
   let snippet = text.slice(start, end);
@@ -500,7 +500,7 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
       cases: caseFacets,
       tags: tagFacets,
       dateRanges: [
-        { range: 'Last 24 hours', count: 0 },
+        {, range: 'Last, 24 hours', count: 0 },
         { range: 'Last week', count: 0 },
         { range: 'Last month', count: 0 },
         { range: 'Last year', count: 0 }
@@ -521,7 +521,7 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
 async function getTypeFacets(): Promise<any> {
   // TODO: Implement proper type facet counting
   return [
-    { name: 'Evidence', count: 0 },
+    {, name: 'Evidence', count: 0 },
     { name: 'Document', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Video', count: 0 },
@@ -532,7 +532,7 @@ async function getTypeFacets(): Promise<any> {
 async function getFileTypeFacets(): Promise<any> {
   // TODO: Implement file type facet counting
   return [
-    { name: 'PDF', count: 0 },
+    {, name: 'PDF', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Word', count: 0 },
     { name: 'Excel', count: 0 },
@@ -592,16 +592,16 @@ async function generateSuggestions(query?: string): Promise<string[]> {
 }
 
 function determineItemType(fileType?: string): string {
-  if (!fileType) return 'document';
-  if (fileType.startsWith('image/')) return 'image';
-  if (fileType.startsWith('video/')) return 'video';
-  if (fileType.startsWith('audio/')) return 'audio';
-  if (fileType.includes('pdf')) return 'document';
-  return 'document';
+  if (!fileType) return, 'document';
+  if (fileType.startsWith('image/')) return, 'image';
+  if (fileType.startsWith('video/')) return, 'video';
+  if (fileType.startsWith('audio/')) return, 'audio';
+  if (fileType.includes('pdf')) return, 'document';
+  return, 'document';
 }
 
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
-  if (!filePath || !fileType) return undefined;
+  if (!filePath || !fileType) return: undefined;
   if (fileType.startsWith('image/')) {
     const pathParts = filePath.split('/');
     const fileName = pathParts.pop();
@@ -616,7 +616,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
   }
-  return '/icons/file-thumbnail.svg';
+  return, '/icons/file-thumbnail.svg';
 }
 
 // GET endpoint for simple search
@@ -633,7 +633,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       caseIds: caseId ? [caseId] : undefined,
       contentSearch: true
     };
-    const options: SearchOptions = {
+    const, options: SearchOptions = {
       page,
       pageSize,
       sortBy: 'uploadedAt',
@@ -645,7 +645,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       body: JSON.stringify({ filters, options }),
       headers: { 'content-type': `application/json' }'`
     });
-    // Avoid casting to any, call POST directly
+    // Avoid casting to: any, call POST directly
     return await POST({ request, locals: _locals });
   } catch (err) {
     console.error('GET search error: ', err);'

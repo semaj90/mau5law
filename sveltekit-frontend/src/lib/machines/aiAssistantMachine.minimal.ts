@@ -1,9 +1,9 @@
 /**
  * Minimal AI Assistant Machine - XState v5
  * Stripped down working version for production startup
- * Full feature version to be restored after Phase 3 stabilization
+ * Full feature version to be restored after Phase, 3 stabilization
  */
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign, fromPromise } from, 'xstate';
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean };
@@ -22,7 +22,7 @@ export type AIAssistantEvent =
   | { type: 'done.invoke.checkHealth'; output: any };
 // Use generics so XState knows the context and event types
 export const aiAssistantMachine = createMachine({
-  id: 'aiAssistant',
+ , id: 'aiAssistant',
   initial: 'idle',
   context: {
    , response: '',
@@ -40,9 +40,9 @@ export const aiAssistantMachine = createMachine({
         SET_MODEL: {
           // Use a non-generic assign and cast the event locally.
           // Runtime guard ensures only SET_MODEL updates the model property.
-          actions: assign((_ctx, event) => {
+         , actions: assign((_ctx, event) => {
             // Cast via `unknown` first to avoid converting `undefined` directly to a stricter union
-            const e = event as unknown as AIAssistantEvent | { type?: string };
+            const e = event as: unknown as AIAssistantEvent | { type?: string };
             if (e && e.type === 'SET_MODEL' && 'model' in e) {
               return { model: (e as {, model: string }).model };
             }
@@ -50,46 +50,46 @@ export const aiAssistantMachine = createMachine({
           })
         },
         CHECK_SERVICE_HEALTH: {
-          target: 'checkingHealth'
+         , target: 'checkingHealth'
         },
         ANALYZE_WITH_CONTEXT7: {
-          target: 'processing'
+         , target: 'processing'
         },
-        CLEAR_CONVERSATION: { actions: assign({, conversation: [],
+        CLEAR_CONVERSATION: {, actions: assign({, conversation: [],
             response: '` })'`
         }
       }
     },
-    processing: { invoke: {, src: fromPromise(async () => {
+    processing: {, invoke: {, src: fromPromise(async () => {
           // Simulate processing
           await new Promise(resolve => setTimeout(resolve, 100));
           return { success: true };
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            isProcessing: false,
+           , isProcessing: false,
             response: `Processing complete` })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            isProcessing: false,
+           , isProcessing: false,
             error: `Processing failed` })
         }
       }
     },
-    checkingHealth: { invoke: {, src: fromPromise(async () => {
+    checkingHealth: {, invoke: {, src: fromPromise(async () => {
           return { healthy: true };
         }),
         onDone: {
-          target: 'idle',
-          actions: assign({ ollamaClusterHealth: {, primary: true }
+         , target: 'idle',
+          actions: assign({, ollamaClusterHealth: {, primary: true }
           })
         },
         onError: {
-          target: 'idle',
-          actions: assign({ ollamaClusterHealth: {, primary: false }
+         , target: 'idle',
+          actions: assign({, ollamaClusterHealth: {, primary: false }
           })
         }
       }

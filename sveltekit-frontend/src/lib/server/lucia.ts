@@ -1,8 +1,8 @@
-import { and, eq, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable } from '$lib/server/db/unified-schema';
-import bcrypt from 'bcryptjs';
-import type { Cookies } from '@sveltejs/kit';
+import { and, eq, sql } from, 'drizzle-orm';
+import { db } from, '$lib/server/db';
+import { sessions, as sessionsTable } from, '$lib/server/db/unified-schema';
+import bcrypt from, 'bcryptjs';
+import type { Cookies } from, '@sveltejs/kit';
 
 async function generateId(length: number = 40): Promise<string> {
   const { randomBytes } = await import('crypto');
@@ -29,7 +29,7 @@ export interface CreateUserSessionResult { sessionId: string;, expiresAt: Date;
 }
 
 export async function createUserSession(
-  userId: string,
+ , userId: string,
   days = 30,
   ipAddress?: string,
   userAgent?: string
@@ -51,7 +51,7 @@ export interface SessionData { id: string;, user_id: string;
   expires_at: Date;
   ip_address: string | null;
   user_agent: string | null;
-  session_context: Record<string, unknown>;
+ , session_context: Record<string, unknown>;
 }
 
 export interface ValidatedUser { id: string;, email: string;
@@ -60,14 +60,14 @@ export interface ValidatedUser { id: string;, email: string;
   role: string;
 }
 
-export interface ValidationResult { session: SessionData | null;, user: ValidatedUser | null;
+export interface ValidationResult {, session: SessionData | null;, user: ValidatedUser | null;
 }
 
 export async function validateSession(sessionId: string): Promise<ValidationResult> {
   const now = new Date();
   const session = await db.query.sessions.findFirst({
     where: and(eq(sessionsTable.id, sessionId), sql`${sessionsTable.expiresAt} >= ${now}`),
-    with: { user: {, columns: { id: true, email: true, first_name: true, last_name: true, role: true }
+    with: {, user: {, columns: {, id: true, email: true, first_name: true, last_name: true, role: true }
       }
     }
   });
@@ -75,10 +75,10 @@ export async function validateSession(sessionId: string): Promise<ValidationResu
     const { user, ...rest } = session;
     return {
       session: rest as SessionData,
-      user: { id: user.id, email: user.email, firstName: user.first_name, lastName: user.last_name, role: user.role }
+      user: {, id: user.id, email: user.email, firstName: user.first_name, lastName: user.last_name, role: user.role }
     };
   }
-  return { session: null, user: null };
+  return {, session: null, user: null };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {

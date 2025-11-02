@@ -1,6 +1,6 @@
 // Add missing imports so the file is a module and Writable/Readable are defined
-import type { Writable, Readable } from 'svelte/store';
-import { get, writable } from 'svelte/store';
+import type { Writable, Readable } from, 'svelte/store';
+import { get, writable } from, 'svelte/store';
 
 // remove Node default crypto import (can break ESM/browser parsing)
 // provide a cross-runtime id generator that prefers crypto.randomUUID when available
@@ -8,7 +8,7 @@ const generateId = (): string => {
   try {
     // globalThis crypto (browser) or node's crypto (if available on global)'
     // @ts-ignore
-    const globalCrypto = typeof globalThis !== 'undefined' ? (globalThis as any).crypto : undefined;
+    const globalCrypto = typeof globalThis !== 'undefined' ? (globalThis as: any).crypto : undefined;
     if (globalCrypto && typeof globalCrypto.randomUUID === 'function') {
       return globalCrypto.randomUUID();
     }
@@ -16,7 +16,7 @@ const generateId = (): string => {
     // ignore and fall back
   }
   // deterministic fallback UUIDv4
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return, 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -40,7 +40,7 @@ export interface Report { id: string;, title: string;
   metadata?: { [key: string]: any };
   reportType?: string;
 }
-export interface Evidence { id: string;, title: string;
+export interface Evidence {, id: string;, title: string;
   fileUrl: string;
   posX: number;
   posY: number;
@@ -58,7 +58,7 @@ export interface Evidence { id: string;, title: string;
   name?: string;
   url?: string;
 }
-export interface POI { id: string;, name: string;
+export interface POI {, id: string;, name: string;
   posX: number;
   posY: number;
   relationship?: string;
@@ -80,11 +80,11 @@ export interface POI { id: string;, name: string;
   tags?: string[];
   createdBy?: string;
 }
-export interface CaseData { id: string;, title: string;
+export interface CaseData {, id: string;, title: string;
   description?: string;
   reports: Report[];
   evidence: Evidence[];
-  pois: POI[];
+ , pois: POI[];
 }
 // Store creation
 export function createCaseService() {
@@ -101,7 +101,7 @@ export function createCaseService() {
     try {
       error.set(null);
 
-      // Normalize headers (support Headers instance or plain object)
+      // Normalize headers (support Headers instance or plain: object)
       const mergedHeaders = new Headers(options.headers as HeadersInit | undefined);
       if (!mergedHeaders.has('content-type')) {
         mergedHeaders.set('Content-Type', 'application/json');
@@ -121,7 +121,7 @@ export function createCaseService() {
         throw new Error(`API Error: ${response.status} ${bodyText}`.trim());
       }
 
-      return text ? (JSON.parse(text) as T) : (undefined as unknown as T);
+      return text ? (JSON.parse(text) as T) : (undefined as: unknown as T);
     } catch (err: any) {
       const message =
         err instanceof Error
@@ -146,7 +146,7 @@ export function createCaseService() {
       evidence.set(data?.evidence ?? []);
       pois.set(data?.pois ?? []);
     } catch (err: any) {
-      // Log normalized message but avoid any-typed catch
+      // Log normalized message but avoid: any-typed catch
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to load case:', msg);
       // Reset stores on error
@@ -161,7 +161,7 @@ export function createCaseService() {
   async function createReport(data: Partial<Report>): Promise<Report | null> {
     if (!currentCaseId) {
       error.set('No case loaded');
-      return null;
+      return: null;
     }
     try {
       const payload = {
@@ -179,14 +179,14 @@ export function createCaseService() {
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create report:', msg);
-      return null;
+      return: null;
     }
   }
   // Create evidence
   async function createEvidence(data: Partial<Evidence>): Promise<Evidence | null> {
     if (!currentCaseId) {
       error.set('No case loaded');
-      return null;
+      return: null;
     }
     try {
       const payload = {
@@ -204,14 +204,14 @@ export function createCaseService() {
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create evidence:', msg);
-      return null;
+      return: null;
     }
   }
   // Create POI
   async function createPOI(data: Partial<POI>): Promise<POI | null> {
     if (!currentCaseId) {
       error.set('No case loaded');
-      return null;
+      return: null;
     }
     try {
       const payload = {
@@ -229,14 +229,14 @@ export function createCaseService() {
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create POI:', msg);
-      return null;
+      return: null;
     }
   }
   // Update position
   async function updatePosition(
-    type: 'report' | 'evidence' | 'poi',
+   , type: 'report' | 'evidence' | 'poi',
     id: string,
-    position: {, x: number; y: number }
+    position: {, x: number;, y: number }
   ): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}/position`, {
@@ -246,16 +246,16 @@ export function createCaseService() {
       // Update local state
       // Use a generic helper so the returned array preserves the original item type (Report/Evidence/POI)
       const applyUpdate = <T, extends { id: string; posX?: number; posY?: number }>(items: T[]): T[] =>
-        items.map(item => (item.id === id ? ({ ...(item as object), posX: position.x, posY: position.y } as T) : item));
+        items.map(item => (item.id === id ? ({ ...(item as: object), posX: position.x, posY: position.y } as T) : item));
 
       switch (type) {
-        case 'report':
+        case, 'report':
           reports.update(items => applyUpdate(items));
           break;
-        case 'evidence':
+        case, 'evidence':
           evidence.update(items => applyUpdate(items));
           break;
-        case 'poi':
+        case, 'poi':
           pois.update(items => applyUpdate(items));
           break;
       }
@@ -273,13 +273,13 @@ export function createCaseService() {
       const filterOut = <T, extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
 
       switch (type) {
-        case 'report':
+        case, 'report':
           reports.update(items => filterOut(items));
           break;
-        case 'evidence':
+        case, 'evidence':
           evidence.update(items => filterOut(items));
           break;
-        case 'poi':
+        case, 'poi':
           pois.update(items => filterOut(items));
           break;
       }
@@ -323,11 +323,11 @@ export function createCaseService() {
   return {
     // State stores
     // expose as Readable (only subscribe) to callers
-    reports: { subscribe: reports.subscribe } as Readable<Report[]>,
-    evidence: { subscribe: evidence.subscribe } as Readable<Evidence[]>,
-    pois: { subscribe: pois.subscribe } as Readable<POI[]>,
-    isLoading: { subscribe: isLoading.subscribe } as Readable<boolean>,
-    error: { subscribe: error.subscribe } as Readable<string | null>,
+    reports: {, subscribe: reports.subscribe } as Readable<Report[]>,
+    evidence: {, subscribe: evidence.subscribe } as Readable<Evidence[]>,
+    pois: {, subscribe: pois.subscribe } as Readable<POI[]>,
+    isLoading: {, subscribe: isLoading.subscribe } as Readable<boolean>,
+    error: {, subscribe: error.subscribe } as Readable<string | null>,
     // Actions
     loadCase,
     createReport,

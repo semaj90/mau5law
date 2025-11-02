@@ -1,12 +1,12 @@
-import type { AIResponse } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-// Svelte 5 TypeScript Patterns - Progressive Type Replacement
-// Replaces generic: 'any' shims with proper Svelte 5 type definitions
-import type { Component, Snippet } from 'svelte';
-import type { HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
+import type { AIResponse } from, '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+// Svelte, 5 TypeScript Patterns - Progressive Type Replacement
+// Replaces generic: 'any' shims with proper Svelte, 5 type definitions
+import type { Component, Snippet } from, 'svelte';
+import type { HTMLButtonAttributes, HTMLInputAttributes } from, 'svelte/elements';
 // === COMPONENT PROPS PATTERNS ===
-// Enhanced Button Component Props (replaces generic Button any type)
+// Enhanced Button Component Props (replaces generic Button: any type)
 export interface EnhancedButtonProps extends HTMLButtonAttributes {
   variant?: 'default' | 'legal' | 'evidence' | 'case' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
@@ -15,7 +15,7 @@ export interface EnhancedButtonProps extends HTMLButtonAttributes {
   children?: Snippet;
   onclick?: (_event: MouseEvent) => void;
 }
-// Enhanced Input Component Props (replaces generic Input any type)
+// Enhanced Input Component Props (replaces generic Input: any type)
 export interface EnhancedInputProps extends HTMLInputAttributes {
   variant?: 'default' | 'legal' | 'search' | 'error';
   error?: string;
@@ -27,7 +27,7 @@ export interface EnhancedInputProps extends HTMLInputAttributes {
   onfocus?: (_event: FocusEvent) => void;
   onblur?: (_event: FocusEvent) => void;
 }
-// Form Component Props (replaces generic Form any type)
+// Form Component Props (replaces generic Form: any type)
 export interface FormProps {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   action?: string;
@@ -38,7 +38,7 @@ export interface FormProps {
   children?: Snippet;
 }
 // === REACTIVE STATE PATTERNS ===
-// User State Interface (replaces generic user any type)
+// User State Interface (replaces generic user: any type)
 export interface UserState { id: string;, email: string;
   name: string;
   isLoggedIn: boolean;
@@ -48,17 +48,17 @@ export interface UserState { id: string;, email: string;
     specializations: string[];
   };
 }
-// Case Management State (replaces generic Case any type)
+// Case Management State (replaces generic, Case: any type)
 export interface CaseState { id: string;, title: string;
   description?: string;
   status: 'draft' | 'active' | 'pending' | 'closed';
   priority: 'low' | 'medium' | 'high';
   assignedTo?: string;
   createdAt: Date;
-  updatedAt: Date;
+ , updatedAt: Date;
   metadata?: Record<string, unknown>;
 }
-// Evidence State (replaces generic Evidence any type)
+// Evidence State (replaces generic Evidence: any type)
 export interface EvidenceState { id: string;, caseId: string;
   title: string;
   description?: string;
@@ -74,10 +74,10 @@ export interface EvidenceState { id: string;, caseId: string;
   };
 }
 // === AI SERVICE TYPES ===
-// AI Task Interface (replaces generic AITask any type)
+// AI Task Interface (replaces generic, AITask: any type)
 export interface AITask { id: string;, type: 'search' | 'embedding' | 'analysis' | 'classification' | 'summarization';
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  input: {
+ , input: {
     query?: string;
     document?: string;
     context?: Record<string, unknown>;
@@ -93,34 +93,34 @@ export interface AITask { id: string;, type: 'search' | 'embedding' | 'analysis
   startedAt?: Date;
   completedAt?: Date;
 }
-// AI Response Interface (replaces generic AIResponse any type)
+// AI Response Interface (replaces generic, AIResponse: any type)
 export interface AIResponse<T = unknown> {
   success: boolean;
   data?: T;
-  error?: { code: string;, message: string;
+  error?: {, code: string;, message: string;
     details?: Record<string, unknown>;
   };
-  metadata: { taskId: string;, processingTime: number;
+  metadata: {, taskId: string;, processingTime: number;
     model: string;
-    tokens?: { input: number;, output: number;
+    tokens?: {, input: number;, output: number;
     };
   };
 }
-// Worker Status Interface (replaces generic WorkerStatus any type)
+// Worker Status Interface (replaces generic, WorkerStatus: any type)
 export interface WorkerStatus { id: string;, status: 'idle' | 'busy' | 'error' | 'stopped';
   activeRequests: number;
   queueLength: number;
-  performance: { averageResponseTime: number;, successRate: number;
+  performance: {, averageResponseTime: number;, successRate: number;
     totalProcessed: number;
   };
-  lastActivity: Date;
+ , lastActivity: Date;
 }
 // === API REQUEST/RESPONSE TYPES ===
 // Case API Types (replaces generic CaseCreateRequest, etc.)
 export interface CaseCreateRequest {
   title: string;
   description?: string;
-  priority: 'low' | 'medium' | 'high';
+ , priority: 'low' | 'medium' | 'high';
   assignedTo?: string;
   metadata?: Record<string, unknown>;
 }
@@ -137,15 +137,15 @@ export interface CaseSearchRequest {
   limit?: number;
   offset?: number;
 }
-export interface CaseSearchResponse { cases: CaseState[];, total: number;
+export interface CaseSearchResponse {, cases: CaseState[];, total: number;
   hasMore: boolean;
-  pagination: { limit: number;, offset: number;
+  pagination: {, limit: number;, offset: number;
   };
 }
 // Evidence API Types
-export interface EvidenceCreateRequest { caseId: string;, title: string;
+export interface EvidenceCreateRequest {, caseId: string;, title: string;
   description?: string;
-  fileType: EvidenceState['fileType'];
+ , fileType: EvidenceState['fileType'];
   file?: File;
   metadata?: Record<string, unknown>;
 }
@@ -173,12 +173,12 @@ export interface BulkOperationResponse { processed: number;, successful: number
   errors?: Array<unknown>;
 }
 // === DATABASE TYPES ===
-// Vector Search Result (replaces generic VectorSearchResult any type)
+// Vector Search Result (replaces generic, VectorSearchResult: any type)
 export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   sourceType: 'document' | 'evidence' | 'case';
-  rankingMatrix: number[][];
+ , rankingMatrix: number[][];
   documentId?: string;
   chunkIndex?: number;
 }
@@ -207,13 +207,13 @@ export interface ComponentEventHandlers {
 // Snippet with Parameters
 export type ParameterizedSnippet<TParams extends, readonly, unknown[]> = Snippet<TParams>;
 // === STATE MANAGEMENT ===
-// Shared State Pattern for Svelte 5
+// Shared State Pattern for Svelte, 5
 export interface SharedState<T> { value: T;, subscribe: (callback: (_value: T) => void) => () => void;
   update: (updater: (_value: T) => T) => void;
   set: (_value: T) => void;
 }
 // Store State Types
-export interface StoreState { auth: UserState;, ui: { theme: 'light' | 'dark' | 'system';, sidebarOpen: boolean;
+export interface StoreState { auth: UserState;, ui: {, theme: 'light' | 'dark' | 'system';, sidebarOpen: boolean;
     loading: boolean;
     notifications: Array<unknown>;
   };
@@ -223,8 +223,8 @@ export interface StoreState { auth: UserState;, ui: { theme: 'light' | 'dark' |
     loading: boolean;
     error?: string;
   };
-  evidence: { items: EvidenceState[];, loading: boolean;
-    uploadProgress: Record<string, number>;
+  evidence: {, items: EvidenceState[];, loading: boolean;
+   , uploadProgress: Record<string, number>;
   };
 }
 // (Removed invalid default export of types; types should be imported individually)

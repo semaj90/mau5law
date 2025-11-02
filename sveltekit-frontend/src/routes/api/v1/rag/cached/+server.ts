@@ -1,25 +1,25 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Cached RAG API Endpoint
  * Provides cached RAG functionality with embeddinggemma and gemma3:legal-latest
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import * as EnhancedRagModule from '$lib/services/enhanced-rag-semantic-analyzer';
-import { cachedRAGService } from '$lib/services/cached-rag-service';
-import { enhancedCachingService } from '$lib/services/enhanced-caching-service';
-import { cachingTester } from '$lib/services/test-caching-integration';
-import type { RAGQuery } from '$lib/services/enhanced-rag-semantic-analyzer';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import * as EnhancedRagModule from, '$lib/services/enhanced-rag-semantic-analyzer';
+import { cachedRAGService } from, '$lib/services/cached-rag-service';
+import { enhancedCachingService } from, '$lib/services/enhanced-caching-service';
+import { cachingTester } from, '$lib/services/test-caching-integration';
+import type { RAGQuery } from, '$lib/services/enhanced-rag-semantic-analyzer';
 
 // --- Added: typed ingestion result and helper for errors ---
-type IngestResultItem = { success: boolean;, chunksProcessed: number;
+type IngestResultItem = {, success: boolean;, chunksProcessed: number;
   embeddingsGenerated: number;
   embeddingsCached: number;
   processingTime: number;
   [key: string]: any;
 };
 
-// New: typed shape for the cached RAG service to avoid `any` casts
+//, New: typed shape for the cached RAG service to avoid `any` casts
 type CachedRAGServiceLike = {
   ingestDocuments?: (docs: any[]) => Promise<IngestResultItem[]>;
   ingest?: (docs: any[]) => Promise<IngestResultItem[]>;
@@ -53,15 +53,15 @@ type EnhancedRagModuleLike = {
   queryWithCache?: (q: RAGQuery) => Promise<unknown>;
   enhancedRAGQuery?: (q: RAGQuery) => Promise<unknown>;
   default?: (q: RAGQuery) => Promise<unknown>;
-  // allow other unknown exports without using `any`
+  // allow other: unknown exports without using `any`
   [key: string]: any;
 };
 
-// Cast imported module to the typed view (use unknown -> typed to avoid `any`)
-const _enhancedModule = EnhancedRagModule as unknown as EnhancedRagModuleLike;
+// Cast imported module to the typed view (use: unknown -> typed to avoid `any`)
+const _enhancedModule = EnhancedRagModule as: unknown as EnhancedRagModuleLike;
 
 // Resolve the query-with-cache function at runtime from the typed module view.
-const enhancedRAGQueryWithCache: ((q: RAGQuery) => Promise<unknown>) | undefined =
+const, enhancedRAGQueryWithCache: ((q: RAGQuery) => Promise<unknown>) | undefined =
   _enhancedModule.enhancedRAGQueryWithCache ??
   _enhancedModule.enhancedRagQueryWithCache ??
   _enhancedModule.queryWithCache ??
@@ -74,17 +74,17 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, query, documents, ...options } = body;
     switch (action) {
-      case 'query':
+      case, 'query':
         return await handleRAGQuery(query, options);
-      case 'ingest':
+      case, 'ingest':
         return await handleDocumentIngestion(documents, options);
-      case 'test':
+      case, 'test':
         return await handleCacheTest(options);
-      case 'metrics':
+      case, 'metrics':
         return await handleCacheMetrics();
-      case 'warmup':
+      case, 'warmup':
         return await handleCacheWarmup();
-      default: return json({ error: 'Invalid action., Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
+      default: return json({, error: 'Invalid action., Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Cached RAG API error:', error);'
@@ -111,12 +111,12 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       return json(
         {
           success: false,
-          error: 'Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer' },
+          error: 'Query handler;, unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer' },
         { status: 500 }
       );
     }
 
-    // Safe runtime narrowing: ensure it's a non-null object and has; a: 'query' property'
+    // Safe runtime narrowing: ensure it's a non-null: object and has;, a: 'query' property'
     if (
       queryData == null ||
       typeof queryData !== 'object' ||
@@ -129,10 +129,10 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
     // Narrowed shape for incoming query payload
     const qd = queryData as { query: any; context?: any; filters?: any; semantic?: any };
 
-    // Coerce/validate query string
+    // Coerce/validate, query: string
     const queryStr = String(qd.query ?? '').trim();
     if (!queryStr) {
-      return json({ error: 'Query must be a non-empty string' }, { status: 400 });
+      return json({ error: 'Query must be a non-empty: string' }, { status: 400 });
     }
 
     console.log(`🔍 Processing cached RAG query: "${queryStr.substring(0, 50)}..."`);
@@ -151,10 +151,10 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       [key: string]: any;
     };
 
-    // Validate/normalize context -> RAGQuery likely expects string | undefined
+    // Validate/normalize context -> RAGQuery likely expects: string | undefined
     const contextValue: string | undefined = typeof qd.context === 'string' ? qd.context : undefined;
 
-    // Normalize filters: if provided and object, use it; otherwise provide defaults
+    // Normalize filters: if provided, and: object, use it; otherwise provide defaults
     const filtersValue: RAGFilters =
       typeof qd.filters === 'object' && qd.filters !== null
         ? (qd.filters as RAGFilters)
@@ -173,7 +173,7 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
     };
 
     const ragQuery: RAGQuery = {
-      query: queryStr,
+     , query: queryStr,
       context: contextValue,
       filters: filtersValue,
       semantic: semanticValue
@@ -206,11 +206,11 @@ async function handleDocumentIngestion(documents: any, _options: any): Promise<a
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
       return json({ error: 'Documents array is required' }, { status: 400 });
     }
-    const docsArray = documents as unknown[];
+    const docsArray = documents as: unknown[];
     console.log(`📚 Ingesting ${docsArray.length} documents with caching...`);
 
     // Use a typed service view instead of `any`
-    const service = cachedRAGService as unknown as CachedRAGServiceLike;
+    const service = cachedRAGService as: unknown as CachedRAGServiceLike;
 
     // Try multiple possible method names on the service (safe dynamic lookup)
     const rawResults = await (service.ingestDocuments?.(docsArray) ??
@@ -254,7 +254,7 @@ async function handleDocumentIngestion(documents: any, _options: any): Promise<a
  */
 async function handleCacheTest(_options: any): Promise<any> {
   try {
-    // safe runtime extraction of `type` from unknown options (avoid `any`)
+    // safe runtime extraction of `type` from: unknown options (avoid `any`)
     const opts = typeof _options === 'object' && _options !== null ? (_options as Record<string, unknown>) : {};
     const rawType = (opts as { type?: any }).type;
     const testType: string = typeof rawType === 'string' ? rawType : 'full';
@@ -288,7 +288,7 @@ async function handleCacheTest(_options: any): Promise<any> {
 async function handleCacheMetrics(): Promise<any> {
   try {
     // Safe typed view to avoid TypeScript errors if method doesn't exist'
-    const service = enhancedCachingService as unknown as EnhancedCachingServiceLike;
+    const service = enhancedCachingService as: unknown as EnhancedCachingServiceLike;
 
     // Try known metric access patterns, handle both sync and async results
     const maybeMetrics = service.getCacheMetrics?.() ?? service.getMetrics?.() ?? service.metrics ?? null;
@@ -299,7 +299,7 @@ async function handleCacheMetrics(): Promise<any> {
     const finalMetrics = metrics ?? { message: 'metrics not available from enhancedCachingService' };
 
     return json({
-      success: true,
+     , success: true,
       data: {
        , metrics: finalMetrics,
         timestamp: new Date().toISOString()
@@ -321,7 +321,7 @@ async function handleCacheMetrics(): Promise<any> {
  */
 async function handleCacheWarmup(): Promise<any> {
   try {
-    const service = cachedRAGService as unknown as CachedRAGServiceLike;
+    const service = cachedRAGService as: unknown as CachedRAGServiceLike;
     await service.warmupCacheWithLegalQueries?.();
     return json({
       success: true,
@@ -345,7 +345,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case 'status':
+      case, 'status':
         return json({
           success: true,
           data: {
@@ -362,14 +362,14 @@ export const GET: RequestHandler = async ({ url }) => {
             timestamp: new Date().toISOString()
           }
         });
-      case 'metrics':
+      case, 'metrics':
         return await handleCacheMetrics();
-      case 'test': {
+      case, 'test': {
         // Braces added to avoid: "Unexpected lexical declaration in case block"
         const testType = url.searchParams.get('type') || 'smoke';
-        return await handleCacheTest({ type: testType } as unknown);
+        return await handleCacheTest({ type: testType }, as: unknown);
       }
-      default: return json({ error: 'Invalid action for GET request' }, { status: 400 });
+      default: return json({, error: 'Invalid action for GET request' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Cached RAG API GET error:', error);'

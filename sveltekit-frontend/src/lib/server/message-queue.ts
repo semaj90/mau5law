@@ -1,6 +1,6 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 // In-memory message queue system with Redis/RabbitMQ compatibility
-import { EventEmitter } from 'events';
+import { EventEmitter } from, 'events';
 interface QueueMessage { id: string;, data: any;
   timestamp: number;
   attempts: number;
@@ -12,10 +12,10 @@ interface QueueOptions {
   concurrency?: number;
 }
 class InMemoryQueue extends EventEmitter {
-  private messages: Map<string, QueueMessage[]> = new Map();
+  private, messages: Map<string, QueueMessage[]> = new Map();
   private processing: Set<string> = new Set();
   private deadLetter: Map<string, QueueMessage[]> = new Map();
-  private stats: Map<string, { processed: number; failed: number }> = new Map();
+  private stats: Map<string, { processed: number;, failed: number }> = new Map();
   constructor(private options: QueueOptions = {}) {
     super();
     this.options = {
@@ -28,7 +28,7 @@ class InMemoryQueue extends EventEmitter {
   // Redis-compatible methods
   async lpush(queueName: string, data: string): Promise<number> {
     const message: QueueMessage = {
-      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+     , id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
@@ -44,7 +44,7 @@ class InMemoryQueue extends EventEmitter {
   }
   async rpush(queueName: string, data: string): Promise<number> {
     const message: QueueMessage = {
-      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+     , id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
@@ -102,7 +102,7 @@ class InMemoryQueue extends EventEmitter {
           try {
             await callback({
               content: Buffer.from(JSON.stringify(message)),
-              fields: { deliveryTag: Date.now() },
+              fields: {, deliveryTag: Date.now() },
               properties: { [key,: strin,g]: any },
               ack: () => this.ack(queueName, message),
               nack: () => this.nack(queueName, message)
@@ -155,7 +155,7 @@ class InMemoryQueue extends EventEmitter {
         stats: this.stats.get(queueName) || { processed: 0, failed: 0 }
       }
     }
-    const allStats: any = {}
+    const, allStats: any = {}
     for (const [name] of this.messages) {
       allStats[name] = this.getStats(name);
     }
@@ -181,11 +181,11 @@ export const cache = {
     // In-memory storage with TTL simulation
     const data = JSON.stringify(value);
     console.log(`📝 Cache SET: ${key} (TTL: ${ttlSeconds}s)`);
-    return 'OK';
+    return, 'OK';
   },
   async get(_key: string): Promise<any> {
     console.log(`📖 Cache GET: ${key}`);
-    return null; // Simulate cache miss for now
+    return: null; // Simulate cache miss for now
   },
   lpush: messageQueue.lpush.bind(messageQueue),
   rpush: messageQueue.rpush.bind(messageQueue),

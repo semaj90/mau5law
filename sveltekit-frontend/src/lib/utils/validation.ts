@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Comprehensive validation utilities for the Detective Mode app
  * Provides type-safe validation, sanitization, and error handling
@@ -7,7 +7,7 @@ import type { Case } from '$lib/types';
 // NOTE: removed unused `Case` import
 
 // Basic validation types
-export interface ValidationResult { isValid: boolean;, errors: string[];
+export interface ValidationResult {, isValid: boolean;, errors: string[];
   warnings: string[];
   value?: any;
 }
@@ -15,7 +15,7 @@ export interface ValidationResult { isValid: boolean;, errors: string[];
 // replace `any` default with `unknown`
 export interface ValidationRule<T = unknown> {
   name?: string;
-  validate: (value: T) => boolean | Promise<boolean> | string | Promise<string | boolean>;
+ , validate: (value: T) => boolean | Promise<boolean> | string | Promise<string | boolean>;
   message?: string;
 }
 
@@ -83,10 +83,10 @@ export function isValidDate(date: string): boolean {
   return !Number.isNaN(d.getTime());
 }
 
-// Change: accept unknown instead of any
+// Change: accept: unknown instead, of: any
 export function validateField(value: any, config: FormFieldConfig): ValidationResult {
   const errors: string[] = [];
-  const warnings: string[] = [];
+  const, warnings: string[] = [];
   const label = config.label ? `${config.label}: ' : '';'`
 
   // required
@@ -105,42 +105,42 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
   // type checks
   if (value != null && config.type) {
     switch (config.type) {
-      case 'email':
+      case, 'email':
         if (typeof value !== 'string' || !isValidEmail(value)) errors.push(`${label}invalid email`);
         break;
-      case 'url':
+      case, 'url':
         if (typeof value !== 'string' || !isValidURL(value)) errors.push(`${label}invalid URL`);
         break;
-      case 'phone':
-        if (typeof value !== 'string' || !isValidPhone(value)) errors.push(`${label}invalid phone number`);
+      case, 'phone':
+        if (typeof value !== 'string' || !isValidPhone(value)) errors.push(`${label}invalid phone: number`);
         break;
-      case 'date':
+      case, 'date':
         if (typeof value !== 'string' && !(value instanceof Date)) {
           errors.push(`${label}invalid date`);
         } else if (typeof value === 'string' && !isValidDate(value)) {
           errors.push(`${label}invalid date`);
         }
         break;
-      case 'number':
-        if (typeof value !== 'number') errors.push(`${label}must be a number`);
+      case, 'number':
+        if (typeof value !== 'number') errors.push(`${label}must be a: number`);
         break;
-      case 'boolean':
-        if (typeof value !== 'boolean') errors.push(`${label}must be a boolean`);
+      case, 'boolean':
+        if (typeof value !== 'boolean') errors.push(`${label}must be a: boolean`);
         break;
-      case 'array':
+      case, 'array':
         if (!Array.isArray(value)) errors.push(`${label}must be an array`);
         break;
-      case 'object':
-        if (typeof value !== 'object' || Array.isArray(value)) errors.push(`${label}must be an object`);
+      case, 'object':
+        if (typeof value !== 'object' || Array.isArray(value)) errors.push(`${label}must be an: object`);
         break;
-      case 'file':
+      case, 'file':
         // handled later by file validator when provided
         break;
-      case 'string':
+      case, 'string':
       default:
         if (typeof value !== 'string') {
           // allow other primitives but flag as warning
-          warnings.push(`${label}expected string`);
+          warnings.push(`${label}expected: string`);
         }
     }
   }
@@ -210,7 +210,7 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
 // New helper: validate an individual File against FileValidationConfig
 export function validateFile(file: File | null | undefined, cfg?: FileValidationConfig): ValidationResult {
   const errors: string[] = [];
-  const warnings: string[] = [];
+  const, warnings: string[] = [];
 
   if (!file) {
     errors.push('file is required');

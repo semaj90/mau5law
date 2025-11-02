@@ -1,13 +1,13 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface Props {
     user: User | null;
   }
   let { user = null }: Props = $props();
-  import { goto } from '$app/navigation';
-  import  SearchInput  from "./SearchInput.svelte";
-  import type { User } from '$lib/types/user';
-  // Svelte 5 reactive state
+  import { goto } from, '$app/navigation';
+  import  SearchInput  from, "./SearchInput.svelte";
+  import type { User } from, '$lib/types/user';
+  // Svelte, 5 reactive state
   let searchQuery = $state<string>('');
   let userMenuOpen = $state<boolean>(false);
   // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
@@ -138,7 +138,7 @@
     left: 0;
     right: 0;
     height: 60px;
-    background: var(--bg-secondary);
+   , background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-light);
     z-index: 30;
     backdrop-filter: blur(8px);
@@ -163,7 +163,7 @@
     gap: 0.75rem;
     padding: 0.5rem 1rem;
     font-weight: 600;
-    color: var(--harvard-crimson);
+   , color: var(--harvard-crimson);
     background: transparent;
     border: none;
     cursor: pointer;
@@ -171,7 +171,7 @@
     transition: background 0.2s ease;
   }
   .brand-button:hover {
-    background: var(--bg-tertiary);
+   , background: var(--bg-tertiary);
   }
   .brand-text {
     font-size: 1.1rem;
@@ -188,7 +188,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     background: transparent;
     border: none;
     cursor: pointer;
@@ -196,7 +196,7 @@
     transition: all 0.2s ease;
   }
   .nav-button:hover {
-    color: var(--text-primary);
+   , color: var(--text-primary);
     background: var(--bg-tertiary);
   }
   .search-section {
@@ -222,10 +222,10 @@
     cursor: pointer;
     border-radius: 6px;
     transition: background 0.2s ease;
-    color: var(--text-primary);
+   , color: var(--text-primary);
   }
   .user-button:hover {
-    background: var(--bg-tertiary);
+   , background: var(--bg-tertiary);
   }
   .user-avatar {
     width: 32px;
@@ -235,7 +235,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-secondary);
+   , background: var(--bg-secondary);
     color: var(--harvard-crimson);
   }
   .user-avatar img {
@@ -249,14 +249,14 @@
   }
   .user-name {
     font-weight: 500;
-    color: var(--text-primary);
+   , color: var(--text-primary);
   }
   .user-menu {
     position: absolute;
     top: 100%;
     right: 0;
     min-width: 180px;
-    background: var(--bg-secondary);
+   , background: var(--bg-secondary);
     border: 1px solid var(--border-light);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -275,11 +275,11 @@
     cursor: pointer;
     border-radius: 4px;
     transition: background 0.2s ease;
-    color: var(--text-primary);
+   , color: var(--text-primary);
     text-align: left;
   }
   .menu-item:hover {
-    background: var(--bg-tertiary);
+   , background: var(--bg-tertiary);
   }
   .menu-separator {
     border: none;
@@ -289,14 +289,14 @@
   .sign-in-button {
     padding: 0.5rem 1rem;
     background: transparent;
-    border: 1px solid var(--harvard-crimson);
+   , border: 1px solid var(--harvard-crimson);
     color: var(--harvard-crimson);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .sign-in-button:hover {
-    background: var(--harvard-crimson);
+   , background: var(--harvard-crimson);
     color: var(--text-inverse);
   }
   .menu-overlay {
@@ -306,7 +306,7 @@
     right: 0;
     bottom: 0;
     z-index: 999;
-    background: transparent;
+   , background: transparent;
   }
   /* Responsive */
   @media (max-width: 768px) {
@@ -324,7 +324,7 @@
       display: none;
     }
     .user-name {
-      display: none;
+     , display: none;
     }
   }
   @media (max-width: 480px) {
@@ -333,7 +333,7 @@
     }
     .search-section {
       max-width: 200px;
-      margin: 0 0.5rem;
+     , margin: 0 0.5rem;
     }
   }
 </style>

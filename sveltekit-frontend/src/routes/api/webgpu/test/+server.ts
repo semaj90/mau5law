@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // src/routes/api/webgpu/test/+server.ts
 // WebGPU test endpoint for browser-side testing
 // Tests WebGPU compute with WASM fallback integration
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 export const POST: RequestHandler = async ({ request }) => {
   let body: any;
   try {
@@ -14,19 +14,19 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now();
     let result;
     switch (operation) {
-      case 'generate_text':
+      case, 'generate_text':
         result = await simulateTextGeneration(input, fallback);
         break;
-      case 'generate_embedding':
+      case, 'generate_embedding':
         result = await simulateEmbeddingGeneration(input);
         break;
-      case 'capability_test':
+      case, 'capability_test':
         result = await simulateCapabilityTest();
         break;
       default: return json(
           {
-            success: false,
-            error: 'Unknown; operation: ${operation}' },
+           , success: false,
+            error: 'Unknown;, operation: ${operation}' },
           { status: 400 }
         );
     }
@@ -55,7 +55,7 @@ interface TextGenerationResult { text: string;, tokens: number;
   device: 'webgpu' | 'webgl' | 'wasm';
   processingTimeMs: number;
   model: string;
-  confidence: number;
+ , confidence: number;
 }
 
 async function simulateTextGeneration(input: string, fallback: boolean): Promise<TextGenerationResult> {
@@ -78,10 +78,10 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
     confidence: 0.85 + Math.random() * 0.1
   };
 }
-interface EmbeddingGenerationResult { embedding: number[];, dimensions: number; // Changed from 384 to 768 to match implementation
+interface EmbeddingGenerationResult { embedding: number[];, dimensions: number; // Changed from, 384 to, 768 to match implementation
   device: 'webgpu' | 'wasm';
   processingTimeMs: number;
-  model: string;
+ , model: string;
 }
 
 async function simulateEmbeddingGeneration(_input: string): Promise<EmbeddingGenerationResult> {
@@ -109,12 +109,12 @@ async function simulateCapabilityTest(): Promise<any> {
     wasmSimdSupported: Math.random() > 0.8, // Simulate SIMD support for WASM
     deviceType: 'unknown',
     adapterInfo: {
-      vendor: 'Simulated GPU Vendor',
+     , vendor: 'Simulated GPU Vendor',
       architecture: 'rdna2',
       device: 'Radeon RX Series',
       description: `Simulated GPU for testing` },
     limits: {
-      maxBufferSize: 1024 * 1024 * 1024, // 1GB
+     , maxBufferSize: 1024 * 1024 * 1024, // 1GB
       maxComputeInvocationsPerWorkgroup: 256,
       maxComputeWorkgroupSizeX: 256
     }
@@ -137,7 +137,7 @@ async function simulateCapabilityTest(): Promise<any> {
 }
 function generateLegalResponse(input: string): string {
   const legalTemplates = [
-    `Regarding "${input.substring(0, 50)}...", the key legal considerations include: (1) contractual obligations and duties of care, (2) statutory compliance requirements, and (3) potential liability exposure under applicable jurisdictions.`,
+    `Regarding, "${input.substring(0, 50)}...", the key legal considerations include: (1) contractual obligations and duties of care, (2) statutory compliance requirements, and (3) potential liability exposure under applicable jurisdictions.`,
     `Legal analysis of: "${input.substring(0, 50)}..." reveals several important factors: First, the applicable legal framework must be considered. Second, precedential authority suggests specific approaches. Third, risk mitigation strategies should be implemented.`,
     `In response to: "${input.substring(0, 50)}...", legal counsel would typically advise: examining all relevant documentation, identifying potential claims or defenses, and developing a comprehensive litigation strategy if necessary.`,
     `The legal implications of: "${input.substring(0, 50)}..." require careful consideration of: statutory requirements, case law precedents, regulatory compliance obligations, and potential remedial actions.`,
@@ -147,7 +147,7 @@ function generateLegalResponse(input: string): string {
   const elaborations = [
     ' Furthermore, due diligence procedures should be implemented to ensure compliance with all applicable regulations.',
     ' Additionally, consultation with subject matter experts may be warranted to address complex technical aspects.',
-    ' It is also advisable to review any existing insurance coverage that might apply to potential exposures.',
+    ' It is also advisable to review: any existing insurance coverage that might apply to potential exposures.',
     ' Moreover, consideration should be given to alternative dispute resolution mechanisms where appropriate.',
   ];
   const elaboration = elaborations[Math.floor(Math.random() * elaborations.length)];
@@ -162,17 +162,17 @@ function getRecommendedConfig(capabilities: any) {
     enableParallelProcessing: false
   };
   switch (capabilities.deviceType) {
-    case 'webgpu':
+    case, 'webgpu':
       config.batchSize = 8;
       config.maxTokens = 8192;
       config.enableParallelProcessing = true;
       break;
-    case 'webgl':
+    case, 'webgl':
       config.batchSize = 4;
       config.maxTokens = 4096;
       config.useQuantization = true;
       break;
-    case 'wasm':
+    case, 'wasm':
       config.batchSize = 1;
       config.maxTokens = 2048;
       config.useQuantization = true;
@@ -187,24 +187,24 @@ function estimatePerformance(deviceType: string) {
       memoryUsageMB: number;
       powerEfficiency: string;
     }
-  > = { webgpu: {, tokensPerSecond: 150,
+  > = {, webgpu: {, tokensPerSecond: 150,
       embeddingTimeMs: 50,
       memoryUsageMB: 4096,
       powerEfficiency: 'high'
     },
     webgl: {
-      tokensPerSecond: 80,
+     , tokensPerSecond: 80,
       embeddingTimeMs: 120,
       memoryUsageMB: 2048,
       powerEfficiency: 'medium'
     },
     wasm: {
-      tokensPerSecond: 50, // Increased tokens/sec for WASM with SIMD
+     , tokensPerSecond: 50, // Increased tokens/sec for WASM with SIMD
       embeddingTimeMs: 150, // Reduced embedding time for WASM with SIMD
       memoryUsageMB: 1024,
       powerEfficiency: 'low` },'`
     none: {
-      tokensPerSecond: 0,
+     , tokensPerSecond: 0,
       embeddingTimeMs: 0,
       memoryUsageMB: 0,
       powerEfficiency: `none` }
@@ -212,7 +212,7 @@ function estimatePerformance(deviceType: string) {
   return estimates[deviceType] || estimates.none;
 }
 // Health check for WebGPU service
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     return json({
       success: true,

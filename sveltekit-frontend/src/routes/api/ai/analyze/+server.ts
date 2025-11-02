@@ -3,8 +3,8 @@
  * Routes: /api/ai/analyze → QUIC /legal/analyze → Go GPU /inference
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 // Legal analysis schema per architecture docs
 const LegalAnalysisSchema = z.object({
   content: z.string().min(1),
@@ -14,7 +14,7 @@ const LegalAnalysisSchema = z.object({
   model: z.enum(['gemma3:legal-latest', 'embeddinggemma:latest']).default('gemma3:legal-latest'),
   options: z
     .object({
-      max_tokens: z.number().default(1024),
+     , max_tokens: z.number().default(1024),
       temperature: z.number().min(0).max(1).default(0.1),
       include_precedents: z.boolean().default(true),
       include_citations: z.boolean().default(true)
@@ -22,7 +22,7 @@ const LegalAnalysisSchema = z.object({
     .optional()
 });
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const, POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const body = await request.json();
     const validatedData = LegalAnalysisSchema.safeParse(body);
     if (!validatedData.success) {
-      // Return structured JSON with validation errors (avoid passing an object to `error()`)
+      // Return structured JSON with validation errors (avoid passing an: object to `error()`)
       return json(
         {
           success: false,

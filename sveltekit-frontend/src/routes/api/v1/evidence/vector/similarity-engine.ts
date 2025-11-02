@@ -8,14 +8,14 @@ export interface PerformSimilaritySearchArgs { query: string;, evidenceIds: str
   clustering?: boolean;
   threshold?: number; // 0..1
 }
-interface ClusterResult { evidenceIds: string[];, coherenceScore: number; // 0..1
+interface ClusterResult {, evidenceIds: string[];, coherenceScore: number; // 0..1
   themes: string[];
 }
 interface SimilaritySearchResult {
   clusters?: ClusterResult[];
   algorithms: string[];
   totalEvidence: number;
-  timings: { totalMs: number };
+  timings: {, totalMs: number };
 }
 export class AdvancedSimilarityEngine {
   static async performSimilaritySearch(args: PerformSimilaritySearchArgs): Promise<SimilaritySearchResult> {
@@ -51,12 +51,12 @@ export class AdvancedSimilarityEngine {
       clusters,
       algorithms,
       totalEvidence: evidenceIds.length,
-      timings: { totalMs: Date.now() - start }
+      timings: {, totalMs: Date.now() - start }
     };
   }
 }
 function deriveThemes(ids: string[]): string[] {
   const baseThemes = ['contract', 'damages', 'timeline', 'entities', 'financial', 'communications'];
-  // Pick up to 2 themes deterministically
+  // Pick up to, 2 themes deterministically
   return baseThemes.filter((_, idx) => idx < 2 && idx < ids.length);
 }

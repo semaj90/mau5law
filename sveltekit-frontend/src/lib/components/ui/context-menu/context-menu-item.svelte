@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { getContext } from 'svelte';
+  import { getContext } from, 'svelte';
   // Expose props correctly for Svelte
   const { disabled } = $props<{ disabled: boolean }>()
   const { onClick } = $props<{ onClick: (event?: MouseEvent | unknown) }>()
@@ -37,7 +37,7 @@
     border-radius: 0.25rem;
     background: transparent;
     cursor: pointer;
-    transition: background-color 0.15s;
+   , transition: background-color 0.15s;
     text-align: left;
   }
   .context-menu-item:hover:not(.disabled) {
@@ -49,6 +49,6 @@
   }
   .context-menu-item.disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+   , cursor: not-allowed;
   }
 </style>

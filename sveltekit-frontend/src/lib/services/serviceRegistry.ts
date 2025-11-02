@@ -1,5 +1,5 @@
-import http from 'http';
-import { EventEmitter } from 'events';
+import http from, 'http';
+import { EventEmitter } from, 'events';
 // Auto-generated Service Registry for Go, gRPC, QUIC, HTTP, WebSocket endpoints
 // Source: gonet12grpcquic3.txt, GO_BINARIES_CATALOG.md, FULL_STACK_INTEGRATION_COMPLETE.md
 export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
@@ -38,22 +38,22 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     testBuild: 'http://localhost:8226'
   },
   grpc: {
-    grpcServer: 'localhost:50051',
+   , grpcServer: 'localhost:50051',
     kratosServer: 'localhost:50052'
   },
   quic: {
-    ragQuicProxy: 'localhost:8216'
+   , ragQuicProxy: 'localhost:8216'
   },
   ws: {
-    liveAgent: 'ws://localhost:8200/ws',
+   , liveAgent: 'ws://localhost:8200/ws',
     enhancedRAG: 'ws://localhost:8094/ws'
   },
   nats: {
-    ws1: 'ws://localhost:4222',
+   , ws1: 'ws://localhost:4222',
     ws2: 'ws://localhost:4223'
   },
   proxy: {
-    enhancedRAG: '/api/go/enhanced-rag',
+   , enhancedRAG: '/api/go/enhanced-rag',
     neo4j: '/api/neo4j',
     upload: '/api/go/upload',
     cluster: '/api/go/cluster',
@@ -63,7 +63,7 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     llm: '/api/llm'
   },
   endpoints: {
-    ragQuery: '/api/v1/rag',
+   , ragQuery: '/api/v1/rag',
     ai: '/api/v1/ai',
     upload: '/api/v1/upload',
     natsPublish: '/api/v1/nats/publish',
@@ -79,7 +79,7 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     natsDemo: '/demos/nats-messaging'
   },
   proto: {
-    embedder: 'proto/embed.proto',
+   , embedder: 'proto/embed.proto',
     evidenceProcessor: 'microservices/evidence-processor/proto/evidence.proto',
     gpuService: 'proto/gpu_service.proto',
     tensor: 'proto/tensor.proto',
@@ -88,4 +88,4 @@ export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',
     ingestNew: 'proto/ingest_new.proto'
   }
 };
-// Usage: ServiceRegistry.http.enhancedRAG, ServiceRegistry.grpc.kratosServer, etc.
+//, Usage: ServiceRegistry.http.enhancedRAG, ServiceRegistry.grpc.kratosServer, etc.

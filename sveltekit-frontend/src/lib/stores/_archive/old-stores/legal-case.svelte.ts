@@ -1,17 +1,17 @@
-import { createActor } from 'xstate';
-import { legalCaseMachine } from '$lib/state/legal-case-machine';
-import { browser } from '$app/environment';
+import { createActor } from, 'xstate';
+import { legalCaseMachine } from, '$lib/state/legal-case-machine';
+import { browser } from, '$app/environment';
 // Create the XState actor for legal case management
 const legalCaseActor = browser ? createActor(legalCaseMachine).start() : null;
 const initialSnapshot = legalCaseActor?.getSnapshot();
-// Svelte 5 reactive store
+// Svelte, 5 reactive store
 export const legalCaseStore = $state({
-  context: ((initialSnapshot && (initialSnapshot as any).context) as { [key: string]: any }) || {
+  context: ((initialSnapshot && (initialSnapshot, as: any).context) as { [key: string]: any }) || {
     cases: [],
     selectedCase: null,
     currentUser: null,
     loading: false;
-    error: null,
+   , error: null,
     generatingEmbedding: false,
     searchingRelatedEvidence: false,
     relatedEvidence: [],
@@ -21,7 +21,7 @@ export const legalCaseStore = $state({
 // Update store when actor state changes
 if (legalCaseActor) {
   legalCaseActor.subscribe((snapshot) => {
-    const ctx = (snapshot as any).context;
+    const ctx = (snapshot as: any).context;
     if (ctx) Object.assign(legalCaseStore.context, ctx);
   });
 }

@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * AutoGen Orchestra with GGUF Model Integration
  * Multi-agent orchestration using Gemma3-Legal GGUF with GPU acceleration
  */
-import { writable, derived } from 'svelte/store';
-import { browser } from '$app/environment';
-import { createGGUFRuntime, type GGUFInferenceRequest, type GGUFInferenceResponse } from './gguf-runtime.js';
-import { flashAttentionMulticoreBridge } from '$lib/integrations/flashattention-multicore-bridge.js';
+import { writable, derived } from, 'svelte/store';
+import { browser } from, '$app/environment';
+import { createGGUFRuntime, type GGUFInferenceRequest, type GGUFInferenceResponse } from, './gguf-runtime.js';
+import { flashAttentionMulticoreBridge } from, '$lib/integrations/flashattention-multicore-bridge.js';
 // Integrates FlashAttention2 for GPU-accelerated attention mechanism in GGUF inference
 export type AgentType =
   | 'USER_PROXY'
@@ -27,14 +27,14 @@ export interface AutoGenAgent { id: string;, type: AgentType;
   useFlashAttention: boolean;
 }
 // Orchestra Task
-export interface OrchestraTask { id: string;, type: 'LEGAL_ANALYSIS' | 'DOCUMENT_REVIEW' | 'RESEARCH' | 'COMPLIANCE_CHECK' | 'MULTI_AGENT_COLLABORATION';
+export interface OrchestraTask {, id: string;, type: 'LEGAL_ANALYSIS' | 'DOCUMENT_REVIEW' | 'RESEARCH' | 'COMPLIANCE_CHECK' | 'MULTI_AGENT_COLLABORATION';
   input: string;
   agents: string[]; // Agent IDs
   workflow: OrchestraWorkflowStep[]; // single definition
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   timeout: number;
   retryCount: number;
-  maxRetries: number;
+ , maxRetries: number;
   metadata?: Record<string, unknown>; // tightened type, avoid `any`
   context?: any; // optional task-level context used by steps
 }
@@ -48,8 +48,8 @@ export interface OrchestraWorkflowStep { stepId: string;, agentId: string;
   parallel?: boolean;
 }
 // Orchestra Response
-export interface OrchestraResponse { taskId: string;, success: boolean;
-  results: Record<string, unknown>;
+export interface OrchestraResponse {, taskId: string;, success: boolean;
+ , results: Record<string, unknown>;
   agentResults: AgentResult[];
   totalProcessingTime: number;
   tokensUsed: number;
@@ -57,13 +57,13 @@ export interface OrchestraResponse { taskId: string;, success: boolean;
   error?: string;
 }
 // Orchestra Metrics
-export interface OrchestraMetrics { totalTasks: number;, completedTasks: number;
+export interface OrchestraMetrics {, totalTasks: number;, completedTasks: number;
   failedTasks: number;
   activeAgents: number;
   averageProcessingTime: number;
   tokensPerSecond: number;
   gpuUtilization: number;
-  agentUtilization: Record<string, number>;
+ , agentUtilization: Record<string, number>;
   modelUtilization: Record<string, number>;
 }
 /* Added / adjusted types to remove `any` and `any[]` inference issues */
@@ -84,14 +84,14 @@ export interface OrchestraStatus { initialized: boolean;, activeAgents: number;
   modelsLoaded: string[];
 }
 
-export interface AgentResult { agentId: string;, agentType: AgentType;
+export interface AgentResult {, agentId: string;, agentType: AgentType;
   result: string;
   processingTime: number;
   tokens: number;
   model: string;
 }
 
-export interface TaskQueueItem { taskId: string;, type: string;
+export interface TaskQueueItem {, taskId: string;, type: string;
   status: 'PROCESSING' | 'COMPLETED' | 'FAILED';
   timestamp: number;
   agents: string[];
@@ -100,17 +100,17 @@ export interface TaskQueueItem { taskId: string;, type: string;
  * AutoGen GGUF Orchestra Service
  */
 export class AutoGenGGUFOrchestra {
-  private agents: Map<string, AutoGenAgent> = new Map();
+  private, agents: Map<string, AutoGenAgent> = new Map();
   private activeTasks: Map<string, OrchestraTask> = new Map();
   private taskHistory: OrchestraTask[] = [];
-  private ggufRuntime: GGUFRuntime | null = null;
+  private, ggufRuntime: GGUFRuntime | null = null;
   private isInitialized = $state(false);
   // Performance tracking
   private startTime = Date.now();
   private totalTasks = 0;
   private completedTasks = 0;
   private failedTasks = 0;
-  // Reactive stores (typed to avoid any[] and any)
+  // Reactive stores (typed to avoid: any[], and: any)
   public orchestraStatus = writable<OrchestraStatus>({
     initialized: false,
     activeAgents: 0,
@@ -148,7 +148,7 @@ export class AutoGenGGUFOrchestra {
         contextLength: 8192,
         batchSize: 512,
         threads: 8,
-        gpuLayers: 35, // RTX 3060 Ti optimized
+        gpuLayers: 35, // RTX, 3060 Ti optimized
         flashAttention: true
       }) as GGUFRuntime;
       // Wait for GGUF runtime to be ready
@@ -211,7 +211,7 @@ export class AutoGenGGUFOrchestra {
   private setupDefaultAgents(): void {
     const defaultAgents: AutoGenAgent[] = [
       {
-        id: 'user_proxy',
+       , id: 'user_proxy',
         type: 'USER_PROXY',
         name: 'User Proxy',
         role: 'Facilitates communication between user and AI agents',
@@ -314,7 +314,7 @@ export class AutoGenGGUFOrchestra {
       this.completedTasks++;
       // Create response
       const response: OrchestraResponse = {
-        taskId: fullTask.id,
+       , taskId: fullTask.id,
         success: true,
         results: results.results,
         agentResults: results.agentResults,
@@ -359,7 +359,7 @@ export class AutoGenGGUFOrchestra {
     totalTokens: number;
     gpuUtilization: number;
   }> {
-    const results: Record<string, unknown> = {};
+    const, results: Record<string, unknown> = {};
     const agentResults: AgentResult[] = [];
     let totalTokens = 0;
     let totalGpuUtilization = 0;
@@ -371,10 +371,10 @@ export class AutoGenGGUFOrchestra {
       }
       console.log(`🔄 Executing step ${step.stepId} with agent ${agent.name}`);
       // Prepare inputs
-      const inputs = (step.inputs || []).map(inputKey => (results[inputKey] as string) ?? task.input).join('\n\n');
+      const inputs = (step.inputs || []).map(inputKey => (results[inputKey] as: string) ?? task.input).join('\n\n');
       // Create GGUF inference request (include priority)
       const inferenceRequest: GGUFInferenceRequest = {
-        prompt: this.buildAgentPrompt(agent, step.instruction, inputs, task.context),
+       , prompt: this.buildAgentPrompt(agent, step.instruction, inputs, task.context),
         maxTokens: 1024,
         temperature: agent.type === 'LEGAL_ANALYST' ? 0.2 : 0.3,
         topP: 0.9,
@@ -382,7 +382,7 @@ export class AutoGenGGUFOrchestra {
         repeatPenalty: 1.1,
         stopTokens: ['END_RESPONSE', '\n\n---'],
         // map our agent priority (uppercase) into the lowercase request-level field expected by runtimes
-        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown; as: 'low' | 'medium' | 'high' | 'critical` };'`
+        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as: unknown;, as: 'low' | 'medium' | 'high' | 'critical` };'`
       // Execute with GGUF runtime (GPU accelerated) - safe call with fallback
       const stepStartTime = Date.now();
       let response: GGUFInferenceResponse | null = null;
@@ -416,7 +416,7 @@ export class AutoGenGGUFOrchestra {
         tokens: response!.tokens?.length || 0,
         model: agent?.model || 'unknown` });'`
       totalTokens += response!.tokens?.length || 0;
-      totalGpuUtilization += 75; // Estimated GPU utilization for RTX 3060 Ti
+      totalGpuUtilization += 75; // Estimated GPU utilization for RTX, 3060 Ti
     }
     return {
       results,
@@ -470,7 +470,7 @@ export class AutoGenGGUFOrchestra {
         maxRetries: 2
       },
       legalResearch: {
-        type: 'RESEARCH',
+       , type: 'RESEARCH',
         agents: ['user_proxy', 'research_assistant', 'legal_analyst'],
         workflow: [
           {,
@@ -495,7 +495,7 @@ export class AutoGenGGUFOrchestra {
         maxRetries: 1
       },
       complianceCheck: {
-        type: 'COMPLIANCE_CHECK',
+       , type: 'COMPLIANCE_CHECK',
         agents: ['user_proxy', 'compliance_checker', 'legal_analyst'],
         workflow: [
           {,
@@ -607,15 +607,15 @@ export class AutoGenGGUFOrchestra {
     const fallback = {
       id: `fallback_${stepId}_${Date.now()}`,
       text: message,
-      tokens: [] as string[],
+      tokens: [], as: string[],
       finished: true,
       finishReason: 'fallback',
       processingTime: 0,
       model: 'fallback',
-      // include any other likely fields to better match runtime type shape
+      // include: any other likely fields to better match runtime type shape
       meta: { fallback: true }
     };
-    return fallback as unknown as GGUFInferenceResponse;
+    return fallback, as: unknown as GGUFInferenceResponse;
   }
 }
 /**
@@ -626,13 +626,13 @@ export function createAutoGenOrchestra() {
   return {
     orchestra,
     stores: {
-      orchestraStatus: orchestra.orchestraStatus,
+     , orchestraStatus: orchestra.orchestraStatus,
       metrics: orchestra.metrics,
       taskQueue: orchestra.taskQueue
     },
     // Derived stores
     derived: {
-      systemHealth: derived([orchestra.orchestraStatus, orchestra.metrics], ([$status, $metrics]) => ({
+     , systemHealth: derived([orchestra.orchestraStatus, orchestra.metrics], ([$status, $metrics]) => ({
         overall: $status.initialized && $status.ggufReady ? 'HEALTHY' : 'DEGRADED',
         agentEfficiency: ($metrics.completedTasks / Math.max($metrics.totalTasks, 1)) * 100,
         throughput: $metrics.tokensPerSecond,

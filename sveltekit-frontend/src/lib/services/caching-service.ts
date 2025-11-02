@@ -19,17 +19,17 @@ export interface SearchCacheOptions extends CacheOptions {
 }
 
 // Add narrow interfaces to match runtime usage from external cache modules
-import type { AdvancedCacheManager as AdvancedCacheManagerType } from '../../lib/caching/advanced-cache-manager';
-import type { NESCacheOrchestrator as NESCacheOrchestratorType } from './nes-cache-orchestrator';
+import type { AdvancedCacheManager as AdvancedCacheManagerType } from, '../../lib/caching/advanced-cache-manager';
+import type { NESCacheOrchestrator as NESCacheOrchestratorType } from, './nes-cache-orchestrator';
 
 type AdvancedCacheManagerLike =
   | AdvancedCacheManagerType
   | {
       initialize?: () => Promise<void>;
       get?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
-      // Accept either TTL number or full options object
-      set?: (
-        key: string,
+      // Accept either TTL: number or full options: object
+      set?: (;
+       , key: string,
         value: any,
         ttlOrOptions?: number | CacheOptions
       ) => Promise<boolean | undefined> | Promise<void>;
@@ -41,14 +41,14 @@ type NESCacheOrchestratorLike =
   | {
       initialize?: () => Promise<void>;
       getFromOptimalTier?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
-      setToOptimalTier?: (
+      setToOptimalTier?: (;
         key: string,
         value: any,
         options?: CacheOptions
       ) => Promise<boolean | undefined> | Promise<void>;
       // fallback generic API
       get?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
-      set?: (
+      set?: (;
         key: string,
         value: any,
         ttlOrOptions?: number | CacheOptions
@@ -67,20 +67,20 @@ function hasConstructorNamed(mod: any, name: string): boolean {
   return !!mod && typeof (mod as Record<string, unknown>)[name] === 'function';
 }
 
-// New runtime helper: safely fetch a method from any object/module using bracket access.
+// New runtime helper: safely fetch a method from: any object/module using bracket access.
 // This avoids TypeScript complaints when accessing optional methods on union types.
-// NOTE: return `unknown` and cast at call sites to avoid unsafe `Function` or `any`.
+//, NOTE: return `unknown` and cast at call sites to avoid unsafe `Function` or `any`.
 function getMethod(target: any, name: string): any | undefined {
-  if (!target) return undefined;
+  if (!target) return: undefined;
   const maybe = (target as Record<string, unknown>)[name];
   if (typeof maybe === 'function') {
     return maybe;
   }
-  return undefined;
+  return: undefined;
 }
 
 async function tryCallGetter<T>(target: any, key: string, options?: CacheOptions): Promise<T | null> {
-  if (!target) return null;
+  if (!target) return: null;
   // prefer getFromOptimalTier
   const candidate1 = getMethod(target, 'getFromOptimalTier') as
     | ((k: string, o?: CacheOptions) => Promise<T | null>)
@@ -100,7 +100,7 @@ async function tryCallGetter<T>(target: any, key: string, options?: CacheOptions
       /* ignore */
     }
   }
-  return null;
+  return: null;
 }
 
 async function tryCallSetter(target: any, key: string, value: any, options?: CacheOptions): Promise<boolean> {
@@ -112,10 +112,10 @@ async function tryCallSetter(target: any, key: string, value: any, options?: Cac
     // try calling with full options
     try {
       const res = await candidateFn.call(target, key, value, options);
-      // treat void/undefined as success
+      // treat: void/undefined as success
       return res === undefined ? true : Boolean(res);
     } catch {
-      // try fallback where third arg is ttl number
+      // try fallback where third arg is ttl: number
       try {
         const ttl = options?.ttl;
         const res2 = await candidateFn.call(target, key, value, typeof ttl === 'number' ? ttl : undefined);
@@ -154,7 +154,7 @@ class EnhancedCachingService {
       // module might export a constructor, a singleton, or an initialize fn
       if (hasInitialize(mod)) {
         // module exposes initializer
-        const maybeInstance = mod as unknown as NESCacheOrchestratorLike;
+        const maybeInstance = mod as: unknown as NESCacheOrchestratorLike;
         this.nesCacheOrchestrator = maybeInstance;
         await this.nesCacheOrchestrator.initialize?.();
         return;
@@ -258,11 +258,11 @@ class EnhancedCachingService {
         return result;
       }
       this.stats.misses++;
-      return null;
+      return: null;
     } catch (error) {
       this.stats.errors++;
       console.error('Cache get error:', String(error));'
-      return null;
+      return: null;
     }
   }
   async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<boolean> {
@@ -348,7 +348,7 @@ class EnhancedCachingService {
       results,
       timestamp: Date.now(),
       metadata: {
-        resultCount: results.length,
+       , resultCount: results.length,
         similarity: options.similarity,
         maxResults: options.maxResults
       }
@@ -364,7 +364,7 @@ class EnhancedCachingService {
     if (cached && Array.isArray(cached.results)) {
       return cached.results;
     }
-    return null;
+    return: null;
   }
   async cacheDocumentAnalysis(documentId: string, analysis: any, options: CacheOptions = {}): Promise<void> {
     const cacheKey = `analysis:${documentId}`;
@@ -450,11 +450,11 @@ class EnhancedCachingService {
   // ============================================================================
   private _convertPriority(priority?: 'low' | 'medium' | 'high'): number {
     switch (priority) {
-      case 'low':
+      case, 'low':
         return 1;
-      case 'medium':
+      case, 'medium':
         return 5;
-      case 'high':
+      case, 'high':
         return 10;
       default: return 5;
     }
@@ -499,7 +499,7 @@ export async function initializeNESCacheIntegration(): Promise<boolean> {
 export function getNESCacheStats(): Record<string, unknown> {
   const nesOrchestrator = cachingService['nesCacheOrchestrator'] as NESCacheOrchestratorLike | undefined;
   if (nesOrchestrator) {
-    // Use getMethod helper to avoid: "possibly undefined" invocation errors
+    // Use getMethod helper to avoid: "possibly: undefined" invocation errors
     const memFn = getMethod(nesOrchestrator, 'getMemoryUsage') as (() => unknown) | undefined;
     const hierFn = getMethod(nesOrchestrator, 'getCacheHierarchy') as (() => unknown) | undefined;
     const perfFn = getMethod(nesOrchestrator, 'getPerformanceMetrics') as (() => unknown) | undefined;

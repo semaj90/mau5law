@@ -2,17 +2,17 @@
  * Telemetry Upload API Endpoint
  * Receives and processes structured upload telemetry events
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import type { TelemetryEvent } from, '$lib/services/upload-telemetry-service';
 interface TelemetryBatch { sessionId: string;, events: TelemetryEvent[];
 }
-interface ProcessedTelemetryStats { sessionId: string;, eventCount: number;
-  eventTypes: Record<string, number>;
-  timespan: { first: number;, last: number;
+interface ProcessedTelemetryStats {, sessionId: string;, eventCount: number;
+ , eventTypes: Record<string, number>;
+  timespan: {, first: number;, last: number;
     durationMs: number;
   };
-  performance: { avgUploadTime: number;, successRate: number;
+  performance: {, avgUploadTime: number;, successRate: number;
     retryRate: number;
   };
 }
@@ -20,7 +20,7 @@ interface ProcessedTelemetryStats { sessionId: string;, eventCount: number;
  * POST /api/v1/telemetry/upload
  * Accepts batched telemetry events for processing and storage
  */
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const batch: TelemetryBatch = await request.json();
     if (!batch.sessionId || !Array.isArray(batch.events)) {
@@ -88,8 +88,8 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
       sessionId: batch.sessionId,
       eventCount: 0,
       eventTypes: {} as Record<string, number>,
-      timespan: { first: 0, last: 0, durationMs: 0 },
-      performance: { avgUploadTime: 0, successRate: 0, retryRate: 0 }
+      timespan: {, first: 0, last: 0, durationMs: 0 },
+      performance: {, avgUploadTime: 0, successRate: 0, retryRate: 0 }
     };
   }
   // Count event types
@@ -124,7 +124,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
     eventTypes,
     timespan,
     performance: {
-      avgUploadTime: Math.round(avgUploadTime),
+     , avgUploadTime: Math.round(avgUploadTime),
       successRate: Math.round(successRate * 100) / 100,
       retryRate: Math.round(retryRate * 100) / 100
     }

@@ -1,18 +1,18 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Contextual Chat Form Schema
  *
  * SvelteKit Superforms schema for contextual chat with validation
  */
-import { z } from 'zod';
+import { z } from, 'zod';
 /**
  * Chat message schema
  */
 export const chatMessageSchema = z.object({
   message: z.string()
     .min(1, 'Message cannot be empty')
-    .max(5000, 'Message too long (max 5000 characters)'),
+    .max(5000, 'Message too long (max, 5000 characters)'),
   sessionId: z.string().uuid('Invalid session ID'),
   userId: z.string().uuid('Invalid user ID'),
   caseId: z.string().uuid('Invalid case ID').optional(),
@@ -72,7 +72,7 @@ export const stateUpdateSchema = z.object({
   intent: z.string().min(1, 'Intent is required'),
   entities: z.array(
     z.object({
-      type: z.string(),
+     , type: z.string(),
       value: z.string(),
       confidence: z.number().min(0).max(1),
       startPos: z.number().optional(),
@@ -105,7 +105,7 @@ export type SimilaritySearchOutput = z.output<typeof, similaritySearchSchema>;
 export const batchEmbeddingSchema = z.object({
   texts: z.array(z.string().min(1))
     .min(1, 'At least one text required')
-    .max(100, 'Maximum 100 texts per batch'),
+    .max(100, 'Maximum, 100 texts per batch'),
   model: z.string().default('embeddinggemma:latest').optional(),
   sessionId: z.string().uuid('Invalid session ID').optional(),
   useCache: z.boolean().default(true).optional()

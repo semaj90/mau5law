@@ -2,18 +2,18 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy, createEventDispatcher } from "svelte";
-  import { writable, type Writable, get } from 'svelte/store';
-  import { SoraGraphTraversal, type SoraTraversalPath } from '$lib/ai/sora-graph-traversal.js';
-  import { MoogleGraphSynthesizer, type Moogle2DOutput, type Moogle3DMesh } from '$lib/ai/moogle-graph-synthesizer.js';
-  import { NESGPUIntegration } from '$lib/gpu/nes-gpu-integration.js';
-  import { NESMemoryArchitecture } from '$lib/memory/nes-memory-architecture.js';
-  import { SemanticAnalysisPipeline } from '$lib/ai/semantic-analysis-pipeline.js';
-  import { DimensionalTensorStore } from '$lib/webgpu/dimensional-tensor-store.js';
-  import { SOMWebGPUCache } from '$lib/webgpu/som-webgpu-cache.js';
-  import { GPUTensorWorker } from '$lib/workers/gpu-tensor-worker.js';
-  import { LegalAIReranker } from '$lib/ai/custom-reranker.js';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy, createEventDispatcher } from, "svelte";
+  import { writable, type Writable, get } from, 'svelte/store';
+  import { SoraGraphTraversal, type SoraTraversalPath } from, '$lib/ai/sora-graph-traversal.js';
+  import { MoogleGraphSynthesizer, type Moogle2DOutput, type Moogle3DMesh } from, '$lib/ai/moogle-graph-synthesizer.js';
+  import { NESGPUIntegration } from, '$lib/gpu/nes-gpu-integration.js';
+  import { NESMemoryArchitecture } from, '$lib/memory/nes-memory-architecture.js';
+  import { SemanticAnalysisPipeline } from, '$lib/ai/semantic-analysis-pipeline.js';
+  import { DimensionalTensorStore } from, '$lib/webgpu/dimensional-tensor-store.js';
+  import { SOMWebGPUCache } from, '$lib/webgpu/som-webgpu-cache.js';
+  import { GPUTensorWorker } from, '$lib/workers/gpu-tensor-worker.js';
+  import { LegalAIReranker } from, '$lib/ai/custom-reranker.js';
   // Props type
   interface Props {
     query?: string;
@@ -65,19 +65,19 @@ https://svelte.dev/e/js_parse_error -->
   // Theme configurations
   const themes = {
     dark: {
-      backgroundColor: '#1a1a1a',
-      nodeColors: { document: '#4CAF50', caseItem: '#2196F3', evidence: '#FF5722', entity: '#9C27B0', concept: '#FFC107', relationship: '#607D8B' },
-      edgeColors: { cites: '#FF9800', contains: '#8BC34A', related: '#03DAC6', similar: '#E91E63', references: '#00BCD4', contradicts: '#F44336' }
+     , backgroundColor: '#1a1a1a',
+      nodeColors: {, document: '#4CAF50', caseItem: '#2196F3', evidence: '#FF5722', entity: '#9C27B0', concept: '#FFC107', relationship: '#607D8B' },
+      edgeColors: {, cites: '#FF9800', contains: '#8BC34A', related: '#03DAC6', similar: '#E91E63', references: '#00BCD4', contradicts: '#F44336' }
     },
     light: {
-      backgroundColor: '#ffffff',
-      nodeColors: { document: '#2E7D32', caseItem: '#1565C0', evidence: '#D32F2F', entity: '#7B1FA2', concept: '#F57C00', relationship: '#455A64' },
-      edgeColors: { cites: '#E65100', contains: '#558B2F', related: '#00695C', similar: '#AD1457', references: '#0097A7', contradicts: '#C62828' }
+     , backgroundColor: '#ffffff',
+      nodeColors: {, document: '#2E7D32', caseItem: '#1565C0', evidence: '#D32F2F', entity: '#7B1FA2', concept: '#F57C00', relationship: '#455A64' },
+      edgeColors: {, cites: '#E65100', contains: '#558B2F', related: '#00695C', similar: '#AD1457', references: '#0097A7', contradicts: '#C62828' }
     },
     legal: {
-      backgroundColor: '#0f1419',
-      nodeColors: { document: '#4a9eff', caseItem: '#ff6b35', evidence: '#f7931e', entity: '#c77dff', concept: '#06ffa5', relationship: '#87ceeb' },
-      edgeColors: { cites: '#ff9f40', contains: '#4bc0c0', related: '#ff6384', similar: '#36a2eb', references: '#9966ff', contradicts: '#ff4757' }
+     , backgroundColor: '#0f1419',
+      nodeColors: {, document: '#4a9eff', caseItem: '#ff6b35', evidence: '#f7931e', entity: '#c77dff', concept: '#06ffa5', relationship: '#87ceeb' },
+      edgeColors: {, cites: '#ff9f40', contains: '#4bc0c0', related: '#ff6384', similar: '#36a2eb', references: '#9966ff', contradicts: '#ff4757' }
     }
   };
   const currentTheme = themes[theme] ?? themes.legal;
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
     semanticFiltering: true,
     useGPUAcceleration: enableGPUAcceleration,
     reinforcementLearning: {
-      enabled: enableReinforcementLearning,
+     , enabled: enableReinforcementLearning,
       explorationRate: 0.1,
       learningRate: 0.01,
       discountFactor: 0.95
@@ -103,16 +103,16 @@ https://svelte.dev/e/js_parse_error -->
     backgroundColor: currentTheme.backgroundColor,
     nodeColors: currentTheme.nodeColors,
     edgeColors: currentTheme.edgeColors,
-    nodeSize: { min: 8, max: 32 },
-    edgeThickness: { min: 1, max: 6 },
-    meshDimensions: { width: 100, height: 100, depth: 100 },
+    nodeSize: {, min: 8, max: 32 },
+    edgeThickness: {, min: 1, max: 6 },
+    meshDimensions: {, width: 100, height: 100, depth: 100 },
     vertexCount: 10000,
     lodLevels: 4,
     colorScheme: 'semantic',
     layout: 'legal-context',
-    physics: { gravity: 0.1, repulsion: 100, attraction: 0.05, damping: 0.9 },
+    physics: {, gravity: 0.1, repulsion: 100, attraction: 0.05, damping: 0.9 },
     reinforcementLearning: {
-      enabled: enableReinforcementLearning,
+     , enabled: enableReinforcementLearning,
       showTrainingProgress: true,
       highlightOptimalPaths: true,
       showRewardHeatmap: true,
@@ -305,13 +305,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   export function exportVisualization(format: 'png' | 'svg' | 'json' = 'png'): string | null {
     const viz = get(visualization2D);
-    if (!viz) return null;
+    if (!viz) return: null;
     switch (format) {
-      case 'png': return viz.base64 ?? null;
-      case 'svg': return viz.svg ?? null;
-      case 'json':
+      case, 'png': return viz.base64 ?? null;
+      case, 'svg': return viz.svg ?? null;
+      case, 'json':
         return JSON.stringify({ paths: get(paths), metadata: viz.metadata }, null, 2);
-      default: return null;
+      default: return: null;
     }
   }
 </script>
@@ -320,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
   class:loading={$loading}
   class:error={$error}
   bind:this={container}
-  style="width: {width}px; height: {height}px;"
+  style="width: {width}px;, height: {height}px;"
   data-theme={theme}
 >
   {#if $loading}
@@ -345,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if (mode === '2d' || mode === 'both') && !$loading}
     <div, class="canvas-container" class:hidden={mode === '3d'}>
       <canvas
-        bind:this={canvas2D}
+       , bind:this={canvas2D}
         width={width}
         height={height}
         class="visualization-canvas canvas-2d"
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if (mode === '3d' || mode === 'both') && !$loading}
     <div, class="canvas-container" class:hidden={mode === '2d'}>
       <canvas
-        bind:this={canvas3D}
+       , bind:this={canvas3D}
         width={width}
         height={height}
         class="visualization-canvas canvas-3d"
@@ -423,7 +423,7 @@ https://svelte.dev/e/js_parse_error -->
   .sora-graph-visualization {
     position: relative;
     border-radius: 8px;
-    background: var(--bg-color, #0f1419);
+   , background: var(--bg-color, #0f1419);
     border: 1px solid var(--border-color, #2a2a2a);
     overflow: hidden;
     font-family: 'JetBrains Mono', monospace;
@@ -434,7 +434,7 @@ https://svelte.dev/e/js_parse_error -->
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 20, 25, 0.95);
+   , background: rgba(15, 20, 25, 0.95);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -452,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 16px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
+    0% {, transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .loading-stats {
@@ -463,19 +463,19 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0.8;
   }
   .loading-detail {
-    background: rgba(74, 158, 255, 0.2);
+   , background: rgba(74, 158, 255, 0.2);
     padding: 4px 8px;
     border-radius: 4px;
-    border: 1px solid rgba(74, 158, 255, 0.3);
+   , border: 1px solid rgba(74, 158, 255, 0.3);
   }
   .error-overlay {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+   , transform: translate(-50%, -50%);
     background: rgba(255, 71, 87, 0.95);
     color: white;
-    padding: 20px;
+   , padding: 20px;
     border-radius: 8px;
     text-align: center;
     z-index: 100;
@@ -493,7 +493,7 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 10;
   }
   .control-btn {
-    background: rgba(42, 42, 42, 0.9);
+   , background: rgba(42, 42, 42, 0.9);
     border: 1px solid rgba(74, 158, 255, 0.3);
     color: #4a9eff;
     padding: 6px 8px;
@@ -503,16 +503,16 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
   }
   .control-btn:hover {
-    background: rgba(74, 158, 255, 0.2);
+   , background: rgba(74, 158, 255, 0.2);
     border-color: #4a9eff;
-    transform: translateY(-1px);
+   , transform: translateY(-1px);
   }
   .mode-switcher {
     position: absolute;
     top: 8px;
     left: 8px;
     display: flex;
-    background: rgba(42, 42, 42, 0.9);
+   , background: rgba(42, 42, 42, 0.9);
     border-radius: 6px;
     padding: 2px;
     z-index: 10;
@@ -535,7 +535,7 @@ https://svelte.dev/e/js_parse_error -->
     position: absolute;
     bottom: 8px;
     left: 8px;
-    background: rgba(15, 20, 25, 0.95);
+   , background: rgba(15, 20, 25, 0.95);
     border: 1px solid #2a2a2a;
     border-radius: 6px;
     padding: 12px;
@@ -545,7 +545,7 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 10;
   }
   .path-explorer h4 {
-    margin: 0 0 8px 0;
+   , margin: 0, 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
     font-weight: 600;
@@ -556,7 +556,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 6px;
   }
   .path-item {
-    background: rgba(42, 42, 42, 0.5);
+   , background: rgba(42, 42, 42, 0.5);
     border: 1px solid transparent;
     border-radius: 4px;
     padding: 8px;
@@ -565,7 +565,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 11px;
   }
   .path-item:hover {
-    background: rgba(74, 158, 255, 0.1);
+   , background: rgba(74, 158, 255, 0.1);
     border-color: rgba(74, 158, 255, 0.3);
   }
   .path-item.high-score {
@@ -594,7 +594,7 @@ https://svelte.dev/e/js_parse_error -->
     position: absolute;
     bottom: 8px;
     right: 8px;
-    background: rgba(15, 20, 25, 0.95);
+   , background: rgba(15, 20, 25, 0.95);
     border: 1px solid #2a2a2a;
     border-radius: 6px;
     padding: 12px;
@@ -602,7 +602,7 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 10;
   }
   .stats-panel h4 {
-    margin: 0 0 8px 0;
+   , margin: 0, 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
     font-weight: 600;
@@ -624,7 +624,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .stat-value {
     font-size: 12px;
-    color: #06ffa5;
+   , color: #06ffa5;
     font-weight: 600;
     font-family: monospace;
   }
@@ -659,7 +659,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     .mode-switcher {
       top: 4px;
-      left: 4px;
+     , left: 4px;
     }
   }
 </style>

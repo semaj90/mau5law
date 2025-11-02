@@ -22,7 +22,7 @@
  *   await gemma.initialize();
  *   const response = await gemma.generate('Summarize this legal document...');
  */
-import { pipeline, env, TextStreamer } from '@huggingface/transformers';
+import { pipeline, env, TextStreamer } from, '@huggingface/transformers';
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -40,20 +40,20 @@ export interface StreamChunk { text: string;, done: boolean;
   tokenCount?: number;
 }
 export class BrowserGemma {
-  private generator: any = null;
+  private, generator: any = null;
   private isInitialized = $state(false);
   private modelName: string;
   private device: 'webgpu' | 'wasm' | 'cpu';
   constructor(
     // Using smaller quantized Gemma model for browser compatibility
-    modelName: string = 'onnx-community/gemma-2-2b-it-q4',
+   , modelName: string = 'onnx-community/gemma-2-2b-it-q4',
     device: 'webgpu' | 'wasm' | 'cpu' = 'webgpu'
   ) {
     this.modelName = modelName;
     this.device = device;
   }
   /**
-   * Initialize Gemma 3 270M model (downloads ~1.5GB on first run)
+   * Initialize Gemma, 3 270M model (downloads ~1.5GB on first run)
    * Model is cached in browser IndexedDB after first download
    */
   async initialize(): Promise<void> {
@@ -191,7 +191,7 @@ export class BrowserGemma {
    * Chat-style conversation with context
    */
   async chat(
-    messages: Array<{, role: 'user' | 'assistant' | 'system'; content: string }>,
+    messages: Array<{, role: 'user' | 'assistant' | 'system';, content: string }>,
     options: GenerateOptions = {}
   ): Promise<string> {
     // Convert messages to Gemma format
@@ -249,7 +249,7 @@ export class BrowserGemma {
     text: string
   ): Promise<{ parties: string[]; dates: string[]; locations: string[] }> {
     const response = await this.generate(
-      `Extract legal entities from this text. Return as JSON with keys: parties, dates, locations.\n\nText: ${text}`,
+      `Extract legal entities from this text. Return as JSON with, keys: parties, dates, locations.\n\nText: ${text}`,
       {
         maxTokens: 200,
         temperature: 0.1,
@@ -262,10 +262,10 @@ export class BrowserGemma {
     }
   }
   async analyzeLegalRisk(
-    caseDescription: string
+   , caseDescription: string
   ): Promise<{ riskLevel: 'low' | 'medium' | 'high'; analysis: string }> {
     const response = await this.generate(
-      `Analyze the legal risk for this case. Return JSON with: "riskLevel" (low/medium/high); and: "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
+      `Analyze the legal risk for this case. Return JSON, with: "riskLevel" (low/medium/high); and: "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
       {
         maxTokens: 150,
         temperature: 0.2,
@@ -310,10 +310,10 @@ export const browserGemma = new BrowserGemma();
 /**
  * USAGE EXAMPLES:
  *
- * // In a Svelte component:
+ * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserGemma } from '$lib/ai/browser-gemma';
- *   import { onMount } from 'svelte';
+ *   import { browserGemma } from, '$lib/ai/browser-gemma';
+ *   import { onMount } from, 'svelte';
  *
  *   let response = $state<string>('');
  *   let isGenerating = $state<boolean>(false);

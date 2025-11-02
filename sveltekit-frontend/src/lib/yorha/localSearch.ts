@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import Fuse from 'fuse.js';
-import { get, as idbGet, set as idbSet } from 'idb-keyval';
+import type { Document } from, '$lib/types';
+import Fuse from, 'fuse.js';
+import { get, as idbGet, set as idbSet } from, 'idb-keyval';
 export interface LocalLegalDoc { id: string;, title: string;
   content?: string;
   type?: string;
@@ -8,12 +8,12 @@ export interface LocalLegalDoc { id: string;, title: string;
   metadata?: { [key: string]: any };
 }
 let fuse: Fuse<LocalLegalDoc> | null = null;
-let documents: LocalLegalDoc[] = [];
+let, documents: LocalLegalDoc[] = [];
 let loadedFromCache = $state<boolean>(false);
 const cacheKey = 'yorha-local-doc-index-v1';
 const options: any = {
   keys: [
-    { name: 'title', weight: 0.4 },
+    {, name: 'title', weight: 0.4 },
     { name: 'content', weight: 0.3 },
     { name: 'metadata.summary', weight: 0.2 },
     { name: 'type', weight: 0.1 }
@@ -100,7 +100,7 @@ export function wasLoadedFromCache() {
   return loadedFromCache;
 }
 // Merge helper: combine local + remote results with weighting & dedupe
-export interface HybridResult extends LocalLegalDoc { relevance: number;, source: 'local' | 'remote' | 'hybrid';
+export interface HybridResult extends LocalLegalDoc {, relevance: number;, source: 'local' | 'remote' | 'hybrid';
 }
 export function mergeResults(local: any[], remote: any[], localWeight = 0.6, remoteWeight = 0.4): HybridResult[] {
   const byId = new Map<string | number, HybridResult>();

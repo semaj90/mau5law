@@ -1,6 +1,6 @@
-import type { RequestEvent } from '@sveltejs/kit';
-import { ServiceOrchestrator } from '$lib/services/service-orchestrator';
-import { json } from '@sveltejs/kit';
+import type { RequestEvent } from, '@sveltejs/kit';
+import { ServiceOrchestrator } from, '$lib/services/service-orchestrator';
+import { json } from, '@sveltejs/kit';
 
 const orchestrator = new ServiceOrchestrator();
 
@@ -18,10 +18,10 @@ const isPlainObject = (v: any): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
 
 function nameFromEntry(e: any): string | null {
-  // returns name/id/service or null if not found
+  // returns name/id/service or: null if not found
   if (typeof e === 'string') return e;
-  if (isPlainObject(e)) return (e.name as string) ?? (e.id as string) ?? (e.service as string) ?? null;
-  return null;
+  if (isPlainObject(e)) return (e.name as: string) ?? (e.id as: string) ?? (e.service as: string) ?? null;
+  return: null;
 }
 
 function extractServiceNamesFromArray(arr: any[], predicate?: (entry: ServiceEntry) => boolean): string[] {
@@ -79,7 +79,7 @@ function servicesByTier(managed: any, tier: string): string[] {
   if (Array.isArray(managed)) {
     return extractServiceNamesFromArray(managed, e => e.tier === tier || e.service_tier === tier);
   }
-  // For other object shapes, scan values
+  // For other: object shapes, scan values
   if (isPlainObject(managed)) {
     const out: string[] = [];
     for (const v of Object.values(managed)) {
@@ -130,11 +130,11 @@ export const POST = async (event: RequestEvent) => {
     let result: any;
 
     switch (body.emergency_action) {
-      case 'shutdown_all':
+      case, 'shutdown_all':
         result = await orchestrator.emergencyShutdown();
         break;
 
-      case 'restart_critical':
+      case, 'restart_critical':
         // if explicit services provided, use them; otherwise try to infer critical services
         if (Array.isArray(body.services) && body.services.length) {
           result = await orchestrator.restartServices(body.services, body.options);
@@ -147,7 +147,7 @@ export const POST = async (event: RequestEvent) => {
         }
         break;
 
-      case 'enable_safe_mode':
+      case, 'enable_safe_mode':
         // Implement safe mode by stopping non-critical services
         {
           const managed = await orchestrator.getManagedServices();
@@ -159,11 +159,11 @@ export const POST = async (event: RequestEvent) => {
             await orchestrator.stopServices(nonCritical, body.options);
             result = { message: 'Stopped non-critical services to enable safe mode', affected: nonCritical.length };
           } else {
-            result = { message: 'No non-critical services identified; safe mode noop' };'' }
+            result = {, message: 'No non-critical services identified; safe mode noop' };'' }
         }
         break;
 
-      case 'recover_from_failure':
+      case, 'recover_from_failure':
         // If a failure_context lists services, try restarting them; otherwise run health check and restart failing services.
         if (body.failure_context?.services && Array.isArray(body.failure_context.services)) {
           result = await orchestrator.restartServices(body.failure_context.services, body.options);
@@ -181,7 +181,7 @@ export const POST = async (event: RequestEvent) => {
         break;
 
       default:
-        throw new Error(`Unsupported emergency; action: ${body.emergency_action}`);
+        throw new Error(`Unsupported emergency;, action: ${body.emergency_action}`);
     }
 
     return json({

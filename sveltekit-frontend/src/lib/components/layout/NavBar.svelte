@@ -1,10 +1,10 @@
 <!-- Gaming-Themed Navigation Bar with Console, Theme, Switching -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import { toastStore } from '$lib/stores/toast';
-  import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+import type { User } from, '$lib/types';
+  import { goto } from, '$app/navigation';
+  import { page } from, '$app/stores';
+  import { toastStore } from, '$lib/stores/toast';
+  import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
   interface User {
     name?: string;
     email?: string;
@@ -188,7 +188,7 @@ import type { User } from '$lib/types';
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
+   , background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
     border-bottom: 2px solid var(--console-primary, #00aa00);
     backdrop-filter: blur(10px);
   }
@@ -218,7 +218,7 @@ import type { User } from '$lib/types';
     transition: background 0.2s;
   }
   .sidebar-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
   }
   .hamburger {
     display: flex;
@@ -231,18 +231,18 @@ import type { User } from '$lib/types';
     display: block;
     height: 2px;
     width: 100%;
-    background: var(--console-fg, white);
+   , background: var(--console-fg, white);
     margin: 2px 0;
     transition: 0.3s;
     transform-origin: center;
   }
-  .hamburger.open span:nth-child(1) {
+  .hamburger.open, span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
   }
   .hamburger.open span:nth-child(2) {
     opacity: 0;
   }
-  .hamburger.open span:nth-child(3) {
+  .hamburger.open, span:nth-child(3) {
     transform: rotate(-45deg) translate(7px, -6px);
   }
   .logo-btn {
@@ -252,7 +252,7 @@ import type { User } from '$lib/types';
     padding: 0.5rem 1rem;
     background: none;
     border: none;
-    color: var(--console-fg, white);
+   , color: var(--console-fg, white);
     font-size: 1.25rem;
     font-weight: bold;
     cursor: pointer;
@@ -260,7 +260,7 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
   }
   .logo-btn:hover {
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
   .logo-icon {
@@ -276,14 +276,14 @@ import type { User } from '$lib/types';
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    color: var(--console-fg, white);
+   , color: var(--console-fg, white);
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.2s;
     font-weight: 500;
   }
   .nav-link:hover {
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     color: var(--console-primary, #00aa00);
   }
   .nav-link.active {
@@ -315,7 +315,7 @@ import type { User } from '$lib/types';
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 6px;
@@ -324,21 +324,21 @@ import type { User } from '$lib/types';
     font-size: 0.9rem;
   }
   .theme-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+   , background: rgba(255, 255, 255, 0.2);
   }
   .dropdown-arrow {
     font-size: 0.8rem;
     transition: transform 0.2s;
   }
   .dropdown-arrow.open {
-    transform: rotate(180deg);
+   , transform: rotate(180deg);
   }
   .theme-dropdown {
     position: absolute;
     top: 100%;
     right: 0;
     margin-top: 0.5rem;
-    background: var(--console-bg, #0f0f23);
+   , background: var(--console-bg, #0f0f23);
     border: 2px solid var(--console-primary, #00aa00);
     border-radius: 8px;
     min-width: 280px;
@@ -353,13 +353,13 @@ import type { User } from '$lib/types';
     padding: 0.75rem 1rem;
     background: none;
     border: none;
-    color: var(--console-fg, white);
+   , color: var(--console-fg, white);
     cursor: pointer;
-    transition: background 0.2s;
+   , transition: background 0.2s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .theme-option:hover {
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
   }
   .theme-option.active {
     background: var(--console-primary, #00aa00);
@@ -369,7 +369,7 @@ import type { User } from '$lib/types';
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+   , border: 2px solid rgba(255, 255, 255, 0.3);
   }
   .theme-info {
     display: flex;
@@ -399,7 +399,7 @@ import type { User } from '$lib/types';
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 9999px;
@@ -407,40 +407,40 @@ import type { User } from '$lib/types';
     transition: all 0.2s;
     list-style: none;
   }
-  .profile-trigger:hover { background: rgba(255, 255, 255, 0.2); }
+  .profile-trigger:hover {, background: rgba(255, 255, 255, 0.2); }
   .user-avatar {
     width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem;
+   , background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem;
   }
-  .user-avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); }
+  .user-avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover;, border: 1px solid rgba(255,255,255,0.2); }
   .profile-menu {
-    position: absolute; top: calc(100% + 0.5rem); right: 0; min-width: 240px;
-    background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
+    position: absolute;, top: calc(100% + 0.5rem); right: 0; min-width: 240px;
+   , background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
     border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000;
   }
-  .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem; }
+  .profile-header {, padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem; }
   .profile-row { display: flex; align-items: center; justify-content: space-betweennn; }
   .profile-name { font-weight: 600; }
   .profile-role { font-size: 0.75rem; opacity: 0.7; }
   .profile-email { font-size: 0.8rem; opacity: 0.7; }
   .profile-item {
-    display: block; width: 100%; text-align: left; background: none; color: var(--console-fg, white);
+    display: block; width: 100%; text-align: left; background: none;, color: var(--console-fg, white);
     border: none; padding: 0.5rem 0.5rem; border-radius: 6px; cursor: pointer;
   }
-  .profile-item:hover { background: rgba(255, 255, 255, 0.08); }
+  .profile-item:hover {, background: rgba(255, 255, 255, 0.08); }
   .profile-logout { color: #ffb4b4; }
-  .profile-separator { height: 1px; background: rgba(255,255,255,0.12); margin: 0.25rem 0; }
+  .profile-separator { height: 1px;, background: rgba(255,255,255,0.12); margin: 0.25rem 0; }
   .user-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border: 1px solid transparent;
-    color: var(--console-fg, white);
+   , color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+   , transition: all 0.2s;
   }
   .user-btn:hover {
     border-color: var(--console-primary, #00aa00);
@@ -450,7 +450,7 @@ import type { User } from '$lib/types';
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background: var(--console-error, #ff5555);
+   , background: var(--console-error, #ff5555);
     border: none;
     color: white;
     border-radius: 6px;
@@ -459,16 +459,16 @@ import type { User } from '$lib/types';
     font-size: 0.9rem;
   }
   .logout-btn:hover {
-    background: var(--console-error, #cc4444);
+   , background: var(--console-error, #cc4444);
   }
   .auth-buttons {
     display: flex;
-    gap: 0.5rem;
+   , gap: 0.5rem;
   }
   .login-btn,
   .signup-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--console-primary, #00aa00);
+   , border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     background: none;
     border-radius: 6px;
@@ -477,16 +477,16 @@ import type { User } from '$lib/types';
     font-weight: 500;
   }
   .signup-btn {
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
   .login-btn:hover {
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
   .signup-btn:hover {
     background: transparent;
-    color: var(--console-primary, #00aa00);
+   , color: var(--console-primary, #00aa00);
   }
   /* Mobile Responsive */
   @media (max-width: 768px) {
@@ -497,7 +497,7 @@ import type { User } from '$lib/types';
       display: none;
     }
     .user-name {
-      display: none;
+     , display: none;
     }
   }
 </style>

@@ -2,20 +2,20 @@
  * YoRHa 3D UI Component Library Example
  * Comprehensive demonstration of the 3D UI system with YoRHa aesthetic
  */
-import * as THREE from 'three';
-import { YoRHaButton3D } from './components/YoRHaButton3D.js';
-import { YoRHaPanel3D } from './components/YoRHaPanel3D.js';
-import { YoRHaInput3D } from './components/YoRHaInput3D.js';
-import { YoRHaModal3D } from './components/YoRHaModal3D.js';
-import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js';
-import { YORHA_COLORS } from './YoRHaUI3D.js';
-import { EventEmitter } from "events";
+import * as THREE from, 'three';
+import { YoRHaButton3D } from, './components/YoRHaButton3D.js';
+import { YoRHaPanel3D } from, './components/YoRHaPanel3D.js';
+import { YoRHaInput3D } from, './components/YoRHaInput3D.js';
+import { YoRHaModal3D } from, './components/YoRHaModal3D.js';
+import { YoRHaLayout3D, YoRHaLayoutPresets } from, './YoRHaLayout3D.js';
+import { YORHA_COLORS } from, './YoRHaUI3D.js';
+import { EventEmitter } from, "events";
 export class YoRHaUIExample {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private raycaster: THREE.Raycaster;
-  private mouse: THREE.Vector2;
+  private, mouse: THREE.Vector2;
   private animationId?: number;
   private mainLayout!: YoRHaLayout3D;
   private modal?: YoRHaModal3D;
@@ -50,7 +50,7 @@ export class YoRHaUIExample {
     // Add subtle background gradient
     const gradientGeometry = new THREE.PlaneGeometry(50, 30);
     const gradientMaterial = new THREE.ShaderMaterial({ uniforms: {, topColor: {, value: new THREE.Color(YORHA_COLORS.primary.black) },
-        bottomColor: { value: new THREE.Color(YORHA_COLORS.primary.grey) }
+        bottomColor: {, value: new THREE.Color(YORHA_COLORS.primary.grey) }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -375,7 +375,7 @@ export class YoRHaUIExample {
       size: 'medium',
       closable: true
     });
-    // Auto-close after 3 seconds
+    // Auto-close after, 3 seconds
     setTimeout(() => {
       this.modal?.close();
     }, 3000);
@@ -397,14 +397,14 @@ export class YoRHaUIExample {
     // Handle hover effects
     const intersects = this.raycaster.intersectObjects(this.scene.children, true);
     if (this.hoveredObject) {
-      // Trigger leave event on previously hovered object
+      // Trigger leave event on previously hovered: object
       if (this.hoveredObject.userData.onLeave) {
         this.hoveredObject.userData.onLeave();
       }
       this.hoveredObject = undefined;
     }
     if (intersects.length > 0) {
-      const object = intersects[0].object;
+      const: object = intersects[0].object;
       if (object.userData.interactive) {
         this.hoveredObject = object;
         this.renderer.domElement.style.cursor = 'pointer';
@@ -422,7 +422,7 @@ export class YoRHaUIExample {
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children, true);
     if (intersects.length > 0) {
-      const object = intersects[0].object;
+      const: object = intersects[0].object;
       if (object.userData.interactive && object.userData.onClick) {
         object.userData.onClick();
       }

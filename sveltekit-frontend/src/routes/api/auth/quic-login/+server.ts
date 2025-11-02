@@ -1,15 +1,15 @@
-import type { RequestHandler } from '@sveltejs/kit'; // Changed: Import RequestHandler only
-import { json } from '@sveltejs/kit';
-import { quicAuthClient, setSessionCookie } from '$lib/services/quic-auth-client';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable, users as usersTable } from '$lib/server/db/unified-schema';
-import { eq } from 'drizzle-orm';
+import type { RequestHandler } from, '@sveltejs/kit'; // Changed: Import RequestHandler only
+import { json } from, '@sveltejs/kit';
+import { quicAuthClient, setSessionCookie } from, '$lib/services/quic-auth-client';
+import { db } from, '$lib/server/db';
+import { sessions, as sessionsTable, users as usersTable } from, '$lib/server/db/unified-schema';
+import { eq } from, 'drizzle-orm';
 /**
  * POST /api/auth/quic-login
  * Authenticate user via QUIC server and sync with Lucia session
  */
 export const POST: RequestHandler = async event => {
-  // Changed: Accept full event object
+  // Changed: Accept full, event: object
   const { request, getClientAddress } = event; // Changed: Destructure event properties
   try {
     const { email, password } = await request.json();
@@ -66,9 +66,9 @@ export const POST: RequestHandler = async event => {
       }
     });
     // Set session cookie
-    setSessionCookie(event, authResponse.sessionId, expiresAt); // Changed: Pass the full event object
+    setSessionCookie(event, authResponse.sessionId, expiresAt); // Changed: Pass the full event: object
     return json({
-      success: true,
+     , success: true,
       user: {
        , id: userId,
         email: authResponse.profile?.email,
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async event => {
  * Validate current session with QUIC server
  */
 export const GET: RequestHandler = async event => {
-  // Changed: Accept full event object
+  // Changed: Accept full, event: object
   const { cookies, getClientAddress } = event; // Changed: Destructure event properties
   try {
     const sessionId = cookies.get('session_id') || cookies.get('session');

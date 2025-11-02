@@ -1,6 +1,6 @@
-import { pipeline, env } from '@xenova/transformers';
-import { browser } from '$app/environment';
-import { $state } from 'svelte/internal'; // Svelte 5 runes
+import { pipeline, env } from, '@xenova/transformers';
+import { browser } from, '$app/environment';
+import { $state } from, 'svelte/internal'; // Svelte, 5 runes
 
 // Configure Transformers.js for WebGPU
 if (browser) {
@@ -19,15 +19,15 @@ export interface TransformersAIConfig { modelName: string;, quantized: boolean;
   contextSize: number;
   enableGPU: boolean;
   enableSIMD: boolean;
-  enableMultiCore: boolean;
+ , enableMultiCore: boolean;
   modelPath?: string; // Optional, if not using default Xenova CDN
 }
 
-export interface TransformersAIResponse { content: string;, metadata: { tokensGenerated: number;, processingTime: number;
+export interface TransformersAIResponse { content: string;, metadata: {, tokensGenerated: number;, processingTime: number;
     confidence: number;
     method: 'transformers.js' | 'webgpu';
     modelUsed: string;
-    fromCache: boolean;
+   , fromCache: boolean;
     gpuAccelerated?: boolean;
   };
 }
@@ -35,7 +35,7 @@ export interface TransformersAIResponse { content: string;, metadata: { tokensG
 export class TransformersAIAdapter {
   private initialized = $state(false);
   private config: TransformersAIConfig;
-  private generator: any = null; // Stores the Transformers.js pipeline
+  private, generator: any = null; // Stores the Transformers.js pipeline
   private modelLoaded = $state(false);
   private gpuAvailable = $state(false);
 
@@ -154,9 +154,9 @@ export class TransformersAIAdapter {
 
       const processingTime = performance.now() - startTime;
       const response: TransformersAIResponse = {
-        content: generatedText,
+       , content: generatedText,
         metadata: {
-          tokensGenerated: tokensGenerated,
+         , tokensGenerated: tokensGenerated,
           processingTime: processingTime,
           confidence: 0.9, // Placeholder confidence
           method: this.gpuAvailable && this.config.enableGPU ? 'webgpu' : 'transformers.js',
@@ -181,7 +181,7 @@ export class TransformersAIAdapter {
     modelName: string;
   } {
     return {
-      initialized: this.initialized,
+     , initialized: this.initialized,
       modelLoaded: this.modelLoaded,
       gpuAvailable: this.gpuAvailable,
       gpuEnabled: this.config.enableGPU,

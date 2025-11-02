@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
   // onMount was unused — removed
   // Use a namespace import to safely access public env vars without TS named-export errors
-  import * as env from '$env/static/public';
+  import * as env from, '$env/static/public';
   interface Props {
     placeholder?: string;
     searchEndpoint?: string;
@@ -92,7 +92,7 @@ import type { Document } from '$lib/types';
     <div, class="search-input-wrapper">
       <input
         bind:this={searchInput}
-        bind:value={query}
+       , bind:value={query}
         onkeydown={handleKeydown}
         oninput={performSearch}
         id="search-input"
@@ -162,7 +162,7 @@ import type { Document } from '$lib/types';
     position: relative;
     width: 100%;
     max-width: 600px;
-    margin: 0 auto;
+   , margin: 0 auto;
     font-family: 'Press Start 2P', monospace;
   }
   .search-field {
@@ -182,7 +182,7 @@ import type { Document } from '$lib/types';
     align-items: center;
   }
   .search-input {
-    flex: 1;
+   , flex: 1;
     padding-right: 80px;
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
@@ -191,7 +191,7 @@ import type { Document } from '$lib/types';
     position: absolute;
     right: 40px;
     top: 50%;
-    transform: translateY(-50%);
+   , transform: translateY(-50%);
     width: 32px;
     height: 32px;
     padding: 0;
@@ -203,7 +203,7 @@ import type { Document } from '$lib/types';
     position: absolute;
     right: 8px;
     top: 50%;
-    transform: translateY(-50%);
+   , transform: translateY(-50%);
     animation: bounce 1s infinite;
   }
   @keyframes bounce {
@@ -223,7 +223,7 @@ import type { Document } from '$lib/types';
     left: 0;
     right: 0;
     z-index: 1000;
-    background: white;
+   , background: white;
     margin-top: 8px;
     max-height: 400px;
     overflow-y: auto;
@@ -284,7 +284,7 @@ import type { Document } from '$lib/types';
   }
   .result-metadata {
     display: flex;
-    gap: 8px;
+   , gap: 8px;
     margin-bottom: 4px;
   }
   .case-tag,
@@ -305,7 +305,7 @@ import type { Document } from '$lib/types';
   }
   .similarity-score {
     font-size: 8px;
-    color: #007bff;
+   , color: #007bff;
     text-align: right;
   }
   /* Responsive adjustments */
@@ -320,7 +320,7 @@ import type { Document } from '$lib/types';
       position: fixed;
       top: auto;
       left: 16px;
-      right: 16px;
+     , right: 16px;
       max-height: 50vh;
     }
   }

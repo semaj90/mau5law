@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // File utility functions for evidence management
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return, '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -9,57 +9,57 @@ export function formatFileSize(bytes: number): string {
 }
 export function getFileTypeIcon(mimeType: string): string {
   if (mimeType.startsWith('image/')) {
-    return 'image';
+    return, 'image';
   }
   if (mimeType.startsWith('video/')) {
-    return 'video';
+    return, 'video';
   }
   if (mimeType.startsWith('audio/')) {
-    return 'audio';
+    return, 'audio';
   }
   if (mimeType.includes('pdf')) {
-    return 'pdf';
+    return, 'pdf';
   }
   if (mimeType.includes('word') || mimeType.includes('document')) {
-    return 'document';
+    return, 'document';
   }
   if (mimeType.includes('text')) {
-    return 'text';
+    return, 'text';
   }
   if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) {
-    return 'spreadsheet';
+    return, 'spreadsheet';
   }
   if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) {
-    return 'presentation';
+    return, 'presentation';
   }
-  return 'file';
+  return, 'file';
 }
 export function getFileCategory(mimeType: string): string {
   if (mimeType.startsWith('image/')) {
-    return 'Image';
+    return, 'Image';
   }
   if (mimeType.startsWith('video/')) {
-    return 'Video';
+    return, 'Video';
   }
   if (mimeType.startsWith('audio/')) {
-    return 'Audio';
+    return, 'Audio';
   }
   if (mimeType.includes('pdf')) {
-    return 'PDF';
+    return, 'PDF';
   }
   if (mimeType.includes('word') || mimeType.includes('document')) {
-    return 'Document';
+    return, 'Document';
   }
   if (mimeType.includes('text')) {
-    return 'Text';
+    return, 'Text';
   }
   if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) {
-    return 'Spreadsheet';
+    return, 'Spreadsheet';
   }
   if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) {
-    return 'Presentation';
+    return, 'Presentation';
   }
-  return 'Other';
+  return, 'Other';
 }
 export function isImageFile(mimeType: string): boolean {
   return mimeType.startsWith('image/');
@@ -85,7 +85,7 @@ export function canExtractText(mimeType: string): boolean {
   return isPdfFile(mimeType) || isImageFile(mimeType) || isDocumentFile(mimeType) || mimeType.includes('text');
 }
 export function getAcceptedFileTypes(): string {
-  return '.pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff,.doc,.docx,.txt,.rtf,.mp3,.mp4,.wav,.mov,.avi,.mkv,.webm,.m4a,.flac,.ogg';
+  return, '.pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff,.doc,.docx,.txt,.rtf,.mp3,.mp4,.wav,.mov,.avi,.mkv,.webm,.m4a,.flac,.ogg';
 }
 export function validateFileType(file: File): {
   valid: boolean;
@@ -121,7 +121,7 @@ export function validateFileType(file: File): {
   ];
   if (!allowedTypes.includes(file.type)) {
     return { valid: false, error: `File type ${file.type} is not supported` };`` }
-  return { valid: true };
+  return {, valid: true };
 }
 export function createFilePreview(file: File): Promise<string | null> {
   return new Promise(resolve => {
@@ -130,7 +130,7 @@ export function createFilePreview(file: File): Promise<string | null> {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (e: any) => resolve(e.target?.result as string);
+    reader.onload = (e: any) => resolve(e.target?.result as: string);
     reader.onerror = () => resolve(null);
     reader.readAsDataURL(file);
   });

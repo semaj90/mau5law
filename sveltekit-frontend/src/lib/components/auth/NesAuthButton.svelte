@@ -3,8 +3,8 @@
   Triggers the NES modal from anywhere in your app
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import  NesAuthModal  from "./NesAuthModal.svelte";
+  // Svelte, 5 runes are auto-imported
+  import  NesAuthModal  from, "./NesAuthModal.svelte";
   interface Props {
     text?: string;
     variant?: 'primary' | 'warning' | 'success' | 'error';
@@ -24,14 +24,14 @@
   function getButtonClasses() {
     let classes = 'nes-btn';
     switch (variant) {
-      case 'warning': classes += ' is-warning'; break;
-      case 'success': classes += ' is-success'; break;
-      case 'error': classes += ' is-error'; break;
+      case, 'warning': classes += ' is-warning'; break;
+      case, 'success': classes += ' is-success'; break;
+      case, 'error': classes += ' is-error'; break;
       default: classes += ' is-primary';
     }
     switch (size) {
-      case 'small': classes += ' nes-btn-small'; break;
-      case 'large': classes += ' nes-btn-large'; break;
+      case, 'small': classes += ' nes-btn-small'; break;
+      case, 'large': classes += ' nes-btn-large'; break;
     }
     return classes;
   }
@@ -45,17 +45,17 @@
   {#if icon}{icon}
   {/if}{text}
 </button>
-<!-- bind the modal's "open" prop and pass, onClose, handler -->'
+<!-- bind the modal's, "open" prop and pass, onClose, handler -->'
 <NesAuthModal, bind:open={isModalOpen} {form} onClose={closeModal} />
 <style>
   /* Custom button size classes */
   :global(.nes-btn-small) {
     font-size: 0.6rem;
-    padding: 0.5rem 1rem;
+   , padding: 0.5rem 1rem;
   }
   :global(.nes-btn-large) {
     font-size: 1rem;
-    padding: 1rem 2rem;
+   , padding: 1rem 2rem;
   }
   /* Button hover effects */
   :global(.nes-btn) {

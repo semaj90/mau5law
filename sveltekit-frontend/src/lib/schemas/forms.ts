@@ -1,17 +1,17 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { z } from 'zod';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { z } from, 'zod';
 // Case creation form schema
 export const caseFormSchema = z.object({
   caseNumber: z
     .string()
-    .min(1, 'Case number is required')
-    .max(50, 'Case number too long')
-    .regex(/^[A-Z]{2,4}-\d{4}-\d{6}$/, 'Case number must follow format: ABC-2024-123456'),
+    .min(1, 'Case: number is required')
+    .max(50, 'Case: number too long')
+    .regex(/^[A-Z]{2,4}-\d{4}-\d{6}$/, 'Case: number must follow, format: ABC-2024-123456'),
   title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
   description: z
     .string()
-    .min(10, 'Description must be at least 10 characters')
+    .min(10, 'Description must be at least, 10 characters')
     .max(1000, 'Description too long')
     .optional(),
   priority: z.enum(['low', 'medium', 'high'], { errorMap: () => ({, message: 'Please select a priority level' }) }),
@@ -30,7 +30,7 @@ export const caseFormSchema = z.object({
       },
       { message: 'Due date must be in the future' }
     ),
-  tags: z.array(z.string().min(1).max(30)).max(10, 'Maximum 10 tags allowed').optional(),
+  tags: z.array(z.string().min(1).max(30)).max(10, 'Maximum, 10 tags allowed').optional(),
   isConfidential: z.boolean().default(false),
   notifyAssignee: z.boolean().default(true)
 });
@@ -40,7 +40,7 @@ export const evidenceFormSchema = z.object({
   description: z.string().max(500, 'Description too long').optional(),
   evidenceType: z.enum(['document', 'image', 'video', 'audio', 'digital'], { errorMap: () => ({, message: 'Please select evidence type' })
   }),
-  tags: z.array(z.string().min(1).max(30)).max(15, 'Maximum 15 tags allowed').optional(),
+  tags: z.array(z.string().min(1).max(30)).max(15, 'Maximum, 15 tags allowed').optional(),
   isChainOfCustodyRequired: z.boolean().default(false),
   custodyNotes: z.string().max(300, 'Custody notes too long').optional(),
   collectedBy: z.string().min(1, 'Collector name is required').max(100, 'Name too long'),
@@ -60,9 +60,9 @@ export const authFormSchema = z.object({
   email: z.string().email('Please enter a valid email address').min(1, 'Email is required'),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(8, 'Password must be at least, 8 characters')
     .max(128, 'Password too long')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and: number'),
   rememberMe: z.boolean().default(false)
 });
 // Registration schema
@@ -81,7 +81,7 @@ export const registerFormSchema = z
     email: z.string().email('Please enter a valid email address').min(1, 'Email is required'),
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
+      .min(8, 'Password must be at least, 8 characters')
       .max(128, 'Password too long')
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,

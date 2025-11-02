@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,18 +11,18 @@ import type { Case } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: minimal
- * - Memory Bank: SAVE_RAM (Nintendo-style)
+ * - Memory, Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 // Contextual Prompts Generation API
 // Generates intelligent prompts based on legal context and user behavior
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { validateAuthSession } from '$lib/server/auth';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { validateAuthSession } from, '$lib/server/auth';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const session = await validateAuthSession(request);
@@ -37,12 +37,12 @@ Context:
 -; Timing: ${timing}
 - Files: ${context.files?.length || 0} documents
 - Case ID: ${context.caseId || 'No active case'}
-- Legal Context: ${JSON.stringify(legalContext || {})}
+- Legal, Context: ${JSON.stringify(legalContext || {})}
 - User Expertise: ${context.userAnalytics?.caseContext?.expertise || 'associate'}
 - Practice Area: ${legalContext?.practiceArea || 'General'}
 - Urgency: ${legalContext?.urgency || 'medium'}
-File Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` }'`
-Generate 2-4 relevant prompts based on the timing phase:; For: "before-upload": Focus on preparation, organization, and potential issues
+File, Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` }'`
+Generate 2-4 relevant prompts based on the timing phase:;, For: "before-upload": Focus on preparation, organization, and potential issues
 For: "during-upload": Focus on monitoring, insights, and real-time guidance
 For: "after-upload": Focus on next steps, analysis results, and recommendations
 Each prompt should be actionable and specific to legal workflows.

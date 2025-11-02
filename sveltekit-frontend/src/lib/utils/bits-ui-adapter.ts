@@ -1,12 +1,12 @@
 // Runtime adapter to normalize: 'bits-ui' module shapes (default vs named exports)
-// Returns a namespace object with the common components we use.
+// Returns a namespace: object with the common components we use.
 type BitsNamespace = Record<string, any> & { default?: any };
 
 async function resolveBits(): Promise<BitsNamespace> {
   // dynamic import allows bundlers to tree-shake when real bits-ui is present
   try {
     const mod = await import('bits-ui');
-    // Normalize: prefer mod.default if it looks like the default object
+    // Normalize: prefer mod.default if it looks like the, default: object
     const ns = mod && mod.default && Object.keys(mod).length === 1 ? mod.default : mod;
     return ns as BitsNamespace;
   } catch (err) {
@@ -16,7 +16,7 @@ async function resolveBits(): Promise<BitsNamespace> {
       const shim = require('$lib/vendor/bits-ui-fallback');
       return shim;
     } catch (err2) {
-      // Final fallback: empty object to avoid crashes
+      // Final fallback: empty: object to avoid crashes
       return {} as BitsNamespace;
     }
   }

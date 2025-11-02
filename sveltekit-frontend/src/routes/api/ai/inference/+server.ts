@@ -9,19 +9,19 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  *
  * TensorRT-LLM with Ollama Fallback API
  * High-performance legal AI inference endpoint with Redis optimization
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { tensorrtLLMService } from '$lib/services/tensorrt-llm-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { tensorrtLLMService } from, '$lib/services/tensorrt-llm-service';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 // Request validation schema
 const InferenceRequestSchema = z.object({
   prompt: z.string().min(1),
@@ -91,19 +91,19 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
     switch (action) {
-      case 'health':
+      case, 'health':
         const healthStatus = await tensorrtLLMService.getHealthStatus();
         return json({
           success: true,
           data: healthStatus
         });
-      case 'models':
+      case, 'models':
         const models = await tensorrtLLMService.getAvailableModels();
         return json({
           success: true,
           data: models
         });
-      case 'warmup':
+      case, 'warmup':
         await tensorrtLLMService.warmupModels();
         return json({
           success: true,
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       default: return json(
           {
-            success: false,
+           , success: false,
             error: 'Unknown action'
           },
           { status: 400 }

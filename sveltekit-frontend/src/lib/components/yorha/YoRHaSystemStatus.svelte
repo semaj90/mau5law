@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte code: Unexpected, token --> <!-- YoRHa System Status Bar, Component --> <script, lang="ts"> // Svelte 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; // Props let { systemLoad, gpuUtilization, memoryUsage, networkLatency } = $props(); // Additional system metrics let cpuTemp = $state<number>(72); let diskUsage = $state<number>(45); let activeConnections = $state<number>(12); let uptime = $state<number>(0); let currentTime = $state(new Date()); // Status indicators let systemStatus = $derived(() => { if (systemLoad > 90 || memoryUsage > 90) return 'critical'; if (systemLoad > 75 || memoryUsage > 75) return 'warning'; return 'normal'; }); let networkStatus = $derived(() => { if (networkLatency > 100) return 'poor'; if (networkLatency > 50) return 'fair'; return 'excellent'; }); // Real-time updates let updateInterval: ReturnType<typeof setInterval> | null = null; onMount(() => { updateInterval = setInterval(() => { currentTime = new Date(); uptime += 1; // Simulate minor fluctuations cpuTemp = Math.max(65, Math.min(85, cpuTemp + (Math.random() - 0.5) * 2)); diskUsage = Math.max(40, Math.min(60, diskUsage + (Math.random() - 0.5) * 1)); activeConnections = Math.max(8, Math.min(20, activeConnections + Math.floor((Math.random() - 0.5) * 3))); }, 1000); return () => { if (updateInterval) clearInterval(updateInterval); }; }); onDestroy(() => { if (updateInterval) { clearInterval(updateInterval); updateInterval = null; }
-  }); function getStatusColor(status: string): string { switch (status) { case 'critical': return 'text-red-400'; case 'warning': return 'text-yellow-400'; case 'normal': return 'text-green-400'; case 'poor': return 'text-red-400'; case 'fair': return 'text-yellow-400'; case 'excellent': return 'text-green-400'; }
-  } function getProgressBarColor(value: number): string { if (value > 85) return 'bg-red-500'; if (value > 70) return 'bg-yellow-500'; return 'bg-green-500'; }
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <!-- YoRHa System Status Bar, Component --> <script, lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from, 'svelte'; // Props let { systemLoad, gpuUtilization, memoryUsage, networkLatency } = $props(); // Additional system metrics let cpuTemp = $state<number>(72); let diskUsage = $state<number>(45); let activeConnections = $state<number>(12); let uptime = $state<number>(0); let currentTime = $state(new Date()); // Status indicators let systemStatus = $derived(() => { if (systemLoad > 90 || memoryUsage > 90) return, 'critical'; if (systemLoad > 75 || memoryUsage > 75) return, 'warning'; return, 'normal'; }); let networkStatus = $derived(() => { if (networkLatency > 100) return, 'poor'; if (networkLatency > 50) return, 'fair'; return, 'excellent'; }); // Real-time updates let updateInterval: ReturnType<typeof setInterval> | null = null; onMount(() => { updateInterval = setInterval(() => { currentTime = new Date(); uptime += 1; // Simulate minor fluctuations cpuTemp = Math.max(65, Math.min(85, cpuTemp + (Math.random() - 0.5) * 2)); diskUsage = Math.max(40, Math.min(60, diskUsage + (Math.random() - 0.5) * 1)); activeConnections = Math.max(8, Math.min(20, activeConnections + Math.floor((Math.random() - 0.5) * 3))); }, 1000); return () => { if (updateInterval) clearInterval(updateInterval); }; }); onDestroy(() => { if (updateInterval) { clearInterval(updateInterval); updateInterval = null; }
+  }); function getStatusColor(status: string): string { switch (status) { case, 'critical': return, 'text-red-400'; case, 'warning': return, 'text-yellow-400'; case, 'normal': return, 'text-green-400'; case, 'poor': return, 'text-red-400'; case, 'fair': return, 'text-yellow-400'; case, 'excellent': return, 'text-green-400'; }
+  } function getProgressBarColor(value: number): string { if (value > 85) return, 'bg-red-500'; if (value > 70) return, 'bg-yellow-500'; return, 'bg-green-500'; }
   function formatUptime(seconds: number): string { const hours = Math.floor(seconds / 3600); const minutes = Math.floor((seconds % 3600) / 60); const secs = seconds % 60; return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
   function formatTime(date: Date): string { return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'
     }); }
@@ -23,15 +23,15 @@
   .metric-label { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .metric-value { font-weight: 700; font-family: 'JetBrains Mono', monospace; }
   .progress-container { border: 1px solid rgba(212, 175, 55, 0.3); }
-  .progress-bar { box-shadow: 0 0 4px currentColor; }
-  .status-dot { box-shadow: 0 0 6px currentColor; }
+  .progress-bar { box-shadow: 0, 0 4px currentColor; }
+  .status-dot { box-shadow: 0, 0 6px currentColor; }
   .network-indicator { animation: pulse 2s infinite; }
-  .system-id { background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%); }
+  .system-id {, background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%); }
   /* Responsive adjustments */ @media (max-width: 1200px) { .status-center { display: none; }
-  } @media (max-width: 768px) { .yorha-status-bar { flex-direction: column; gap: 8px; padding: 12px 16px; }
-    .status-left, .status-right { flex-wrap: wrap; gap: 12px; }
+  } @media (max-width: 768px) { .yorha-status-bar { flex-direction: column; gap: 8px;, padding: 12px 16px; }
+    .status-left, .status-right { flex-wrap: wrap;, gap: 12px; }
     .metric-group { min-width: auto; }
   } /* Animation for critical status */ @keyframes pulse-critical { 0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
-  } .status-dot.bg-red-400 { animation: pulse-critical 1s infinite; }
+  } .status-dot.bg-red-400 {, animation: pulse-critical 1s infinite; }
 </style>

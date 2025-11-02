@@ -1,17 +1,17 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * QUIC Vector Proxy API - High-Performance Vector Operations
  * Provides vector search with intelligent caching and multi-backend routing
  * Port: 8445 (QUIC), 8446 (HTTP/2 fallback)
  * Backends: Qdrant (6333), pgvector via Enhanced RAG (8094)
  */
-import { json, error } from '@sveltejs/kit';
-import { randomUUID } from 'node:crypto';
-import { ensureError } from '$lib/utils/ensure-error';
+import { json, error } from, '@sveltejs/kit';
+import { randomUUID } from, 'node:crypto';
+import { ensureError } from, '$lib/utils/ensure-error';
 // Use canonical VectorSearchQuery type
-import type { VectorSearchQuery } from '$lib/types/ai-assistant';
+import type { VectorSearchQuery } from, '$lib/types/ai-assistant';
 // Use the real vector search service singleton (Qdrant + Ollama)
-import { RealVectorSearchService } from '$lib/services/real-vector-search-service';
+import { RealVectorSearchService } from, '$lib/services/real-vector-search-service';
 
 let vectorSearchService: RealVectorSearchService | null = null;
 
@@ -34,7 +34,7 @@ const QUIC_VECTOR_CONFIG = {
 /*
  * GET /api/v1/quic/vector - Vector proxy health and cache status
  */
-export const GET: RequestHandler = async ({}) => {
+export const, GET: RequestHandler = async ({}) => {
   try {
     return json({
       service: 'quic-vector-proxy',
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({}) => {
         'Health Monitoring',
       ],
       cache: {
-        enabled: true,
+       , enabled: true,
         ttl: QUIC_VECTOR_CONFIG.cacheTTL,
         maxSize: QUIC_VECTOR_CONFIG.maxCacheSize
       },
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: Date.now()
       }
     };
-    // Use Go Vector Service if backend is: 'auto'; or: 'vector'
+    // Use Go Vector Service if backend is: 'auto';, or: 'vector'
     if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
       // If a direct Go vector client exists in future, call it here.
       // For now, skip to Enhanced RAG fallback below.
@@ -183,7 +183,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: cacheKey ? `Cache; key: '${cacheKey}' cleared` : 'All cache cleared',
+      message: cacheKey ? `Cache;, key: '${cacheKey}' cleared` : 'All cache cleared',
       result,
       timestamp: new Date().toISOString()
     });
@@ -206,10 +206,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.cacheTTL && (config.cacheTTL < 10 || config.cacheTTL > 3600)) {
-      error(400, ensureError({ message: `Cache TTL must be between 10 and 3600 seconds` }));'`'`
+      error(400, ensureError({ message: `Cache TTL must be between, 10 and, 3600 seconds` }));'`'`
     }
     if (config.maxCacheSize && (config.maxCacheSize < 10 || config.maxCacheSize > 10000)) {
-      error(400, ensureError({ message: `Max cache size must be between 10 and 10000` }));
+      error(400, ensureError({ message: `Max cache size must be between, 10 and 10000` }));
     }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {

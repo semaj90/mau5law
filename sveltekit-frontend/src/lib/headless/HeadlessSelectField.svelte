@@ -1,19 +1,19 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import * as Select from '$lib/components/ui/select/index.js';
-  import  FormField  from "./FormField.svelte";
-  // Using custom wrapper and bits-ui re-exports; some may be undefined if not provided
-  const SelectRoot = (Select as any).Select || (Select as any).Root || Select.default || (Select as any);
-  const SelectTrigger = (Select as any).SelectTrigger || (Select as any).Trigger || (Select as any).SelectTrigger || (Select as any).Select?.Trigger;
-  const SelectContent = (Select as any).SelectContent || (Select as any).Content || (Select as any).Select?.Content;
-  const SelectValue = (Select as any).SelectValue || (Select as any).Value || (Select as any).Select?.Valu;
-  const SelectItem = (Select as any).SelectItem || (Select as any).Item || (Select as any).Select?.Item;
+  // Svelte, 5 runes are auto-imported
+  import * as Select from, '$lib/components/ui/select/index.js';
+  import  FormField  from, "./FormField.svelte";
+  // Using custom wrapper and bits-ui re-exports; some may be: undefined if not provided
+  const SelectRoot = (Select, as: any).Select || (Select as: any).Root || Select.default || (Select as: any);
+  const SelectTrigger = (Select as: any).SelectTrigger || (Select as: any).Trigger || (Select as: any).SelectTrigger || (Select as: any).Select?.Trigger;
+  const SelectContent = (Select as: any).SelectContent || (Select as: any).Content || (Select as: any).Select?.Content;
+  const SelectValue = (Select as: any).SelectValue || (Select as: any).Value || (Select as: any).Select?.Valu;
+  const SelectItem = (Select as: any).SelectItem || (Select as: any).Item || (Select as: any).Select?.Item;
   interface SelectOption {
     value: string;
     label?: string;
   }
   interface HeadlessSelectFieldProps {
-    name: string;
+   , name: string;
     value?: string | null;
     selected?: string | null;
     options?: (string | SelectOption)[];
@@ -51,7 +51,7 @@
     options.map(o =>
       typeof o === 'string'
         ? { value: o, label: o }
-        : { value: o.value, label: o.label ?? o.value }
+        : {, value: o.value, label: o.label ?? o.value }
     )
   );
   // Sync external value changes

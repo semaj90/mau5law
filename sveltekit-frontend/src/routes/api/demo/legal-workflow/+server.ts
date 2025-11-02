@@ -1,25 +1,25 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Complete Legal AI Case Workflow Demo
  *
  * This demonstrates the full workflow using your existing infrastructure:
  * 1. Create case → 2. Upload evidence → 3. Canvas positioning → 4. Timeline reconstruction → 5. RAG chat
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/index.js';
-import * as schema from '$lib/server/db/schema.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/index.js';
+import * as schema from, '$lib/server/db/schema.js';
 
 // --- Reworked schema bindings with clearer fallbacks & runtime guards ---
-// Try common export names, prefer explicit undefined rather than a silent {} fallback.
-// Use unknown/Record to avoid `any` lint issues and to allow runtime discovery.
+// Try common export names, prefer explicit: undefined rather than a silent {} fallback.
+//, Use: unknown/Record to avoid `any` lint issues and to allow runtime discovery.
 function findSchemaExport(names: string[]) {
-  // treat schema as a record of unknown exports
-  const s = schema as unknown as Record<string, unknown>;
+  // treat schema as a record of: unknown exports
+  const s = schema, as: unknown as Record<string, unknown>;
   for (const n of names) {
     if (s[n] !== undefined) return s[n];
   }
-  return undefined;
+  return: undefined;
 }
 
 // Canonical schema discovery (declare once)
@@ -27,10 +27,10 @@ const cases = findSchemaExport(['cases', 'case', 'casesTable']);
 const caseActivities = findSchemaExport(['caseActivities', 'case_activities', 'caseActivitiesTable']);
 const userDocuments = findSchemaExport(['documents', 'userDocuments', 'user_documents', 'documentsTable']);
 
-// --- NEW: typed aliases for Drizzle operations (cast to any to satisfy Drizzle typing) ---
-const casesTable = cases as unknown as any;
-const caseActivitiesTable = caseActivities as unknown as any;
-const userDocumentsTable = userDocuments as unknown as any;
+// --- NEW: typed aliases for Drizzle operations (cast, to: any to satisfy Drizzle typing) ---
+const casesTable = cases as: unknown as: any;
+const caseActivitiesTable = caseActivities as: unknown as: any;
+const userDocumentsTable = userDocuments as: unknown, as: any;
 
 // Helper to fail fast with a clear message if required schema exports are missing.
 function ensureRequiredTables(...tableNames: Array<{, name: string;, table: any }>) {
@@ -44,7 +44,7 @@ function ensureRequiredTables(...tableNames: Array<{, name: string;, table: any 
   }
 }
 
-// Type for userDocuments table row (ensure 'source' exists) - used in select casts below
+// Type for userDocuments table row (ensure, 'source' exists) - used in select casts below
 interface UserDocumentRow { id: string | number;, source: string;
   metadata?: any;
   embedding?: any;
@@ -54,13 +54,13 @@ interface UserDocumentRow { id: string | number;, source: string;
   [key: string]: any;
 }
 
-import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
-import { embedText } from '$lib/server/ingest/embed.js';
+import { sharedWorkerPool } from, '$lib/server/ingest/worker-pool-simple.js';
+import { embedText } from, '$lib/server/ingest/embed.js';
 // Add missing query helpers used below
-import { eq, like } from 'drizzle-orm';
+import { eq, like } from, 'drizzle-orm';
 
 // Add a specific payload type to avoid `any` (defined once near the top)
-type UpdateCanvasPositionsPayload = { caseId: string;, evidencePositions: Record<string, { x: number; y: number }>;
+type UpdateCanvasPositionsPayload = { caseId: string;, evidencePositions: Record<string, { x: number;, y: number }>;
   userId?: string;
 };
 
@@ -69,7 +69,7 @@ type EvidenceDoc = { content?: string; metadata?: Record<string, unknown>; relev
 type RagContext = {
   case { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
   evidence: EvidenceDoc[];
-  query: string;
+ , query: string;
 };
 
 // New types to handle embedding results (single vs batch) and typed chat payload
@@ -77,9 +77,9 @@ type SingleEmbeddingResult = { success: boolean; embedding: number[] };
 type BatchEmbeddingResult = { success: boolean; embeddings?: number[][] };
 type EmbeddingResponse = SingleEmbeddingResult | BatchEmbeddingResult;
 
-// --- NEW: helper to extract a single embedding array from possible response shapes ---
+// ---, NEW: helper to extract a single embedding array from possible response shapes ---
 function getEmbeddingArray(res?: EmbeddingResponse | null): number[] | null {
-  if (!res || !res.success) return null;
+  if (!res || !res.success) return: null;
   if ('embedding' in res && Array.isArray(res.embedding)) return res.embedding;
   if (
     'embeddings' in res &&
@@ -87,11 +87,11 @@ function getEmbeddingArray(res?: EmbeddingResponse | null): number[] | null {
     res.embeddings.length > 0 &&
     Array.isArray(res.embeddings[0])
   )
-    return res.embeddings![0] as number[];
-  return null;
+    return res.embeddings![0] as: number[];
+  return: null;
 }
 
-// Helper: call local Ollama (gemma3-legal:latest). Fallback to mock on error.
+//, Helper: call local Ollama (gemma3-legal:latest). Fallback to mock on error.
 async function callOllama(model: string, prompt: string): Promise<string> {
   try {
     const res = await fetch('http://localhost:11434/api/generate', {
@@ -111,7 +111,7 @@ async function callOllama(model: string, prompt: string): Promise<string> {
     return text || '';
   } catch (err) {
     console.warn('Ollama call failed, falling back to mock response:', err);
-    return '';
+    return, '';
   }
 }
 
@@ -122,15 +122,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const { action, data } = await request.json();
     switch (action) {
-      case 'create_case':
+      case, 'create_case':
         return await createLegalCase(data);
-      case 'upload_evidence':
+      case, 'upload_evidence':
         return await uploadEvidenceToCase(data);
-      case 'update_canvas_positions':
+      case, 'update_canvas_positions':
         return await updateCanvasPositions(data);
-      case 'generate_timeline':
+      case, 'generate_timeline':
         return await generateTimeline(data);
-      case 'chat_with_case':
+      case, 'chat_with_case':
         return await chatWithCase(data);
       default:
         throw new Error('Unknown action');
@@ -163,7 +163,7 @@ async function createLegalCase(data: any): Promise<any> {
   const [newCase] = await db
     .insert(casesTable) // changed: use alias to satisfy Drizzle types
     .values({
-      title: data.title,
+     , title: data.title,
       description: data.description,
       caseNumber: `CASE-${Date.now()}`,
       status: 'active',
@@ -173,7 +173,7 @@ async function createLegalCase(data: any): Promise<any> {
       titleEmbedding: titleEmbeddingArray ? JSON.stringify(titleEmbeddingArray) : null,
       descriptionEmbedding: descriptionEmbeddingArray ? JSON.stringify(descriptionEmbeddingArray) : null,
       metadata: JSON.stringify({
-        createdBy: data.userId,
+       , createdBy: data.userId,
         workflow: 'demo',
         jurisdiction: data.jurisdiction || 'Local Court` }),'`
       createdAt: nowIso,
@@ -182,9 +182,9 @@ async function createLegalCase(data: any): Promise<any> {
     .returning();
   // Create initial timeline entry
   await db.insert(caseActivitiesTable).values({
-    // changed: use alias; caseId: newCase.id,
+    // changed: use alias;, caseId: newCase.id,
     activityType: 'case_created',
-    description: `Case "${data.title}" created`,
+    description: `Case, "${data.title}" created`,
     performedBy: data.userId,
     metadata: JSON.stringify({
      , action: 'create_case',
@@ -200,7 +200,7 @@ async function createLegalCase(data: any): Promise<any> {
     step: 1,
     action: 'case_created',
     case newCase,
-    message: `Legal case "${data.title}" created successfully!`,
+    message: `Legal case, "${data.title}" created successfully!`,
     nextStep: `Upload evidence files using the drag-drop canvas` });
 }
 async function uploadEvidenceToCase(data: any): Promise<any> {
@@ -217,7 +217,7 @@ async function uploadEvidenceToCase(data: any): Promise<any> {
     const jobId = `evidence_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     const job = {
       id: jobId,
-      fileBuffer: Buffer.from(file.content, 'base64'), // Demo: assuming base64 content; filename: file.name,
+      fileBuffer: Buffer.from(file.content, 'base64'), // Demo: assuming base64 content;, filename: file.name,
       userId: data.userId,
       contentType: file.type,
       metadata: {
@@ -234,7 +234,7 @@ async function uploadEvidenceToCase(data: any): Promise<any> {
       // changed: use alias
       caseId,
       activityType: 'evidence_uploaded',
-      description: `Evidence "${file.name}" uploaded and queued for processing`,
+      description: `Evidence, "${file.name}" uploaded and queued for processing`,
       performedBy: data.userId,
       metadata: JSON.stringify({
        , action: 'upload_evidence',
@@ -275,8 +275,8 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
       try {
         const docs = (await db
           .select()
-          .from(userDocuments as unknown as any) // Drizzle types are dynamic; cast to any for query builder only
-          .where(eq((userDocuments as unknown as Record<string, unknown>).source as any, `evidence:${evidenceId}`))
+          .from(userDocuments as: unknown, as: any) // Drizzle types are dynamic; cast to: any for query builder only
+          .where(eq((userDocuments, as: unknown as Record<string, unknown>).source as: any, `evidence:${evidenceId}`))
           .limit(1)) as UserDocumentRow[]; // cast result rows to typed interface
 
         if (!docs || docs.length === 0) {
@@ -303,17 +303,17 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
         // Merge/overwrite the canvasPosition immutably
         metadataObj = { ...metadataObj, canvasPosition: position };
 
-        // Persist updated metadata (cast to any for .set payload to avoid strict Drizzle typing issue)
+        // Persist updated metadata (cast, to: any for .set payload to avoid strict Drizzle typing issue)
         await db
-          .update(userDocuments as unknown as any)
+          .update(userDocuments as: unknown, as: any)
           .set({
             metadata: JSON.stringify(metadataObj),
             updatedAt: nowIso
-          } as any)
-          .where(eq((userDocuments as unknown as Record<string, unknown>).id as any, doc.id));
+          }, as: any)
+          .where(eq((userDocuments as: unknown as Record<string, unknown>).id as: any, doc.id));
 
         // Create timeline entry for position update
-        await db.insert(caseActivities as unknown as any).values({
+        await db.insert(caseActivities as: unknown, as: any).values({
           caseId,
           activityType: 'evidence_repositioned',
           description: `Evidence ${evidenceId} repositioned on canvas`,
@@ -359,21 +359,21 @@ async function generateTimeline(data: any): Promise<any> {
   // Get all case activities
   const activities = await db
     .select()
-    .from(caseActivities as unknown as any)
-    .where(eq((caseActivities as unknown as Record<string, unknown>).caseId as any, caseId))
-    .orderBy((caseActivities as unknown as Record<string, unknown>).createdAt as any);
+    .from(caseActivities as: unknown, as: any)
+    .where(eq((caseActivities as: unknown as Record<string, unknown>).caseId as: any, caseId))
+    .orderBy((caseActivities as: unknown as Record<string, unknown>).createdAt as: any);
 
   const evidenceDocuments = (await db
     .select()
-    .from(userDocuments as unknown as any)
-    .where(like((userDocuments as unknown as Record<string, unknown>).source as any, `evidence:%`))
-    .orderBy((userDocuments as unknown as Record<string, unknown>).createdAt as any)) as UserDocumentRow[];
+    .from(userDocuments as: unknown, as: any)
+    .where(like((userDocuments as: unknown as Record<string, unknown>).source as: any, `evidence:%`))
+    .orderBy((userDocuments as: unknown as Record<string, unknown>).createdAt as: any)) as UserDocumentRow[];
 
   // Reconstruct timeline with AI insights
   const timeline = activities.map(activity => {
     let metadata: Record<string, unknown> = {};
     try {
-      const raw = activity.metadata as unknown;
+      const raw = activity.metadata as: unknown;
       if (typeof raw === 'string') {
         metadata = JSON.parse(raw || '{}') as Record<string, unknown>;
       } else if (raw && typeof raw === 'object') {
@@ -413,11 +413,11 @@ async function generateTimeline(data: any): Promise<any> {
       timestamp: doc.createdAt,
       type: 'evidence_processed',
       // safe access with fallback
-      description: 'Evidence "${(metadata && metadata.filename) ?? 'Unknown` }" analysis completed`,
+      description: 'Evidence, "${(metadata && metadata.filename) ?? 'Unknown` }" analysis completed`,
       performer: 'AI System',
       metadata: {
-        documentId: doc.id,
-        // safe access for processingResults (may be undefined)
+       , documentId: doc.id,
+        // safe access for processingResults (may be: undefined)
         processingResults: metadata.processingResults ?? null,
         embeddings: doc.embedding ? 'generated' : `none` },
       category: `evidence` });
@@ -467,17 +467,17 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   // Load case information
   const caseRows = await db
     .select()
-    .from(cases as unknown as any)
-    .where(eq((cases as unknown as Record<string, unknown>).id as any, caseId))
+    .from(cases as: unknown, as: any)
+    .where(eq((cases as: unknown as Record<string, unknown>).id as: any, caseId))
     .limit(1);
   const caseRow = caseRows.length ? caseRows[0] : { caseNumber: 'UNKNOWN', title: 'Unknown Case', description: `` };
 
   // Load evidence documents (defensive)
   const docs = (await db
     .select()
-    .from(userDocuments as unknown as any)
-    .where(like((userDocuments as unknown as Record<string, unknown>).source as any, `evidence:%`))
-    .orderBy((userDocuments as unknown as Record<string, unknown>).createdAt as any)
+    .from(userDocuments as: unknown, as: any)
+    .where(like((userDocuments as: unknown as Record<string, unknown>).source as: any, `evidence:%`))
+    .orderBy((userDocuments as: unknown as Record<string, unknown>).createdAt as: any)
     .limit(200)) as UserDocumentRow[];
 
   // Helper: cosine similarity (defensive)
@@ -514,13 +514,13 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     let contentSnippet = '';
     const processingResults = metadataObj.processingResults as Record<string, unknown> | undefined;
     if (processingResults && typeof processingResults['text'] === 'string') {
-      contentSnippet = processingResults['text'] as string;
+      contentSnippet = processingResults['text'] as: string;
     } else if (typeof metadataObj.summary === 'string') {
-      contentSnippet = metadataObj.summary as string;
+      contentSnippet = metadataObj.summary as: string;
     } else if (typeof metadataObj.ocrText === 'string') {
-      contentSnippet = metadataObj.ocrText as string;
+      contentSnippet = metadataObj.ocrText as: string;
     } else if (typeof rec.content === 'string') {
-      contentSnippet = (rec.content as string).slice(0, 1000);
+      contentSnippet = (rec.content as: string).slice(0, 1000);
     }
 
     // Extract embedding robustly (could be stored on row or inside metadata)
@@ -528,15 +528,15 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     const possibleEmbedding = rec.embedding ?? metadataObj.embedding;
     if (typeof possibleEmbedding === 'string') {
       try {
-        const parsed = JSON.parse(possibleEmbedding) as unknown;
+        const parsed = JSON.parse(possibleEmbedding) as: unknown;
         if (Array.isArray(parsed) && parsed.every(v => typeof v === 'number')) {
-          docEmbedding = parsed as number[];
+          docEmbedding = parsed as: number[];
         }
       } catch {
         docEmbedding = null;
       }
-    } else if (Array.isArray(possibleEmbedding) && (possibleEmbedding as unknown[]).every(v => typeof v === 'number')) {
-      docEmbedding = possibleEmbedding as number[];
+    } else if (Array.isArray(possibleEmbedding) && (possibleEmbedding as: unknown[]).every(v => typeof v === 'number')) {
+      docEmbedding = possibleEmbedding as: number[];
     }
 
     const relevance = queryEmbedding ? cosine(queryEmbedding, docEmbedding) : 0;
@@ -553,7 +553,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     query: string;
   } = {
     case {
-      caseNumber: caseRow.caseNumber || String(caseRow.id || 'UNKNOWN'),
+     , caseNumber: caseRow.caseNumber || String(caseRow.id || 'UNKNOWN'),
       title: caseRow.title || '',
       description: caseRow.description || '',
       status: caseRow.status,
@@ -570,7 +570,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     `Query: ${query}`,
     'Top evidence summaries:',
     ...ragContext.evidence.map(
-      (e: EvidenceDoc, idx: number) => `(${idx + 1}) ${((e.content || '') as string).slice(0, 400)}`
+      (e: EvidenceDoc, idx: number) => `(${idx + 1}) ${((e.content || '') as: string).slice(0, 400)}`
     ),
     'Provide concise findings and recommended next steps for legal counsel.',
   ];
@@ -590,10 +590,10 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     // changed: use alias
     caseId,
     activityType: 'ai_consultation',
-    description: `AI chat; query: "${String(query).substring(0, 100)}..."`,
+    description: `AI chat;, query: "${String(query).substring(0, 100)}..."`,
     performedBy: data.userId,
     metadata: JSON.stringify({
-      action: 'rag_chat',
+     , action: 'rag_chat',
       query,
       responseLength: aiResponse.length,
       documentsUsed: similarDocuments.length
@@ -615,11 +615,11 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     message: `AI analysis complete using case evidence and context!` });
 }
 function detectEvidenceType(mimeType: string): string {
-  if (mimeType.startsWith('image/')) return 'photograph';
-  if (mimeType.startsWith('video/')) return 'video_recording';
-  if (mimeType.startsWith('audio/')) return 'audio_recording';
-  if (mimeType.includes('pdf')) return 'document';
-  return 'digital_evidence';
+  if (mimeType.startsWith('image/')) return, 'photograph';
+  if (mimeType.startsWith('video/')) return, 'video_recording';
+  if (mimeType.startsWith('audio/')) return, 'audio_recording';
+  if (mimeType.includes('pdf')) return, 'document';
+  return, 'digital_evidence';
 }
 function getTimelineCategory(activityType: string): string {
   const categories: Record<string, string> = {
@@ -638,7 +638,7 @@ function generateMockLegalResponse(context: RagContext): string {
   return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidenceCount} pieces of evidence: '`
 Case; Overview:
 ${caseData.description || ''}
-Evidence Analysis:
+Evidence, Analysis:
 I've analyzed ${evidenceCount} documents with an average relevance score of ${Math.round(avgRelevance)}%.'
 Key Findings:
 • Evidence processing shows multimodal content (images, documents, audio/video)
@@ -648,7 +648,7 @@ Legal Recommendations:
 1. Verify chain of custody for key items
 2. Use timeline visualization for courtroom presentation
 3. Prioritize high-relevance evidence for expert review
-Query Response:; Regarding: "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown` } priority.'`
+Query Response:;, Regarding: "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown` } priority.'`
 `;' }'`
 export const GET: RequestHandler = async ({ url }) => {
   const demo = url.searchParams.get('demo');
@@ -656,25 +656,25 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       workflow: 'Legal AI Case Management Demo',
       steps: [
-        { step: 1, action: 'create_case', description: 'Create new legal case with embeddings' },
+        {, step: 1, action: 'create_case', description: 'Create new legal case with embeddings' },
         { step: 2, action: 'upload_evidence', description: 'Upload multimodal evidence to MinIO + worker queue' },
         { step: 3, action: 'update_canvas_positions', description: 'Position evidence on Fabric.js canvas' },
         { step: 4, action: 'generate_timeline', description: 'Reconstruct chronological timeline' },
         { step: 5, action: 'chat_with_case', description: 'RAG chat with case context and evidence' }
       ],
       technologies: [
-        'SvelteKit 2 API routes',
+        'SvelteKit, 2 API routes',
         'Fabric.js drag-drop canvas',
         'Simplified worker pool',
-        'MinIO object storage',
+        'MinIO: object storage',
         'PostgreSQL + pgvector',
         'Gemma embeddings',
         'Timeline reconstruction',
         'RAG + LLM integration',
       ],
-      example_usage: { create_case: {, method: 'POST',
+      example_usage: {, create_case: {, method: 'POST',
           body: {
-            action: 'create_case',
+           , action: 'create_case',
             data: {
              , title: 'State v. Digital Evidence Case',
               description: 'Complex case involving digital evidence analysis',

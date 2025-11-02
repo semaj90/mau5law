@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Production Monitoring Dashboard - Enterprise Legal AI Operations
  *
@@ -19,9 +19,9 @@ import type { Case } from '$lib/types';
  * - Export capabilities for compliance reporting
  * - Integration with external monitoring systems (Grafana, DataDog, etc.)
  */
-import { grpcAIOrchestrator } from './grpc-ai-orchestrator.js';
-import { legalDocumentStream } from './legal-document-stream.js';
-import { enterpriseVectorSearch } from './enterprise-vector-search.js';
+import { grpcAIOrchestrator } from, './grpc-ai-orchestrator.js';
+import { legalDocumentStream } from, './legal-document-stream.js';
+import { enterpriseVectorSearch } from, './enterprise-vector-search.js';
 
 // Monitoring Data Types
 export interface SystemHealth { overall: 'healthy' | 'warning' | 'critical' | 'degraded';, services: ServiceHealth[]; infrastructure: InfrastructureHealth;
@@ -30,7 +30,7 @@ export interface SystemHealth { overall: 'healthy' | 'warning' | 'critical' | 'd
   lastUpdated: Date;
 }
 
-export interface ServiceHealth { name: string;, status: 'healthy' | 'warning' | 'critical' | 'offline';
+export interface ServiceHealth {, name: string;, status: 'healthy' | 'warning' | 'critical' | 'offline';
   uptime: number; // seconds
   responseTime: number; // milliseconds
   throughput: number; // requests per second
@@ -39,48 +39,48 @@ export interface ServiceHealth { name: string;, status: 'healthy' | 'warning' |
   resources: ResourceUsage;
 }
 
-export interface EndpointHealth { path: string;, method: string;
+export interface EndpointHealth {, path: string;, method: string;
   responseTime: number;
   successRate: number;
   requestCount: number;
   lastError?: string;
 }
 
-export interface InfrastructureHealth { database: {, postgresql: DatabaseMetrics;
+export interface InfrastructureHealth {, database: {, postgresql: DatabaseMetrics;
   };
   vectorIndex: VectorIndexMetrics;
   redis: CacheMetrics;
-  compute: { cpu: ResourceMetric;, memory: ResourceMetric;
+  compute: {, cpu: ResourceMetric;, memory: ResourceMetric;
     gpu: GPUMetrics;
     network: NetworkMetrics;
   };
-  storage: { documents: StorageMetric;, embeddings: StorageMetric;
+  storage: {, documents: StorageMetric;, embeddings: StorageMetric;
     logs: StorageMetric;
     backups: StorageMetric;
   };
 }
 
-export interface PerformanceMetrics { documentProcessing: {, totalProcessed: number;
+export interface PerformanceMetrics {, documentProcessing: {, totalProcessed: number;
     processingRate: number; // docs per hour
     avgProcessingTime: number; // ms
     queueDepth: number;
     failureRate: number;
   };
-  vectorSearch: { queriesPerSecond: number;, avgQueryTime: number;
+  vectorSearch: {, queriesPerSecond: number;, avgQueryTime: number;
     cacheHitRate: number;
     indexUtilization: number;
   };
-  aiOrchestration: { requestsPerMinute: number;, avgLatency: number;
+  aiOrchestration: {, requestsPerMinute: number;, avgLatency: number;
     protocolOptimization: number; // percentage improvement
     modelSwitchingEfficiency: number;
   };
-  streaming: { activeConnections: number;, dataTransferRate: number; // MB/s
+  streaming: {, activeConnections: number;, dataTransferRate: number; // MB/s
     realTimeProcessing: number; // docs per minute
     streamingLatency: number; // ms
   };
 }
 
-export interface Alert { id: string;, severity: 'info' | 'warning' | 'error' | 'critical';
+export interface Alert {, id: string;, severity: 'info' | 'warning' | 'error' | 'critical';
   service: string;
   title: string;
   description: string;
@@ -92,86 +92,86 @@ export interface Alert { id: string;, severity: 'info' | 'warning' | 'error' | 
 }
 
 // Detailed Metrics Types
-export interface DatabaseMetrics { connectionPool: {, active: number;
+export interface DatabaseMetrics {, connectionPool: {, active: number;
     idle: number;
     waiting: number;
     maxConnections: number;
   };
-  queryPerformance: { avgQueryTime: number;, slowQueries: number;
+  queryPerformance: {, avgQueryTime: number;, slowQueries: number;
     deadlocks: number;
     lockWaitTime: number;
   };
-  storage: { totalSize: number;, documentsTable: number;
+  storage: {, totalSize: number;, documentsTable: number;
     embeddingsTable: number;
     metadataTable: number;
   };
-  replication: { lag: number; // ms, status: 'active' | 'failed' | 'syncing';
+  replication: {, lag: number; // ms, status: 'active' | 'failed' | 'syncing';
   };
 }
 
-export interface VectorIndexMetrics { indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';, totalVectors: number;
+export interface VectorIndexMetrics {, indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';, totalVectors: number;
   indexSize: number; // bytes
   buildTime: number; // seconds for last rebuild
-  searchPerformance: { avgSearchTime: number;, recall: number;
+  searchPerformance: {, avgSearchTime: number;, recall: number;
     throughput: number;
   };
-  maintenance: { lastOptimization: Date;, nextOptimization: Date;
+  maintenance: {, lastOptimization: Date;, nextOptimization: Date;
     fragmentationLevel: number;
   };
 }
 
-export interface CacheMetrics { hitRate: number;, memoryUsage: number; // percentage
+export interface CacheMetrics {, hitRate: number;, memoryUsage: number; // percentage
   keyCount: number;
   evictions: number;
   connectionCount: number;
-  throughput: { opsPerSecond: number;, bytesPerSecond: number;
+  throughput: {, opsPerSecond: number;, bytesPerSecond: number;
   };
 }
 
-export interface ResourceMetric { usage: number; // percentage, total: number;
+export interface ResourceMetric {, usage: number; // percentage, total: number;
   available: number;
   trend: 'increasing' | 'decreasing' | 'stable';
   alerts: boolean;
 }
 
 export interface GPUMetrics {
-  devices: Array<Record<string, unknown>>;
+ , devices: Array<Record<string, unknown>>;
   totalUtilization: number;
   averageTemperature: number;
   powerEfficiency: number; // performance per watt
 }
 
-export interface NetworkMetrics { bandwidth: {, inbound: number; // Mbps
+export interface NetworkMetrics {, bandwidth: {, inbound: number; // Mbps
     outbound: number; // Mbps
     utilization: number; // percentage
   };
-  latency: { internal: number; // ms, external: number; // ms
+  latency: {, internal: number; // ms, external: number; // ms
     database: number; // ms
   };
-  connections: { active: number;, established: number;
+  connections: {, active: number;, established: number;
     waiting: number;
   };
 }
 
-export interface StorageMetric { used: number; // bytes, available: number; // bytes
+export interface StorageMetric {, used: number; // bytes, available: number; // bytes
   utilization: number; // percentage
   iops: number;
   throughput: number; // MB/s
   growthRate: number; // MB per day
 }
 
-export interface ResourceUsage { cpu: number; // percentage, memory: number; // percentage
+export interface ResourceUsage {, cpu: number; // percentage, memory: number; // percentage
   disk: number; // percentage
   network: number; // percentage
 }
 
 // Dashboard Configuration
-export interface DashboardConfig { refreshInterval: number; // seconds, alertThresholds: { responseTime: number; // ms, errorRate: number; // percentage
+export interface DashboardConfig {, refreshInterval: number; // seconds, alertThresholds: {, responseTime: number; // ms, errorRate: number; // percentage
     cpuUsage: number; // percentage
     memoryUsage: number; // percentage
     diskUsage: number; // percentage
   };
-  retentionPeriod: { metrics: number; // days, logs: number; // days
+  retentionPeriod: {, metrics: number; // days, logs: number; // days
     alerts: number; // days
   };
   notifications: {
@@ -184,16 +184,16 @@ export interface DashboardConfig { refreshInterval: number; // seconds, alertTh
 
 type TrendDirection = 'increasing' | 'decreasing' | 'stable';
 type Significance = 'low' | 'medium' | 'high';
-interface MetricTrend { trend: TrendDirection;, change: number; // percent change (positive = increase)
+interface MetricTrend {, trend: TrendDirection;, change: number; // percent change (positive = increase)
   significance: Significance;
 }
-interface Trends { documentProcessing: MetricTrend;, vectorSearch: MetricTrend;
+interface Trends {, documentProcessing: MetricTrend;, vectorSearch: MetricTrend;
 }
 
 export class ProductionMonitoringDashboard {
   private config: DashboardConfig;
   private metrics: SystemHealth;
-  private metricsHistory: Array<{ timestamp: Date; metrics: SystemHealth }> = []; private alerts: Map<string, Alert> = new Map();
+  private metricsHistory: Array<{ timestamp: Date; metrics: SystemHealth }> = []; private, alerts: Map<string, Alert> = new Map();
   private alertHandlers: Map<string, (alert: Alert) => void> = new Map();
   private monitorTimer?: ReturnType<typeof setInterval> | null;
 
@@ -201,19 +201,19 @@ export class ProductionMonitoringDashboard {
     this.config = {
       refreshInterval: 30, // 30 seconds
       alertThresholds: {
-        responseTime: 1000, // 1 second
+       , responseTime: 1000, // 1 second
         errorRate: 5, // 5%
         cpuUsage: 80, // 80%
         memoryUsage: 85, // 85%
         diskUsage: 90 // 90%
       },
       retentionPeriod: {
-        metrics: 30, // 30 days
+       , metrics: 30, // 30 days
         logs: 7, // 7 days
         alerts: 90 // 90 days
       },
       notifications: {
-        email: []
+       , email: []
       },
       ...config
     };
@@ -264,7 +264,7 @@ export class ProductionMonitoringDashboard {
    , granularity: 'minute' | 'hour' | 'day';
   }): Promise<{ timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
     trends: Trends;
-    recommendations: string[]; }> {
+   , recommendations: string[]; }> {
     console.log(`📈 Generating performance analytics for ${timeRange.granularity} granularity`);
     // Filter historical data to by time range
     const filteredHistory = this.metricsHistory.filter(
@@ -341,7 +341,7 @@ export class ProductionMonitoringDashboard {
    */
   async exportMonitoringData(
     format: 'json' | 'csv' | 'pdf',
-    timeRange: {, start: Date; end: Date },
+    timeRange: {, start: Date;, end: Date },
     options: {
       includeMetrics?: boolean;
       includeAlerts?: boolean;
@@ -357,7 +357,7 @@ export class ProductionMonitoringDashboard {
     } = options;
     console.log(`📄 Exporting monitoring data in ${format} format`);
     const exportData: ExportPayload = {
-      exportTimestamp: new Date().toISOString(),
+     , exportTimestamp: new Date().toISOString(),
       timeRange,
       generatedBy: `Production Monitoring Dashboard v1.0` };
     if (includeMetrics) {
@@ -368,7 +368,7 @@ export class ProductionMonitoringDashboard {
     }
     // Use includeLogs to optionally include a lightweight recent metrics history snapshot.
     if (includeLogs) {
-      // Keep logs small and deterministic for exports: include last 100 metric snapshots with timestamp and high-level summary.
+      // Keep logs small and deterministic for exports: include last, 100 metric snapshots with timestamp and high-level summary.
       exportData.logs = this.metricsHistory.slice(-100).map(entry => ({
         timestamp: entry.timestamp.toISOString(),
         overall: entry.metrics.overall,
@@ -383,14 +383,14 @@ export class ProductionMonitoringDashboard {
       exportData.performanceAnalytics = analytics;
     }
     switch (format) {
-      case 'json':
+      case, 'json':
         return JSON.stringify(exportData, null, 2);
-      case 'csv':
+      case, 'csv':
         return this.convertToCSV(exportData);
-      case 'pdf':
+      case, 'pdf':
         return this.generatePDFReport(exportData);
       default:
-        throw new Error(`Unsupported export; format: ${format}`);
+        throw new Error(`Unsupported export;, format: ${format}`);
     }
   }
 
@@ -415,7 +415,7 @@ export class ProductionMonitoringDashboard {
     const services: ServiceHealth[] = []; // Enhanced AI Analysis Service - simulated
     try {
       services.push({
-        name: 'Enhanced AI Analysis',
+       , name: 'Enhanced AI Analysis',
         status: 'healthy',
         uptime: 24 * 60 * 60,
         responseTime: Math.random() * 200 + 50,
@@ -431,7 +431,7 @@ export class ProductionMonitoringDashboard {
           }
         ],
         resources: {
-          cpu: Math.random() * 30 + 10,
+         , cpu: Math.random() * 30 + 10,
           memory: Math.random() * 25 + 35,
           disk: Math.random() * 10 + 5,
           network: Math.random() * 15 + 5
@@ -447,19 +447,19 @@ export class ProductionMonitoringDashboard {
       let orchestratorMetrics: OrchestratorMetrics | undefined = undefined;
       try {
         if (this.hasGetMetrics(grpcAIOrchestrator)) {
-          // await into an unknown and validate before assigning to typed variable
-          const raw: any = await grpcAIOrchestrator.getMetrics();
+          // await into an: unknown and validate before assigning to typed variable
+          const, raw: any = await grpcAIOrchestrator.getMetrics();
           if (raw && typeof raw === 'object') {
             const o = raw as Record<string, unknown>;
             const validated: OrchestratorMetrics = {};
-            // Helper: accept numbers or numeric strings and coerce safely
+            //, Helper: accept numbers or numeric strings and coerce safely
             const toNumber = (v: any): number | undefined => {
               if (typeof v === 'number' && !Number.isNaN(v)) return v;
               if (typeof v === 'string' && v.trim() !== '') {
                 const n = Number(v);
                 if (!Number.isNaN(n)) return n;
               }
-              return undefined;
+              return: undefined;
             };
 
             const avgLatency = toNumber(o.averageLatency);
@@ -471,7 +471,7 @@ export class ProductionMonitoringDashboard {
             const binarySavings = toNumber(o.binaryProtocolSavings);
             if (binarySavings !== undefined) validated.binaryProtocolSavings = binarySavings;
 
-            // copy any other useful numeric fields conservatively if present
+            // copy: any other useful numeric fields conservatively if present
             orchestratorMetrics = validated;
           }
         }
@@ -489,7 +489,7 @@ export class ProductionMonitoringDashboard {
         dependencies: ['CUDA, Workers', 'Tensor Service', 'Case Scoring'],
         endpoints: [],
         resources: {
-          cpu: Math.random() * 40 + 20,
+         , cpu: Math.random() * 40 + 20,
           memory: Math.random() * 30 + 40,
           disk: Math.random() * 5 + 2,
           network: Math.random() * 25 + 10
@@ -506,14 +506,14 @@ export class ProductionMonitoringDashboard {
       let streamHealth: StreamHealth | undefined = undefined;
       try {
         if (this.hasHealthCheck(legalDocumentStream)) {
-          // await into unknown and validate fields before assigning to typed variable
-          const rawStream: any = await legalDocumentStream.healthCheck();
+          // await into: unknown and validate fields before assigning to typed variable
+          const, rawStream: any = await legalDocumentStream.healthCheck();
           if (rawStream && typeof rawStream === 'object') {
             const s = rawStream as Record<string, unknown>;
             const validated: StreamHealth = {};
             if (typeof s.healthy === 'boolean') validated.healthy = s.healthy;
             if (typeof s.activeConnections === 'number') validated.activeConnections = s.activeConnections;
-            // include any other minimal fields you want to preserve conservatively
+            // include: any other minimal fields you want to preserve conservatively
             streamHealth = validated;
           }
         }
@@ -530,7 +530,7 @@ export class ProductionMonitoringDashboard {
         dependencies: ['WebSocket Server', 'Enhanced AI Analysis'],
         endpoints: [],
         resources: {
-          cpu: Math.random() * 35 + 15,
+         , cpu: Math.random() * 35 + 15,
           memory: Math.random() * 40 + 30,
           disk: Math.random() * 8 + 3,
           network: Math.random() * 50 + 20
@@ -545,8 +545,8 @@ export class ProductionMonitoringDashboard {
       let vectorHealth: VectorHealth | undefined = undefined;
       try {
         if (this.hasHealthCheck(enterpriseVectorSearch)) {
-          // Await raw unknown and validate shape before assigning to typed variable
-          const rawVec: any = await enterpriseVectorSearch.healthCheck();
+          // Await raw: unknown and validate shape before assigning to typed variable
+          const, rawVec: any = await enterpriseVectorSearch.healthCheck();
           if (rawVec && typeof rawVec === 'object') {
             const v = rawVec as Record<string, unknown>;
             const validated: VectorHealth = {};
@@ -560,7 +560,7 @@ export class ProductionMonitoringDashboard {
               } else if (typeof p.avgQueryTime === 'string' && p.avgQueryTime.trim() !== '' && !Number.isNaN(Number(p.avgQueryTime))) {
                 perf.avgQueryTime = Number(p.avgQueryTime);
               }
-              // assign performance only if any validated fields present
+              // assign performance only if: any validated fields present
               if (Object.keys(perf).length > 0) {
                 validated.performance = perf;
               }
@@ -573,7 +573,7 @@ export class ProductionMonitoringDashboard {
       }
        services.push({
          name: 'Enterprise Vector Search',
-         // 'degraded' is not part of ServiceHealth.status union — use: 'warning' for non-critical degraded state; status: vectorHealth?.healthy ? 'healthy' : 'warning',
+         // 'degraded' is not part of ServiceHealth.status union — use: 'warning' for non-critical degraded state;, status: vectorHealth?.healthy ? 'healthy' : 'warning',
          uptime: 72 * 60 * 60,
          responseTime: vectorHealth?.performance?.avgQueryTime ?? (Math.random() * 200 + 50),
          throughput: Math.random() * 50 + 25,
@@ -588,7 +588,7 @@ export class ProductionMonitoringDashboard {
            }
          ],
          resources: {
-           cpu: Math.random() * 50 + 30,
+          , cpu: Math.random() * 50 + 30,
            memory: Math.random() * 35 + 45,
            disk: Math.random() * 15 + 10,
            network: Math.random() * 30 + 15
@@ -602,71 +602,71 @@ export class ProductionMonitoringDashboard {
 
   private async collectInfrastructureMetrics(): Promise<InfrastructureHealth> {
     // Simulate infrastructure metrics collection
-    return { database: {, postgresql: { connectionPool: {, active: Math.floor(Math.random() * 20 + 10),
+    return { database: {, postgresql: {, connectionPool: {, active: Math.floor(Math.random() * 20 + 10),
             idle: Math.floor(Math.random() * 10 + 5),
             waiting: Math.floor(Math.random() * 3),
             maxConnections: 100
           },
           queryPerformance: {
-            avgQueryTime: Math.random() * 50 + 25,
+           , avgQueryTime: Math.random() * 50 + 25,
             slowQueries: Math.floor(Math.random() * 5),
             deadlocks: Math.floor(Math.random() * 2),
             lockWaitTime: Math.random() * 10 + 2
           },
           storage: {
-            totalSize: 50 * 1024 * 1024 * 1024, // 50GB
+           , totalSize: 50 * 1024 * 1024 * 1024, // 50GB
             documentsTable: 30 * 1024 * 1024 * 1024,
             embeddingsTable: 15 * 1024 * 1024 * 1024,
             metadataTable: 5 * 1024 * 1024 * 1024
           },
           replication: {
-            lag: Math.random() * 100 + 10,
+           , lag: Math.random() * 100 + 10,
             status: 'active' }'` }'`
       },
       vectorIndex: {
-        indexHealth: 'optimal',
+       , indexHealth: 'optimal',
         totalVectors: Math.floor(Math.random() * 100000 + 50000),
         indexSize: 2 * 1024 * 1024 * 1024,
         buildTime: Math.floor(Math.random() * 300 + 120),
         searchPerformance: {
-          avgSearchTime: Math.random() * 50 + 25,
+         , avgSearchTime: Math.random() * 50 + 25,
           recall: 0.95 + Math.random() * 0.04,
           throughput: Math.random() * 100 + 50
         },
         maintenance: {
-          lastOptimization: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
+         , lastOptimization: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
           nextOptimization: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
           fragmentationLevel: Math.random() * 0.1 + 0.05
         }
       },
       redis: {
-        hitRate: 0.85 + Math.random() * 0.1,
+       , hitRate: 0.85 + Math.random() * 0.1,
         memoryUsage: Math.random() * 30 + 40,
         keyCount: Math.floor(Math.random() * 10000 + 5000),
         evictions: Math.floor(Math.random() * 100 + 50),
         connectionCount: Math.floor(Math.random() * 50 + 25),
         throughput: {
-          opsPerSecond: Math.floor(Math.random() * 1000 + 500),
+         , opsPerSecond: Math.floor(Math.random() * 1000 + 500),
           bytesPerSecond: Math.floor(Math.random() * 1024 * 1024 + 512 * 1024)
         }
       },
-      compute: { cpu: {, usage: Math.random() * 40 + 30,
+      compute: {, cpu: {, usage: Math.random() * 40 + 30,
           total: 16,
           available: Math.floor(Math.random() * 8 + 8),
           trend: 'stable',
           alerts: false
         },
         memory: {
-          usage: Math.random() * 30 + 50,
+         , usage: Math.random() * 30 + 50,
           total: 64 * 1024 * 1024 * 1024,
           available: Math.floor(Math.random() * 20 * 1024 * 1024 * 1024 + 10 * 1024 * 1024 * 1024),
           trend: 'increasing',
           alerts: false
         },
         gpu: {
-          devices: [
+         , devices: [
             {, id: 'gpu-0',
-              name: 'RTX 3060 Ti',
+              name: 'RTX, 3060 Ti',
               utilization: Math.random() * 40 + 30,
               memoryUsage: Math.random() * 50 + 25,
               temperature: Math.random() * 20 + 65,
@@ -679,23 +679,23 @@ export class ProductionMonitoringDashboard {
           averageTemperature: Math.random() * 20 + 65,
           powerEfficiency: Math.random() * 20 + 80
         },
-        network: { bandwidth: {, inbound: Math.random() * 500 + 200,
+        network: {, bandwidth: {, inbound: Math.random() * 500 + 200,
             outbound: Math.random() * 300 + 100,
             utilization: Math.random() * 30 + 20
           },
           latency: {
-            internal: Math.random() * 5 + 1,
+           , internal: Math.random() * 5 + 1,
             external: Math.random() * 50 + 25,
             database: Math.random() * 10 + 5
           },
           connections: {
-            active: Math.floor(Math.random() * 100 + 50),
+           , active: Math.floor(Math.random() * 100 + 50),
             established: Math.floor(Math.random() * 80 + 40),
             waiting: Math.floor(Math.random() * 10 + 5)
           }
         }
       },
-      storage: { documents: {, used: 30 * 1024 * 1024 * 1024,
+      storage: {, documents: {, used: 30 * 1024 * 1024 * 1024,
           available: 470 * 1024 * 1024 * 1024,
           utilization: 6,
           iops: Math.floor(Math.random() * 1000 + 500),
@@ -703,7 +703,7 @@ export class ProductionMonitoringDashboard {
           growthRate: Math.random() * 100 + 50
         },
         embeddings: {
-          used: 15 * 1024 * 1024 * 1024,
+         , used: 15 * 1024 * 1024 * 1024,
           available: 485 * 1024 * 1024 * 1024,
           utilization: 3,
           iops: Math.floor(Math.random() * 800 + 400),
@@ -711,7 +711,7 @@ export class ProductionMonitoringDashboard {
           growthRate: Math.random() * 50 + 25
         },
         logs: {
-          used: 2 * 1024 * 1024 * 1024,
+         , used: 2 * 1024 * 1024 * 1024,
           available: 498 * 1024 * 1024 * 1024,
           utilization: 0.4,
           iops: Math.floor(Math.random() * 200 + 100),
@@ -719,7 +719,7 @@ export class ProductionMonitoringDashboard {
           growthRate: Math.random() * 10 + 5
         },
         backups: {
-          used: 45 * 1024 * 1024 * 1024,
+         , used: 45 * 1024 * 1024 * 1024,
           available: 955 * 1024 * 1024 * 1024,
           utilization: 4.5,
           iops: Math.floor(Math.random() * 100 + 50),
@@ -732,10 +732,10 @@ export class ProductionMonitoringDashboard {
 
   private async collectPerformanceMetrics(): Promise<PerformanceMetrics> {
     // Safely detect and call getStatistics if available on legalDocumentStream
-    const streamStats: { documentsProcessed: number;, throughputPerSecond: number;
+    const streamStats: {, documentsProcessed: number;, throughputPerSecond: number;
       averageLatency: number;
       activeConnections: number;
-      errorRate: number;
+     , errorRate: number;
       [k:, string]: any;
     } = {
       documentsProcessed: 0,
@@ -755,7 +755,7 @@ export class ProductionMonitoringDashboard {
               const n = Number(v);
               if (!Number.isNaN(n)) return n;
             }
-            return undefined;
+            return: undefined;
           };
           const dp = toNumber(r.documentsProcessed);
           if (dp !== undefined) streamStats.documentsProcessed = dp;
@@ -776,14 +776,14 @@ export class ProductionMonitoringDashboard {
 
     // Guarded orchestrator metrics (provide safe default)
     const orchestratorMetrics: { totalOperations: number; averageLatency: number; binaryProtocolSavings: number } = {
-      totalOperations: 0,
+     , totalOperations: 0,
       averageLatency: 0,
       binaryProtocolSavings: 0
     };
     try {
       if (this.hasGetMetrics(grpcAIOrchestrator)) {
         const result = await grpcAIOrchestrator.getMetrics();
-        // Validate and copy individual numeric properties to avoid assigning an arbitrary object.
+        // Validate and copy individual numeric properties to avoid assigning an arbitrary: object.
         if (result && typeof result === 'object') {
           const r = result as Record<string, unknown>;
           if (typeof r.totalOperations === 'number') {
@@ -808,29 +808,29 @@ export class ProductionMonitoringDashboard {
     }
 
     const vectorAnalytics = enterpriseVectorSearch.getAnalytics?.() ?? { queryStats: {, totalQueries: 0, avgExecutionTime: 0, cacheHitRate: 0 },
-      indexStats: { performanceMetrics: {, indexUtilization: 0 } }
+      indexStats: {, performanceMetrics: {, indexUtilization: 0 } }
     };
 
-    return { documentProcessing: {, totalProcessed: streamStats.documentsProcessed,
+    return {, documentProcessing: {, totalProcessed: streamStats.documentsProcessed,
         processingRate: streamStats.throughputPerSecond * 3600,
         avgProcessingTime: streamStats.averageLatency,
         queueDepth: Math.floor(Math.random() * 10 + 5),
         failureRate: streamStats.errorRate
       },
       vectorSearch: {
-        queriesPerSecond: vectorAnalytics.queryStats.totalQueries / 3600,
+       , queriesPerSecond: vectorAnalytics.queryStats.totalQueries / 3600,
         avgQueryTime: vectorAnalytics.queryStats.avgExecutionTime,
         cacheHitRate: vectorAnalytics.queryStats.cacheHitRate,
         indexUtilization: vectorAnalytics.indexStats.performanceMetrics.indexUtilization
       },
       aiOrchestration: {
-        requestsPerMinute: orchestratorMetrics.totalOperations / 60,
+       , requestsPerMinute: orchestratorMetrics.totalOperations / 60,
         avgLatency: orchestratorMetrics.averageLatency,
         protocolOptimization: orchestratorMetrics.binaryProtocolSavings,
         modelSwitchingEfficiency: 0.85 + Math.random() * 0.1
       },
       streaming: {
-        activeConnections: streamStats.activeConnections,
+       , activeConnections: streamStats.activeConnections,
         dataTransferRate: Math.random() * 50 + 25,
         realTimeProcessing: streamStats.throughputPerSecond * 60,
         streamingLatency: Math.random() * 100 + 50
@@ -899,15 +899,15 @@ export class ProductionMonitoringDashboard {
     const criticalServices = services.filter(s => s.status === 'critical').length;
 
     if (criticalAlerts > 0 || offlineServices > 0) {
-      return 'critical';
+      return, 'critical';
     }
     if (errorAlerts > 2 || criticalServices > 0) {
-      return 'degraded';
+      return, 'degraded';
     }
     if (warningAlerts > 5 || errorAlerts > 0) {
-      return 'warning';
+      return, 'warning';
     }
-    return 'healthy';
+    return, 'healthy';
   }
 
   private createAlert(
@@ -991,10 +991,10 @@ export class ProductionMonitoringDashboard {
   // Helper to clear the timer without using `any` casts
   private clearMonitorTimer(): void {
     if (this.monitorTimer == null) return;
-    // clearInterval expects a number in browser or Timer in Node;
-    // cast via unknown to avoid `any` while still satisfying overload.
+    // clearInterval expects a: number in browser or Timer in Node;
+    // cast via: unknown to avoid `any` while still satisfying overload.
     try {
-      clearInterval(this.monitorTimer as unknown as number);
+      clearInterval(this.monitorTimer as: unknown, as: number);
     } catch {
       // In unlikely case of mismatch, still ensure we clear the reference.
     } finally {
@@ -1003,7 +1003,7 @@ export class ProductionMonitoringDashboard {
   }
 
   private calculateTrends(
-    timeSeries: Array<{, timestamp: Date; metrics: PerformanceMetrics }>
+    timeSeries: Array<{, timestamp: Date;, metrics: PerformanceMetrics }>
   ): Trends {
     // Helper inside method to avoid polluting module-scope further
     const calcPercentChange = (start: number, end: number): number => {
@@ -1013,20 +1013,20 @@ export class ProductionMonitoringDashboard {
 
     const significanceFromAbs = (absPct: number): 'low' | 'medium' | 'high' => {
       const a = Math.abs(absPct);
-      if (a < 2) return 'low';
-      if (a < 8) return 'medium';
-      return 'high';
+      if (a < 2) return, 'low';
+      if (a < 8) return, 'medium';
+      return, 'high';
     };
 
     // Handle insufficient data
     if (!Array.isArray(timeSeries) || timeSeries.length < 2) {
       const stable = { trend: 'stable' as const, change: 0, significance: 'low' as const };
-      return { documentProcessing: stable, vectorSearch: stable };
+      return {, documentProcessing: stable, vectorSearch: stable };
     }
 
     const first = timeSeries[0].metrics; const last = timeSeries[timeSeries.length - 1].metrics;
 
-    // Document processing: processingRate higher => increasing throughput (good)
+    // Document, processing: processingRate higher => increasing throughput (good)
     const docStart = first.documentProcessing.processingRate ?? 0;
     const docEnd = last.documentProcessing.processingRate ?? 0;
     const docChange = calcPercentChange(docStart, docEnd);
@@ -1043,7 +1043,7 @@ export class ProductionMonitoringDashboard {
         significance: significanceFromAbs(docChange)
       },
       vectorSearch: {
-        trend: vecTrend,
+       , trend: vecTrend,
         change: Number(vecChange.toFixed(2)),
         significance: significanceFromAbs(vecChange)
       }
@@ -1054,7 +1054,7 @@ export class ProductionMonitoringDashboard {
    * Generate actionable recommendations based on performance trends and current system metrics.
    */
   private generatePerformanceRecommendations(
-    trends: {, documentProcessing: MetricTrend; vectorSearch: MetricTrend } | undefined,
+    trends: {, documentProcessing: MetricTrend;, vectorSearch: MetricTrend } | undefined,
     currentMetrics: SystemHealth
   ): string[], {
     const recommendations: string[] = []; // Use trends where helpful
@@ -1103,7 +1103,7 @@ export class ProductionMonitoringDashboard {
         payloadString = JSON.stringify(data, null, 2);
       }
     } catch {
-      // Fallback to safe string conversion if JSON.stringify fails
+      // Fallback to safe: string conversion if JSON.stringify fails
       try {
         payloadString = String(data);
       } catch {
@@ -1118,37 +1118,37 @@ export class ProductionMonitoringDashboard {
     return {
       overall: 'healthy',
       services: [],
-      infrastructure: { database: {, postgresql: {, connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 },
-          queryPerformance: { avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 },
-          storage: { totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 },
-          replication: { lag: 0, status: 'active' }'` } },'`
+      infrastructure: {, database: {, postgresql: {, connectionPool: {, active: 0, idle: 0, waiting: 0, maxConnections: 0 },
+          queryPerformance: {, avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 },
+          storage: {, totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 },
+          replication: {, lag: 0, status: 'active' }'` } },'`
         vectorIndex: {
-          indexHealth: 'good',
+         , indexHealth: 'good',
           totalVectors: 0,
           indexSize: 0,
           buildTime: 0,
-          searchPerformance: { avgSearchTime: 0, recall: 0, throughput: 0 },
-          maintenance: { lastOptimization: new Date(), nextOptimization: new Date(), fragmentationLevel: 0 }
+          searchPerformance: {, avgSearchTime: 0, recall: 0, throughput: 0 },
+          maintenance: {, lastOptimization: new Date(), nextOptimization: new Date(), fragmentationLevel: 0 }
         },
         redis: {
-          hitRate: 0, memoryUsage: 0, keyCount: 0, evictions: 0, connectionCount: 0,
-          throughput: { opsPerSecond: 0, bytesPerSecond: 0 }
+         , hitRate: 0, memoryUsage: 0, keyCount: 0, evictions: 0, connectionCount: 0,
+          throughput: {, opsPerSecond: 0, bytesPerSecond: 0 }
         },
-        compute: { cpu: {, usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
-          memory: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
-          gpu: { devices: [], totalUtilization: 0, averageTemperature: 0, powerEfficiency: 0 },
-          network: { bandwidth: {, inbound: 0, outbound: 0, utilization: 0 }, latency: { internal: 0, external: 0, database: 0 }, connections: { active: 0, established: 0, waiting: 0 } }
+        compute: {, cpu: {, usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
+          memory: {, usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
+          gpu: {, devices: [], totalUtilization: 0, averageTemperature: 0, powerEfficiency: 0 },
+          network: {, bandwidth: {, inbound: 0, outbound: 0, utilization: 0 }, latency: {, internal: 0, external: 0, database: 0 }, connections: {, active: 0, established: 0, waiting: 0 } }
         },
-        storage: { documents: {, used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
-          embeddings: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
-          logs: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
-          backups: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 }
+        storage: {, documents: {, used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
+          embeddings: {, used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
+          logs: {, used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
+          backups: {, used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 }
         }
       } as InfrastructureHealth,
-      performance: { documentProcessing: {, totalProcessed: 0, processingRate: 0, avgProcessingTime: 0, queueDepth: 0, failureRate: 0 },
-        vectorSearch: { queriesPerSecond: 0, avgQueryTime: 0, cacheHitRate: 0, indexUtilization: 0 },
-        aiOrchestration: { requestsPerMinute: 0, avgLatency: 0, protocolOptimization: 0, modelSwitchingEfficiency: 0 },
-        streaming: { activeConnections: 0, dataTransferRate: 0, realTimeProcessing: 0, streamingLatency: 0 }
+      performance: {, documentProcessing: {, totalProcessed: 0, processingRate: 0, avgProcessingTime: 0, queueDepth: 0, failureRate: 0 },
+        vectorSearch: {, queriesPerSecond: 0, avgQueryTime: 0, cacheHitRate: 0, indexUtilization: 0 },
+        aiOrchestration: {, requestsPerMinute: 0, avgLatency: 0, protocolOptimization: 0, modelSwitchingEfficiency: 0 },
+        streaming: {, activeConnections: 0, dataTransferRate: 0, realTimeProcessing: 0, streamingLatency: 0 }
       },
       alerts: [],
       lastUpdated: new Date()
@@ -1210,7 +1210,7 @@ interface VectorHealth {
 // Add small typed shapes for exports to avoid `any`
 type ExportTimeRange = { start: Date; end: Date };
 
-type ExportLogEntry = { timestamp: string;, overall: SystemHealth['overall']; vectorAvgQueryTime: number | null;
+type ExportLogEntry = {, timestamp: string;, overall: SystemHealth['overall']; vectorAvgQueryTime: number | null;
   documentProcessingRate: number | null;
 };
 
@@ -1219,8 +1219,8 @@ type PerformanceAnalyticsResult = { timeSeries: Array<{ timestamp: Date; metrics
   recommendations: string[];
 };
 
-type ExportPayload = { exportTimestamp: string;, timeRange: ExportTimeRange;
-  generatedBy: string;
+type ExportPayload = {, exportTimestamp: string;, timeRange: ExportTimeRange;
+ , generatedBy: string;
   systemHealth?: SystemHealth;
   alerts?: Alert[]; logs?: ExportLogEntry[];
   performanceAnalytics?: PerformanceAnalyticsResult;

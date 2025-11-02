@@ -1,30 +1,30 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // src/routes/api/cases/[id]/analyze/+server.ts
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/unified-client';
-import { legalCases, evidence, documentMetadata } from '$lib/server/db/schema-unified';
-import { eq, sql } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/db/unified-client';
+import { legalCases, evidence, documentMetadata } from, '$lib/server/db/schema-unified';
+import { eq, sql } from, 'drizzle-orm';
 
 interface AnalysisResult { caseId: string;, summary: string;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   keyFindings: string[];
   recommendations: string[];
-  similarCases: Array<{ id: string;, title: string;
+  similarCases: Array<{, id: string;, title: string;
     similarity: number;
   }>;
   complianceStatus: 'compliant' | 'non-compliant' | 'needs-review';
-  timeline: Array<{ event: string;, date: string;
+  timeline: Array<{, event: string;, date: string;
     importance: 'low' | 'medium' | 'high';
   }>;
 }
 
-interface SimilarCaseRow { id: string;, title: string;
-  similarity: number;
+interface SimilarCaseRow {, id: string;, title: string;
+ , similarity: number;
 }
 
 // -------------------- new helpers --------------------
-function getOllamaEndpoint(): { url: string; embedModel: string } {
+function getOllamaEndpoint(): { url: string;, embedModel: string } {
   // centralize endpoint resolution, prefer Docker service name then fallback to localhost
   const url = process.env.OLLAMA_URL || 'http://localhost:11434';
   const embedModel = process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
@@ -49,24 +49,24 @@ async function embedWithOllama(text: string | string[]): Promise<number[] | null
         continue;
       }
       const body = await res.json();
-      // handle common response shapes: { embedding: [...] } or { data: [{, embedding: [...] }] } or { embeddings: [...] }
+      // handle common response shapes: { embedding: [...] } or {, data: [{, embedding: [...] }] } or {, embeddings: [...] }
       if (Array.isArray(body.embedding)) return body.embedding;
       if (Array.isArray(body.embeddings) && Array.isArray(body.embeddings[0])) return body.embeddings[0];
       if (Array.isArray(body.data) && body.data[0] && Array.isArray(body.data[0].embedding))
         return body.data[0].embedding;
       // fallback: if the API returned a flat array
-      if (Array.isArray(body) && typeof body[0] === 'number') return body as number[];
+      if (Array.isArray(body) && typeof body[0] === 'number') return body as: number[];
     } catch (err) {
       // ignore and try next path
       continue;
     }
   }
   console.error('Ollama embedding failed for provided text');
-  return null;
+  return: null;
 }
 // -------------------- end helpers --------------------
 
-export const POST: RequestHandler = async ({ params }) => {
+export const, POST: RequestHandler = async ({ params }) => {
   const caseId = params.caseId;
   if (!caseId) {
     return json({ error: 'Case ID is required' }, { status: 400 });
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ params }) => {
     //   Status: ${case_.status}
     //   Evidence Count: ${evidenceData.length}
     //   Document Count: ${documentsWithEmbeddings.length}
-    //   Evidence Summary: ${evidenceData.map(e => e.title).join(', ')}
+    //   Evidence, Summary: ${evidenceData.map(e => e.title).join(', ')}
     //   Provide a comprehensive legal analysis including:
     //   1. Risk assessment (low/medium/high/critical)
     //   2. Key legal findings
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ params }) => {
       // prefer stored embedding
       let queryEmbedding: number[] | null | undefined = documentsWithEmbeddings[0].contentEmbedding;
       if (!queryEmbedding) {
-        // build a short context string to embed
+        // build a short context: string to embed
         const docText = (
           documentsWithEmbeddings[0].text ||
           documentsWithEmbeddings[0].title ||
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ params }) => {
 					WHERE lc.id != ${caseId}
 						AND dm.content_embedding IS NOT NULL
 					ORDER BY similarity DESC
-					LIMIT 5
+					LIMIT, 5
 				`);`
         similarCases = (similarityResults as SimilarCaseRow[]).map(row => ({
           id: row.id,

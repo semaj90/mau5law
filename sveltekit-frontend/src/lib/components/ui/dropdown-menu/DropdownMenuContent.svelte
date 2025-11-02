@@ -1,9 +1,9 @@
 <script, lang="ts">
 
-  import { onMount } from 'svelte';
-  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-  import { cn } from '$lib/utils';
-  // Use slot instead of a: 'children' prop; avoid exporting: 'class' (reserved) — use className
+  import { onMount } from, 'svelte';
+  import { getBitsNamespace } from, '$lib/utils/bits-ui-adapter';
+  import { cn } from, '$lib/utils';
+  // Use slot instead of a: 'children' prop; avoid, exporting: 'class' (reserved) — use className
   const { className = '' } = $props()
   const { side } = $props<{ side: 'top' | 'right' | 'bottom' | 'left' }>()
   const { align } = $props<{ align: 'start' | 'center' | 'end' }>()
@@ -31,7 +31,7 @@
       const ns = await getBitsNamespace();
       ContentComponent = ns?.DropdownMenuContent ?? ns?.DropdownMenu?.Content ?? ns?.DropdownMenu ?? ns;
     } catch (err) {
-      // Fail gracefully: leave ContentComponent null so nothing renders
+      // Fail gracefully: leave, ContentComponent: null so nothing renders
       console.error('Failed to load bits namespace for DropdownMenuContent', err);
     }
   });

@@ -1,8 +1,8 @@
 /// <reference, types="vite/client" />
-import { writable, derived, get } from "svelte/store";
-import { browser } from "$app/environment";
+import { writable, derived, get } from, "svelte/store";
+import { browser } from, "$app/environment";
 /**
- * FIXED Evidence Unified Store - Phase 2 Integration
+ * FIXED Evidence Unified Store - Phase, 2 Integration
  * Addresses critical and compatibility issues
  */
 // Safe import with fallback
@@ -25,13 +25,13 @@ export interface Evidence { id: string;, caseId: string;
   metadata?: { [key: string]: any }
   tags?: string[];
   embedding?: number[];
-  location?: { latitude: number;, longitude: number;
+  location?: {, latitude: number;, longitude: number;
     address?: string;
   }
-  classification?: { category: string;, relevance: number;
+  classification?: {, category: string;, relevance: number;
     confidence: number;
   }
-  timeline?: { createdAt: string;, updatedAt: string;
+  timeline?: {, createdAt: string;, updatedAt: string;
     collectedAt?: string;
   }
   analysis?: {
@@ -40,19 +40,19 @@ export interface Evidence { id: string;, caseId: string;
     relatedEvidence?: string[];
   }
 }
-export interface EvidenceStoreState { evidence: Evidence[];, isLoading: boolean;
+export interface EvidenceStoreState {, evidence: Evidence[];, isLoading: boolean;
   error: string | null;
   isConnected: boolean;
 }
 class UnifiedEvidenceStore {
   public store = writable<EvidenceStoreState>({
-    evidence: [],
+   , evidence: [],
     isLoading: false;
    , error: null,
     isConnected: false
   });
   private websocket: WebSocket | null = null;
-  private eventSource: EventSource | null = null;
+  private, eventSource: EventSource | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   constructor() {
@@ -123,13 +123,13 @@ class UnifiedEvidenceStore {
     if (message.channel === "evidence_update") {
       const { type, data } = message.data;
       switch (type) {
-        case 'EVIDENCE_CREATED':
+        case, 'EVIDENCE_CREATED':
           this.store.update((s) => ({
             ...s,
             evidence: [...s.evidence, data]
           });
           break;
-        case 'EVIDENCE_UPDATED':
+        case, 'EVIDENCE_UPDATED':
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.map((e: any) =>
@@ -137,7 +137,7 @@ class UnifiedEvidenceStore {
             )
           });
           break;
-        case 'EVIDENCE_DELETED':
+        case, 'EVIDENCE_DELETED':
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id)

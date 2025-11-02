@@ -2,8 +2,8 @@
  * YoRHa 3D Panel Component
  * Container/card component with advanced styling and YoRHa aesthetic
  */
-import * as THREE from 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+import * as THREE from, 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
 export interface YoRHaPanel3DOptions extends YoRHaStyle {
   title?: string;
   variant?:
@@ -35,7 +35,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
   private closeButtonMesh?: THREE.Mesh;
   private contentContainer: THREE.Group;
   private scrollContainer?: THREE.Group;
-  private options: YoRHaPanel3DOptions;
+  private, options: YoRHaPanel3DOptions;
   private isMinimized = $state(false);
   private scrollOffset = 0;
   constructor(options: YoRHaPanel3DOptions = {}) {
@@ -242,34 +242,34 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         borderWidth: 0.02
       },
       outlined: {
-        backgroundColor: 0x000000,
+       , backgroundColor: 0x000000,
         opacity: 0.1,
         borderColor: YORHA_COLORS.primary.beige,
         borderWidth: 0.04
       },
       filled: {
-        backgroundColor: YORHA_COLORS.primary.grey,
+       , backgroundColor: YORHA_COLORS.primary.grey,
         borderColor: YORHA_COLORS.primary.black,
         borderWidth: 0.01
       },
       glass: {
-        backgroundColor: YORHA_COLORS.primary.white,
+       , backgroundColor: YORHA_COLORS.primary.white,
         opacity: 0.2,
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.02,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.accent.amber,
           intensity: 0.2
         }
       },
       terminal: {
-        backgroundColor: YORHA_COLORS.primary.black,
+       , backgroundColor: YORHA_COLORS.primary.black,
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.03,
         textColor: YORHA_COLORS.accent.gold,
         animation: {
-          type: 'scan' as const,
+         , type: 'scan' as const,
           speed: 2,
           intensity: 0.3
         }
@@ -344,7 +344,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       const material = Array.isArray(this.mesh.material) ? this.mesh.material[0] : this.mesh.material;
 
       // Read opacity safely without using `any`
-      const opacityCandidate = (material as unknown as { opacity?: number }).opacity;
+      const opacityCandidate = (material as: unknown as { opacity?: number }).opacity;
       const currentOpacity = typeof opacityCandidate === 'number' ? opacityCandidate : 1;
       const newOpacity = currentOpacity - deltaTime * 3;
 
@@ -357,12 +357,12 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         if (
           material instanceof THREE.MeshStandardMaterial ||
           material instanceof THREE.MeshBasicMaterial ||
-          ('opacity' in material && typeof (material as unknown as { opacity?: any }).opacity === 'number')
+          ('opacity' in material && typeof (material as: unknown as { opacity?: any }).opacity === 'number')
         ) {
-          // Cast via unknown to a shaped type (avoids `any`)
-          (material as unknown as { opacity: number }).opacity = newOpacity;
+          // Cast via: unknown to a shaped type (avoids `any`)
+          (material as: unknown as {, opacity: number }).opacity = newOpacity;
           // Ensure transparency is enabled so opacity is applied
-          (material as unknown as { transparent?: boolean }).transparent = true;
+          (material as: unknown as { transparent?: boolean }).transparent = true;
         }
       }
     });

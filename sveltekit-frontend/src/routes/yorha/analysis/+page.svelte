@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported import { onMount } from 'svelte'; // Svelte 5 runes are built-in, no import needed import  Card, as CardOriginal  from "$lib/components/ui/Card.svelte"; // named export import  Button  from "$lib/components/ui/Button.svelte"; // named export import { Progress } from '$lib/components/ui/progress'; // Changed to named import from index.ts import * as Lucide from 'lucide-svelte'; // lucide-svelte typing can be inconsistent — cast to any and destructure the icons we use. const { TrendingUp, AlertCircle, Brain, Activity, Database, Clock } = Lucide as any; // Cast Button to `any` to bypass strict type checks for the `class` prop. const ButtonComponent: any = Button; const CardComponent: any = CardOriginal; // Analysis data let analysisData = $state({ caseMetrics: {, total: 12, active: 8, pending: 3, closed: 1, success_rate: 87 }, evidenceAnalysis: {, total_pieces: 247, processed: 203, ai_analyzed: 189, flagged: 24, processing_queue: 15 }, threatAssessment: {, critical: 2, high: 5, medium: 8, low: 12, cleared: 3 }, aiPerformance: {, accuracy: 94.2, processing_speed: 1.3, confidence: 91.8, last_update: '2024-01-22, 14:35:00'
+import type { Case } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from, 'svelte'; // Svelte, 5 runes are built-in, no import needed import  Card, as CardOriginal  from, "$lib/components/ui/Card.svelte"; // named export import  Button  from, "$lib/components/ui/Button.svelte"; // named export import { Progress } from, '$lib/components/ui/progress'; // Changed to named import from index.ts import * as Lucide from, 'lucide-svelte'; // lucide-svelte typing can be inconsistent — cast to: any and destructure the icons we use. const { TrendingUp, AlertCircle, Brain, Activity, Database, Clock } = Lucide as: any; // Cast Button to `any` to bypass strict type checks for the `class` prop. const ButtonComponent: any = Button; const CardComponent: any = CardOriginal; // Analysis data let analysisData = $state({, caseMetrics: {, total: 12, active: 8, pending: 3, closed: 1, success_rate: 87 }, evidenceAnalysis: {, total_pieces: 247, processed: 203, ai_analyzed: 189, flagged: 24, processing_queue: 15 }, threatAssessment: {, critical: 2, high: 5, medium: 8, low: 12, cleared: 3 }, aiPerformance: {, accuracy: 94.2, processing_speed: 1.3, confidence: 91.8, last_update: '2024-01-22, 14:35:00'
     } }); let recentAnalyses = $state([ {, id: 'ANA-001', case_id: 'CASE-2024-087', type: 'Pattern Recognition', status: 'completed', confidence: 94.7, findings: 'Corporate network intrusion patterns identified', timestamp: '2 hours ago'
     }, {
       id: 'ANA-002', case_id: 'CASE-2024-088', type: 'Behavioral Analysis', status: 'processing', confidence: null, findings: 'Analyzing communication patterns...', timestamp: '15 minutes ago'
@@ -20,16 +20,16 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported impo
                           >{analysis.status.toUpperCase()}</span >
                       {/if} </div> </div> <div, class="analysis-findings"> {analysis.findings} </div> <div, class="analysis-footer"> <span, class="analysis-timestamp">{analysis.timestamp}</span> <div, class="bits-btn"> <ButtonComponent, size="sm" variant="secondary">View Details</ButtonComponent>
 </div> </div> </div> {/each} </div> </div> </div> </CardComponent>
-</div> </div> </main> </div> <style> .yorha-interface { display: flex; height: 100vh; background: #2a2a2a; color: #d4af37; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; overflow: hidden; }
+</div> </div> </main> </div> <style> .yorha-interface { display: flex; height: 100vh; background: #2a2a2a;, color: #d4af37; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; overflow: hidden; }
   .yorha-sidebar { width: 200px; background: #1a1a1a; border-right: 1px solid #3a3a3a; display: flex; flex-direction: column; }
-  .yorha-logo { padding: 20px 15px; border-bottom: 1px solid #3a3a3a; }
+  .yorha-logo {, padding: 20px 15px; border-bottom: 1px solid #3a3a3a; }
   .yorha-title, .yorha-subtitle { font-size: 18px; font-weight: bold; color: #d4af37; line-height: 1; }
   .yorha-subtext { font-size: 10px; color: #888; margin-top: 5px; }
   .yorha-nav { flex: 1; padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */ display: flex; flex-direction: column; justify-content: space-between; /* Fixed typo: space-betweenn to space-between */ }
   .nav-section { display: flex; flex-direction: column; gap: 2px; }
   .nav-item { display: flex; align-items: center; padding: 8px 0; /* Removed horizontal padding from item itself */ padding-left: 15px; /* Added explicit left padding for content alignment */ background: none; border: none; color: #888; text-decoration: none; text-align: left; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.2s; justify-content: space-between; /* Fixed typo: space-betweenn to space-between */ }
   .nav-item:hover { background: #2a2a2a; color: #d4af37; }
-  .nav-item.analysis-active { background: #1a2a1a; color: #d4af37; border-left: 3px solid #d4af37; padding-left: 12px; /* Adjust padding to account for 3px border, maintaining 15px content alignment */ }
+  .nav-item.analysis-active { background: #1a2a1a;, color: #d4af37; border-left: 3px solid #d4af37; padding-left: 12px; /* Adjust padding to account for 3px border, maintaining 15px content alignment */ }
   .nav-icon { margin-right: 8px; }
   .nav-count { font-size: 10px; background: #d4af37; color: #000; padding: 1px 6px; border-radius: 2px; }
   .yorha-status { padding: 15px; border-top: 1px solid #3a3a3a; font-size: 10px; color: #666; }
@@ -41,8 +41,8 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported impo
   .analysis-title { font-size: 24px; font-weight: bold; color: #d4af37; margin: 0; }
   .analysis-subtitle { font-size: 12px; color: #888; }
   .analysis-dashboard { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-  .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }:global(.metric-nier-bits-card) { background: #1a1a1a !important; border: 1px solid #3a3a3a !important; color: #d4af37 !important; }:global(.metric-header) { display: flex; align-items: center; gap: 10px; }:global(.metric-icon) { color: #d4af37; width: 20px; height: 20px; }:global(.metric-content) { padding-top: 10px; }
-  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+  .metrics-row {, display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }:global(.metric-nier-bits-card) { background: #1a1a1a !important; border: 1px solid #3a3a3a !important;, color: #d4af37 !important; }:global(.metric-header) { display: flex; align-items: center;, gap: 10px; }:global(.metric-icon) { color: #d4af37; width: 20px;, height: 20px; }:global(.metric-content) { padding-top: 10px; }
+  .metric-grid {, display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
   .metric-item { text-align: center; }
   .metric-number { display: block; font-size: 18px; font-weight: bold; color: #d4af37; margin-bottom: 4px; }
   .metric-number.active { color: #4ade80; }
@@ -50,16 +50,16 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported impo
   .progress-section { display: flex; flex-direction: column; gap: 15px; }
   .progress-item { display: flex; flex-direction: column; gap: 5px; }
   .progress-label { font-size: 11px; color: #ccc; }
-  .threat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .threat-grid {, display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .threat-item { text-align: center; padding: 8px; border: 1px solid #555; border-radius: 4px; }
   .threat-number { display: block; font-size: 16px; font-weight: bold; margin-bottom: 4px; }
   .threat-label { font-size: 10px; }
   .threat-item.critical .threat-number { color: #ef4444; }
   .threat-item.high .threat-number { color: #f97316; }
   .threat-item.medium .threat-number { color: #fbbf24; }
-  .threat-item.low .threat-number { color: #4ade80; }:global(.ai-performance-nier-bits-card),:global(.recent-analyses-nier-bits-card) { background: #1a1a1a !important; border: 1px solid #3a3a3a !important; color: #d4af37 !important; }:global(.ai-performance-content) { display: flex; flex-direction: column; gap: 15px; }
+  .threat-item.low .threat-number {, color: #4ade80; }:global(.ai-performance-nier-bits-card),:global(.recent-analyses-nier-bits-card) { background: #1a1a1a !important; border: 1px solid #3a3a3a !important;, color: #d4af37 !important; }:global(.ai-performance-content) { display: flex; flex-direction: column; gap: 15px; }
   .analyses-content { max-height: 400px; overflow-y: auto; }
-  .performance-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .performance-metrics {, display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .performance-item { text-align: center; }
   .performance-label { font-size: 11px; color: #888; margin-bottom: 5px; }
   .performance-value { font-size: 16px; font-weight: bold; color: #d4af37; margin-bottom: 8px; }
@@ -68,12 +68,12 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported impo
   .analysis-item { padding: 15px; border: 1px solid #3a3a3a; border-radius: 6px; background: #2a2a2a; }
   .analysis-header { display: flex; justify-content: space-between; /* Fixed typo: space-betweenn to space-between */ align-items: center; margin-bottom: 10px; }
   .analysis-basic-info { display: flex; align-items: center; gap: 10px; }
-  .analysis-id { font-size: 10px; color: #666; font-family: 'JetBrains Mono', monospace; }
+  .analysis-id { font-size: 10px;, color: #666; font-family: 'JetBrains Mono', monospace; }
   .analysis-case { font-size: 11px; color: #d4af37; font-weight: bold; }
   .analysis-status { display: flex; align-items: center; gap: 8px; }
   .confidence-score { font-size: 10px; color: #4ade80; }
   .analysis-findings { font-size: 12px; color: #ccc; margin: 10px 0; line-height: 1.4; }
   .analysis-footer { display: flex; justify-content: space-between; /* Fixed typo: space-betweenn to space-between */ align-items: center; margin-top: 10px; }
-  .analysis-timestamp { font-size: 10px; color: #666; }
+  .analysis-timestamp { font-size: 10px;, color: #666; }
 </style>
 

@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /** Minimal mock API sync module — clean and syntactically valid. */
 
 export const mockDataGenerators = {
@@ -8,7 +8,7 @@ export const mockDataGenerators = {
       id: `mock_doc_${Date.now()}_${i}`,
       title: `Mock Document ${i + 1}`,
       content: 'This is mock content.',
-      embedding: Array.from({ length: EMB_DIM }, () => Math.random())
+      embedding: Array.from({, length: EMB_DIM }, () => Math.random())
     }));
   }
 };

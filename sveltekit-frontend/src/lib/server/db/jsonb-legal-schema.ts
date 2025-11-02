@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * JSONB Legal Metadata Schema Optimization
  *
@@ -12,11 +12,11 @@ import type { Document } from '$lib/types';
  * - Optimized query patterns for common operations
  * - Integration with vector embeddings and graph data
  */
-import { sql } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-// import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { z } from 'zod';
+import { sql } from, 'drizzle-orm';
+import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle-orm';
+// import { createInsertSchema, createSelectSchema } from, 'drizzle-zod'
+import { z } from, 'zod';
 // ============================================================================
 // LEGAL METADATA SCHEMA DEFINITIONS
 // ============================================================================
@@ -271,7 +271,7 @@ export class LegalJsonbOperations {
               FROM jsonb_array_elements(metadata->'chainOfCustody') as custody_step
             ) t
             WHERE previous_step IS NOT NULL
-          ) THEN: 'VALID'; ELSE: 'INVALID'
+          ) THEN: 'VALID';, ELSE: 'INVALID'
         END as chain_validity,
         -- Count custody transfers
         jsonb_array_length(metadata->'chainOfCustody') as custody_count,
@@ -329,12 +329,12 @@ export class LegalJsonbOperations {
         CASE
           WHEN similarity_score >= 0.9 THEN: 'VERY_HIGH'
           WHEN similarity_score >= 0.7 THEN: 'HIGH'
-          WHEN similarity_score >= 0.5 THEN: 'MEDIUM'; ELSE: 'LOW'
+          WHEN similarity_score >= 0.5 THEN: 'MEDIUM';, ELSE: 'LOW'
         END as similarity_level
       FROM case_similarities
       WHERE similarity_score >= ${threshold}
       ORDER BY similarity_score DESC
-      LIMIT 20
+      LIMIT, 20
     `;` }
   /**
    * Legal concept extraction and clustering
@@ -368,7 +368,7 @@ export class LegalJsonbOperations {
         CASE
           WHEN frequency >= 5 THEN: 'CORE'
           WHEN frequency >= 3 THEN: 'IMPORTANT'
-          WHEN frequency >= 2 THEN: 'RELEVANT'; ELSE: 'PERIPHERAL'
+          WHEN frequency >= 2 THEN: 'RELEVANT';, ELSE: 'PERIPHERAL'
         END as importance_level
       FROM concept_counts
       ORDER BY frequency DESC, concept

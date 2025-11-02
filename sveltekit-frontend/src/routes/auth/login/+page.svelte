@@ -3,9 +3,9 @@
   Now with NES.css Retro Gaming Modal Option
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { enhance } from '$app/forms';
-  import DemoLoginButton from '$lib/components/auth/DemoLoginButton.svelte';
+  // Svelte, 5 runes are auto-imported
+  import { enhance } from, '$app/forms';
+  import DemoLoginButton from, '$lib/components/auth/DemoLoginButton.svelte';
   interface Props {
     data?: any;
     form?: any;
@@ -20,8 +20,8 @@
   let formError = $state<string | null>(null);
   $effect(() => {
     formError =
-      isFormWithError(form) && typeof (form as any).error === 'string' && (form as any).error.length > 0
-        ? (form as any).error
+      isFormWithError(form) && typeof (form as: any).error === 'string' && (form as: any).error.length > 0
+        ? (form as: any).error
         : null;
   });
 
@@ -74,7 +74,7 @@
             id="email"
             required
             disabled={isLoading}
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
             placeholder="admin@legal-ai.local"
           />
         </div>
@@ -87,7 +87,7 @@
             id="password"
             required
             disabled={isLoading}
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
             placeholder="Enter your password"
           />
         </div>
@@ -107,7 +107,7 @@
           type="button"
           onclick={fillDemoCredentials}
           disabled={isLoading}
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors disabled:opacity-50"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors, disabled:opacity-50"
         >
           Fill Demo Credentials
         </button>
@@ -115,7 +115,7 @@
         <button
           type="submit"
           disabled={isLoading}
-          class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition-colors disabled:opacity-50"
+          class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition-colors, disabled:opacity-50"
         >
           {#if isLoading}
             Signing In...

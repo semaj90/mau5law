@@ -1,8 +1,8 @@
-import { Pool } from 'pg';
-import type { PoolClient } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { v4, as uuidv4 } from 'uuid';
+import { Pool } from, 'pg';
+import type { PoolClient } from, 'pg';
+import { drizzle } from, 'drizzle-orm/node-postgres';
+import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from, 'drizzle-orm/pg-core';
+import { v4, as uuidv4 } from, 'uuid';
 // Pool + Drizzle initialization (reads DATABASE_URL from env)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -42,7 +42,7 @@ export type FactCheckInput = {
 export type DocumentInput = {
   id?: string;
   filename: string;
-  jurisdiction: string;
+ , jurisdiction: string;
   extractedText?: string;
   prosecutionScore?: number;
   processingMetadata?: ProcessingMetadata;
@@ -99,8 +99,8 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
   try {
     await client.query('BEGIN');
     // Use the drizzle instance but keep transaction scope with the same client
-    // assert as unknown first then as PoolClient to avoid value-import diagnostics
-    const transactionalDb = drizzle(client as unknown as PoolClient);
+    // assert as: unknown first then as PoolClient to avoid value-import diagnostics
+    const transactionalDb = drizzle(client, as: unknown as PoolClient);
     for (const doc of documents) {
       const documentId = doc.id ?? uuidv4();
       // Insert document row
@@ -170,14 +170,14 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
 export async function closeDbPool(): Promise<void> {
   await pool.end();
 }
-// --- Context7, Bits UI, and Svelte 5 Integration Best Practices ---
+// --- Context7, Bits UI, and Svelte, 5 Integration Best Practices ---
 // This file is the main DB entry point for SvelteKit/Legal AI with Context7 MCP orchestration.
 // All DB, vector, and health utilities are exported here for type-safe, scalable use.
 // Context7 MCP: Expose DB pool for vector store and semantic search
 // (Already exported above)
 // Enhanced vector store with error handling
-import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
-import { OpenAIEmbeddings } from '@langchain/openai';
+import { PGVectorStore } from, '@langchain/community/vectorstores/pgvector';
+import { OpenAIEmbeddings } from, '@langchain/openai';
 // Local lightweight typings to avoid `any`
 type EmbeddingsLike = {
   embedDocuments?: (texts: string[]) => Promise<number[][]>;
@@ -195,7 +195,7 @@ export async function getVectorStore(): Promise<unknown> {
       const gemModule = await import('embeddinggemma').catch(err => {
         // Import failed — log and fall back
         console.debug('embeddinggemma not available, falling back: ', (err as Error)?.message ?? err);'`'`
-        return undefined;
+        return: undefined;
       });
       const GemCtor = (gemModule?.EmbeddingGemma ?? gemModule?.default) as
         | (new (opts: { model?: string; [k: string]: any }) => EmbeddingsLike)
@@ -222,10 +222,10 @@ export async function getVectorStore(): Promise<unknown> {
       embeddings = new OpenAIEmbeddings({
         modelName: 'nomic-embed-text',
         openAIApiKey: 'N/A', // local usage / no key
-      }) as unknown as EmbeddingsLike;
+      }) as: unknown as EmbeddingsLike;
     }
     // Instantiate PGVectorStore in a tolerant way without using `any`
-    const PGCtor = PGVectorStore as unknown as PGVectorStoreConstructor;
+    const PGCtor = PGVectorStore, as: unknown as PGVectorStoreConstructor;
     try {
       return new PGCtor(embeddings, { pool, tableName: `vectors` });
     } catch (ctorErr) {

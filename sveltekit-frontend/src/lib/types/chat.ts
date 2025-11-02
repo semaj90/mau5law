@@ -1,7 +1,7 @@
 // Chat types for Legal AI platform
 export interface ChatMessage { id: string;, content: string;
   role: 'user' | 'assistant' | 'system';
-  timestamp: string | Date; // was Date -> allow JSON string from server
+  timestamp: string | Date; // was Date -> allow JSON: string from server
   sessionId?: string;
   metadata?: {
     model?: string;
@@ -15,7 +15,7 @@ export interface ChatMessage { id: string;, content: string;
     [key: string]: any;
   };
 }
-export interface ChatSession { id: string;, model: string;
+export interface ChatSession {, id: string;, model: string;
   createdAt: string | Date; // was Date
   updatedAt?: string | Date; // was Date
   messageCount?: number;
@@ -27,11 +27,11 @@ export interface ChatSession { id: string;, model: string;
     [key: string]: any;
   };
 }
-export interface ChatState { messages: ChatMessage[];, currentSession: ChatSession | null;
+export interface ChatState {, messages: ChatMessage[];, currentSession: ChatSession | null;
   isLoading: boolean;
   error: string | null;
 }
-export interface OllamaResponse { model: string;, createdAt: string | Date; // maps from created_at
+export interface OllamaResponse {, model: string;, createdAt: string | Date; // maps from created_at
   response: string;
   done: boolean;
   context?: number[];
@@ -54,6 +54,6 @@ export interface ChatResponse {
   confidence?: number;
   sources?: string[];
   processingTime?: number;
-  model: string;
+ , model: string;
   metadata?: any;
 }

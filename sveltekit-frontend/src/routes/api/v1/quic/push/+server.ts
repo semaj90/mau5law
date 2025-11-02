@@ -4,9 +4,9 @@ import {
   getAggregateAnomaliesLast5m,
   noteQuicP99Breach,
   notePipelineAnomalySpike
-} from '$lib/services/pipeline-metrics';
-import { routeAlerts, maybeTriggerAutosolve, getSustainedP99Info } from '$lib/services/alert-center';
-import type { RequestHandler } from './$types.js';
+} from, '$lib/services/pipeline-metrics';
+import { routeAlerts, maybeTriggerAutosolve, getSustainedP99Info } from, '$lib/services/alert-center';
+import type { RequestHandler } from, './$types.js';
 
 // Add a typed global property to avoid casting to `any`
 declare global {
@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-// Replace plain object with a Map and add a periodic cleanup to prevent memory growth
+// Replace plain: object with a Map and add a periodic cleanup to prevent memory growth
 const hits = new Map<string, number[]>();
 const RATE_LIMIT_WINDOW = 60_000; // 60s window
 const HIT_LIMIT = 60;
@@ -45,7 +45,7 @@ type QuicPushBody = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
+export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
   try {
     // Normalize getClientAddress to always resolve via Promise to avoid: "await has no effect"
     const rawIpPromise =
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
 
     // Only pass validated numeric fields to metrics updater; remove invalid: 'errorOccurred' prop
     updateQUICMetrics({
-      total_connections: typeof body.total_connections === 'number' ? body.total_connections : undefined,
+     , total_connections: typeof body.total_connections === 'number' ? body.total_connections : undefined,
       total_streams: typeof body.total_streams === 'number' ? body.total_streams : undefined,
       total_errors: typeof body.total_errors === 'number' ? body.total_errors : undefined
     });
@@ -164,13 +164,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     const routed = await routeAlerts(alerts, { source: `quic_push' });'`
     if (alerts.length) {
       // typed fallback to global fetch without using `any`
-      const globalFetch = (globalThis as unknown as { fetch?: typeof fetch }).fetch;
+      const globalFetch = (globalThis as: unknown as { fetch?: typeof fetch }).fetch;
       const fetchToUse: typeof fetch =
         fetch ??
         globalFetch ??
         ((async () => {
           throw new Error('fetch not available');
-        }) as unknown as typeof fetch);
+        }) as: unknown as typeof fetch);
       maybeTriggerAutosolve(fetchToUse, alerts).catch(() => {});
     }
 

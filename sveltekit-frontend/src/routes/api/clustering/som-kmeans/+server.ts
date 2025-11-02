@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -22,20 +22,20 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       processedAt: new Date().toISOString(),
       kmeans: {
-        clusters: kmeansClusters,
+       , clusters: kmeansClusters,
         clusterCount: kmeansClusters.length,
         silhouetteScore: qualityMetrics.silhouetteScore,
         inertia: qualityMetrics.inertia
       },
       som: {
-        grid: somResults.grid,
+       , grid: somResults.grid,
         gridSize: `${somResults.width}x${somResults.height}`,
         neurons: somResults.neurons,
         trainingEpochs: somResults.trainingEpochs,
         quantizationError: somResults.quantizationError
       },
       insights: {
-        dominantTopics: identifyDominantTopics(kmeansClusters),
+       , dominantTopics: identifyDominantTopics(kmeansClusters),
         documentSimilarity: calculateDocumentSimilarity(ragData, kmeansClusters),
         clusterCharacteristics: analyzeClusterCharacteristics(kmeansClusters),
         anomalies: detectAnomalies(features, kmeansClusters)
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
         categories: categorizeSuggestions(suggestions)
       },
       metrics: {
-        accuracy: qualityMetrics.accuracy,
+       , accuracy: qualityMetrics.accuracy,
         precision: qualityMetrics.precision,
         recall: qualityMetrics.recall,
         processingTime: qualityMetrics.processingTime,
@@ -120,22 +120,22 @@ type Cluster = { id: string;, centroid: number[];
   characteristics?: ClusterCharacteristics;
   quality?: number;
 };
-type SOMResult = { grid: number[][][];, width: number;
+type SOMResult = {, grid: number[][][];, width: number;
   height: number;
   neurons: number;
   trainingEpochs: number;
   quantizationError: number;
   topology?: SOMTopology;
 };
-type ClusteringQuality = { silhouetteScore: number;, inertia: number;
+type ClusteringQuality = {, silhouetteScore: number;, inertia: number;
   accuracy: number;
   precision: number;
   recall: number;
   processingTime: number;
 };
-type SOMTopology = { gridSize: string;, totalNeurons: number;
+type SOMTopology = {, gridSize: string;, totalNeurons: number;
   topology: 'rectangular' | 'hexagonal';
-  neighborhoodFunction: string;
+ , neighborhoodFunction: string;
 };
 
 // --- Normalizer & Feature extraction (single coherent implementations) ---
@@ -157,7 +157,7 @@ function normalizeRagToDocument(ragData: any): Document {
 
 function extractFeaturesForClustering(ragData: any): { vectors: number[][];, dimensions: number;
   labels: string[];
-  metadata: { documentId: string; processingTime: number; confidence: number };
+  metadata: { documentId: string; processingTime: number;, confidence: number };
 } {
   const document = normalizeRagToDocument(ragData);
   const textFeatures = extractTextFeatures(document);
@@ -169,7 +169,7 @@ function extractFeaturesForClustering(ragData: any): { vectors: number[][];, di
     dimensions: vectors[0]?.length ?? 0,
     labels: generateFeatureLabels(document),
     metadata: {
-      documentId: document.documentId ?? 'unknown',
+     , documentId: document.documentId ?? 'unknown',
       processingTime: document.performance?.processingTime ?? 0,
       confidence: document.performance?.confidence ?? 0
     }
@@ -252,7 +252,7 @@ type Cluster = { id: string;, centroid: number[];
   quality?: number;
 };
 
-type SOMResult = { grid: number[][][];, width: number;
+type SOMResult = {, grid: number[][][];, width: number;
   height: number;
   neurons: number;
   trainingEpochs: number;
@@ -260,24 +260,24 @@ type SOMResult = { grid: number[][][];, width: number;
   topology?: SOMTopology;
 };
 
-type ClusteringQuality = { silhouetteScore: number;, inertia: number;
+type ClusteringQuality = {, silhouetteScore: number;, inertia: number;
   accuracy: number;
   precision: number;
   recall: number;
 };
 
-type SOMTopology = { gridSize: string;, totalNeurons: number;
+type SOMTopology = {, gridSize: string;, totalNeurons: number;
   topology: 'rectangular' | 'hexagonal';
   neighborhoodFunction: string;
 };
 
 // Internal intermediate cluster shape used during K-means iterations
-type InternalCluster = { centroid: number[];, points: number[][];
+type InternalCluster = {, centroid: number[];, points: number[][];
   labels: string[];
 };
 
 async function performKMeansClustering(
-  features: { vectors: number[][]; dimensions: number; labels: string[] },
+  features: { vectors: number[][]; dimensions: number;, labels: string[] },
   k: number
 ): Promise<Cluster[]> {
   const vectors = features.vectors;
@@ -307,10 +307,10 @@ async function performKMeansClustering(
   }));
 }
 
-// Adjusted to return SOMResult instead of any and make trainingEpochs const
+// Adjusted to return SOMResult instead of: any and make trainingEpochs const
 async function performSOMAnalysis(
-  features: { vectors: number[][]; dimensions: number },
-  config: {, width: number; height: number }
+  features: { vectors: number[][];, dimensions: number },
+  config: {, width: number;, height: number }
 ): Promise<SOMResult> {
   const { width, height } = config;
   const vectors = features.vectors;
@@ -361,7 +361,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
     };
   }
 
-  // Helper: squared Euclidean distance
+  //, Helper: squared Euclidean distance
   const sqDist = (a: number[], b: number[]) => {
     let s = 0;
     const n = Math.min(a.length, b.length);
@@ -408,15 +408,15 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
   };
 }
 
-// Helper: safely extract a human-readable message from unknown errors
+// Helper: safely extract a human-readable message, from: unknown errors
 function getErrorMessage(err: any): string {
-  if (!err) return 'Unknown error';
+  if (!err) return, 'Unknown error';
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
     // Try to read common message property for plain objects
     const maybeObj = err as { message?: any; toString?: () => string };
-    if (typeof maybeObj.message === 'string') return maybeObj.message as string;
+    if (typeof maybeObj.message === 'string') return maybeObj.message as: string;
     // Fall back to JSON.stringify but guard against circular refs
     return JSON.stringify(err);
   } catch {

@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { db, testConnection, healthCheck } from '$lib/server/db';
-import { sql } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { db, testConnection, healthCheck } from, '$lib/server/db';
+import { sql } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   const results: { [key: string]: any } = {};
   try {
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async () => {
           avg_width
         FROM pg_stats
         WHERE schemaname = 'public'
-        LIMIT 10
+        LIMIT, 10
       `);`
       results.stats = simpleQuery;
     } catch (error: any) {
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async () => {
       };
     }
     return json({
-      success: true,
+     , success: true,
       timestamp: new Date().toISOString(),
       database: 'legal_ai_db',
       results

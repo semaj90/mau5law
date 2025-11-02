@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Legal AI interface layout with unified navigation
-  import NavBar from '$lib/components/layout/NavBar.svelte';
-  import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+  import NavBar from, '$lib/components/layout/NavBar.svelte';
+  import Sidebar from, '$lib/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
 
   let { children, data }: {  any; data: any } = $props();
 
@@ -34,7 +34,7 @@
 <style>
   .legal-layout {
     min-height: 100vh;
-    background: var(--surface-primary, #0a0a0a);
+   , background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #00ff00);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
@@ -46,13 +46,13 @@
 
   .legal-sidebar {
     width: 280px;
-    background: var(--surface-secondary, #111111);
+   , background: var(--surface-secondary, #111111);
     border-right: 1px solid var(--border-primary, #00ff00);
   }
 
   .legal-main {
     flex: 1;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     overflow-x: auto;
   }
 
@@ -63,7 +63,7 @@
 
     .legal-sidebar {
       width: 100%;
-      height: auto;
+     , height: auto;
       border-right: none;
       border-bottom: 1px solid var(--border-primary, #00ff00);
     }

@@ -1,16 +1,16 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
-import { db } from '$lib/server/database';
-import { sql } from 'drizzle-orm';
-import { testRagDocuments, testRagEmbeddings } from '$lib/server/db/schema-test-rag';
-import { gpuRAGService } from '$lib/services/gpu-rag-service';
-import { QdrantVectorService } from '$lib/server/services';
-import { env } from '$env/dynamic/private';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
+import { db } from, '$lib/server/database';
+import { sql } from, 'drizzle-orm';
+import { testRagDocuments, testRagEmbeddings } from, '$lib/server/db/schema-test-rag';
+import { gpuRAGService } from, '$lib/services/gpu-rag-service';
+import { QdrantVectorService } from, '$lib/server/services';
+import { env } from, '$env/dynamic/private';
 
 // Define the structure for entities extracted by OCR/langextract
 interface OcrExtractedEntities {
-  entities?: Array<Record<string, unknown>>; // Array of extracted entities, each entity is an object
+  entities?: Array<Record<string, unknown>>; // Array of extracted entities, each entity is an: object
   // Add other properties if the OCR service returns them, e.g., 'documentType', 'language', 'summary'
 }
 
@@ -21,11 +21,11 @@ interface OcrExtractedEntities {
  */
 
 interface UploadResult {
-  success: boolean;
+ , success: boolean;
   documentId?: string;
   filename?: string;
   textExtracted?: string;
-  entities?: OcrExtractedEntities; // Changed from 'Record<string, unknown>' to: 'OcrExtractedEntities'
+  entities?: OcrExtractedEntities; // Changed from, 'Record<string, unknown>' to: 'OcrExtractedEntities'
   embeddingGenerated?: boolean;
   pgvectorStored?: boolean;
   qdrantStored?: boolean;
@@ -41,7 +41,7 @@ async function extractTextFromFile(
 ): Promise<{ text: string; entities?: OcrExtractedEntities; embedding?: number[] }> {
   // Updated return type
   const fileType = file.type;
-  const OCR_SERVICE_URL = (env.SURYA_OCR_URL as string) || 'http://localhost:8090/v1';
+  const OCR_SERVICE_URL = (env.SURYA_OCR_URL, as: string) || 'http://localhost:8090/v1';
 
   // For text files, read directly
   if (fileType === 'text/plain' || fileType === 'application/json') {
@@ -88,7 +88,7 @@ async function extractTextFromFile(
     }
   }
 
-  throw new Error('Unsupported file type: ${fileType}');
+  throw new Error('Unsupported file, type: ${fileType}');
 }
 
 const handler: RequestHandler = async ({ request, fetch }) => {
@@ -103,12 +103,12 @@ const handler: RequestHandler = async ({ request, fetch }) => {
 
     for (const file of files) {
       const result: UploadResult = {
-        success: false,
+       , success: false,
         filename: file.name
       };
 
       try {
-        // Step 1: Extract text using GPU OCR service (Surya + langextract-go)
+        // Step, 1: Extract text using GPU OCR service (Surya + langextract-go)
         console.log(`\n🚀 [Test RAG] Processing: ${file.name}`);
         const ocrResult = await extractTextFromFile(file, fetch);
         const extractedText = ocrResult.text;
@@ -116,7 +116,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         result.entities = ocrResult.entities; // This is now OcrExtractedEntities | undefined
 
         // Step 2: Use embedding from OCR service or generate new one with Ollama
-        let embedding: number[] | null = ocrResult.embedding || null;
+        let, embedding: number[] | null = ocrResult.embedding || null;
         if (!embedding) {
           try {
             console.log('🔢 [Test RAG] Generating embedding with Ollama (embeddinggemma)...');
@@ -149,7 +149,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             },
             confidence: 0.85,
             legalAnalysis: ocrResult.entities
-              ? { entities: Array.isArray(ocrResult.entities.entities) // Access .entities safely, without: 'any'
+              ? {, entities: Array.isArray(ocrResult.entities.entities) // Access .entities safely, without: 'any'
                     ? ocrResult.entities.entities
                     : []
                 }
@@ -165,10 +165,10 @@ const handler: RequestHandler = async ({ request, fetch }) => {
           console.log('🔢 [Test RAG] Storing embedding in pgvector...');
           await db.insert(testRagEmbeddings).values({
             documentId: doc.id,
-            content: extractedText.substring(0, 1000), // First 1000 chars as chunk
+            content: extractedText.substring(0, 1000), // First, 1000 chars as chunk
             embedding: embedding,
             metadata: {
-              chunkIndex: 0,
+             , chunkIndex: 0,
               chunkCount: 1,
               modelUsed: 'embeddinggemma:latest',
               generatedAt: new Date().toISOString()
@@ -181,15 +181,15 @@ const handler: RequestHandler = async ({ request, fetch }) => {
           try {
             console.log('☁️  [Test RAG] Syncing to Qdrant...');
             const vectorPoint: VectorPoint = {
-              id: doc.id,
+             , id: doc.id,
               vector: embedding,
               payload: {
-                documentId: doc.id,
+               , documentId: doc.id,
                 content: extractedText,
                 filename: file.name,
                 tags: [],
                 metadata: {
-                  fileType: file.type,
+                 , fileType: file.type,
                   fileSize: file.size
                 },
                 confidence: 0.85,
@@ -248,7 +248,7 @@ export const POST = withValidationAndRate(handler, null, {
 /**
  * GET: Check test RAG endpoint health
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     let qdrantHealthy = false;
     try {
@@ -268,18 +268,18 @@ export const GET: RequestHandler = async () => {
         .from(testRagDocuments)
         .limit(1)) as Array<{ count: number }>;
       const embCountRows = (await db
-        .select({ count: sql<number>`COUNT(*)` })
+        .select({, count: sql<number>`COUNT(*)` })
         .from(testRagEmbeddings)
         .limit(1)) as Array<{ count: number }>;
       docCount = Array.isArray(docCountRows) && docCountRows[0] ? Number(docCountRows[0].count) : 0;
       embCount = Array.isArray(embCountRows) && embCountRows[0] ? Number(embCountRows[0].count) : 0;
     } catch (countErr) {
       console.warn('[Test RAG] Failed to read table counts: ', countErr);'`'`
-      // leave docCount and embCount as -1 to indicate unknown
+      // leave docCount and embCount as -1 to indicate: unknown
     }
 
     return json({
-      success: true,
+     , success: true,
       healthy: qdrantHealthy && dbConnected,
       services: {
        , qdrant: qdrantHealthy,
@@ -287,7 +287,7 @@ export const GET: RequestHandler = async () => {
         gpu: true,
         ocr: `http://localhost:8090/v1 (Surya + langextract-go)` },
       stats: {
-        documents: docCount,
+       , documents: docCount,
         embeddings: embCount
       },
       timestamp: new Date().toISOString()

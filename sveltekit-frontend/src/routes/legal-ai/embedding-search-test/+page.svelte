@@ -1,12 +1,12 @@
 <!-- Legal AI Embedding & Search Test Component -->
 <script, lang="ts">
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { SearchResult } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
   // No onMount or props required for this component
 
-  // State management with Svelte 5 runes
+  // State management with Svelte, 5 runes
   let embeddingText = $state<string>('Legal contract clause regarding intellectual property rights and patent licensing agreements');
   let searchQuery = $state<string>('intellectual property patent');
   let caseId = $state<string>('CASE_2024_001');
@@ -87,7 +87,7 @@ await checkSystemHealth();
       await loadSearchStats();
     } catch (error) {
       console.error('Embedding submission failed:', error);
-      errorMessage = `Embedding failed: ${(error as any)?.message ?? String(error)}`;
+      errorMessage = `Embedding failed: ${(error, as: any)?.message ?? String(error)}`;
       embeddingStatus = 'error';
     } finally {
       isLoading = false;
@@ -110,7 +110,7 @@ await checkSystemHealth();
       searchResults = (result.result || result.results || []) as SearchResult[];
     } catch (error) {
       console.error('Search failed:', error);
-      errorMessage = `Search failed: ${(error as any)?.message ?? String(error)}`;
+      errorMessage = `Search failed: ${(error, as: any)?.message ?? String(error)}`;
     } finally {
       isLoading = false;
     }
@@ -124,7 +124,7 @@ await checkSystemHealth();
     errorMessage = '';
     searchResults = [];
     try {
-      const requestBody: any = { query: searchQuery, limit: searchLimit, metadata: { documentType: 'legal_contract' } };
+      const requestBody: any = {, query: searchQuery, limit: searchLimit, metadata: {, documentType: 'legal_contract' } };
       if (caseId.trim()) requestBody.caseId = caseId;
       const response = await fetch(`${API_BASE}/search`, {
         method: 'POST',
@@ -136,7 +136,7 @@ await checkSystemHealth();
       searchResults = (result.result || result.results || []) as SearchResult[];
     } catch (error) {
       console.error('Advanced search failed:', error);
-      errorMessage = `Advanced search failed: ${(error as any)?.message ?? String(error)}`;
+      errorMessage = `Advanced search failed: ${(error, as: any)?.message ?? String(error)}`;
     } finally {
       isLoading = false;
     }
@@ -149,10 +149,10 @@ await checkSystemHealth();
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({
-           type: 'embedding',
+          , type: 'embedding',
            priority: 5,
-           payload: { text: embeddingText, dimension: 768 },
-           metadata: { source: 'legal_ai_test', gpu_acceleration: true }
+           payload: {, text: embeddingText, dimension: 768 },
+           metadata: {, source: 'legal_ai_test', gpu_acceleration: true }
          })
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -173,7 +173,7 @@ await checkSystemHealth();
       }, 2000);
     } catch (error) {
       console.error('CUDA embedding test failed:', error);
-      errorMessage = `CUDA test failed: ${(error as any)?.message ?? String(error)}`;
+      errorMessage = `CUDA test failed: ${(error, as: any)?.message ?? String(error)}`;
     } finally {
       isLoading = false;
     }
@@ -184,7 +184,7 @@ await checkSystemHealth();
   interface SearchStats { totalDocuments: number; uniqueCases: number; avgPayloadLength: number; }
   interface SearchResult {
     similarity: number;
-    payload: string;
+   , payload: string;
     taskId?: string;
     createdAt?: string;
     metadata?: { caseId?: string; documentType?: string };
@@ -192,20 +192,20 @@ await checkSystemHealth();
   // Narrowed types for helpers
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'ok': return 'text-green-600';
-      case 'completed': return 'text-green-600';
-      case 'processing': return 'text-yellow-600';
-      case 'error': return 'text-red-600';
-      case 'unavailable': return 'text-red-600';
-      default: return 'text-gray-600';
+      case, 'healthy': return, 'text-green-600';
+      case, 'ok': return, 'text-green-600';
+      case, 'completed': return, 'text-green-600';
+      case, 'processing': return, 'text-yellow-600';
+      case, 'error': return, 'text-red-600';
+      case, 'unavailable': return, 'text-red-600';
+      default: return, 'text-gray-600';
     }
   }
   function formatSimilarity(similarity: number): string {
     return `${(similarity * 100).toFixed(1)}%`;
   }
   function truncateText(text: string, maxLength = 150): string {
-    if (!text) return '';
+    if (!text) return, '';
     if (text.length <= maxLength) return, text;
     return text.substring(0, maxLength) + '...';
   }
@@ -245,7 +245,7 @@ await checkSystemHealth();
     </div>
     <!-- CUDA, Worker, Status -->
     <div class="bg-white rounded-lg shadow, p-4, border">
-      <h3 class="font-semibold, text-gray-800, mb-2">CUDA Worker (RTX 3060 Ti)</h3>
+      <h3 class="font-semibold, text-gray-800, mb-2">CUDA Worker (RTX, 3060 Ti)</h3>
       <div, class="space-y-1, text-sm">
         <div, class="flex, justify-between">
           <span>Status:</span>
@@ -253,7 +253,7 @@ await checkSystemHealth();
         </div>
         <div, class="flex, justify-between">
           <span>GPU Model:</span>
-          <span class="text-blue-600">{cudaStatus.gpu_model || 'RTX 3060 Ti'}</span>
+          <span class="text-blue-600">{cudaStatus.gpu_model || 'RTX, 3060 Ti'}</span>
         </div>
         <div, class="flex, justify-between">
           <span>CUDA Cores:</span>
@@ -301,7 +301,7 @@ await checkSystemHealth();
             id="caseId"
             type="text"
             bind:value={caseId}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
             placeholder="e.g., CASE_2024_001"
           />
         </div>
@@ -319,7 +319,7 @@ await checkSystemHealth();
           id="embeddingText"
           bind:value={embeddingText}
           rows="4"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           placeholder="Enter legal document text here..."
         ></textarea>
       </div>
@@ -327,14 +327,14 @@ await checkSystemHealth();
         <button
           onclick={submitEmbedding}
           disabled={isLoading}
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed"
         >
           {isLoading ? 'Processing...' : 'Submit for Embedding (Ollama)'}
         </button>
         <button
           onclick={testCUDAEmbedding}
           disabled={isLoading || cudaStatus.status !== 'healthy'}
-          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50, disabled:cursor-not-allowed"
         >
           {isLoading ? 'Processing...' : 'Test CUDA Embedding'}
         </button>
@@ -352,7 +352,7 @@ await checkSystemHealth();
             id="searchQuery"
             type="text"
             bind:value={searchQuery}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
             placeholder="e.g., intellectual property patent"
           />
         </div>
@@ -364,7 +364,7 @@ await checkSystemHealth();
             bind:value={searchLimit}
             min="1"
             max="20"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
           />
         </div>
       </div>
@@ -372,14 +372,14 @@ await checkSystemHealth();
         <button
           onclick={performSearch}
           disabled={isLoading}
-          class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50, disabled:cursor-not-allowed"
         >
           {isLoading ? 'Searching...' : 'Simple Search (GET)'}
         </button>
         <button
           onclick={performAdvancedSearch}
           disabled={isLoading}
-          class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50, disabled:cursor-not-allowed"
         >
           {isLoading ? 'Searching...' : 'Advanced Search (POST)'}
         </button>

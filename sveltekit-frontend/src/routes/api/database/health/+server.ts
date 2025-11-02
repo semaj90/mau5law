@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { testDatabaseConnection, initializeDatabase } from '$lib/database/connection';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { testDatabaseConnection, initializeDatabase } from, '$lib/database/connection';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     console.log('🔍 Testing database connection...');
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: 'error',
-        message: `Database health check; failed: ${(error as Error).message}`,
+        message: `Database health check;, failed: ${(error as Error).message}`,
         error: (error as Error).stack,
         timestamp: new Date().toISOString()
       },
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         status: 'error',
-        message: 'Invalid action.; Use: "initialize"',
+        message: 'Invalid action.;, Use: "initialize"',
         timestamp: new Date().toISOString()
       },
       { status: 400 }
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         status: 'error',
-        message: `Database action; failed: ${(error as Error).message}`,
+        message: `Database action;, failed: ${(error as Error).message}`,
         error: (error as Error).stack,
         timestamp: new Date().toISOString()
       },

@@ -2,10 +2,10 @@
  * Detective Mode Toggle API Route
  * POST /api/v1/cases/[id]/detective - Toggle detective mode for case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { CasesCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid case ID format');
 // Detective mode request schema
@@ -17,13 +17,13 @@ const DetectiveModeSchema = z.object({
 // Helper: safely extract user id from locals/session
 function getUserId(locals: any): string | null {
   // Common shapes: locals.user?.id or locals.session?.user?.id
-  return (locals?.user?.id ?? locals?.session?.user?.id ?? null) as string | null;
+  return (locals?.user?.id ?? locals?.session?.user?.id ?? null) as: string | null;
 }
 /*
  * POST /api/v1/cases/[id]/detective
  * Toggle detective mode for a specific case
  */
-export const POST: RequestHandler = async ({ params, request, locals }) => {
+export const, POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         }
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         caseId,
         timestamp: new Date().toISOString(),
         action: enabled ? 'detective_mode_activated' : `detective_mode_deactivated` }

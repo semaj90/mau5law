@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { webgpuPolyfill } from, '$lib/webgpu/webgpu-polyfill';
 
 // Add explicit types for the polyfill surface and init result
 type PerformanceStats = Record<string, unknown>;
@@ -19,16 +19,16 @@ export interface VectorSimilarityRequest { vector1: number[];, vector2: number[
   mode?: 'webgpu' | 'webgl' | 'cpu' | 'auto';
   returnDiagnostics?: boolean;
 }
-export interface VectorSimilarityResponse { similarity: number;, mode: 'webgpu' | 'webgl' | 'cpu';
+export interface VectorSimilarityResponse {, similarity: number;, mode: 'webgpu' | 'webgl' | 'cpu';
   executionTimeMs: number;
-  diagnostics?: { webgpuAvailable: boolean;, webglAvailable: boolean;
+  diagnostics?: {, webgpuAvailable: boolean;, webglAvailable: boolean;
     vectorLength: number;
     performanceStats?: any;
   };
   error?: string;
 }
 // GET endpoint for WebGPU capabilities info
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     const capabilities = {
       endpoint: '/api/webgpu/vector-similarity',
@@ -36,13 +36,13 @@ export const GET: RequestHandler = async () => {
       webgpuSupported: typeof navigator !== 'undefined' && 'gpu' in navigator,
       methods: ['POST'],
       requestFormat: {
-        vector1: 'number[] - First vector',
+       , vector1: 'number[] - First vector',
         vector2: 'number[] - Second vector (must be same length as vector1)',
         mode: 'string (optional) - "webgpu", "webgl", "cpu", or: "auto" (default)',
         returnDiagnostics: 'boolean (optional) - Include performance diagnostics'
       },
       responseFormat: {
-        similarity: 'number - Cosine similarity score (-1 to 1)',
+       , similarity: 'number - Cosine similarity score (-1 to 1)',
         mode: 'string - Actual computation mode used',
         executionTimeMs: 'number - Execution time in milliseconds',
         diagnostics: 'object (optional) - Performance and capability info'
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let initResult: WebGPUInitResult = null;
 
     // Narrow the imported polyfill to a typed variable
-    const polyfill = webgpuPolyfill as unknown as WebGPUPolyfill;
+    const polyfill = webgpuPolyfill, as: unknown as WebGPUPolyfill;
 
     // helper to resolve value that may be sync or a Promise<number>
     async function resolveNumberOrPromise(m: number | Promise<number>): Promise<number> {
@@ -103,11 +103,11 @@ export const POST: RequestHandler = async ({ request }) => {
       if (m && typeof (m as Promise<number>).then === 'function') {
         return await (m as Promise<number>);
       }
-      return m as number;
+      return m as: number;
     }
 
     try {
-      // Try WebGPU for: 'webgpu'; or: 'auto'
+      // Try WebGPU for: 'webgpu';, or: 'auto'
       if (mode === 'webgpu' || mode === 'auto') {
         try {
           if (typeof polyfill.init === 'function') {
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: 0,
         mode: 'cpu' as const,
         executionTimeMs: executionTime,
-        error: `Vector similarity computation; failed: ${errMsg}' } as VectorSimilarityResponse,'`
+        error: `Vector similarity computation;, failed: ${errMsg}' } as VectorSimilarityResponse,'`
       { status: 500 }
     );
   }

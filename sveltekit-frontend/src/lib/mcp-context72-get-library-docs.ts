@@ -1,10 +1,10 @@
 /**
  * MCP Context7.2 Get Library Docs Integration
- * Enhanced for Svelte 5 + SvelteKit 2 + TypeScript + Full Tech Stack
+ * Enhanced for Svelte, 5 + SvelteKit, 2 + TypeScript + Full Tech Stack
  *
  * Provides utilities for retrieving documentation from Context7 MCP server
  * Supports all major framework dependencies for the Legal AI platform:
- * -; Frontend: Svelte 5, SvelteKit 2, Bits UI, Melt UI, XState, UnoCSS
+ * -;, Frontend: Svelte, 5, SvelteKit, 2, Bits UI, Melt UI, XState, UnoCSS
  * - Backend: TypeScript, Drizzle ORM
  * - Database: PostgreSQL with pgvector, Redis, Qdrant
  * - AI/Performance: WebGPU, WebAssembly
@@ -22,11 +22,11 @@ export interface LibraryDocsRequest {
   format?: 'markdown' | 'json' | 'typescript';
 }
 
-export interface LibraryDocsResponse { content: string;, metadata: {
+export interface LibraryDocsResponse {, content: string;, metadata: {
     library: string;
     version?: string;
     topic?: string;
-    tokenCount: number;
+   , tokenCount: number;
   };
   snippets?: CodeSnippet[];
 }
@@ -276,31 +276,31 @@ export async function getTechStackDocs(
   const allDocs = { ...frontendDocs, ...backendDocs, ...databaseDocs, ...aiDocs };
 
   switch (component) {
-    case 'frontend': {
+    case, 'frontend': {
       const results = await Promise.all(
         Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
-    case 'backend': {
+    case, 'backend': {
       const results = await Promise.all(
         Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
-    case 'database': {
+    case, 'database': {
       const results = await Promise.all(
         Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
-    case 'ai': {
+    case, 'ai': {
       const results = await Promise.all(
         Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
     }
-    case 'full': {
+    case, 'full': {
       const results = await Promise.all(
         Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const )
       );

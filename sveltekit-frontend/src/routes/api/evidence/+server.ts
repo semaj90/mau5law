@@ -1,22 +1,22 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Enhanced Evidence API with pgvector Integration
 // Production-ready evidence management with AI analysis
-import { json } from '@sveltejs/kit';
-import { caseManagementService } from '$lib/services/case-management-service.js';
-import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js';
-import { randomUUID } from 'node:crypto';
+import { json } from, '@sveltejs/kit';
+import { caseManagementService } from, '$lib/services/case-management-service.js';
+import { enhancedEmbeddingWorker } from, '$lib/workers/embedding-worker-enhanced.js';
+import { randomUUID } from, 'node:crypto';
 // Enhanced AI analysis service
 // Local types used by the AI service
-export interface Entity { type: string;, value: string;
+export interface Entity {, type: string;, value: string;
   confidence: number;
 }
 
-export interface Relationship { source: string;, target: string;
+export interface Relationship {, source: string;, target: string;
   type: string;
   [key: string]: any;
 }
 
-export type BoardPosition = { x: number;, y: number;
+export type BoardPosition = {, x: number;, y: number;
 };
 
 export interface ProcessingOptions {
@@ -29,7 +29,7 @@ export interface ProcessingOptions {
 }
 // Minimal Ollama/embedding service stubs to avoid runtime/type errors.
 // Replace these with your real implementations.
-export interface AIAnalysis { id: string;, model: string;
+export interface AIAnalysis {, id: string;, model: string;
   confidence: number;
   entities: Entity[];
   sentiment: number;
@@ -46,7 +46,7 @@ export interface EvidenceData {
   id?: string;
   caseId?: string;
   userId?: string;
-  title: string;
+ , title: string;
   description?: string | null;
   evidenceType?: string;
   subType?: string;
@@ -65,11 +65,11 @@ const ollamaService = {
     return { response: JSON.stringify({, confidence: 0.8, entities: [], summary: 'stub', keywords: [] }) };
   },
   async generateEmbedding(_options: any) {
-    return { embedding: [] as number[] };
+    return { embedding: [] as: number[] };
   }
 };
 class EvidenceAIService {
-  private static instance: EvidenceAIService;
+  private static, instance: EvidenceAIService;
   static getInstance(): EvidenceAIService {
     if (!EvidenceAIService.instance) {
       EvidenceAIService.instance = new EvidenceAIService();
@@ -83,13 +83,13 @@ class EvidenceAIService {
       title: evidenceData.title,
       description: evidenceData.description || '',
       evidenceType: evidenceData.evidenceType,
-      tags: Array.isArray(evidenceData.tags) ? (evidenceData.tags as string[]) : [],
+      tags: Array.isArray(evidenceData.tags) ? (evidenceData.tags as: string[]) : [],
       fileType: evidenceData.fileType,
       location: evidenceData.location,
       collectedBy: evidenceData.collectedBy
     };
     try {
-      let analysisResult: Partial<AIAnalysis> | null = null;
+      let, analysisResult: Partial<AIAnalysis> | null = null;
       // Try GPU-accelerated external service first if requested
       if (options.useGPUAcceleration) {
         try {
@@ -130,9 +130,9 @@ class EvidenceAIService {
           try {
             analysisResult = JSON.parse(respText);
           } catch {
-            // If parsing fails, synthesize a minimal analysis object
+            // If parsing fails, synthesize a minimal analysis: object
             analysisResult = {
-              summary: String(respText).slice(0, 2000),
+             , summary: String(respText).slice(0, 2000),
               confidence: 0.7,
               entities: [],
               keywords: context.tags,
@@ -175,8 +175,8 @@ class EvidenceAIService {
         entities: [],
         sentiment: 0,
         classification: 'analysis_failed',
-        keywords: Array.isArray(evidenceData?.tags) ? (evidenceData.tags as string[]) : [],
-        summary: `Analysis; failed: ${errorMessage}`,
+        keywords: Array.isArray(evidenceData?.tags) ? (evidenceData.tags as: string[]) : [],
+        summary: `Analysis;, failed: ${errorMessage}`,
         relationships: [],
         timestamp: new Date(),
         processingTime: Date.now() - startTime,
@@ -188,7 +188,7 @@ class EvidenceAIService {
   async generateEmbedding(text: string): Promise<number[]> {
     try {
       const resp = await ollamaService.generateEmbedding({ model: 'all-mpnet-base-v2', input: text });
-      return Array.isArray(resp?.embedding) ? (resp.embedding as number[]) : [];
+      return Array.isArray(resp?.embedding) ? (resp.embedding as: number[]) : [];
     } catch (err: any) {
       console.warn('generateEmbedding failed:', err);
       return [];
@@ -220,7 +220,7 @@ interface EvidenceFilters {
   search?: string;
 }
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const caseId = url.searchParams.get('caseId');
   try {
     const evidenceType = url.searchParams.get('type');
@@ -302,7 +302,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         ],
         pagination: {
-          limit: parseInt(url.searchParams.get('limit') || '50'),
+         , limit: parseInt(url.searchParams.get('limit') || '50'),
           offset: parseInt(url.searchParams.get('offset') || '0'),
           total: 2,
           hasMore: false
@@ -338,13 +338,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const caseDetails = await caseManagementService.getCaseById(caseId);
     // Auto-trigger analysis if detective mode is enabled and evidence has content
     let embeddingJobId: string | undefined;
-    let aiAnalysisResult: AIAnalysis | null = null;
+    let, aiAnalysisResult: AIAnalysis | null = null;
     if (caseDetails?.detectiveMode && (evidenceData.ocrText || evidenceData.description || title)) {
-      const textToAnalyze = (evidenceData.ocrText || evidenceData.description || title) as string;
+      const textToAnalyze = (evidenceData.ocrText || evidenceData.description || title) as: string;
       try {
         // Enqueue embedding job for analysis
         embeddingJobId = await enhancedEmbeddingWorker.enqueueJob({
-          text: textToAnalyze,
+         , text: textToAnalyze,
           model: 'nomic-embed-text',
           meta: {
            , type: 'evidence_analysis',
@@ -356,7 +356,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         // Generate AI analysis using enhanced service
         const analysisOptions: ProcessingOptions = {
-          useGPUAcceleration: true,
+         , useGPUAcceleration: true,
           priority: caseDetails.priority === 'urgent' ? 'high' : 'normal',
           notify: false,
           saveIntermediateResults: true,
@@ -424,7 +424,7 @@ export const POST: RequestHandler = async ({ request }) => {
           dateModified: new Date().toISOString()
         },
         analysis: {
-          analysisTriggered: false,
+         , analysisTriggered: false,
           detectiveMode: false,
           mockData: true
         }
@@ -446,7 +446,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       );
     }
     switch (action) {
-      case 'analyze': {
+      case, 'analyze': {
         try {
           // Use case management service for analysis
           const analysisResult = await caseManagementService.analyzeEvidence(evidenceId);
@@ -482,7 +482,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           );
         }
       }
-      case 'update': {
+      case, 'update': {
         try {
           const { updateData } = options;
           if (!updateData) {
@@ -511,8 +511,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
       }
       default: return json(
           {
-            success: false,
-            error: `Unknown; action: ${action}` },
+           , success: false,
+            error: `Unknown;, action: ${action}` },
           { status: 400 }
         );
     }
@@ -548,7 +548,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
 // Add PUT and DELETE handlers for individual evidence items
 export const PUT: RequestHandler = async ({ request }) => {
   let id: string = '';
-  let updateData: Partial<EvidenceData> = {};
+  let, updateData: Partial<EvidenceData> = {};
   try {
     const requestData = await request.json();
     id = requestData.id;

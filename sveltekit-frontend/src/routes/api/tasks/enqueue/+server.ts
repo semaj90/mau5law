@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Simplified task enqueue endpoint (placeholder for RabbitMQ / queue integration)
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return new Response(JSON.stringify({ success: true, task }), { status: 202 });
   } catch (e: unknown) {
-    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
-    return new Response(JSON.stringify({ success: false, message: errorMessage }), { status: 400 });
+    const errorMessage = e instanceof Error ? e.message : 'An: unknown error occurred';
+    return new Response(JSON.stringify({, success: false, message: errorMessage }), { status: 400 });
   }
 };

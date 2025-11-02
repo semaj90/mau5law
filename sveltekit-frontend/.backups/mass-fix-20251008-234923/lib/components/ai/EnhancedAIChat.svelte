@@ -457,7 +457,7 @@
   </div>
   <!-- Analysis Dialog -->
   {#if showAnalysisPanel}
-    <Dialog.Root>
+    <Dialog>
       <Dialog.Content class="max-w-2xl">
         <Dialog.Header>
           <Dialog.Title>Message Analysis</Dialog.Title>
@@ -490,7 +490,7 @@
           </Button>
         </Dialog.Footer>
       </Dialog.Content>
-    </Dialog.Root>
+    </Dialog>
   {/if}
 </div>
 <style>

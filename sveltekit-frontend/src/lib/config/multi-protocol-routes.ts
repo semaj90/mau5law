@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import http from "http";
+import type { User } from, '$lib/types';
+import http from, "http";
 /**
  * Multi-Protocol API Routing Configuration
  * Native Windows Legal AI Platform - Production Ready
@@ -9,13 +9,13 @@ import http from "http";
  */
 
 export interface ServiceConfig { name: string;, port: number;
-  protocols: ('http' | 'grpc' | 'quic' | 'ws')[];
+ , protocols: ('http' | 'grpc' | 'quic' | 'ws')[];
   healthEndpoint: string;
   binary?: string;
   tier: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
 }
-export interface ProtocolRoute { service: string;, endpoint: string;
+export interface ProtocolRoute {, service: string;, endpoint: string;
   protocols: {
     http?: string;
     grpc?: string;
@@ -23,13 +23,13 @@ export interface ProtocolRoute { service: string;, endpoint: string;
     ws?: string;
   }
   fallback: string[];
-  timeout: number;
+ , timeout: number;
 }
-// Complete 37 Services Configuration using existing binaries
+// Complete, 37 Services Configuration using existing binaries
 export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   // TIER 1: Core Infrastructure (Ports 6000-7000),
   postgresql: {
-    name: 'PostgreSQL',
+   , name: 'PostgreSQL',
     port: 5432,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -37,7 +37,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'critical'
   },
   redis: {
-    name: 'Redis',
+   , name: 'Redis',
     port: 6379,
     protocols: ['http'],
     healthEndpoint: '/ping',
@@ -45,7 +45,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'critical'
   },
   qdrant: {
-    name: 'Qdrant Vector DB',
+   , name: 'Qdrant Vector DB',
     port: 6333,
     protocols: ['http'],
     healthEndpoint: '/collections',
@@ -53,7 +53,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'critical'
   },
   neo4j: {
-    name: 'Neo4j Graph DB',
+   , name: 'Neo4j Graph DB',
     port: 7474,
     protocols: ['http'],
     healthEndpoint: '/db/system/tx/commit',
@@ -61,7 +61,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   minio: {
-    name: 'MinIO Object Storage',
+   , name: 'MinIO Object Storage',
     port: 9000,
     protocols: ['http'],
     healthEndpoint: '/minio/health/live',
@@ -69,7 +69,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   ollama: {
-    name: 'Ollama AI Server',
+   , name: 'Ollama AI Server',
     port: 11434,
     protocols: ['http'],
     healthEndpoint: '/api/tags',
@@ -78,7 +78,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   },
   // TIER 2: Core Go Services (Ports 8090-8099),
   enhancedRag: {
-    name: 'Enhanced RAG Service',
+   , name: 'Enhanced RAG Service',
     port: 8094,
     protocols: ['http', 'grpc', 'quic'],
     healthEndpoint: '/health',
@@ -87,7 +87,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'critical'
   },
   uploadService: {
-    name: 'Upload Service',
+   , name: 'Upload Service',
     port: 8093,
     protocols: ['http', 'ws'],
     healthEndpoint: '/health',
@@ -96,7 +96,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'critical'
   },
   enhancedRagV2: {
-    name: 'Enhanced RAG V2',
+   , name: 'Enhanced RAG V2',
     port: 8095,
     protocols: ['http', 'grpc'],
     healthEndpoint: '/health',
@@ -105,7 +105,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   aiSummary: {
-    name: 'AI Summary Service',
+   , name: 'AI Summary Service',
     port: 8097,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -115,7 +115,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   },
   // TIER 3: Management & Orchestration (Ports 8210-8219),
   xstateManager: {
-    name: 'XState Manager',
+   , name: 'XState Manager',
     port: 8212,
     protocols: ['http', 'ws'],
     healthEndpoint: '/health',
@@ -124,7 +124,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   clusterManager: {
-    name: 'Cluster HTTP Manager',
+   , name: 'Cluster HTTP Manager',
     port: 8213,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -133,7 +133,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   quicGateway: {
-    name: 'QUIC Gateway',
+   , name: 'QUIC Gateway',
     port: 8216,
     protocols: ['quic', 'http'],
     healthEndpoint: '/health',
@@ -142,7 +142,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   simdHealth: {
-    name: 'SIMD Health Monitor',
+   , name: 'SIMD Health Monitor',
     port: 8217,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -151,7 +151,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   context7Pipeline: {
-    name: 'Context7 Error Pipeline',
+   , name: 'Context7 Error Pipeline',
     port: 8219,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -161,7 +161,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   },
   // TIER 4: Specialized Services (Ports 8200-8209, 8220-8229)
   liveAgent: {
-    name: 'Live Agent Enhanced',
+   , name: 'Live Agent Enhanced',
     port: 8200,
     protocols: ['http', 'ws'],
     healthEndpoint: '/health',
@@ -170,7 +170,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   legalAI: {
-    name: 'Legal AI Service',
+   , name: 'Legal AI Service',
     port: 8202,
     protocols: ['http', 'grpc'],
     healthEndpoint: '/health',
@@ -179,7 +179,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   gpuIndexer: {
-    name: 'GPU Indexer Service',
+   , name: 'GPU Indexer Service',
     port: 8220,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -188,7 +188,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   loadBalancer: {
-    name: 'Load Balancer',
+   , name: 'Load Balancer',
     port: 8222,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -197,7 +197,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'critical'
   },
   recommendations: {
-    name: 'Recommendation Service',
+   , name: 'Recommendation Service',
     port: 8223,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -206,7 +206,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   summarizerHttp: {
-    name: 'Summarizer HTTP',
+   , name: 'Summarizer HTTP',
     port: 8224,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -215,7 +215,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   summarizerService: {
-    name: 'Summarizer Service',
+   , name: 'Summarizer Service',
     port: 8225,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -224,7 +224,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   simdParser: {
-    name: 'SIMD Parser',
+   , name: 'SIMD Parser',
     port: 8226,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -233,7 +233,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'low'
   },
   ginUpload: {
-    name: 'Gin Upload Service',
+   , name: 'Gin Upload Service',
     port: 8227,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -242,7 +242,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'low'
   },
   simpleUpload: {
-    name: 'Simple Upload Service',
+   , name: 'Simple Upload Service',
     port: 8228,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -252,7 +252,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   },
   // TIER 5: Additional Services (Ports 8230-8236),
   legalClean: {
-    name: 'Enhanced Legal Clean',
+   , name: 'Enhanced Legal Clean',
     port: 8229,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -261,7 +261,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'low'
   },
   legalFixed: {
-    name: 'Enhanced Legal Fixed',
+   , name: 'Enhanced Legal Fixed',
     port: 8230,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -270,7 +270,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'low'
   },
   legalRedis: {
-    name: 'Enhanced Legal Redis',
+   , name: 'Enhanced Legal Redis',
     port: 8231,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -279,7 +279,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'low'
   },
   multicore: {
-    name: 'Enhanced Multicore',
+   , name: 'Enhanced Multicore',
     port: 8232,
     protocols: ['http'],
     healthEndpoint: '/health',
@@ -288,7 +288,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   ragKratos: {
-    name: 'RAG Kratos',
+   , name: 'RAG Kratos',
     port: 8233,
     protocols: ['grpc', 'http'],
     healthEndpoint: '/health',
@@ -297,7 +297,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'medium'
   },
   ragQuicProxy: {
-    name: 'RAG QUIC Proxy',
+   , name: 'RAG QUIC Proxy',
     port: 8234,
     protocols: ['quic', 'http'],
     healthEndpoint: '/health',
@@ -307,7 +307,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   },
   // gRPC Services (Ports 50051-50052)
   grpcServer: {
-    name: 'gRPC Server',
+   , name: 'gRPC Server',
     port: 50051,
     protocols: ['grpc'],
     healthEndpoint: '/grpc.health.v1.Health/Check',
@@ -316,7 +316,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     priority: 'high'
   },
   kratosServer: {
-    name: 'Kratos gRPC Server',
+   , name: 'Kratos gRPC Server',
     port: 50052,
     protocols: ['grpc'],
     healthEndpoint: '/grpc.health.v1.Health/Check',
@@ -329,10 +329,10 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
 export const API_ROUTES: ProtocolRoute[] = [
   // Enhanced RAG Routes
   {
-    service: 'enhancedRag',
+   , service: 'enhancedRag',
     endpoint: '/api/v1/rag',
     protocols: {
-      quic: 'quic://localhost:8094/api/v1/rag',
+     , quic: 'quic://localhost:8094/api/v1/rag',
       grpc: 'grpc://localhost:50051/rag.v1.RAGService',
       http: 'http://localhost:8094/api/v1/rag',
       ws: 'ws://localhost:8094/api/v1/rag/stream'
@@ -345,7 +345,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'uploadService',
     endpoint: '/api/v1/upload',
     protocols: {
-      http: 'http://localhost:8093/upload',
+     , http: 'http://localhost:8093/upload',
       ws: 'ws://localhost:8093/upload/stream'
     },
     fallback: ['http'],
@@ -356,7 +356,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'aiSummary',
     endpoint: '/api/v1/ai/summary',
     protocols: {
-      http: 'http://localhost:8097/api/v1/summary',
+     , http: 'http://localhost:8097/api/v1/summary',
       ws: 'ws://localhost:8097/api/v1/summary/stream'
     },
     fallback: ['http'],
@@ -367,7 +367,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'legalAI',
     endpoint: '/api/v1/legal',
     protocols: {
-      grpc: 'grpc://localhost:50051/legal.v1.LegalService',
+     , grpc: 'grpc://localhost:50051/legal.v1.LegalService',
       http: 'http://localhost:8202/api/v1/legal'
     },
     fallback: ['grpc', 'http'],
@@ -378,7 +378,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'quicGateway',
     endpoint: '/api/v1/quic',
     protocols: {
-      quic: 'quic://localhost:8216/api/v1/gateway',
+     , quic: 'quic://localhost:8216/api/v1/gateway',
       http: 'http://localhost:8216/api/v1/gateway'
     },
     fallback: ['quic', 'http'],
@@ -389,7 +389,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'clusterManager',
     endpoint: '/api/v1/cluster',
     protocols: {
-      http: 'http://localhost:8213/api/v1/cluster'
+     , http: 'http://localhost:8213/api/v1/cluster'
     },
     fallback: ['http'],
     timeout: 15000
@@ -399,7 +399,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'xstateManager',
     endpoint: '/api/v1/state',
     protocols: {
-      http: 'http://localhost:8212/api/v1/state',
+     , http: 'http://localhost:8212/api/v1/state',
       ws: 'ws://localhost:8212/api/v1/state/events'
     },
     fallback: ['http'],
@@ -410,7 +410,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'loadBalancer',
     endpoint: '/api/v1/lb',
     protocols: {
-      http: 'http://localhost:8222/api/v1/balance'
+     , http: 'http://localhost:8222/api/v1/balance'
     },
     fallback: ['http'],
     timeout: 5000
@@ -420,7 +420,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'gpuIndexer',
     endpoint: '/api/v1/gpu/index',
     protocols: {
-      http: 'http://localhost:8220/api/v1/index'
+     , http: 'http://localhost:8220/api/v1/index'
     },
     fallback: ['http'],
     timeout: 60000
@@ -430,7 +430,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'recommendations',
     endpoint: '/api/v1/recommendations',
     protocols: {
-      http: 'http://localhost:8223/api/v1/recommend'
+     , http: 'http://localhost:8223/api/v1/recommend'
     },
     fallback: ['http'],
     timeout: 15000
@@ -438,7 +438,7 @@ export const API_ROUTES: ProtocolRoute[] = [
 ];
 // Protocol Priority Configuration
 export const PROTOCOL_PRIORITY = {
-  performance: ['quic', 'grpc', 'http', 'ws'],
+ , performance: ['quic', 'grpc', 'http', 'ws'],
   reliability: ['http', 'grpc', 'quic', 'ws'],
   realtime: ['ws', 'quic', 'grpc', 'http']
 } as const;
@@ -451,7 +451,7 @@ export const HEALTH_CHECK_CONFIG = {
   healthyThreshold: 2
 }
 // Protocol-specific configurations
-export const PROTOCOL_CONFIG = { http: {, timeout: 30000,
+export const PROTOCOL_CONFIG = {, http: {, timeout: 30000,
     retries: 3,
     headers: {
       'Content-Type': 'application/json',
@@ -459,19 +459,19 @@ export const PROTOCOL_CONFIG = { http: {, timeout: 30000,
     }
   },
   grpc: {
-    timeout: 15000,
+   , timeout: 15000,
     retries: 3,
     keepAlive: true,
     keepAliveTimeout: 30000
   },
   quic: {
-    timeout: 5000,
+   , timeout: 5000,
     retries: 2,
     keepAlive: true,
     maxStreams: 100
   },
   ws: {
-    timeout: 0, // No timeout for WebSocket
+   , timeout: 0, // No timeout for WebSocket
     pingInterval: 30000,
     pongTimeout: 5000,
     reconnectDelay: 1000
@@ -479,7 +479,7 @@ export const PROTOCOL_CONFIG = { http: {, timeout: 30000,
 }
 // Service Discovery Configuration
 export const SERVICE_DISCOVERY = {
-  enabled: true,
+ , enabled: true,
   refreshInterval: 60000, // 1 minute
   healthCheckEnabled: true,
   autoFailover: true,

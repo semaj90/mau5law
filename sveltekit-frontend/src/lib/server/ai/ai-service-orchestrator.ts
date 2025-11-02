@@ -3,12 +3,12 @@
  * Unified entry point for all AI operations with TensorRT-LLM, Triton, pgvector, Qdrant integration
  *
  * Architecture:
- * - LLM; Provider: TensorRT-LLM (Triton) → vLLM → Ollama (fallback)
+ * - LLM;, Provider: TensorRT-LLM (Triton) → vLLM → Ollama (fallback)
  * - Embedding: embeddinggemma:latest via Ollama → vLLM (fallback)
  * - Vector Search: pgvector (primary) → Qdrant (fallback)
  * - Health Monitoring: Automatic provider switching on failure
  *
- * Features:
+ *, Features:
  * - Single entry point for embeddings, LLM inference, and RAG
  * - Multi-provider routing with automatic health checks
  * - Redis caching for embeddings and LLM responses
@@ -19,10 +19,10 @@
  * @author Legal AI Platform Team
  * @version 2.0.0
  */
-import Redis from 'ioredis';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { GemmaEmbeddingService, type EmbeddingRequest, type BatchEmbeddingResponse } from './gemma-embedding-service';
-import { PgVectorIndexingService, type VectorDocument, type VectorSearchResult } from './pgvector-indexing-service';
+import Redis from, 'ioredis';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js/driver';
+import { GemmaEmbeddingService, type EmbeddingRequest, type BatchEmbeddingResponse } from, './gemma-embedding-service';
+import { PgVectorIndexingService, type VectorDocument, type VectorSearchResult } from, './pgvector-indexing-service';
 /**
  * AI Orchestrator Configuration
  */
@@ -42,7 +42,7 @@ export interface AIServiceOrchestratorConfig {
 /**
  * Provider Health Status
  */
-export interface ProviderHealth { provider: string;, status: 'healthy' | 'degraded' | 'unhealthy';
+export interface ProviderHealth {, provider: string;, status: 'healthy' | 'degraded' | 'unhealthy';
   lastCheck: Date;
   responseTime: number;
   errorCount: number;
@@ -51,7 +51,7 @@ export interface ProviderHealth { provider: string;, status: 'healthy' | 'degra
 /**
  * Service Status
  */
-export interface ServiceStatus { orchestrator: 'ready' | 'initializing' | 'degraded' | 'error';, llmProviders: ProviderHealth[];
+export interface ServiceStatus {, orchestrator: 'ready' | 'initializing' | 'degraded' | 'error';, llmProviders: ProviderHealth[];
   embeddingProvider: ProviderHealth;
   vectorSearchProviders: ProviderHealth[];
   mcpContext7: ProviderHealth;
@@ -81,10 +81,10 @@ export interface OrchestratedLLMRequest {
 /**
  * LLM Response
  */
-export interface OrchestratedLLMResponse { content: string;, model: string;
+export interface OrchestratedLLMResponse {, content: string;, model: string;
   provider: string;
-  tokensUsed: { prompt: number;, completion: number;
-    total: number;
+  tokensUsed: {, prompt: number;, completion: number;
+   , total: number;
   };
   functionResults?: Record<string, unknown>;
   processingTime: number;
@@ -105,13 +105,13 @@ export interface OrchestratedRAGQuery {
 /**
  * RAG Response
  */
-export interface OrchestratedRAGResponse { answer: string;, sources: VectorSearchResult[];
+export interface OrchestratedRAGResponse {, answer: string;, sources: VectorSearchResult[];
   relevanceScore: number;
   model: string;
   provider: string;
   searchProvider: 'pgvector' | 'qdrant';
   processingTime: number;
-  citations?: Array<{ source: string;, relevance: number;
+  citations?: Array<{, source: string;, relevance: number;
     excerpt: string;
   }>;
 }
@@ -122,11 +122,11 @@ export interface OrchestratedRAGResponse { answer: string;, sources: VectorSear
 export class AIServiceOrchestrator {
   private config: AIServiceOrchestratorConfig;
   private redis: Redis;
-  private database: PostgresJsDatabase<Record<string, unknown>>;
+  private, database: PostgresJsDatabase<Record<string, unknown>>;
   private embeddingService: GemmaEmbeddingService;
   private vectorSearchService: PgVectorIndexingService;
   private mcpContext7Initialized = false;
-  private serviceStatus: ServiceStatus;
+  private, serviceStatus: ServiceStatus;
   private readonly CACHE_PREFIX = 'orchestrator:';
   private readonly HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
   private healthCheckTimer?: NodeJS.Timeout;
@@ -159,7 +159,7 @@ export class AIServiceOrchestrator {
       orchestrator: 'initializing',
       llmProviders: [],
       embeddingProvider: {
-        provider: 'ollama-gemma',
+       , provider: 'ollama-gemma',
         status: 'healthy',
         lastCheck: new Date(),
         responseTime: 0,
@@ -168,7 +168,7 @@ export class AIServiceOrchestrator {
       },
       vectorSearchProviders: [],
       mcpContext7: {
-        provider: 'mcp-context7',
+       , provider: 'mcp-context7',
         status: 'healthy',
         lastCheck: new Date(),
         responseTime: 0,
@@ -196,12 +196,12 @@ export class AIServiceOrchestrator {
    */
   async embed(request: OrchestratedEmbeddingRequest): Promise<{ embedding: number[];, dimensions: number;
     cached: boolean;
-    processingTime: number;
+   , processingTime: number;
   }> {
     const startTime = Date.now();
     try {
       const embeddingRequest: EmbeddingRequest = {
-        text: request.text,
+       , text: request.text,
         documentId: request.documentId,
         type: (request.type || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
         cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}' };'`
@@ -227,7 +227,7 @@ export class AIServiceOrchestrator {
     const startTime = Date.now();
     try {
       const embeddingRequests: EmbeddingRequest[] = requests.map(req => ({
-        text: req.text,
+       , text: req.text,
         documentId: req.documentId,
         type: (req.type || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
         cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}' }));'`
@@ -248,7 +248,7 @@ export class AIServiceOrchestrator {
     const startTime = Date.now();
     try {
       // Primary: pgvector search
-      const queryEmbedding = await this.embed({ text: query, type: 'legal_context' });'`'`
+      const queryEmbedding = await this.embed({, text: query, type: 'legal_context' });'`'`
       const results = await this.vectorSearchService.similaritySearch(queryEmbedding.embedding, {
         limit: topK,
         threshold
@@ -299,7 +299,7 @@ export class AIServiceOrchestrator {
       // For now, use a simple LLM call (MCP integration happens at route level)
       // TODO: Integrate with MCP Context7 multicore for function calling support
       const llmResponse = {
-        content: 'Based on the search results, here's the analysis of your query: "${request.question}". Found ${sources.length} relevant documents.`,`
+       , content: 'Based on the search results, here's the analysis of your query: "${request.question}". Found ${sources.length} relevant documents.`,`
         model: 'gemma3-legal',
         provider: 'ollama' };'`'`
       // 4. Build response with citations
@@ -336,7 +336,7 @@ export class AIServiceOrchestrator {
       }
       // 2. Store in pgvector
       await this.vectorSearchService.indexDocument(doc);
-      // 3. Cache in Redis with 24 hour TTL
+      // 3. Cache in Redis with, 24 hour TTL
       const cacheKey = `${this.CACHE_PREFIX}indexed:${doc.id}`;
       await this.redis.set(cacheKey, JSON.stringify(doc), 'EX', 86400);
     } catch (error) {
@@ -491,7 +491,7 @@ export class AIServiceOrchestrator {
     });
     const data = (await response.json()) as { result: Array<{, id: string;
       score: number;
-      payload: { content: string; documentId: string; metadata?: Record<string, unknown> };
+      payload: { content: string;, documentId: string; metadata?: Record<string, unknown> };
     }> };
     return data.result.map((item) => ({
       id: item.id,

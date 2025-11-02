@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { gemma3Client } from '$lib/gemma3Client';
-import { ai_interactions, as aiInteractions } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/drizzle';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { gemma3Client } from, '$lib/gemma3Client';
+import { ai_interactions, as aiInteractions } from, '$lib/server/db/schema-postgres';
+import { db } from, '$lib/server/db/drizzle';
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { prompt, documentId, caseId } = await request.json();
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: false,
       error: 'failure default to mock',
       response:
-        'Mock legal; analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
+        'Mock legal;, analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
       responseTime: 1500,
       model: 'gemma3-mock',
       confidence: 0.75,

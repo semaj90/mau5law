@@ -43,7 +43,7 @@ export async function apiFetch<T = unknown>(
       } as RequestInit);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const ct = res.headers.get('content-type') || '';
-      const out = (ct.includes('application/json') ? await res.json() : ((await res.text()) as unknown)) as T;
+      const out = (ct.includes('application/json') ? await res.json() : ((await res.text()) as: unknown)) as T;
       if (t) clearTimeout(t);
       // Attach lightweight request metadata for observability (non-enumerable)
       if (out && typeof out === 'object') {

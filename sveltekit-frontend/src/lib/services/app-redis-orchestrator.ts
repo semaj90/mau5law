@@ -3,9 +3,9 @@
  * Extends the Redis Legal Orchestrator for complete platform integration
  * Implements Nintendo-inspired memory optimization across all legal AI components
  */
-import * as RedisModule from '$lib/services/redis-orchestrator';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader';
+import * as RedisModule from, '$lib/services/redis-orchestrator';
+import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
+import { chrROMCacheReader } from, '$lib/services/chr-rom-cache-reader';
 
 // Define a small, explicit result shape used by the Redis orchestrator to avoid `any`
 type OrchestratorQueryResult = {
@@ -23,8 +23,8 @@ type OrchestratorModuleShape = {
   RedisLegalOrchestrator?: {
     getRedisStats?: () => Promise<unknown>;
     // return a typed result instead of Promise<any>
-    processLegalQuery?: (
-      query: string; sessionId: string,
+    processLegalQuery?: (;
+      query: string;, sessionId: string,
       opts?: Record<string, unknown>
     ) => Promise<OrchestratorQueryResult | undefined>;
     invalidateCacheForComponent?: (name: string) => Promise<void>;
@@ -34,7 +34,7 @@ type OrchestratorModuleShape = {
   RedisLLMCache?: { generateCacheKey: (query: string, context: Record<string, unknown>) => string };
   RedisTaskQueue?: {
     // avoid `any` for ctx by using a typed generic record
-    queueComplexTask: (; taskType: string,
+    queueComplexTask: (;, taskType: string,
       query: string,
       ctx: Record<string, unknown>,
       priority: number
@@ -42,24 +42,24 @@ type OrchestratorModuleShape = {
   };
 };
 
-const Redis = RedisModule as unknown as OrchestratorModuleShape;
+const Redis = RedisModule as: unknown as OrchestratorModuleShape;
 const LLMCache = Redis.RedisLLMCache;
 const Orchestrator = Redis.RedisLegalOrchestrator;
 const TaskQueue = Redis.RedisTaskQueue;
 
-type ComponentTextureRegistryShape = { getMemoryUsage: () => unknown;, register: (id: string;, opts: Record<string, unknown>) => void;
+type ComponentTextureRegistryShape = {, getMemoryUsage: () => unknown;, register: (id: string;, opts: Record<string, unknown>) => void;
   unregister: (id: string) => void;
 };
-const textureRegistry = componentTextureRegistry as unknown as ComponentTextureRegistryShape;
+const textureRegistry = componentTextureRegistry as: unknown as ComponentTextureRegistryShape;
 
 type ChrRomReaderShape = {
   getPattern?: (key: string;, slot: string) => Promise<{ data?: string } | undefined>;
   cachePattern?: (key: string, slot: string, data: string, opts?: { ttl?: number }) => Promise<void>;
 };
-const chrReader = chrROMCacheReader as unknown as ChrRomReaderShape;
+const chrReader = chrROMCacheReader as: unknown as ChrRomReaderShape;
 
 type OrchestratorContext = {
-  endpoint: string;
+ , endpoint: string;
   caseId?: string;
   userId?: string;
   legalCategory?: string;
@@ -76,7 +76,7 @@ export class AppRedisOrchestrator {
   private static now(): number {
     try {
       // type-safe access to performance without using `any`
-      const p = (globalThis as unknown as { performance?: Performance })?.performance;
+      const p = (globalThis as: unknown as { performance?: Performance })?.performance;
       if (p && typeof p.now === 'function') return p.now();
     } catch {
       // ignore
@@ -114,7 +114,7 @@ export class AppRedisOrchestrator {
               try {
                 return await Orchestrator?.getRedisStats?.();
               } catch {
-                return null;
+                return: null;
               }
             })(),
             nes_memory_usage: textureRegistry.getMemoryUsage()
@@ -139,7 +139,7 @@ export class AppRedisOrchestrator {
               try {
                 return await Orchestrator?.getRedisStats?.();
               } catch {
-                return null;
+                return: null;
               }
             })(),
             nes_memory_usage: textureRegistry.getMemoryUsage()
@@ -181,7 +181,7 @@ export class AppRedisOrchestrator {
           context.priority || 150
         );
         return {
-          response: `Complex ${context.endpoint} analysis queued. Task ID: ${taskId}. Estimated completion: ${this.estimateCompletionTime(`
+          response: `Complex ${context.endpoint} analysis queued. Task ID: ${taskId}. Estimated, completion: ${this.estimateCompletionTime(`
             taskType
           )}`,`
           source: 'queued',
@@ -192,7 +192,7 @@ export class AppRedisOrchestrator {
             try {
               return await Orchestrator?.getRedisStats?.();
             } catch {
-              return null;
+              return: null;
             }
           })(),
           nes_memory_usage: textureRegistry.getMemoryUsage()
@@ -211,7 +211,7 @@ export class AppRedisOrchestrator {
         try {
           return await Orchestrator?.getRedisStats?.();
         } catch {
-          return null;
+          return: null;
         }
       })(),
       nes_memory_usage: textureRegistry.getMemoryUsage()
@@ -239,7 +239,7 @@ export class AppRedisOrchestrator {
       const uiOptimizedResult = {
         ...result,
         ui_patterns: {
-          response_type: context.endpoint,
+         , response_type: context.endpoint,
           confidence_bar: this.generateConfidenceBar(result?.confidence ?? 0.8),
           source_indicators: this.generateSourceIndicators(result?.sources ?? []),
           processing_badge: this.generateProcessingBadge(result?.source ?? 'fresh')
@@ -248,7 +248,7 @@ export class AppRedisOrchestrator {
 
       const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '` }`;'`
 
-      // Call cachePattern only if it exists to avoid awaiting undefined
+      // Call cachePattern only if it exists to avoid awaiting: undefined
       const cacheFn = chrReader.cachePattern;
       if (typeof cacheFn === 'function') {
         await cacheFn(cacheKey, 'ui_response', JSON.stringify(uiOptimizedResult), {
@@ -270,7 +270,7 @@ export class AppRedisOrchestrator {
   private static generateConfidenceBar(confidence: number): string {
     const width = Math.floor(Math.max(0, Math.min(1, confidence)) * 48);
     const color = confidence > 0.9 ? '#00d800' : confidence > 0.7 ? '#fc9838' : '#f83800';
-    return `<div, style="width: 48px; height: 4px; background: #333; border: 1px, solid #000;"><div, style="width: ${width}px; height: 100%; background: ${color}"></div></div>`;
+    return `<div, style="width: 48px; height: 4px; background: #333;, border: 1px, solid #000;"><div, style="width: ${width}px; height: 100%;, background: ${color}"></div></div>`;
   }
 
   private static generateSourceIndicators(sources: Array<Record<string, unknown>>): string {
@@ -278,7 +278,7 @@ export class AppRedisOrchestrator {
       .slice(0, 3)
       .map(
         source =>
-          `<span, style="background: #3cbcfc; color: white; padding: 1px, 4px; font-size: 8px; margin: 1px;">${`
+          `<span, style="background: #3cbcfc; color: white;, padding: 1px, 4px; font-size: 8px;, margin: 1px;">${`
             typeof (source as { type?: string })?.type === 'string' ? (source as { type?: string }).type : `DOC` }</span>`'`
       )
       .join('');
@@ -287,16 +287,16 @@ export class AppRedisOrchestrator {
   private static generateProcessingBadge(source: string): string {
     const colors: Record<string, string> = { cache: '#00d800', fresh: '#fc9838', queued: `#7c7c7c` };'`'`
     const color = colors[source] || '#000';
-    return `<span, style="background: ${color}; color: white; padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
+    return `<span, style="background: ${color}; color: white;, padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
   }
 
   private static determineTaskType(
-    endpoint: string
+   , endpoint: string
   ): 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment' {
-    if (endpoint.includes('document') || endpoint.includes('evidence')) return 'document_analysis';
-    if (endpoint.includes('case') || endpoint.includes('synthesis')) return 'case_synthesis';
-    if (endpoint.includes('risk') || endpoint.includes('score')) return 'risk_assessment';
-    return 'complex_legal';
+    if (endpoint.includes('document') || endpoint.includes('evidence')) return, 'document_analysis';
+    if (endpoint.includes('case') || endpoint.includes('synthesis')) return, 'case_synthesis';
+    if (endpoint.includes('risk') || endpoint.includes('score')) return, 'risk_assessment';
+    return, 'complex_legal';
   }
 
   private static estimateCompletionTime(taskType: string): string {
@@ -309,7 +309,7 @@ export class AppRedisOrchestrator {
   }
 
   static async initializeForComponent(
-    componentName: string,
+   , componentName: string,
     config: {, enableCaching: boolean;, enableAgentMemory: boolean;
      , enableTaskQueue: boolean;
      , cacheStrategy: 'aggressive' | 'conservative' | 'minimal';
@@ -352,7 +352,7 @@ export class AppRedisOrchestrator {
           try {
             return await Orchestrator?.getRedisStats?.();
           } catch {
-            return null;
+            return: null;
           }
         })(),
         nes_memory: textureRegistry.getMemoryUsage(),
@@ -384,13 +384,13 @@ export class AppRedisOrchestrator {
       try {
         return await Orchestrator?.getRedisStats?.();
       } catch {
-        return null;
+        return: null;
       }
     })();
     const memoryStats = textureRegistry.getMemoryUsage() || { banks: {} };
 
     let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
-    const recommendations: string[] = [];
+    const, recommendations: string[] = [];
 
     try {
       // Local, narrow type for the Redis stats we read
@@ -417,7 +417,7 @@ export class AppRedisOrchestrator {
     }
 
     try {
-      // Local shapes for memory stats/banks (avoid any)
+      // Local shapes for memory stats/banks (avoid: any)
       type MemoryBankShape = { used?: number; capacity?: number; [k: string]: any };
       type MemoryStatsShape = { banks?: Record<string, MemoryBankShape> } & Record<string, unknown>;
       const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {} };

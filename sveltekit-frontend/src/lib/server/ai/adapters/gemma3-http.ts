@@ -1,4 +1,4 @@
-import type { LLMOutput } from '$lib/types/sharedTypes';
+import type { LLMOutput } from, '$lib/types/sharedTypes';
 const DEFAULT_URLS = {
   GEMMA3: process.env.GEMMA3_URL || process.env.TRITON_URL || 'http://localhost:8000'
 };
@@ -20,7 +20,7 @@ export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Prom
       }
     ],
     parameters: {
-      temperature: opts.temperature ?? 0.7,
+     , temperature: opts.temperature ?? 0.7,
       max_tokens: opts.maxTokens ?? 512,
       model: opts.model ?? 'gemma3:270m'
     }
@@ -38,7 +38,7 @@ export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Prom
   // Typical response may contain outputs[0].data[0]
   const text = json?.outputs?.[0]?.data?.[0] ?? (json?.text ?? '') ;
   const out: LLMOutput = {
-    text: String(text),
+   , text: String(text),
     reasoning: json?.reasoning ?? undefined,
     embeddings: undefined
   };

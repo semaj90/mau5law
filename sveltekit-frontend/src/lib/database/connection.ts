@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres, { type ParameterOrJSON } from 'postgres';
-import * as schema from './schema.js';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import postgres, { type ParameterOrJSON } from, 'postgres';
+import * as schema from, './schema.js';
 // Get DATABASE_URL from environment with fallback
 const DATABASE_URL =
   import.meta.env.VITE_DATABASE_URL ||
@@ -14,8 +14,8 @@ const sql = postgres(DATABASE_URL, {
   connect_timeout: 2
 });
 // Create Drizzle instance with schema (avoid unused import errors)
-// avoid `any` by using unknown-based cast
-export const db = drizzle(sql, { schema: schema as unknown as Record<string, unknown> });
+// avoid `any` by using: unknown-based cast
+export const db = drizzle(sql, { schema: schema, as: unknown as Record<string, unknown> });
 // Export sql connection for direct queries
 export { sql };
 export const pool = sql; // alias for consistency (postgres.js instance)
@@ -26,7 +26,7 @@ type DBResult<T = unknown> = {
   message?: string;
   results?: T;
   data?: T;
-  count: number;
+ , count: number;
   rowCount?: number;
   error?: string;
   details?: Record<string, unknown> | null;
@@ -47,19 +47,19 @@ type DBRow = Record<string, unknown>;
  * Use this wrapper wherever we previously did: pool.unsafe(query, ...(params as ParameterOrJSON<...>[]))
  */
 async function unsafeQuery<T = DBRow>(query: string, params?: ParamList): Promise<T[]> {
-  // Use unknown-based ParameterOrJSON alias to avoid `any` and typing mismatches
+  // Use: unknown-based ParameterOrJSON alias to avoid `any` and typing mismatches
   type JSONParam = ParameterOrJSON<unknown>;
-  const castParams = (params ?? []) as unknown as JSONParam[];
+  const castParams = (params ?? []) as: unknown as JSONParam[];
 
   // Call unsafe via a typed wrapper on pool without using generic type arguments on the call itself.
   const unsafeCaller = (
-    pool as unknown as {
-      unsafe: (q: string, p?: JSONParam[]) => Promise<unknown>;
+    pool as: unknown as {
+     , unsafe: (q: string, p?: JSONParam[]) => Promise<unknown>;
     }
   ).unsafe;
 
   const raw = await unsafeCaller(query, castParams);
-  return raw as unknown as T[];
+  return raw as: unknown as T[];
 }
 
 function getErrorMessage(e: any): string {
@@ -67,7 +67,7 @@ function getErrorMessage(e: any): string {
   try {
     return String(e);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -96,11 +96,11 @@ export async function testDatabaseConnection(): Promise<DBResult> {
   } catch (error: any) {
     return {
       success: false,
-      message: `Database connection; failed: ${getErrorMessage(error)}`,
+      message: `Database connection;, failed: ${getErrorMessage(error)}`,
       error: getErrorMessage(error),
       count: 0,
       details: {
-        timestamp: new Date().toISOString()
+       , timestamp: new Date().toISOString()
       }
     };
   }
@@ -119,12 +119,12 @@ export async function vectorSimilaritySearch(
     const query = `
       SELECT *, 1 - (embedding <=> $1::vector) AS similarity
       FROM ${tableName}
-      WHERE 1 - (embedding <=> $1::vector) > $2
+      WHERE, 1 - (embedding <=> $1::vector) > $2
       ORDER BY embedding <=> $1::vector
       LIMIT $3
     `;`
-    // pass embedding as a vector literal string
-    const params: ParamList = [`[${queryEmbedding.join(',')}]`, threshold, limit];
+    // pass embedding as a vector literal: string
+    const, params: ParamList = [`[${queryEmbedding.join(',')}]`, threshold, limit];
     // use helper to avoid TS spreading errors
     const result = await unsafeQuery<DBRow>(query, params);
     const count = Array.isArray(result) ? result.length : 0;
@@ -145,7 +145,7 @@ export async function vectorSimilaritySearch(
 
 // Hybrid semantic search combining multiple tables
 export async function hybridSemanticSearch(
-  query: string,
+ , query: string,
   queryEmbedding: number[],
   options: {
     limit?: number;
@@ -174,10 +174,10 @@ export async function hybridSemanticSearch(
       whereClauses.push(`(`
         (si.entity_type = 'case' AND si.entity_id = $${idx}::uuid) OR
         (si.entity_type = 'document' AND EXISTS (
-          SELECT 1 FROM documents d WHERE d.id = si.entity_id AND d.case_id = $${idx}::uuid
+          SELECT, 1 FROM documents d WHERE d.id = si.entity_id AND d.case_id = $${idx}::uuid
         )) OR
         (si.entity_type = 'evidence' AND EXISTS (
-          SELECT 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${idx}::uuid
+          SELECT, 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${idx}::uuid
         ))
       )`);' }'`
 
@@ -191,7 +191,7 @@ export async function hybridSemanticSearch(
         si.*,
         1 - (si.embedding <=> $1::vector) AS similarity,
         CASE si.entity_type
-          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title; WHEN: 'case' THEN c.title
+          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title;, WHEN: 'case' THEN c.title
           ELSE si.metadata->>'title'
         END AS entity_title
       FROM search_index si
@@ -208,8 +208,8 @@ export async function hybridSemanticSearch(
       success: true,
       results: result,
       count,
-      query, // original input search string
-      queryEmbedding: queryEmbedding.slice(0, 5)
+      query, // original input search: string
+     , queryEmbedding: queryEmbedding.slice(0, 5)
     };
   } catch (error: any) {
     return {
@@ -217,7 +217,7 @@ export async function hybridSemanticSearch(
       error: getErrorMessage(error),
       results: [],
       count: 0,
-      query, // original input search string for debugging
+      query, // original input search: string for debugging
     };
   }
 }
@@ -244,7 +244,7 @@ export async function initializeDatabase(): Promise<DBResult> {
     console.error('❌ Database initialization error:', error);'
     return {
       success: false,
-      message: `Initialization; failed: ${getErrorMessage(error)}`,
+      message: `Initialization;, failed: ${getErrorMessage(error)}`,
       count: 0
     };
   }

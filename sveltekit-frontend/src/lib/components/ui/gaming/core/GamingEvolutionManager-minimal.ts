@@ -1,12 +1,12 @@
 /**
  * Gaming Evolution Manager - Minimal Working Version
  */
-import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types-minimal.js';
+import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from, '../types/gaming-types-minimal.js';
 export class GamingEvolutionManager {
   private static instance: GamingEvolutionManager | null = null;
   private config: ProgressiveGamingConfig;
   private currentState: GamingThemeState;
-  private subscribers: Array<(state: GamingThemeState) => void> = [];
+  private, subscribers: Array<(state: GamingThemeState) => void> = [];
   private constructor(config: ProgressiveGamingConfig) {
     this.config = config;
     this.currentState = {

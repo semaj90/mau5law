@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Multi-Library Startup Service
 // Initializes all integrated libraries: Loki.js + Fuse.js + Fabric.js + XState + Redis + RabbitMQ
-// Platform: Native Windows (No Docker) with SvelteKit 2 + Svelte 5
-import { browser } from '$app/environment';
-import { concurrencyOrchestrator } from './concurrency-orchestrator.js';
-import { gemma3LegalService } from './ollama-gemma3-service.js';
+//, Platform: Native Windows (No Docker) with SvelteKit, 2 + Svelte, 5
+import { browser } from, '$app/environment';
+import { concurrencyOrchestrator } from, './concurrency-orchestrator.js';
+import { gemma3LegalService } from, './ollama-gemma3-service.js';
 
 // New: minimal local types to avoid `any` everywhere
 type Constructor<T = unknown> = new (...args: any[]) => T;
@@ -35,7 +35,7 @@ type HealthStatus = { status: 'healthy' | 'degraded' | 'unhealthy';, services: 
   errors: string[];
 };
 
-export interface StartupStatus { initialized: boolean;, services: { loki: boolean;, fuse: boolean;
+export interface StartupStatus {, initialized: boolean;, services: {, loki: boolean;, fuse: boolean;
     fabric: boolean;
     xstate: boolean;
     redis: boolean;
@@ -49,9 +49,9 @@ export interface StartupStatus { initialized: boolean;, services: { loki: boole
 }
 class MultiLibraryStartupService {
   private status: StartupStatus = {
-    initialized: false,
+   , initialized: false,
     services: {
-      loki: false,
+     , loki: false,
       fuse: false,
       fabric: false,
       xstate: false,
@@ -103,7 +103,7 @@ class MultiLibraryStartupService {
       // Loki.js is initialized within the concurrency orchestrator
       // This just verifies the import works
       const mod = await import('lokijs');
-      const LokiCtor = ((mod as { default?: Constructor }) .default ?? (mod as unknown as Constructor));
+      const LokiCtor = ((mod as { default?: Constructor }) .default ?? (mod as: unknown as Constructor));
       if (typeof LokiCtor === 'function') {
         this.status.services.loki = true;
         console.log('✅ Loki.js - High-performance in-memory database ready');
@@ -116,14 +116,14 @@ class MultiLibraryStartupService {
   private async initializeFuse(): Promise<void> {
     try {
       const mod = await import('fuse.js');
-      const Fuse = (mod as { default?: FuseLike }).default ?? (mod as unknown as FuseLike);
+      const Fuse = (mod as { default?: FuseLike }).default ?? (mod as: unknown as FuseLike);
       // Test with a small dataset to verify functionality
       const testData = [{ title: 'Legal Document', content: 'Sample legal text' }];
-      const testFuse = new (Fuse as unknown as FuseLike)(testData, {
+      const testFuse = new (Fuse, as: unknown as FuseLike)(testData, {
         keys: ['title', 'content'],
         threshold: 0.3
       });
-      const testResult = (testFuse as unknown as { search: (q: string) => unknown[] }).search('legal');
+      const testResult = (testFuse as: unknown as {, search: (q: string) => unknown[] }).search('legal');
       if (Array.isArray(testResult) && testResult.length > 0) {
         this.status.services.fuse = true;
         console.log('✅ Fuse.js - Advanced fuzzy search capabilities ready');
@@ -143,7 +143,7 @@ class MultiLibraryStartupService {
       }
       // Client-side: test canvas creation
       const mod = await import('fabric');
-      const fabric = (mod as { fabric?: FabricLike }).fabric ?? (mod as unknown as FabricLike);
+      const fabric = (mod as { fabric?: FabricLike }).fabric ?? (mod as: unknown as FabricLike);
       if (fabric && typeof fabric.Canvas === 'function') {
         this.status.services.fabric = true;
         console.log('✅ Fabric.js - Interactive evidence canvas ready');
@@ -191,7 +191,7 @@ class MultiLibraryStartupService {
       // Server-side: attempt Redis connection
       const mod = await import('ioredis');
       const Redis = (mod as { default?: any }).default ?? mod;
-      const redis = (Redis as unknown as Constructor<RedisClientLike>);
+      const redis = (Redis as: unknown as Constructor<RedisClientLike>);
       const client = new redis() as RedisClientLike;
       // many ioredis versions expose .connect/.ping/.quit — guard in case of variant
       if (typeof client.connect === 'function') {

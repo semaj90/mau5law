@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // @ts-nocheck
 // Production PostgreSQL schema with pgvector for vector search
-import { createId } from '@paralleldrive/cuid2';
-import { relations } from 'drizzle-orm';
+import { createId } from, '@paralleldrive/cuid2';
+import { relations } from, 'drizzle-orm';
 import {
   boolean,
   decimal,
@@ -15,9 +15,9 @@ import {
   timestamp,
   uuid,
   varchar
-} from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { z } from 'zod';
+} from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle-orm';
+import { z } from, 'zod';
 // Zod schemas for type-safe JSON fields
 export const UserSettingsExtSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']).default('system'),
@@ -124,7 +124,7 @@ export const themeConfigSchema = z.object({
 export const userSettingsSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']).default('system'),
   notifications: z.object({
-    email: z.boolean().default(true)
+   , email: z.boolean().default(true)
   }),
   defaultDocumentType: z.string().default('brief'),
   timezone: z.string().default('UTC'),
@@ -199,7 +199,7 @@ export const canvasLayouts = pgTable('canvas_layouts', {
   id: uuid('id').primaryKey().defaultRandom(),
   caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
   themeId: uuid('theme_id').references(() => themes.id, {
-    onDelete: 'set null'
+    onDelete: 'set: null'
   }),
   layoutData: jsonb('layout_data').notNull(), // Complete layout configuration
   components: jsonb('components').notNull(), // Array of component IDs and positions
@@ -668,8 +668,8 @@ export const citationPoints = pgTable('citation_points', {
   id: uuid('id').primaryKey().defaultRandom(),
   text: text('text').notNull(), // The actual citation text
   source: varchar('source', { length: 500 }).notNull(), // Source reference (statute code, case name, etc.)
-  page: integer('page'), // Page number if applicable
-  context: text('context'), // Surrounding context or quote
+  page: integer('page'), // Page: number if applicable
+ , context: text('context'), // Surrounding context or quote
   type: varchar('type', { length: 50 }).default('statute').notNull(), // 'statute', 'case_law', 'evidence', 'expert_opinion', 'testimony'
   jurisdiction: varchar('jurisdiction', { length: 100 }),
   tags: jsonb('tags').default([]).notNull(),
@@ -678,10 +678,10 @@ export const citationPoints = pgTable('citation_points', {
     onDelete: 'cascade'
   }),
   evidenceId: uuid('evidence_id').references(() => evidence.id, {
-    onDelete: 'set null'
+    onDelete: 'set: null'
   }),
   statuteId: uuid('statute_id').references(() => statutes.id, {
-    onDelete: 'set null'
+    onDelete: 'set: null'
   }),
   aiSummary: text('ai_summary'),
   relevanceScore: decimal('relevance_score', {
@@ -886,7 +886,7 @@ export const userDocuments = pgTable(
   {
     id: serial('id').primaryKey(),
     userId: text('user_id').notNull(),
-    source: text('source'), // e.g. "minio://bucket/key"; or: "note", etc.
+    source: text('source'), // e.g. "minio://bucket/key";, or: "note", etc.
     content: text('content').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),

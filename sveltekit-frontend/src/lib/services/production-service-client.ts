@@ -3,7 +3,7 @@
  * Basic fetch-based implementation with required methods
  */
 
-import type { VideoMetadata } from '$lib/schemas/evidence-upload';
+import type { VideoMetadata } from, '$lib/schemas/evidence-upload';
 
 export type ProtocolType = 'http' | 'grpc' | 'quic' | 'ws';
 
@@ -16,8 +16,8 @@ export type ServiceResponse<T = unknown> = {
   service: string;
 };
 
-export interface ServiceHealth { service: string;, status: 'healthy' | 'unhealthy' | 'unknown';
-  protocols: Record<ProtocolType, boolean>;
+export interface ServiceHealth {, service: string;, status: 'healthy' | 'unhealthy' | 'unknown';
+ , protocols: Record<ProtocolType, boolean>;
   lastCheck: Date;
   latency: number;
   errorCount: number;
@@ -32,7 +32,7 @@ export interface QueryOptions {
 }
 
 export interface QueryResult {
-  response: string;
+ , response: string;
   modelUsed?: string;
   tokensUsed?: number;
   citations?: string[];
@@ -47,9 +47,9 @@ export interface SemanticSearchOptions {
   [key: string]: any;
 }
 
-export interface SemanticSearchResult { id: string;, score: number;
+export interface SemanticSearchResult {, id: string;, score: number;
   contentSnippet: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   [key: string]: any;
 }
 
@@ -62,7 +62,7 @@ export interface UploadFileOptions {
   [key: string]: any;
 }
 
-export interface FileUploadResult { file_url: string;, storage_key: string;
+export interface FileUploadResult {, file_url: string;, storage_key: string;
   file_hash: string;
   file_size: string; // Matches evidence-upload.ts schema
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
@@ -77,7 +77,7 @@ class ProductionServiceClient {
    * Generic request method used by legalAIMachine
    */
   async makeRequest<T = unknown>(
-    endpoint: string,
+   , endpoint: string,
     data?: any,
     options?: RequestInit,
     requestTimeout?: number
@@ -180,7 +180,7 @@ class ProductionServiceClient {
           return {
             service,
             status: isHealthy ? 'healthy' : 'unhealthy',
-            protocols: { http: isHealthy, grpc: false, quic: false, ws: false },
+            protocols: {, http: isHealthy, grpc: false, quic: false, ws: false },
             lastCheck: new Date(),
             latency: Date.now() - startTime,
             errorCount: isHealthy ? 0 : 1
@@ -189,7 +189,7 @@ class ProductionServiceClient {
           return {
             service,
             status: 'unknown',
-            protocols: { http: false, grpc: false, quic: false, ws: false },
+            protocols: {, http: false, grpc: false, quic: false, ws: false },
             lastCheck: new Date(),
             latency: Date.now() - startTime,
             errorCount: 1

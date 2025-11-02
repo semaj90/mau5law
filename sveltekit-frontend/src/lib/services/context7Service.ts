@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from, 'svelte/store';
 
 export interface Context7Tool {
   name: string;
@@ -9,27 +9,27 @@ export interface Context7Analysis { component: string;, recommendations: string
   integration?: string;
   bestPractices?: string[];
 }
-export interface VectorIntelligence { query: string;, results: Array<Record<string, unknown>>;
+export interface VectorIntelligence {, query: string;, results: Array<Record<string, unknown>>;
   suggestions: string[];
 }
-export interface AutoFixResult { success: boolean;, timestamp: string;
+export interface AutoFixResult {, success: boolean;, timestamp: string;
   summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean; area: string };
-  fixes: Record<string, Array<Record<string, unknown>>>;
+ , fixes: Record<string, Array<Record<string, unknown>>>;
   configImprovements: string[];
   recommendations: string[];
 }
 
 // New typed result for legal document analysis to avoid `any`
-export interface LegalDocumentAnalysis { summary: string;, entities: Record<string, string[]>;
+export interface LegalDocumentAnalysis {, summary: string;, entities: Record<string, string[]>;
   riskScore: number; // 0-100
   confidence: number; // 0.0-1.0
-  recommendations: string[];
+ , recommendations: string[];
   extractedFromContent?: boolean;
 }
 
 export class Context7Service {
   // Configurable MCP endpoint (use PUBLIC_CONTEXT7_MCP in env; fallback to Context7 default port 8777)
-  private mcpEndpoint = (import.meta.env.PUBLIC_CONTEXT7_MCP as string | undefined) ?? 'http://localhost:8777/mcp';
+  private mcpEndpoint = (import.meta.env.PUBLIC_CONTEXT7_MCP as: string | undefined) ?? 'http://localhost:8777/mcp';
   private cacheEnabled = true;
   // Replace `any` with `unknown` to avoid unexpected-any lint error while keeping flexibility.
   private cache = new Map<string, unknown>();
@@ -69,7 +69,7 @@ export class Context7Service {
   private async loadAvailableTools(): Promise<void> {
     const cacheKey = 'available-tools';
     if (this.cacheEnabled && this.cache.has(cacheKey)) {
-      // Validate and narrow unknown to Context7Tool[] before setting the store
+      // Validate and narrow: unknown to Context7Tool[] before setting the store
       const cached = this.cache.get(cacheKey);
       if (Array.isArray(cached)) {
         this.availableTools.set(cached as Context7Tool[]);
@@ -155,7 +155,7 @@ export class Context7Service {
         intelligence = {
           query,
           results,
-          suggestions: (payload.suggestions ?? []) as string[]
+          suggestions: (payload.suggestions ?? []) as: string[]
         };
       } else {
         intelligence = this.getFallbackVectorResults(query);
@@ -180,10 +180,10 @@ export class Context7Service {
     try {
       // Placeholder behavior: no changes performed, return summary
       const result: AutoFixResult = {
-        success: true,
+       , success: true,
         timestamp: new Date().toISOString(),
         summary: {
-          filesProcessed: 0,
+         , filesProcessed: 0,
           filesFixed: 0,
           totalIssues: 0,
           dryRun: !!options?.dryRun,
@@ -205,7 +205,7 @@ export class Context7Service {
         success: false,
         timestamp: new Date().toISOString(),
         summary: {
-          filesProcessed: 0,
+         , filesProcessed: 0,
           filesFixed: 0,
           totalIssues: 0,
           dryRun: !!options?.dryRun,
@@ -219,7 +219,7 @@ export class Context7Service {
 
   // Analyze legal document using component analysis as a helper
   public async analyzeLegalDocument(
-    content: string,
+   , content: string,
     caseType?: string,
     jurisdiction?: string
   ): Promise<LegalDocumentAnalysis | null> {
@@ -254,7 +254,7 @@ export class Context7Service {
       };
     } catch (error) {
       console.warn('analyzeLegalDocument failed:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -301,12 +301,12 @@ export class Context7Service {
       {,
         name: 'analyze-stack',
         description: 'Analyze technology stack components',
-        schema: { type: 'object', properties: { component: {, type: `string` } } }
+        schema: {, type: 'object', properties: {, component: {, type: `string` } } }
       },
       {
         name: 'generate-best-practices',
         description: 'Generate best practices for development areas',
-        schema: { type: 'object', properties: { area: {, type: `string` } } }
+        schema: {, type: 'object', properties: {, area: {, type: `string` } } }
       },
     ];
   }

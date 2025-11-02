@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Snippet } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import type { Snippet } from, 'svelte';
   interface Props {
     class?: string;
     children?: Snippet;
@@ -24,7 +24,7 @@
     padding: 1rem;
     box-sizing: border-box;
     /* Prevent layout shift during hydration */
-    contain: layout style;
+   , contain: layout style;
   }
   /* Improve spacing between child elements (children are dynamic; make these selectors global so Svelte won't mark them unused) */'
   :global(.card-content-ssr > * + *) {
@@ -52,7 +52,7 @@
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     border-radius: 0.375rem;
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
   }
   /* Loading state for SSR hydration */
   :global(.card-content-ssr.loading) {

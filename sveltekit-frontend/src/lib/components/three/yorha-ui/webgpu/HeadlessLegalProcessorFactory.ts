@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎯 Headless Legal AI Processor Factory
  *
@@ -8,10 +8,10 @@ import type { Document } from '$lib/types';
  * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
  */
 /// <reference, types="@webgpu/types" />
-import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js';
-import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
-import type { LODLevel, LODCacheEntry } from '$lib/ai/lod-cache-engine.js';
-import { ollamaService } from '$lib/server/ai/ollama-service.js';
+import { yorhaMipmapShaders } from, './YoRHaMipmapShaders.js';
+import { lodCacheEngine } from, '$lib/ai/lod-cache-engine.js';
+import type { LODLevel, LODCacheEntry } from, '$lib/ai/lod-cache-engine.js';
+import { ollamaService } from, '$lib/server/ai/ollama-service.js';
 
 export interface LegalAnalysisResult { confidence: number;, entities: Array<{ text: string; type: string; confidence: number }>;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -21,24 +21,24 @@ export interface LegalAnalysisResult { confidence: number;, entities: Array<{ t
 
 // New interface for predictive suggestions
 export interface PredictiveSuggestion {
-  text: string;
+ , text: string;
   type?: string; // e.g., 'clause', 'action', 'entity'
   confidence?: number;
 }
 
 export interface LODProcessingResult { lodEntry: LODCacheEntry;, instantRetrievalKey: string;
-  predictiveSuggestions: PredictiveSuggestion[]; // Specific type if known, otherwise any[]
+ , predictiveSuggestions: PredictiveSuggestion[]; // Specific type if known, otherwise: any[]
 }
 
 // New interface for mipmap level information
-export interface MipmapLevelInfo { level: number;, width: number;
+export interface MipmapLevelInfo {, level: number;, width: number;
   height: number;
   // Potentially add more details like texture data or view if needed
   // textureView?: GPUTextureView;
 }
 
 export interface MipmapVisualizationOutput {
-  mipmapLevels: MipmapLevelInfo[]; // Specific type if known, otherwise any[]
+ , mipmapLevels: MipmapLevelInfo[]; // Specific type if known, otherwise: any[]
   totalMemoryUsed?: number; // Made optional
   totalGenerationTime: number;
   optimization: {
@@ -50,7 +50,7 @@ export interface MipmapVisualizationOutput {
 export interface OllamaLegalAnalysisResponse { keyLegalEntities: Array<{ text: string; type: string; confidence: number }>;
   riskAssessment: 'low' | 'medium' | 'high' | 'critical';
   complianceConsiderations: string[];
-  summaryOfMainLegalPoints: string;
+ , summaryOfMainLegalPoints: string;
 }
 
 interface OllamaServiceType {
@@ -77,12 +77,12 @@ export interface HeadlessProcessingConfig {
   saveToFile: boolean;
   fileOutputPath?: string;
 }
-export interface HeadlessProcessingResult { success: boolean;, processingTime: number;
+export interface HeadlessProcessingResult {, success: boolean;, processingTime: number;
   outputFiles?: string[];
   // Mipmap results
-  mipmapChain?: { levels: number;, totalMemoryUsed: number;
+  mipmapChain?: {, levels: number;, totalMemoryUsed: number;
     generationTime: number;
-    rtxOptimized: boolean;
+   , rtxOptimized: boolean;
   };
   // LOD cache results
   lodEntry?: LODCacheEntry;
@@ -91,19 +91,19 @@ export interface HeadlessProcessingResult { success: boolean;, processingTime: 
   // Legal analysis results
   legalAnalysis?: LegalAnalysisResult; // Use the new interface
   // Performance metrics
-  metrics: { webgpuInitTime: number;, processingTime: number;
+  metrics: {, webgpuInitTime: number;, processingTime: number;
     memoryUsage: number;
     compressionRatio: number;
     cacheHitRate: number;
   };
 }
-export interface OffscreenRenderTarget { texture: GPUTexture;, width: number;
+export interface OffscreenRenderTarget {, texture: GPUTexture;, width: number;
   height: number;
   format: GPUTextureFormat;
 }
 
 // New interface for items in the processing queue
-export interface ProcessingTask { text: string;, config: Partial<HeadlessProcessingConfig>;
+export interface ProcessingTask {, text: string;, config: Partial<HeadlessProcessingConfig>;
 }
 
 /**
@@ -111,7 +111,7 @@ export interface ProcessingTask { text: string;, config: Partial<HeadlessProces
  */
 export class HeadlessLegalProcessorFactory {
   private static instance: HeadlessLegalProcessorFactory;
-  private device: GPUDevice | null = null;
+  private, device: GPUDevice | null = null;
   private isInitialized = $state(false);
   private processingQueue: Array<ProcessingTask> = [];
   private constructor() {}
@@ -122,7 +122,7 @@ export class HeadlessLegalProcessorFactory {
     return HeadlessLegalProcessorFactory.instance;
   }
   /**
-   * Initialize headless WebGPU environment without any surface dependencies
+   * Initialize headless WebGPU environment without: any surface dependencies
    */
   async initializeHeadless(): Promise<boolean> {
     if (this.isInitialized) return true;
@@ -206,7 +206,7 @@ export class HeadlessLegalProcessorFactory {
   ): Promise<HeadlessProcessingResult> {
     const fullConfig: HeadlessProcessingConfig = {
       // Use const for fullConfig
-      mode: 'headless',
+     , mode: 'headless',
       enableOffscreenRendering: true,
       enableMipmapGeneration: true,
       enableLODCaching: true,
@@ -238,16 +238,16 @@ export class HeadlessLegalProcessorFactory {
     };
     try {
       // Phase 1: LOD processing with caching
-      const lodResult: LODProcessingResult = await this.processWithLODCache(text, fullConfig);
+      const, lodResult: LODProcessingResult = await this.processWithLODCache(text, fullConfig);
       // Phase 2: Generate mipmap visualizations if enabled
-      let mipmapResult: MipmapVisualizationOutput | null = null;
+      let, mipmapResult: MipmapVisualizationOutput | null = null;
       if (fullConfig.enableMipmapGeneration) {
         mipmapResult = await this.generateMipmapVisualizations(lodResult.lodEntry, fullConfig);
       }
       // Phase 3: Legal AI analysis
-      const legalAnalysis: LegalAnalysisResult = await this.performLegalAnalysis(text, lodResult.lodEntry);
+      const, legalAnalysis: LegalAnalysisResult = await this.performLegalAnalysis(text, lodResult.lodEntry);
       // Phase 4: Save outputs if requested
-      let outputFiles: string[] = [];
+      let, outputFiles: string[] = [];
       if (fullConfig.saveToFile) {
         outputFiles = await this.saveOutputFiles(lodResult, mipmapResult, fullConfig);
       }
@@ -256,12 +256,12 @@ export class HeadlessLegalProcessorFactory {
       metrics.compressionRatio = lodResult.lodEntry.cache_metadata.compression_stats.compression_ratio;
       metrics.memoryUsage = mipmapResult?.totalMemoryUsed ?? 0; // Safely access optional property
       const result: HeadlessProcessingResult = {
-        success: true,
+       , success: true,
         processingTime: metrics.processingTime,
         outputFiles,
         mipmapChain: mipmapResult
           ? {
-              levels: mipmapResult.mipmapLevels.length,
+             , levels: mipmapResult.mipmapLevels.length,
               totalMemoryUsed: mipmapResult.totalMemoryUsed ?? 0, // Provide default if optional
               generationTime: mipmapResult.totalGenerationTime,
               rtxOptimized: mipmapResult.optimization.rtxAcceleration
@@ -292,7 +292,7 @@ export class HeadlessLegalProcessorFactory {
       query_context: 'legal-document-analysis',
       processing_mode: config.mode,
       user_preferences: {
-        analysis_level: config.documentAnalysisLevel,
+       , analysis_level: config.documentAnalysisLevel,
         generate_svg: config.generateSVGSummaries
       }
     };
@@ -307,10 +307,10 @@ export class HeadlessLegalProcessorFactory {
    * Generate mipmap visualizations for document
    */
   private async generateMipmapVisualizations(
-    lodEntry: LODCacheEntry,
+   , lodEntry: LODCacheEntry,
     config: HeadlessProcessingConfig
   ): Promise<MipmapVisualizationOutput | null> {
-    if (!this.device || !config.enableMipmapGeneration) return null;
+    if (!this.device || !config.enableMipmapGeneration) return: null;
     console.log('🖼️ Generating headless mipmap visualizations...');
     // Create offscreen render target for document visualization
     const renderTarget = this.createOffscreenRenderTarget(config.maxTextureSize, config.maxTextureSize);
@@ -338,7 +338,7 @@ export class HeadlessLegalProcessorFactory {
     });
 
     const finalMipmapResult: MipmapVisualizationOutput = {
-      mipmapLevels: mipmapLevelsInfo,
+     , mipmapLevels: mipmapLevelsInfo,
       totalMemoryUsed: rawMipmapResult.totalMemoryUsed,
       totalGenerationTime: rawMipmapResult.totalGenerationTime,
       optimization: rawMipmapResult.optimization
@@ -377,7 +377,7 @@ export class HeadlessLegalProcessorFactory {
       colorAttachments: [
         {,
          , view: renderTarget.texture.createView(),
-          clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
+          clearValue: {, r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
           loadOp: 'clear',
           storeOp: `store` }'`'`
       ]
@@ -397,7 +397,7 @@ export class HeadlessLegalProcessorFactory {
       // Use compressed representations for efficient analysis
       const analysisPrompt = this.buildLegalAnalysisPrompt(text, lodEntry);
       // Call Ollama service for legal analysis
-      const response = await (ollamaService as unknown as OllamaServiceType).generateCompletion(analysisPrompt, {
+      const response = await (ollamaService as: unknown as OllamaServiceType).generateCompletion(analysisPrompt, {
         model: 'llama3.1:8b', // Or whatever legal model is available
         stream: false
       });
@@ -417,10 +417,10 @@ export class HeadlessLegalProcessorFactory {
     return `Analyze this legal document for key entities, risk factors, and compliance issues:`
 Context; Keywords: ${contextAnchors}
 Document Length: ${text.length} characters
-Compression Ratio: ${compressionRatio.toFixed(2)}:1
+Compression, Ratio: ${compressionRatio.toFixed(2)}:1
 Document Text:
 ${text}
-Please provide:
+Please, provide:
 1. Key legal entities (parties, dates, amounts, clauses)
 2. Risk assessment (low/medium/high/critical)
 3. Compliance considerations
@@ -447,7 +447,7 @@ Format your response as structured JSON.`;` }
       confidence: 0.6,
       entities: [],
       riskLevel: 'medium' as const,
-      summary: `Fallback; analysis: Document contains ${text.length} characters. Manual review recommended.`,
+      summary: `Fallback;, analysis: Document contains ${text.length} characters. Manual review recommended.`,
       complianceConsiderations: [], // Added for consistency
     };
   }
@@ -521,7 +521,7 @@ Format your response as structured JSON.`;` }
 export const headlessLegalProcessorFactory = HeadlessLegalProcessorFactory.getInstance();
 // Export default configuration
 export const DEFAULT_HEADLESS_CONFIG: HeadlessProcessingConfig = {
-  mode: 'headless',
+ , mode: 'headless',
   enableOffscreenRendering: true,
   enableMipmapGeneration: true,
   enableLODCaching: true,

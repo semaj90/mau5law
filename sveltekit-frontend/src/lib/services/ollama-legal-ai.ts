@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Ollama Legal AI Service
  * Production-grade integration with Gemma3 for legal document analysis
@@ -16,7 +16,7 @@ export interface CompletionRequest {
   context?: string[];
 }
 
-export interface CompletionResponse { response: string;, model: string;
+export interface CompletionResponse {, response: string;, model: string;
   created_at: string;
   done: boolean;
   context?: number[];
@@ -28,7 +28,7 @@ export interface CompletionResponse { response: string;, model: string;
 
 export class OllamaLegalAIService {
   private baseURL: string;
-  private defaultModel: ModelName = 'gemma3:latest';
+  private, defaultModel: ModelName = 'gemma3:latest';
 
   constructor(baseURL: string = 'http://localhost:11434') {
     this.baseURL = baseURL;

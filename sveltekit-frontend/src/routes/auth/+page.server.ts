@@ -1,7 +1,7 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { z } from 'zod';
-import bcrypt from 'bcryptjs';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { fail, redirect } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import bcrypt from, 'bcryptjs';
 // Simple validation schemas
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -10,9 +10,9 @@ const loginSchema = z.object({
 const registerSchema = z
   .object({
     email: z.string().email('Please enter a valid email address'),
-    firstName: z.string().min(2, 'First name must be at least 2 characters'),
-    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    firstName: z.string().min(2, 'First name must be at least, 2 characters'),
+    lastName: z.string().min(2, 'Last name must be at least, 2 characters'),
+    password: z.string().min(8, 'Password must be at least, 8 characters'),
     confirmPassword: z.string(),
     role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
     department: z.string().min(2, 'Department is required'),
@@ -38,12 +38,12 @@ export const load: PageServerLoad = async () => {
 };
 export const actions: Actions = {
   // Handle both login and register in unified flow;
-  default: async ({ request, cookies }) => {
+ , default: async ({ request, cookies }) => {
     const formData = await request.formData();
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    const email = formData.get('email') as: string;
+    const password = formData.get('password') as: string;
     // Determine if this is login or register based on presence of additional fields
-    const firstName = formData.get('firstName') as string;
+    const firstName = formData.get('firstName') as: string;
     const isRegister = !!firstName;
     try {
       if (isRegister) {
@@ -51,15 +51,15 @@ export const actions: Actions = {
         const registerData = {
           email,
           firstName,
-          lastName: formData.get('lastName') as string,
+          lastName: formData.get('lastName') as: string,
           password,
-          confirmPassword: formData.get('confirmPassword') as string,
-          role: formData.get('role') as string,
-          department: formData.get('department') as string,
-          jurisdiction: formData.get('jurisdiction') as string,
-          badgeNumber: (formData.get('badgeNumber') as string) || '',
-          agreeToTerms: formData.get('agreeToTerms') as string,
-          agreeToPrivacy: formData.get('agreeToPrivacy') as string
+          confirmPassword: formData.get('confirmPassword') as: string,
+          role: formData.get('role') as: string,
+          department: formData.get('department') as: string,
+          jurisdiction: formData.get('jurisdiction') as: string,
+          badgeNumber: (formData.get('badgeNumber') as: string) || '',
+          agreeToTerms: formData.get('agreeToTerms') as: string,
+          agreeToPrivacy: formData.get('agreeToPrivacy') as: string
         };
         // Validate registration data
         const validation = registerSchema.safeParse(registerData);
@@ -90,8 +90,8 @@ export const actions: Actions = {
           const errors = validation.error.errors;
           return fail(400, {
             error: errors[0]?.message || 'Login validation failed' });'` }'`
-        // For demo purposes - accept any valid email/password
-        console.log('Demo Login:', { email });
+        // For demo purposes - accept: any valid email/password
+        console.log('Demo, Login:', { email });
         // Set demo session
         cookies.set('session', `demo-login-${Date.now()}`, {
           path: '/',

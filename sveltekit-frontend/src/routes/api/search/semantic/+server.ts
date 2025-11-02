@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { defaultQueryCache } from '$lib/server/optimize/query-cache';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { defaultQueryCache } from, '$lib/server/optimize/query-cache';
 
 // Go inference service search endpoint
 const GO_SEARCH_URL = process.env.GO_GPU_SERVER_URL || 'http://localhost:8080/api/v1/search';
 // Semantic search using pgvector in Go service
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     if (!body || !body.query || body.query.trim().length === 0) {
@@ -19,14 +19,14 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log('Semantic search request:', body.query.substring(0, 100) + '...');
 
-    // Create cache query object
+    // Create cache query: object
     const cacheQuery = {
-      query: body.query.toLowerCase().trim(),
+     , query: body.query.toLowerCase().trim(),
       limit: body.limit || 5,
       type: 'semantic-search'
     };
 
-    // Use query cache with 30 minute TTL
+    // Use query cache with, 30 minute TTL
     const { data: searchData, cacheHit } = await defaultQueryCache.getOrQuery(
       cacheQuery,
       async () => {
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       count: searchData.count || 0,
       timestamp: new Date().toISOString(),
       cache: {
-        hit: cacheHit.hit,
+       , hit: cacheHit.hit,
         source: cacheHit.source,
         latency: '${cacheHit.latency.toFixed(2)}ms' }
     });
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Semantic search; failed: ${error instanceof Error ? error.message : 'Unknown error' }` },'`
+        error: 'Semantic search;, failed: ${error instanceof Error ? error.message : 'Unknown error' }` },'`
       { status: 500 }
     );
   }

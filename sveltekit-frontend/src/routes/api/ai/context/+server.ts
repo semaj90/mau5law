@@ -9,17 +9,17 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit'
+import { json } from, '@sveltejs/kit'
 
-import { ContextService } from "$lib/services/context-service"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { ContextService } from, "$lib/services/context-service"
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from, './$types.js'
 // Environment variables fallback
 const env = process.env || {}
 /*
@@ -43,7 +43,7 @@ export async function GET({ url }): Promise<any> {
       application: currentContext
       // AI Model configuration
       aiModel: {
-        name: "gemma3-legal",
+       , name: "gemma3-legal",
         endpoint: env.OLLAMA_URL || "http://ollama:11434",
         type: "local_llm",
         capabilities: [
@@ -54,7 +54,7 @@ export async function GET({ url }): Promise<any> {
           "chain_of_custody_analysis"
         ],
         configuration: {
-          temperature: 0.1,
+         , temperature: 0.1,
           maxTokens: 2048,
           contextWindow: 8192,
           streamingEnabled: true
@@ -62,7 +62,7 @@ export async function GET({ url }): Promise<any> {
       },
       // System architecture context
       architecture: {
-        frontend: "SvelteKit 2 with Svelte 5 runes",
+       , frontend: "SvelteKit, 2 with Svelte, 5 runes",
         backend: "Drizzle ORM + PostgreSQL",
         aiInfrastructure: "Ollama GPU + Docker",
         vectorSearch: "Qdrant + pgvector",
@@ -70,13 +70,13 @@ export async function GET({ url }): Promise<any> {
         messaging: "RabbitMQ"
       },
       // Development guidelines
-      guidelines: { svelte: {, runesRequired: true,
+      guidelines: {, svelte: {, runesRequired: true,
           stateDeclaration: "let (never const)",
           derivedFunctions: "$derived.by(() => ...)",
           errorBoundaries: "component rendering only"
         },
         aiIntegration: {
-          priorityIndex: "enhanced_legal_ai_index",
+         , priorityIndex: "enhanced_legal_ai_index",
           contextBoost: 0.2,
           mcpActive: true,
           fallbackChain: ["gemma3-legal", "gemma3:12b", "mock"]
@@ -106,7 +106,7 @@ export async function GET({ url }): Promise<any> {
       }
     }
     return json({
-      success: true,
+     , success: true,
       context: enhancedContext,
       timestamp: new Date().toISOString(),
       version: "1.0.0"

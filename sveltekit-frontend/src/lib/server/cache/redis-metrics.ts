@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * Redis Cache with Hit/Miss Metrics
  * Tracks cache performance for optimization insights
  */
-import { createClient, type RedisClientType } from 'redis';
+import { createClient, type RedisClientType } from, 'redis';
 interface CacheMetrics { hits: number;, misses: number;
   sets: number;
   deletes: number;
@@ -13,15 +13,15 @@ interface CacheMetrics { hits: number;, misses: number;
   averageGetTime: number;
   averageSetTime: number;
 }
-interface OperationTiming { operation: string;, duration: number;
+interface OperationTiming {, operation: string;, duration: number;
   timestamp: number;
 }
 export class RedisMetricsCache {
-  private client: RedisClientType | null = null;
+  private, client: RedisClientType | null = null;
   private isConnected = $state(false);
   // Metrics counters
   private metrics: CacheMetrics = {
-    hits: 0,
+   , hits: 0,
     misses: 0,
     sets: 0,
     deletes: 0,
@@ -36,7 +36,7 @@ export class RedisMetricsCache {
   private setTimes: number[] = [];
   private readonly MAX_TIMING_SAMPLES = 1000;
   // Key pattern tracking for insights
-  private keyPatterns: Map<string, { hits: number; misses: number }> = new Map();
+  private, keyPatterns: Map<string, { hits: number;, misses: number }> = new Map();
   constructor(private url: string) {}
   /**
    * Connect to Redis
@@ -89,7 +89,7 @@ export class RedisMetricsCache {
       this.metrics.errors++;
       this.metrics.misses++;
       console.error(`Redis GET error for key ${key}: ', error);'`
-      return null;
+      return: null;
     }
   }
   /**
@@ -159,7 +159,7 @@ export class RedisMetricsCache {
    * Multi-tier caching: Redis → Fallback → Source
    */
   async getWithFallback<T>(
-    key: string,
+   , key: string,
     fallbackSource: () => Promise<T | null>,
     primarySource: () => Promise<T>,
     ttl = 3600
@@ -267,7 +267,7 @@ export class RedisMetricsCache {
   /**
    * Get key pattern statistics
    */
-  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number; hitRate: number }> {
+  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number;, hitRate: number }> {
     return Array.from(this.keyPatterns.entries())
       .map(([pattern, stats]) => ({
         pattern,
@@ -291,7 +291,7 @@ export class RedisMetricsCache {
         errorRate: ((metrics.errors / metrics.totalRequests) * 100).toFixed(2) + '%'
       },
       performance: {
-        averageGetTime: metrics.averageGetTime.toFixed(2) + 'ms',
+       , averageGetTime: metrics.averageGetTime.toFixed(2) + 'ms',
         averageSetTime: metrics.averageSetTime.toFixed(2) + 'ms` },'`
       topPatterns: patterns.slice(0, 10),
       recommendations: this.generateRecommendations(metrics, patterns)

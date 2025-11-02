@@ -1,10 +1,10 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https: //svelte.dev/e/js_parse_error -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface Props {
     text: string;
-    speed: number;
+   , speed: number;
   }
   let { text = '', speed = 50 }: Props = $props();
   let output = $state<string>('');
@@ -42,7 +42,7 @@ https: //svelte.dev/e/js_parse_error -->
     min-height: 1.5rem;
     border-right: 2px solid #007bff;
     padding-right: 5px;
-    animation: blink 1s infinite;
+   , animation: blink 1s infinite;
   }
   @keyframes blink {
     0%,

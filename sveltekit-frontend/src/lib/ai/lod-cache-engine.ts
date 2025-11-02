@@ -5,15 +5,15 @@
  * processes LLM outputs into SVG summaries and vector metadata for enhanced RAG retrieval.
  * Integrates topology-aware predictive analytics for intelligent content prefetching.
  */
-import { simdTextTilingEngine } from './simd-text-tiling-engine';
-import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine';
+import { simdTextTilingEngine } from, './simd-text-tiling-engine';
+import type { TextEmbeddingResult, CompressedTextTile } from, './simd-text-tiling-engine';
 // Import hybrid GPU context for acceleration
-import type { HybridGPUContext } from '../gpu/hybrid-gpu-context';
+import type { HybridGPUContext } from, '../gpu/hybrid-gpu-context';
 // Import advanced GPU context provider and environment configuration
-import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../gpu/gpu-context-provider';
-import { gpuVectorProcessor } from '$lib/gpu/gpu-vector-processor';
-import { telemetryBus } from '$lib/telemetry/telemetry-bus';
-import { GPU_CONFIG, CLIENT_ENV } from '../config/env';
+import { gpuContextProvider, type GPUBackendType, type ShaderResources } from, '../gpu/gpu-context-provider';
+import { gpuVectorProcessor } from, '$lib/gpu/gpu-vector-processor';
+import { telemetryBus } from, '$lib/telemetry/telemetry-bus';
+import { GPU_CONFIG, CLIENT_ENV } from, '../config/env';
 // ================= Additional Explicit Types =================
 // Narrow previously: 'any' usages into explicit interfaces
 interface LODProcessingContext {
@@ -32,24 +32,24 @@ interface EnhancedRAGRetrievalOptions {
 interface VectorSearchMatch { entry: LODCacheEntry;, relevance_score: number;
   vector_similarity: number;
 }
-interface EnhancedRAGResultItem { entry: LODCacheEntry;, relevance_score: number;
+interface EnhancedRAGResultItem {, entry: LODCacheEntry;, relevance_score: number;
   lod_match: LODLevel;
   contextual_prompt: string;
   svg_visualization: string;
   vector_similarity: number;
 }
-interface EnhancedRAGResponse { results: EnhancedRAGResultItem[];, enhanced_context: string;
+interface EnhancedRAGResponse {, results: EnhancedRAGResultItem[];, enhanced_context: string;
   predictive_next_queries: string[];
 }
-interface ProcessLLMOutputResult { cache_entry: LODCacheEntry;, instant_retrieval_key: string;
+interface ProcessLLMOutputResult {, cache_entry: LODCacheEntry;, instant_retrieval_key: string;
   predictive_suggestions: string[];
-  enhanced_rag_context: { compressed_glyphs: LODCacheEntry['compressed_data'];, svg_summaries: LODCacheEntry['svg_summaries'];
+  enhanced_rag_context: {, compressed_glyphs: LODCacheEntry['compressed_data'];, svg_summaries: LODCacheEntry['svg_summaries'];
     vector_clusters: number[];
     topology_features: number[];
     contextual_anchors: string[];
   };
 }
-interface LODCacheStats { total_entries: number;, total_compressed_size: number;
+interface LODCacheStats {, total_entries: number;, total_compressed_size: number;
   total_original_size: number;
   average_compression_ratio: number;
   cache_hit_rate: number;
@@ -60,39 +60,39 @@ type SIMDProcessingResult = TextEmbeddingResult;
 type SIMDTile = CompressedTextTile;
 // LOD levels for progressive detail rendering
 type LODLevel = 'glyph' | 'tile' | 'block' | 'section' | 'document';
-interface LODCacheEntry { id: string;, original_text: string;
+interface LODCacheEntry {, id: string;, original_text: string;
   lod_level: LODLevel;
   // 7-bit compressed representations at different detail levels
-  compressed_data: { glyph: Uint8Array; // 7 bytes - single character/symbol level, tile: Uint8Array; // 7 bytes - word/phrase level (existing SIMD),
+  compressed_data: {, glyph: Uint8Array; // 7 bytes - single character/symbol level, tile: Uint8Array; // 7 bytes - word/phrase level (existing SIMD),
     block: Uint8Array; // 35 bytes - paragraph level (5 tiles)
     section: Uint8Array; // 175 bytes - section level (25 tiles),
     document: Uint8Array; // 875 bytes - full document level (125 tiles)
   };
   // SVG summarizations for each LOD level
-  svg_summaries: { glyph: string; // Single glyph SVG, tile: string; // Mini-icon SVG (16x16),
+  svg_summaries: {, glyph: string; // Single glyph SVG, tile: string; // Mini-icon SVG (16x16),
     block: string; // Small diagram SVG (64x64)
     section: string; // Medium visualization SVG (256x256),
     document: string; // Full document map SVG (512x512)
   };
   // Vector metadata for enhanced RAG
-  vector_metadata: { embeddings: Float32Array[]; // Semantic embeddings per LOD level, topology_features: Float32Array; // Structural relationship vectors,
+  vector_metadata: {, embeddings: Float32Array[]; // Semantic embeddings per LOD level, topology_features: Float32Array; // Structural relationship vectors,
     semantic_clusters: number[]; // Cluster IDs for related content
-    retrieval_scores: number[]; // Predictive relevance scores,
+   , retrieval_scores: number[]; // Predictive relevance scores,
     context_anchors: string[]; // Key terms for contextual prompting
   };
   // Caching metadata
-  cache_metadata: { created_at: number;, access_count: number;
+  cache_metadata: {, created_at: number;, access_count: number;
     last_accessed: number;
     prediction_confidence: number;
     retrieval_priority: number;
     processing_backend?: GPUBackendType;
-    compression_stats: { original_size: number;, compressed_size: number;
+    compression_stats: {, original_size: number;, compressed_size: number;
       compression_ratio: number;
       semantic_preservation: number;
     };
   };
 }
-interface LODProcessingConfig { enable_background_processing: boolean;, svg_generation_quality: 'fast' | 'balanced' | 'high';
+interface LODProcessingConfig {, enable_background_processing: boolean;, svg_generation_quality: 'fast' | 'balanced' | 'high';
   vector_dimensions: number;
   topology_awareness_level: 'basic' | 'advanced' | 'neural';
   predictive_analytics_enabled: boolean;
@@ -100,7 +100,7 @@ interface LODProcessingConfig { enable_background_processing: boolean;, svg_gen
   retention_policy: 'lru' | 'frequency' | 'predictive';
 }
 class LODCacheEngine {
-  private cache: Map<string, LODCacheEntry> = new Map();
+  private, cache: Map<string, LODCacheEntry> = new Map();
   private backgroundWorker: Worker | null = null;
   private svgProcessor: SVGSummarizationProcessor;
   private vectorEncoder: VectorMetadataEncoder;
@@ -110,9 +110,9 @@ class LODCacheEngine {
   private hybridGPU: HybridGPUContext | null = null;
   private useGPUAcceleration = true;
   private activeBackend: GPUBackendType = 'cpu';
-  private shaderResources: Map<string, ShaderResources> = new Map();
+  private, shaderResources: Map<string, ShaderResources> = new Map();
   private config: LODProcessingConfig = {
-    enable_background_processing: true,
+   , enable_background_processing: true,
     svg_generation_quality: 'balanced',
     vector_dimensions: 384,
     topology_awareness_level: 'advanced',
@@ -193,14 +193,14 @@ class LODCacheEngine {
     const embeddingShaders = await this.getOrLoadShaderResources('embedding-generation', () =>
       gpuContextProvider.loadShaderResources('embedding-generation', { webgpu: {, compute: this.createWebGPUEmbeddingShader() },
         webgl2: {
-          vertex: this.createWebGL2ComputeVertexShader(),
+         , vertex: this.createWebGL2ComputeVertexShader(),
           fragment: this.createWebGL2EmbeddingFragmentShader()
         },
         webgl1: {
-          vertex: this.createWebGL1ComputeVertexShader(),
+         , vertex: this.createWebGL1ComputeVertexShader(),
           fragment: this.createWebGL1EmbeddingFragmentShader()
         },
-        cpu: { uniforms: {, processingMode: 'embedding-generation' } }'` })'`
+        cpu: {, uniforms: {, processingMode: 'embedding-generation' } }'` })'`
     );
     if (embeddingShaders && CLIENT_ENV.SHADER_DEBUG) {
       console.log(`🔧 Loaded ${this.activeBackend} shaders for embedding generation`);
@@ -208,11 +208,11 @@ class LODCacheEngine {
     const clusteringShaders = await this.getOrLoadShaderResources('vector-clustering', () =>
       gpuContextProvider.loadShaderResources('vector-clustering', { webgpu: {, compute: this.createWebGPUClusteringShader() },
         webgl2: {
-          vertex: this.createWebGL2ComputeVertexShader(),
+         , vertex: this.createWebGL2ComputeVertexShader(),
           fragment: this.createWebGL2ClusteringFragmentShader()
         },
         webgl1: {
-          vertex: this.createWebGL1ComputeVertexShader(),
+         , vertex: this.createWebGL1ComputeVertexShader(),
           fragment: this.createWebGL1ClusteringFragmentShader()
         }
       })
@@ -223,11 +223,11 @@ class LODCacheEngine {
     const similarityShaders = await this.getOrLoadShaderResources('similarity-computation', () =>
       gpuContextProvider.loadShaderResources('similarity-computation', { webgpu: {, compute: this.createWebGPUSimilarityShader() },
         webgl2: {
-          vertex: this.createWebGL2ComputeVertexShader(),
+         , vertex: this.createWebGL2ComputeVertexShader(),
           fragment: this.createWebGL2SimilarityFragmentShader()
         },
         webgl1: {
-          vertex: this.createWebGL1ComputeVertexShader(),
+         , vertex: this.createWebGL1ComputeVertexShader(),
           fragment: this.createWebGL1SimilarityFragmentShader()
         }
       })
@@ -300,14 +300,14 @@ class LODCacheEngine {
     const vectorMetadata = await this.extractVectorMetadata(text, context);
     // Phase 4: Build complete LOD cache entry
     const cacheEntry: LODCacheEntry = {
-      id: entryId,
+     , id: entryId,
       original_text: text,
       lod_level: this.determinePrimaryLODLevel(text),
       compressed_data: compressedData,
       svg_summaries: svgSummaries,
       vector_metadata: vectorMetadata,
       cache_metadata: {
-        created_at: Date.now(),
+       , created_at: Date.now(),
         access_count: 1,
         last_accessed: Date.now(),
         prediction_confidence: await this.calculatePredictionConfidence(text, context),
@@ -445,7 +445,7 @@ class LODCacheEngine {
   private async compressToGlyph(char: string): Promise<Uint8Array> {
     const glyph = new Uint8Array(7);
     glyph[0] = char.charCodeAt(0) & 0x7f; // 7-bit ASCII
-    // Remaining 6 bytes encode semantic context, frequency, visual properties
+    // Remaining, 6 bytes encode semantic context, frequency, visual properties
     glyph[1] = this.calculateSemanticWeight(char);
     glyph[2] = this.calculateVisualComplexity(char);
     glyph[3] = this.calculateFrequencyScore(char);
@@ -559,7 +559,7 @@ class LODCacheEngine {
     for (let i = 0; i < bytes.length; i++) {
       checksum ^= bytes[i];
     }
-    return checksum & 0x7f; // Keep to 7 bits
+    return checksum & 0x7f; // Keep to, 7 bits
   }
   private generateEntryId(text: string, context: any): string {
     const hash = this.simpleHash(text + JSON.stringify(context));
@@ -575,11 +575,11 @@ class LODCacheEngine {
     return Math.abs(hash).toString(36);
   }
   private determinePrimaryLODLevel(text: string): LODLevel {
-    if (text.length <= 10) return 'glyph';
-    if (text.length <= 50) return 'tile';
-    if (text.length <= 250) return 'block';
-    if (text.length <= 1500) return 'section';
-    return 'document';
+    if (text.length <= 10) return, 'glyph';
+    if (text.length <= 50) return, 'tile';
+    if (text.length <= 250) return, 'block';
+    if (text.length <= 1500) return, 'section';
+    return, 'document';
   }
   private async calculatePredictionConfidence(text: string, context: LODProcessingContext): Promise<number> {
     // Simple confidence calculation - would be more sophisticated in production
@@ -651,7 +651,7 @@ class LODCacheEngine {
       instant_retrieval_key: entry.id,
       predictive_suggestions: entry.vector_metadata.context_anchors.slice(0, 5),
       enhanced_rag_context: {
-        compressed_glyphs: entry.compressed_data,
+       , compressed_glyphs: entry.compressed_data,
         svg_summaries: entry.svg_summaries,
         vector_clusters: entry.vector_metadata.semantic_clusters,
         topology_features: Array.from(entry.vector_metadata.topology_features),
@@ -697,7 +697,7 @@ class LODCacheEngine {
     _options: EnhancedRAGRetrievalOptions
   ): Promise<VectorSearchMatch[]> {
     // Stubbed vector similarity search:
-    // 1) Map cache entries to a uniform match object
+    // 1) Map cache entries to a uniform match: object
     // 2) Return top-N matches (slice after mapping)
     const matches = Array.from(this.cache.values()).map(entry => ({
       entry,
@@ -712,15 +712,15 @@ class LODCacheEngine {
   }
   private async buildContextualPrompt(entry: LODCacheEntry, query: string): Promise<string> {
     const anchors = entry.vector_metadata.context_anchors.join(', ');
-    return `Context: ${anchors}\nQuery: ${query}\nRelevant content: ${entry.original_text.slice(0, 200)}...`;
+    return `Context: ${anchors}\nQuery: ${query}\nRelevant, content: ${entry.original_text.slice(0, 200)}...`;
   }
   private selectOptimalSVG(entry: LODCacheEntry, lodPreference?: LODLevel): string {
     return entry.svg_summaries[lodPreference || 'tile'];
   }
   private determineBestLODForQuery(entry: LODCacheEntry, query: string): LODLevel {
-    if (query.length <= 20) return 'glyph';
-    if (query.length <= 100) return 'tile';
-    return 'block';
+    if (query.length <= 20) return, 'glyph';
+    if (query.length <= 100) return, 'tile';
+    return, 'block';
   }
   private async synthesizeEnhancedContext(results: EnhancedRAGResultItem[], query: string): Promise<string> {
     const contexts = results.map(r => r.contextual_prompt).join('\n\n');
@@ -752,7 +752,7 @@ class LODCacheEngine {
       };
     }
     return {
-      total_entries: this.cache.size,
+     , total_entries: this.cache.size,
       total_compressed_size: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.compressed_size, 0),
       total_original_size: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.original_size, 0),
       average_compression_ratio:
@@ -779,7 +779,7 @@ class SVGSummarizationProcessor {
     const char = String.fromCharCode(compressed[0]);
     const complexity = compressed[2];
     const color = `hsl(${(compressed[1] / 127) * 360}, 70%, 50%)`;
-    return `<svg width="16" height="16" viewBox="0 0, 16, 16">`
+    return `<svg width="16" height="16" viewBox="0, 0, 16, 16">`
       <rect, fill="${color}" width="16" height="16" rx="${complexity / 20}" opacity="${opacity}"/>
       <text, x="8" y="12" text-anchor="middle" font-size="12" fill="white">${char}</text>
     </svg>`;` }
@@ -788,7 +788,7 @@ class SVGSummarizationProcessor {
     const words = text.split(' ').slice(0, 3).join(' ');
     // small usage of quality here for font-size
     const fontSize = this.quality === 'fast' ? 5 : this.quality === 'high' ? 7 : 6;
-    return `<svg width="32" height="32" viewBox="0 0, 32, 32">`
+    return `<svg width="32" height="32" viewBox="0, 0, 32, 32">`
       <rect, fill="hsl(${hue}, 60%, 40%)" width="32" height="32" rx="4"/>
       <foreignObject, x="2" y="2" width="28" height="28">
         <div, style="font-size:${fontSize}px;color:white;text-align:center;line-height:1.2">${words}</div>
@@ -801,7 +801,7 @@ class SVGSummarizationProcessor {
       const hue = (compressed[i * 7] / 127) * 360;
       rects += `<rect, x="${i * 12}" y="0" width="10" height="64" fill="hsl(${hue}, 60%, 50%)"/>`;
     }
-    return `<svg width="64" height="64" viewBox="0 0, 64, 64">`
+    return `<svg width="64" height="64" viewBox="0, 0, 64, 64">`
       ${rects}
       <foreignObject, x="0" y="45" width="64" height="19">
         <div, style="font-size:4px;color:black;text-align:center">${text.slice(0, 50)}...</div>
@@ -809,7 +809,7 @@ class SVGSummarizationProcessor {
     </svg>`;`
   }
   async generateSectionSVG(compressed: Uint8Array, text: string): Promise<string> {
-    return `<svg width="256" height="256" viewBox="0 0, 256, 256">`
+    return `<svg width="256" height="256" viewBox="0, 0, 256, 256">`
       <defs>
         <pattern, id="textPattern" patternUnits="userSpaceOnUse" width="20" height="20">
           <rect, width="20" height="20" fill="hsl(${(compressed[0] / 127) * 360}, 50%, 90%)"/>
@@ -830,7 +830,7 @@ class SVGSummarizationProcessor {
       const hue = (compressed[i * 7] / 127) * 360;
       grid += `<rect, x="${x + 5}" y="${y + 5}" width="90" height="90" fill="hsl(${hue}, 50%, 70%)" rx="5"/>`;
     }
-    return `<svg width="512" height="512" viewBox="0 0, 512, 512">`
+    return `<svg width="512" height="512" viewBox="0, 0, 512, 512">`
       <rect, fill="#f8f9fa" width="512" height="512"/>
       ${grid}
       <foreignObject, x="20" y="450" width="472" height="50">
@@ -841,7 +841,7 @@ class SVGSummarizationProcessor {
 class VectorMetadataEncoder {
   private baseDimensions: number;
   constructor(
-    private dimensions: number,
+    private, dimensions: number,
     private cacheEngine?: LODCacheEngine
   ) {
     this.baseDimensions = dimensions;
@@ -850,7 +850,7 @@ class VectorMetadataEncoder {
     // Adaptive scaling based on backend and performance profile
     const backend: GPUBackendType = this.cacheEngine?.getHybridGPU() ? this.cacheEngine!.activeBackend : 'cpu';
     // Use imported CLIENT_ENV rather than globalAny
-    const profile = (CLIENT_ENV as any)?.PERFORMANCE_PROFILE || 'auto';
+    const profile = (CLIENT_ENV as: any)?.PERFORMANCE_PROFILE || 'auto';
     let scale = 1.0;
     if (backend === 'webgl1' || backend === 'cpu') scale *= 0.5;
     else if (backend === 'webgl2') scale *= 0.75;
@@ -893,7 +893,7 @@ class VectorMetadataEncoder {
     });
     // Emit memory usage snapshot if provider exposes it
     try {
-      const memGetter = (gpuContextProvider as unknown as { getMemoryUsage?: () => unknown }).getMemoryUsage;
+      const memGetter = (gpuContextProvider as: unknown as { getMemoryUsage?: () => unknown }).getMemoryUsage;
       const mem = memGetter?.();
       if (mem) {
         telemetryBus.publish({ type: 'gpu.memory.update', meta: mem });
@@ -946,7 +946,7 @@ class VectorMetadataEncoder {
         embeddings[embeddingIndex] = value;
       }
     `;`
-    const runCompute = (hybridGPU as unknown as { runComputeShader?: Function }).runComputeShader;
+    const runCompute = (hybridGPU as: unknown as { runComputeShader?: Function }).runComputeShader;
     if (!runCompute) {
       // Fallback directly to CPU path if compute helper missing
       return this.generateEmbeddingsCPU(segments);
@@ -973,7 +973,7 @@ class VectorMetadataEncoder {
     const backend = this.cacheEngine?.activeBackend || 'cpu';
     const adaptiveDim =
       (
-        gpuVectorProcessor as unknown as { getCurrentEmbeddingDimension?: () => number }
+        gpuVectorProcessor as: unknown as { getCurrentEmbeddingDimension?: () => number }
       ).getCurrentEmbeddingDimension?.() || this.dimensions;
     const segmentCount = segments.length;
     // Build one contiguous buffer: segmentCount * adaptiveDim
@@ -987,7 +987,7 @@ class VectorMetadataEncoder {
       }
     }
     const runRes = await (
-      gpuVectorProcessor as unknown as { runEmbeddingBatch?: (b: Float32Array, tag?: string) => any }
+      gpuVectorProcessor as: unknown as { runEmbeddingBatch?: (b: Float32Array, tag?: string) => any }
     ).runEmbeddingBatch?.(batched, 'embed-batch');
     if (!runRes) {
       // Log fallback
@@ -1000,7 +1000,7 @@ class VectorMetadataEncoder {
     const canUseStats = !!stats && stats.length >= segmentCount * triple;
     if (canUseStats) {
       telemetryBus.publish({
-        type: 'lod.embed.pipeline.stats' as any,
+        type: 'lod.embed.pipeline.stats', as: any,
         meta: {
           backend,
           segments: segmentCount,
@@ -1017,7 +1017,7 @@ class VectorMetadataEncoder {
       const sliceStart = i * adaptiveDim;
       const sliceEnd = sliceStart + adaptiveDim;
       let mean: number;
-      let std: number;
+      let, std: number;
       let energy = 0;
       if (canUseStats) {
         const base = i * triple;
@@ -1063,12 +1063,12 @@ class VectorMetadataEncoder {
       for (let j = 0; j < adaptiveDim; j++) final[j] /= l2;
       embeddings[i] = final;
       telemetryBus.publish({
-        type: 'lod.embed.pipeline.reduce' as any,
+        type: 'lod.embed.pipeline.reduce', as: any,
         meta: {, idx: i, mean, std, freq, energy, gpuStats: canUseStats }
       });
     }
     telemetryBus.publish({
-      type: 'lod.embed.pipeline.batch' as any,
+      type: 'lod.embed.pipeline.batch', as: any,
       meta: {
         backend,
         segments: segmentCount,
@@ -1212,7 +1212,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function (): string {
     `;`
 };
 LODCacheEngine.prototype.createWebGL2ComputeVertexShader = function (): string {
-  return `#version 300 es`
+  return `#version, 300 es`
       in vec2 a_position;
       in float a_index;
       out float v_index;
@@ -1223,7 +1223,7 @@ LODCacheEngine.prototype.createWebGL2ComputeVertexShader = function (): string {
     `;`
 };
 LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function (): string {
-  return `#version 300 es`
+  return `#version, 300 es`
       precision highp float;
       in float v_index;
       out vec4 fragColor;
@@ -1256,14 +1256,13 @@ LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function (): stri
     `;`
 };
 LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function (): string {
-  return `#version 300 es`
+  return `#version, 300 es`
       precision highp float;
       in float v_index;
       out vec4 fragColor;
       uniform sampler2D u_embeddings;
       uniform sampler2D u_centroids;
-      uniform vec4 u_config; // dimensions, embeddingCount, clusterCount, iterations
-      void main() {
+      uniform vec4 u_config; // dimensions, embeddingCount, clusterCount, iterations: void main() {
         float dimensions = u_config.x;
         float clusterCount = u_config.z;
         float bestCluster = 0.0;
@@ -1289,14 +1288,13 @@ LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function (): str
     `;`
 };
 LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function (): string {
-  return `#version 300 es`
+  return `#version, 300 es`
       precision highp float;
       in float v_index;
       out vec4 fragColor;
       uniform sampler2D u_queryEmbedding;
       uniform sampler2D u_documentEmbeddings;
-      uniform vec4 u_config; // dimensions, documentCount, similarityType, threshold
-      void main() {
+      uniform vec4 u_config; // dimensions, documentCount, similarityType, threshold: void main() {
         float dimensions = u_config.x;
         float docId = v_index;
         float similarityType = u_config.z;
@@ -1339,8 +1337,7 @@ LODCacheEngine.prototype.createWebGL1EmbeddingFragmentShader = function (): stri
   return `
       // @ts-ignore
       uniform vec4 u_config;
-      // @ts-ignore
-      void main() {
+      // @ts-ignore: void main() {
         // Simplified embedding for WebGL1
         // @ts-ignore
         float value = texture2D(u_textData, vec2(v_index / u_config.x, 0.0)).r;
@@ -1361,8 +1358,7 @@ LODCacheEngine.prototype.createWebGL1ClusteringFragmentShader = function (): str
       uniform sampler2D u_embeddings;
       // @ts-ignore
       uniform vec4 u_config;
-      // @ts-ignore
-      void main() {
+      // @ts-ignore: void main() {
         // Simplified clustering for WebGL1
         // @ts-ignore
         float cluster = mod(floor(v_index / 8.0), 3.0);
@@ -1383,8 +1379,7 @@ LODCacheEngine.prototype.createWebGL1SimilarityFragmentShader = function (): str
       uniform sampler2D u_documentEmbeddings;
       // @ts-ignore
       uniform vec4 u_config;
-      // @ts-ignore
-      void main() {
+      // @ts-ignore: void main() {
         // Simplified similarity for WebGL1
         // @ts-ignore
         vec2 queryCoord = vec2(0.5, 0.0);

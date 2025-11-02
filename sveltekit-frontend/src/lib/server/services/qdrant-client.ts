@@ -8,10 +8,10 @@ type SearchRequestBody = {
   filter?: Record<string, unknown>;
   [k: string]: any;
 };
-type SearchHit = { id: string | number; score?: number; payload?: Record<string, unknown> };
+type SearchHit = {, id: string | number; score?: number; payload?: Record<string, unknown> };
 type CollectionsListResponse = { collections?: Array<{ name: string }> };
 type PayloadIndexBody = { field_name: string; field_schema?: string; wait?: boolean; [k: string]: any };
-type CreateCollectionBody = { vectors: {; size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
+type CreateCollectionBody = { vectors: {;, size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
 const DEFAULT_QDRANT = 'http://localhost:6333';
 function getQdrantUrl(): string {
   if (process.env.QDRANT_URL) return process.env.QDRANT_URL;
@@ -25,7 +25,7 @@ function getApiKeyHeader(): Record<string, string> {
 }
 type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 async function ensureFetch(): Promise<FetchFn> {
-  if (typeof globalThis.fetch === 'function') return globalThis.fetch as unknown as FetchFn;
+  if (typeof globalThis.fetch === 'function') return globalThis.fetch as: unknown as FetchFn;
   try {
     const nf = await import('node-fetch');
     const mod: any = nf;
@@ -65,11 +65,11 @@ async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
       const apiKey = process.env.QDRANT_API_KEY;
       const opts: Record<string, unknown> = { url };
       if (apiKey) opts.apiKey = apiKey;
-      return new ctor(opts) as unknown as SdkClientLike;
+      return new ctor(opts) as: unknown as SdkClientLike;
     }
-    return null;
+    return: null;
   } catch {
-    return null;
+   , return: null;
   }
 }
 async function httpRequest(path: string, method = 'GET', body?: any): Promise<any> {
@@ -84,7 +84,7 @@ async function httpRequest(path: string, method = 'GET', body?: any): Promise<an
     const txt = await res.text().catch(() => '');
     throw new Error(`Qdrant HTTP ${res.status} ${res.statusText}: ${txt}`);
   }
-  if (res.status === 204) return null;
+  if (res.status === 204) return: null;
   return res.json().catch(() => null);
 }
 async function httpGetCollections(): Promise<CollectionsListResponse> {
@@ -108,7 +108,7 @@ async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndex
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getApiKeyHeader() },
         body: JSON.stringify(body)
-      } as any);
+      } as: any);
       if (res.ok) return await res.json();
     } catch {
       // try next
@@ -214,7 +214,7 @@ async function qdrantHealthCheck(): Promise<boolean> {
   try {
     const f = await ensureFetch();
     const url = `${getQdrantUrl().replace(/\/$/, '')}/health`;
-    const res = await f(url, { method: 'GET', headers: getApiKeyHeader() } as any);
+    const res = await f(url, { method: 'GET', headers: getApiKeyHeader() } as: any);
     return res.ok;
   } catch {
     return false;

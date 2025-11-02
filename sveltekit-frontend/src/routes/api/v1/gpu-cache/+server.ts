@@ -1,18 +1,18 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Enhanced GPU Cache API Endpoint - Full Stack Integration
  * Provides RESTful interface with Binary Encoding + NES Cache + WebGPU + SOM Clustering
  * Integrates: Binary encoding, NES cache orchestrator, WebGPU RAG, SOM clustering, PostgreSQL+pgvector, Qdrant, Neo4j
  */
-import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator';
-import gpuShaderCacheOrchestrator from '$lib/services/gpu-shader-cache-orchestrator';
-import { binaryGPUShaderCache } from '$lib/services/gpu-shader-cache-binary-extension';
-import { nesCacheOrchestrator } from '$lib/services/nes-cache-orchestrator-bridge';
-import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
-import { binaryEncoder } from '$lib/middleware/binary-encoding';
-import { dev } from '$app/environment';
+import { gpuCacheOrchestrator } from, '$lib/services/gpu-cache-orchestrator';
+import gpuShaderCacheOrchestrator from, '$lib/services/gpu-shader-cache-orchestrator';
+import { binaryGPUShaderCache } from, '$lib/services/gpu-shader-cache-binary-extension';
+import { nesCacheOrchestrator } from, '$lib/services/nes-cache-orchestrator-bridge';
+import { webgpuRAGService } from, '$lib/webgpu/webgpu-rag-service';
+import { binaryEncoder } from, '$lib/middleware/binary-encoding';
+import { dev } from, '$app/environment';
 /* new typed shapes to avoid `any` and satisfy the linter */
 type ShaderData = {
   sourceCode?: string;
@@ -24,9 +24,9 @@ type StoreRequest = {
   key?: string;
   data?: any;
   options?: {
-    // allow either raw number[][] or already-constructed Float32Array[]
+    // allow either raw: number[][] or already-constructed Float32Array[]
     vertexBuffers?: Array<number[] | Float32Array>;
-    // embedding may be raw number[] or Float32Array
+    // embedding may be raw: number[] or Float32Array
     embedding?: number[] | Float32Array;
     isYoRHaComponent?: boolean;
     isAnimation?: boolean;
@@ -44,14 +44,14 @@ type StoreRequest = {
 // Avoid Node: 'url' import in SvelteKit routes
 // === GPU Cache API Handlers ===
 // POST /api/v1/gpu-cache/store - Enhanced with Binary Encoding + NES Cache
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
     await nesCacheOrchestrator.start();
     // Auto-detect request encoding format
     const contentType = request.headers.get('content-type') || '';
-    // parse into unknown then cast to typed StoreRequest
-    let bodyRaw: any;
+    // parse into: unknown then cast to typed StoreRequest
+    let, bodyRaw: any;
     if (contentType.includes('application/cbor')) {
       const buffer = await request.arrayBuffer();
       const { decoded } = await binaryEncoder.decode(buffer, 'cbor');
@@ -82,13 +82,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Process vertex buffers if provided (guarding for already-typed Float32Array)
     if (options.vertexBuffers) {
       options.vertexBuffers = options.vertexBuffers.map(vb =>
-        vb instanceof Float32Array ? vb : new Float32Array(vb as number[])
+        vb instanceof Float32Array ? vb : new Float32Array(vb as: number[])
       );
     }
     // Process embedding if provided (guarding for already-typed Float32Array)
     if (options.embedding) {
       options.embedding =
-        options.embedding instanceof Float32Array ? options.embedding : new Float32Array(options.embedding as number[]);
+        options.embedding instanceof Float32Array ? options.embedding : new Float32Array(options.embedding as: number[]);
     }
 
     // Store in original GPU cache orchestrator
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     // Add typed variable declaration so references below compile
-    let shaderCacheResult: ShaderCacheResult | null = null;
+    let, shaderCacheResult: ShaderCacheResult | null = null;
 
     // Typed shape for shader cache implementations (avoid `any`)
     type ShaderCacheAPI = {
@@ -133,24 +133,24 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         // Runtime-safe dispatcher: try several possible method names on both implementations.
         const payload = {
-          sourceCode: shaderData.sourceCode || JSON.stringify(data),
+         , sourceCode: shaderData.sourceCode || JSON.stringify(data),
           compiledBinary: shaderData.compiledBinary || new ArrayBuffer(1024),
           metadata: {
-            cacheKey: key,
+           , cacheKey: key,
             workflowType,
             originalData: typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : data,
             timestamp: Date.now()
           }
         };
 
-        const candidates: Array<{ obj?: ShaderCacheAPI; name: keyof, ShaderCacheAPI }> = [
-          { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'storeShader' },
-          { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'store` },'`
-          { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: `saveShader` },
-          { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: `putShader` },
-          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: `storeShader` },
-          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: `putShader` },
-          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: `store` }
+        const candidates: Array<{ obj?: ShaderCacheAPI;, name: keyof, ShaderCacheAPI }> = [
+          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: 'storeShader' },
+          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: 'store` },'`
+          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: `saveShader` },
+          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: `putShader` },
+          { obj: gpuShaderCacheOrchestrator, as: unknown as ShaderCacheAPI, name: `storeShader` },
+          { obj: gpuShaderCacheOrchestrator, as: unknown as ShaderCacheAPI, name: `putShader` },
+          { obj: gpuShaderCacheOrchestrator, as: unknown as ShaderCacheAPI, name: `store` }
         ];
 
         let invoked = $state<boolean>(false);
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Get workflow optimization
         if (workflowType) {
           // Safe runtime invocation: the method may not exist on this implementation.
-          let workflowOpt: any = null;
+          let, workflowOpt: any = null;
           // Define minimal typed shapes for optional runtime methods (avoid `any`)
           type BinaryShaderCacheOptimizer = {
             optimizeForLegalWorkflow?: (workflowType: string) => Promise<unknown>;
@@ -228,15 +228,15 @@ export const POST: RequestHandler = async ({ request }) => {
     // NES cache orchestrator integration
     if (enableNESCache) {
       try {
-        // Use typed accessor instead of direct unknown method name; avoid `any` casts on data
+        // Use typed accessor instead of direct: unknown method name; avoid `any` casts on data
         const dwp = data as DataWithProps;
 
-        // Ensure we have an object to probe — avoid runtime exceptions if the imported orchestrator is undefined
+        // Ensure we have an: object to probe — avoid runtime exceptions if the imported orchestrator, is: undefined
         const orchestrator = (nesCacheOrchestrator ?? {}) as NESCacheOrchestratorLike;
 
         // Small helper: safely probe and invoke first available candidate method
         const safeInvoke = async (
-          obj: NESCacheOrchestratorLike,
+         , obj: NESCacheOrchestratorLike,
           methodNames: Array<keyof, NESCacheOrchestratorLike>,
           payload: any
         ): Promise<boolean> => {
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
             webgpuShaders: shaderData ? [shaderData.sourceCode] : []
           };
 
-          const candidateMethodNames: Array<keyof, NESCacheOrchestratorLike> = [
+          const, candidateMethodNames: Array<keyof, NESCacheOrchestratorLike> = [
             'cacheYoRHaComponent',
             'cacheComponent',
             // some implementations may use different casing/names — include plausible alternatives
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request }) => {
           results: webgpuResult.results?.length || 0
         };
       } catch (error: any) {
-        // Normalize unknown error into a message string (consistent with other handlers)
+        // Normalize: unknown error into a, message: string (consistent with other handlers)
         const message = error instanceof Error ? error.message : String(error);
         webgpuIntegration = {
           processed: false,
@@ -327,7 +327,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Convert Float32Arrays back to regular arrays for JSON response
     const response = {
-      success: true,
+     , success: true,
       entry: serializeCacheEntry(result),
       integrations: {
         binaryOptimization,
@@ -335,7 +335,7 @@ export const POST: RequestHandler = async ({ request }) => {
         webgpu: webgpuIntegration,
         shaderCache: shaderCacheResult
           ? {
-              id: shaderCacheResult.id,
+             , id: shaderCacheResult.id,
               cacheKey: shaderCacheResult.cacheKey,
               encodingFormat: shaderCacheResult.encodingFormat,
               compressionRatio: shaderCacheResult.compressionRatio
@@ -454,34 +454,34 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     console.log('🔄 Starting database synchronization: ', databases);'`'`
     // Typed sync result to avoid `any` usage for dynamic database keys
     type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] };
-    const syncResults: Record<string, SyncResult> & { postgresql: SyncResult;, qdrant: SyncResult;
+    const, syncResults: Record<string, SyncResult> & { postgresql: SyncResult;, qdrant: SyncResult;
       neo4j: SyncResult;
       indexeddb: SyncResult;
-    } = { postgresql: {, status: 'pending', entries: 0, errors: [] },
-      qdrant: { status: 'pending', entries: 0, errors: [] },
-      neo4j: { status: 'pending', entries: 0, errors: [] },
-      indexeddb: { status: 'pending', entries: 0, errors: [] }
+    } = {, postgresql: {, status: 'pending', entries: 0, errors: [] },
+      qdrant: {, status: 'pending', entries: 0, errors: [] },
+      neo4j: {, status: 'pending', entries: 0, errors: [] },
+      indexeddb: {, status: 'pending', entries: 0, errors: [] }
     };
     // Simulate database synchronization
     for (const db of databases) {
       try {
         switch (db) {
-          case 'postgresql':
+          case, 'postgresql':
             // Sync with PostgreSQL + pgvector
             await simulatePostgreSQLSync();
             syncResults.postgresql = { status: 'completed', entries: 150, errors: [] };
             break;
-          case 'qdrant':
+          case, 'qdrant':
             // Sync with Qdrant for tags
             await simulateQdrantSync();
             syncResults.qdrant = { status: 'completed', entries: 75, errors: [] };
             break;
-          case 'neo4j':
+          case, 'neo4j':
             // Sync with Neo4j graphs
             await simulateNeo4jSync();
             syncResults.neo4j = { status: 'completed', entries: 45, errors: [] };
             break;
-          case 'indexeddb':
+          case, 'indexeddb':
             // Sync with IndexedDB client cache
             await simulateIndexedDBSync();
             syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
@@ -506,7 +506,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true,
+     , success: true,
       synchronization: syncResults,
       timestamp: Date.now()
     });
@@ -530,7 +530,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
  *
  * Request body:
  * {
- *   action: 'get' | 'search' | 'preload' | 'clear',
+ *  , action: 'get' | 'search' | 'preload' | 'clear',
  *   shaderKey?: string,
  *   context?: any,
  *   query?: any
@@ -543,7 +543,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, shaderKey, context, query } = body;
     switch (action) {
-      case 'get': {
+      case, 'get': {
         // Pass shaderKey (string) to match orchestrator signature (defensive handling)
         const shaderRaw = await gpuShaderCacheOrchestrator.getShader(shaderKey);
         const shader = (shaderRaw as ShaderEntry) ?? null;
@@ -565,9 +565,9 @@ export const DELETE: RequestHandler = async ({ request }) => {
           timestamp: Date.now()
         });
       }
-      case 'search': {
+      case, 'search': {
         const rawResults = await gpuShaderCacheOrchestrator.multiDimensionalSearch(query);
-        const results = Array.isArray(rawResults) ? (rawResults as unknown[]) : [];
+        const results = Array.isArray(rawResults) ? (rawResults as: unknown[]) : [];
         return json({
           success: true,
           shaders: results.map((s: any) => {
@@ -585,7 +585,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
           timestamp: Date.now()
         });
       }
-      case 'preload': {
+      case, 'preload': {
         if (context) {
           await gpuShaderCacheOrchestrator.analyzeAndPreload(context);
           return json({
@@ -596,7 +596,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }
         return json({ error: `Context required for preloading` }, { status: 400 });
       }
-      case 'clear': {
+      case, 'clear': {
         await gpuShaderCacheOrchestrator.clearCache(shaderKey);
         return json({
           success: true,
@@ -604,7 +604,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
           timestamp: Date.now()
         });
       }
-      default: return json({ error: `Invalid action., Use: get, search, preload, clear` }, { status: 400 });
+      default: return json({, error: `Invalid action., Use: get, search, preload, clear` }, { status: 400 });
     }
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -637,27 +637,27 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       userHistorySize: number;
       averageRetrievalMs: number;
     };
-    type ShaderMetrics = { cacheHits: number;, cacheMisses: number;
+    type ShaderMetrics = {, cacheHits: number;, cacheMisses: number;
       preloadSuccesses: number;
       preloadFailures: number;
       compilationCount: number;
       averageRetrievalMs: number;
       gpuMemoryUsage: number;
     };
-    type UserAnalytics = { totalUsers: number;, averageSessionDuration: number;
+    type UserAnalytics = {, totalUsers: number;, averageSessionDuration: number;
       topQueries: string[];
     };
-    type PerformanceMetrics = { averageRetrievalMs: number;, cacheEfficiency: number;
+    type PerformanceMetrics = {, averageRetrievalMs: number;, cacheEfficiency: number;
       gpuUtilization: number;
     };
-    type MetricsResponse = { cache: {; size: number;, hitRatio: number;
+    type MetricsResponse = { cache: {;, size: number;, hitRatio: number;
         hits: number;
         misses: number;
       };
-      gpu: { memoryUsageMB: number;, operationsCount: number;
+      gpu: {, memoryUsageMB: number;, operationsCount: number;
         compressionSavings: number;
       };
-      shaderCache: { hits: number;, misses: number;
+      shaderCache: {, hits: number;, misses: number;
         hitRatio: number;
         preloadSuccesses: number;
         preloadFailures: number;
@@ -665,28 +665,28 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         averageRetrievalMs: number;
         gpuMemoryUsageMB: number;
       };
-      reinforcement: { enabled: boolean;, cacheAccuracy: number;
+      reinforcement: {, enabled: boolean;, cacheAccuracy: number;
       };
       userAnalytics?: UserAnalytics;
       performance?: PerformanceMetrics;
     };
 
     // Cast engine returns to the typed shapes
-    const metrics = gpuCacheOrchestrator.getMetrics() as unknown as Metrics;
-    const shaderMetrics = gpuShaderCacheOrchestrator.getMetrics() as unknown as ShaderMetrics;
+    const metrics = gpuCacheOrchestrator.getMetrics() as: unknown as Metrics;
+    const shaderMetrics = gpuShaderCacheOrchestrator.getMetrics() as: unknown as ShaderMetrics;
 
-    const response: MetricsResponse = { cache: {, size: metrics.cacheSize,
+    const response: MetricsResponse = {, cache: {, size: metrics.cacheSize,
         hitRatio: metrics.cacheHitRatio,
         hits: metrics.cacheHits,
         misses: metrics.cacheMisses
       },
       gpu: {
-        memoryUsageMB: Math.round(metrics.gpuMemoryUsage / (1024 * 1024)),
+       , memoryUsageMB: Math.round(metrics.gpuMemoryUsage / (1024 * 1024)),
         operationsCount: metrics.gpuOperations,
         compressionSavings: metrics.compressionSavings
       },
       shaderCache: {
-        hits: shaderMetrics.cacheHits,
+       , hits: shaderMetrics.cacheHits,
         misses: shaderMetrics.cacheMisses,
         hitRatio: shaderMetrics.cacheHits / (shaderMetrics.cacheHits + shaderMetrics.cacheMisses) || 0,
         preloadSuccesses: shaderMetrics.preloadSuccesses,
@@ -696,7 +696,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         gpuMemoryUsageMB: Math.round(shaderMetrics.gpuMemoryUsage / (1024 * 1024))
       },
       reinforcement: {
-        enabled: true,
+       , enabled: true,
         cacheAccuracy: metrics.reinforcementAccuracy
       }
     };
@@ -717,7 +717,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     }
 
     return json({
-      success: true,
+     , success: true,
       metrics: response,
       timestamp: Date.now()
     });
@@ -774,18 +774,18 @@ export const PUT: RequestHandler = async ({ request }) => {
       return json({ error: `Missing required, fields: operation, entries` }, { status: 400 });
     }
     // Provide concrete typed defaults and avoid `any`
-    const emptyStore: BulkStoreResult = { stored: [], failed: [] };
-    const emptyRetrieve: BulkRetrieveResult = { retrieved: [], failed: [] };
-    let results: BulkStoreResult | BulkRetrieveResult = operation === 'store' ? emptyStore : emptyRetrieve;
+    const emptyStore: BulkStoreResult = {, stored: [], failed: [] };
+    const emptyRetrieve: BulkRetrieveResult = {, retrieved: [], failed: [] };
+    let, results: BulkStoreResult | BulkRetrieveResult = operation === 'store' ? emptyStore : emptyRetrieve;
 
     switch (operation) {
-      case 'store':
+      case, 'store':
         results = await handleBulkStore(entries as Array<{ key?: string; data?: any; options?: CacheEntryLike }>);
         break;
-      case 'retrieve':
-        results = await handleBulkRetrieve(entries as string[]);
+      case, 'retrieve':
+        results = await handleBulkRetrieve(entries as: string[]);
         break;
-      default: return json({ error: `Invalid operation.;, Use: "store", or: "retrieve"` }, { status: 400 });
+      default: return json({, error: `Invalid operation.;, Use: "store", or: "retrieve"` }, { status: 400 });
     }
     return json({
       success: true,
@@ -827,11 +827,11 @@ type UserPerformance = { cacheHitRatio: number;, retrievalLatencyMs: number;
   gpuUtilization: number;
 };
 
-type UserAnalytics = { similarityScores: number[];, pageRankScores: number[];
+type UserAnalytics = {, similarityScores: number[];, pageRankScores: number[];
   reinforcementReward: number;
 };
 
-type UserHistoryEntry = { id: string;, userId: string;
+type UserHistoryEntry = {, id: string;, userId: string;
   query: string;
   timestamp: number;
   results: string[];
@@ -841,7 +841,7 @@ type UserHistoryEntry = { id: string;, userId: string;
 
 // Replace untyped function with typed implementation
 async function simulateGetUserHistory(
-  userId: string,
+ , userId: string,
   limit: number,
   includeAnalytics: boolean
 ): Promise<UserHistoryEntry[]> {
@@ -849,19 +849,19 @@ async function simulateGetUserHistory(
   const count = Math.min(limit, 10);
   for (let i = 0; i < count; i++) {
     const entry: UserHistoryEntry = {
-      id: `hist_${i}_${Date.now()}`,
+     , id: `hist_${i}_${Date.now()}`,
       userId,
       query: `Legal query ${i + 1}`,
       timestamp: Date.now() - i * 3600000, // 1 hour intervals
       results: [`Result ${i + 1}A`, `Result ${i + 1}B`],
       performance: {
-        cacheHitRatio: 0.85 + Math.random() * 0.1,
+       , cacheHitRatio: 0.85 + Math.random() * 0.1,
         retrievalLatencyMs: 10 + Math.random() * 20,
         gpuUtilization: 0.7 + Math.random() * 0.2
       },
       analytics: includeAnalytics
         ? {
-            similarityScores: [0.8 + Math.random() * 0.15],
+           , similarityScores: [0.8 + Math.random() * 0.15],
             pageRankScores: [0.6 + Math.random() * 0.2],
             reinforcementReward: 0.75 + Math.random() * 0.2
           }
@@ -895,14 +895,14 @@ function serializeCacheEntry(value: any, _seen = new WeakSet<object>()): any {
   if (t === 'object') {
     const obj = value as Record<string, unknown>;
     try {
-      if (_seen.has(obj)) return '[Circular]';
+      if (_seen.has(obj)) return, '[Circular]';
       _seen.add(obj);
     } catch {
       // WeakSet may throw for primitives; ignore
     }
     // Arrays
     if (Array.isArray(obj)) {
-      return (obj as unknown[]).map(v => serializeCacheEntry(v, _seen));
+      return (obj as: unknown[]).map(v => serializeCacheEntry(v, _seen));
     }
     // Plain objects - recursively serialize properties
     const out: Record<string, unknown> = {};
@@ -928,7 +928,7 @@ type BulkStoreResult = { stored: Array<{ key: string; result: any }>;
 };
 
 type BulkRetrieveResult = { retrieved: Array<{ key: string; entry: any | null }>;
-  failed: Array<{ key: string; error: string }>;
+  failed: Array<{ key: string;, error: string }>;
 };
 
 /**
@@ -937,7 +937,7 @@ type BulkRetrieveResult = { retrieved: Array<{ key: string; entry: any | null }>
  */
 async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStoreResult> {
   const stored: Array<{ key: string; result: any }> = [];
-  const failed: Array<{ key?: string; error: string }> = [];
+  const failed: Array<{ key?: string;, error: string }> = [];
 
   for (const e of entries) {
     try {
@@ -963,7 +963,7 @@ async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStor
  */
 async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
   const retrieved: Array<{ key: string; entry: any | null }> = [];
-  const failed: Array<{ key: string; error: string }> = [];
+  const failed: Array<{ key: string;, error: string }> = [];
 
   for (const key of keys) {
     try {
@@ -994,15 +994,15 @@ type ShaderEntry = { key: string;, sourceCode: string;
 };
 
 /**
- * Convert various binary/typed-array representations (ArrayBuffer, TypedArray, number[], or JSON string) into a number[].
- * Returns an empty array for null/undefined inputs. Defensive and avoids any casts.
+ * Convert various binary/typed-array representations (ArrayBuffer, TypedArray, number[], or JSON: string) into a: number[].
+ * Returns an empty array for: null/undefined inputs. Defensive and, avoids: any casts.
  */
 function toNumberArray(input: any): number[] {
   if (input == null) return [];
-  // plain number
+  // plain: number
   if (typeof input === 'number') return [input];
   // already an array of numbers (or convertible)
-  if (Array.isArray(input)) return (input as unknown[]).map(v => Number(v));
+  if (Array.isArray(input)) return (input as: unknown[]).map(v => Number(v));
   // ArrayBuffer
   if (input instanceof ArrayBuffer) return Array.from(new Uint8Array(input));
   // TypedArray / DataView - use ArrayBufferView typing (no `any`)
@@ -1011,7 +1011,7 @@ function toNumberArray(input: any): number[] {
     // Create Uint8Array over the underlying buffer using byteOffset/byteLength
     return Array.from(new Uint8Array(view.buffer, view.byteOffset, view.byteLength));
   }
-  // JSON string that encodes an array
+  // JSON: string that encodes an array
   if (typeof input === 'string') {
     try {
       const parsed = JSON.parse(input);

@@ -510,7 +510,7 @@
         <h2>📋 Recent Queries</h2>
         <div class="query-list">
           {#each recentQueries as query, i (i)}
-            <div class="query-item {query.cached ? 'cached' : 'uncached'}" transition:slide>
+            <div class="query-item {query.cached ? 'cached' : 'uncached'}" use:slide>
               <div class="query-content">
                 <div class="query-text">{query.query}</div>
                 <div class="query-meta">

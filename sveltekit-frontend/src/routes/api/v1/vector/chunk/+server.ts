@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * RAG Chunking API - Optimized text chunking for legal documents
  * Handles semantic chunking, paragraph-aware splitting, and CUDA-accelerated processing
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from '$lib/server/minio-service';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getCudaServiceUrl, getEmbeddingModel } from, '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } from, '$lib/server/minio-service';
+import { generateEmbeddings } from, '$lib/server/services/embedding-service';
 interface ChunkingRequest {
   text?: string;
   minioUrl?: string;
@@ -23,22 +23,22 @@ interface ChunkingRequest {
     generateEmbeddings?: boolean;
   };
 }
-interface SemanticChunk { content: string;, startIndex: number;
+interface SemanticChunk {, content: string;, startIndex: number;
   endIndex: number;
   embedding?: number[];
-  metadata: { wordCount: number;, sentenceCount: number;
+  metadata: {, wordCount: number;, sentenceCount: number;
     complexity: number;
     entities?: string[];
     keyTerms?: string[];
     similarity?: number; // Similarity to previous chunk
   };
 }
-interface ChunkingResponse { success: boolean;, chunks: SemanticChunk[];
-  summary: { totalChunks: number;, averageChunkSize: number;
+interface ChunkingResponse {, success: boolean;, chunks: SemanticChunk[];
+  summary: {, totalChunks: number;, averageChunkSize: number;
     totalTokens: number;
     processingTime: number;
     chunkingMethod: string;
-    usedCUDA: boolean;
+   , usedCUDA: boolean;
   };
   embeddings?: number[][];
   documentMetadata?: Record<string, unknown> | undefined; // <-- added optional typed metadata
@@ -118,10 +118,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = Date.now() - startTime;
     const totalTokens = chunks.reduce((acc, chunk) => acc + estimateTokens(chunk.content), 0);
     const response: ChunkingResponse = {
-      success: true,
+     , success: true,
       chunks,
       summary: {
-        totalChunks: chunks.length,
+       , totalChunks: chunks.length,
         averageChunkSize: Math.round(chunks.reduce((acc, c) => acc + c.content.length, 0) / chunks.length),
         totalTokens,
         processingTime,
@@ -155,7 +155,7 @@ async function performSemanticChunking(
   const chunks: SemanticChunk[] = [];
   let currentChunk = '';
   let currentStartIndex = 0;
-  let currentSentences: string[] = [];
+  let, currentSentences: string[] = [];
   for (let i = 0; i < sentences.length; i++) {
     const sentence = sentences[i];
     const tentativeChunk = currentChunk + (currentChunk ? ' ' : '') + sentence;
@@ -311,7 +311,7 @@ async function createSemanticChunk(
   const wordCount = content.split(/\s+/).length;
   const sentenceCount = sentences.length;
   let entities: string[] = [];
-  let keyTerms: string[] = [];
+  let, keyTerms: string[] = [];
   let complexity = 0;
   if (extractMetadata) {
     // Extract legal entities and key terms
@@ -341,7 +341,7 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       texts,
       model: getEmbeddingModel(),
       config: {
-        normalize: true,
+       , normalize: true,
         use_tensor_cores: true
       }
     };

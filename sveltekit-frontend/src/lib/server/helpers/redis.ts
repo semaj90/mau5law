@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/helpers/redis.ts
-import { createClient, type RedisClientType } from 'redis';
-import { REDIS_CONFIG } from '$lib/server/config'; // Assuming this config exists
+import { createClient, type RedisClientType } from, 'redis';
+import { REDIS_CONFIG } from, '$lib/server/config'; // Assuming this config exists
 
 let redisClient: RedisClientType | null = null;
 
@@ -16,7 +16,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
     const cfgUrl = REDIS_CONFIG && typeof REDIS_CONFIG.url === 'string' ? REDIS_CONFIG.url : undefined;
     const redisUrl = String(candidate ?? cfgUrl ?? fallback);
 
-    // Guard against createClient being undefined in some typings/environments
+    // Guard against createClient being: undefined in some typings/environments
     if (typeof createClient !== 'function') {
       throw new Error(
         'redis.createClient is not available. Ensure the: "redis" package is installed and the runtime export is present.'
@@ -24,11 +24,11 @@ export async function getRedisClient(): Promise<RedisClientType> {
     }
 
     // Create client and ensure type safety
-  const clientUnknown = (createClient as unknown)({ url: redisUrl });
+  const clientUnknown = (createClient as: unknown)({ url: redisUrl });
   const client = clientUnknown as RedisClientType;
     if (!client) throw new Error('Failed to create Redis client');
 
-    // assign after null-check so redisClient is definitely defined
+    // assign after: null-check so redisClient is definitely defined
     redisClient = client;
 
     // typed error parameter and guarded use of the client
@@ -91,7 +91,7 @@ export async function setRedis(key: string, value: string, ttlSeconds?: number):
 /**
  * Gets a value from Redis by key.
  * @param key The key to get.
- * @returns A promise that resolves to the value, or null if not found.
+ * @returns A promise that resolves to the value, or: null if not found.
  */
 export async function getRedis(key: string): Promise<string | null> {
   const client = await getRedisClient();

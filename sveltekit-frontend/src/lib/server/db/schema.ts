@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // Move/import Drizzle pg-core symbols near the top of the file
 import {
   pgTable,
@@ -12,20 +12,20 @@ import {
   real,
   integer,
   vector
-} from 'drizzle-orm/pg-core';
+} from, 'drizzle-orm/pg-core';
 // If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
-import { users } from './schema-postgres';
-import { sql } from 'drizzle-orm';
+import { users } from, './schema-postgres';
+import { sql } from, 'drizzle-orm';
 // Re-export the PostgreSQL schema as the main schema
-export * from './schema-postgres';
-export * from './schema-gpu-cache';
+export * from, './schema-postgres';
+export * from, './schema-gpu-cache';
 // Exported table definition used by the advanced-analysis endpoint
 export const analysisResults = pgTable('analysis_results', {
   analysisId: varchar('analysis_id', { length: 128 }).primaryKey(),
   evidenceId: varchar('evidence_id', { length: 128 }).notNull(),
   results: json('results').notNull(), // stores analyzer output as JSON
-  analysisTypes: json('analysis_types').notNull(), // array or string stored as JSON
-  confidence: real('confidence').default(0),
+  analysisTypes: json('analysis_types').notNull(), // array or: string stored as JSON
+ , confidence: real('confidence').default(0),
   processingTime: integer('processing_time').default(0), // ms or seconds per your convention
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),'`'`
   updatedAt: timestamp('updated_at', { mode: `date' }).defaultNow()'`
@@ -100,13 +100,13 @@ export const chatEmbeddings = pgTable(
     embedding: vector('embedding', { dimensions: 768 }).notNull(), // Gemma embedding size
     // Store quantized embedding as bytea (binary data) or text (base64 encoded)
     // For Float32Array, bytea is more efficient.
-    quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64 string for simplicity in JS
-    timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
+    quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64: string for simplicity in JS
+   , timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
     temporalContext: jsonb('temporal_context')
       .$type<{ dayOfWeek: number;, hourOfDay: number;
         monthOfYear: number;
         seasonality: 'spring' | 'summer' | 'fall' | 'winter';
-        businessHours: boolean;
+       , businessHours: boolean;
       }>()
       .notNull(),
     semanticHash: varchar('semantic_hash', { length: 256 }).notNull()
@@ -127,7 +127,7 @@ export const reports = pgTable('reports', {
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
   embedding: vector('embedding', { dimensions: 1536 }),
-  sourceUri: text('source_uri'), // Optional: link to MinIO object; isFavorite: boolean('is_favorite').default(false),
+  sourceUri: text('source_uri'), // Optional: link to MinIO: object;, isFavorite: boolean('is_favorite').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
@@ -136,7 +136,7 @@ console.log('📝 Drizzle ORM schema defined');
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
   embedding: vector('embedding', { dimensions: 1536 }),
-  sourceUri: text('source_uri'), // Optional: link to MinIO object; isFavorite: boolean('is_favorite').default(false),
+  sourceUri: text('source_uri'), // Optional: link to MinIO: object;, isFavorite: boolean('is_favorite').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });

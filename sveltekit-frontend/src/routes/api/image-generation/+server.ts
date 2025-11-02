@@ -3,8 +3,8 @@
  * Supports multiple providers: Stable Diffusion WebUI, ComfyUI, Ollama
  * Production-ready with Windows native support
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 interface ImageGenerationRequest {
   prompt: string;
@@ -21,7 +21,7 @@ interface ImageGenerationRequest {
 // Provider configurations
 const PROVIDERS = {
   'stable-diffusion-webui': {
-    url: 'http://localhost:7860',
+   , url: 'http://localhost:7860',
     endpoint: '/api/v1/txt2img',
     healthCheck: '/api/v1/options'
   },
@@ -52,8 +52,7 @@ async function enhancePromptWithLegal(prompt: string, style?: string): Promise<s
   try {
     const enhancementRequest = {
       model: 'gemma3-legal',
-      prompt: 'Enhance this image generation prompt for legal/evidence; documentation: "${prompt}"'
-Style: ${style || 'realistic` }'`
+      prompt: 'Enhance this image generation prompt for legal/evidence; documentation: "${prompt}"', Style: ${style || 'realistic` }'`
 Provide a detailed, professional prompt suitable for legal documentation. Include technical and artistic details while maintaining accuracy.
 Enhanced prompt: ','
       stream: false
@@ -102,7 +101,7 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
   return {
     imageBase64: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).images[0],
     metadata: {
-      seed: payload.seed,
+     , seed: payload.seed,
       model: 'Stable Diffusion',
       parameters: payload
     }
@@ -140,9 +139,9 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
   }
   // Note: Real ComfyUI would require polling for completion
   return {
-    imageBase64: null, // Would be actual ComfyUI result
+   , imageBase64: null, // Would be actual ComfyUI result
     metadata: {
-      seed: workflow['3'].inputs.seed,
+     , seed: workflow['3'].inputs.seed,
       model: 'ComfyUI',
       parameters: request
     }
@@ -176,7 +175,7 @@ Visual Description: ';'
   return {
     imageBase64: canvas,
     metadata: {
-      seed: request.seed || -1,
+     , seed: request.seed || -1,
       model: 'Ollama (Text Description)',
       description: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).response,
       parameters: request
@@ -260,20 +259,20 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate image based on provider
     try {
       switch (provider) {
-        case 'stable-diffusion-webui':
+        case, 'stable-diffusion-webui':
           result = await generateWithStableDiffusion(enhancedRequest);
           break;
-        case 'comfyui':
+        case, 'comfyui':
           result = await generateWithComfyUI(enhancedRequest);
           break;
-        case 'ollama-vision':
+        case, 'ollama-vision':
           result = await generateWithOllama(enhancedRequest);
           break;
         default:
           result = {
-            imageBase64: createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
+           , imageBase64: createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
             metadata: {
-              seed: enhancedRequest.seed,
+             , seed: enhancedRequest.seed,
               model: 'Fallback Generator',
               parameters: enhancedRequest
             }
@@ -286,7 +285,7 @@ export const POST: RequestHandler = async ({ request }) => {
       result = {
         imageBase64: createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
         metadata: {
-          seed: enhancedRequest.seed,
+         , seed: enhancedRequest.seed,
           model: 'Fallback Generator (Error)',
           parameters: enhancedRequest,
           error: providerError instanceof Error ? providerError.message : `Unknown error` }
@@ -308,7 +307,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         ...result.metadata,
         size: {
-          width: enhancedRequest.width,
+         , width: enhancedRequest.width,
           height: enhancedRequest.height
         }
       }

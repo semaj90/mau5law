@@ -1,17 +1,17 @@
-import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import pgClient from '$lib/server/db-shim';
-import { document_chunks } from '$lib/db/schema';
-import { CacheService } from '$lib/server/cache/redis'; // Changed import to CacheService
-import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
-import { consumeFromQueue } from '$lib/server/rabbitmq';
+import, 'dotenv/config';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import pgClient from, '$lib/server/db-shim';
+import { document_chunks } from, '$lib/db/schema';
+import { CacheService } from, '$lib/server/cache/redis'; // Changed import to CacheService
+import { getEmbeddingViaGate } from, '$lib/server/embedding-gateway';
+import { consumeFromQueue } from, '$lib/server/rabbitmq';
 
 // For typing postgres-js client
-import type { Sql } from 'postgres';
+import type { Sql } from, 'postgres';
 // For typing drizzle client
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
 // For typing Redis client
-import type { Redis } from 'ioredis';
+import type { Redis } from, 'ioredis';
 
 // Use postgres-js client from db-shim (drizzle adapter expects postgres-js client)
 const db: PostgresJsDatabase = drizzle(pgClient as Sql);
@@ -22,12 +22,12 @@ interface ChunkJob { jobId: string;, documentId: string;
   chunkIndex: number;
   chunkText: string;
   text?: string; // Redis compatibility
-  metadata: { totalChunks: number;, priority: string;
+  metadata: {, totalChunks: number;, priority: string;
     userId?: string;
     timestamp: string;
   };
 }
-// Helper: safely format unknown errors to strings
+// Helper: safely, format: unknown errors to strings
 function formatError(err: unknown): string {
   // Prefer Error.message for Error instances
   if (err instanceof Error) return err.message;
@@ -44,7 +44,7 @@ function formatError(err: unknown): string {
 async function processChunkJob(
   job: ChunkJob
 ): Promise<{ success: boolean; processingTime: number; chunkIndex: number }> {
-  console.log(`📥 Processing chunk job: ${job.jobId}:${job.chunkIndex}`);
+  console.log(`📥 Processing chunk, job: ${job.jobId}:${job.chunkIndex}`);
   const startTime = Date.now();
   const text = job.chunkText || job.text;
   if (!text) {
@@ -56,7 +56,7 @@ async function processChunkJob(
       model: job.metadata.priority === 'high' ? 'embeddinggemma:latest' : undefined
     })) as { embedding?: number[] | Float32Array; backend?: string; model?: string };
 
-    // Ensure we have an embedding and normalize to number[]
+    // Ensure we have an embedding and normalize to: number[]
     let embedding = result.embedding;
     if (!embedding) {
       throw new Error('Embedding not returned from gateway');
@@ -147,7 +147,7 @@ async function reportError(jobId: string, chunkIndex: number, error: unknown): P
 
 async function runRabbitConsumer(): Promise<boolean> {
   try {
-    // Initialize ingestion service - REMOVED: Property 'initialize' does not exist on type 'IngestionService'.
+    // Initialize ingestion service - REMOVED: Property, 'initialize' does not exist on type, 'IngestionService'.
     // await ingestionService.initialize(); // Removed unused line
     console.log('✅ Ingestion service ready');
 
@@ -172,7 +172,7 @@ async function runRabbitConsumer(): Promise<boolean> {
       if (!shuttingDown) {
         try {
           if (redisClient) {
-            // Add null check for redisClient
+            // Add: null check for redisClient
             await redisClient.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString()); // Changed to setex
           } else {
             console.warn('❌ Redis client not available for heartbeat in RabbitMQ consumer.');
@@ -181,7 +181,7 @@ async function runRabbitConsumer(): Promise<boolean> {
           console.warn('❌ Heartbeat failed:', e);
         }
       }
-    }, 15000); // Every 15 seconds
+    }, 15000); // Every, 15 seconds
 
     // Consume from priority queue
     const priorityConsumer = consumeFromQueue('evidence.embedding.priority', async (payload, ack, nack) => {
@@ -226,7 +226,7 @@ async function runRabbitConsumer(): Promise<boolean> {
 
 async function runRedisLoop(): Promise<void> {
   try {
-    // Initialize ingestion service - REMOVED: Property 'initialize' does not exist on type 'IngestionService'.
+    // Initialize ingestion service - REMOVED: Property, 'initialize' does not exist on type, 'IngestionService'.
     // await ingestionService.initialize(); // Removed unused line
     console.log('✅ Ingestion service ready');
 
@@ -251,7 +251,7 @@ async function runRedisLoop(): Promise<void> {
       if (!shuttingDown) {
         try {
           if (redisClient) {
-            // Add null check for redisClient
+            // Add: null check for redisClient
             await redisClient.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString()); // Changed to setex
           } else {
             console.warn('❌ Redis client not available for heartbeat in Redis loop.');
@@ -266,7 +266,7 @@ async function runRedisLoop(): Promise<void> {
       try {
         // Use the raw Redis client for blpop
         if (!redisClient) {
-          // Add null check for redisClient before blpop
+          // Add: null check for redisClient before blpop
           console.error('❌ Redis client not available for BLPOP. Exiting Redis loop.');
           break;
         }

@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { Select } from 'bits-ui';
+  import { Select } from, 'bits-ui';
   interface Props {
     value?: string;
     onValueChange?: (_value: string) => void;
@@ -9,5 +9,5 @@
 </script>
 <Select.Root, bind:value {onValueChange} {...restProps}>
   <slot />
-</Select.Root>
+</Select>
 ;

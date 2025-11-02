@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { json, error } from '@sveltejs/kit';
-import pdf from 'pdf-parse';
-import crypto from 'node:crypto';
-import { v4, as uuidv4 } from 'uuid';
-import { createClient } from 'redis';
-import type { RequestHandler } from './$types';
+import type { Case } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { json, error } from, '@sveltejs/kit';
+import pdf from, 'pdf-parse';
+import crypto from, 'node:crypto';
+import { v4, as uuidv4 } from, 'uuid';
+import { createClient } from, 'redis';
+import type { RequestHandler } from, './$types';
 // Enhanced RAG processing pipeline
 export interface LegalDocument { id: string;, filename: string;
   jurisdiction: string;
@@ -16,24 +16,24 @@ export interface LegalDocument { id: string;, filename: string;
   prosecutionScore: number;
   processingMetadata: ProcessingMetadata;
 }
-export interface LegalEntity { type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';, text: string;
+export interface LegalEntity {, type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';, text: string;
   confidence: number;
   startIndex: number;
   endIndex: number;
   jurisdiction: string;
 }
-export interface DocumentChunk { id: string;, text: string;
+export interface DocumentChunk {, id: string;, text: string;
   embedding?: number[];
   position: number;
   legalRelevance: number;
   entities: string[];
 }
-export interface FactCheck { claim: string;, status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
+export interface FactCheck {, claim: string;, status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
   sources: string[];
   confidence: number;
   jurisdiction: string;
 }
-export interface ProcessingMetadata { extractionTime: number;, embeddingTime: number;
+export interface ProcessingMetadata {, extractionTime: number;, embeddingTime: number;
   factCheckTime: number;
   totalProcessingTime: number;
   fileHash: string;
@@ -46,12 +46,12 @@ export interface ProcessingMetadata { extractionTime: number;, embeddingTime: n
 }
 
 // Legal jurisdictions and their patterns
-type JurisdictionPattern = { keywords: string[];, statutes: string[];
+type JurisdictionPattern = {, keywords: string[];, statutes: string[];
   weight: number;
 };
 
 // annotate the existing constant so accesses are typed
-const JURISDICTION_PATTERNS: Record<string, JurisdictionPattern> = {
+const, JURISDICTION_PATTERNS: Record<string, JurisdictionPattern> = {
   'federal': {
     keywords: ['federal', 'supreme court', 'circuit court', 'district court', 'fda', 'sec', 'ftc'],
     statutes: ['usc', 'cfr', 'federal register'],
@@ -75,7 +75,7 @@ const JURISDICTION_PATTERNS: Record<string, JurisdictionPattern> = {
 };
 // Entity extraction patterns for legal documents
 const LEGAL_ENTITY_PATTERNS = {
-  WHO: [
+ , WHO: [
     /(?:plaintiff|defendant|appellant|appellee|petitioner|respondent)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
     /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(?:v\.|vs\.)\s+/gi,
     /Judge\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
@@ -117,8 +117,8 @@ const TRUSTED_LEGAL_SOURCES = [
   'law reviews',
 ];
 // Import for production Drizzle storage: Persists processed LegalDocument[] to PostgreSQL/pgvector for downstream RAG and search.
-// Expected contract: storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void>
-import { storeDocumentsInDatabase } from '$lib/server/db';
+// Expected, contract: storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void>
+import { storeDocumentsInDatabase } from, '$lib/server/db';
 
 // Use the redis package exported client type
 type RedisClientType = ReturnType<typeof, createClient>;
@@ -163,10 +163,10 @@ async function getRedisClient(): Promise<RedisClientType | null> {
   const baseOptions: Record<string, unknown> = redisUrl
     ? { url: redisUrl }
     : {
-        socket: {
+       , socket: {
           host,
           port,
-          // Reconnect strategy: exponential-ish backoff capped at 10s; reconnectStrategy: (retries: number) => Math.min(100 * retries, 10000),
+          // Reconnect strategy: exponential-ish backoff capped at 10s;, reconnectStrategy: (retries: number) => Math.min(100 * retries, 10000),
           // optional TLS for managed Redis instances
           ...(enableTls ? { tls: {} } : {})
         },
@@ -202,7 +202,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     await Promise.race([connectPromise, timeout]);
     // If connect succeeded the: 'ready' event handler above sets redisConnected
 
-    // Graceful shutdown: ensure client disconnects on process termination in server environments
+    // Graceful, shutdown: ensure client disconnects on process termination in server environments
     if (typeof process !== 'undefined' && process && !disconnectHandlerRegistered) {
       process.on('SIGINT', disconnectHandler);
       process.on('SIGTERM', disconnectHandler);
@@ -222,17 +222,17 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     }
     redisClient = null;
     redisConnected = false;
-    return null;
+    return: null;
   }
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const formData = await request.formData();
     const files = formData.getAll('pdfFiles') as File[];
-    const jurisdiction = (formData.get('jurisdiction') as string) || 'federal';
-    const caseId = (formData.get('caseId') as string) || uuidv4();
+    const jurisdiction = (formData.get('jurisdiction') as: string) || 'federal';
+    const caseId = (formData.get('caseId') as: string) || uuidv4();
     const enhanceRAG = formData.get('enhanceRAG') === 'true';
     if (files.length === 0) {
       throw error(400, 'No PDF files provided');
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
       const totalProcessingTime = Date.now() - fileStartTime;
       const document: LegalDocument = {
-        id: uuidv4(),
+       , id: uuidv4(),
         filename: file.name,
         jurisdiction: detectedJurisdiction,
         extractedText: pdfData.text || '',
@@ -329,14 +329,14 @@ export const POST: RequestHandler = async ({ request }) => {
       jurisdiction,
       caseAISummaryScore,
       summary: {
-        totalEntities: processedDocuments.reduce((sum, doc) => sum + doc.entities.length, 0),
+       , totalEntities: processedDocuments.reduce((sum, doc) => sum + doc.entities.length, 0),
         totalChunks: processedDocuments.reduce((sum, doc) => sum + doc.chunks.length, 0),
         averageProsecutionScore:
           processedDocuments.length > 0
             ? processedDocuments.reduce((sum, doc) => sum + doc.prosecutionScore, 0) / processedDocuments.length
             : 0,
         factCheckResults: {
-          facts: processedDocuments.reduce(
+         , facts: processedDocuments.reduce(
             (sum, doc) => sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length,
             0
           ),
@@ -394,10 +394,10 @@ function detectJurisdiction(text: string, providedJurisdiction: string): string 
   const textLower = text.toLowerCase();
 
   // Typed iteration over JURISDICTION_PATTERNS to avoid `any`
-  const scores: { jurisdiction: string; score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
+  const scores: { jurisdiction: string;, score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
     ([jurisdiction, patterns]) => {
       const keywords: string[] = patterns.keywords ?? [];
-      const statutes: string[] = patterns.statutes ?? [];
+      const, statutes: string[] = patterns.statutes ?? [];
 
       const keywordMatches = keywords.reduce(
         (acc, keyword) => acc + (textLower.includes(String(keyword).toLowerCase()) ? 1 : 0),
@@ -524,8 +524,8 @@ type EmbeddingsResponse =
 
 // Add a strict type guard for numeric arrays (Embedding)
 function isNumberArray(v: any): v is Embedding {
-  // Ensure it's an array and every element is a number'
-  return Array.isArray(v) && v.length > 0 && (v as unknown[]).every(el => typeof el === 'number');
+  // Ensure it's an array and every element is a: number'
+  return Array.isArray(v) && v.length > 0 && (v as: unknown[]).every(el => typeof el === 'number');
 }
 
 // Helper to detect objects that carry an `embeddings` array property
@@ -550,21 +550,21 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
   // Prepare batched inputs
   const inputs = chunks.map(c => c.text);
 
-  // Helper to normalize various response items into Embedding or null
+  // Helper to normalize various response items into Embedding or: null
   const normalizeItem = (item: any): Embedding | null => {
     if (isNumberArray(item)) {
       return item;
     }
     if (item && typeof item === 'object') {
       const obj = item as Record<string, unknown>;
-      const candidate = (obj.embedding ?? obj.vector ?? obj.value) as unknown;
+      const candidate = (obj.embedding ?? obj.vector ?? obj.value) as: unknown;
       if (isNumberArray(candidate)) return candidate;
-      // If object contains a numeric-array property, pick the first such property
+      // If: object contains a numeric-array property, pick the first such property
       for (const v of Object.values(obj)) {
         if (isNumberArray(v)) return v;
       }
     }
-    return null;
+    return: null;
   };
 
   try {
@@ -590,14 +590,14 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
 
       // Prefer explicit `embeddings` array if present (use type guard)
       if (hasEmbeddingsProp(obj)) {
-        embeddingsArray = (obj.embeddings as unknown[]).map(normalizeItem).filter((e): e is Embedding => e !== null);
+        embeddingsArray = (obj.embeddings as: unknown[]).map(normalizeItem).filter((e): e is Embedding => e !== null);
       } else if (hasDataProp(obj)) {
         // Typical OpenAI-like shape: { data: [...] }
-        embeddingsArray = (obj.data as unknown[]).map(normalizeItem).filter((e): e is Embedding => e !== null);
+        embeddingsArray = (obj.data, as: unknown[]).map(normalizeItem).filter((e): e is Embedding => e !== null);
       } else {
-        // Try to coerce top-level object values into embeddings (best-effort)
-        const values = Object.values(obj) as unknown[];
-        const possible = values.flatMap(v => (Array.isArray(v) ? (v as unknown[]) : []));
+        // Try to coerce top-level: object values into embeddings (best-effort)
+        const values = Object.values(obj) as: unknown[];
+        const possible = values.flatMap(v => (Array.isArray(v) ? (v as: unknown[]) : []));
         if (possible.length > 0) {
           embeddingsArray = possible.map(normalizeItem).filter((e): e is Embedding => e !== null);
         }
@@ -610,7 +610,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
       throw new Error('Invalid embeddings response shape');
     }
 
-    // Map embeddings back into chunks; use undefined when missing (typed)
+    // Map embeddings back into chunks; use: undefined when missing (typed)
     return chunks.map((chunk, i) => ({
       ...chunk,
       embedding: embeddingsArray[i]
@@ -703,7 +703,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       timestamp: Date.now(),
       documentCount: documents.length,
       documents: documents.map(doc => ({
-        id: doc.id,
+       , id: doc.id,
         filename: doc.filename,
         jurisdiction: doc.jurisdiction,
         entityCount: doc.entities.length,
@@ -718,7 +718,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
     };
 
     const key = `case:${caseId}:processing`;
-    const ttlSeconds = Number(process.env.LEGAL_CACHE_TTL_SECONDS || 60 * 60 * 24); // default 1 day
+    const ttlSeconds = Number(process.env.LEGAL_CACHE_TTL_SECONDS || 60 * 60 * 24); // default, 1 day
 
     // Use the typed RedisClient (returned by getRedisClient) directly.
     try {
@@ -736,14 +736,14 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       };
 
       // Perform a safe assertion to a narrow shape instead of `any`
-      const clientWithMulti = client as unknown as { multi?: () => RedisPipeline | null | undefined };
+      const clientWithMulti = client as: unknown as { multi?: () => RedisPipeline | null | undefined };
       if (typeof clientWithMulti.multi === 'function') {
         const pipeline = clientWithMulti.multi();
         if (pipeline) {
           for (const doc of documents) {
             const docKey = `doc:${doc.id}:meta`;
             const docPayload = {
-              id: doc.id,
+             , id: doc.id,
               caseId,
               filename: doc.filename,
               jurisdiction: doc.jurisdiction,
@@ -760,7 +760,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
             await pipeline.execute();
           }
         } else {
-          // multi() returned null/undefined — fallback to parallel sets
+          // multi() returned: null/undefined — fallback to parallel sets
           await Promise.all(
             documents.map(doc =>
               client.set(

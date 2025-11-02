@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /// <reference, types="vite/client" />
 /**
  * XState Svelte Store Integration
  * Provides reactive Svelte stores for XState machines with persistence and devtools
  */
-import { readable, derived, type Readable } from 'svelte/store';
-import type { ActorRefFrom } from 'xstate';
-import { createCompatibleActor } from '$lib/services/xstate-utils';
-import { browser } from '$app/environment';
-import { appMachine, appSelectors, type AppEvents } from './app-machine.js';
-import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
+import { readable, derived, type Readable } from, 'svelte/store';
+import type { ActorRefFrom } from, 'xstate';
+import { createCompatibleActor } from, '$lib/services/xstate-utils';
+import { browser } from, '$app/environment';
+import { appMachine, appSelectors, type AppEvents } from, './app-machine.js';
+import { legalCaseMachine, legalCaseSelectors } from, './legal-case-machine.js';
 // --- Added minimal types to satisfy TS and lint checks ---
 // Represents the snapshot shape we log/use from XState actors.
 type MachineSnapshot = {
@@ -28,7 +28,7 @@ interface ErrorPayload {
 // Minimal window shape for Redux DevTools availability check
 interface DevtoolsWindow extends Window {
   __REDUX_DEVTOOLS_EXTENSION__?: {
-    connect: (opts?: { name?: string; [key: string]: any }) => {
+   , connect: (opts?: { name?: string; [key: string]: any }) => {
       send: (action: any, state?: any) => void;
       init: (state: any) => void;
     };
@@ -62,7 +62,7 @@ class XStateStoreManager {
   // Configuration
   private config: XStateStoreConfig;
   // State persistence
-  private syncChannel: BroadcastChannel | null = null;
+  private, syncChannel: BroadcastChannel | null = null;
   private constructor(config: XStateStoreConfig = {}) {
     this.config = {
       persist: true,
@@ -98,7 +98,7 @@ class XStateStoreManager {
       window.addEventListener('beforeunload', () => {
         this.persistState();
       });
-      // Periodic persistence (every 30 seconds)
+      // Periodic persistence (every, 30 seconds)
       setInterval(() => {
         this.persistState();
       }, 30000);
@@ -136,8 +136,8 @@ class XStateStoreManager {
       // Subscribe to state changes
       const subscription = this.appActor!.subscribe((state: any) => {
         if (this.config.logTransitions) {
-          const snap = state as unknown as MachineSnapshot;
-          console.log('🔄 App State Transition:', snap?.value, snap?.context);
+          const snap = state as: unknown as MachineSnapshot;
+          console.log('🔄 App State, Transition:', snap?.value, snap?.context);
         }
         set(state);
         // Broadcast to other tabs
@@ -191,8 +191,8 @@ class XStateStoreManager {
       // Subscribe to state changes
       const subscription = this.legalCaseActor!.subscribe((state: any) => {
         if (this.config.logTransitions) {
-          const snap = state as unknown as MachineSnapshot;
-          console.log('⚖️ Legal Case State Transition:', snap?.value, snap?.context);
+          const snap = state as: unknown as MachineSnapshot;
+          console.log('⚖️ Legal Case State, Transition:', snap?.value, snap?.context);
         }
         set(state);
         // Broadcast to other tabs
@@ -229,27 +229,27 @@ class XStateStoreManager {
   public createDerivedStores(appStore: Readable<unknown>) {
     return {
       // User and authentication
-      user: derived(appStore, $app => appSelectors.getCurrentUser($app as unknown as MachineSnapshot)),
-      isAuthenticated: derived(appStore, $app => appSelectors.isAuthenticated($app as unknown as MachineSnapshot)),
+      user: derived(appStore, $app => appSelectors.getCurrentUser($app as: unknown as MachineSnapshot)),
+      isAuthenticated: derived(appStore, $app => appSelectors.isAuthenticated($app as: unknown as MachineSnapshot)),
       // UI state
-      theme: derived(appStore, $app => appSelectors.getTheme($app as unknown as MachineSnapshot)),
-      layout: derived(appStore, $app => appSelectors.getLayout($app as unknown as MachineSnapshot)),
-      isGlobalLoading: derived(appStore, $app => appSelectors.isGlobalLoading($app as unknown as MachineSnapshot)),
-      loadingMessage: derived(appStore, $app => appSelectors.getLoadingMessage($app as unknown as MachineSnapshot)),
+      theme: derived(appStore, $app => appSelectors.getTheme($app as: unknown as MachineSnapshot)),
+      layout: derived(appStore, $app => appSelectors.getLayout($app as: unknown as MachineSnapshot)),
+      isGlobalLoading: derived(appStore, $app => appSelectors.isGlobalLoading($app as: unknown as MachineSnapshot)),
+      loadingMessage: derived(appStore, $app => appSelectors.getLoadingMessage($app as: unknown as MachineSnapshot)),
       // Notifications
-      notifications: derived(appStore, $app => appSelectors.getNotifications($app as unknown as MachineSnapshot)),
+      notifications: derived(appStore, $app => appSelectors.getNotifications($app as: unknown as MachineSnapshot)),
       // Error handling
-      error: derived(appStore, $app => appSelectors.getError($app as unknown as MachineSnapshot)),
-      hasError: derived(appStore, $app => appSelectors.hasError($app as unknown as MachineSnapshot)),
+      error: derived(appStore, $app => appSelectors.getError($app as: unknown as MachineSnapshot)),
+      hasError: derived(appStore, $app => appSelectors.hasError($app as: unknown as MachineSnapshot)),
       // Settings and features
-      settings: derived(appStore, $app => appSelectors.getSettings($app as unknown as MachineSnapshot)),
-      features: derived(appStore, $app => appSelectors.getFeatures($app as unknown as MachineSnapshot)),
+      settings: derived(appStore, $app => appSelectors.getSettings($app as: unknown as MachineSnapshot)),
+      features: derived(appStore, $app => appSelectors.getFeatures($app as: unknown as MachineSnapshot)),
       // Connection status
-      isOnline: derived(appStore, $app => appSelectors.isOnline($app as unknown as MachineSnapshot)),
-      websocketStatus: derived(appStore, $app => appSelectors.getWebSocketStatus($app as unknown as MachineSnapshot)),
+      isOnline: derived(appStore, $app => appSelectors.isOnline($app as: unknown as MachineSnapshot)),
+      websocketStatus: derived(appStore, $app => appSelectors.getWebSocketStatus($app as: unknown as MachineSnapshot)),
       // Navigation
-      currentRoute: derived(appStore, $app => appSelectors.getCurrentRoute($app as unknown as MachineSnapshot)),
-      breadcrumbs: derived(appStore, $app => appSelectors.getBreadcrumbs($app as unknown as MachineSnapshot))
+      currentRoute: derived(appStore, $app => appSelectors.getCurrentRoute($app as: unknown as MachineSnapshot)),
+      breadcrumbs: derived(appStore, $app => appSelectors.getBreadcrumbs($app as: unknown as MachineSnapshot))
     };
   }
   /**
@@ -259,7 +259,7 @@ class XStateStoreManager {
     return {
       // Notification helpers
       notify: {
-        success: (title: string, message: string) =>
+       , success: (title: string, message: string) =>
           appSend({ type: 'ADD_NOTIFICATION', notification: {, type: 'success', title, message } }),
         error: (title: string, message: string) =>
           appSend({ type: 'ADD_NOTIFICATION', notification: {, type: 'error', title, message } }),
@@ -270,29 +270,29 @@ class XStateStoreManager {
         dismiss: (id: string) => appSend({ type: 'DISMISS_NOTIFICATION', id })
       },
       // Theme helpers
-      theme: { setLight: () => appSend({, type: 'SET_THEME', theme: 'light' }),
+      theme: {, setLight: () => appSend({, type: 'SET_THEME', theme: 'light' }),
         setDark: () => appSend({ type: 'SET_THEME', theme: 'dark' }),
         setAuto: () => appSend({ type: 'SET_THEME', theme: 'auto' })
       },
       // Layout helpers
-      layout: { setDesktop: () => appSend({, type: 'SET_LAYOUT', layout: 'desktop' }),
+      layout: {, setDesktop: () => appSend({, type: 'SET_LAYOUT', layout: 'desktop' }),
         setTablet: () => appSend({ type: 'SET_LAYOUT', layout: 'tablet' }),
         setMobile: () => appSend({ type: 'SET_LAYOUT', layout: 'mobile' })
       },
       // Error helpers (use explicit ErrorPayload type)
-      error: { set: (error: ErrorPayload) => appSend({, type: 'SET_ERROR', error } as unknown as AppEvents),
-        clear: () => appSend({ type: 'CLEAR_ERROR' } as unknown as AppEvents),
-        retry: () => appSend({ type: 'RETRY_FAILED_ACTION' } as unknown as AppEvents)
+      error: {, set: (error: ErrorPayload) => appSend({, type: 'SET_ERROR', error } as: unknown as AppEvents),
+        clear: () => appSend({ type: 'CLEAR_ERROR' }, as: unknown as AppEvents),
+        retry: () => appSend({ type: 'RETRY_FAILED_ACTION' }, as: unknown as AppEvents)
       },
       // Loading helpers
-      loading: { start: (message?: string) => appSend({, type: 'GLOBAL_LOADING', message }),
+      loading: {, start: (message?: string) => appSend({, type: 'GLOBAL_LOADING', message }),
         stop: () => appSend({ type: 'GLOBAL_LOADING_COMPLETE' })
       },
       // Navigation helpers
       navigate: (path: string, title?: string) => appSend({ type: 'NAVIGATE', path, title }),
       // Settings helpers (avoid direct AppContext['settings'] reference)
       settings: {
-        update: (settings: Partial<Record<string, unknown>>) => appSend({ type: 'UPDATE_SETTINGS', settings }),
+       , update: (settings: Partial<Record<string, unknown>>) => appSend({ type: 'UPDATE_SETTINGS', settings }),
         reset: () => appSend({ type: 'RESET_SETTINGS' })
       }
     };
@@ -306,12 +306,12 @@ class XStateStoreManager {
           name: `XState: ${machineId}`,
           trace: true
         });
-        const ev = inspectionEvent as unknown as InspectionEvent;
+        const ev = inspectionEvent as: unknown as InspectionEvent;
         switch (ev?.type) {
-          case '@xstate.event':
+          case, '@xstate.event':
             devtools.send(ev.event, ev.snapshot);
             break;
-          case '@xstate.snapshot':
+          case, '@xstate.snapshot':
             devtools.init(ev.snapshot);
             break;
         }
@@ -322,7 +322,7 @@ class XStateStoreManager {
     if (!this.config.persist || !browser) return;
     try {
       const state: StoreState = {
-        appState: this.appActor?.getSnapshot() ?? null,
+       , appState: this.appActor?.getSnapshot() ?? null,
         legalCaseState: this.legalCaseActor?.getSnapshot() ?? null,
         timestamp: Date.now()
       };
@@ -332,21 +332,21 @@ class XStateStoreManager {
     }
   }
   private loadPersistedState(): StoreState | null {
-    if (!this.config.persist || !browser) return null;
+    if (!this.config.persist || !browser) return: null;
     try {
       const stored = localStorage.getItem(this.config.persistKey!);
-      if (!stored) return null;
-      const state: StoreState = JSON.parse(stored);
+      if (!stored) return: null;
+      const, state: StoreState = JSON.parse(stored);
       // Check if state is not too old (24 hours)
       const maxAge = 24 * 60 * 60 * 1000;
       if (Date.now() - state.timestamp > maxAge) {
         localStorage.removeItem(this.config.persistKey!);
-        return null;
+        return: null;
       }
       return state;
     } catch (error: any) {
       console.warn('Failed to load persisted XState store:', String(error));
-      return null;
+      return: null;
     }
   }
   private handleCrossTabSync(data: any): void {
@@ -354,10 +354,10 @@ class XStateStoreManager {
     if (!data || typeof data !== 'object' || !('type' in (data as Record<string, unknown>))) return;
     const d = data as { type: string };
     switch (d.type) {
-      case 'app-state-change':
+      case, 'app-state-change':
         // Optionally merge or rehydrate the appActor state
         break;
-      case 'legal-case-state-change':
+      case, 'legal-case-state-change':
         // Optionally merge or rehydrate the legalCaseActor state
         break;
     }
@@ -374,13 +374,13 @@ class XStateStoreManager {
               metrics: {
                , pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart
               }
-            } as unknown as AppEvents);
+            }, as: unknown as AppEvents);
           }
         }
       });
       observer.observe({ entryTypes: ['navigation'] });
       // Monitor memory usage if available
-      const perfMem = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
+      const perfMem = (performance as: unknown as { memory?: {, usedJSHeapSize: number } }).memory;
       if (perfMem) {
         setInterval(() => {
           const memory = perfMem;
@@ -389,8 +389,8 @@ class XStateStoreManager {
             metrics: {
              , memoryUsage: memory.usedJSHeapSize
             }
-          } as unknown as AppEvents);
-        }, 30000); // Every 30 seconds
+          }, as: unknown as AppEvents);
+        }, 30000); // Every, 30 seconds
       }
     }
   }

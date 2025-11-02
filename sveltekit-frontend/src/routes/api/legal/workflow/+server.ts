@@ -1,9 +1,9 @@
 // Legal Document Workflow API - RabbitMQ + XState Integration
 // Demonstrates enterprise-grade message queuing with state machines
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { rabbitmqService, type LegalDocumentMessage } from '$lib/server/messaging/rabbitmq-service';
-import { logger } from '$lib/server/ai/logger';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { rabbitmqService, type LegalDocumentMessage } from, '$lib/server/messaging/rabbitmq-service';
+import { logger } from, '$lib/server/ai/logger';
 let isInitialized = $state<boolean>(false);
 // Initialize RabbitMQ on first request
 async function ensureRabbitMQInitialized(): Promise<void> {
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required; fields: content, documentType, caseId'
+          error: 'Missing required;, fields: content, documentType, caseId'
         },
         { status: 400 }
       );
@@ -38,13 +38,13 @@ export const POST: RequestHandler = async ({ request }) => {
     await ensureRabbitMQInitialized();
     // Create legal document message
     const documentMessage: LegalDocumentMessage = {
-      id: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+     , id: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       documentId: `${caseId}_${Date.now()}`,
       caseId,
       documentType: documentType as LegalDocumentMessage['documentType'],
       content,
       metadata: {
-        submittedAt: new Date().toISOString(),
+       , submittedAt: new Date().toISOString(),
         source: 'api',
         contentLength: content.length,
         ...body.metadata
@@ -108,15 +108,15 @@ export const GET: RequestHandler = async () => {
        , submit: 'POST /api/legal/workflow',
         status: 'GET /api/legal/workflow',
         managementUI: `http://localhost:15672 (legal_admin:123456)` },
-      usage: { submitDocument: {, method: 'POST',
+      usage: {, submitDocument: {, method: 'POST',
           url: '/api/legal/workflow',
           body: {
-            content: 'Document content here...',
+           , content: 'Document content here...',
             documentType: 'contract | evidence | brief | citation | discovery',
             caseId: 'CASE-2025-001',
             priority: 'low | normal | high | urgent',
             metadata: {
-              fileName: 'optional-file-name.pdf',
+             , fileName: 'optional-file-name.pdf',
               tags: ['contract', 'employment']
             }
           }

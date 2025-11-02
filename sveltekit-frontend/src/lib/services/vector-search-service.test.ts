@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { SearchResult } from, '$lib/types';
+import { describe, it, expect, beforeEach } from, 'vitest';
 
 // Mock VectorSearchService for testing - actual service has @ts-nocheck
 interface SearchResult { documentId: string;, similarity: number;
@@ -13,13 +13,13 @@ interface VectorSearchConfig {
   timeout?: number;
 }
 
-interface CollectionStatus { vectorDimension: number;, documentCount: number;
+interface CollectionStatus {, vectorDimension: number;, documentCount: number;
 }
 
 // Mock service implementation
 class MockVectorSearchService {
   private config: VectorSearchConfig;
-  private initialized: boolean = $state(false);
+  private, initialized: boolean = $state(false);
   private searchCache: Map<string, SearchResult[]> = new Map();
 
   constructor(config: VectorSearchConfig) {
@@ -29,13 +29,13 @@ class MockVectorSearchService {
   async initialize() {
     this.initialized = true;
     return { qdrant: {, status: 'connected' },
-      postgres: { status: 'connected' },
+      postgres: {, status: 'connected' },
       redis: { status: 'connected' }
     };
   }
 
   async search(
-    embedding: number[],
+   , embedding: number[],
     limit: number,
     threshold?: number
   ): Promise<SearchResult[]> {
@@ -51,7 +51,7 @@ class MockVectorSearchService {
     // Mock results
     const results: SearchResult[] = [
       {
-        documentId: 'doc1',
+       , documentId: 'doc1',
         similarity: 0.95,
         source: 'qdrant' as const
       },
@@ -109,7 +109,7 @@ class MockVectorSearchService {
 
   async ensureCollections() {
     return { qdrant: {, name: 'legal_documents', vectorSize: 384 },
-      postgres: { name: 'embeddings', vectorSize: 384 }
+      postgres: {, name: 'embeddings', vectorSize: 384 }
     };
   }
 
@@ -244,12 +244,12 @@ describe('VectorSearchService (Integration)', () => {
 
     it('should merge results from multiple sources using Reciprocal Rank Fusion', async () => {
       const qdrantResults: SearchResult[] = [
-        { documentId: 'doc1', similarity: 0.95, source: 'qdrant' },
+        {, documentId: 'doc1', similarity: 0.95, source: 'qdrant' },
         { documentId: 'doc2', similarity: 0.85, source: 'qdrant' }
       ];
 
       const pgResults: SearchResult[] = [
-        { documentId: 'doc2', similarity: 0.87, source: `postgres` },'`'`
+        {, documentId: 'doc2', similarity: 0.87, source: `postgres` },'`'`
         { documentId: 'doc3', similarity: 0.80, source: `postgres` }
       ];
 

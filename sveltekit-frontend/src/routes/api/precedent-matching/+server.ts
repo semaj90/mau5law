@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { env } from '$env/dynamic/private'; // For server-side environment variables
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { env } from, '$env/dynamic/private'; // For server-side environment variables
 
 // Mock interfaces for demonstration purposes, these should ideally be imported from a shared types file
 interface PrecedentMatch { id: string;, title: string;
@@ -19,13 +19,13 @@ interface PrecedentMatch { id: string;, title: string;
   recentCitations: number;
   distinguishingFactors: string[];
   applicabilityScore: number;
-  strengthIndicators: { factualAlignment: number;, legalPrinciples: number;
+  strengthIndicators: {, factualAlignment: number;, legalPrinciples: number;
     jurisdictionalRelevance: number;
     temporalRelevance: number;
   };
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const {
       searchQuery,
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const redisUrl = env.REDIS_URL || 'redis://:redis@localhost:6379/0';
     const minioEndpoint = env.MINIO_ENDPOINT || 'http://localhost:9000';
 
-    console.log(`Using Ollama endpoint: ${ollamaUrl}`);
+    console.log(`Using Ollama, endpoint: ${ollamaUrl}`);
     console.log(`Using Qdrant endpoint: ${qdrantUrl}`);
     console.log(`Using Database endpoint: ${databaseUrl}`);
     console.log(`Using Redis endpoint: ${redisUrl}`);
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // 2. Perform vector search using Qdrant or pgvector (Drizzle ORM)
     //    Example using a hypothetical enhancedVectorSearchService from instructions:
-    //    import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config';
+    //    import { enhancedVectorSearchService } from, '$lib/server/db/drizzle-vector-config';
     //    const vectorSearchResults = await enhancedVectorSearchService.searchDocuments(embedding, {
     //      limit: 10,
     //      filters: {, jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea }
@@ -80,15 +80,15 @@ export const POST: RequestHandler = async ({ request }) => {
     // 3. Refine results, build reasoning chains, etc.
     //    This would involve more complex logic, potentially calling other Go microservices
     //    via productionServiceClient as mentioned in instructions.
-    //    import { productionServiceClient } from '$lib/api/production-service-client';
+    //    import { productionServiceClient } from, '$lib/api/production-service-client';
     //    const goServiceResult = await productionServiceClient.makeRequest('enhanced-rag', { /* ... */ });
 
     // Mock results for demonstration
     const mockMatches: PrecedentMatch[] = [
       {
-        id: 'API-CASE-2023-001',
+       , id: 'API-CASE-2023-001',
         title: 'API: State v. Johnson - Contract Interpretation Under Duress',
-        citation: '847 F.3d 234 (5th Cir. 2023)',
+        citation: '847 F.3d, 234 (5th Cir. 2023)',
         court: '5th Circuit Court of Appeals',
         jurisdiction: 'Federal',
         dateDecided: '2023-08-15',
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
         distinguishingFactors: [],
         applicabilityScore: 0.92,
         strengthIndicators: {
-          factualAlignment: 93,
+         , factualAlignment: 93,
           legalPrinciples: 97,
           jurisdictionalRelevance: 88,
           temporalRelevance: 99
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         id: 'API-CASE-2022-087',
         title: 'API: Martinez v. Global Corp - Unconscionable Contract Terms',
-        citation: '623 F.Supp.3d 445 (S.D. Cal. 2022)',
+        citation: '623 F.Supp.3d, 445 (S.D. Cal. 2022)',
         court: 'U.S. District Court Southern District of California',
         jurisdiction: 'Federal',
         dateDecided: '2022-11-22',
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
         distinguishingFactors: ['API: Different factual context (consumer vs. commercial)'],
         applicabilityScore: 0.80,
         strengthIndicators: {
-          factualAlignment: 80,
+         , factualAlignment: 80,
           legalPrinciples: 90,
           jurisdictionalRelevance: 75,
           temporalRelevance: 88
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('API Error in precedent-matching:', error);
     return json({
       success: false,
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message: error instanceof Error ? error.message : 'An: unknown error occurred',
       matches: [],
       totalMatches: 0
     }, { status: 500 });

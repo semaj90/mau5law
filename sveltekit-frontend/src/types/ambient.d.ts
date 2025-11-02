@@ -1,6 +1,6 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-declare module '$lib/shims/xstate' {
+import type { SearchResult } from, '$lib/types';
+import type { User } from, '$lib/types';
+declare module, '$lib/shims/xstate' {
   // Minimal re-exports used by machines to avoid pulling full xstate types
   export function createMachine(...args: any[]): any;
   export function assign(...args: any[]): any;
@@ -8,7 +8,7 @@ declare module '$lib/shims/xstate' {
   export type AnyEventObject = Record<string, any>;
 }
 
-declare module '$lib/schemas/evidence-upload' {
+declare module, '$lib/schemas/evidence-upload' {
   export type VideoMetadata = {
     id?: string;
     filename?: string;
@@ -18,7 +18,7 @@ declare module '$lib/schemas/evidence-upload' {
   };
 }
 
-declare module '../stores/auth.svelte.js' {
+declare module, '../stores/auth.svelte.js' {
   export type User = {
     id?: string;
     name?: string;
@@ -29,17 +29,17 @@ declare module '../stores/auth.svelte.js' {
   export default user;
 }
 
-declare module '$app/environment' {
+declare module, '$app/environment' {
   export const browser: boolean;
-  export const dev: boolean;
+  export const, dev: boolean;
 }
 
-declare module '$env/dynamic/private' {
+declare module, '$env/dynamic/private' {
   export const env: Record<string, string>;
 }
 // Minimal ambient declarations to reduce noisy type errors during iterative fixes
 // Add more specific typings progressively as files are stabilized.
-declare module 'fabric';
+declare module, 'fabric';
 // Redis service shape used across the codebase (trimmed to commonly used methods)
 declare interface SimpleRedis { connect: (...args: any[]) => Promise<unknown>;, disconnect: (...args: any[]) => Promise<unknown>;
   ping: (...args: any[]) => Promise<unknown>;
@@ -49,7 +49,7 @@ declare interface SimpleRedis { connect: (...args: any[]) => Promise<unknown>;,
   keys: (...args: any[]) => Promise<string[]>;
   info: (...args: any[]) => Promise<unknown>;
   status: any;
-  dbsize: (...args: any[]) => Promise<number>;
+ , dbsize: (...args: any[]) => Promise<number>;
   get: (...args: any[]) => Promise<unknown>;
   set: (...args: any[]) => Promise<unknown>;
   /** Set key with expiry (seconds) */
@@ -77,45 +77,45 @@ declare interface SimpleRedis { connect: (...args: any[]) => Promise<unknown>;,
   memory?: (...args: any[]) => Promise<unknown>;
   type?: (...args: any[]) => Promise<string>;
 }
-declare module 'redis' {
+declare module, 'redis' {
   const Redis: { createClient?: (...args: any[]) => SimpleRedis } & unknown;
   export = Redis;
 }
 // Stubs for local server/db modules (export what's referenced in errors)'
-declare module '$lib/server/db/client.js' {
+declare module, '$lib/server/db/client.js' {
   /** Minimal typed exports for common query usage in the codebase */
   export const query: <T = unknown>(sql: string, params?: any[]) => Promise<DBQueryResult<T>>;
   export const ensureEvidenceTable: () => Promise<void> | void;
   const client: DBClient;
   export default client;
 }
-declare module '$lib/server/db/drizzle' {
+declare module, '$lib/server/db/drizzle' {
   const enhanced_db: any;
   export { enhanced_db };
   export default enhanced_db;
 }
-declare module '$lib/server/db/index' {
+declare module, '$lib/server/db/index' {
   export const isPostgreSQL: any;
-  export const users: any;
+  export const, users: any;
   export default {};
 }
-declare module '$lib/server/database' {
+declare module, '$lib/server/database' {
   export const documents: any;
   export const embeddings: any;
-  export const searchSessions: any;
+  export const, searchSessions: any;
   export default {};
 }
-declare module '$lib/server/redis-service' {
+declare module, '$lib/server/redis-service' {
   export const redisService: SimpleRedis;
   export default redisService;
 }
-declare module '$lib/services/nomic-embedding-service' {
+declare module, '$lib/services/nomic-embedding-service' {
   const nomicEmbeddings: any;
   export { nomicEmbeddings };
   export default nomicEmbeddings;
 }
 // Generic catch-all for other internal modules that are still in flux
-declare module '$lib/*' {
+declare module, '$lib/*' {
   const whatever: any;
   export default whatever;
 }
@@ -207,7 +207,7 @@ declare interface LibraryDocsResponse {
   content?: string;
   metadata?: { library?: string; topic?: any; tokenCount?: number } | unknown;
   snippets?: Array<unknown> | unknown;
-  /** Some callers expect an object with `message` or `code` */
+  /** Some callers expect, an: object with `message` or `code` */
   error?: { message?: string; code?: string } | unknown;
   [k: string]: any;
 }

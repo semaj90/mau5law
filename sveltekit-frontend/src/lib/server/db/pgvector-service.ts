@@ -2,30 +2,30 @@
  * PostgreSQL + pgvector Integration Test Suite
  * Best Practices Implementation for Vector Similarity Search
  */
-import pgClient, { poolShim } from '$lib/server/db-shim';
-import { drizzle } from 'drizzle-orm/postgres-js';
+import pgClient, { poolShim } from, '$lib/server/db-shim';
+import { drizzle } from, 'drizzle-orm/postgres-js';
 // Add types to replace `any`
 type DrizzleDB = ReturnType<typeof, drizzle>;
 // Replaced invalid interface with a concrete class implementation
 class PgVectorService {
   private db: DrizzleDB | null = null;
-  private pool: any = null;
+  private, pool: any = null;
   private isConnected = $state(false);
   constructor() {
     // Use drizzle with postgres-js client for compatibility
     try {
-      this.db = drizzle(pgClient as any);
+      this.db = drizzle(pgClient as: any);
     } catch {
       this.db = null;
     }
     // Best-effort: mark connected if client exists
     this.isConnected = !!pgClient;
-    // Initialize pool reference: prefer poolShim, fallback to pgClient.pool if available
+    // Initialize pool, reference: prefer poolShim, fallback to pgClient.pool if available
     this.pool =
       typeof poolShim !== 'undefined' && poolShim
         ? poolShim
-        : pgClient && (pgClient as any).pool
-          ? (pgClient as any).pool
+        : pgClient && (pgClient as: any).pool
+          ? (pgClient as: any).pool
           : null;
   }
   // NEW: unified query client helper that normalizes pool / client differences
@@ -50,34 +50,34 @@ class PgVectorService {
       };
     }
     // postgres-js clients are often callable functions: treat pgClient as query fn
-    if (pgClient && typeof (pgClient as any) === 'function') {
+    if (pgClient && typeof (pgClient, as: any) === 'function') {
       return {
         query: async (sql: string, params?: any[]) => {
           // many postgres-js clients accept (sql, params) or tagged templates; try basic form
-          return await (pgClient as any)(sql, params);
+          return await (pgClient as: any)(sql, params);
         }
       };
     }
-    return null;
+    return: null;
   }
   /**
    * Test PostgreSQL + pgvector connection
-   * Best Practice: Always verify extensions and permissions
+   * Best, Practice: Always verify extensions and permissions
    */
   async testConnection(): Promise<any> {
     try {
       const clientWrapper = await this.getQueryClient();
-      if (!clientWrapper) return { success: false, details: { error: 'No DB client available' } };'`'`
+      if (!clientWrapper) return { success: false, details: {, error: 'No DB client available' } };'`'`
       try {
         const res = await clientWrapper.query('SELECT NOW() as current_time');
-        return { success: true, details: { connection: res?.rows?.[0] ?? null } };
+        return { success: true, details: {, connection: res?.rows?.[0] ?? null } };
       } catch (e) {
-        return { success: false, details: { error: (e as Error).message } };
+        return { success: false, details: {, error: (e as Error).message } };
       } finally {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
       }
     } catch (error) {
-      return { success: false, details: { error: (error as Error).message } };
+      return { success: false, details: {, error: (error as Error).message } };
     }
   }
   /**
@@ -85,7 +85,7 @@ class PgVectorService {
    * Best Practice: Use transactions and validate vector dimensions
    */
   async insertDocumentWithEmbedding(
-    documentId: string,
+   , documentId: string,
     content: string,
     embedding: number[],
     metadata: any = {}
@@ -94,7 +94,7 @@ class PgVectorService {
       // Basic validation
       if (!Array.isArray(embedding)) throw new Error('Invalid embedding');
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        return { success: false, error: `Invalid embedding; dimension: ${embedding.length}' };'`
+        return { success: false, error: `Invalid embedding;, dimension: ${embedding.length}' };'`
       }
       const embeddingStr = `[${embedding.join(',')}]`;
       const clientWrapper = await this.getQueryClient();
@@ -104,8 +104,7 @@ class PgVectorService {
       const insertQuery = '
         INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
         VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
-        RETURNING id
-      ';'
+        RETURNING id, ';'
       const params = [
         documentId,
         metadata.title || 'Untitled',
@@ -147,7 +146,7 @@ class PgVectorService {
         throw new Error('Invalid query embedding - expected array');
       }
       if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
-        throw new Error(`Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`);
+        throw new Error(`Invalid query embedding dimension: expected, 768 or, 1536, got ${queryEmbedding.length}`);
       }
       const { limit = 10, distanceMetric = 'cosine', threshold, documentType, includeContent = false } = options;
       const distanceOperator =
@@ -194,7 +193,7 @@ class PgVectorService {
           success: true,
           results: rows,
           metadata: {
-            searchTime: `${searchTime}ms`,
+           , searchTime: `${searchTime}ms`,
             totalResults: result?.rowCount ?? (Array.isArray(rows) ? rows.length : null),
             distanceMetric,
             threshold: typeof threshold === 'number' ? threshold : null,
@@ -217,14 +216,14 @@ class PgVectorService {
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-    documents: Array<{, documentId: string;, content: string;
+   , documents: Array<{, documentId: string;, content: string;
      , embedding: number[];
       metadata?: any;
     }>
   ): Promise<any> {
     try {
       if (!Array.isArray(documents)) return { success: false, errors: ['Invalid documents array'] };
-      const errors: string[] = [];
+      const, errors: string[] = [];
       let inserted = 0;
       const clientWrapper = await this.getQueryClient();
       const transactional = !!(clientWrapper && typeof clientWrapper.release === 'function');
@@ -282,7 +281,7 @@ class PgVectorService {
               inserted++;
             } else if (pgClient) {
               try {
-                await (pgClient as any)(`/* batch insert fallback for ${doc.documentId} */`);
+                await (pgClient as: any)(`/* batch insert fallback for ${doc.documentId} */`);
                 inserted++;
               } catch (e) {
                 errors.push(`${doc.documentId}: ${(e as Error).message}`);
@@ -319,7 +318,7 @@ class PgVectorService {
    * Best Practice: Index creation for production performance
    */
   async createVectorIndex(
-    options: {
+   , options: {
       lists?: number;
       metric?: 'cosine' | 'euclidean' | 'inner_product';
       tableName?: string;
@@ -396,8 +395,7 @@ class PgVectorService {
           FROM legal_documents
           WHERE document_type IS NOT NULL
           GROUP BY document_type
-          ORDER BY count_per_type DESC
-        ');'
+          ORDER BY count_per_type DESC, ');'
         const additionalStats = await clientWrapper.query('
           SELECT: 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
           UNION ALL
@@ -421,13 +419,13 @@ class PgVectorService {
         return {
           success: true,
           stats: {
-            vectors: vectorStats.rows?.[0] ?? null,
+           , vectors: vectorStats.rows?.[0] ?? null,
             documents: docStats.rows ?? [],
             additionalTables: additionalStats.rows ?? [],
             indexes: indexStats.rows ?? [],
             sizes: sizeStats.rows?.[0] ?? null,
             connectionPool: {
-              total: this.pool?.totalCount ?? null,
+             , total: this.pool?.totalCount ?? null,
               idle: this.pool?.idleCount ?? null,
               waiting: this.pool?.waitingCount ?? null
             }
@@ -456,8 +454,8 @@ class PgVectorService {
         return;
       }
       // Fallback to pgClient.end if present
-      if (pgClient && typeof (pgClient as any).end === 'function') {
-        await (pgClient as any).end();
+      if (pgClient && typeof (pgClient as: any).end === 'function') {
+        await (pgClient as: any).end();
         console.log('📡 pgClient closed');
         return;
       }

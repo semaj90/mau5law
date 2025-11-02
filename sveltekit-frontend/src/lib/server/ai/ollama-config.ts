@@ -1,16 +1,16 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // @ts-nocheck - Critical TypeScript error suppression
 // Unified Ollama configuration module (consolidated)
 // Provides model registry, fallback chains, and helper utilities used by server AI services.
-import type { OllamaConfig, ModelConfig } from './types.js';
+import type { OllamaConfig, ModelConfig } from, './types.js';
 /**
  * Ollama Configuration for High-Performance AI Assistant
  * Using local gemma3-legal:latest model with legal-bert fallback
  */
 // Model configurations aligned with the blueprint architecture
-export const MODELS: Record<string, ModelConfig> = {
+export const, MODELS: Record<string, ModelConfig> = {
   'gemma3-legal:latest': {
-    name: 'gemma3-legal:latest',
+   , name: 'gemma3-legal:latest',
     type: 'local',
     capabilities: ['text-generation', 'embeddings', 'legal-analysis'],
     contextWindow: 8192,
@@ -22,7 +22,7 @@ export const MODELS: Record<string, ModelConfig> = {
     You provide accurate, context-aware legal insights while maintaining strict confidentiality and professional standards.
     Your responses are based on deep understanding of legal terminology, precedents, and regulatory frameworks.`,`
     options: {
-      num_gpu: 1, // Use GPU acceleration
+     , num_gpu: 1, // Use GPU acceleration
       num_thread: 8, // Parallel processing threads
       repeat_penalty: 1.1,
       seed: 42,
@@ -37,7 +37,7 @@ export const MODELS: Record<string, ModelConfig> = {
     contextWindow: 8192
   },
   embeddinggemma: {
-    name: 'embeddinggemma',
+   , name: 'embeddinggemma',
     type: 'embedding',
     capabilities: ['embeddings'],
     embeddingDimension: 768,
@@ -54,37 +54,37 @@ export const FALLBACK_CHAIN = {
     'gemma3-legal:latest', // Only gemma3-legal
   ],
   embeddings: [
-    'embeddinggemma', // Primary: Google's; EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model'
+    'embeddinggemma', // Primary: Google's;, EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model'
   ]
 }
 export const OLLAMA_CONFIG: OllamaConfig = {
-  baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+ , baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
   defaultModel: 'gemma3-legal:latest',
   embeddingModel: 'embeddinggemma',
   fallbackModel: 'gemma3-legal:latest',
   fallbackModels: {
-    legal: 'gemma3-legal:latest',
+   , legal: 'gemma3-legal:latest',
     general: `gemma3-legal:latest' },'`
   timeout: 60000, // 60 seconds for complex legal analysis
   maxRetries: 3,
   streamEnabled: true
   // GPU acceleration settings
   gpu: {
-    enabled: true,
+   , enabled: true,
     layers: 35, // Number of layers to offload to GPU
     mainGpu: 0,
     tensorSplit: null
   },
   // Performance optimization
   performance: {
-    batchSize: 32,
+   , batchSize: 32,
     parallelRequests: 4,
     cacheEnabled: true,
     cacheTTL: 3600, // 1 hour cache
   },
   // Advanced features from blueprint
   features: {
-    som: true, // Self-Organizing Map for topic modeling
+   , som: true, // Self-Organizing Map for topic modeling
     proactiveCaching: true,
     multiModalIndexing: true,
     reinforcementLearning: false, // Can be enabled later
@@ -133,7 +133,7 @@ export function selectBestAvailableModel(preferredModels: string[], availableMod
       return matchingModel;
     }
   }
-  // If no preferred models available, return first available or null
+  // If no preferred models available, return first available or: null
   return availableModels[0] || null;
 }
 /**

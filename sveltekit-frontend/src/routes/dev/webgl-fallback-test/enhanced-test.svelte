@@ -1,14 +1,14 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  // Svelte 5 runes for reactive state
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { browser } from, '$app/environment';
+  // Svelte, 5 runes for reactive state
   let log = $state<string>('');
   let testResults = $state({
-    webgpu: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    webgl2: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    webgl1: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    wasm: { supported: false, tested: false, performance: null as any, error: null as string | null },
+    webgpu: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgl2: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgl1: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    wasm: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
     recommendation: '';
   });
   let isTestingInProgress = $state<boolean>(false);
@@ -17,7 +17,7 @@
   // Test configuration for Gemma3 270M simulation
   const matrixSize = 384; // Gemma3 270M embedding dimension
   const iterations = 50;
-  let testData: { matrixA: Float32Array; matrixB: Float32Array } | null = null;
+  let testData: { matrixA: Float32Array;, matrixB: Float32Array } | null = null;
   function append(msg: string) {
     log += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
   }
@@ -154,7 +154,7 @@ if (browser) {
       const computeShader = device.createShaderModule({ code: computeShaderSource });
       const computePipeline = device.createComputePipeline({
         layout: 'auto',
-        compute: { module: computeShader, entryPoint: 'main' }
+        compute: {, module: computeShader, entryPoint: 'main' }
       });
       // Performance benchmark for Gemma3 270M operations
       const startTime = performance.now();
@@ -169,7 +169,7 @@ if (browser) {
         opsPerSecond: (iterations / (totalTime / 1000)).toFixed(2),
         matrixSize: matrixSize
       }
-      append(`✅ WebGPU: ${iterations} Gemma3 270M operations in ${totalTime.toFixed(2)}ms (${(iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
+      append(`✅, WebGPU: ${iterations} Gemma3 270M operations in ${totalTime.toFixed(2)}ms (${(iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
     } catch (error) {
       testResults.webgpu.error = (error as Error).messag;
       append(`❌ WebGPU failed: ${(error as Error).message}`);
@@ -199,7 +199,7 @@ if (browser) {
         opsPerSecond: (webgl2Iterations / (totalTime / 1000)).toFixed(2),
         matrixSize: matrixSize
       }
-      append(`✅ WebGL2: ${webgl2Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl2Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
+      append(`✅, WebGL2: ${webgl2Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl2Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
     } catch (error) {
       testResults.webgl2.error = (error as Error).messag;
       append(`❌ WebGL2 failed: ${(error as Error).message}`);
@@ -228,7 +228,7 @@ if (browser) {
         avgTime: (totalTime / webgl1Iterations).toFixed(2),
         opsPerSecond: (webgl1Iterations / (totalTime / 1000)).toFixed(2),
         matrixSize: matrixSize
-        note: `Reduced iterations: ${webgl1Iterations} (WebGL1 limitations)`
+        note: `Reduced, iterations: ${webgl1Iterations} (WebGL1 limitations)`
       }
       append(`✅ WebGL1: ${webgl1Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl1Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
     } catch (error) {
@@ -255,9 +255,9 @@ if (browser) {
         avgTime: (totalTime / cpuIterations).toFixed(2),
         opsPerSecond: (cpuIterations / (totalTime / 1000)).toFixed(2),
         matrixSize: matrixSize
-        note: `CPU-based SIMD, iterations: ${cpuIterations}`
+       , note: `CPU-based SIMD, iterations: ${cpuIterations}`
       }
-      append(`✅ WebAssembly: ${cpuIterations} operations in ${totalTime.toFixed(2)}ms (${(cpuIterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
+      append(`✅, WebAssembly: ${cpuIterations} operations in ${totalTime.toFixed(2)}ms (${(cpuIterations / (totalTime / 1000)).toFixed(1)} ops/sec)`);
     } catch (error) {
       testResults.wasm.error = (error as Error).messag;
       append(`❌ WebAssembly failed: ${(error as Error).message}`);
@@ -278,24 +278,24 @@ if (browser) {
     const matrixSizeBytes = matrixSize * matrixSize * 4;
     const bufferA = device.createBuffer({
       size: matrixSizeBytes;
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
+     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
     });
     const bufferB = device.createBuffer({
       size: matrixSizeBytes;
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
+     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
     });
     const resultBuffer = device.createBuffer({
       size: matrixSizeBytes;
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC;
+     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC;
     });
     device.queue.writeBuffer(bufferA, 0, testData!.matrixA);
     device.queue.writeBuffer(bufferB, 0, testData!.matrixB);
     const bindGroup = device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: bufferA } },
-        { binding: 1, resource: { buffer: bufferB } },
-        { binding: 2, resource: { buffer: resultBuffer } }
+        {, binding: 0, resource: {, buffer: bufferA } },
+        { binding: 1, resource: {, buffer: bufferB } },
+        { binding: 2, resource: {, buffer: resultBuffer } }
       ]
     });
     const commandEncoder = device.createCommandEncoder();
@@ -360,27 +360,27 @@ if (browser) {
       testResults.recommendation = '🚀 WebGPU: OPTIMAL for Gemma3 270M WebAssembly. Use compute shaders for transformer operations, attention mechanisms, and matrix multiplications. Expected performance: 4x faster than CPU.';
       append('✅ RECOMMENDATIon WebGPU compute shaders - Best performance for Gemma3 270M');
     } else if (results.webgl2.performance && !results.webgl2.error) {
-      testResults.recommendation = '⚡ WebGL2: EXCELLENT for Gemma3 270M WebAssembly. Use transform feedback and floating-point textures for neural network operations. Expected performance: 2-3x faster than CPU.';
+      testResults.recommendation = '⚡ WebGL2: EXCELLENT for Gemma3 270M WebAssembly. Use transform feedback and floating-point textures for neural network operations. Expected, performance: 2-3x faster than CPU.';
       append('✅ RECOMMENDATIon WebGL2 transform feedback - Excellent performance');
     } else if (results.webgl1.performance && !results.webgl1.error) {
-      testResults.recommendation = '⚠️ WebGL1: LIMITED but functional for Gemma3 270M. Use texture-based operations with reduced precision. Consider model quantization to int8. Expected performance: 1.5x faster than CPU.';
+      testResults.recommendation = '⚠️ WebGL1: LIMITED but functional for Gemma3 270M. Use texture-based operations with reduced precision. Consider model quantization to int8. Expected, performance: 1.5x faster than CPU.';
       append('⚠️ RECOMMENDATIon WebGL1 with quantization - Limited performance');
     } else if (results.wasm.performance && !results.wasm.error) {
       testResults.recommendation = '🔄 WebAssembly CPU: FALLBACK mode for Gemma3 270M. Use SIMD operations, multi-threading with SharedArrayBuffer. Consider smaller model variants (Gemma 125M) for better performance.';
       append('🔄 RECOMMENDATIon WebAssembly CPU with SIMD - Fallback option');
     } else {
-      testResults.recommendation = '❌ Limited acceleration available. Consider server-side processing with RTX 3060 Ti GPU or highly optimized CPU implementations with quantization.';
+      testResults.recommendation = '❌ Limited acceleration available. Consider server-side processing with RTX, 3060 Ti GPU or highly optimized CPU implementations with quantization.';
       append('❌ RECOMMENDATIon Server-side processing preferred');
     }
     append('📋 Gemma3 270M deployment analysis complete');
   }
   function getPerformanceColor(ops: string | null) {
-    if (!ops) return 'color: #666;';
+    if (!ops) return, 'color: #666;';
     const opsNum = parseFloat(ops);
-    if (opsNum > 20) return 'color: #22c55e;'; // green - excellent
-    if (opsNum > 10) return 'color: #eab308;'; // yellow - good
-    if (opsNum > 2) return 'color: #f97316;';  // orange - acceptable
-    return 'color: #ef4444;'; // red - poor
+    if (opsNum > 20) return, 'color: #22c55e;'; // green - excellent
+    if (opsNum > 10) return, 'color: #eab308;'; // yellow - good
+    if (opsNum > 2) return, 'color: #f97316;';  // orange - acceptable
+    return, 'color: #ef4444;'; // red - poor
   }
   async function runBasicCompatibilityCheck(): Promise<any> {
     append('🔧 Running advanced compatibility check for Gemma3 270M...');
@@ -400,7 +400,7 @@ if (browser) {
       }
     }
     // Test for memory availability (important for 270M model)
-    const memoryInfo = (performance as any).memory;
+    const memoryInfo = (performance as: any).memory;
     if (memoryInfo) {
       const heapSizeMB = Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024);
       const heapLimitMB = Math.round(memoryInfo.jsHeapSizeLimit / 1024 / 1024);
@@ -544,7 +544,7 @@ if (browser) {
   .webgl-test-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+   , padding: 1rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   .header {
@@ -556,7 +556,7 @@ if (browser) {
     text-align: center;
   }
   .header h1 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     font-size: 2rem;
     font-weight: 700;
   }
@@ -580,12 +580,12 @@ if (browser) {
     cursor: pointer;
     font-weight: 600;
     font-size: 1rem;
-    transition: all 0.2;
+   , transition: all 0.2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   .test-buttonhover:not(:disabled) {,
     background: #1d4ed8;
-    transform: translateY(-2px);
+   , transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
   .test-buttondisabled {
@@ -597,7 +597,7 @@ if (browser) {
     background: white;
     border-radius: 0.75rem;
     padding: 1.5rem;
-    margin: 1rem 0;
+   , margin: 1rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .progress-text {
@@ -615,7 +615,7 @@ if (browser) {
   }
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+   , background: linear-gradient(90deg, #3b82f6, #1d4ed8);
     transition: width 0.3s ease;
     border-radius: 0.375rem;
   }
@@ -626,7 +626,7 @@ if (browser) {
     margin-top: 0.5rem;
   }
   .results-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
@@ -635,17 +635,17 @@ if (browser) {
     background: white;
     border: 2px solid #e5e7eb;
     border-radius: 1rem;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2;
   }
   .result-card:hover {
-    transform: translateY(-4px);
+   , transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6;
   }
   .result-card h3 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     font-size: 1.25rem;
     font-weight: 700;
     color: #1f2937;
@@ -673,15 +673,15 @@ if (browser) {
     margin-top: 0.5rem;
   }
   .recommendation {
-    background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
+   , background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
     border: 2px solid #3b82f6;
     border-radius: 1rem;
     padding: 2rem;
-    margin: 2rem 0;
+   , margin: 2rem 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   }
   .recommendation h3 {
-    margin: 0 0 1rem 0;
+    margin: 0, 0 1rem 0;
     color: #1e40af;
     font-size: 1.5rem;
     font-weight: 700;
@@ -699,13 +699,13 @@ if (browser) {
   }
   .log-container h2 {
     color: #e2e8f0;
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     font-size: 1.25rem;
   }
   .log-output {
     background: #1e293b;
     color: #e2e8f0;
-    padding: 1rem;
+   , padding: 1rem;
     border-radius: 0.5rem;
     white-space: pre-wrap;
     font-family: 'Courier New', 'Monaco', monospace;
@@ -716,7 +716,7 @@ if (browser) {
     border: 1px solid #334155;
   }
   .info-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
@@ -737,7 +737,7 @@ if (browser) {
   .info-value {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #1f2937;
+   , color: #1f2937;
     margin-top: 0.25rem;
   }
   @media (max-width: 768px) {

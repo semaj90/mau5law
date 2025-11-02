@@ -3,10 +3,10 @@ import type {
   RAGResponse,
   RAGSearchResult,
   VectorSearchOptions as RAGVectorSearchOptions
-} from '$lib/types/rag';
-import type { RedisClient } from '$lib/types/redis';
-import type { EmbeddingService } from '$lib/services/feedback-loop-service';
-import type { PgDatabase } from 'drizzle-orm/pg-core'; // Assuming pg-core for PostgreSQL
+} from, '$lib/types/rag';
+import type { RedisClient } from, '$lib/types/redis';
+import type { EmbeddingService } from, '$lib/services/feedback-loop-service';
+import type { PgDatabase } from, 'drizzle-orm/pg-core'; // Assuming pg-core for PostgreSQL
 
 // Interface for a generic AI model that can predict
 interface LegalBERTModel {
@@ -54,30 +54,30 @@ declare const legalRAG: LegalRAGService;
 declare const qdrantService: QdrantVectorSearchService;
 declare const nomicEmbedText: EmbeddingService;
 declare const embeddinggemma: EmbeddingService; // Added declaration for embeddinggemma
-declare const vectorOps: VectorOperations;
+declare const, vectorOps: VectorOperations;
 
 type RecommendationRequest = RecommendationRequestType;
 type VectorSearchOptions = RAGVectorSearchOptions;
 
-declare module '$lib/server/db/drizzle' {
+declare module, '$lib/server/db/drizzle' {
   const _default: PgDatabase<unknown, unknown, unknown>;
   export default _default;
 }
-declare module '$lib/server/redis-service' {
+declare module, '$lib/server/redis-service' {
   const redis: RedisClient;
   export { redis };
 }
-declare module 'node-fetch' {
+declare module, 'node-fetch' {
   const fetch: typeof globalThis.fetch;
   export default fetch;
 }
 // Removed broad App.Locals augmentation. Use locals-unify.d.ts instead.
-// Allow unknown modules used in the codebase to be imported without type errors
-declare module '*-service' {
+//, Allow: unknown modules used in the codebase to be imported without type errors
+declare module, '*-service' {
   const x: ProductionServiceClient;
   export default x;
 }
-declare module '*service' {
+declare module, '*service' {
   const x: ProductionServiceClient;
   export default x;
 }

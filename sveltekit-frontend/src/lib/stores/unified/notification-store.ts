@@ -1,21 +1,21 @@
 /**
  * NotificationStore - Unified Alerts, Notifications & Toast Messages
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - alerts.ts
  * - notifications.ts
  * - toast.ts
  * - analyticsStore.ts (feedback component)
  *
  * Usage:
- *   import { notificationStore, showToast } from '$lib/stores/unified';
+ *   import { notificationStore, showToast } from, '$lib/stores/unified';
  *
  *   notificationStore.showToast('Success!', 'success', 3000);
  *   notificationStore.addNotification({ title: 'Update', message: 'Task complete' });
  *   $: notifications = $notificationStore.notifications;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -29,7 +29,7 @@ export interface Toast { id: string;, message: string;
   createdAt: number;
 }
 
-export interface Notification { id: string;, title: string;
+export interface Notification {, id: string;, title: string;
   message: string;
   type: NotificationType;
   isRead: boolean;
@@ -37,7 +37,7 @@ export interface Notification { id: string;, title: string;
   actionUrl?: string;
 }
 
-export interface Alert { id: string;, title: string;
+export interface Alert {, id: string;, title: string;
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   isDismissed: boolean;
@@ -48,21 +48,21 @@ export interface Alert { id: string;, title: string;
 /**
  * Notification Store State
  */
-interface NotificationStoreState { notifications: Notification[];, toasts: Toast[];
+interface NotificationStoreState {, notifications: Notification[];, toasts: Toast[];
   alerts: Alert[];
   unreadCount: number;
-  alertSettings: { enableSoundNotification: boolean;, enableDesktopNotification: boolean;
+  alertSettings: {, enableSoundNotification: boolean;, enableDesktopNotification: boolean;
     groupByType: boolean;
   };
 }
 
 const initialState: NotificationStoreState = {
-  notifications: [],
+ , notifications: [],
   toasts: [],
   alerts: [],
   unreadCount: 0,
   alertSettings: {
-    enableSoundNotification: true,
+   , enableSoundNotification: true,
     enableDesktopNotification: false,
     groupByType: true
   }
@@ -335,16 +335,16 @@ export const activeAlerts = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { alerts, addAlert, dismissAlert  } from '$lib/stores/unified'
- *   import { notifications } from '$lib/stores/notifications'
- *   import { showToast } from '$lib/stores/toast'
+ * Old imports to, replace:
+ *   import { alerts, addAlert, dismissAlert  } from, '$lib/stores/unified'
+ *   import { notifications } from, '$lib/stores/notifications'
+ *   import { showToast } from, '$lib/stores/toast'
  *
  * New imports:
- *   import { notificationStore, showToast, notifications, alerts } from '$lib/stores/unified'
+ *   import { notificationStore, showToast, notifications, alerts } from, '$lib/stores/unified'
  *
  * Usage patterns:
- *  ; Old: addAlert(...) - function based
+ *  ;, Old: addAlert(...) - function based
  *   New: notificationStore.addAlert(...) - method based
  *
  *   Old: $alerts, $notifications, $toasts - separate subscriptions

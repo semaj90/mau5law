@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Minimal, valid implementation to restore route integrity
 const AVAILABLE_GET = ['status', 'health', 'metrics', 'logs'] as const;
 const AVAILABLE_POST = ['restart', 'execute', 'query'] as const;
@@ -8,17 +8,17 @@ export const GET: RequestHandler = async ({ params, url }) => {
   if (!serviceId) return json({ success: false, error: 'Missing serviceId' }, { status: 400 });
   const action = url.searchParams.get('action') ?? 'status';
   switch (action) {
-    case 'status':
+    case, 'status':
       return json({ success: true, data: { serviceId, status: 'unknown' }, timestamp: new Date().toISOString() });
-    case 'health':
+    case, 'health':
       return json({ success: true, data: { serviceId, healthy: false }, timestamp: new Date().toISOString() });
-    case 'metrics':
+    case, 'metrics':
       return json({ success: true, data: { serviceId, metrics: {} }, timestamp: new Date().toISOString() });
-    case 'logs':
+    case, 'logs':
       return json({ success: true, data: { serviceId, logs: [] }, timestamp: new Date().toISOString() });
     default:
       return json(
-        { success: false, error: `Unknown; action: ${action}`, availableActions: AVAILABLE_GET },
+        {, success: false, error: `Unknown;, action: ${action}`, availableActions: AVAILABLE_GET },
         { status: 400 }
       );
   }
@@ -42,9 +42,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
   const data = parsed.data ?? {};
   const options = parsed.options ?? {};
   switch (action) {
-    case 'restart':
+    case, 'restart':
       return json({ success: true, message: `Restart requested`, serviceId, timestamp: new Date().toISOString() });
-    case 'execute':
+    case, 'execute':
       return json({
         success: true,
         message: `Execute requested`,
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         options,
         timestamp: new Date().toISOString()
       });
-    case 'query':
+    case, 'query':
       return json({
         success: true,
         message: `Query requested`,
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       });
     default:
       return json(
-        { success: false, error: 'Unknown; action: ${action ?? 'undefined' }`, availableActions: AVAILABLE_POST },'`
+        {, success: false, error: 'Unknown;, action: ${action ?? 'undefined' }`, availableActions: AVAILABLE_POST },'`
         { status: 400 }
       );
   }

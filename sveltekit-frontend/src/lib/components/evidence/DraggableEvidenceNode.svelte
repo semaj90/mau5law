@@ -1,12 +1,12 @@
-<!-- Draggable Evidence Node - Svelte 5 + Enhanced, Drag, System -->
+<!-- Draggable Evidence Node - Svelte, 5 + Enhanced, Drag, System -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { draggable } from '$lib/actions/draggable';
-  import { evidenceStore  } from '$lib/stores/unified';
-  import { embeddingsService } from '$lib/services/embeddings-service';
-  import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
-  import { showSuccess, showError  } from '$lib/stores/unified';
-  import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
+  // Svelte, 5 runes are auto-imported
+  import { draggable } from, '$lib/actions/draggable';
+  import { evidenceStore  } from, '$lib/stores/unified';
+  import { embeddingsService } from, '$lib/services/embeddings-service';
+  import  Button, Card, CardContent, CardHeader, CardTitle  from, "$lib/components/ui/enhanced-bits.svelte";
+  import { showSuccess, showError  } from, '$lib/stores/unified';
+  import { FileText, Image, Video, Mic, Zap, Bot } from, 'lucide-svelte';
   interface EvidenceNode {
     id: string;
     title: string;
@@ -32,7 +32,7 @@
     }
   }
   interface Props {
-    evidence: EvidenceNode; // Fixed: EvidenceNod -> EvidenceNode
+    evidence: EvidenceNode; //, Fixed: EvidenceNod -> EvidenceNode
     canvasContainer?: HTMLElement;
     selected?: boolean;
     highlighted?: boolean;
@@ -49,7 +49,7 @@
     onAnalyze,
     onConnect
   }: Props = $props();
-  // Svelte 5 state
+  // Svelte, 5 state
   let nodeElement = $state<HTMLDivElement>();
   let isDragging = $state<boolean>(false);
   let isAnalyzing = $state<boolean>(false);
@@ -65,18 +65,18 @@
   `);`
   let iconComponent = $derived(() => {
     switch (evidence.type) {
-      case 'document': return FileText;
-      case 'image': return Image; // Fixed: Imag -> Image
-      case 'video': return Video;
-      case 'audio': return Mic;
+      case, 'document': return FileText;
+      case, 'image': return Image; // Fixed: Imag -> Image
+      case, 'video': return Video;
+      case, 'audio': return Mic;
       default: return FileText;
     }
   });
   let confidenceColor = $derived(() => {
     const confidence = evidence.metadata?.confidence || 0;
-    if (confidence > 0.8) return 'text-green-600';
-    if (confidence > 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence > 0.8) return, 'text-green-600';
+    if (confidence > 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   });
   // Position update handler
   function handlePositionUpdate(x: number, y: number) {
@@ -113,7 +113,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ // Fixed: removed extra comma
-          evidenceId: evidence.id,
+         , evidenceId: evidence.id,
           text: preprocessed.cleanText,
           embeddings: embeddingResult.embedding,
           metadata: evidence.metadata, // Fixed: semicolon to comma
@@ -170,7 +170,7 @@
   function handleDragStart_Connection(_event: DragEvent) {
     if (_event.dataTransfer) { // Fixed: use _event parameter
       _event.dataTransfer.setData('text/plain', JSON.stringify({ // Fixed: use _event parameter
-        id: evidence.id,
+       , id: evidence.id,
         title: evidence.title,
         type: evidence.type, // Fixed: evidence.typ -> evidence.type, semicolon to comma
       }));
@@ -183,12 +183,12 @@
   class={nodeClass}
   style="left: {evidence.x}px; top: {evidence.y}px;"
   use:draggable={{ // Fixed: removed extra comma
-    id: evidence.id,
+   , id: evidence.id,
     onDrag: handlePositionUpdate, // Fixed: added comma
-    onDragStart: handleDragStart, // Fixed: added comma
-    onDragEnd: handleDragEnd, // Fixed: semicolon to comma
-    handle: '.drag-handle',
-    constraint: canvasContainer ? { container: canvasContainer } : undefined
+   , onDragStart: handleDragStart, // Fixed: added comma
+   , onDragEnd: handleDragEnd, // Fixed: semicolon to comma
+   , handle: '.drag-handle',
+    constraint: canvasContainer ? {, container: canvasContainer } : undefined
   }}
   onclick={handleNodeClick}
   ondrop={handleConnectionDrop}
@@ -198,7 +198,7 @@
   role="button"
   tabindex="0"
 >
-  <Card.Root class="w-64 shadow-lg hover:shadow-xl, transition-all, duration-200">
+  <Card class="w-64 shadow-lg hover:shadow-xl, transition-all, duration-200">
     <!-- Header with, drag, handle -->
     <CardHeader, class="pb-2">
       <div class="flex, items-center, justify-between">
@@ -295,7 +295,7 @@
           {/if}
         {/if}
     </CardContent>
-  </Card.Root>
+  </Card>
 </div>
 <style>
   .evidence-node {
@@ -303,7 +303,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .evidence-node:hover {
-    transform: scale(1.02);
+   , transform: scale(1.02);
   }
   .evidence-node.selected {
 /* @apply ring-2 ring-primary ring-opacity-75; */
@@ -318,10 +318,10 @@
   }
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+      box-shadow: 0, 0, 0, 0 rgba(59, 130, 246, 0.4);
     }
     50% {
-      box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+      box-shadow: 0, 0 0 10px rgba(59, 130, 246, 0);
     }
   }
   .line-clamp-2 {
@@ -329,6 +329,6 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-clamp: 2; /* Fixed: Added standard property */
+    line-clamp: 2; /*, Fixed: Added standard property */
   }
 </style>

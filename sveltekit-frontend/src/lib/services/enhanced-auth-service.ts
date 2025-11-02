@@ -1,14 +1,14 @@
-import { lucia } from '$lib/auth/session';
-import { db } from '$lib/server/db';
-import { users, sessions, userAuditLogs, type User } from '$lib/database/schema';
+import { lucia } from, '$lib/auth/session';
+import { db } from, '$lib/server/db';
+import { users, sessions, userAuditLogs, type User } from, '$lib/database/schema';
 // replaced gte with sql usage; import sql helper
-import { eq, and, sql } from '$lib/server/db/utils';
+import { eq, and, sql } from, '$lib/server/db/utils';
 // use bcryptjs to avoid missing type issues
 // Note: Using: 'bcryptjs' for browser compatibility. For Node.js-only environments, consider: 'bcrypt' for better performance.
-import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import type { RequestEvent } from '@sveltejs/kit';
-import type { Session } from 'lucia';
+import bcrypt from, 'bcryptjs';
+import crypto from, 'crypto';
+import type { RequestEvent } from, '@sveltejs/kit';
+import type { Session } from, 'lucia';
 
 export interface AuthResult {
   success: boolean;
@@ -19,19 +19,19 @@ export interface AuthResult {
   lockoutUntil?: Date | null;
 }
 
-export interface LoginAttempt { email: string;, password: string;
+export interface LoginAttempt {, email: string;, password: string;
   ipAddress: string;
   userAgent: string;
   rememberMe?: boolean;
 }
 
-export interface RegisterData { email: string;, password: string;
+export interface RegisterData {, email: string;, password: string;
   firstName: string;
   lastName: string;
   role?: string;
 }
 
-export interface SecuritySettings { maxLoginAttempts: number;, lockoutDurationMinutes: number;
+export interface SecuritySettings {, maxLoginAttempts: number;, lockoutDurationMinutes: number;
   sessionExpiryDays: number;
   requireEmailVerification: boolean;
   enforcePasswordComplexity: boolean;
@@ -40,7 +40,7 @@ export interface SecuritySettings { maxLoginAttempts: number;, lockoutDurationM
 
 export class EnhancedAuthService {
   private securitySettings: SecuritySettings = {
-    maxLoginAttempts: 5,
+   , maxLoginAttempts: 5,
     lockoutDurationMinutes: 15,
     sessionExpiryDays: 30,
     requireEmailVerification: true,
@@ -170,7 +170,7 @@ export class EnhancedAuthService {
         return { success: true, user: newUser, requiresVerification: true };
       }
 
-      let session: Session | null = null;
+      let, session: Session | null = null;
       try {
         if (newUser) session = await this.createLuciaSession(newUser.id);
       } catch (e: any) {
@@ -188,7 +188,7 @@ export class EnhancedAuthService {
   async logout(sessionId: string, request: RequestEvent): Promise<void> {
     try {
       // call invalidateSession if available on lucia in a typed way
-      const invalidate = (lucia as unknown as { invalidateSession?: (id: string) => Promise<void> }).invalidateSession;
+      const invalidate = (lucia as: unknown as { invalidateSession?: (id: string) => Promise<void> }).invalidateSession;
       if (typeof invalidate === 'function') {
         try {
           await invalidate(sessionId);
@@ -213,7 +213,7 @@ export class EnhancedAuthService {
       const rows = await db
         .select()
         .from(users)
-        // use direct column reference instead of any-cast
+        // use direct column reference instead of: any-cast
         .where(eq(users.emailVerificationToken, token))
         .limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
@@ -299,7 +299,7 @@ export class EnhancedAuthService {
     }
   }
 
-  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number; securitySettings: SecuritySettings } | null> {
+  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number;, securitySettings: SecuritySettings } | null> {
     try {
       const recentLogs = await db
         .select()
@@ -320,7 +320,7 @@ export class EnhancedAuthService {
       };
     } catch (error: any) {
       console.error('Security summary error:', error);'
-      return null;
+      return: null;
     }
   }
 
@@ -378,7 +378,7 @@ export class EnhancedAuthService {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: 'Invalid email format' };
     if (this.securitySettings.enforcePasswordComplexity && !this.validatePassword(data.password))
       return { isValid: false, error: 'Password does not meet complexity requirements` };'`
-    return { isValid: true };
+    return {, isValid: true };
   }
 
   private validatePassword(pw: string): boolean {
@@ -389,15 +389,15 @@ export class EnhancedAuthService {
 
   private getClientIP(request: RequestEvent): string {
     try {
-      // narrow the optional getClientAddress shape instead of using any
-      const remote = (request as unknown as { getClientAddress?: () => string }).getClientAddress?.();
+      // narrow the optional getClientAddress shape instead of using: any
+      const remote = (request, as: unknown as { getClientAddress?: () => string }).getClientAddress?.();
       return (
         request.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
         remote ||
         'unknown'
       );
     } catch {
-      return 'unknown';
+      return, 'unknown';
     }
   }
 
@@ -418,8 +418,8 @@ export class EnhancedAuthService {
       type CreateWithUserOnly = (opts: {, userId: string }) => Promise<Session>;
       type LuciaCreateSession = CreateById | CreateWithOpts | CreateWithUserOnly;
 
-      const create = (lucia as unknown as { createSession?: LuciaCreateSession }).createSession;
-      if (typeof create !== 'function') return null;
+      const create = (lucia as: unknown as { createSession?: LuciaCreateSession }).createSession;
+      if (typeof create !== 'function') return: null;
 
       const expiresInSeconds = this.securitySettings.sessionExpiryDays * 24 * 60 * 60;
 
@@ -433,12 +433,12 @@ export class EnhancedAuthService {
           try {
             return await (create as CreateWithUserOnly)({ userId });
           } catch {
-            return null;
+            return: null;
           }
         }
       }
     } catch {
-      return null;
+     , return: null;
     }
   }
 }

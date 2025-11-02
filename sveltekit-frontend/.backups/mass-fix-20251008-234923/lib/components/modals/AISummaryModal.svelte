@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
     onclose?.();
   }
 </script>
-<Dialog.Root open={isOpen} close={closeModal}>
+<Dialog open={isOpen} close={closeModal}>
   <Dialog.Content size="lg">
   <Dialog.Header>
     <Dialog.Title>AI Summary</Dialog.Title>
@@ -90,7 +90,7 @@ closeModal()} variant="secondary" aria-label="Close summary modal">
     </Dialog.Close>
   </Dialog.Footer>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   /* @unocss-include */
   .prose {

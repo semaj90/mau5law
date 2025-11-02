@@ -1,20 +1,20 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Enhanced Legal AI Search Service with LangChain.js, Nomic Embed, and pgvector
 // Implements RAG pattern with vector similarity search and semantic enhancement
-import { MemoryVectorStore } from "@langchain/community/vectorstores/memory";
-import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
-import { Embeddings } from "@langchain/core/embeddings";
-import { OllamaEmbeddings } from "@langchain/ollama";
+import { MemoryVectorStore } from, "@langchain/community/vectorstores/memory";
+import { PGVectorStore } from, "@langchain/community/vectorstores/pgvector";
+import { Embeddings } from, "@langchain/core/embeddings";
+import { OllamaEmbeddings } from, "@langchain/ollama";
 
 // Define the Ollama URL based on environment variable with a localhost fallback
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 
 // Define legal document type
-type LegalDocumentType = { id: string;, title: string;
+type LegalDocumentType = {, id: string;, title: string;
   description: string;
   content: string;
   jurisdiction: string;
-  category: string;
+ , category: string;
   code?: string;
   sections?: string[];
   url?: string;
@@ -34,7 +34,7 @@ const initializeLegalDocuments = loadLegalDocuments();
 // Embedding generation helper
 async function generateEmbedding(text: string, options?: { model?: string }): Promise<number[]> {
   const embeddings = new OllamaEmbeddings({
-    model: 'embeddinggemma:latest', // Changed from 'nomic-embed-text'
+    model: 'embeddinggemma:latest', // Changed from, 'nomic-embed-text'
     baseUrl: OLLAMA_URL // Use the environment-aware constant
   });
   try {
@@ -67,19 +67,19 @@ export class GemmaEmbeddings extends Embeddings { // Renamed from NomicEmbedding
 export interface LegalSearchConfig { useVector: boolean;, useFallback: boolean;
   maxResults: number;
   similarityThreshold: number;
-  boostFactors: { title: number;, exact_match: number;
+  boostFactors: {, title: number;, exact_match: number;
     jurisdiction: number;
     category: number;
     recency: number;
   }
 }
 const defaultConfig: LegalSearchConfig = {
-  useVector: true,
+ , useVector: true,
   useFallback: true,
   maxResults: 10,
   similarityThreshold: 0.7,
   boostFactors: {
-    title: 2.0,
+   , title: 2.0,
     exact_match: 3.0,
     jurisdiction: 1.5,
     category: 1.3,
@@ -87,7 +87,7 @@ const defaultConfig: LegalSearchConfig = {
   }
 }
 // Enhanced Legal Search Result
-export interface LegalSearchResult { id: string;, title: string;
+export interface LegalSearchResult {, id: string;, title: string;
   content: string;
   description?: string;
   jurisdiction: string;
@@ -98,7 +98,7 @@ export interface LegalSearchResult { id: string;, title: string;
   score: number;
   searchType: 'vector' | 'hybrid' | 'fallback';
   confidence: number;
-  relevanceFactors: { semantic: number;, exact_match: number;
+  relevanceFactors: {, semantic: number;, exact_match: number;
     jurisdiction_match: number;
     category_match: number;
   }
@@ -110,7 +110,7 @@ export class EnhancedLegalSearchService {
   private embeddings: GemmaEmbeddings; // Changed from NomicEmbeddings
   private memoryVectorStore?: MemoryVectorStore;
   private pgVectorStore?: PGVectorStore;
-  private config: LegalSearchConfig;
+  private, config: LegalSearchConfig;
   constructor(config: Partial<LegalSearchConfig> = {}) {
     this.embeddings = new GemmaEmbeddings(); // Changed from NomicEmbeddings
     this.config = { ...defaultConfig, ...config }
@@ -155,14 +155,14 @@ export class EnhancedLegalSearchService {
           },
           tableName: 'search_index',
           columns: {
-            idColumnName: 'id',
+           , idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
             metadataColumnName: 'metadata' },'`'`
-          distanceStrategy: 'cosine' as any
+          distanceStrategy: 'cosine' as: any
         }
         // Initialize PGVector store
-        this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, pgConfig);
+        this.pgVectorStore = new (PGVectorStore, as: any)(this.embeddings, pgConfig);
         console.log('✅ PGVector store initialized');
       }
     } catch (error: any) {
@@ -182,7 +182,7 @@ export class EnhancedLegalSearchService {
   ): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
     try {
-      // NEW: Try enhanced semantic search first (preferred method)
+      //, NEW: Try enhanced semantic search first (preferred method)
       if (options.useEnhancedSemanticSearch !== false && typeof fetch !== 'undefined') {
         try {
           const semanticResponse = await fetch('/api/rag/semantic-search', {
@@ -294,7 +294,7 @@ export class EnhancedLegalSearchService {
             searchType: 'vector',
             confidence: this.calculateConfidence(score, 'vector'),
             relevanceFactors: {
-              semantic: score,
+             , semantic: score,
               exact_match: this.calculateExactMatch(query, doc.pageContent),
               jurisdiction_match: this.calculateJurisdictionMatch(
                 options.jurisdiction,
@@ -359,7 +359,7 @@ export class EnhancedLegalSearchService {
             searchType: 'hybrid',
             confidence: this.calculateConfidence(score, 'fuzzy'),
             relevanceFactors: {
-              semantic: score * 0.7,
+             , semantic: score * 0.7,
               exact_match: this.calculateExactMatch(query, doc.content),
               jurisdiction_match: this.calculateJurisdictionMatch(
                 options.jurisdiction,
@@ -405,7 +405,7 @@ export class EnhancedLegalSearchService {
           searchType: 'fallback',
           confidence: 0.6,
           relevanceFactors: {
-            semantic: 0.5,
+           , semantic: 0.5,
             exact_match: titleMatch ? 1.0 : 0.0,
             jurisdiction_match: this.calculateJurisdictionMatch(
               options.jurisdiction,
@@ -420,7 +420,7 @@ export class EnhancedLegalSearchService {
   }
   // Utility methods
   private buildMetadataFilter(options: any): { [key: string]: any } | undefined {
-    const filter: { [key: string]: any } = {}
+    const, filter: { [key: string]: any } = {}
     if (options.jurisdiction && options.jurisdiction !== 'all') {
       filter.jurisdiction = options.jurisdiction;
     }
@@ -467,7 +467,7 @@ export class EnhancedLegalSearchService {
   }
   private normalizeScore(score: number): number {
     // Normalize different scoring systems to 0-1 range
-    return Math.max(0, Math.min(1, score)); // Changed from 1 - score, as similaritySearch returns similarity
+    return Math.max(0, Math.min(1, score)); // Changed from, 1 - score, as similaritySearch returns similarity
   }
   private deduplicateAndRankResults(
     results: LegalSearchResult[],

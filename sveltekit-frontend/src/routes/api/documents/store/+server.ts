@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Enhanced Document Storage API with MinIO + PostgreSQL + Cognitive Cache
-import { db, getDatabaseHealth } from '$lib/server/db';
-import { legal_documents } from '$lib/server/db/schema-postgres';
-import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
-import { sql } from 'drizzle-orm';
+import { db, getDatabaseHealth } from, '$lib/server/db';
+import { legal_documents } from, '$lib/server/db/schema-postgres';
+import { cognitiveCacheManager } from, '$lib/services/cognitive-cache-integration';
+import { sql } from, 'drizzle-orm';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('[Storage] Processing document storage request...');
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
       documentId,
       message: 'Document stored successfully',
       document: {
-        id: documentId,
+       , id: documentId,
         title: filename || 'untitled',
         filename: filename || 'untitled',
         documentType: documentData.document_type,
@@ -74,14 +74,14 @@ export const POST: RequestHandler = async ({ request }) => {
         isConfidential: documentData.is_confidential,
         processingStatus: `completed' },'`
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         databaseHealth: dbHealth.overall
       }
     };
     // Cache the stored document for future retrieval
     await cognitiveCacheManager.set(
       {
-        key: `document_${documentId}`,
+       , key: `document_${documentId}`,
         type: 'legal-data' as const,
         context: {
          , action: 'document-storage',
@@ -123,10 +123,10 @@ export const GET: RequestHandler = async () => {
       status: dbHealth.overall === 'healthy' ? 'healthy' : 'unhealthy',
       service: 'Enhanced Document Storage',
       features: {
-        postgresqlStorage: dbHealth.postgres.connected,
+       , postgresqlStorage: dbHealth.postgres.connected,
         vectorEmbeddings: dbHealth.postgres.connected,
         cognitiveCaching: true,
-        minioIntegration: false, // TODO: Implement MinIO integration; legalAnalysis: true
+        minioIntegration: false, // TODO: Implement MinIO integration;, legalAnalysis: true
       },
       database: {
        , status: dbHealth.overall,

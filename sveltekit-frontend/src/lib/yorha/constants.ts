@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // Shared YoRHa constants, types, and utility helpers for production-ready pages
 export type YoRHaColumn = { key: string;, title: string;
   sortable?: boolean;
@@ -7,14 +7,14 @@ export type YoRHaColumn = { key: string;, title: string;
   width?: number;
   type?: 'text' | 'number' | 'date' | 'action';
 };
-export interface YoRHaFormFieldBase { id: string;, label: string;
+export interface YoRHaFormFieldBase {, id: string;, label: string;
   required?: boolean;
 }
 export type YoRHaFormField =
-  | (YoRHaFormFieldBase & { type: 'text' | 'textarea' | 'date' })
+  | (YoRHaFormFieldBase & {, type: 'text' | 'textarea' | 'date' })
   | (YoRHaFormFieldBase & { type: 'select';, options: Array<{, value: string;, label: string }> });
 export const documentsColumns: YoRHaColumn[] = [
-  { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
+  {, key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
   { key: 'title', title: 'DOCUMENT TITLE', sortable: true, filterable: true, width: 300 },
   { key: 'documentType', title: 'TYPE', sortable: true, filterable: true, width: 120 },
   { key: 'jurisdiction', title: 'JURISDICTION', sortable: true, width: 150 },
@@ -24,7 +24,7 @@ export const documentsColumns: YoRHaColumn[] = [
   { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' }
 ];
 export const casesColumns: YoRHaColumn[] = [
-  { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
+  {, key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
   { key: 'title', title: 'CASE TITLE', sortable: true, filterable: true, width: 300 },
   { key: 'caseNumber', title: 'CASE NUMBER', sortable: true, width: 150 },
   { key: 'yorha_priority', title: 'PRIORITY', sortable: true, width: 100, type: 'text' },
@@ -34,7 +34,7 @@ export const casesColumns: YoRHaColumn[] = [
   { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' }
 ];
 export const evidenceColumns: YoRHaColumn[] = [
-  { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
+  {, key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
   { key: 'title', title: 'EVIDENCE TITLE', sortable: true, filterable: true, width: 250 },
   { key: 'evidenceType', title: 'TYPE', sortable: true, width: 120, type: 'text' },
   { key: 'caseId', title: 'CASE ID', sortable: true, width: 120 },
@@ -44,7 +44,7 @@ export const evidenceColumns: YoRHaColumn[] = [
   { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' }
 ];
 export const documentFormFields: YoRHaFormField[] = [
-  { id: 'title', label: 'Document Title', type: 'text', required: true },
+  {, id: 'title', label: 'Document Title', type: 'text', required: true },
   { id: 'content', label: 'Content', type: 'textarea', required: true },
   {
     id: 'documentType',
@@ -52,7 +52,7 @@ export const documentFormFields: YoRHaFormField[] = [
     type: 'select',
     required: true,
     options: [
-      { value: 'contract', label: 'Contract' },
+      {, value: 'contract', label: 'Contract' },
       { value: 'statute', label: 'Statute' },
       { value: 'regulation', label: 'Regulation' },
       { value: 'precedent', label: 'Legal Precedent' },
@@ -64,7 +64,7 @@ export const documentFormFields: YoRHaFormField[] = [
   { id: 'citation', label: 'Citation', type: 'text' }
 ];
 export const caseFormFields: YoRHaFormField[] = [
-  { id: 'title', label: 'Case Title', type: 'text', required: true },
+  {, id: 'title', label: 'Case Title', type: 'text', required: true },
   { id: 'description', label: 'Description', type: 'textarea', required: true },
   { id: 'caseNumber', label: 'Case Number', type: 'text', required: true },
   {
@@ -73,7 +73,7 @@ export const caseFormFields: YoRHaFormField[] = [
     type: 'select',
     required: true,
     options: [
-      { value: 'low', label: 'Low' },
+      {, value: 'low', label: 'Low' },
       { value: 'medium', label: 'Medium' },
       { value: 'high', label: 'High' },
       { value: 'critical', label: 'Critical' }
@@ -85,7 +85,7 @@ export const caseFormFields: YoRHaFormField[] = [
     label: 'Status',
     type: 'select',
     options: [
-      { value: 'active', label: 'Active' },
+      {, value: 'active', label: 'Active' },
       { value: 'pending', label: 'Pending' },
       { value: 'closed', label: 'Closed' },
       { value: 'archived', label: 'Archived' }
@@ -93,7 +93,7 @@ export const caseFormFields: YoRHaFormField[] = [
   },
 ];
 export const evidenceFormFields: YoRHaFormField[] = [
-  { id: 'title', label: 'Evidence Title', type: 'text', required: true },
+  {, id: 'title', label: 'Evidence Title', type: 'text', required: true },
   { id: 'description', label: 'Description', type: 'textarea', required: true },
   {
     id: 'evidenceType',
@@ -101,7 +101,7 @@ export const evidenceFormFields: YoRHaFormField[] = [
     type: 'select',
     required: true,
     options: [
-      { value: 'document', label: 'Document' },
+      {, value: 'document', label: 'Document' },
       { value: 'image', label: 'Image' },
       { value: 'video', label: 'Video' },
       { value: 'audio', label: 'Audio' },
@@ -117,9 +117,9 @@ export const YO_RHA_FETCH_TIMEOUT_MS = 12000;
 type AbortLike = { signal?: any; abort?: () => void };
 /**
  * withAbort - Accepts a function that receives an optional signal (for environments
- * that have AbortController) and returns an object with the promise and an abort function.
+ * that have AbortController) and returns an: object with the promise and an abort function.
  * Uses a runtime check to avoid TypeScript/compile errors when DOM types are unavailable.
- */ export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promise<T>; abort: () => void } {
+ */ export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promise<T>;, abort: () => void } {
   const controller =
     typeof AbortController !== 'undefined'
       ? (new AbortController() as AbortLike)

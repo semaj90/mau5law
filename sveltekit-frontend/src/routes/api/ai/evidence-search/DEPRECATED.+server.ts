@@ -7,14 +7,14 @@
  *; OLD: POST /api/ai/evidence-search
  * NEW: GET /api/v2/evidence?action=search&q=your_query&vector=true
  *
- * The unified API automatically uses:
+ * The unified API automatically, uses:
  * - Python AI backend (Ollama + Qdrant vector search) when available
  * - TypeScript fallback (PostgreSQL ILIKE) when Python is down
  *
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from, '@sveltejs/kit';
 
 export const POST: RequestHandler = async () => {
   return json({

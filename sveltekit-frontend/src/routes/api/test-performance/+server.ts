@@ -1,20 +1,20 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { cognitiveCache, as cacheManager } from '$lib/services/cognitive-cache-integration.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { cognitiveCache, as cacheManager } from, '$lib/services/cognitive-cache-integration.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, iterations = 100 } = await request.json();
     if (action === 'benchmark') {
       const results = { memory: {, total: 0, avg: 0, iterations: 0 },
-        redis: { total: 0, avg: 0, iterations: 0 },
-        qdrant: { total: 0, avg: 0, iterations: 0 },
-        overall: { total: 0, avg: 0 }
+        redis: {, total: 0, avg: 0, iterations: 0 },
+        qdrant: {, total: 0, avg: 0, iterations: 0 },
+        overall: {, total: 0, avg: 0 }
       };
       const testData = {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         data: new Array(100).fill(0).map((_, i) => ({ id: i, value: Math.random() })),
-        metadata: { type: 'performance-test', size: 'medium' }
+        metadata: {, type: 'performance-test', size: 'medium' }
       };
       console.log(`Starting performance benchmark with ${iterations} iterations...`);
       const overallStart = Date.now();
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
               const retrieved = await cacheManager.retrieveJsonbDocument(key);
               const opTime = Date.now() - opStart;
               workerResults.totalTime += opTime;
-              if (retrieved && (retrieved as unknown as { workerId: number }).workerId === workerId) {
+              if (retrieved && (retrieved as: unknown as {, workerId: number }).workerId === workerId) {
                 workerResults.success++;
               } else {
                 workerResults.errors++;
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({ success: false, error: 'Invalid action' }, { status: 400 });'' } catch (error: any) {
     console.error('Performance test error:', error);'
-    const message = error instanceof Error ? error.message : 'An unknown error occurred';
-    return json({ success: false, error: message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'An: unknown error occurred';
+    return json({, success: false, error: message }, { status: 500 });
   }
 };

@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
-import { json, error } from '@sveltejs/kit'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
-import crypto from 'node:crypto'
-import type { RequestHandler } from './$types.js'
+import type { Document } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit'
+import { writeFile, mkdir } from, 'fs/promises'
+import { join } from, 'path'
+import { existsSync } from, 'fs'
+import crypto from, 'node:crypto'
+import type { RequestHandler } from, './$types.js'
 
 // Function to determine the correct Ollama endpoint based on environment
 function getOllamaEndpoint(): string {
@@ -13,16 +13,16 @@ function getOllamaEndpoint(): string {
 // if the SvelteKit app is running inside a Docker container.
   if (process.env.DOCKER_ENV === 'true') {
     // When running inside Docker, access host services via host.docker.internal
-    return 'http://host.docker.internal:11434';
+    return, 'http://host.docker.internal:11434';
   }
   // Default to localhost for host environment or if DOCKER_ENV is not set
-  return 'http://localhost:11434';
+  return, 'http://localhost:11434';
 }
 
 // Document Upload + Embedding Pipeline API
 // Integrates with your existing LangChain+Ollama+pgvector infrastructure
 const config = {
-  ollamaBaseUrl: getOllamaEndpoint(), // Use the dynamically determined Ollama endpoint
+ , ollamaBaseUrl: getOllamaEndpoint(), // Use the dynamically determined Ollama endpoint
   embeddingModel: 'embeddinggemma:latest', // 384 dimensions
   chunkSize: 1000,
   chunkOverlap: 200,
@@ -51,17 +51,17 @@ async function extractText(file: File): Promise<string> {
     // In production, use mammoth.js for Word docs
     return `[Word Document] ${file.name} - Size: ${file.size} bytes`;
   }
-  throw new Error(`Unsupported file type: ${mimeType}`);
+  throw new Error(`Unsupported file, type: ${mimeType}`);
 }
 // POST handler for document upload and embedding
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const caseId = formData.get('caseId') as string;
-    const evidenceId = formData.get('evidenceId') as string;
-    const title = (formData.get('title') as string) || file.name;
-    const userId = formData.get('userId') as string;
+    const caseId = formData.get('caseId') as: string;
+    const evidenceId = formData.get('evidenceId') as: string;
+    const title = (formData.get('title') as: string) || file.name;
+    const userId = formData.get('userId') as: string;
     // Validation
     if (!file) {
       throw error(400, 'No file provided');
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async () => {
         uploadDir: config.uploadDir,
         maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB` },'`'`
       ollama: {
-        baseUrl: config.ollamaBaseUrl,
+       , baseUrl: config.ollamaBaseUrl,
         connected: true
       }
     });

@@ -1,12 +1,12 @@
 <!-- 🤖 AI Recommendation Assistant with, Gemma3, Integration -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import { onMount } from 'svelte';
-  import { fade, slide, fly } from 'svelte/transition';
-  import { elasticOut } from 'svelte/easing';
-  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
-  import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import { onMount } from, 'svelte';
+  import { fade, slide, fly } from, 'svelte/transition';
+  import { elasticOut } from, 'svelte/easing';
+  import  DiamondModal  from, "$lib/components/ui/DiamondModal.svelte";
+  import { getCurrentPalette } from, '$lib/themes/retro-console-palettes';
   interface AIRecommendation {
     id: string;
     type: 'case' | 'document' | 'search' | 'workflow' | 'precedent';
@@ -25,7 +25,7 @@ import type { Document } from '$lib/types';
     tools?: string[];
   }
   interface Props {
-    open: boolean;
+   , open: boolean;
     context?: {
       recentCases?: string[];
       currentCase?: string;
@@ -35,7 +35,7 @@ import type { Document } from '$lib/types';
       workHistory?: string[];
     };
   }
-  // Keep Svelte 5 runes usage
+  // Keep Svelte, 5 runes usage
   let {
     open = $bindable(),
     context = {}
@@ -114,16 +114,16 @@ import type { Document } from '$lib/types';
     } catch (error) {
       console.error('Failed to generate AI recommendations:', error);
       usingMockData = true;
-      // Fallback to mock AI recommendations (valid JS object syntax)
+      // Fallback to mock AI recommendations (valid JS: object syntax)
       recommendations = [
         {,
           id: 'mock-ai-001',
           type: 'case',
           title: 'Employment Dispute Analysis',
-          description: 'Similar pattern detected in 3 recent cases with 85% success rate',
+          description: 'Similar pattern detected in, 3 recent cases with 85% success rate',
           confidence: 0.87,
           priority: 220,
-          metadata: { caseType: 'employment', successRate: 0.85 },
+          metadata: {, caseType: 'employment', successRate: 0.85 },
           aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
         },
         {
@@ -133,7 +133,7 @@ import type { Document } from '$lib/types';
           description: 'New precedent strengthens constructive dismissal claims',
           confidence: 0.91,
           priority: 240,
-          metadata: { court: '9th Circuit', date: '2024-02-15' },
+          metadata: {, court: '9th Circuit', date: '2024-02-15' },
           aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
         }
       ];
@@ -157,7 +157,7 @@ import type { Document } from '$lib/types';
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position: fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -186,7 +186,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/ai/execute-action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: action.action, context })
+        body: JSON.stringify({, action: action.action, context })
       });
       if (!response.ok) {
         throw new Error('Action execution API failed');
@@ -203,7 +203,7 @@ import type { Document } from '$lib/types';
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - action simulated locally';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position: fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock success - simulate action execution
@@ -215,17 +215,17 @@ import type { Document } from '$lib/types';
   }
   function getTypeIcon(type: AIRecommendation['type']): string {
     switch (type) {
-      case 'case':
-        return '⚖️';
-      case 'document':
-        return '📄';
-      case 'search':
-        return '🔍';
-      case 'workflow':
-        return '⚡';
-      case 'precedent':
-        return '📚';
-      default: return '🤖';
+      case, 'case':
+        return, '⚖️';
+      case, 'document':
+        return, '📄';
+      case, 'search':
+        return, '🔍';
+      case, 'workflow':
+        return, '⚡';
+      case, 'precedent':
+        return, '📚';
+      default: return, '🤖';
     }
   }
   function getConfidenceColor(conf: number): string {
@@ -246,19 +246,19 @@ import type { Document } from '$lib/types';
   function getActionPriorityColor(priority: AIAction['priority']): string {
     const palette = getCurrentPalette();
     switch (priority) {
-      case 'critical':
+      case, 'critical':
         return palette.colors?.error ?? '#e53e3e';
-      case 'high':
+      case, 'high':
         return palette.colors?.warning ?? '#dd6b20';
-      case 'medium':
+      case, 'medium':
         return palette.colors?.accent?.[1] ?? '#4a90e2';
-      case 'low':
+      case, 'low':
         return palette.colors?.accent?.[2] ?? '#9f7aea';
       default: return palette.colors?.primary ?? '#6b7280';
     }
   }
 </script>
-<DiamondModal bind:open title="🤖 AI, Legal, Assistant" size="large">
+<DiamondModal, bind:open title="🤖 AI, Legal, Assistant" size="large">
   <div, class="ai-assistant-modal">
     <!-- Header, Controls -->
     <div, class="modal-header">
@@ -280,7 +280,7 @@ import type { Document } from '$lib/types';
         <input
           type="text"
           placeholder="Optional: Specific question or context for AI analysis..."
-          bind:value={customQuery}
+         , bind:value={customQuery}
           class="query-input"
         />
         <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
@@ -437,7 +437,7 @@ import type { Document } from '$lib/types';
   .ai-assistant-modal {
     max-height: 85vh;
     overflow: hidden;
-    display: flex;
+   , display: flex;
     flex-direction: column;
   }
   .modal-header {
@@ -453,17 +453,17 @@ import type { Document } from '$lib/types';
   }
   .type-btn {
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
+   , background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
     text-align: left;
   }
   .type-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border-color: rgba(138, 43, 226, 0.5);
   }
   .type-btn.active {
@@ -478,24 +478,24 @@ import type { Document } from '$lib/types';
   .query-input {
     flex: 1;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
+   , background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: #fff;
     font-size: 0.9rem;
   }
   .query-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+   , color: rgba(255, 255, 255, 0.5);
   }
   .analyze-btn {
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5));
+   , background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5));
     border: 1px solid rgba(138, 43, 226, 0.6);
     border-radius: 8px;
     color: #fff;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+   , transition: all 0.2s;
     white-space: nowrap;
   }
   .analyze-btn:hover:not(:disabled) {
@@ -507,7 +507,7 @@ import type { Document } from '$lib/types';
     cursor: not-allowed;
   }
   .ai-thinking {
-    background: rgba(138, 43, 226, 0.1);
+   , background: rgba(138, 43, 226, 0.1);
     border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 12px;
     padding: 1.5rem;
@@ -526,19 +526,19 @@ import type { Document } from '$lib/types';
   .thinking-header h3 {
     margin: 0;
     flex: 1;
-    color: rgba(255, 255, 255, 0.9);
+   , color: rgba(255, 255, 255, 0.9);
   }
   .thinking-spinner {
     width: 24px;
     height: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+   , border: 2px solid rgba(255, 255, 255, 0.2);
     border-top: 2px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
   .thinking-message {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1rem;
     font-style: italic;
   }
@@ -549,7 +549,7 @@ import type { Document } from '$lib/types';
   }
   .processing-step {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
+   , color: rgba(255, 255, 255, 0.7);
     padding: 0.25rem 0;
   }
   .ai-results {
@@ -557,7 +557,7 @@ import type { Document } from '$lib/types';
     overflow-y: auto;
   }
   .ai-reasoning {
-    background: rgba(255, 255, 255, 0.05);
+   , background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
@@ -571,7 +571,7 @@ import type { Document } from '$lib/types';
   }
   .reasoning-header h3 {
     margin: 0;
-    color: rgba(255, 255, 255, 0.9);
+   , color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
   }
   .confidence-badge {
@@ -583,7 +583,7 @@ import type { Document } from '$lib/types';
   }
   .reasoning-text {
     margin: 0;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     line-height: 1.5;
   }
   .recommendations-section,
@@ -594,7 +594,7 @@ import type { Document } from '$lib/types';
   .recommendations-section h4,
   .actions-section h4,
   .topics-section h4 {
-    margin: 0 0 1rem 0;
+    margin: 0, 0 1rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
   }
@@ -604,14 +604,14 @@ import type { Document } from '$lib/types';
     gap: 1rem;
   }
   .recommendation-card {
-    background: rgba(255, 255, 255, 0.03);
+   , background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
     transition: all 0.2s;
   }
   .recommendation-card:hover {
-    background: rgba(255, 255, 255, 0.05);
+   , background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.2);
   }
   .rec-header {
@@ -627,21 +627,21 @@ import type { Document } from '$lib/types';
     flex: 1;
   }
   .rec-title {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 500;
   }
   .rec-description {
     margin: 0;
-    color: rgba(255, 255, 255, 0.7);
+   , color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
     line-height: 1.4;
   }
   .rec-stats {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+   , gap: 0.5rem;
   }
   .confidence-meter,
   .priority-indicator {
@@ -653,7 +653,7 @@ import type { Document } from '$lib/types';
     text-align: center;
   }
   .ai-insight {
-    background: rgba(138, 43, 226, 0.1);
+   , background: rgba(138, 43, 226, 0.1);
     border: 1px solid rgba(138, 43, 226, 0.2);
     border-radius: 6px;
     padding: 0.75rem;
@@ -661,13 +661,13 @@ import type { Document } from '$lib/types';
   }
   .insight-label {
     font-size: 0.8rem;
-    color: rgba(138, 43, 226, 0.9);
+   , color: rgba(138, 43, 226, 0.9);
     font-weight: 500;
     margin-bottom: 0.25rem;
   }
   .insight-text {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     line-height: 1.4;
     font-style: italic;
   }
@@ -677,11 +677,11 @@ import type { Document } from '$lib/types';
   .metadata-details summary {
     cursor: pointer;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+   , color: rgba(255, 255, 255, 0.6);
     margin-bottom: 0.5rem;
   }
   .metadata-content {
-    background: rgba(0, 0, 0, 0.2);
+   , background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -693,11 +693,11 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem;
   }
   .metadata-key {
-    color: rgba(255, 255, 255, 0.6);
+   , color: rgba(255, 255, 255, 0.6);
     min-width: 80px;
   }
   .metadata-value {
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     word-break: break-word;
   }
   .actions-list {
@@ -706,7 +706,7 @@ import type { Document } from '$lib/types';
     gap: 1rem;
   }
   .action-card {
-    background: rgba(255, 255, 255, 0.03);
+   , background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
@@ -721,14 +721,14 @@ import type { Document } from '$lib/types';
     margin-right: 1rem;
   }
   .action-title {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 500;
   }
   .action-description {
     margin: 0;
-    color: rgba(255, 255, 255, 0.7);
+   , color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
     line-height: 1.4;
   }
@@ -748,7 +748,7 @@ import type { Document } from '$lib/types';
   }
   .action-time {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+   , color: rgba(255, 255, 255, 0.6);
   }
   .action-tools {
     display: flex;
@@ -759,24 +759,24 @@ import type { Document } from '$lib/types';
   }
   .tools-label {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+   , color: rgba(255, 255, 255, 0.6);
   }
   .tool-chip {
     padding: 0.25rem 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
   }
   .execute-btn {
     padding: 0.5rem 1rem;
-    background: rgba(76, 175, 80, 0.2);
+   , background: rgba(76, 175, 80, 0.2);
     border: 1px solid rgba(76, 175, 80, 0.4);
     border-radius: 6px;
     color: #fff;
     font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
+   , transition: all 0.2s;
   }
   .execute-btn:hover:not(:disabled) {
     background: rgba(76, 175, 80, 0.3);
@@ -793,16 +793,16 @@ import type { Document } from '$lib/types';
   }
   .topic-tag {
     padding: 0.5rem 1rem;
-    background: rgba(138, 43, 226, 0.1);
+   , background: rgba(138, 43, 226, 0.1);
     border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 16px;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s;
   }
   .topic-tag:hover {
-    background: rgba(138, 43, 226, 0.2);
+   , background: rgba(138, 43, 226, 0.2);
     border-color: rgba(138, 43, 226, 0.5);
   }
   .empty-state {
@@ -812,7 +812,7 @@ import type { Document } from '$lib/types';
     justify-content: center;
     padding: 3rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+   , color: rgba(255, 255, 255, 0.7);
   }
   .empty-icon {
     font-size: 4rem;
@@ -820,7 +820,7 @@ import type { Document } from '$lib/types';
     opacity: 0.5;
   }
   .empty-state h3 {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
   }
   .empty-state p {
@@ -829,7 +829,7 @@ import type { Document } from '$lib/types';
     line-height: 1.5;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
+    0% {, transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   @keyframes pulse {
@@ -841,13 +841,13 @@ import type { Document } from '$lib/types';
     width: 6px;
   }
   .ai-results::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+   , background: rgba(0, 0, 0, 0.2);
   }
   .ai-results::-webkit-scrollbar-thumb {
-    background: rgba(138, 43, 226, 0.5);
+   , background: rgba(138, 43, 226, 0.5);
     border-radius: 3px;
   }
   .ai-results::-webkit-scrollbar-thumb:hover {
-    background: rgba(138, 43, 226, 0.7);
+   , background: rgba(138, 43, 226, 0.7);
   }
 </style>

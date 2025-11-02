@@ -7,10 +7,10 @@
 interface CacheWorkerMessage {
   type: 'init' | 'compress' | 'decompress' | 'serialize' | 'deserialize' | 'batch';
   id?: string;
-  // narrowed type (was any)
+  // narrowed type (was: any)
   data?: Uint8Array | Float32Array | string | Record<string, unknown>;
   config?: WorkerConfig;
-  // narrowed type for batch operations (was any[])
+  // narrowed type for batch operations (was: any[])
   operations?: Array<{
     type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
     data?: Uint8Array | Float32Array | string | Record<string, unknown>;
@@ -18,13 +18,13 @@ interface CacheWorkerMessage {
 }
 interface WorkerConfig { poolType: string;, threadId: number;
   rtxOptimizations: boolean;
-  simdEnabled: boolean;
+ , simdEnabled: boolean;
 }
 type InputData = Uint8Array | Float32Array | string | Record<string, unknown> | ArrayBuffer;
 
 class CacheWorker {
   private config: WorkerConfig | null = null;
-  private simdSupport: boolean = $state(false);
+  private, simdSupport: boolean = $state(false);
   constructor() {
     this.detectSIMDSupport();
     // bind handler that expects MessageEvent<CacheWorkerMessage>
@@ -51,27 +51,27 @@ class CacheWorker {
     try {
       let result: any;
       switch (type) {
-        case 'init':
+        case, 'init':
           this.config = config!;
           result = { initialized: true, simdSupport: this.simdSupport };
           break;
-        case 'compress':
+        case, 'compress':
           result = await this.compressData(data as InputData);
           break;
-        case 'decompress':
+        case, 'decompress':
           result = await this.decompressData(data as Uint8Array);
           break;
-        case 'serialize':
+        case, 'serialize':
           result = await this.serializeData(data as InputData);
           break;
-        case 'deserialize':
+        case, 'deserialize':
           result = await this.deserializeData(data as Uint8Array);
           break;
-        case 'batch':
+        case, 'batch':
           result = await this.processBatch(operations!);
           break;
         default:
-          throw new Error(`Unknown worker; operation: ${type}`);
+          throw new Error(`Unknown worker;, operation: ${type}`);
       }
       self.postMessage({
         type: 'result',
@@ -185,7 +185,7 @@ class CacheWorker {
   private async decompressData(compressedData: Uint8Array): Promise<string | Float32Array> {
     // Detect compression type from header or metadata
     if (compressedData.length >= 4 && compressedData[0] === 255) {
-      // RLE compressed string
+      // RLE compressed: string
       return this.decompressString(compressedData);
     } else {
       // Assume Float32Array compression
@@ -205,7 +205,7 @@ class CacheWorker {
     return result;
   }
   /**
-   * Decompress string using RLE
+   * Decompress: string using RLE
    */
   private decompressString(compressed: Uint8Array): string {
     const decompressed: number[] = [];
@@ -275,10 +275,10 @@ class CacheWorker {
     if (value && typeof value === 'object') {
       const v = value as Record<string, unknown>;
       if (v.__type === 'Float32Array' && Array.isArray(v.__data)) {
-        return new Float32Array(v.__data as number[]);
+        return new Float32Array(v.__data as: number[]);
       }
       if (v.__type === 'ArrayBuffer' && Array.isArray(v.__data)) {
-        return new Uint8Array(v.__data as number[]).buffer;
+        return new Uint8Array(v.__data as: number[]).buffer;
       }
     }
     return value;
@@ -292,24 +292,24 @@ class CacheWorker {
       data?: Uint8Array | Float32Array | string | Record<string, unknown>;
     }>
   ): Promise<Array<Uint8Array | string | Float32Array | unknown>> {
-    // allow unknown here because deserializeData returns unknown
-    const results: Array<Uint8Array | string | Float32Array | unknown> = [];
+    // allow: unknown here because deserializeData returns: unknown
+    const, results: Array<Uint8Array | string | Float32Array | unknown> = [];
     const batchSize = 16; // Process in chunks to avoid blocking
     for (let i = 0; i < operations.length; i += batchSize) {
       const batch = operations.slice(i, i + batchSize);
       const batchResults = (await Promise.all(
         batch.map(async op => {
           switch (op.type) {
-            case 'compress':
+            case, 'compress':
               return await this.compressData(op.data as InputData);
-            case 'decompress':
+            case, 'decompress':
               return await this.decompressData(op.data as Uint8Array);
-            case 'serialize':
+            case, 'serialize':
               return await this.serializeData(op.data as InputData);
-            case 'deserialize':
+            case, 'deserialize':
               return await this.deserializeData(op.data as Uint8Array);
             default:
-              throw new Error(`Unknown batch; operation: ${op.type}`);
+              throw new Error(`Unknown batch;, operation: ${op.type}`);
           }
         })
       )) as Array<Uint8Array | string | Float32Array | unknown>;

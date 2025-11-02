@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,17 +11,17 @@ import type { Document } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { getUser } from '$lib/server/auth';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint, getEnhancedRagEndpoint } from '$lib/server/endpoints';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { getUser } from, '$lib/server/auth';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint, getEnhancedRagEndpoint } from, '$lib/server/endpoints';
 
 // --- Types added to replace `any` usages ---
 type EvidenceItem = Record<string, unknown>;
@@ -39,7 +39,7 @@ interface User {
   legalSpecialties?: string[];
 }
 
-interface EnhancedContext { caseId: string;, evidence: EvidenceItem[];
+interface EnhancedContext {, caseId: string;, evidence: EvidenceItem[];
   userId: string;
   analysisType: string;
   model: string;
@@ -54,15 +54,15 @@ interface EnhancedContext { caseId: string;, evidence: EvidenceItem[];
   };
 }
 
-interface ModelCheck { available: boolean;, models: string[];
+interface ModelCheck {, available: boolean;, models: string[];
 }
 
-interface RiskAssessment { level: 'low' | 'medium' | 'high';, factors: string[];
+interface RiskAssessment {, level: 'low' | 'medium' | 'high';, factors: string[];
 }
 
-interface AuditLog { userId: string;, caseId: string;
+interface AuditLog {, userId: string;, caseId: string;
   analysisType: string;
-  model: string;
+ , model: string;
   confidence?: number;
   processingTime?: number;
 }
@@ -103,7 +103,7 @@ export interface ProcessEvidenceRequest { caseId: string;, evidence: EvidenceIt
   maxTokens?: number;
   stream?: boolean;
 }
-export interface LegalAnalysisResponse { summary: string;, sources: Source[];
+export interface LegalAnalysisResponse {, summary: string;, sources: Source[];
   confidence: number;
   legalConcepts: string[];
   recommendations: string[];
@@ -111,7 +111,7 @@ export interface LegalAnalysisResponse { summary: string;, sources: Source[];
   processingTime: number;
   tokenCount: number;
 }
-const originalPOSTHandler: RequestHandler = async event => {
+const, originalPOSTHandler: RequestHandler = async event => {
   // receive full RequestEvent so we can pass it to getUser()
   const { request } = event;
   const startTime = performance.now();
@@ -165,7 +165,7 @@ const originalPOSTHandler: RequestHandler = async event => {
       maxTokens,
       stream,
       metadata: {
-        userRole: user.role,
+       , userRole: user.role,
         userSpecialties: user.legalSpecialties || [],
         timestamp: new Date().toISOString()
       }
@@ -179,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async event => {
         'X-Case-ID': caseId
       },
       body: JSON.stringify({
-        input_data: enhancedContext,
+       , input_data: enhancedContext,
         operation: 'legal_analysis',
         model: model,
         context: enhancedContext
@@ -193,7 +193,7 @@ const originalPOSTHandler: RequestHandler = async event => {
     }
     let ragResult: RAGResponse = {};
     try {
-      const parsed = (await ragResponse.json().catch(() => ({}))) as unknown;
+      const parsed = (await ragResponse.json().catch(() => ({}))) as: unknown;
       if (typeof parsed === 'object' && parsed !== null) {
         ragResult = parsed as RAGResponse;
       } else {
@@ -212,7 +212,7 @@ const originalPOSTHandler: RequestHandler = async event => {
       typeof ragResult.tokenCount === 'number' ? ragResult.tokenCount : estimateTokenCount(String(summaryText));
 
     const enhancedResult: LegalAnalysisResponse = {
-      summary: String(summaryText),
+     , summary: String(summaryText),
       sources: sourcesValue,
       confidence: confidenceValue,
       legalConcepts: extractLegalConcepts(String(summaryText)),
@@ -256,9 +256,9 @@ async function checkOllamaModel(model: string): Promise<ModelCheck> {
     const url = `${getOllamaEndpoint()}/api/tags`;
     const resp = await fetch(url);
     if (!resp.ok) return { available: false, models: [] };
-    const data = (await resp.json().catch(() => ({}))) as unknown;
+    const data = (await resp.json().catch(() => ({}))) as: unknown;
 
-    let availableModels: string[] = [];
+    let, availableModels: string[] = [];
     if (hasModelsField(data)) {
       availableModels = data.models.map(m => m.name ?? '').filter(Boolean);
     } else if (Array.isArray(data)) {
@@ -285,16 +285,16 @@ Provide accurate, precise analysis following legal standards and best practices.
 Always cite relevant sources and indicate confidence levels.`;`
   const typeSpecificPrompts = {
     summary: `${basePrompt}`
-Focus on: Key legal issues, relevant facts, applicable law, and case conclusions.
+Focus, on: Key legal issues, relevant facts, applicable law, and case conclusions.
 Format: Clear, structured summary suitable for legal professionals.`,`
     risk_analysis: `${basePrompt}`
-Focus on: Legal risks, potential liabilities, compliance issues, and mitigation strategies.
+Focus, on: Legal risks, potential liabilities, compliance issues, and mitigation strategies.
 Format: Risk assessment with severity levels and actionable recommendations.`,`
     legal_research: `${basePrompt}`
-Focus on: Applicable statutes, case precedents, legal principles, and jurisdictional considerations.
+Focus, on: Applicable statutes, case precedents, legal principles, and jurisdictional considerations.
 Format: Comprehensive research memo with citations and legal analysis.`,`
     case_comparison: `${basePrompt}`
-Focus on: Similarities/differences in facts, legal issues, holdings, and reasoning.
+Focus, on: Similarities/differences in facts, legal issues, holdings, and reasoning.
 Format: Comparative analysis highlighting relevant patterns and distinctions.' };`'`
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary;
 }
@@ -331,7 +331,7 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
     const parsed = (await resp.json().catch(() => ({}))) as Record<string, unknown>;
     const summaryText = String(parsed['response'] ?? parsed['summary'] ?? '');
     const responseObj: LegalAnalysisResponse = {
-      summary: summaryText,
+     , summary: summaryText,
       sources: [],
       confidence: 0.75,
       legalConcepts: extractLegalConcepts(summaryText),
@@ -355,7 +355,7 @@ function createLegalPrompt(context: EnhancedContext): string {
     .join('\n\n');
   return `Case ID: ${context.caseId}`
 Analysis Type: ${context.analysisType}
-Evidence to Analyze:
+Evidence to, Analyze:
 ${evidenceText}
 Please provide a comprehensive ${context.analysisType.replace('_', ' ')} of this evidence.
 Include relevant legal principles, potential issues, and actionable insights.`;' }'`
@@ -421,7 +421,7 @@ function assessLegalRisk(
   const riskCount = riskKeywords.filter(keyword => text.includes(keyword)).length;
   const evidenceCount = Array.isArray(evidence) ? evidence.length : 0;
   let level: RiskAssessment['level'] = 'low';
-  const factors: string[] = [];
+  const, factors: string[] = [];
   if (riskCount > 2 || evidenceCount > 10) {
     level = 'high';
     factors.push('Multiple risk indicators identified', 'Substantial evidence volume');

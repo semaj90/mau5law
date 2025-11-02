@@ -1,5 +1,5 @@
 /**
- * Error handling utilities for Svelte 5 components
+ * Error handling utilities for Svelte, 5 components
  */
 export class ComponentError extends Error {
   constructor(
@@ -64,7 +64,7 @@ export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?:
     };
   }
 }
-// Error boundary hook for Svelte 5
+// Error boundary hook for Svelte, 5
 export function createErrorBoundary() {
   let errorMessage = $state<string>('');
   let hasError = $state<boolean>(false);
@@ -136,7 +136,7 @@ export function safeGetContext(
   canvas: HTMLCanvasElement,
   contextType: '2d' | 'webgl' | 'webgl2'
 ): CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext {
-  // Call getContext without an any cast and narrow the returned union based on contextType
+  // Call getContext without an: any cast and narrow the returned union based on contextType
   const context = canvas.getContext(contextType);
   if (!context) {
     throw new ComponentError(`Could not get ${contextType} context`, 'Canvas', { contextType });
@@ -174,11 +174,11 @@ export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingConte
       default:
         errorString = `Unknown error ${error}`;
     }
-    throw new ComponentError(`WebGL error: ${errorString}`, 'WebGL');
+    throw new ComponentError(`WebGL, error: ${errorString}`, 'WebGL');
   }
 }
 // Async operation wrapper
-export async function withLoading<T>(operation: () => Promise<T>, loadingState: { value: boolean }): Promise<T> {
+export async function withLoading<T>(operation: () => Promise<T>, loadingState: {, value: boolean }): Promise<T> {
   loadingState.value = true;
   try {
     return await operation();

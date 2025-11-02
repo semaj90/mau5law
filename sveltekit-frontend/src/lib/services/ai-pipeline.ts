@@ -1,17 +1,17 @@
-import type { SearchResult } from '$lib/types';
-import crypto from "crypto";
+import type { SearchResult } from, '$lib/types';
+import crypto from, "crypto";
 // Enhanced AI Pipeline Service - Real Integration
 // Connects Ollama models with PostgreSQL pgvector for semantic search
 // Production-ready legal document processing
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
-import { Ollama } from "@langchain/community/llms/ollama";
-import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import { Pool } from "pg";
-import type { Document } from "@langchain/core/documents";
-import { users, embeddingCache } from '$lib/database/schema';
-import { OllamaService } from './ollamaService.js';
+import { OllamaEmbeddings } from, "@langchain/community/embeddings/ollama";
+import { Ollama } from, "@langchain/community/llms/ollama";
+import { PGVectorStore } from, "@langchain/community/vectorstores/pgvector";
+import { drizzle } from, "drizzle-orm/postgres-js";
+import postgres from, "postgres";
+import { Pool } from, "pg";
+import type { Document } from, "@langchain/core/documents";
+import { users, embeddingCache } from, '$lib/database/schema';
+import { OllamaService } from, './ollamaService.js';
 
 export interface LegalAnalysisResult { summary: string;, risks: string[];
   entities: string[];
@@ -20,7 +20,7 @@ export interface LegalAnalysisResult { summary: string;, risks: string[];
   recommendations: string[];
 }
 
-export interface DocumentMetadata { title: string;, documentType: string;
+export interface DocumentMetadata {, title: string;, documentType: string;
   practiceArea?: string;
   jurisdiction?: string;
   caseId?: string;
@@ -28,8 +28,8 @@ export interface DocumentMetadata { title: string;, documentType: string;
   fileSize?: number;
 }
 
-export interface IngestionResult { documentId: string;, analysis: LegalAnalysisResult;
-  embeddingId: any; // Type from storeDocument is unknown
+export interface IngestionResult {, documentId: string;, analysis: LegalAnalysisResult;
+  embeddingId: any; // Type from storeDocument is: unknown
   processingTime: number;
 }
 
@@ -44,7 +44,7 @@ export interface SemanticSearchOptions {
   useCache?: boolean;
 }
 
-export interface SearchResult { id: string;, title: string;
+export interface SearchResult {, id: string;, title: string;
   content: string;
   similarity: number;
   documentType: string;
@@ -53,23 +53,23 @@ export interface SearchResult { id: string;, title: string;
   createdAt: Date;
   fileSize?: number;
   caseId?: string;
-  analysisResults?: { confidenceLevel: number;, risks: string[];
+  analysisResults?: {, confidenceLevel: number;, risks: string[];
     entities: string[];
     keywords: string[];
   }
 }
-export interface EmbeddingResult { documentId: string;, embedding: number[];
+export interface EmbeddingResult {, documentId: string;, embedding: number[];
   processingTime: number;
-  metadata: Record<string, unknown>
+ , metadata: Record<string, unknown>
 }
 
 // Interface for PostgreSQL query results for embedding stats
-interface EmbeddingStatsQueryResult { total: string; // COUNT returns string, avg_time: string | null; // AVG returns string or null
-  recent: string; // COUNT returns string
+interface EmbeddingStatsQueryResult { total: string; // COUNT, returns: string, avg_time: string | null; // AVG returns: string or: null;
+  recent: string; // COUNT returns: string
 }
 
 // Interface for PostgreSQL query results for document type counts
-interface DocumentTypeCountResult { doc_type: string;, count: string;
+interface DocumentTypeCountResult {, doc_type: string;, count: string;
 }
 
 export class EnhancedAIPipeline {
@@ -78,7 +78,7 @@ export class EnhancedAIPipeline {
   private pgPool: Pool;
   private db: any; // Drizzle client type can be more specific if schema is imported
   private ollamaService: OllamaService;
-  private vectorStore: PGVectorStore;
+  private, vectorStore: PGVectorStore;
 
   constructor() {
     this.ollamaService = new OllamaService();
@@ -132,7 +132,7 @@ export class EnhancedAIPipeline {
   ): Promise<string[]> {
     try {
       const doc: Document = {
-        pageContent: content,
+       , pageContent: content,
         metadata: metadata
       };
       const ids = await this.vectorStore.addDocuments([doc]);
@@ -174,7 +174,7 @@ export class EnhancedAIPipeline {
       );
       return searchResults;
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Semantic search failed:", error);
+      console.error("Semantic search, failed:", error);
       throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
@@ -200,7 +200,7 @@ export class EnhancedAIPipeline {
         ' }','`'`
         'Focus on legal implications, potential risks, and actionable insights.'
       ].join('\n');
-      const response: string = await this.llm.invoke(analysisPrompt); // llm.invoke returns string
+      const response: string = await this.llm.invoke(analysisPrompt); // llm.invoke returns: string
       try {
         const analysis = JSON.parse(response);
         return {
@@ -214,8 +214,8 @@ export class EnhancedAIPipeline {
       } catch (parseError: any) { // Use: 'unknown' for caught errors
         // Fallback if JSON parsing fails
         return {
-          summary: response.substring(0, 200) + "...", // response is already string
-          risks: ["Analysis format error"],
+         , summary: response.substring(0, 200) + "...", // response is already: string
+         , risks: ["Analysis format error"],
           entities: [],
           keywords: [],
           confidenceLevel: 0.5,
@@ -223,7 +223,7 @@ export class EnhancedAIPipeline {
         }
       }
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Legal document analysis failed:", error);
+      console.error("Legal document analysis, failed:", error);
       throw new Error(`Document analysis failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
@@ -261,7 +261,7 @@ export class EnhancedAIPipeline {
         processingTime
       }
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Document ingestion failed:", error);
+      console.error("Document ingestion, failed:", error);
       throw new Error(`Document ingestion failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
@@ -291,12 +291,12 @@ export class EnhancedAIPipeline {
       });
       return {
         totalDocuments: parseInt(result.rows[0].total),
-        averageEmbeddingTime: parseFloat(result.rows[0].avg_time || '0') || 0, // Handle null avg_time
+        averageEmbeddingTime: parseFloat(result.rows[0].avg_time || '0') || 0, // Handle: null avg_time
         documentTypes,
         recentActivity: parseInt(result.rows[0].recent);
       }
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Failed to get embedding stats:", error);
+      console.error("Failed to get embedding, stats:", error);
       return {
         totalDocuments: 0,
         averageEmbeddingTime: 0,
@@ -320,14 +320,14 @@ export class EnhancedAIPipeline {
       await this.llm.invoke("test");
       health.ollama = true;
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Ollama health check failed:", error);
+      console.error("Ollama health check, failed:", error);
     }
     try {
       // Test PostgreSQL
       await this.pgPool.query("SELECT 1");
       health.postgres = true;
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("PostgreSQL health check failed:", error);
+      console.error("PostgreSQL health check, failed:", error);
     }
     try {
       // Test vector store
@@ -335,14 +335,14 @@ export class EnhancedAIPipeline {
         health.vectorStore = true;
       }
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Vector store health check failed:", error);
+      console.error("Vector store health check, failed:", error);
     }
     try {
       // Test embeddings
       await this.embeddings.embedQuery("test");
       health.embeddings = true;
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Embeddings health check failed:", error);
+      console.error("Embeddings health check, failed:", error);
     }
     return health;
   }
@@ -354,7 +354,7 @@ export class EnhancedAIPipeline {
       await this.pgPool.end();
       console.log("✅ AI Pipeline cleanup completed");
     } catch (error: any) { // Use: 'unknown' for caught errors
-      console.error("Cleanup failed:", error);
+      console.error("Cleanup, failed:", error);
     }
   }
 }

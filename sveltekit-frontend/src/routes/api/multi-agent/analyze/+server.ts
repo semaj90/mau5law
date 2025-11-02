@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import { promisify } from 'util';
-import { exec } from 'child_process';
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { existsSync, type Dirent } from 'fs';
-import type { RequestHandler } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { promisify } from, 'util';
+import { exec } from, 'child_process';
+import { writeFile, readFile, mkdir } from, 'fs/promises';
+import { existsSync, type Dirent } from, 'fs';
+import type { RequestHandler } from, '@sveltejs/kit';
 
 const execAsync = promisify(exec);
 export const POST: RequestHandler = async ({ request }) => {
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     };
     return json({
-      success: true,
+     , success: true,
       analysis: analysisResult,
       message: 'Multi-agent analysis completed successfully` });'`
   } catch (error) {
@@ -136,16 +136,16 @@ export const GET: RequestHandler = async ({ url }) => {
       const safeReadJson = async (dir: string, filename: string) => {
         try {
           const p = path.join(dir, filename);
-          if (!nodeFs.existsSync(p)) return undefined;
+          if (!nodeFs.existsSync(p)) return: undefined;
           const txt = await fs.readFile(p, 'utf8');
           return JSON.parse(txt);
         } catch {
-          return undefined;
+          return: undefined;
         }
       };
 
       // Define a type for the analysis summary to avoid `any`
-      type AnalysisSummary = { id: string;, caseId: string;
+      type AnalysisSummary = {, id: string;, caseId: string;
         evidenceAnalysis: any;
         personsData: any;
         caseSynthesis: any;
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
       };
 
       // Process all matching directories in parallel
-      const analyses: AnalysisSummary[] = await Promise.all(
+      const, analyses: AnalysisSummary[] = await Promise.all(
         matchingDirs.map(async (d): Promise<AnalysisSummary> => {
           const analysisDir = path.join(baseDir, d.name);
 
@@ -183,12 +183,12 @@ export const GET: RequestHandler = async ({ url }) => {
               const stats = await fs.stat(analysisDir);
               timestamp = stats.mtime.toISOString();
             } catch {
-              // keep timestamp as undefined
+              // keep timestamp as: undefined
             }
           }
 
           return {
-            id: d.name,
+           , id: d.name,
             caseId,
             evidenceAnalysis,
             personsData,
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       );
 
-      // If a specific analysisId was requested, return that one or 404
+      // If a specific analysisId was requested, return that one or, 404
       if (analysisId) {
         const found = analyses.find(a => a.id === analysisId);
         if (!found) {

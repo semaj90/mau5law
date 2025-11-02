@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 // Optimized case search API endpoint
 // Supports multiple search strategies with automatic fallbacks
-import { json } from '@sveltejs/kit';
-import { and, desc, ilike, or, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import { cases } from '$lib/server/db/schema/cases'; // Import the cases schema
+import { json } from, '@sveltejs/kit';
+import { and, desc, ilike, or, sql } from, 'drizzle-orm';
+import { db } from, '$lib/server/db/index';
+import { cases } from, '$lib/server/db/schema/cases'; // Import the cases schema
 
 // Define types for better type safety
 interface CaseFilters {
@@ -19,7 +19,7 @@ type CaseSelect = typeof cases.$inferSelect; // Type for a selected case from th
 interface CaseSearchResult extends CaseSelect { searchScore: number;, matchType: 'text' | 'semantic' | 'hybrid';
 }
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q');
     const limit = parseInt(url.searchParams.get('limit') || '20');
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const searchType = url.searchParams.get('type') || 'hybrid'; // 'text', 'semantic', 'hybrid'
     const filters: CaseFilters = {
       // Use the new interface
-      status: url.searchParams.get('status'),
+     , status: url.searchParams.get('status'),
       priority: url.searchParams.get('priority'),
       category: url.searchParams.get('category')
     };
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     // Change: 'any'; to: 'unknown'
-    console.error('Case search error:', error);'
+    console.error('Case search, error:', error);'
     return json(
       {
         results: [],
@@ -101,7 +101,7 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       matchType: 'text` }));'`
   } catch (error: any) {
     // Change: 'any'; to: 'unknown'
-    console.error('Text search failed:', error);
+    console.error('Text search, failed:', error);
     return [];
   }
 }

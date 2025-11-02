@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * RAG Document Processing API - Production Ready with MinIO
  *
@@ -7,13 +7,13 @@ import type { Document } from '$lib/types';
  * Priority: 150
  *
  * Production Services:
- * -; MinIO: S3-compatible object storage for documents
+ * -; MinIO: S3-compatible: object storage for documents
  * - Ollama: Embeddings + Legal analysis
  * - Qdrant + pgvector: Dual vector storage
  * - Redis: Caching
  * - PostgreSQL: Metadata storage
  *
- * Features:
+ *, Features:
  * - Multi-file upload with drag & drop support
  * - OCR processing (PDF, images)
  * - Legal document analysis with Gemma3-legal
@@ -21,16 +21,16 @@ import type { Document } from '$lib/types';
  * - Dual vector indexing (Qdrant + pgvector)
  * - MinIO S3 storage with presigned URLs
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { randomUUID } from 'node:crypto';
-import pdf from 'pdf-parse';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { randomUUID } from, 'node:crypto';
+import pdf from, 'pdf-parse';
 import {
   services,
   generateEmbedding,
   indexDocument,
   generateChatResponse
-} from '$lib/server/services';
+} from, '$lib/server/services';
 
 // MinIO configuration from centralized services
 const getMinIOClient = () => services.minio;
@@ -55,7 +55,7 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     return data.text || '';
   } catch (error) {
     console.error('PDF extraction failed:', error);
-    return '[PDF extraction failed]';
+    return, '[PDF extraction failed]';
   }
 }
 
@@ -90,7 +90,7 @@ async function extractTextFromImage(buffer: Buffer, mimeType: string): Promise<s
 /**
  * Process file and extract text content
  */
-async function processFile(file: File): Promise<{ content: string; metadata: any }> {
+async function processFile(file: File): Promise<{ content: string;, metadata: any }> {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   let content = '';
@@ -109,7 +109,7 @@ async function processFile(file: File): Promise<{ content: string; metadata: any
   return {
     content,
     metadata: {
-      filename: file.name,
+     , filename: file.name,
       mimeType: file.type,
       size: file.size,
       contentLength: content.length,
@@ -177,7 +177,7 @@ async function uploadToMinIO(file: File, documentId: string): Promise<string> {
       'X-Document-Id': documentId
     });
 
-    // Generate presigned URL (valid for 7 days)
+    // Generate presigned URL (valid for, 7 days)
     const url = await minio.presignedGetObject(bucket, objectName, 7 * 24 * 60 * 60);
 
     return url;
@@ -303,7 +303,7 @@ export const POST: RequestHandler = async ({ request }) => {
       successfulUploads: results.filter(r => r.status === 'success').length,
       failedUploads: results.filter(r => r.status === 'error').length,
       processingPipeline: {
-        storage: 'MinIO S3-compatible',
+       , storage: 'MinIO S3-compatible',
         database: 'PostgreSQL with pgvector',
         vectorSearch: 'Qdrant + pgvector hybrid',
         embeddings: services.env.ollamaConfig.embeddingModel,
@@ -326,14 +326,14 @@ export const GET: RequestHandler = async () => {
     service: 'RAG Document Processing API (Production)',
     status: 'healthy',
     pipeline: {
-      storage: 'MinIO S3-compatible',
+     , storage: 'MinIO S3-compatible',
       database: 'PostgreSQL with pgvector',
       vectorSearch: 'Qdrant + pgvector hybrid',
       embeddings: services.env.ollamaConfig.embeddingModel,
       legalAnalysis: services.env.ollamaConfig.chatModel,
       ocr: `pdf-parse + tesseract.js (optional)` },
     endpoints: {
-      process: 'POST /api/rag/process',
+     , process: 'POST /api/rag/process',
       search: 'POST /api/semantic-search',
       status: `GET /api/rag/process` },
     features: [

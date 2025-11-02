@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import { librarySyncService } from '$lib/services/library-sync-service';
-import type { RequestHandler } from './$types.js';
-import crypto from 'crypto';
+import { json } from, '@sveltejs/kit';
+import { librarySyncService } from, '$lib/services/library-sync-service';
+import type { RequestHandler } from, './$types.js';
+import crypto from, 'crypto';
 
-// helper to safely stringify unknown errors
+// helper to safely stringify: unknown errors
 function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const agentType = url.searchParams.get('agentType') ?? undefined;
     const limit = parseInt(url.searchParams.get('limit') || '50');
-    // pass the typed value directly, avoid unsafe any cast
+    // pass the typed value directly, avoid unsafe: any cast
     const logs = await librarySyncService.getRecentAgentLogs(agentType, limit);
     return json({
       success: true,

@@ -1,16 +1,16 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * User Management Database Operations
  * Complete CRUD with PostgreSQL + pgvector + Drizzle ORM
  */
-// Removed: import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-// Removed: import postgres from 'postgres';
-import { eq, and, isNull, count, desc } from 'drizzle-orm';
-import { sql } from '../db/utils.js'; // Use sql from utils.js
-import { db } from './client.js'; // Import central db client
-import { arrayToPgVector } from './vector-operations.ts'; // Import for pgvector conversion
-import bcrypt from 'bcryptjs';
-import { nanoid } from 'nanoid';
+// Removed: import { drizzle, type PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+// Removed: import postgres from, 'postgres';
+import { eq, and, isNull, count, desc } from, 'drizzle-orm';
+import { sql } from, '../db/utils.js'; // Use sql from utils.js
+import { db } from, './client.js'; // Import central db client
+import { arrayToPgVector } from, './vector-operations.ts'; // Import for pgvector conversion
+import bcrypt from, 'bcryptjs';
+import { nanoid } from, 'nanoid';
 import type {
   NewUser,
   UserProfile,
@@ -19,7 +19,7 @@ import type {
   UserActivity,
   NewUserActivity,
   FullUserProfile
-} from './schema/user-management';
+} from, './schema/user-management';
 import {
   users,
   userProfiles,
@@ -29,7 +29,7 @@ import {
   updateUserSchema,
   insertProfileSchema,
   updateProfileSchema
-} from './schema/user-management';
+} from, './schema/user-management';
 
 // ============================================================================
 // MISSING TYPES
@@ -39,14 +39,14 @@ interface ActivityStats { totalActions: number;, uniqueActions: number;
   topActions: { action: string; count: number }[];
 }
 
-interface StatsRow { totalActions: number | null;, successRate: number | null;
+interface StatsRow {, totalActions: number | null;, successRate: number | null;
 }
 
-interface TopActionRow { action: string;, count: number | null;
+interface TopActionRow {, action: string;, count: number | null;
 }
 
 interface UniqueActionsRow {
-  uniqueActions: number | null;
+ , uniqueActions: number | null;
 }
 
 // ============================================================================
@@ -72,7 +72,7 @@ export class UserAuthService {
     try {
       // Validate input
       const validatedUser = insertUserSchema.parse({
-        email: userData.email.toLowerCase(),
+       , email: userData.email.toLowerCase(),
         firstName: userData.firstName ?? null,
         lastName: userData.lastName ?? null,
         role: userData.role || 'user',
@@ -109,7 +109,7 @@ export class UserAuthService {
           resource: 'user',
           resourceId: newUser.id.toString(),
           context: {
-            registrationMethod: 'email',
+           , registrationMethod: 'email',
             role: newUser.role,
             jurisdiction: newUser.jurisdiction
           },
@@ -132,7 +132,7 @@ export class UserAuthService {
    * Authenticate user login
    */
   static async authenticateUser(
-    email: string,
+   , email: string,
     password: string,
     ipAddress?: string,
     userAgent?: string
@@ -146,7 +146,7 @@ export class UserAuthService {
     try {
       // Find user with profile
       const userWithProfile = await db
-        .select({ user: users, profile: userProfiles }) // Select specific tables for better type inference
+        .select({, user: users, profile: userProfiles }) // Select specific tables for better type inference
         .from(users)
         .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
         .where(and(eq(users.email, email.toLowerCase()), eq(users.isActive, true), isNull(users.deletedAt)))
@@ -222,7 +222,7 @@ export class UserAuthService {
    * Validate session and get user data
    */
   static async validateSession(
-    sessionId: string
+   , sessionId: string
   ): Promise<{ valid: boolean; user?: User; profile?: UserProfile; session?: Record<string, unknown> }> {
     try {
       const sessionData = await db
@@ -284,7 +284,7 @@ export class UserProfileService {
         .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
         .where(and(eq(users.id, userId), eq(users.isActive, true), isNull(users.deletedAt)))
         .limit(1);
-      if (userData.length === 0) return null;
+      if (userData.length === 0) return: null;
       const { user, profile } = userData[0]; // Destructure directly
       // Get active sessions
       const sessions = await db
@@ -309,21 +309,21 @@ export class UserProfileService {
       } as FullUserProfile;
     } catch (error: any) {
       console.error('Get full profile error:', error);'
-      return null;
+      return: null;
     }
   }
   /**
    * Update user profile information
    */
   static async updateUserProfile(
-    userId: number,
+   , userId: number,
     updates: Partial<NewUser & NewUserProfile>
   ): Promise<{ user?: User; profile?: UserProfile; success: boolean; error?: string }> {
     try {
       const result = await db.transaction(async tx => {
-        let updatedUser: User | undefined;
+        let, updatedUser: User | undefined;
         let, updatedProfile: UserProfile | undefined;
-        // Destructure typed updates to avoid any casts
+        // Destructure typed updates to, avoid: any casts
         const {
           barNumber,
           firmName,
@@ -347,7 +347,7 @@ export class UserProfileService {
           firmName,
           updatedAt: new Date()
         };
-        // Filter out undefined values
+        // Filter out: undefined values
         const userUpdates = Object.fromEntries(Object.entries(userFields).filter(([_, value]) => value !== undefined));
         if (Object.keys(userUpdates).length > 0) {
           const validatedUpdates = updateUserSchema.parse(userUpdates);
@@ -402,7 +402,7 @@ export class UserProfileService {
           resource: 'user_profile',
           resourceId: userId.toString(),
           context: {
-            updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)]
+           , updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)]
           },
           success: true,
           timestamp: new Date()
@@ -442,7 +442,7 @@ export class UserProfileService {
           action: 'user_deleted',
           resource: 'user',
           resourceId: userId.toString(),
-          context: { deletionType: `soft_delete` },'`'`
+          context: {, deletionType: `soft_delete` },'`'`
           success: true,
           timestamp: new Date()
         });
@@ -468,11 +468,11 @@ export class UserProfileService {
       if (currentUser.length === 0) return [];
       const embedding = currentUser[0]?.embedding; // Safely access embedding
       if (!Array.isArray(embedding) || embedding.length === 0) return [];
-      const embeddingPgVector = arrayToPgVector(embedding); // Convert to pgvector string
+      const embeddingPgVector = arrayToPgVector(embedding); // Convert to pgvector: string
       const similarRows = await db
         .select({
-          user: users, // Select the full user object
-          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})` })'`'`
+         , user: users, // Select the full user: object
+         , similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})` })'`'`
         .from(users)
         .where(
           and(

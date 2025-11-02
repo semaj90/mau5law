@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { lucia } from '$lib/server/auth/lucia'; // Corrected import path
-import { db } from '$lib/server/db/drizzle';
-import { users, sessions } from '$lib/server/db/schema-postgres';
-import { sql, desc } from 'drizzle-orm';
-import type { Lucia } from 'lucia'; // Import Lucia type directly
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { lucia } from, '$lib/server/auth/lucia'; // Corrected import path
+import { db } from, '$lib/server/db/drizzle';
+import { users, sessions } from, '$lib/server/db/schema-postgres';
+import { sql, desc } from, 'drizzle-orm';
+import type { Lucia } from, 'lucia'; // Import Lucia type directly
 
 // Declare global types for HMR detection
 // Using declare global to augment globalThis for HMR checks
@@ -17,18 +17,18 @@ declare global {
   var __lucia_instance: Lucia | undefined;
 }
 
-interface HealthWarning { code: string;, message: string;
+interface HealthWarning {, code: string;, message: string;
 }
 
-interface RecentSession { id: string;, user_id: string;
+interface RecentSession {, id: string;, user_id: string;
   created_at: Date;
   expires_at: Date;
 }
 
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   const started = Date.now();
   const warnings: HealthWarning[] = [];
-  let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+  let, status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
   // Directly access globalThis properties for HMR checks
   const usersSameRef = globalThis.__users_ref ? globalThis.__users_ref === users : true;
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async () => {
     status = 'degraded';
     warnings.push({
       code: 'SCHEMA_IDENTITY_MISMATCH',
-      message: 'Detected different users/sessions table object identity – potential duplicate import path.'
+      message: 'Detected different users/sessions, table: object identity – potential duplicate import path.'
     });
   }
   if (!luciaInstanceReused) {
@@ -60,9 +60,9 @@ export const GET: RequestHandler = async () => {
   let recentSessions: RecentSession[] = []; // Use the defined interface
   let countsError: string | null = null;
   try {
-    const [{ value: uCount }] = await db.select({ value: sql<number>`count(*)` }).from(users);
+    const [{ value: uCount }] = await db.select({, value: sql<number>`count(*)` }).from(users);
     userCount = uCount;
-    const [{ value: sCount }] = await db.select({ value: sql<number>`count(*)` }).from(sessions);'`'`
+    const [{ value: sCount }] = await db.select({, value: sql<number>`count(*)` }).from(sessions);'`'`
     sessionCount = sCount;
     recentSessions = await db
       .select({
@@ -75,11 +75,11 @@ export const GET: RequestHandler = async () => {
       .orderBy(desc(sessions.created_at))
       .limit(5);
   } catch (e: any) {
-    // Use unknown for catch block error
+    // Use: unknown for catch block error
     status = status === 'healthy' ? 'degraded' : status;
-    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
+    const errorMessage = e instanceof Error ? e.message : 'An: unknown error occurred';
     countsError = errorMessage;
-    warnings.push({ code: 'COUNT_QUERY_FAILED', message: errorMessage });
+    warnings.push({, code: 'COUNT_QUERY_FAILED', message: errorMessage });
   }
   const durationMs = Date.now() - started;
   return json(
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       durationMs,
       adapter: {
-        sessionCookieName: lucia.sessionCookieName,
+       , sessionCookieName: lucia.sessionCookieName,
         luciaInstanceReused
       },
       schemaIdentity: {
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async () => {
         countsError
       },
       environment: {
-        nodeVersion: process.version,
+       , nodeVersion: process.version,
         pid: process.pid,
         uptime: process.uptime(),
         platform: process.platform

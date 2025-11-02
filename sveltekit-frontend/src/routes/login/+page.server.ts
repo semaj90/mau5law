@@ -1,11 +1,11 @@
-import { loginSchema } from '$lib/schemas/auth';
-import { db, helpers, users } from '$lib/server/db';
-import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
-import { fail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from './$types';
+import { loginSchema } from, '$lib/schemas/auth';
+import { db, helpers, users } from, '$lib/server/db';
+import { createUserSession, setSessionCookie, verifyPassword } from, '$lib/server/lucia';
+import { fail, redirect } from, '@sveltejs/kit';
+import { message, superValidate } from, 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from, './$types';
 // add this type import to satisfy the TS overload
-import type { ValidationAdapter } from 'sveltekit-superforms/server';
+import type { ValidationAdapter } from, 'sveltekit-superforms/server';
 
 // Replace load to accept the full event and pass it to superValidate
 export const load: PageServerLoad = async event => {
@@ -30,14 +30,14 @@ export const load: PageServerLoad = async event => {
 
 // Actions: include the full event and use it with superValidate
 export const actions: Actions = {
-  default: async event => {
+ , default: async event => {
     // request wasn't used, so only keep cookies to avoid unused variable warnings'
     const { cookies } = event;
 
     // Cast the Zod schema to ValidationAdapter so TS matches the (data, adapter) overload.
     const form = await superValidate(
       await event.request.formData(),
-      loginSchema as unknown as ValidationAdapter<Record<string, unknown>, Record<string, unknown>>
+      loginSchema as: unknown as ValidationAdapter<Record<string, unknown>, Record<string, unknown>>
     );
 
     if (!form.valid) {
@@ -50,11 +50,11 @@ export const actions: Actions = {
       // Find user by email (guard shape because db helper wiring can vary)
       let existingUser: any[] = [];
       try {
-        // use helpers.eq directly (avoid casting to any)
+        // use helpers.eq directly (avoid casting, to: any)
         existingUser = await db
           .select()
           .from(users)
-          .where(helpers.eq(users.email, email as string))
+          .where(helpers.eq(users.email, email as: string))
           .limit(1);
       } catch (e: any) {
         console.error('[Login] DB select failed:', e);
@@ -81,7 +81,7 @@ export const actions: Actions = {
       }
 
       // Verify password using custom lucia
-      const validPassword = await verifyPassword(user.hashed_password, password as string);
+      const validPassword = await verifyPassword(user.hashed_password, password as: string);
 
       if (!validPassword) {
         console.log(`[Login] Password verification failed for ${user.email}`);

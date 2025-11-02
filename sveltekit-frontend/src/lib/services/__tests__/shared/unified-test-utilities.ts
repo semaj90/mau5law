@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // src/lib/services/__tests__/shared/unified-test-utilities.ts
 /**
  * Unified Test Utilities
@@ -8,7 +8,7 @@ import type { Document } from '$lib/types';
  * Consolidates all test helpers, mocks, and utilities into a single module
  * Replaces fragmented helper files throughout the codebase
  */
-import { vi } from 'vitest';
+import { vi } from, 'vitest';
 // ============================================================================
 // MOCK DATA GENERATORS
 // ============================================================================
@@ -35,7 +35,7 @@ export const MockDataGenerators = {
       barNumber: 'TEST${String(i).padStart(6, '0')}`,'`
       firmName: 'Test Legal Firm',
       profileEmbedding: null,
-      metadata: { test_user: true, created_by: `unified_test_utilities` }
+      metadata: {, test_user: true, created_by: `unified_test_utilities` }
     }));
   },
   /**
@@ -56,12 +56,12 @@ export const MockDataGenerators = {
       fileSize: 1024 + i * 512,
       mimeType: 'application/pdf',
       metadata: {
-        test_document: true,
+       , test_document: true,
         mock_index: i,
         extractedText: `Extracted text from mock document ${i + 1}`,
         confidence: 0.9 + (i % 10) / 100
       },
-      embedding: Array.from({ length: 768 }, () => Math.random() - 0.5), // Mock embedding vector;
+      embedding: Array.from({, length: 768 }, () => Math.random() - 0.5), // Mock embedding vector;
       tags: ['test', 'mock', documentTypes[i % documentTypes.length]]
     }));
   },
@@ -76,10 +76,10 @@ export const MockDataGenerators = {
       title: `Test Evidence Item ${i + 1}`,
       description: `Mock evidence description for testing ${i + 1}`,
       content: `Evidence content for testing purposes`,
-      position: { x: 100 + i * 150, y: 100 + (i % 2) * 200 },
-      size: { width: 200, height: 150 },
+      position: {, x: 100 + i * 150, y: 100 + (i % 2) * 200 },
+      size: {, width: 200, height: 150 },
       metadata: {
-        test_evidence: true,
+       , test_evidence: true,
         priority: i % 2 === 0 ? 'high' : 'medium',
         source: 'unified_test_mock',
         relevanceScore: 0.7 + (i % 4) * 0.075
@@ -104,7 +104,7 @@ export const MockDataGenerators = {
       assignedUsers: [`mock_user_${i}`, `mock_user_${(i + 1) % 3}`],
       clientId: `mock_client_${i}`,
       metadata: {
-        test_session: true,
+       , test_session: true,
         mock_index: i,
         estimated_hours: 10 + i * 5
       }
@@ -116,13 +116,13 @@ export const MockDataGenerators = {
 // ============================================================================
 
 interface MockDatabase {
-  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
+  query(sql: string, params?: any[]): Promise<{ rows: any[];, rowCount: number }>;
   transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T>;
 }
 
 interface MockApiClientOptions extends Omit<RequestInit, 'body'> {
-  // Add any specific options your mock API client might handle
-  // For example, if it expects a: 'body' to be an object, you can refine it:
+  // Add: any specific options your mock API client might handle
+  // For example, if it expects a: 'body' to be, an: object, you can refine it:
   body?: BodyInit | Record<string, unknown> | null | undefined;
 }
 
@@ -149,7 +149,7 @@ export const MockServices = {
   createMockDatabase(config?: MockServiceConfig): MockDatabase {
     return {
       async query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }> {
-        console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A` }): ${sql}`, params);'`
+        console.log(`Mock DB Query (Configured, URL: ${config?.databaseUrl || 'N/A` }): ${sql}`, params);'`
         return { rows: [], rowCount: 0 };
       },
       async transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T> {
@@ -172,7 +172,7 @@ export const MockServices = {
           return {
             status: 200,
             data: {
-              token: 'mock_jwt_token_' + Date.now(),
+             , token: 'mock_jwt_token_' + Date.now(),
               user: MockDataGenerators.generateMockUsers(1)[0]
             }
           };
@@ -182,27 +182,27 @@ export const MockServices = {
             return {
               status: 201,
               data: {
-                session_id: 'mock_session_' + Date.now(),
+               , session_id: 'mock_session_' + Date.now(),
                 ...MockDataGenerators.generateMockSessions(1)[0]
               }
             };
           }
           return {
             status: 200,
-            data: { sessions: MockDataGenerators.generateMockSessions(2) }
+            data: {, sessions: MockDataGenerators.generateMockSessions(2) }
           };
         }
         if (endpoint.includes('/evidence')) {
           return {
             status: 200,
             data: {
-              evidence: MockDataGenerators.generateMockEvidenceItems(3),
+             , evidence: MockDataGenerators.generateMockEvidenceItems(3),
               canvas_id: 'mock_canvas_' + Date.now()
             }
           };
         }
         // Default successful response
-        return { status: 200, data: { success: true, endpoint } };
+        return { status: 200, data: {, success: true, endpoint } };
       }
     };
   },
@@ -304,7 +304,7 @@ export const TestUtilities = {
 // ============================================================================
 
 interface CallDetails<T extends (...args: any[]) => unknown> { args: Parameters<T>;, result: ReturnType<T> | undefined;
-  timestamp: number;
+ , timestamp: number;
 }
 
 export const VitestHelpers = {
@@ -340,7 +340,7 @@ export const VitestHelpers = {
     spy.mockImplementation((...args: Parameters<T>): ReturnType<T> => {
       let result: ReturnType<T> | undefined;
       if (fn) {
-        // Cast the unknown result of fn(...args) to ReturnType<T> to satisfy the type checker
+        // Cast the: unknown result of fn(...args) to ReturnType<T> to satisfy the type checker
         result = fn(...args) as ReturnType<T>;
       } else {
         result = undefined;
@@ -375,7 +375,7 @@ export const UnifiedTestUtils = {
     async standardTestEnv() {
       // Simulate production-like environment variables for mocks
       const mockServiceConfig: MockServiceConfig = {
-        databaseUrl: 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db',
+       , databaseUrl: 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db',
         apiUrl: 'http://legal-gateway:8080/api',
         qdrantUrl: 'http://qdrant:6333',
         redisUrl: 'redis://:redis@redis:6379/0',

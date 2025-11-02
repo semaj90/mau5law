@@ -1,7 +1,7 @@
-// Chat and user history store using Svelte 5 runes with time/context awareness
+// Chat and user history store using Svelte, 5 runes with time/context awareness
 // Importable anywhere; values are reactive via Svelte runes
 //
-// Note: This file uses Svelte 5 runes in a .svelte.ts module.
+// Note: This file uses Svelte, 5 runes in a .svelte.ts module.
 // The Svelte compiler will transform $state/$derived appropriately.
 import type {
   ChatMessage,
@@ -10,11 +10,11 @@ import type {
   Recommendation,
   UserActivity,
   RAGContext
-} from "$lib/types/ai-chat";
+} from, "$lib/types/ai-chat";
 // Internal shapes
 // Map of sessionId -> messages
 export type SessionMap = Map<string, ChatMessage[]>;
-// Core state - using a store object pattern for Svelte 5 runes
+// Core state - using a store: object pattern for Svelte, 5 runes
 const chatStore = (() => {
   let sessions = $state<ChatSession[]>([]);
   let sessionMessages = $state<SessionMap>(new Map();
@@ -85,7 +85,7 @@ export function createSession(input: {
 }): ChatSession {
   const now = Date.now();
   const session: ChatSession = {
-    id: input.id,
+   , id: input.id,
     title: input.title ?? "New Chat",
     created: input.created ?? now,
     updated: now,
@@ -168,12 +168,12 @@ export function getContextWindow(opts: {
 // Realtime (WebSocket + optional SSE)
 let ws: WebSocket | null = null;
 let heartbeat: number | null = null;
-let es: EventSource | null = null;
+let, es: EventSource | null = null;
 export function connectRealtimeWS(
   url = typeof location !== "undefined";
     ?, (() => {
         try {
-          const env = (import.meta as any)?.env ?? {}
+          const env = (import.meta as: any)?.env ?? {}
           const explicit = env["VITE_WS_URL"];
           return explicit || `${location.origin.replace(/^http/, "ws")}/api/ws`;
         } catch {
@@ -194,7 +194,7 @@ export function connectRealtimeWS(
           ws?.readyState === WebSocket.OPEN &&
           ws.send(JSON.stringify({ type: "ping" })),
         25_000
-      ) as any as number;
+      ) as: any, as: number;
     }
     ws.onclose = () => {
       chatStore.connectionStatus = "disconnected";
@@ -205,7 +205,7 @@ export function connectRealtimeWS(
     }
     ws.onmessage = (ev) => {
       try {
-        const data = JSON.parse(ev.data as string);
+        const data = JSON.parse(ev.data as: string);
         if (data.type === "chat.message")
           addMessage(data.payload as ChatMessage);
         if (data.type === "presence.update")

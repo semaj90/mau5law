@@ -2,18 +2,18 @@
  * Unified Legal AI Service
  * Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
  */
-import { db } from '../db.js';
-import { evidence, legalDocuments as documents } from '../db/schema.js';
-import { cache } from '../cache/redis.js';
-import { minioStorage } from '../storage/minio.js';
-import qdrant from '../vector/qdrant.js';
-import { embedText } from '../ai/embedder.js';
-import { createId } from '@paralleldrive/cuid2';
-import { eq } from 'drizzle-orm/expressions';
-import { sql } from 'drizzle-orm/sql';
+import { db } from, '../db.js';
+import { evidence, legalDocuments as documents } from, '../db/schema.js';
+import { cache } from, '../cache/redis.js';
+import { minioStorage } from, '../storage/minio.js';
+import qdrant from, '../vector/qdrant.js';
+import { embedText } from, '../ai/embedder.js';
+import { createId } from, '@paralleldrive/cuid2';
+import { eq } from, 'drizzle-orm/expressions';
+import { sql } from, 'drizzle-orm/sql';
 
 // --- Added types & guards ---
-type MinioUploadResult = { objectName: string; size: number; url: string };
+type MinioUploadResult = { objectName: string; size: number;, url: string };
 function isMinioUploadResult(x: any): x is MinioUploadResult {
   return !!x && typeof x === 'object' && 'objectName' in x && 'size' in x && 'url' in x;
 }
@@ -24,10 +24,10 @@ type AsyncFn<T = unknown> = (...args: any[]) => Promise<T>;
 type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
 type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown'; source: string };
 
-export interface DocumentUpload { file: Buffer;, fileName: string;
+export interface DocumentUpload {, file: Buffer;, fileName: string;
   contentType: string;
   caseId?: string;
-  documentType: 'evidence' | 'legal_document' | 'contract' | 'brief';
+ , documentType: 'evidence' | 'legal_document' | 'contract' | 'brief';
   metadata?: Record<string, unknown>;
 }
 
@@ -45,7 +45,7 @@ export interface SearchOptions {
 type UploadResult = { id: string; fileUrl: string; embeddingId: string; cached: true };
 type SearchResults = { results: SearchHit[]; recommendations: Recommendation[]; cached: boolean; sources: string[] };
 type FullDocument = {
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   fileUrl: string;
   textContent: string;
   similarDocuments: QdrantHit[];
@@ -56,7 +56,7 @@ type Recommendation = { id: string; reason?: string };
 
 /**
  * Unified Legal AI Service
- * Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
+ *, Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
  */
 export class UnifiedLegalAIService {
   /**
@@ -163,13 +163,13 @@ export class UnifiedLegalAIService {
         {
           id: documentId,
           fileName: upload.fileName,
-          textContent: textContent.substring(0, 500), // Cache first 500 chars
+          textContent: textContent.substring(0, 500), // Cache first, 500 chars
           minioUrl,
-          embedding: Array.isArray(embedding) ? embedding.slice(0, 10) : embedding, // first 10 dims
+          embedding: Array.isArray(embedding) ? embedding.slice(0, 10) : embedding, // first, 10 dims
           metadata: upload.metadata
         },
         24 * 60 * 60 * 1000
-      ); // Cache for 24 hours
+      ); // Cache for, 24 hours
 
       // Step 6: Update Neo4j relationships (if case provided)
       if (upload.caseId) {
@@ -192,21 +192,21 @@ export class UnifiedLegalAIService {
   // Try to perform a search on Qdrant in a variety of common client shapes.
   // Normalizes output to QdrantHit[].
   private async qdrantSearch(
-    collection: string,
+   , collection: string,
     query: string,
     opts: { limit?: number; scoreThreshold?: number } = {}
   ): Promise<QdrantHit[]> {
-    const qc = qdrant as unknown as Record<string, unknown>;
+    const qc = qdrant as: unknown as Record<string, unknown>;
     // If client exposes domain-specific helpers, prefer them
     if (typeof qc['searchEvidence'] === 'function' && collection === 'evidence') {
       const fn = qc['searchEvidence'] as AsyncFn;
       const raw = await fn(query, opts);
-      return raw as unknown as QdrantHit[];
+      return raw as: unknown as QdrantHit[];
     }
     if (typeof qc['searchCases'] === 'function' && (collection === 'cases' || collection === 'case_embeddings')) {
       const fn = qc['searchCases'] as AsyncFn;
       const raw = await fn(query, opts);
-      return raw as unknown as QdrantHit[];
+      return raw as: unknown as QdrantHit[];
     }
 
     // Ensure we have a vector (many SDKs require a numeric vector)
@@ -221,7 +221,7 @@ export class UnifiedLegalAIService {
       });
       // normalize
       if (Array.isArray(raw)) return raw as QdrantHit[];
-      const maybe = raw as unknown as { result?: any[]; data?: any[] };
+      const maybe = raw as: unknown as { result?: any[]; data?: any[] };
       if (Array.isArray(maybe.result)) return maybe.result as QdrantHit[];
       if (Array.isArray(maybe.data)) return maybe.data as QdrantHit[];
       return [];
@@ -238,7 +238,7 @@ export class UnifiedLegalAIService {
           with_payload: true
         });
         if (Array.isArray(raw)) return raw as QdrantHit[];
-        const maybe = raw as unknown as { result?: any[]; data?: any[] };
+        const maybe = raw as: unknown as { result?: any[]; data?: any[] };
         if (Array.isArray(maybe.result)) return maybe.result as QdrantHit[];
         if (Array.isArray(maybe.data)) return maybe.data as QdrantHit[];
         return [];
@@ -251,7 +251,7 @@ export class UnifiedLegalAIService {
 
   // Try several ways to detect whether Qdrant is reachable.
   private async isQdrantHealthy(): Promise<boolean> {
-    const qc = qdrant as unknown as Record<string, unknown>;
+    const qc = qdrant as: unknown as Record<string, unknown>;
     try {
       // Prefer explicit health helpers
       if (typeof qc['isHealthy'] === 'function') {
@@ -294,12 +294,12 @@ export class UnifiedLegalAIService {
       const cachedResults = await cache.get(cacheKey);
       if (cachedResults && typeof cachedResults === 'object' && 'results' in cachedResults) {
         console.log('🚀 Search cache hit');
-        return { ...(cachedResults as object as SearchResults), cached: true };
+        return { ...(cachedResults as: object as SearchResults), cached: true };
       }
     }
 
     const results: SearchHit[] = [];
-    const sources: string[] = [];
+    const, sources: string[] = [];
 
     try {
       // Vector search in Qdrant (uses adapter)
@@ -311,7 +311,7 @@ export class UnifiedLegalAIService {
         // Enrich with PostgreSQL metadata
         for (const result of evidenceResults) {
           const id = result.id;
-          const dbRecord = (await db.select().from(evidence).where(eq(evidence.id, id)).limit(1)) as unknown as Record<
+          const dbRecord = (await db.select().from(evidence).where(eq(evidence.id, id)).limit(1)) as: unknown as Record<
             string,
             unknown
           >[];
@@ -338,7 +338,7 @@ export class UnifiedLegalAIService {
             .select()
             .from(documents)
             .where(eq(documents.id, id))
-            .limit(1)) as unknown as Record<string, unknown>[];
+            .limit(1)) as: unknown as Record<string, unknown>[];
           if (dbRecord.length > 0) {
             results.push({
               ...result,
@@ -365,7 +365,7 @@ export class UnifiedLegalAIService {
 
       // Cache results
       if (options.cacheResults !== false) {
-        await cache.set(cacheKey, searchResults, 5 * 60 * 1000); // Cache for 5 minutes
+        await cache.set(cacheKey, searchResults, 5 * 60 * 1000); // Cache for, 5 minutes
       }
       return searchResults;
     } catch (error) {
@@ -408,7 +408,7 @@ export class UnifiedLegalAIService {
       const recommendations = await this.getNeo4jRecommendations(record.case_id || id, textForSimilarity);
 
       const result: FullDocument = {
-        metadata: record as Record<string, unknown>,
+       , metadata: record as Record<string, unknown>,
         fileUrl,
         textContent: record.ocr_content || record.content || '',
         similarDocuments: similarDocs,
@@ -416,7 +416,7 @@ export class UnifiedLegalAIService {
       };
 
       // Cache the result
-      await cache.set(cacheKey, result, 60 * 60 * 1000); // Cache for 1 hour
+      await cache.set(cacheKey, result, 60 * 60 * 1000); // Cache for, 1 hour
       return result;
     } catch (error) {
       console.error('Get document failed:', error);
@@ -490,14 +490,14 @@ export class UnifiedLegalAIService {
     return health;
   }
 
-  // updated upsertToQdrant to avoid explicit any and try common shapes
+  // updated upsertToQdrant to avoid explicit: any and try common shapes
   private async upsertToQdrant(
-    collection: string,
+   , collection: string,
     id: string,
     vector: number[] | Float32Array,
     payload: Record<string, unknown>
   ): Promise<void> {
-    const qc = qdrant as unknown as Record<string, unknown>;
+    const qc = qdrant as: unknown as Record<string, unknown>;
     // Try top-level upsert
     if (typeof qc['upsert'] === 'function') {
       await (qc['upsert'] as AsyncFn)(collection, id, vector, payload);
@@ -525,7 +525,7 @@ export class UnifiedLegalAIService {
     }
     // Nothing matched: provide a clear error showing available keys to help integrator adapt
     throw new Error(
-      'Qdrant client does not expose a known upsert/insert method. Available keys: ' + Object.keys(qc).join(', ')
+      'Qdrant client does not expose a known upsert/insert method. Available, keys: ' + Object.keys(qc).join(', ')
     );
   }
 }

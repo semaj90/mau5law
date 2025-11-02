@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js'
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js'
 // Friend-of-a-Friend (FOAF) API endpoint - SSR compatible
-import { json, error } from '@sveltejs/kit'
-import { db } from '$lib/server/db/index.js'
-import { users, cases, evidence } from '$lib/server/db/schema-unified.js'
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js'
-import { eq, ne, and, sql } from 'drizzle-orm'
+import { json, error } from, '@sveltejs/kit'
+import { db } from, '$lib/server/db/index.js'
+import { users, cases, evidence } from, '$lib/server/db/schema-unified.js'
+import { generateEnhancedEmbedding } from, '$lib/server/ai/embeddings-enhanced.js'
+import { eq, ne, and, sql } from, 'drizzle-orm'
 
 export interface FOAFRequest {
   personId: string;
@@ -13,18 +13,18 @@ export interface FOAFRequest {
   maxDepth?: number;
   caseContext?: string;
 }
-export interface Person { id: string;, name: string;
+export interface Person {, id: string;, name: string;
   handle: string;
   role: string;
   specialization: string;
   confidence: number;
   relationshipPath: string;
 }
-export interface FOAFResponse { people: Person[];, summary: string;
+export interface FOAFResponse {, people: Person[];, summary: string;
   totalFound: number;
   processingTimeMs: number;
 }
-export const GET: RequestHandler = async ({ params, url, fetch }) => {
+export const, GET: RequestHandler = async ({ params, url, fetch }) => {
   const startTime = Date.now();
   const { personId } = params;
   if (!personId) {
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
       maxDepth,
       caseContext
     });
-    const foafData: FOAFResponse = { people: foafRecommendations.map(rec => ({, id: rec.id,
+    const foafData: FOAFResponse = {, people: foafRecommendations.map(rec => ({, id: rec.id,
         name: rec.name,
         handle: rec.handle || rec.email || 'unknown@legal.ai',
         role: rec.role || 'user',
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       includeEmbedding: true,
       minConnectionStrength: 0.2
     });
-    const enhancedResponse: FOAFResponse = { people: foafRecommendations.map(rec => ({, id: rec.id,
+    const enhancedResponse: FOAFResponse = {, people: foafRecommendations.map(rec => ({, id: rec.id,
         name: rec.name,
         handle: rec.handle || rec.email || 'unknown@legal.ai',
         role: rec.role || 'user',
@@ -129,7 +129,7 @@ export interface DatabaseFOAFRecommendation { id: string;, name: string;
   relationshipPath: string;
   sharedCases?: number;
   sharedEvidence?: number;
-  reasoning: string;
+ , reasoning: string;
   metadata?: Record<string, unknown>;
 }
 async function generateDatabaseFOAFRecommendations(
@@ -239,7 +239,7 @@ async function generateDatabaseFOAFRecommendations(
           relationshipPath: `Legal Network → Shared Cases → ${conn.role}`,
           sharedCases: conn.sharedCases || 0,
           reasoning: 'Collaborated on ${conn.sharedCases} shared case${(conn.sharedCases || 0) > 1 ? 's' : `' }`,'`'`
-          metadata: { connectionType: `case_collaboration' }'`
+          metadata: {, connectionType: `case_collaboration' }'`
         });
       }
     }
@@ -267,7 +267,7 @@ async function generateDatabaseFOAFRecommendations(
           relationshipPath: `Legal Network → Evidence Collaboration → ${conn.role}`,
           sharedEvidence: conn.sharedEvidence || 0,
           reasoning: 'Worked with ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `' }`,'`'`
-          metadata: { connectionType: `evidence_collaboration' }'`
+          metadata: {, connectionType: `evidence_collaboration' }'`
         });
       }
     }
@@ -287,7 +287,7 @@ async function generateDatabaseFOAFRecommendations(
             connectionStrength: roleScore,
             relationshipPath: `Legal Network → ${conn.role} Peers`,
             reasoning: `Same role (${conn.role}) with ${conn.caseCount} cases`,
-            metadata: { connectionType: 'role_based', caseCount: conn.caseCount }
+            metadata: {, connectionType: 'role_based', caseCount: conn.caseCount }
           });
         }
       }
@@ -327,7 +327,7 @@ async function enhanceRecommendationsWithEmbeddings(
       provider: 'nomic-embed',
       legalDomain: true,
       cache: true
-    })) as number[];
+    })) as: number[];
     // Enhance each recommendation
     for (const rec of recommendations) {
       try {
@@ -348,7 +348,7 @@ async function enhanceRecommendationsWithEmbeddings(
               provider: 'nomic-embed',
               legalDomain: true,
               cache: true
-            })) as number[];
+            })) as: number[];
             const similarity = cosineSimilarity(targetEmbedding, recEmbedding);
             // Boost connection strength based on semantic similarity
             rec.connectionStrength = Math.min(0.99, rec.connectionStrength + similarity * 0.15);

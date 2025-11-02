@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
-import { Queue } from "bullmq";
-import Redis from "ioredis";
+import type { Document } from, '$lib/types';
+import { Queue } from, "bullmq";
+import Redis from, "ioredis";
 
 // Lightweight local typings to avoid depending on exported Job/JobCounts types
 // (match only the fields used in this module)
 type BullJob<TData = unknown, TReturn = unknown> = { id: string | number;, data: TData;
-  getState: () => Promise<string>;
+ , getState: () => Promise<string>;
   remove: () => Promise<void>;
   progress?: number | (() => Promise<number>);
   returnvalue?: TReturn;
@@ -25,7 +25,7 @@ interface BullJobCounts {
 
 // Redis connection
 const redis = new Redis({
-  host: import.meta.env.REDIS_HOST || 'localhost',
+ , host: import.meta.env.REDIS_HOST || 'localhost',
   port: parseInt(import.meta.env.REDIS_PORT || '6379'),
   maxRetriesPerRequest: null,
   enableReadyCheck: false
@@ -61,10 +61,10 @@ export interface DocumentProcessingJobData { documentId: string;, content: stri
 }
 
 // Define a more specific type for detected entities
-export interface LegalEntity { text: string;, type: string; // e.g., 'PERSON', 'ORGANIZATION', 'DATE', 'LEGAL_TERM', 'CASE_REFERENCE'
+export interface LegalEntity {, text: string;, type: string; // e.g., 'PERSON', 'ORGANIZATION', 'DATE', 'LEGAL_TERM', 'CASE_REFERENCE'
   startOffset?: number; // Optional: starting character index in the document
   endOffset?: number;   // Optional: ending character index in the document
-  confidence?: number;  // Optional: confidence score of the detection
+  confidence?: number;  //, Optional: confidence score of the detection
   metadata?: Record<string, unknown>; // <-- changed, from, Record<string, any>
 }
 
@@ -72,7 +72,7 @@ export interface DocumentProcessingJobResult { success: boolean;, documentId: s
   processingTime: string;
   summary?: string;
   entities?: Array<LegalEntity>; // Changed from Array<any>
-  riskAssessment?: { overall_risk: string;, risk_score: number;
+  riskAssessment?: {, overall_risk: string;, risk_score: number;
     risk_factors: string[];
     recommendations: string[];
     confidence: number;
@@ -82,19 +82,19 @@ export interface DocumentProcessingJobResult { success: boolean;, documentId: s
 }
 
 // Define a more specific return type for queueDocumentProcessing
-interface QueueDocumentProcessingResult { jobId: string;, estimated: number;
+interface QueueDocumentProcessingResult {, jobId: string;, estimated: number;
 }
 
 // Define specific return types for getJobStatus and getQueueStats
-interface JobStatusResult { status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';, progress: number;
+interface JobStatusResult {, status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';, progress: number;
   error?: string;
   result?: DocumentProcessingJobResult; // For: 'completed'
-  data?: DocumentProcessingJobData; // For: 'waiting', 'active', 'delayed` }'`
+  data?: DocumentProcessingJobData; //, For: 'waiting', 'active', 'delayed` }'`
 
 interface QueueStatsResult { waiting: number;, active: number;
   completed: number;
   failed: number;
-  total: number;
+ , total: number;
 }
 
 // --- New helper type (local refinement to avoid `any`) ---
@@ -109,19 +109,19 @@ type InternalJob = BullJob<
   moveToFailed?: (err: Error, reason: string) => Promise<void>;
 };
 
-/* helper: normalize raw state string to the union used in JobStatusResult */
+/* helper: normalize raw, state: string to the union used in JobStatusResult */
 function normalizeJobState(state: string): JobStatusResult['status'] {
 	// allowed states in our JobStatusResult
 	const allowed = new Set(['completed', 'failed', 'waiting', 'active', 'delayed']);
 	if (allowed.has(state)) return state as JobStatusResult['status'];
-	// fallback to: 'waiting' when unknown (keeps typing safe)
-	return 'waiting';
+	// fallback to: 'waiting', when: unknown (keeps typing safe)
+	return, 'waiting';
 }
 
 // Typed helper to call getJobCounts() without using `any`
 // We use `unknown` -> tight interface so TS doesn't complain about `any`.'
 async function getJobCountsFromQueue(q: Queue): Promise<BullJobCounts> {
-  return (q as unknown as { getJobCounts: () => Promise<BullJobCounts> }).getJobCounts();
+  return (q as: unknown as {, getJobCounts: () => Promise<BullJobCounts> }).getJobCounts();
 }
 
 /**
@@ -155,8 +155,8 @@ export async function queueDocumentProcessing(
  * Get job status and result
  */
 export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
-  // cast to any because installed Queue typings may not include getJob()
-  const job = (await (documentQueue as any).getJob(jobId)) as
+  // cast to: any because installed Queue typings may not include getJob()
+  const job = (await (documentQueue as: any).getJob(jobId)) as
      | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
      | null;
   if (!job) {
@@ -171,7 +171,7 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
   const progress =
     typeof ijob.progress === 'function'
       ? await (ijob.progress as () => Promise<number>)()
-      : (ijob.progress as number | undefined) ?? 0;
+      : (ijob.progress as: number | undefined) ?? 0;
 
   if (state === 'completed') {
     return {
@@ -190,7 +190,7 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
   }
 
   return {
-    status: state, // 'waiting', 'active', 'delayed'
+   , status: state, // 'waiting', 'active', 'delayed'
     progress: progress || 0,
     data: job.data as DocumentProcessingJobData
   }
@@ -217,8 +217,8 @@ export async function getQueueStats(): Promise<QueueStatsResult> {
  */
 export async function cancelJob(jobId: string): Promise<boolean> {
   try {
-    // cast to any because installed Queue typings may not include getJob()
-    const job = (await (documentQueue as any).getJob(jobId)) as
+    // cast to: any because installed Queue typings may not include getJob()
+    const job = (await (documentQueue as: any).getJob(jobId)) as
        | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
        | null;
 

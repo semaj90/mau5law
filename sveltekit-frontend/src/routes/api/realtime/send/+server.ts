@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 // Proxy endpoint used as the final fallback when WebTransport/WebSocket are unavailable.
 // This preserves common headers (Authorization, Cookie) and forwards the raw JSON body to the GPU chat API.
@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const incoming = await request.json().catch(() => null);
 
     // Build forwarded headers: allow Authorization and other useful headers to pass through
-    const forwardedHeaders: Record<string, string> = {
+    const, forwardedHeaders: Record<string, string> = {
       'Content-Type': 'application/json'
     };
     const auth = request.headers.get('authorization') || request.headers.get('Authorization');

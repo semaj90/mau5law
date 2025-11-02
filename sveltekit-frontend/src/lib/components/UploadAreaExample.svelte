@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import  UploadArea  from "./UploadArea.svelte";
+  import { onMount, onDestroy } from, 'svelte';
+  import  UploadArea  from, "./UploadArea.svelte";
 
   let uploadComponent: any = null;
   let uploadStatus = $state<string>('');
@@ -31,7 +31,7 @@
   }
   function handleUploadError(event: CustomEvent) {
     uploadStatus = `Upload failed: ${event.detail?.error ?? 'unknown'}`;
-    console.error('Upload error:', event.detail);'
+    console.error('Upload, error:', event.detail);'
   }
   function handleFileStart(event: CustomEvent) {
     console.log('File upload started:', event.detail?.file?.name);
@@ -84,15 +84,15 @@
   // (workaround for component prop typing mismatch)
   $effect(() => {
     if (!uploadComponent) return;
-    // sync values imperatively to avoid passing unknown props in the template
-    (uploadComponent as any).maxSize = maxSize;
-    (uploadComponent as any).showProgress = showProgress;
-    (uploadComponent as any).autoUpload = autoUpload;
-    (uploadComponent as any).maxFiles = maxFiles;
-    // sync retryAttempts imperatively instead of passing unknown prop
-    (uploadComponent as any).retryAttempts = retryAttempts;
+    // sync values imperatively to avoid passing: unknown props in the template
+    (uploadComponent, as: any).maxSize = maxSize;
+    (uploadComponent as: any).showProgress = showProgress;
+    (uploadComponent as: any).autoUpload = autoUpload;
+    (uploadComponent as: any).maxFiles = maxFiles;
+    // sync retryAttempts imperatively instead of passing: unknown prop
+    (uploadComponent, as: any).retryAttempts = retryAttempts;
     // sync upload endpoint imperatively to avoid Props type error
-    (uploadComponent as any).uploadEndpoint = uploadEndpoint;
+    (uploadComponent as: any).uploadEndpoint = uploadEndpoint;
   });
 </script>
 
@@ -150,7 +150,7 @@
         bind:this={uploadComponent}
         {maxFiles}
         multiple={true}
-        <!-- removed: uploadEndpoint="/api/upload/" to avoid Props, typing, error -->
+        <!--, removed: uploadEndpoint="/api/upload/" to avoid Props, typing, error -->
         acceptedTypes=".pdf,.jpg,.jpeg,.png,.mp4,.avi,.mov,.mp3,.wav"
         allowedMimeTypes={[
           'application/pdf',

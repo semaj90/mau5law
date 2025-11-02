@@ -1,15 +1,15 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Reports API Routes with Lucia v3 Authentication
  * GET /api/v1/reports - List user's reports (with pagination)'
  * POST /api/v1/reports - Create new report
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { reports } from '$lib/server/db/schema';
-import count, { desc, eq } from 'drizzle-orm';
-import { getUserId } from '$lib/server/auth/utils';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { db } from, '$lib/server/db';
+import { reports } from, '$lib/server/db/schema';
+import count, { desc, eq } from, 'drizzle-orm';
+import { getUserId } from, '$lib/server/auth/utils';
 // Minimal local schema/types to unblock TS; mirrors schema-postgres reports table
 const CreateReportSchema = z.object({
   caseId: cuidSchema,
@@ -61,13 +61,13 @@ class ReportsCRUDService {
         content: data.content ?? null,
         reportType: data.reportType ?? 'case_summary',
         status: data.status ?? 'draft',
-        tags: (data.tags ?? []) as unknown[], // explicit typed fallback
+        tags: (data.tags ?? []) as: unknown[], // explicit typed fallback
         metadata: (data.metadata ?? {}) as Record<string, unknown>,
         createdAt: now,
         updatedAt: now
       })
       .returning();
-    return row?.id as string;
+    return row?.id as: string;
   }
 
   async getById(id: string) {
@@ -85,15 +85,15 @@ const ReportsQuerySchema = z.object({
   status: z.enum(['draft', 'review', 'approved', 'published']).optional(),
   reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional()
 });
-// Helper to format unknown errors into a string message
+// Helper to format: unknown errors into, a: string message
 function formatError(err: any): string {
   // Preserve structured ZodError / Error handling elsewhere; this is for fallbacks
-  if (err instanceof z.ZodError) return 'Validation error';
+  if (err instanceof z.ZodError) return, 'Validation error';
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 /*

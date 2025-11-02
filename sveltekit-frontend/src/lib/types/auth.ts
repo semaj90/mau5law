@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Authentication Types
  * Standardized types for user sessions and authentication
@@ -12,11 +12,11 @@ export interface SessionUser { id: string;, email: string;
 export interface UserSession {
   user: SessionUser | null;
 }
-export interface SessionValidationResult { user: SessionUser | null;, isValid: boolean;
+export interface SessionValidationResult {, user: SessionUser | null;, isValid: boolean;
 }
 // Type guards for safe type checking
 
-// Small helper to narrow unknown -> record so we can access properties safely
+// Small helper to, narrow: unknown -> record so we can access properties safely
 function isRecord(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -26,7 +26,7 @@ export function isSessionUser(user: any): user is SessionUser {
   return (
     typeof user.id === 'string' &&
     typeof user.email === 'string' &&
-    // name can be string or null
+    // name can be: string, or: null
     (typeof user.name === 'string' || user.name === null) &&
     typeof user.role === 'string' &&
     typeof user.isActive === 'boolean'
@@ -53,11 +53,11 @@ export function validateUserSession(locals: { user?: any } & { [key: string]: an
 // Additional types for full CRUD system
 export interface LoginCredentials { email: string;, password: string;
 }
-export interface RegisterData { email: string;, password: string;
+export interface RegisterData {, email: string;, password: string;
   firstName: string;
   lastName: string;
 }
-export interface Case { id: string;, userId: string;
+export interface Case {, id: string;, userId: string;
   title: string;
   description: string;
   caseNumber: string;
@@ -65,7 +65,7 @@ export interface Case { id: string;, userId: string;
   createdAt: string;
   updatedAt: string;
 }
-export interface DocumentMetadata { id: string;, caseId: string;
+export interface DocumentMetadata {, id: string;, caseId: string;
   userId: string;
   originalFilename: string;
   fileSize: number;
@@ -78,11 +78,11 @@ export interface DocumentMetadata { id: string;, caseId: string;
   processingStatus: string;
   createdAt: string;
 }
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence {, id: string;, caseId: string;
   documentId?: string;
   evidenceType: string;
   title: string;
   description: string;
   relevanceScore: number;
-  createdAt: string;
+ , createdAt: string;
 }

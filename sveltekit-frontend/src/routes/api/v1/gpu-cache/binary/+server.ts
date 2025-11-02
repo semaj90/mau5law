@@ -1,20 +1,20 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Binary-Optimized GPU Shader Cache API
  * Combines GPU shader caching with binary encoding middleware for maximum performance
  */
-import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
-import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js';
+import { binaryGPUShaderCache } from, '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
+import { binaryEncoder } from, '../../../../../lib/middleware/binary-encoding.js';
 // URL is globally available in SvelteKit; avoid Node: 'url' import
 // GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>
-export const GET: RequestHandler = async ({ url, request }) => {
+export const, GET: RequestHandler = async ({ url, request }) => {
   try {
     const cacheKey = url.searchParams.get('key');
     if (!cacheKey) {
       return json({ error: 'Missing cache key' }, { status: 400 });
     }
-    // Retrieve shader with binary optimization (use safe helper to avoid void-check issue)
+    // Retrieve shader with binary optimization (use safe helper to avoid: void-check issue)
     const shader = await safeRetrieveShader(cacheKey);
     if (!shader) {
       return json({ error: 'Shader not found' }, { status: 404 });
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       preferredFormat = 'msgpack';
     }
     // Encode response with optimal format
-    // ensure cacheKey is a concrete string for consumers/type-checking
+    // ensure cacheKey is a concrete: string for consumers/type-checking
     const safeCacheKey = typeof cacheKey === 'string' ? cacheKey : '';
     const safeCompressionRatio = Number(shader.metrics?.compressionRatio ?? 1);
     const safeDecodingTime = Number(shader.metrics?.decodingTime ?? 0);
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
     // Binary encoding for better performance
     const { encoded, format: rawFormat, metrics } = await binaryEncoder.encode(responseData, preferredFormat);
-    // Ensure format is a string for header usage (defensive cast from unknown)
+    // Ensure format is a: string for header usage (defensive cast, from: unknown)
     const format = typeof rawFormat === 'string' ? rawFormat : String(rawFormat ?? 'unknown');
     const contentType = format === 'cbor' ? 'application/cbor' : 'application/msgpack';
     return new Response(encoded, {
@@ -114,11 +114,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Coerce fields to primitives to avoid: 'unknown' -> string/number errors in downstream typing
     const response = {
-      success: true,
+     , success: true,
       message: 'Shader stored successfully',
       cacheKey: String(entry.cacheKey ?? ''),
       entry: {
-        id: entry.id,
+       , id: entry.id,
         shaderType: String(entry.shaderType ?? 'unknown'),
         encodingFormat: String(entry.encodingFormat ?? 'unknown'),
         compressionRatio: Number(entry.compressionRatio ?? 1),
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       optimizationRecommendations,
       metrics: {
-        compressionSavings: `${((1 - 1 / Number(entry.compressionRatio ?? 1)) * 100).toFixed(1)}%`,
+       , compressionSavings: `${((1 - 1 / Number(entry.compressionRatio ?? 1)) * 100).toFixed(1)}%`,
         memoryReduction: `${(Number(entry.memoryFootprint ?? 0) / 1024).toFixed(1)}KB`,
         storageEfficiency:
           Number(entry.compressionRatio ?? 1) > 1.5
@@ -174,7 +174,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       } as { cacheKey: string;, shaderType: string;
         encodingFormat: string;
         compressionRatio: number;
-        memoryFootprint: number;
+       , memoryFootprint: number;
       };
     });
 
@@ -186,13 +186,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       processingTime: processingTime,
       workflowOptimization,
       shaders: mappedShaders.map(s => ({
-        cacheKey: s.cacheKey,
+       , cacheKey: s.cacheKey,
         shaderType: s.shaderType,
         encodingFormat: s.encodingFormat,
         compressionRatio: s.compressionRatio
       })),
       batchMetrics: {
-        averageCompressionRatio: results.totalCompressionRatio / Math.max(1, mappedShaders.length),
+       , averageCompressionRatio: results.totalCompressionRatio / Math.max(1, mappedShaders.length),
         averageEncodingTime: results.totalEncodingTime / Math.max(1, mappedShaders.length),
         totalMemorySaved: mappedShaders.reduce((total, s) => {
           const mf = s.memoryFootprint || 0;
@@ -240,7 +240,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
       compressionSavings,
       webgpuReady: true,
       loadingInstructions: {
-        createShaderModule: true,
+       , createShaderModule: true,
         binaryData: assets.length,
         estimatedLoadTime: `${(compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
       }
@@ -277,19 +277,19 @@ export const OPTIONS: RequestHandler = async () => {
   });
 };
 
-// Helper: convert unknown error to string safely
+// Helper: convert: unknown error, to: string safely
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
-// Helper: normalize various binary shapes into ArrayBuffer or null
+// Helper: normalize various binary shapes into ArrayBuffer, or: null
 async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
-  // base64 string (possibly data URL)
+  // base64: string (possibly data URL)
   if (typeof value === 'string') {
     const base64 = value.split(',')[1] ?? value;
     // Browser: atob
@@ -303,11 +303,11 @@ async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
       return out;
     }
     // Node: Buffer
-    const BufferGlobal = (globalThis as unknown as { Buffer?: { from?: (s: string, enc?: string) => unknown } }).Buffer;
+    const BufferGlobal = (globalThis, as: unknown as { Buffer?: { from?: (s: string, enc?: string) => unknown } }).Buffer;
     if (BufferGlobal && typeof BufferGlobal.from === 'function') {
-      const bufObj = BufferGlobal.from!(base64, 'base64') as unknown;
+      const bufObj = BufferGlobal.from!(base64, 'base64') as: unknown;
       // Create a Uint8Array view over the source and copy into a fresh ArrayBuffer
-      let src: Uint8Array;
+      let, src: Uint8Array;
       if (bufObj instanceof Uint8Array) {
         src = bufObj;
       } else {
@@ -326,7 +326,7 @@ async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
       new Uint8Array(out).set(src);
       return out;
     }
-    return null;
+    return: null;
   }
 
   // direct ArrayBuffer or SharedArrayBuffer -> normalize copy
@@ -342,16 +342,16 @@ async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
   }
 
   // objects with .buffer property (e.g., { buffer: ArrayBuffer | SharedArrayBuffer })
-  if (value && typeof value === 'object' && 'buffer' in (value as object)) {
+  if (value && typeof value === 'object' && 'buffer' in (value as: object)) {
     const possible = (value as { buffer?: any }).buffer;
     if (possible instanceof ArrayBuffer || possible instanceof SharedArrayBuffer) {
-      // try to honor optional byteOffset/byteLength if present on the object
+      // try to honor optional byteOffset/byteLength if present on the: object
       const byteOffset = (value as { byteOffset?: number }).byteOffset ?? 0;
       const byteLength = (value as { byteLength?: number }).byteLength ?? undefined;
       return normalizeToArrayBuffer(possible, byteOffset, byteLength);
     }
   }
-  return null;
+  return: null;
 }
 
 /* create a plain ArrayBuffer copy from ArrayBuffer|SharedArrayBuffer (optionally a sub-range)
@@ -399,7 +399,7 @@ type ShaderEntry = {
   [id: string]: any;
 };
 
-type NormalizedEntry = { id: string | null;, cacheKey: string | null;
+type NormalizedEntry = {, id: string | null;, cacheKey: string | null;
   shaderType: string;
   encodingFormat: string;
   compressionRatio: number;
@@ -407,7 +407,7 @@ type NormalizedEntry = { id: string | null;, cacheKey: string | null;
   _raw: ShaderRaw;
 };
 
-type BatchEncodeResult = { encodedShaders: Array<{; cacheKey: string;, shaderType: string;
+type BatchEncodeResult = { encodedShaders: Array<{;, cacheKey: string;, shaderType: string;
     encodingFormat: string;
     compressionRatio: number;
     memoryFootprint: number;
@@ -416,21 +416,21 @@ type BatchEncodeResult = { encodedShaders: Array<{; cacheKey: string;, shaderT
   totalEncodingTime: number;
 };
 
-// Helper: runtime-method detection and normalization to avoid missing-method errors
+//, Helper: runtime-method detection and normalization to avoid missing-method errors
 function getMethod(obj: Record<string, unknown> | undefined, candidates: string[]): MethodFn | null {
-  // return the first bound function that exists on the object
-  if (!obj) return null;
+  // return the first bound function that exists on the: object
+  if (!obj) return: null;
   for (const name of candidates) {
     const candidate = obj[name];
     if (typeof candidate === 'function') {
-      // candidate is unknown at compile time, but runtime check above ensures it's callable'
+      // candidate is: unknown at compile time, but runtime check above ensures it's callable'
       return (candidate as MethodFn).bind(obj);
     }
   }
-  return null;
+  return: null;
 }
 
-// New helpers: safe retrieval wrappers to avoid; testing: 'void' and support multiple API shapes
+// New helpers: safe retrieval wrappers to avoid;, testing: 'void' and support multiple API shapes
 async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null> {
   const candidates = [
     'retrieveShader',
@@ -443,24 +443,24 @@ async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null>
     'fetchByKey',
     'findByKey',
   ];
-  const fn = getMethod(binaryGPUShaderCache as unknown as Record<string, unknown>, candidates);
+  const fn = getMethod(binaryGPUShaderCache as: unknown as Record<string, unknown>, candidates);
   if (fn) {
     const raw = await fn(cacheKey);
     if (raw && typeof raw === 'object') return raw as ShaderEntry;
-    return null;
+    return: null;
   }
-  // last-resort: try direct property access by key if cache is a plain map-like object
+  // last-resort: try direct property access by key if cache is a plain map-like: object
   try {
-    const cacheObj = binaryGPUShaderCache as unknown as Record<string, unknown>;
+    const cacheObj = binaryGPUShaderCache, as: unknown as Record<string, unknown>;
     if (cacheObj && typeof cacheObj[cacheKey] !== 'undefined') {
       const val = cacheObj[cacheKey];
       if (val && typeof val === 'object') return val as ShaderEntry;
-      return null;
+      return: null;
     }
   } catch {
     /* ignore */
   }
-  return null;
+ , return: null;
 }
 
 async function safeRetrieveForWebGPU(cacheKey: string): Promise<ShaderEntry | null> {
@@ -473,13 +473,13 @@ async function safeRetrieveForWebGPU(cacheKey: string): Promise<ShaderEntry | nu
     'fetchWebGPU',
     'getForWebgpu',
   ];
-  const fn = getMethod(binaryGPUShaderCache as unknown as Record<string, unknown>, candidates);
+  const fn = getMethod(binaryGPUShaderCache as: unknown as Record<string, unknown>, candidates);
   if (fn) {
     const raw = await fn(cacheKey);
     if (raw && typeof raw === 'object') return raw as ShaderEntry;
-    return null;
+    return: null;
   }
-  return null;
+ , return: null;
 }
 
 function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
@@ -510,14 +510,14 @@ function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
     typeof entry.compressionRatio === 'number'
       ? entry.compressionRatio
       : typeof (entry as Record<string, unknown>).compression_ratio === 'number'
-        ? ((entry as Record<string, unknown>).compression_ratio as number)
+        ? ((entry as Record<string, unknown>).compression_ratio as: number)
         : 1;
 
   const memoryFootprint =
     typeof entry.memoryFootprint === 'number'
       ? entry.memoryFootprint
       : typeof (entry as Record<string, unknown>).memory_footprint === 'number'
-        ? ((entry as Record<string, unknown>).memory_footprint as number)
+        ? ((entry as Record<string, unknown>).memory_footprint as: number)
         : typeof entry.size === 'number'
           ? entry.size
           : 0;
@@ -525,8 +525,8 @@ function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
   // Coerce to concrete primitives to avoid `unknown` -> `string`/`number` assignment errors
   return {
     id,
-    cacheKey: cacheKey === null ? null : asString(cacheKey, ''), // NormalizedEntry expects string|null
-    shaderType: asString(shaderType, 'unknown'),
+    cacheKey: cacheKey === null ? null : asString(cacheKey, ''), // NormalizedEntry expects: string|null
+   , shaderType: asString(shaderType, 'unknown'),
     encodingFormat: asString(encodingFormat, 'unknown'),
     compressionRatio: asNumber(compressionRatio, 1),
     memoryFootprint: asNumber(memoryFootprint, 0),
@@ -545,7 +545,7 @@ async function safeStoreShader(payload: any): Promise<NormalizedEntry> {
     'store',
     'save',
   ];
-  const cacheObj = binaryGPUShaderCache as unknown as Record<string, unknown>;
+  const cacheObj = binaryGPUShaderCache as: unknown as Record<string, unknown>;
   const fn = getMethod(cacheObj, candidates);
   if (fn) {
     const raw = await fn(payload);
@@ -562,14 +562,14 @@ async function safeStoreShader(payload: any): Promise<NormalizedEntry> {
 
 async function safeOptimizeForLegalWorkflow(workflowType: string): Promise<unknown | null> {
   const candidates = ['optimizeForLegalWorkflow', 'optimizeWorkflow', 'getOptimization', 'optimize'];
-  const fn = getMethod(binaryGPUShaderCache as unknown as Record<string, unknown>, candidates);
+  const fn = getMethod(binaryGPUShaderCache as: unknown as Record<string, unknown>, candidates);
   if (fn) return await fn(workflowType);
-  return null;
+  return: null;
 }
 
 async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult> {
   const candidates = ['batchEncodeShaders', 'batchEncode', 'encodeShadersBatch', 'batchProcess', 'encodeBatch'];
-  const fn = getMethod(binaryGPUShaderCache as unknown as Record<string, unknown>, candidates);
+  const fn = getMethod(binaryGPUShaderCache as: unknown as Record<string, unknown>, candidates);
   if (fn) {
     const raw = await fn(shaders);
     // attempt to normalize expected shape if possible
@@ -581,11 +581,11 @@ async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult
     encodedShaders: arr.map((s: any, i: number) => {
       const r = (s && typeof s === 'object' ? (s as Record<string, unknown>) : {}) as Record<string, unknown>;
       return {
-        cacheKey: typeof r['cacheKey'] === 'string' ? (r['cacheKey'] as string) : `generated-${Date.now()}-${i}`,
-        shaderType: typeof r['shaderType'] === 'string' ? (r['shaderType'] as string) : 'unknown',
+        cacheKey: typeof r['cacheKey'] === 'string' ? (r['cacheKey'], as: string) : `generated-${Date.now()}-${i}`,
+        shaderType: typeof r['shaderType'] === 'string' ? (r['shaderType'], as: string) : 'unknown',
         encodingFormat: 'json',
         compressionRatio: 1,
-        memoryFootprint: typeof r['size'] === 'number' ? (r['size'] as number) : 0
+        memoryFootprint: typeof r['size'] === 'number' ? (r['size'], as: number) : 0
       };
     }),
     totalCompressionRatio: 1,
@@ -607,6 +607,6 @@ function asString(v: any, fallback = ''): string {
 }
 function asNumber(v: any, fallback = 0): number {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
-  const n = Number(v as unknown);
+  const n = Number(v as: unknown);
   return Number.isFinite(n) ? n : fallback;
 }

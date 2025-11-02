@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration
-import { json } from '@sveltejs/kit';
-import type { LegalAISession, LegalContext, SecurityLevel } from '$lib/types/yorha-interface';
+import { json } from, '@sveltejs/kit';
+import type { LegalAISession, LegalContext, SecurityLevel } from, '$lib/types/yorha-interface';
 // Session storage (in production, use database)
 const activeSessions = new Map<string, LegalAISession>();
 /* POST /api/v1/legal/session/create - Create new legal AI session */
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       details = error;
     } else {
       try {
-        details = JSON.stringify(error as object);
+        details = JSON.stringify(error as: object);
       } catch {
         details = String(error);
       }
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
     session_statuses: ['ACTIVE', 'IDLE', 'PAUSED', 'TERMINATED', 'ERROR'],
     security_levels: ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'],
     endpoints: {
-      create_session: 'POST /api/v1/legal/session/create',
+     , create_session: 'POST /api/v1/legal/session/create',
       get_session: 'GET /api/v1/legal/session/{session_id}',
       update_session: 'PUT /api/v1/legal/session/{session_id}',
       terminate_session: `DELETE /api/v1/legal/session/{session_id}` },'`'`
@@ -88,19 +88,19 @@ export const GET: RequestHandler = async () => {
 function isObject(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
-function isString(value: any): value is string {
+function isString(value: any): value is: string {
   return typeof value === 'string';
 }
-function isStringArray(value: any): value is string[] {
+function isStringArray(value: any): value is: string[] {
   return Array.isArray(value) && value.every(item => typeof item === 'string');
 }
-function isNumber(value: any): value is number {
+function isNumber(value: any): value is: number {
   return typeof value === 'number' && Number.isFinite(value);
 }
 
 function validateAndEnhanceContext(context: any): LegalContext {
   const defaultContext: LegalContext = {
-    jurisdiction: 'Global',
+   , jurisdiction: 'Global',
     practice_area: ['General Legal'],
     case_type: 'Investigation',
     priority_level: 5,
@@ -136,7 +136,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
 }
 function isValidSecurityLevel(level: any): level is SecurityLevel {
   const validLevels: SecurityLevel[] = ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'];
-  return isString(level) && (validLevels as readonly string[]).includes(level as string);
+  return isString(level) && (validLevels as readonly: string[]).includes(level as: string);
 }
 // Export session storage for other endpoints
 export { activeSessions };

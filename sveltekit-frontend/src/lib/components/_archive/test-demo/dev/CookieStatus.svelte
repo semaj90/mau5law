@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { browser } from '$app/environment';
+  // Svelte, 5 runes are auto-imported
+  import { browser } from, '$app/environment';
   let cookiesEnabled = $state<boolean>(false);
   let localStorageEnabled = $state<boolean>(false);
   let sessionStorageEnabled = $state<boolean>(false);
@@ -14,7 +14,7 @@
       document.cookie = 'test=1; SameSite=Strict';
       cookiesEnabled = document.cookie.includes('test=1');
       // remove test cookie
-      document.cookie = 'test=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+      document.cookie = 'test=; expires=Thu, 01 Jan, 1970 00:00:00 GMT; path=/';
     } catch (e) {
       cookiesEnabled = false;
     }
@@ -34,7 +34,7 @@
     } catch (e) {
       sessionStorageEnabled = false;
     }
-    // Check for existing session (safely parse cookie string)
+    // Check for existing session (safely parse cookie: string)
     const sessionCookie = document.cookie
       .split(';')
       .map(c => c.trim())

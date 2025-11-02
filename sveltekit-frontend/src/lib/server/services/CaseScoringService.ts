@@ -1,13 +1,13 @@
 // CaseScoringService.ts - AI-Powered Case Scoring System
 // Implements 0-100 scoring with multi-criteria analysis
-import { eq } from 'drizzle-orm';
+import { eq } from, 'drizzle-orm';
 // Insertable is a Drizzle ORM utility type that ensures type-safe inserts into a table schema.
-import type { InferInsertModel } from 'drizzle-orm';
-import { db } from '../db/index.js';
-import { caseScores } from '../db/schema.js';
-import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from '../../types/scoring.js';
-import { ollamaService } from '$lib/server/ai/ollama-adapter';
-import { cognitiveCache } from '$lib/server/ai/cache';
+import type { InferInsertModel } from, 'drizzle-orm';
+import { db } from, '../db/index.js';
+import { caseScores } from, '../db/schema.js';
+import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from, '../../types/scoring.js';
+import { ollamaService } from, '$lib/server/ai/ollama-adapter';
+import { cognitiveCache } from, '$lib/server/ai/cache';
 // Simple logger implementation
 // Tighten logger arg typing
 const logger = {
@@ -23,7 +23,7 @@ export class CaseScoringService {
   // replaced inline initializers with explicit declarations and a constructor
   private readonly DEFAULT_TEMPERATURE: number;
   private readonly SCORING_MODEL: string;
-  private readonly CRITERIA_WEIGHTS: Record<string, number>;
+  private readonly, CRITERIA_WEIGHTS: Record<string, number>;
   constructor() {
     this.DEFAULT_TEMPERATURE = 0.7;
     this.SCORING_MODEL = 'gemma3-legal';
@@ -54,7 +54,7 @@ export class CaseScoringService {
       const finalScore = this.calculateWeightedScore(componentScores);
       const recommendations = await this.generateRecommendations(request, componentScores, finalScore);
       const scoringResult: CaseScoringResult = {
-        caseId: request.caseId,
+       , caseId: request.caseId,
         score: finalScore,
         confidence: this.calculateConfidence(componentScores),
         criteria: componentScores,
@@ -64,7 +64,7 @@ export class CaseScoringService {
         model: this.SCORING_MODEL,
         version: `1.0` };
       await this.saveScoring(scoringResult, this.DEFAULT_TEMPERATURE);
-      await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for 1 hour
+      await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for, 1 hour
       logger.info('Case scored successfully', {
         caseId: request.caseId,
         score: finalScore,
@@ -72,7 +72,7 @@ export class CaseScoringService {
       });
       return scoringResult;
     } catch (error: any) {
-      // safe logging for unknown
+      // safe logging for: unknown
       logger.error('Failed to score case', error instanceof Error ? error.message : String(error));
       throw error;
     }
@@ -93,14 +93,14 @@ export class CaseScoringService {
     const criteriaProvided =
       request.scoring_criteria != null
         ? request.scoring_criteria
-        : (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria || {};
+        : (request as: unknown as { criteria?: Partial<ScoringCriteria> }).criteria || {};
     const prompt = `Analyze this legal case for prosecution viability: '`
 Case; Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
 Evidence Count: ${evidenceCount}
 Defendants: ${defendants}
 Jurisdiction: ${caseData.jurisdiction || 'N/A` }'`
-Scoring Criteria Provided:
+Scoring Criteria, Provided:
 ${JSON.stringify(criteriaProvided, null, 2)}
 Provide a comprehensive analysis covering:
 1. Strength of evidence and its admissibility
@@ -132,9 +132,9 @@ Be objective, thorough, and consider both strengths and weaknesses.`;`
   private async calculateComponentScores(request: CaseScoringRequest, aiAnalysis: string): Promise<ScoringCriteria> {
     // simplified nullish coalescing for clarity
     const provided =
-      request.scoring_criteria ?? (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria ?? {};
-    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:; Analysis: ${aiAnalysis}`
-Rate the following on a scale of 0 to 1:
+      request.scoring_criteria ?? (request as: unknown as { criteria?: Partial<ScoringCriteria> }).criteria ?? {};
+    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:;, Analysis: ${aiAnalysis}`
+Rate the following on a scale of, 0 to 1:
 1. Evidence Strength (considering admissibility and weight)
 2. Witness Reliability (considering credibility and consistency)
 3. Legal Precedent Support (considering applicable case law)
@@ -215,7 +215,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     let weightedSum = 0;
     let totalWeight = 0;
     // treat criteria as a record of numbers for safe indexing
-    const criteriaMap: Record<string, number> = criteria as unknown as Record<string, number>;
+    const criteriaMap: Record<string, number> = criteria as: unknown as Record<string, number>;
     for (const [key, weight] of Object.entries(this.CRITERIA_WEIGHTS)) {
       const value = criteriaMap[key];
       if (typeof value === 'number' && !Number.isNaN(value)) {
@@ -263,7 +263,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
 ${caseData.description || 'No description provided` }'`
 Provide 2-3 specific strategic recommendations for the prosecution team.`;`
     try {
-      let aiRecommendationsRaw: any = null;
+      let, aiRecommendationsRaw: any = null;
       if (typeof ollama.generateCompletion === 'function') {
         aiRecommendationsRaw = await ollama.generateCompletion(this.SCORING_MODEL, strategyPrompt, {
           temperature: 0.5,
@@ -287,7 +287,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;`
    * Calculate confidence level of the scoring
    */
   private calculateConfidence(scores: ScoringCriteria): number {
-    const values = Object.values(scores).filter(v => typeof v === 'number') as number[];
+    const values = Object.values(scores).filter(v => typeof v === 'number') as: number[];
     if (!values.length) return 0.5;
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
     const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
@@ -373,19 +373,19 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;`
         return {
           caseId: String(r.caseId),
           score: parseFloat(String(r.score || '0')),
-          confidence: r.confidence != null ? (r.confidence as number) : 0.8,
+          confidence: r.confidence != null ? (r.confidence, as: number) : 0.8,
           criteria: (r.criteria as ScoringCriteria) || ({} as ScoringCriteria),
-          explanation: (r.notes as string) || 'Historical score record',
-          recommendations: (r.recommendations as string[]) || [],
-          scoringDate: new Date(r.calculatedAt as string | number),
-          model: (r.model as string) || this.SCORING_MODEL,
-          version: (r.version as string) || '1.0',
+          explanation: (r.notes, as: string) || 'Historical score record',
+          recommendations: (r.recommendations, as: string[]) || [],
+          scoringDate: new Date(r.calculatedAt, as: string | number),
+          model: (r.model, as: string) || this.SCORING_MODEL,
+          version: (r.version, as: string) || '1.0',
           // legacy/additional fields preserved
           breakdown: r.breakdown,
           riskLevel: r.riskLevel,
           timestamp: r.calculatedAt,
           scoring_criteria: r.criteria,
-          ai_analysis: (r.notes as string) || '',
+          ai_analysis: (r.notes, as: string) || '',
           processing_time: r.processing_time || 0
         } as CaseScoringResult;
       });
@@ -399,11 +399,11 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;`
    */
   private determineRiskLevel(
     score: number,
-    thresholds: { low: number; medium: number; high: number }
+    thresholds: { low: number; medium: number;, high: number }
   ): 'LOW' | 'MEDIUM' | 'HIGH' {
-    if (score >= thresholds.high) return 'HIGH';
-    if (score >= thresholds.medium) return 'MEDIUM';
-    return 'LOW';
+    if (score >= thresholds.high) return, 'HIGH';
+    if (score >= thresholds.medium) return, 'MEDIUM';
+    return, 'LOW';
   }
 }
 // Export singleton instance

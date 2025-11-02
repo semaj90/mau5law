@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { Document } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 // Streaming ingestion pipeline with MinIO for legal document processing
 // Supports: PDF → Text extraction → Chunking → Embedding → pgvector storage
-import * as Minio from 'minio';
-import { createHash } from 'crypto';
-import { Readable } from 'stream';
-import { db } from '../db/connection';
+import * as Minio from, 'minio';
+import { createHash } from, 'crypto';
+import { Readable } from, 'stream';
+import { db } from, '../db/connection';
 import {
   legalDocumentChunks,
   embeddingCache512,
@@ -16,9 +16,9 @@ import {
   type NewCaseEmbedding,
   type NewEvidenceEmbedding,
   EMBEDDING_MODELS
-} from '../db/schema-pgvector-512';
-import { eq, and, lt } from 'drizzle-orm';
-import Redis from 'ioredis';
+} from, '../db/schema-pgvector-512';
+import { eq, and, lt } from, 'drizzle-orm';
+import Redis from, 'ioredis';
 
 interface DocumentMetadata { documentId: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
   caseId?: string;
@@ -27,11 +27,11 @@ interface DocumentMetadata { documentId: string;, documentType: 'contract' | 'e
   jurisdiction?: string;
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
 }
-interface ChunkingOptions { maxTokens: number;, overlapTokens: number;
+interface ChunkingOptions {, maxTokens: number;, overlapTokens: number;
   preserveSentences: boolean;
   minChunkSize: number;
 }
-interface ProcessingResult { documentId: string;, totalChunks: number;
+interface ProcessingResult {, documentId: string;, totalChunks: number;
   totalTokens: number;
   embeddingsGenerated: number;
   cacheHits: number;
@@ -44,7 +44,7 @@ export class StreamingIngestionPipeline {
   private redis: Redis;
   private embeddingService: EmbeddingService;
   private textExtractor: TextExtractor;
-  private chunker: DocumentChunker;
+  private, chunker: DocumentChunker;
 
   constructor(minioConfig: Minio.ClientOptions, redisUrl: string, embeddingServiceUrl: string) {
     this.minioClient = new Minio.Client(minioConfig);
@@ -63,7 +63,7 @@ export class StreamingIngestionPipeline {
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
     const result: ProcessingResult = {
-      documentId: metadata.documentId,
+     , documentId: metadata.documentId,
       totalChunks: 0,
       totalTokens: 0,
       embeddingsGenerated: 0,
@@ -73,7 +73,7 @@ export class StreamingIngestionPipeline {
     };
 
     try {
-      // Step 1: Stream document from MinIO
+      // Step, 1: Stream document from MinIO
       const documentStream = await this.streamDocumentFromMinIO(bucketName, objectName);
 
       // Step 2: Extract text
@@ -119,7 +119,7 @@ export class StreamingIngestionPipeline {
   private async streamDocumentFromMinIO(bucketName: string, objectName: string): Promise<Readable> {
     try {
       // minio.getObject returns a stream
-      return (await this.minioClient.getObject(bucketName, objectName)) as unknown as Readable;
+      return (await this.minioClient.getObject(bucketName, objectName)) as: unknown as Readable;
     } catch (error) {
       throw new Error(`Failed to stream from MinIO: ${String(error)}`);
     }
@@ -151,7 +151,7 @@ export class StreamingIngestionPipeline {
         }
 
         const dbChunk: NewLegalDocumentChunk = {
-          documentId: metadata.documentId,
+         , documentId: metadata.documentId,
           caseId: metadata.caseId ?? null,
           evidenceId: metadata.evidenceId ?? null,
           chunkIndex: chunk.index,
@@ -184,7 +184,7 @@ export class StreamingIngestionPipeline {
       // insert to case / evidence specific tables
       if (metadata.caseId) {
         const caseEmbeddingData: NewCaseEmbedding[] = builtChunks.map(c => ({
-          caseId: metadata.caseId!,
+         , caseId: metadata.caseId!,
           docId: c.documentId,
           pageNo: c.pageNumber ?? 0,
           chunkNo: c.chunkIndex,
@@ -203,7 +203,7 @@ export class StreamingIngestionPipeline {
 
       if (metadata.evidenceId) {
         const evidenceEmbeddingData: NewEvidenceEmbedding[] = builtChunks.map(c => ({
-          evidenceId: metadata.evidenceId!,
+         , evidenceId: metadata.evidenceId!,
           docId: c.documentId,
           pageNo: c.pageNumber ?? 0,
           chunkNo: c.chunkIndex,
@@ -225,23 +225,23 @@ export class StreamingIngestionPipeline {
   // Cache operations
   private async getCachedEmbedding(textHash: string): Promise<{ embedding: number[] } | null> {
     try {
-      const rows: any[] = await db
+      const, rows: any[] = await db
         .select()
         .from(embeddingCache512)
         .where(eq(embeddingCache512.textHash, textHash))
         .limit(1);
       if (rows.length > 0) {
-        return { embedding: rows[0].embedding as number[] };
+        return { embedding: rows[0].embedding as: number[] };
       }
-      return null;
+     , return: null;
     } catch (error) {
       console.error('Cache read error:', error);'
-      return null;
+      return: null;
     }
   }
 
   private async cacheEmbedding(
-    textHash: string,
+   , textHash: string,
     embedding: number[],
     model: string,
     tokenCount: number
@@ -254,7 +254,7 @@ export class StreamingIngestionPipeline {
         tokenCount,
         accessCount: 1,
         lastAccessed: new Date()
-      } as any;
+      } as: any;
       await db.insert(embeddingCache512).values(cacheData);
     } catch (error) {
       console.error('Cache write error:', error);'
@@ -268,7 +268,7 @@ export class StreamingIngestionPipeline {
         .set({
           lastAccessed: new Date(),
           accessCount: embeddingCache512.accessCount + 1
-        } as any)
+        }, as: any)
         .where(eq(embeddingCache512.textHash, textHash));
     } catch (error) {
       console.error('Cache access update error: `, error);` }'
@@ -305,7 +305,7 @@ export class StreamingIngestionPipeline {
         .delete(embeddingCache512)
         .where(and(lt(embeddingCache512.lastAccessed, cutoffDate), lt(embeddingCache512.accessCount, 5)));
       // Drizzle delete return shape varies; try to return a numeric count if available
-      // Use any-safe access
+      // Use: any-safe access
       // @ts-ignore
       return deleted?.rowCount ?? deleted?.affectedRows ?? 0;
     } catch (error) {
@@ -326,7 +326,7 @@ interface DocumentChunk { index: number;, text: string;
 }
 
 class EmbeddingService {
-  constructor(private serviceUrl: string) {}
+  constructor(private, serviceUrl: string) {}
   async generateEmbedding(text: string, model: string): Promise<number[]> {
     try {
       const response = await fetch(`${this.serviceUrl}/embed`, {
@@ -338,7 +338,7 @@ class EmbeddingService {
         throw new Error(`Embedding service error: ${response.statusText}`);
       }
       const result = await response.json();
-      return result.embedding as number[];
+      return result.embedding as: number[];
     } catch (error) {
       console.warn(`Embedding service failed, using fallback: ${String(error)}`);
       return this.generateFallbackEmbedding(text);

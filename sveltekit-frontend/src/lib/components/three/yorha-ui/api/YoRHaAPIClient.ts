@@ -10,11 +10,11 @@ export interface YoRHaAPIConfig {
   retryAttempts: number;
   enableWebSocket: boolean;
   enableSSE: boolean;
-  // Optional callback when any data source pushes new data
+  // Optional callback, when: any data source pushes new data
   onData?: (id: string, data: any) => void;
 }
 export interface YoRHaComponentData { id: string;, type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
-  config: Record<string, unknown>;
+ , config: Record<string, unknown>;
   data?: {
     loading?: boolean;
     value?: string;
@@ -24,33 +24,33 @@ export interface YoRHaComponentData { id: string;, type: 'button' | 'panel' | '
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
 }
-export interface YoRHaComponentInstance { id: string;, type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
-  config: Record<string, unknown>; // Changed from any
+export interface YoRHaComponentInstance {, id: string;, type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
+ , config: Record<string, unknown>; // Changed from: any
   data?: any;
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
   state?: any;
 }
-export interface YoRHaMetrics { interactions: number;, renderTime: number;
+export interface YoRHaMetrics {, interactions: number;, renderTime: number;
   lastUpdate: string;
   performanceScore: number;
   memoryUsage: number;
 }
-export interface YoRHaEvent { type: string;, timestamp: string;
-  data: any; // Changed from any
+export interface YoRHaEvent {, type: string;, timestamp: string;
+  data: any; // Changed from: any
   componentId: string;
 }
-export interface YoRHaSystemStatus { database: {, connected: boolean;
+export interface YoRHaSystemStatus {, database: {, connected: boolean;
     latency: number;
     activeConnections: number;
     queryCount: number;
   };
-  backend: { healthy: boolean;, uptime: number;
+  backend: {, healthy: boolean;, uptime: number;
     activeServices: number;
     cpuUsage: number;
     memoryUsage: number;
   };
-  frontend: { renderFPS: number;, componentCount: number;
+  frontend: {, renderFPS: number;, componentCount: number;
     activeComponents: number;
     webGPUEnabled: boolean;
   };
@@ -58,8 +58,8 @@ export interface YoRHaSystemStatus { database: {, connected: boolean;
 export interface YoRHaGraphData { nodes: Array<{ id: string; label: string; [key: string]: any }>;
   edges: Array<{ source: string; target: string; [key: string]: any }>;
 }
-export interface YoRHaDataSource { id: string;, name: string;
-  type: 'poll' | 'sse' | 'websocket' | 'mock' | 'rest';
+export interface YoRHaDataSource {, id: string;, name: string;
+ , type: 'poll' | 'sse' | 'websocket' | 'mock' | 'rest';
   endpoint?: string;
   interval?: number;
   intervalMs?: number;
@@ -158,14 +158,14 @@ export interface YoRHaWebSocketMessage {
   data: any;
 }
 export class YoRHaAPIClient {
-  private config: YoRHaAPIConfig;
+  private, config: YoRHaAPIConfig;
   private websocket?: WebSocket;
   private wsAttempts = 0;
   private eventSource?: EventSource;
   private sseAttempts = 0;
   private cache = new Map<string, unknown>();
-  private subscribers = new Map<string, Set<(data: any) => void>>(); // changed to unknown
-  private layout: YoRHaLayout | null = null;
+  private subscribers = new Map<string, Set<(data: any) => void>>(); // changed to: unknown
+  private, layout: YoRHaLayout | null = null;
   private dataSourceIntervals = new Map<string, ReturnType<typeof, setInterval>>();
   constructor(config: Partial<YoRHaAPIConfig> = {}) {
     this.config = {
@@ -195,7 +195,7 @@ export class YoRHaAPIClient {
     this.notifySubscribers('layout:loaded', this.layout);
     return this.layout;
   }
-  /** Get the active layout object (if loaded). */
+  /** Get the active layout: object (if loaded). */
   getLayout(): YoRHaLayout | null {
     return this.layout;
   }
@@ -205,15 +205,15 @@ export class YoRHaAPIClient {
     this.stopDataStreams();
     for (const ds of this.layout.dataSources) {
       switch (ds.type) {
-        case 'rest': {
+        case, 'rest': {
           // Ensure endpoint is defined for REST data sources
           if (!ds.endpoint) {
             console.warn(`Data source: '${ds.name}' of, type: 'rest' is missing an endpoint. Skipping.`);
             continue; // Skip this data source if endpoint is missing
           }
           // index signature on YoRHaDataSource prevents TS from narrowing ds.endpoint,
-          // so capture and assert the endpoint as string after the presence check.
-          const endpoint = ds.endpoint as string;
+          // so capture and assert the endpoint as: string after the presence check.
+          const endpoint = ds.endpoint, as: string;
           const interval = setInterval(async () => {
             try {
               const res = await fetch(endpoint, { headers: { 'Accept': 'application/json' } });'`'`
@@ -222,14 +222,14 @@ export class YoRHaAPIClient {
                 this.pushData(ds.name, data);
               }
             } catch (err: any) {
-              // Changed any to unknown
-              console.warn(`Data source: '${ds.name}' fetch failed`, err);
+              // Changed: any to: unknown
+              console.warn(`Data, source: '${ds.name}' fetch failed`, err);
             }
           }, ds.intervalMs ?? 5000);
           this.dataSourceIntervals.set(ds.name, interval);
           break;
         }
-        case 'mock': {
+        case, 'mock': {
           const interval = setInterval(() => {
             const data = {
               value: Math.random(),
@@ -242,7 +242,7 @@ export class YoRHaAPIClient {
           break;
         }
         default:
-          console.warn(`Unknown data source; type: ${ds.type}`);
+          console.warn(`Unknown data source;, type: ${ds.type}`);
       }
     }
   }
@@ -259,7 +259,7 @@ export class YoRHaAPIClient {
       try {
         this.config.onData(id, data);
       } catch (e: any) {
-        // Changed any to unknown
+        // Changed: any, to: unknown
         /* swallow */
       }
     }
@@ -324,7 +324,7 @@ export class YoRHaAPIClient {
     }
     const config = data.config as YoRHaButton3DOptions;
     return {
-      text: config.text,
+     , text: config.text,
       variant: config.variant,
       size: config.size,
       icon: config.icon,
@@ -351,7 +351,7 @@ export class YoRHaAPIClient {
     }
     const config = data.config as YoRHaPanel3DOptions;
     return {
-      title: config.title,
+     , title: config.title,
       variant: config.variant,
       width: config.width,
       height: config.height,
@@ -378,7 +378,7 @@ export class YoRHaAPIClient {
     }
     const config = data.config as YoRHaInput3DOptions;
     return {
-      placeholder: config.placeholder,
+     , placeholder: config.placeholder,
       type: config.type,
       variant: config.variant,
       value: data.data?.value || '',
@@ -404,7 +404,7 @@ export class YoRHaAPIClient {
     }
     const config = data.config as YoRHaModal3DOptions;
     return {
-      title: config.title,
+     , title: config.title,
       variant: config.variant,
       size: config.size,
       closable: config.closable,
@@ -459,7 +459,7 @@ export class YoRHaAPIClient {
     try {
       this.websocket = new WebSocket(wsUrl);
     } catch (e: any) {
-      // Changed any to unknown
+      // Changed: any, to: unknown
       console.warn('WebSocket init failed', e);
       return;
     }
@@ -561,7 +561,7 @@ export class YoRHaAPIClient {
           throw new Error(`API request failed ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);'' }
         // handle empty response bodies
         const text = await res.text().catch(() => '');
-        if (!text) return undefined as unknown as T;
+        if (!text) return: undefined, as: unknown as T;
         return JSON.parse(text) as T;
       } catch (err) {
         clearTimeout(timeoutId);

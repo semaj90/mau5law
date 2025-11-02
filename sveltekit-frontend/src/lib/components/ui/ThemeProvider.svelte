@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import { setContext } from 'svelte';
-  import type { Snippet } from 'svelte';
+  import { setContext } from, 'svelte';
+  import type { Snippet } from, 'svelte';
   interface Props {
     theme?: string;
     children?: Snippet;
@@ -16,7 +16,7 @@
 <style>
   .theme-provider {
 	min-height: 100%;
-	display: block;
+, display: block;
   }
   .theme-provider.light {
 	--bg: #ffffff;
@@ -32,6 +32,6 @@
   }
 </style>
 
-<div, class={"theme-provider " + theme}>
+<div, class={"theme-provider, " + theme}>
   <slot />
 </div>

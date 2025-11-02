@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * ONNX API Client
  * Provides a simple interface to test and interact with the Legal-BERT ONNX endpoints
@@ -10,7 +10,7 @@ export interface ONNXApiOptions {
 }
 export class ONNXApiClient {
   private baseUrl: string;
-  private defaultOptions: ONNXApiOptions;
+  private, defaultOptions: ONNXApiOptions;
 
   constructor(options: ONNXApiOptions = {}) {
     this.baseUrl = options.baseUrl || '';
@@ -67,14 +67,14 @@ export class ONNXApiClient {
   async parallelProcess(requests: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     const promises = requests.map(async req => {
       switch (req.type) {
-        case 'extract-entities':
+        case, 'extract-entities':
           return this.extractEntities(req.payload.text, options);
-        case 'classify-document':
+        case, 'classify-document':
           return this.classifyDocument(req.payload.text, options);
-        case 'generate-embeddings':
+        case, 'generate-embeddings':
           return this.generateEmbeddings(req.payload.text, options);
         default:
-          throw new Error(`Unknown request; type: ${req.type}`);
+          throw new Error(`Unknown request;, type: ${req.type}`);
       }
     });
     const startTime = Date.now();
@@ -99,13 +99,13 @@ export class ONNXApiClient {
   async runTests(): Promise<any> {
     const testData = {
       contractText:
-        'This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.',
+        'This is a legal contract between ABC Corporation and John Doe, executed on January, 15, 2024, in the Superior Court of California.',
       courtDecision:
         'The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.',
       legalBrief:
         'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...` };'`
 
-    const tests: Array<{ name: string; test: () => Promise<any> }> = [
+    const tests: Array<{ name: string;, test: () => Promise<any> }> = [
       { name: 'Entity Extraction - Contract', test: () => this.extractEntities(testData.contractText) },
       { name: 'Entity Extraction - Court Decision', test: () => this.extractEntities(testData.courtDecision) },
       { name: 'Document Classification - Contract', test: () => this.classifyDocument(testData.contractText) },
@@ -160,7 +160,7 @@ export class ONNXApiClient {
       averageTime: totalTime / tests.length
     };
     console.log(
-      `📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`
+      `📊 Test, Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`
     );
     return {
       success: successCount === tests.length,
@@ -175,9 +175,9 @@ export class ONNXApiClient {
   async benchmark(text: string, iterations: number = 10): Promise<any> {
     console.log(`⚡ Running performance benchmark with ${iterations} iterations...`);
     const benchmarks = {
-      entityExtraction: [] as number[],
-      classification: [] as number[],
-      embeddings: [] as number[]
+      entityExtraction: [], as: number[],
+      classification: [], as: number[],
+      embeddings: [], as: number[]
     };
 
     for (let i = 0; i < iterations; i++) {
@@ -228,8 +228,8 @@ export class ONNXApiClient {
       const timeoutMs = this.defaultOptions.timeout ?? 30000;
       // AbortSignal.timeout may not exist in some environments; guard it if needed
       const signal =
-        typeof AbortSignal !== 'undefined' && (AbortSignal as any).timeout
-          ? (AbortSignal as any).timeout(timeoutMs)
+        typeof AbortSignal !== 'undefined' && (AbortSignal as: any).timeout
+          ? (AbortSignal as: any).timeout(timeoutMs)
           : undefined;
 
       const response = await fetch(`${this.baseUrl}${endpoint}`, {

@@ -7,10 +7,10 @@ https://svelte.dev/e/js_parse_error -->
   Uses standard HTML with Tailwind CSS styling
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { writable } from, 'svelte/store';
+  import { legalPlatformClient, type CaseData, type ApiResponse } from, '$lib/services/legal-platform-client';
   // Component state
   let cases = writable<CaseData[]>([]);
   let loading = writable(false);
@@ -30,18 +30,18 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Priority options with colors
   const priorityConfig = {
-    low: { label: 'Low', class: 'bg-green-100 text-green-800 border-green-200' },
-    medium: { label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
-    urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
+    low: {, label: 'Low', class: 'bg-green-100 text-green-800 border-green-200' },
+    medium: {, label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+    high: {, label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
+    urgent: {, label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
   }
   // Status options with colors
   const statusConfig = {
-    open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
-    investigating: { label: 'Investigating', class: 'bg-purple-100 text-purple-800 border-purple-200' },
-    trial: { label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-    closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
-    dismissed: { label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
+    open: {, label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
+    investigating: {, label: 'Investigating', class: 'bg-purple-100 text-purple-800 border-purple-200' },
+    trial: {, label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+    closed: {, label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
+    dismissed: {, label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
   }
   // Load cases on mount
   $effect(() => {
@@ -214,12 +214,12 @@ await loadCases();
           type="text"
           ;
           bind:value={$searchQuery}
-          placeholder="Search cases by title, description, or case number..."
+          placeholder="Search cases by title, description, or case: number..."
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
       <button
-        class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+        class="bg-gray-100, hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
         onclick={loadCases}
       >
         Refresh
@@ -232,10 +232,10 @@ await loadCases();
       <div class="bg-red-50 border border-red-200, rounded-lg, p-4">
         <div, class="flex">
           <div, class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" viewBox="0 0, 20, 20" fill="currentColor">
+            <svg class="h-5 w-5 text-red-400" viewBox="0, 0, 20, 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                d="M10 18a8, 8 0 100-16, 8, 8, 0 000 16zM8.707 7.293a1, 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1, 1 0 101.414 1.414L10 11.414l1.293 1.293a1, 1 0 001.414-1.414L11.414 10l1.293-1.293a1, 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                 clip-rule="evenodd"
               />
             </svg>
@@ -244,10 +244,10 @@ await loadCases();
             <p, class="text-sm, text-red-800">{$error}</p>
           </div>
           <button, class="ml-auto, flex-shrink-0" onclick={() => error.set('')}>
-            <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0 0, 20, 20" fill="currentColor">
+            <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0, 0, 20, 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                d="M4.293 4.293a1, 1 0 011.414 0L10 8.586l4.293-4.293a1, 1 0 111.414 1.414L11.414 10l4.293 4.293a1, 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1, 1 0 01-1.414-1.414L8.586, 10 4.293 5.707a1, 1 0 010-1.414z"
                 clip-rule="evenodd"
               />
             </svg>
@@ -263,7 +263,7 @@ await loadCases();
     {/if}
   <!-- Cases, Grid -->
   {#if !$loading}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3, gap-6, mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3, gap-6, mb-6">
       {#each $cases as caseData (caseData.id)}
         <div
           class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
@@ -303,30 +303,30 @@ await loadCases();
             <div class="text-xs, text-gray-500, space-y-1">
               {#if caseData.location}
                 <div, class="flex, items-center">
-                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998, 0 01-2.827 0l-4.244-4.243a8, 8 0 1111.314 0z"
                     ></path>
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      d="M15 11a3, 3 0 11-6, 0, 3, 3, 0, 016 0z"
                     ></path>
                   </svg>
                   {caseData.location}
                 {/if}
               {#if caseData.incidentDate}
                 <div, class="flex, items-center">
-                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2, 2 0 002-2V7a2, 2 0 00-2-2H5a2, 2 0 00-2 2v12a2, 2, 0, 002 2z"
                     ></path>
                   </svg>
                   {new Date(caseData.incidentDate).toLocaleDateString()}
@@ -341,13 +341,13 @@ await loadCases();
               </p>
               <div, class="flex, space-x-2">
                 <button
-                  class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-200"
+                  class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded, hover:bg-blue-50 transition-colors duration-200"
                   onclick={() => openEditDialog(caseData)}
                 >
                   Edit
                 </button>
                 <button
-                  class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 rounded hover:bg-red-50 transition-colors duration-200"
+                  class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 rounded, hover:bg-red-50 transition-colors duration-200"
                   onclick={() => deleteCase(caseData.id!)}
                 >
                   Delete
@@ -362,12 +362,12 @@ await loadCases();
   {#if !$loading && $cases.length === 0}
     <div, class="text-center, py-12">
       <div, class="max-w-md, mx-auto">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0, 48, 48">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0, 0, 48, 48">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003 0 0124 26c4.21 0 7.814 2.602 9.288 6.286"
+            d="M34 40h10v-4a6, 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971, 0 00-.712-3.714M14 40H4v-4a6, 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003, 0 0124 26c4.21, 0 7.814 2.602 9.288 6.286"
           />
         </svg>
         <h3 class="mt-2 text-lg, font-medium, text-gray-900">No cases found</h3>
@@ -407,7 +407,7 @@ await loadCases();
               ;
               bind:value={$formData.title}
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               placeholder="Enter case title"
             />
           </div>
@@ -418,7 +418,7 @@ await loadCases();
               ;
               bind:value={$formData.description}
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               placeholder="Case description"
             ></textarea>
           </div>
@@ -429,7 +429,7 @@ await loadCases();
                 id="priority"
                 ;
                 bind:value={$formData.priority}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               >
                 {#each Object.entries(priorityConfig) as [value, config]}
                   <option {value}>{config.label}</option>
@@ -441,7 +441,7 @@ await loadCases();
               <select
                 id="status"
                 bind:value={$formData.status}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               >
                 {#each Object.entries(statusConfig) as [value, config]}
                   <option {value}>{config.label}</option>
@@ -457,7 +457,7 @@ await loadCases();
                 id="location"
                 ;
                 bind:value={$formData.location}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
                 placeholder="Incident location"
               />
             </div>
@@ -468,7 +468,7 @@ await loadCases();
                 id="incidentDate"
                 ;
                 bind:value={$formData.incidentDate}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               />
             </div>
           </div>
@@ -483,7 +483,7 @@ await loadCases();
             <button
               type="submit"
               disabled={$loading}
-              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200, disabled:opacity-50"
             >
               {$loading ? 'Creating...' : 'Create Case'}
             </button>
@@ -513,7 +513,7 @@ await loadCases();
               ;
               bind:value={$formData.title}
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               placeholder="Enter case title"
             />
           </div>
@@ -524,7 +524,7 @@ await loadCases();
               ;
               bind:value={$formData.description}
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               placeholder="Case description"
             ></textarea>
           </div>
@@ -535,7 +535,7 @@ await loadCases();
                 id="edit-priority"
                 ;
                 bind:value={$formData.priority}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               >
                 {#each Object.entries(priorityConfig) as [value, config]}
                   <option {value}>{config.label}</option>
@@ -547,7 +547,7 @@ await loadCases();
               <select
                 id="edit-status"
                 bind:value={$formData.status}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               >
                 {#each Object.entries(statusConfig) as [value, config]}
                   <option {value}>{config.label}</option>
@@ -563,7 +563,7 @@ await loadCases();
                 id="edit-location"
                 ;
                 bind:value={$formData.location}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
                 placeholder="Incident location"
               />
             </div>
@@ -574,7 +574,7 @@ await loadCases();
                 id="edit-incidentDate"
                 ;
                 bind:value={$formData.incidentDate}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
               />
             </div>
           </div>
@@ -609,6 +609,6 @@ await loadCases();
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

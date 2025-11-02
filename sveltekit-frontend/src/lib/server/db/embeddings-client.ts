@@ -1,10 +1,10 @@
 // Enhanced database client for embeddings with pgvector
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { Pool } from 'pg';
-import { embeddings, legalDocumentEmbeddings, searchQueries } from './schema-embeddings';
-import { sql } from 'drizzle-orm';
-import { eq } from '$lib/server/db/utils';
-import type { NewEmbedding, Embedding, NewSearchQuery } from './schema-embeddings';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { Pool } from, 'pg';
+import { embeddings, legalDocumentEmbeddings, searchQueries } from, './schema-embeddings';
+import { sql } from, 'drizzle-orm';
+import { eq } from, '$lib/server/db/utils';
+import type { NewEmbedding, Embedding, NewSearchQuery } from, './schema-embeddings';
 // Database connection pool
 const pool = new Pool({
   host: 'localhost',
@@ -12,8 +12,8 @@ const pool = new Pool({
   user: 'legal_admin',
   password: '123456',
   database: 'legal_ai_db',
-  max: 10, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000,
+  max: 10, // Maximum: number of clients in the pool
+ , idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000
 });
 // Initialize drizzle db using postgres-js client
@@ -35,7 +35,7 @@ export class EmbeddingsService {
     limit: number = 5,
     threshold: number = 0.7
   ): Promise<Array<Embedding & { similarity: number }>> {
-    // Convert number array to proper format for pgvector
+    //, Convert: number array to proper format for pgvector
     const embeddingVector = `[${queryEmbedding.join(',')}]`;
     const results = await db.execute(
       sql`
@@ -49,7 +49,7 @@ export class EmbeddingsService {
           updated_at,
           1 - (embedding <=> ${embeddingVector}::vector) as similarity
         FROM ${embeddings}
-        WHERE 1 - (embedding <=> ${embeddingVector}::vector) > ${threshold}
+        WHERE, 1 - (embedding <=> ${embeddingVector}::vector) > ${threshold}
         ORDER BY embedding <=> ${embeddingVector}::vector ASC
         LIMIT ${limit}
       `

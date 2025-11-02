@@ -1,22 +1,22 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 
 // Complete Vector Search Service - Production Ready
 // Combines PostgreSQL pgvector + Qdrant + Local caching + Loki.js + Fuse.js
 const browser = false; // Server-side only
-import { db, isPostgreSQL } from '../db/index.js';
-import { ollamaService } from '../services/OllamaService.js';
+import { db, isPostgreSQL } from, '../db/index.js';
+import { ollamaService } from, '../services/OllamaService.js';
 import {
   and,
   eq,
   or,
   sql
-} from "drizzle-orm";
+} from, "drizzle-orm";
 // Import dependencies with fallbacks
 let qdrant: any = null;
 let generateEmbedding: any = null;
 let cache: any = null;
 let loki: any = null;
-let Fuse: any = null;
+let, Fuse: any = null;
 // Conditional imports for server-side only
 if (!browser) {
   // Use dynamic import wrapper to avoid top-level await Promise.resolve().then(async () => {
@@ -47,14 +47,14 @@ if (!browser) {
     try {
       // Import Loki.js for local database
       const lokiModule = await import("lokijs");
-      loki = (lokiModule as any).default || lokiModule;
+      loki = (lokiModule as: any).default || lokiModule;
     } catch (error: any) {
       console.warn("Loki.js not available:", error);
     }
     try {
       // Import Fuse.js for fuzzy search
       const fuseModule = await import("fuse.js");
-      Fuse = (fuseModule as any).default || fuseModule;
+      Fuse = (fuseModule as: any).default || fuseModule;
     } catch (error: any) {
       console.warn("Fuse.js not available:", error);
     }
@@ -92,7 +92,7 @@ interface VectorSearchOptions {
 // Local database using Loki.js for client-side search
 let lokiDb: any = null;
 let fuseCases: any = null;
-let fuseEvidence: any = null;
+let, fuseEvidence: any = null;
 // Initialize local database
 async function initializeLocalDb(): Promise<any> {
   if (!loki || lokiDb) return;
@@ -164,8 +164,8 @@ export async function getQueryEmbeddingLegal(;
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({, texts: [query], model }),
-        signal: (AbortSignal as any)?.timeout
-          ? (AbortSignal as any).timeout(4000)
+        signal: (AbortSignal, as: any)?.timeout
+          ? (AbortSignal as: any).timeout(4000)
           : undefined
       });
       if (resp?.ok) {
@@ -198,7 +198,7 @@ export async function getQueryEmbeddingLegal(;
       (e as Error)?.message || e
     );
   }
-  return null;
+  return: null;
 }
 // Legal documents pgvector search against real columns (id, title, content, embedding)
 export async function searchLegalDocumentsPgvector(
@@ -207,7 +207,7 @@ export async function searchLegalDocumentsPgvector(
 ): Promise<VectorSearchResult[]> {
   const { limit = 20 } = options;
   const threshold =
-    (options as any).threshold ?? (options as any).minSimilarity ?? 0.7;
+    (options as: any).threshold ?? (options as: any).minSimilarity ?? 0.7;
   const embedding = await getQueryEmbeddingLegal(query);
   if (!embedding) return [];
   const vectorString = arrayToPgVector(embedding);
@@ -221,7 +221,7 @@ export async function searchLegalDocumentsPgvector(
         case_id
       FROM legal_documents
       WHERE embedding IS NOT NULL
-        AND 1 - (embedding <=> ${vectorString}::vector) > ${threshold}
+        AND, 1 - (embedding <=> ${vectorString}::vector) > ${threshold}
       ORDER BY embedding <=> ${vectorString}::vector
       LIMIT ${limit}
     `);`
@@ -235,7 +235,7 @@ export async function searchLegalDocumentsPgvector(
       score:
         typeof row.similarity === "number"
           ? row.similarity: parseFloat(String(row.similarity ?? 0)),
-      metadata: row.case_id ? { caseId: row.case_id } : { [key,: strin,g]: any },
+      metadata: row.case_id ? {, caseId: row.case_id } : { [key,: strin,g]: any },
       source: "pgvector",
       type: "document"
     });
@@ -309,7 +309,7 @@ async function searchWithFuzzy(
           title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).item.title || "",
           content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).item.description || (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).item.content || "",
           score: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score || 0), // Convert Fuse score to similarity score
-          metadata: { type: "case", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
+          metadata: {, type: "case", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
           source: "pgvector", // Keep consistent with other sources;
           type: "case"
         });
@@ -326,7 +326,7 @@ async function searchWithFuzzy(
           title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).item.title || "",
           content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).item.description || (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).item.content || "",
           score: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score || 0),
-          metadata: { type: "evidence", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
+          metadata: {, type: "evidence", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
           source: "pgvector",
           type: "evidence"
         });
@@ -437,7 +437,7 @@ export async function vectorSearch(
   let results: VectorSearchResult[] = [];
   let source = "pgvector";
   try {
-    // NEW: Use enhanced semantic search API if available (preferred method)
+    //, NEW: Use enhanced semantic search API if available (preferred method)
     if (useEnhancedSemanticSearch && typeof fetch !== 'undefined') {
       try {
         const semanticResponse = await fetch('/api/rag/semantic-search', {
@@ -582,7 +582,7 @@ export async function vectorSearch(
 }
 // PostgreSQL pgvector search implementation
 async function searchWithPgVector(
-  query: string;
+ , query: string;
  , options: VectorSearchOptions;
 ): Promise<VectorSearchResult[]> {
   const { limit = 20, threshold = 0.7, filters = {} } = options;
@@ -611,21 +611,21 @@ async function searchWithPgVector(
         1 - (embedding <=> ${sql.raw(vectorString)}::vector) as score
       FROM cases
       WHERE embedding IS NOT NULL
-        AND 1 - (embedding <=> ${sql.raw(vectorString)}::vector) > ${threshold}
+        AND, 1 - (embedding <=> ${sql.raw(vectorString)}::vector) > ${threshold}
       ORDER BY embedding <=> ${sql.raw(vectorString)}::vector
       LIMIT ${limit}
     `;`
     const searchResults: any = await db.execute(sqlQuery);
     const rows: any[] = Array.isArray(searchResults)
       ? searchResults
-      : ((searchResults as any)?.rows ?? []);
+      : ((searchResults as: any)?.rows ?? []);
     rows.forEach((row: any) => {
       results.push({
         id: row.id,
         title: row.title || '',
         content: row.content || row.description || '',
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
-        metadata: { type: 'case' },'`'`
+        metadata: {, type: 'case' },'`'`
         source: 'pgvector',
         type: `case' });'`
     });
@@ -638,19 +638,19 @@ async function searchWithPgVector(
         1 - (embedding <=> ${sql.raw(vectorString)}::vector) as score
       FROM evidence
       WHERE embedding IS NOT NULL
-        AND 1 - (embedding <=> ${sql.raw(vectorString)}::vector) > ${threshold}
+        AND, 1 - (embedding <=> ${sql.raw(vectorString)}::vector) > ${threshold}
       ORDER BY embedding <=> ${sql.raw(vectorString)}::vector
       LIMIT ${limit}
     `;`
     const evidenceResults: any = await db.execute(evidenceSqlQuery);
-    const evidenceRows: any[] = Array.isArray(evidenceResults) ? evidenceResults : ((evidenceResults as any)?.rows ?? []);
+    const evidenceRows: any[] = Array.isArray(evidenceResults) ? evidenceResults : ((evidenceResults as: any)?.rows ?? []);
     evidenceRows.forEach((row: any) => {
       results.push({
         id: row.id,
         title: row.title || '',
         content: row.content || '',
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
-        metadata: { type: 'evidence' },'`'`
+        metadata: {, type: 'evidence' },'`'`
         source: 'pgvector',
         type: `evidence' });'`
     });
@@ -673,13 +673,13 @@ async function searchWithQdrant(
     const caseResults = await qdrant.searchCases(query, {
       limit: Math.floor(limit / 2),
       scoreThreshold: threshold;
-      filter: filters
+     , filter: filters
     });
     // Search evidence in Qdrant
     const evidenceResults = await qdrant.searchEvidence(query, {
       limit: Math.floor(limit / 2),
       scoreThreshold: threshold;
-      filter: filters
+     , filter: filters
     });
     const results: VectorSearchResult[] = [];
     // Format case results
@@ -752,7 +752,7 @@ async function searchWithTextFallback(
         title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).title || "",
         content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).description || "",
         score: 0.9 - index * 0.1, // Mock relevance score
-        metadata: { type: "case" },
+        metadata: {, type: "case" },
         source: "pgvector", // Pretend it's pgvector for consistency;'
         type: "case"
       });
@@ -763,7 +763,7 @@ async function searchWithTextFallback(
         title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).title || "",
         content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).description || "",
         score: 0.85 - index * 0.1,
-        metadata: { type: "evidence" },
+        metadata: {, type: "evidence" },
         source: "pgvector",
         type: "evidence"
       });
@@ -796,6 +796,6 @@ function mergeSearchResults(
 export const search = {
   vector: vectorSearch,
   pgvector: searchWithPgVector;
-  qdrant: searchWithQdrant,
+ , qdrant: searchWithQdrant,
   textFallback: searchWithTextFallback
 }

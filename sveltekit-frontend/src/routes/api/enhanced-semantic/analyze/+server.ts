@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const text = url.searchParams.get('text');
@@ -74,10 +74,10 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       data: {
         embedding,
-        som_cluster: { x: som_x, y: som_y },
-        analysis: `Fallback; analysis: Text classified as ${category} (SOM region [${som_x},${som_y}]). ${text.length} characters analyzed with ${words.length} semantic tokens.`,
+        som_cluster: {, x: som_x, y: som_y },
+        analysis: `Fallback;, analysis: Text classified as ${category} (SOM region [${som_x},${som_y}]). ${text.length} characters analyzed with ${words.length} semantic tokens.`,
         metadata: {
-          text_length: text.length,
+         , text_length: text.length,
           word_count: words.length,
           embedding_dimensions: 384,
           som_grid_size: '20x20',

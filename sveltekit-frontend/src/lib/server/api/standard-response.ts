@@ -2,8 +2,8 @@
  * Standardized API Response Utilities
  * Provides consistent response formats across all API routes
  */
-import { json } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import type { RequestEvent } from, '@sveltejs/kit';
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -12,7 +12,7 @@ export interface ApiResponse<T = unknown> {
   requestId?: string;
   timestamp: string;
 }
-export interface ApiError { code: string;, message: string;
+export interface ApiError {, code: string;, message: string;
   details?: any;
 }
 /**
@@ -20,7 +20,7 @@ export interface ApiError { code: string;, message: string;
  */
 export function apiSuccess<T>(data: T, message?: string, requestId?: string) {
   const response: ApiResponse<T> = {
-    success: true,
+   , success: true,
     data,
     timestamp: new Date().toISOString()
   };
@@ -33,7 +33,7 @@ export function apiSuccess<T>(data: T, message?: string, requestId?: string) {
  */
 export function apiError(message: string, status: number = 400, code?: string, details?: any, requestId?: string) {
   const response: ApiResponse = {
-    success: false,
+   , success: false,
     error: message,
     timestamp: new Date().toISOString()
   };
@@ -48,7 +48,7 @@ export function apiError(message: string, status: number = 400, code?: string, d
  */
 export function validateRequest(body: any, requiredFields: string[]): string | null {
   if (typeof body !== 'object' || body === null) {
-    return 'Invalid request body';
+    return, 'Invalid request body';
   }
   const bodyAsRecord = body as Record<string, unknown>; // Cast for property access after type guard
   for (const field of requiredFields) {
@@ -56,7 +56,7 @@ export function validateRequest(body: any, requiredFields: string[]): string | n
       return `Missing required field: ${field}`;
     }
   }
-  return null;
+ , return: null;
 }
 /**
  * Get request ID from locals (set by hooks.server.ts)
@@ -87,10 +87,10 @@ export function withErrorHandling<T, extends, RequestEvent>(handler: (_event: T)
       return await handler(_event);
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      // Safely extract: 'code' if it exists and is a string
+      const errorMessage = error instanceof Error ? error.message : 'An: unknown error occurred';
+      // Safely extract: 'code' if it exists and is a: string
       const errorCode =
-        error instanceof Object && 'code' in error && typeof (error as { code: any }).code === 'string'
+        error instanceof Object && 'code' in error && typeof (error as {, code: any }).code === 'string'
           ? (error as { code: string }).code
           : 'INTERNAL_ERROR';
       // Only include stack in development mode for Error instances

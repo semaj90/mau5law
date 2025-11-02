@@ -4,14 +4,14 @@
  * Get/update conversation state with HMM predictions
  */
 
-import { json } from '@sveltejs/kit';
-import { contextualUnderstanding } from '$lib/server/ai/contextual-understanding-service';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { contextualUnderstanding } from, '$lib/server/ai/contextual-understanding-service';
+import type { RequestHandler } from, './$types';
 
 /**
  * GET: Retrieve contextual state
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     const userId = url.searchParams.get('userId');
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /**
  * POST: Update contextual state
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const {
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * DELETE: Clear contextual state
  */
-export const DELETE: RequestHandler = async ({ url }) => {
+export const, DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
 

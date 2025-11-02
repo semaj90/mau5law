@@ -4,7 +4,7 @@
  * Demonstrates the enhanced CUDA cache optimizer with autoencoder compression
  * and Self-Organizing Map clustering for legal AI intent recognition.
  */
-import { cudaCacheOptimizer } from '../ai/cuda-cache-memory-optimizer';
+import { cudaCacheOptimizer } from, '../ai/cuda-cache-memory-optimizer';
 // Demo queries representing different legal AI use cases
 const testQueries = [
   'Review this contract for potential liability issues',

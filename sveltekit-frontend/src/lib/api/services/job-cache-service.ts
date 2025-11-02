@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Specialized Job Cache Service
  * High-level caching functions for job management, queue operations, and progress tracking
  * Built on top of the unified cache service for consistency
  */
-import { cache } from '$lib/server/cache/redis';
+import { cache } from, '$lib/server/cache/redis';
 export interface JobStatus { id: string;, uploadId: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
-  progress: { stage: string;, percentage: number;
+  progress: {, stage: string;, percentage: number;
   message: string;
   }
   fileName: string;
@@ -34,9 +34,9 @@ export interface JobStatus { id: string;, uploadId: string;
   metadata?: { [key: string]: any };
 }
 
-export interface QueueInfo { size: number;, processing: number;
+export interface QueueInfo {, size: number;, processing: number;
   completed: number;
-  failed: number;
+ , failed: number;
   lastProcessed?: string;
 }
 // TTL constants for different job data types
@@ -100,7 +100,7 @@ export class JobCacheService {
   async addUserJob(userId: string, jobId: string): Promise<void> {
     const jobs = await this.getUserJobs(userId) || [];
     jobs.unshift(jobId); // Add to front
-    // Keep only last 100 jobs per user
+    // Keep only last, 100 jobs per user
     const trimmed = jobs.slice(0, 100);
     await cache.set(`user:${userId}:jobs`, trimmed, JOB_STATUS_TTL);
   }

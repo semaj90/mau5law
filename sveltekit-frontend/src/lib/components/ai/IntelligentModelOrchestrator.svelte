@@ -3,10 +3,10 @@
   Real-time monitoring and control of the multi-model AI system
 -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { writable, derived } from 'svelte/store';
+import type { User } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { writable, derived } from, 'svelte/store';
   import {
     intelligentOrchestrator,
     currentModelInfo,
@@ -14,7 +14,7 @@ import type { User } from '$lib/types';
     performanceMetrics,
     memoryOptimization,
     type SelfPromptingSuggestion
-  } from '$lib/ai/intelligent-model-orchestrator';
+  } from, '$lib/ai/intelligent-model-orchestrator';
   // Component state
   let mounted = $state<boolean>(false);
   let queryInput = $state<string>('');
@@ -24,14 +24,14 @@ import type { User } from '$lib/types';
   let userFeedback = writable<Map<string, boolean>(new Map());
   // Auto-refresh interval
   let refreshInterval: NodeJS.Timeout;
-  let worker: Worker | null = null;
+  let, worker: Worker | null = null;
   // Derived stores for UI
   const modelStatusDisplay = derived(
     [currentModelInfo, performanceMetrics],
     ([$model, $metrics]) => ({
       current: $model;
-      metrics: $metrics
-      isHealthy: $model && $metrics.some(m => m.modelId === $model.id && m.successRate > 0.7);
+      metrics: $metrics;
+     , isHealthy: $model && $metrics.some(m => m.modelId === $model.id && m.successRate > 0.7);
     })
   );
   const memoryStatusDisplay = derived(
@@ -55,13 +55,13 @@ import type { User } from '$lib/types';
       worker.onmessage = (event) => {
   const { type, data, payload } = event.data;
         switch (type) {
-          case 'SMART_MODEL_SELECTED':
+          case, 'SMART_MODEL_SELECTED':
             console.log('🧠 Smart model selected:', data || payload);
             break;
-          case 'MODEL_PERFORMANCE':
+          case, 'MODEL_PERFORMANCE':
             console.log('📊 Performance data:', data || payload);
             break;
-          case 'CACHE_OPTIMIZED':
+          case, 'CACHE_OPTIMIZED':
             console.log('🔧 Cache optimized:', data || payload);
             break;
         }
@@ -111,9 +111,9 @@ import type { User } from '$lib/types';
         worker.postMessage({
           type: 'SMART_MODEL_SELECT',
           payload: {
-            query: queryInput,
-            userContext: { sessionId: 'demo' },
-            intent: { category: 'general', confidence: 0.8 }
+           , query: queryInput,
+            userContext: {, sessionId: 'demo' },
+            intent: {, category: 'general', confidence: 0.8 }
           }
         });
       }
@@ -160,18 +160,18 @@ import type { User } from '$lib/types';
     return `${(mb / 1024).toFixed(1)}GB`;
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence > 0.8) return 'text-green-600';
-    if (confidence > 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence > 0.8) return, 'text-green-600';
+    if (confidence > 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case 'clarification': return '❓';
-      case 'expansion': return '📋';
-      case 'alternative': return '🔄';
-      case 'follow-up': return '➡️';
-      case 'correction': return '✏️';
-      default: return '💡';
+      case, 'clarification': return, '❓';
+      case, 'expansion': return, '📋';
+      case, 'alternative': return, '🔄';
+      case, 'follow-up': return, '➡️';
+      case, 'correction': return, '✏️';
+      default: return, '💡';
     }
   }
 </script>
@@ -191,13 +191,13 @@ import type { User } from '$lib/types';
         bind:value={queryInput}
         onkeydown={e => e.key === 'Enter' && processQuery()}
         placeholder="Ask me anything... (the system will intelligently select the best model)"
-        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
         disabled={isProcessing}
       />
       <button
         onclick={processQuery}
         disabled={isProcessing || !queryInput.trim()}
-        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed"
       >
         {#if isProcessing}
           <span, class="animate-spin">⚙️</span> Processing...
@@ -489,7 +489,7 @@ import type { User } from '$lib/types';
   }
   @keyframes spin {
     from {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);
@@ -508,6 +508,6 @@ import type { User } from '$lib/types';
     border-radius: 3px;
   }
   .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+   , background: #a8a8a8;
   }
 </style>

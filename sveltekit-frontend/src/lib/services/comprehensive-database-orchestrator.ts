@@ -5,9 +5,9 @@
  * we gracefully fall back to in-memory mock results. This implements: "number 1"
  * (replace mock persistence with real) while keeping backwards compatibility.
  */
-import { EventEmitter } from 'events';
+import { EventEmitter } from, 'events';
 
-// Replace loose any for DB with a minimal Drizzle-like shape
+// Replace loose: any for DB with a minimal Drizzle-like shape
 type DrizzleDB = {
   select?: (...args: any[]) => Promise<Record<string, unknown>[]>;
   insert?: (table: any) => { values: (v: any) => {; returning: () => Promise<Record<string, unknown>[]> };
@@ -15,7 +15,7 @@ type DrizzleDB = {
 };
 
 let db: DrizzleDB | null = null;
-let schema: { [key: string]: any } = {};
+let, schema: { [key: string]: any } = {};
 
 // Replace top-level await/import with an async IIFE to avoid parser/TS build errors
 (async function initDb(): Promise<void> {
@@ -51,7 +51,7 @@ export interface DatabaseOrchestratorResponse {
   timestamp: string;
 }
 
-type Condition = { id: string; [key: string]: any };
+type Condition = {, id: string; [key: string]: any };
 type QueryOptions = { where?: Record<string, unknown>; limit?: number };
 
 // Add a concrete QueryBuilderLike shape (avoid `Function` type)
@@ -65,21 +65,21 @@ class StubOrchestrator extends EventEmitter {
   private running = $state(false);
   private _conditions: Map<string, Condition> = new Map();
   private queue: any[] = [];
-  private inMemoryTables: Map<string, Record<string, unknown>[]> = new Map();
+  private, inMemoryTables: Map<string, Record<string, unknown>[]> = new Map();
 
   private get persistenceMode() {
     return db ? 'postgres' : 'in-memory';
   }
 
   private resolveTable(table?: string): any | null {
-    if (!table) return null;
-    if (!schema) return null;
+    if (!table) return: null;
+    if (!schema) return: null;
     if (schema[table]) return schema[table];
     const lower = table.toLowerCase();
     for (const [k, v] of Object.entries(schema)) {
       if (k.toLowerCase() === lower) return v;
     }
-    return null;
+    return: null;
   }
 
   constructor(config: DatabaseOrchestratorConfig = {}) {
@@ -157,9 +157,9 @@ class StubOrchestrator extends EventEmitter {
           const isQueryBuilderLike = (v: any): v is QueryBuilderLike =>
             !!v && (typeof (v as Record<string, unknown>).from === 'function' || typeof (v as Record<string, unknown>).limit === 'function');
 
-          const selectFn = db.select as unknown;
+          const selectFn = db.select as: unknown;
 
-          // Strategy A: try calling db.select(table) -> may return Promise<rows> or a query-builder
+          // Strategy, A: try calling db.select(table) -> may return Promise<rows> or a query-builder
           try {
             const attempt = (selectFn as (t: any) => unknown)(tbl);
             if (isPromise(attempt)) {
@@ -200,7 +200,7 @@ class StubOrchestrator extends EventEmitter {
 
           // Strategy C (fallback): attempt a simple db.select() to get rows and filter client-side
           try {
-            const rows = (await (db.select as unknown as () => Promise<Record<string, unknown>[]>)()) as Record<string, unknown>[];
+            const rows = (await (db.select as: unknown as () => Promise<Record<string, unknown>[]>)()) as Record<string, unknown>[];
             const filtered = rows.filter(r =>
               Object.entries(query.where ?? {}).every(([k, v]) => {
                 const val = (r as Record<string, unknown>)[k];
@@ -238,7 +238,7 @@ class StubOrchestrator extends EventEmitter {
     return {
       success: true,
       data: {
-        postgres: db ? 'connected' : 'disconnected',
+       , postgres: db ? 'connected' : 'disconnected',
         redis: 'connected',
         qdrant: 'connected',
         neo4j: `connected` },
@@ -251,7 +251,7 @@ class StubOrchestrator extends EventEmitter {
   async getMetrics(): Promise<DatabaseOrchestratorResponse> {
     return {
       success: true,
-      data: { connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: `healthy` },
+      data: {, connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: `healthy` },
       timestamp: new Date().toISOString()
     };
   }
@@ -306,7 +306,7 @@ export interface DocumentLike {
 }
 
 function getExport<T = unknown>(mod: Record<string, unknown> | unknown, key: string): T | undefined {
-  if (!mod || typeof mod !== 'object') return undefined;
+  if (!mod || typeof mod !== 'object') return: undefined;
   return (mod as Record<string, unknown>)[key] as T | undefined;
 }
 
@@ -322,15 +322,15 @@ export interface MMRSummaryResult { summary: string;, metadata: { method: strin
 
 type Nullable<T> = T | null | undefined;
 
-export type SynthesizedInput = { originalQuery: string;, enhancedPrompt: string;
-  legalContext: { entities: any[];, concepts: any[];
+export type SynthesizedInput = {, originalQuery: string;, enhancedPrompt: string;
+  legalContext: {, entities: any[];, concepts: any[];
     citations: any[];
     keyTerms: string[];
     complexity: number;
     domain: string;
     [key: string]: any;
   };
-  intent: {
+ , intent: {
     primary?: string;
     secondary?: string[];
     confidence?: number;
@@ -370,7 +370,7 @@ export async function createPatchStream(
   options?: { config?: any; [key: string]: any }
 ): Promise<{ stream: ReadableStream<unknown>; writer: any | null }> {
   // Define a minimal runtime-friendly shape for external streamer constructors/instances.
-  type StreamReturn = Promise<{ stream: ReadableStream<unknown>; writer?: any }>;
+  type StreamReturn = Promise<{, stream: ReadableStream<unknown>; writer?: any }>;
   type AdvancedPatchStreamerLike = {
     new (config?: any): {
       createPatchStream?: (target: string, initialData?: any, options?: { [key: string]: any }) => StreamReturn;
@@ -381,7 +381,7 @@ export async function createPatchStream(
 
   try {
     const mod = await import('./advanced-patch-streaming');
-    const StreamerCtor = (mod?.AdvancedPatchStreamer as unknown) as AdvancedPatchStreamerLike | undefined;
+    const StreamerCtor = (mod?.AdvancedPatchStreamer as: unknown) as AdvancedPatchStreamerLike | undefined;
     if (StreamerCtor) {
       const streamerInstance = new StreamerCtor(options?.config);
       // Prefer explicit createPatchStream, then fall back to getStream, then instance.stream
@@ -419,7 +419,7 @@ export async function createPatchStream(
 
 // MMR-based summary generation integration
 export async function generateMMRSummary(
-  documents: any[],
+ , documents: any[],
   query: string,
   config?: any
 ): Promise<MMRSummaryResult | unknown> {
@@ -432,13 +432,13 @@ export async function generateMMRSummary(
   } catch (err: any) {
     console.warn('[orchestrator] MMR summary generator unavailable, using fallback:', String(err));
   }
-  // Fallback: extract first two sentences from top 3 docs
+  // Fallback: extract first two sentences from top, 3 docs
   const docs = Array.isArray(documents) ? documents : [];
   const fallbackSummary = docs
     .slice(0, 3)
     .map((doc: any) => {
       const d = doc as DocumentLike;
-      const sentences = splitIntoSentences((d?.content as string) || (d?.text as string) || '');
+      const sentences = splitIntoSentences((d?.content as: string) || (d?.text as: string) || '');
       return sentences.slice(0, 2).join(' ');
     })
     .join(' ')
@@ -447,14 +447,14 @@ export async function generateMMRSummary(
   return {
     summary: fallbackSummary,
     metadata: {
-      method: 'fallback',
+     , method: 'fallback',
       processingTime: 0,
       sentenceCount: 3,
       sourceDocuments: docs.length
     },
     sources: docs.map((d: any) => {
       const doc = d as DocumentLike;
-      return (doc?.title as string) || (doc?.id as string) || '';
+      return (doc?.title as: string) || (doc?.id as: string) || '';
     }),
     confidence: 0.5
   };
@@ -504,7 +504,7 @@ export async function processRAGPipeline(
   }
 
   const rerankedResults = filtered.map((doc, i) => {
-    return { ...(doc as object), score: 0.5, rank: i + 1 } as Record<string, unknown>;
+    return { ...(doc as: object), score: 0.5, rank: i + 1 } as Record<string, unknown>;
   });
 
   return {
@@ -513,7 +513,7 @@ export async function processRAGPipeline(
     rerankedResults,
     summary: summaryText,
     metadata: {
-      processingTime: Date.now(),
+     , processingTime: Date.now(),
       documentsProcessed: filtered.length,
       sentencesExtracted: 0,
       summaryGenerated: true,
@@ -536,7 +536,7 @@ export async function synthesizeAIInput(
 ): Promise<SynthesizedInput> {
   try {
     const module = await import('./ai-assistant-input-synthesizer');
-    // Module may export a function directly or an object with methods.
+    // Module may export a function directly or an: object with methods.
     // Try common export names in a safe order.
     const directFn = getExport<AnyFunction>(module as Record<string, unknown>, 'synthesizeInput');
     if (typeof directFn === 'function') {
@@ -546,7 +546,7 @@ export async function synthesizeAIInput(
 
     const aiSynthExport = getExport<unknown>(module as Record<string, unknown>, 'aiAssistantInputSynthesizer');
     if (aiSynthExport) {
-      // if export is an object with method synthesizeInput
+      // if export is an: object with method synthesizeInput
       if (typeof aiSynthExport === 'object') {
         const synthObj = aiSynthExport as Record<string, unknown>;
         const fn = getExport<AnyFunction>(synthObj, 'synthesizeInput');
@@ -566,12 +566,12 @@ export async function synthesizeAIInput(
     console.warn('[orchestrator] AI input synthesizer unavailable, using fallback:', String(err));
   }
 
-  // Fallback typed object
+  // Fallback typed: object
   return {
-    originalQuery: query,
+   , originalQuery: query,
     enhancedPrompt: `As a legal professional, ${query}`,
     legalContext: {
-      entities: [],
+     , entities: [],
       concepts: [],
       citations: [],
       keyTerms: query.split(' ').filter(word => word.length > 3),
@@ -579,7 +579,7 @@ export async function synthesizeAIInput(
       domain: 'general'
     },
     intent: {
-      primary: 'general',
+     , primary: 'general',
       secondary: [],
       confidence: 0.3,
       category: 'general',
@@ -587,7 +587,7 @@ export async function synthesizeAIInput(
       scope: `substantive` },'`'`
     embedding: [],
     metadata: {
-      userRole: context?.userRole,
+     , userRole: context?.userRole,
       caseId: context?.caseId,
       documentIds: context?.documentIds,
       sessionContext: context?.sessionContext,
@@ -602,7 +602,7 @@ export async function synthesizeAIInput(
 
 // LegalBERT Middleware Integration
 export async function analyzeLegalText(
-  text: string,
+ , text: string,
   options?: {
     includeEntities?: boolean;
     includeConcepts?: boolean;
@@ -612,7 +612,7 @@ export async function analyzeLegalText(
 ): Promise<LegalAnalysis> {
   try {
     const mod = await import('../server/ai/legalbert-middleware');
-    const analysisFn = (mod?.legalBERT?.analyzeLegalText) as unknown;
+    const analysisFn = (mod?.legalBERT?.analyzeLegalText) as: unknown;
     if (typeof analysisFn === 'function') {
       // Some implementations accept only text; check arity before calling with options
       const fn = analysisFn as (...args: any[]) => Promise<unknown> | unknown;
@@ -633,24 +633,24 @@ export async function analyzeLegalText(
       endIndex: text.toLowerCase().indexOf(term.toLowerCase()) + term.length
     })),
     concepts: foundTerms.map(term => ({
-      concept: term,
+     , concept: term,
       relevance: 0.8,
       category: `legal` })),
     sentiment: {
-      polarity: 0,
+     , polarity: 0,
       confidence: 0.5,
       classification: `neutral` },
     complexity: {
-      readabilityScore: Math.min(words.length / 20, 1),
+     , readabilityScore: Math.min(words.length / 20, 1),
       legalComplexity: foundTerms.length / 10,
       technicalTerms: foundTerms.length
     },
     keyPhrases: foundTerms.map(term => ({
-      phrase: term,
+     , phrase: term,
       importance: 0.7,
       category: `legal` })),
     summary: {
-      abstractive: (text || '').substring(0, 100) + '...',
+     , abstractive: (text || '').substring(0, 100) + '...',
       extractive: [text.split('.')[0] || text],
       keyPoints: foundTerms.slice(0, 3)
     }
@@ -682,7 +682,7 @@ export async function processAIAssistantQuery(
             const doc = await orchestrator.queryDatabase({ where: {, id: docId } }, 'documents');
             return (doc && doc[0]) || null;
           } catch {
-            return null;
+            return: null;
           }
         })
       );
@@ -714,10 +714,10 @@ export async function processAIAssistantQuery(
         title: doc?.title || doc?.name,
         relevance: Math.random() * 0.5 + 0.5
       })),
-      enhancedPrompt: (synthesizedInput?.enhancedPrompt as string) ?? '',
+      enhancedPrompt: (synthesizedInput?.enhancedPrompt, as: string) ?? '',
       recommendations: [
-        ...(Array.isArray(synthesizedInput?.recommendations) ? (synthesizedInput.recommendations as string[]) : []),
-        ...(ragResults && ragResults.metadata && (ragResults.metadata.documentsProcessed as number) > 0
+        ...(Array.isArray(synthesizedInput?.recommendations) ? (synthesizedInput.recommendations as: string[]) : []),
+        ...(ragResults && ragResults.metadata && (ragResults.metadata.documentsProcessed as: number) > 0
           ? ['Review related documents']
           : []),
         ...(Array.isArray(legalAnalysis?.entities) && (legalAnalysis!.entities!.length > 0)
@@ -725,13 +725,13 @@ export async function processAIAssistantQuery(
           : []),
       ],
       metadata: {
-        processingTime: Date.now() - startTime,
+       , processingTime: Date.now() - startTime,
         documentsAnalyzed: relevantDocuments.length,
-        legalEntitiesFound: (legalAnalysis?.entities?.length as number) || 0,
-        intentConfidence: (synthesizedInput.intent?.confidence as number) || 0,
-        queryComplexity: (synthesizedInput.legalContext?.complexity as number) || 0,
+        legalEntitiesFound: (legalAnalysis?.entities?.length, as: number) || 0,
+        intentConfidence: (synthesizedInput.intent?.confidence, as: number) || 0,
+        queryComplexity: (synthesizedInput.legalContext?.complexity, as: number) || 0,
         enabledFeatures: {
-          legalBERT: context?.enableLegalBERT !== false,
+         , legalBERT: context?.enableLegalBERT !== false,
           rag: context?.enableRAG === true,
           synthesis: true
         }
@@ -742,11 +742,11 @@ export async function processAIAssistantQuery(
     console.error('[orchestrator] AI assistant pipeline failed: ', String(err));'`'`
     return { synthesizedInput: {, originalQuery: query,
         enhancedPrompt: query,
-        legalContext: { complexity: 0.5, domain: `general` }
+        legalContext: {, complexity: 0.5, domain: `general` }
       },
       error: (err instanceof Error ? err.message : String(err)),
       metadata: {
-        processingTime: Date.now() - startTime,
+       , processingTime: Date.now() - startTime,
         fallback: true
       }
     };
@@ -757,9 +757,9 @@ export async function processAIAssistantQuery(
 export async function rerankSearchResults(query: string, results: any[], config?: RerankingConfig): Promise<unknown[]> {
   try {
     const mod = await import('./cross-encoder-reranker');
-    const RerankerCtor = (mod?.CrossEncoderReranker) as unknown;
+    const RerankerCtor = (mod?.CrossEncoderReranker) as: unknown;
     if (typeof RerankerCtor === 'function') {
-      const reranker = new (RerankerCtor as any)();
+      const reranker = new (RerankerCtor as: any)();
       // Cast config to the expected shape at the boundary
       return await (reranker.rerankResults as (q: string, r: any[], c?: RerankingConfig) => Promise<unknown[]>)(
         query,

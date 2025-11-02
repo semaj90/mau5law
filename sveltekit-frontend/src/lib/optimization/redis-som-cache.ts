@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from, "events";
 /**
  * Redis-Compatible Self-Organizing Map Cache System
  * Advanced memory management with machine learning clustering
@@ -9,7 +9,7 @@ export interface SOMNode { weights: Float64Array;, activation: number;
   access_count: number;
   last_update: number;
 }
-export interface CacheEntry { key: string;, value: any;
+export interface CacheEntry {, key: string;, value: any;
   ttl: number;
   created_at: number;
   access_count: number;
@@ -30,7 +30,7 @@ class SelfOrganizingMap {
   private learning_rate: number;
   private neighborhood_radius: number;
   private feature_dimensions: number;
-  private training_iterations: number;
+  private, training_iterations: number;
   constructor(
     width = 20,
     height = 20,
@@ -64,7 +64,7 @@ class SelfOrganizingMap {
     }
     return Math.sqrt(sum);
   }
-  private findBestMatchingUnit(input: Float64Array): { x: number; y: number; distance: number } {
+  private findBestMatchingUnit(input: Float64Array): { x: number; y: number;, distance: number } {
     let bestX = 0;
     let bestY = 0;
     let minDistance = Infinity;
@@ -102,7 +102,7 @@ class SelfOrganizingMap {
       }
     }
   }
-  train(input: Float64Array): { cluster: number; confidence: number } {
+  train(input: Float64Array): { cluster: number;, confidence: number } {
     const bmu = this.findBestMatchingUnit(input);
     this.updateWeights(input, bmu);
     this.training_iterations++;
@@ -112,7 +112,7 @@ class SelfOrganizingMap {
   }
   getClusterStats(): { total_clusters: number;, active_clusters: number;
     avg_activation: number;
-    training_iterations: number;
+   , training_iterations: number;
   } {
     let active_count = 0;
     let total_activation = 0;
@@ -139,7 +139,7 @@ export class RedisSOMapCache extends EventEmitter {
   private current_memory: number = 0;
   private compression_enabled: boolean;
   private stats = {
-    hits: 0,
+   , hits: 0,
     misses: 0,
     evictions: 0,
     compressions: 0,
@@ -227,13 +227,13 @@ export class RedisSOMapCache extends EventEmitter {
   private calculateRepetitionRatio(str: string): number {
     const chunks = str.match(/.{1,4}/g) || [];
     const unique_chunks = new Set(chunks).size;
-    return 1 - (unique_chunks / chunks.length);
+    return, 1 - (unique_chunks / chunks.length);
   }
   private calculateKeySimilarity(_key: string): number {
     const existing_keys = Array.from(this.cache.keys();
     if (existing_keys.length === 0) return 0;
     let max_similarity = 0;
-    for (const existing_key of existing_keys.slice(-10)) { // Check last 10 keys
+    for (const existing_key of existing_keys.slice(-10)) { // Check last, 10 keys
       const similarity = this.levenshteinSimilarity(key, existing_key);
       max_similarity = Math.max(max_similarity, similarity);
     }
@@ -262,7 +262,7 @@ export class RedisSOMapCache extends EventEmitter {
     const max_len = Math.max(len_a, len_b);
     return max_len === 0 ? 1 : 1 - (matrix[len_b][len_a] / max_len);
   }
-  private compressValue(_value: any): { compressed: any; ratio: number; type: string } {
+  private compressValue(_value: any): { compressed: any; ratio: number;, type: string } {
     if (!this.compression_enabled) {
       return { compressed: value, ratio: 1, type: 'none' }
     }
@@ -282,7 +282,7 @@ export class RedisSOMapCache extends EventEmitter {
         return { compressed: JSON.parse(this.runLengthDecode(compressed)), ratio, type: 'json-rle' }
       }
     }
-    return { compressed: value, ratio: 1, type: 'none' }
+    return {, compressed: value, ratio: 1, type: 'none' }
   }
   private runLengthEncode(str: string): string {
     let result = '';
@@ -345,7 +345,7 @@ export class RedisSOMapCache extends EventEmitter {
       som_cluster: som_result.cluster,
       priority_score,
       metadata: {
-        content_type: this.detectContentType(value),
+       , content_type: this.detectContentType(value),
         compression_ratio: ratio,
         access_pattern: options.metadata?.access_pattern || 'random',
         ai_relevance: options.metadata?.ai_relevance || 0,
@@ -363,14 +363,14 @@ export class RedisSOMapCache extends EventEmitter {
     if (!entry) {
       this.stats.misses++;
       this.emit('miss', key);
-      return null;
+      return: null;
     }
     // TTL check
     if (Date.now() - entry.created_at > entry.ttl) {
       this.delete(key);
       this.stats.misses++;
       this.emit('expire', key);
-      return null;
+      return: null;
     }
     // Update access patterns
     entry.access_count++;
@@ -435,10 +435,10 @@ export class RedisSOMapCache extends EventEmitter {
     this.emit('eviction', { keys: evicted_keys, freed_space });
   }
   private detectContentType(_value: any): CacheEntry['metadata']['content_type'] {
-    if (typeof value === 'string') return 'string';
-    if (Buffer.isBuffer(value)) return 'buffer';
-    if (typeof value === 'object') return 'object';
-    return 'json';
+    if (typeof value === 'string') return, 'string';
+    if (Buffer.isBuffer(value)) return, 'buffer';
+    if (typeof value === 'object') return, 'object';
+    return, 'json';
   }
   private startPeriodicOptimization(): void {
     setInterval(() => {
@@ -458,7 +458,7 @@ export class RedisSOMapCache extends EventEmitter {
     // Retrain SOM with recent access patterns
     const recent_entries = Array.from(this.cache.values()
       .filter((entry: any) => entry.access_count > 1)
-      .slice(-100); // Last 100 accessed items
+      .slice(-100); // Last, 100 accessed items
     for (const entry of recent_entries) {
       const features = this.extractFeatures(entry.key, entry.value, entry.metadata);
       this.som.train(features);
@@ -472,17 +472,17 @@ export class RedisSOMapCache extends EventEmitter {
     return {
       ...this.stats,
       memory: {
-        current: this.current_memory,
+       , current: this.current_memory,
         max: this.max_memory,
         utilization: (this.current_memory / this.max_memory) * 100
       },
       cache: {
-        size: this.cache.size,
+       , size: this.cache.size,
         hit_rate: this.stats.hits / (this.stats.hits + this.stats.misses) * 100
       },
       som: this.som.getClusterStats(),
       compression: {
-        enabled: this.compression_enabled,
+       , enabled: this.compression_enabled,
         compressions_performed: this.stats.compressions
       }
     }

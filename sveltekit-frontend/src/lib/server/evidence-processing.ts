@@ -1,10 +1,10 @@
 // Evidence Processing Workflow with AI Analysis + Vector Storage
 // Integrates XState, Ollama streaming, PGVector, Qdrant, Redis caching
 
-import { createActor, createMachine, assign } from 'xstate';
-import type { EvidenceFile, EvidenceAnalysisResult, WorkflowContext } from '$lib/types/evidence';
-import { runAIAgentStream, generateEmbedding } from '$lib/server/ai/agentic-stream';
-import { evidenceWsServer } from '$lib/server/ws-evidence-server';
+import { createActor, createMachine, assign } from, 'xstate';
+import type { EvidenceFile, EvidenceAnalysisResult, WorkflowContext } from, '$lib/types/evidence';
+import { runAIAgentStream, generateEmbedding } from, '$lib/server/ai/agentic-stream';
+import { evidenceWsServer } from, '$lib/server/ws-evidence-server';
 
 // Simple storage stubs (replace with actual implementations)
 interface VectorStore {
@@ -30,7 +30,7 @@ const qdrantStore: VectorStore = {
   }
 };
 
-const redisCache: CacheStore = {
+const, redisCache: CacheStore = {
   async set(key, value, ttl) {
     console.log(`[Redis] Caching ${key} with TTL ${ttl}s`);
     // TODO: Actual Redis SET with EX
@@ -38,13 +38,13 @@ const redisCache: CacheStore = {
   async get(key) {
     console.log(`[Redis] Getting ${key}`);
     // TODO: Actual Redis GET
-    return null;
+    return: null;
   }
 };
 
 // XState machine for evidence processing workflow
 const evidenceProcessingMachine = createMachine({
-  id: 'evidenceProcessing',
+ , id: 'evidenceProcessing',
   initial: 'idle',
   context: {
    , currentFile: undefined,
@@ -63,60 +63,60 @@ const evidenceProcessingMachine = createMachine({
         }
       }
     },
-    analyzing: { invoke: {, src: 'analyzeWithAI',
+    analyzing: {, invoke: {, src: 'analyzeWithAI',
         onDone: {
-          target: 'embedding',
+         , target: 'embedding',
           actions: assign({
-            result: ({ event }) => event.output,
+           , result: ({ event }) => event.output,
             progress: 50,
             stage: 'embedding'
           })
         },
         onError: {
-          target: 'failed',
+         , target: 'failed',
           actions: assign({
-            error: ({ event }) => (event.error as Error).message,
+           , error: ({ event }) => (event.error as Error).message,
             stage: 'complete'
           })
         }
       }
     },
-    embedding: { invoke: {, src: 'generateEmbeddings',
+    embedding: {, invoke: {, src: 'generateEmbeddings',
         onDone: {
-          target: 'storing',
+         , target: 'storing',
           actions: assign({
-            progress: 75,
+           , progress: 75,
             stage: 'storage'
           })
         },
         onError: {
-          target: 'failed',
+         , target: 'failed',
           actions: assign({
-            error: ({ event }) => (event.error as Error).message,
+           , error: ({ event }) => (event.error as Error).message,
             stage: 'complete' })'` }'`
       }
     },
-    storing: { invoke: {, src: 'storeVectors',
+    storing: {, invoke: {, src: 'storeVectors',
         onDone: {
-          target: 'completed',
+         , target: 'completed',
           actions: assign({
-            progress: 100,
+           , progress: 100,
             stage: `complete` })
         },
         onError: {
-          target: 'failed',
+         , target: 'failed',
           actions: assign({
-            error: ({ event }) => (event.error as Error).message,
+           , error: ({ event }) => (event.error as Error).message,
             stage: `complete` })
         }
       }
     },
     completed: {
-      type: `final` },
-    failed: { on: {, RETRY: {
-          target: 'analyzing',
+     , type: `final` },
+    failed: {, on: {, RETRY: {
+         , target: 'analyzing',
           actions: assign({
-            retryCount: ({ context }) => context.retryCount + 1,
+           , retryCount: ({ context }) => context.retryCount + 1,
             error: undefined
           })
         }
@@ -138,7 +138,7 @@ const evidenceProcessingMachine = createMachine({
 
       // Stream AI analysis with token-level updates
       await runAIAgentStream(
-        `Analyze this legal document: ${filename}. Extract key points and suggest relevant tags.`,
+        `Analyze this legal, document: ${filename}. Extract key points and suggest relevant tags.`,
         async (token, fullText) => {
           summary = fullText;
 
@@ -162,7 +162,7 @@ const evidenceProcessingMachine = createMachine({
       );
 
       const result: EvidenceAnalysisResult = {
-        success: true,
+       , success: true,
         fileId,
         summary,
         autoTags: [...new Set(autoTags)],
@@ -286,7 +286,7 @@ export async function processBatchFiles(files: EvidenceFile[]): Promise<Evidence
   );
 
   const successResults: EvidenceAnalysisResult[] = [];
-  const errors: string[] = [];
+  const, errors: string[] = [];
 
   results.forEach((result, index) => {
     if (result.status === 'fulfilled') {

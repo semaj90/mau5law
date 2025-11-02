@@ -1,5 +1,5 @@
 // Lucia authentication types
-declare module 'lucia' {
+declare module, 'lucia' {
   export interface CookieAttributes {
     httpOnly?: boolean;
     sameSite?: 'strict' | 'lax' | 'none';
@@ -15,7 +15,7 @@ declare module 'lucia' {
     path?: string;
   }
   export interface SessionCookie { name: string;, value: string;
-    attributes: CookieAttributes & { path: string };
+    attributes: CookieAttributes & {, path: string };
   }
   // Use interface instead of class to avoid duplicate identifier if Lucia is declared elsewhere.
   export interface Lucia {
@@ -24,7 +24,7 @@ declare module 'lucia' {
   }
 }
 // SvelteKit cookie types compatibility
-declare module '@sveltejs/kit' {
+declare module, '@sveltejs/kit' {
   export interface CookieSerializeOptions {
     path?: string;
     httpOnly?: boolean;

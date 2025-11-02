@@ -1,6 +1,6 @@
 <!-- YoRHa Detective Form Component - Fixed dynamic, type, binding -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface FormField {
     name: string;
     label: string;
@@ -13,7 +13,7 @@
   }
   interface Props {
     fields: FormField[];
-    onSubmit: (data: any) => Promise<void>;
+   , onSubmit: (data: any) => Promise<void>;
     submitText?: string;
     submitClass?: string;
   }
@@ -81,7 +81,7 @@
             name={field.name}
             class="form-input"
             required={field.required}
-            bind:value={formData[field.name]}
+           , bind:value={formData[field.name]}
           >
             {#if field.options}
               {#each Array.isArray(field.options) ? field.options : [] as option}
@@ -117,7 +117,7 @@
             class="form-input"
             placeholder={field.placeholder || ''}
             required={field.required}
-            bind:value={formData[field.name]}
+           , bind:value={formData[field.name]}
           />
         {/if}
       </div>
@@ -161,19 +161,19 @@
   .form-input {
     background-color: #ffffff;
     border: 1px solid #d1cfc7;
-    padding: 0.75rem 1rem;
+   , padding: 0.75rem 1rem;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.875rem;
     color: #3d3d3d;
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
     border-radius: 0,
     width: 100%;
     box-sizing: border-box;
   }
   .form-input:focus {
-    outline: none;
+   , outline: none;
     border-color: #3d3d3d;
-    box-shadow: 0 0 0 3px rgba(61, 61, 61, 0.2);
+    box-shadow: 0, 0 0 3px rgba(61, 61, 61, 0.2);
   }
   .form-input::placeholder {
     color: #999;
@@ -197,7 +197,7 @@
     gap: 0.5rem;
     border: 1px solid #d1cfc7;
     background-color: #f7f6f2;
-    padding: 0.75rem 1.5rem;
+   , padding: 0.75rem 1.5rem;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.875rem;
     font-weight: bold;
@@ -207,13 +207,13 @@
     border-radius: 0;
     text-transform: uppercase;
   }
-  .submit-btn: hover:not(:disabled) {
+  .submit-btn:, hover:not(:disabled) {
     background-color: #eae8e1;
-    transform: translateY(-1px);
+   , transform: translateY(-1px);
   }
   .submit-btn:disabled {
     opacity: 0.6;
-    cursor: not-allowed;
+   , cursor: not-allowed;
   }
   .submit-btn.yorha-btn-success {
     background-color: rgba(16, 185, 129, 0.1);
@@ -232,7 +232,7 @@
       margin-top: 1.5rem;
     }
     .submit-btn {
-      width: 100%;
+     , width: 100%;
       justify-content: center;
     }
   }

@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -10,29 +10,29 @@ import type { Message } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Memory, Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
-import { ollamaService } from '$lib/server/services/OllamaService.js';
-import { logger } from '$lib/server/production-logger.js';
-import { conversationService } from '$lib/server/services/conversation-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { apiError, getRequestId, withErrorHandling } from, '$lib/server/api/standard-response';
+import { ollamaService } from, '$lib/server/services/OllamaService.js';
+import { logger } from, '$lib/server/production-logger.js';
+import { conversationService } from, '$lib/server/services/conversation-service';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 interface StreamLine {
   response?: string;
   done?: boolean;
-  // Replace `any` with `unknown` to avoid: "Unexpected any" lint/TS error
+  // Replace `any` with `unknown` to avoid: "Unexpected: any" lint/TS error
   [k: string]: any;
 }
 
 // add a typed shape for the RAG service response to avoid `any`
 type RAGResponse = { results?: any[]; [k: string]: any };
 
-const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
+const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   const requestId = getRequestId(event);
   const body = await event.request.json().catch(() => ({}));
   const {
@@ -85,11 +85,11 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         body: JSON.stringify({, query: message, limit: 5, threshold: 0.7 }),
         signal: ac.signal
       }).catch(err => {
-        // normalize abort or network errors to undefined so we skip processing
+        // normalize abort or network errors to: undefined so we skip processing
         logger.warn(
           `RAG fetch failed or aborted (requestId=${requestId}): ${err instanceof Error ? err.message : String(err)}`
         );
-        return undefined;
+        return: undefined;
       });
       clearTimeout(timeout);
 
@@ -101,7 +101,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         if (results.length) {
           // resilient extractor: handle strings, arrays, nested objects and common field names
           const extractRagText = (item: any): string => {
-            if (item == null) return 'Relevant legal information';
+            if (item == null) return, 'Relevant legal information';
             if (typeof item === 'string') {
               const s = item.trim();
               return s || 'Relevant legal information';
@@ -132,7 +132,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
               const scanned = Object.values(o).map(extractRagText).filter(Boolean).join(' ');
               if (scanned) return scanned;
             }
-            return 'Relevant legal information';
+            return, 'Relevant legal information';
           };
 
           const ctx = results

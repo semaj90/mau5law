@@ -1,11 +1,11 @@
 <!-- YoRHa Terminal, Navigation, Component -->
 <script, lang="ts">
 
-  // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
+  // Svelte, 5 runes are auto-imported
+  import { page } from, '$app/stores';
   type Link = { href: string; label: string; icon?: string };
   // Exported props with proper types
-  const { brand } = $props<{ brand: string }>()
+  const { brand } = $props<{, brand: string }>()
   const { version } = $props<{ version: string }>()
   const { links } = $props<{ links: Link[] }>()
   // Reactive derived current path from the page store
@@ -64,10 +64,10 @@
     background: var(--yorha-bg-secondary, #1a1a1a);
     border-bottom: 3px solid var(--yorha-secondary, #ffd700);
     position: sticky;
-    top: 0;
+   , top: 0;
     z-index: 1000;
     box-shadow:
-      0 3px 0 0 var(--yorha-secondary, #ffd700),
+      0 3px, 0 0 var(--yorha-secondary, #ffd700),
       0 6px 20px rgba(0, 0, 0, 0.8);
   }
   .yorha-nav-container {
@@ -89,11 +89,11 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: var(--yorha-secondary, #ffd700);
+   , background: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 24px;
-    border: 2px solid var(--yorha-secondary, #ffd700);
-    box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
+   , border: 2px solid var(--yorha-secondary, #ffd700);
+    box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
   }
   .yorha-brand-info {
     display: flex;
@@ -101,7 +101,7 @@
     gap: 2px;
   }
   .yorha-brand-text {
-    color: var(--yorha-secondary, #ffd700);
+   , color: var(--yorha-secondary, #ffd700);
     font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
     font-size: 18px;
     font-weight: 700;
@@ -110,7 +110,7 @@
     line-height: 1;
   }
   .yorha-brand-version {
-    color: var(--yorha-text-muted, #808080);
+   , color: var(--yorha-text-muted, #808080);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     font-size: 11px;
     letter-spacing: 1px;
@@ -125,7 +125,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--yorha-text-secondary, #b0b0b0);
+   , color: var(--yorha-text-secondary, #b0b0b0);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     font-size: 14px;
     font-weight: 500;
@@ -138,7 +138,7 @@
     overflow: hidden;
   }
   .yorha-nav-link:hover {
-    color: var(--yorha-secondary, #ffd700);
+   , color: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-tertiary, #2a2a2a);
   }
@@ -147,8 +147,8 @@
     border-color: var(--yorha-secondary, #ffd700);
     background: var(--yorha-bg-tertiary, #2a2a2a);
     box-shadow:
-      inset 0 3px 0 var(--yorha-secondary, #ffd700),
-      0 0 10px rgba(255, 215, 0, 0.2);
+      inset, 0 3px, 0 var(--yorha-secondary, #ffd700),
+      0, 0 10px rgba(255, 215, 0, 0.2);
   }
   .nav-icon {
     font-size: 16px;
@@ -159,8 +159,8 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--yorha-secondary, #ffd700);
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+   , background: var(--yorha-secondary, #ffd700);
+    box-shadow: 0, 0 8px rgba(255, 215, 0, 0.5);
   }
   .yorha-nav-actions {
     display: flex;
@@ -174,7 +174,7 @@
     justify-content: center;
     gap: 2px;
     padding: 8px 12px;
-    background: var(--yorha-bg-secondary, #1a1a1a);
+   , background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-secondary, #b0b0b0);
     cursor: pointer;
@@ -183,10 +183,10 @@
     height: 60px;
   }
   .yorha-toolbar-btn:hover {
-    background: var(--yorha-secondary, #ffd700);
+   , background: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
-    box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700);
+    box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700);
   }
   .btn-icon {
     font-size: 18px;
@@ -220,7 +220,7 @@
     }
     .yorha-toolbar-btn {
       min-width: 48px;
-      height: 48px;
+     , height: 48px;
     }
   }
 </style>

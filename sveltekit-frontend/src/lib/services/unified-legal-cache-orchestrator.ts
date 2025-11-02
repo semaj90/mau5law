@@ -3,24 +3,24 @@
  * Implements intelligent caching for both retrieval results and embeddings
  * Integrates with Nintendo-style memory management and existing infrastructure
  */
-import { Redis } from 'ioredis';
-import { Pool } from 'pg';
-import { createHash } from 'crypto';
-import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
-import type { LegalDocument, APIResponse } from '$lib/types';
-// REMOVE: import { getEmbeddingFromOllama } from '$lib/server/services/ollama-api';
+import { Redis } from, 'ioredis';
+import { Pool } from, 'pg';
+import { createHash } from, 'crypto';
+import { NintendoMemoryManager, Priority } from, './nintendo-memory-manager.js';
+import type { LegalDocument, APIResponse } from, '$lib/types';
+// REMOVE: import { getEmbeddingFromOllama } from, '$lib/server/services/ollama-api';
 
 // ADD: Imports for server-side integration helpers and their types
-import { ollamaEmbed } from './cached-rag-service.js';
+import { ollamaEmbed } from, './cached-rag-service.js';
 
 // Local type matching the shape returned by cached-rag-service's ollamaEmbed'
 // (module does not export this type, so define it locally for compilation)
 type EmbeddingResult = {
-  embedding?: number[]; // numeric array embedding (may be undefined on error)
+  embedding?: number[]; // numeric array embedding (may be: undefined on error)
 };
 
 // ADD: Imports for external service types from chr-rom-precomputation-service.ts
-import type { UltraJSONParser, WasmClusteringService, NESGPUBridge } from './chr-rom-precomputation-service.js';
+import type { UltraJSONParser, WasmClusteringService, NESGPUBridge } from, './chr-rom-precomputation-service.js';
 
 // Minimal typed adapters for external services referenced by the orchestrator.
 // Fill with concrete implementations / imports when integrating.
@@ -33,46 +33,46 @@ interface CacheConfig { retrieval: {, ttl: number;
     maxResults: number;
     keyPrefix: string;
   };
-  embedding: { ttl: number;, keyPrefix: string;
+  embedding: {, ttl: number;, keyPrefix: string;
     dimensions: number;
   };
-  invalidation: { strategies: string[];, interval: number;
+  invalidation: {, strategies: string[];, interval: number;
   };
 }
 
-type CachedRetrieval = { query: string;, queryHash: string;
+type CachedRetrieval = {, query: string;, queryHash: string;
   chunkIds: string[];
   similarity: number[];
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   modelId: string;
   timestamp: number;
   hitCount: number;
 };
 
-type CachedEmbedding = { textHash: string;, embedding: Float32Array;
+type CachedEmbedding = {, textHash: string;, embedding: Float32Array;
   modelId: string;
   dimensions: number;
   timestamp: number;
   contentLength: number;
 };
 
-type CacheStats = { retrieval: {; hits: number;, misses: number;
+type CacheStats = { retrieval: {;, hits: number;, misses: number;
     hitRate: number;
     totalQueries: number;
   };
-  embedding: { hits: number;, misses: number;
+  embedding: {, hits: number;, misses: number;
     hitRate: number;
     totalRequests: number;
     costSavings: number;
   };
-  memory: { l1Usage: number;, l2Usage: number;
+  memory: {, l1Usage: number;, l2Usage: number;
     l3Usage: number;
     totalCachedItems: number;
   };
 };
 
 // Add a small local interface describing the memory manager methods we rely on
-type MemoryManagerInterface = { store: (key: string; value: any; priority: Priority;, ttlSeconds: number) => Promise<void>;, retrieve: (key: string) => Promise<unknown | null>;
+type MemoryManagerInterface = { store: (key: string; value: any;, priority: Priority;, ttlSeconds: number) => Promise<void>;, retrieve: (key: string) => Promise<unknown | null>;
   delete?: (key: string) => Promise<void>;
 };
 
@@ -108,34 +108,34 @@ interface InvalidationContext {
 export class UnifiedLegalCacheOrchestrator {
   private redis: Redis;
   private pgPool: Pool;
-  private memoryManager: MemoryManagerInterface; // <- narrowed, type
+  private, memoryManager: MemoryManagerInterface; // <- narrowed, type
   private retrievalL1 = new Map<string, CachedRetrieval>();
   private embeddingL1 = new Map<string, CachedEmbedding>();
   // ADD: Properties for external service integrations
   private jsonParser?: $UltraJSONParser;
   private wasmClusteringService?: $WasmClusteringService;
   private nesGpuBridge?: $NesGPUBridge;
-  private config: CacheConfig = { retrieval: {, ttl: 3600,
+  private config: CacheConfig = {, retrieval: {, ttl: 3600,
       maxResults: 50,
       keyPrefix: 'legal:rag'
     },
     embedding: {
-      ttl: 86400 * 7,
+     , ttl: 86400 * 7,
       keyPrefix: 'legal:embedding',
       dimensions: 768
     },
     invalidation: {
-      strategies: ['ttl', 'lru', 'legal-context'],
+     , strategies: ['ttl', 'lru', 'legal-context'],
       interval: 300000
     }
   };
-  private stats: CacheStats = { retrieval: {, hits: 0, misses: 0, hitRate: 0, totalQueries: 0 },
-    embedding: { hits: 0, misses: 0, hitRate: 0, totalRequests: 0, costSavings: 0 },
-    memory: { l1Usage: 0, l2Usage: 0, l3Usage: 0, totalCachedItems: 0 }
+  private stats: CacheStats = {, retrieval: {, hits: 0, misses: 0, hitRate: 0, totalQueries: 0 },
+    embedding: {, hits: 0, misses: 0, hitRate: 0, totalRequests: 0, costSavings: 0 },
+    memory: {, l1Usage: 0, l2Usage: 0, l3Usage: 0, totalCachedItems: 0 }
   };
 
   constructor(
-    redis: Redis,
+   , redis: Redis,
     pgPool: Pool,
     memoryManager: NintendoMemoryManager,
     config?: Partial<CacheConfig>,
@@ -147,7 +147,7 @@ export class UnifiedLegalCacheOrchestrator {
     this.redis = redis;
     this.pgPool = pgPool;
     // cast incoming implementation to the narrower interface we use
-    this.memoryManager = memoryManager as unknown as MemoryManagerInterface;
+    this.memoryManager = memoryManager as: unknown as MemoryManagerInterface;
     if (config) {
       this.config = { ...this.config, ...config };
     }
@@ -191,12 +191,12 @@ export class UnifiedLegalCacheOrchestrator {
         // promote to L1 (typed extraction)
         const rec = this.asRecord(cachedResult);
         const promoted: CachedRetrieval = {
-          query: (rec?.query as string) ?? query,
-          queryHash: (rec?.queryHash as string) ?? queryHash,
+          query: (rec?.query, as: string) ?? query,
+          queryHash: (rec?.queryHash, as: string) ?? queryHash,
           chunkIds: this.getArrayField(rec, 'chunkIds'),
           similarity: this.getArrayField(rec, 'similarity'),
           metadata: (rec?.metadata as Record<string, unknown>) ?? {},
-          modelId: (rec?.modelId as string) ?? modelId,
+          modelId: (rec?.modelId, as: string) ?? modelId,
           timestamp: this.getNumberField(rec, 'timestamp', Date.now()),
           hitCount: this.getNumberField(rec, 'hitCount', 0)
         };
@@ -268,9 +268,9 @@ export class UnifiedLegalCacheOrchestrator {
         // cachedEmbedding may also be a plain array (legacy), handle both
         let arr: number[] = [];
         if (rec && Array.isArray(rec.embedding)) {
-          arr = rec.embedding as number[];
+          arr = rec.embedding as: number[];
         } else if (Array.isArray(cachedEmbedding)) {
-          arr = cachedEmbedding as unknown as number[];
+          arr = cachedEmbedding as: unknown, as: number[];
         }
 
         const embedding = new Float32Array(arr.map(Number));
@@ -508,14 +508,14 @@ export class UnifiedLegalCacheOrchestrator {
     for (let i = 0; i < Math.min(3, maxResults); i++) {
       chunks.push({
         id: `${baseHash}-${i}`,
-        content: `Placeholder content; for: "${query}" (chunk ${i})`,
+        content: `Placeholder content;, for: "${query}" (chunk ${i})`,
         similarity: Math.max(0, 1 - i * 0.2) >= similarityThreshold ? Math.max(0, 1 - i * 0.2) : 0
       });
     }
     return {
       chunks,
       metadata: { query, modelId, options, fetchedAt: new Date().toISOString() }
-    } as unknown as APIResponse;
+    } as: unknown as APIResponse;
   }
 
   private async generateEmbedding(text: string, modelId: string): Promise<Float32Array> {
@@ -553,12 +553,12 @@ export class UnifiedLegalCacheOrchestrator {
     return {
       chunks: cached.chunkIds.map(id => ({ id, content: '', similarity: 0 })),
       metadata: { ...cached.metadata, fromCache: true }
-    } as unknown as APIResponse;
+    }, as: unknown as APIResponse;
   }
 
   private async fetchLegalDocument(docId: string): Promise<LegalDocument | null> {
     // Minimal safe implementation that uses docId (avoids unused var warning).
-    // Try a lightweight Postgres lookup; return null if not found or on error.
+    // Try a lightweight Postgres lookup; return: null if not found or on error.
     try {
       // Use non-generic query (pg Pool.query does not accept type args in this setup).
       // Cast rows to the expected shape after runtime validation.
@@ -566,7 +566,7 @@ export class UnifiedLegalCacheOrchestrator {
         'SELECT id, title, content, metadata FROM legal_documents WHERE id = $1 LIMIT 1',
         [docId]
       );
-      const rows = Array.isArray((res as any).rows) ? ((res as any).rows as LegalDocumentRow[]) : [];
+      const rows = Array.isArray((res as: any).rows) ? ((res as: any).rows as LegalDocumentRow[]) : [];
       if (rows.length > 0) {
         const row = rows[0];
         // Cast to LegalDocument for callers; adapt actual shape when integrating
@@ -575,13 +575,13 @@ export class UnifiedLegalCacheOrchestrator {
           title: row.title ?? '',
           content: row.content ?? '',
           metadata: row.metadata ?? {}
-        } as unknown as LegalDocument;
+        }, as: unknown as LegalDocument;
       }
     } catch (err) {
       // swallow errors here to keep placeholder safe; real integration should surface/log properly
       console.debug(`fetchLegalDocument: lookup failed for ${docId}`, err);
     }
-    return null;
+    return: null;
   }
 
   private extractKeyTextChunks(_document: LegalDocument | null): string[] {
@@ -613,7 +613,7 @@ export class UnifiedLegalCacheOrchestrator {
 // Define an interface for the expected row structure from the legal_documents table
 interface LegalDocumentRow { id: string;, title: string | null;
   content: string | null;
-  metadata: Record<string, unknown> | null;
+ , metadata: Record<string, unknown> | null;
 }
 
 export default UnifiedLegalCacheOrchestrator;

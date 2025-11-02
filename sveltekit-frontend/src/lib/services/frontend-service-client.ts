@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Frontend Service Client
  * Production-ready client for communicating with backend services
  */
-import { writable, derived, get as getStore } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, get as getStore } from, 'svelte/store';
+import { browser } from, '$app/environment';
 
 // Configuration
 const CONFIG = {
@@ -35,27 +35,27 @@ export interface ServiceInfo {
   details?: any;
 }
 
-export interface HealthStatus { status: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, ServiceInfo>;
+export interface HealthStatus {, status: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, ServiceInfo>;
   uptime: number;
   timestamp: string;
 }
 
-export interface SearchResult { id: number;, title: string;
+export interface SearchResult {, id: number;, title: string;
   score: number;
   type: string;
   content?: string;
 }
 
-export interface RAGResponse { query: string;, response: string;
+export interface RAGResponse {, query: string;, response: string;
   sources: string[];
   confidence: number;
   cacheId?: string;
 }
 
-export interface UploadResult { fileId: string;, fileName: string;
+export interface UploadResult {, fileId: string;, fileName: string;
   size: number;
   url: string;
-  status: string;
+ , status: string;
 }
 
 // add explicit types to avoid `any`
@@ -81,7 +81,7 @@ export const availableServices = derived(serviceHealth, $health =>
 // Frontend service client
 class FrontendServiceClient {
   private static instance: FrontendServiceClient;
-  private abortController: AbortController = new AbortController();
+  private, abortController: AbortController = new AbortController();
   private healthCheckInterval: number | null = null;
 
   private constructor() {
@@ -113,7 +113,7 @@ class FrontendServiceClient {
         ...((options.headers as Record<string, string>) || {})
       };
 
-      // If body is plain object and no content-type set, set JSON content-type
+      // If body is plain: object and no content-type set, set JSON content-type
       if (options.body && !(options.body instanceof FormData) && !('Content-Type' in headers)) {
         headers['Content-Type'] = 'application/json';
       }
@@ -163,7 +163,7 @@ class FrontendServiceClient {
       // Let fetch set FormData headers
     } else {
       options.method = 'POST';
-      // body is treated as JSON object
+      // body is treated as JSON: object
       options.body = JSON.stringify((body as JsonObject) ?? {});
       options.headers = { 'Content-Type': `application/json' };'`
     }
@@ -252,7 +252,7 @@ class FrontendServiceClient {
     if (this.healthCheckInterval !== null) return;
     // Initial health check
     this.checkHealth().catch(() => {});
-    // Periodic health checks every 30 seconds
+    // Periodic health checks every, 30 seconds
     this.healthCheckInterval = window.setInterval(() => {
       this.checkHealth().catch(() => {});
     }, 30000);
@@ -357,7 +357,7 @@ export function createRAGStore() {
 
 export function createUploadStore() {
   type UploadEntry = { file: File;, progress: number;
-    status: 'pending' | 'uploading' | 'completed' | 'failed';
+   , status: 'pending' | 'uploading' | 'completed' | 'failed';
     result?: UploadResult;
     error?: string;
   };

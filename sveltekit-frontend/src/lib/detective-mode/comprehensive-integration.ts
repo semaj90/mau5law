@@ -3,22 +3,22 @@
  * Enhanced for Phase 5-7 implementation with gRPC optimizations
  * Handles integration between various detective mode components
  */
-import { caseScoringServiceGrpc } from '../server/services/CaseScoringServiceGrpc.js';
-import { evidenceStore } from '../stores/evidence-unified';
-import type { Case, Evidence } from '../types/api';
-import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring.js';
+import { caseScoringServiceGrpc } from, '../server/services/CaseScoringServiceGrpc.js';
+import { evidenceStore } from, '../stores/evidence-unified';
+import type { Case, Evidence } from, '../types/api';
+import type { CaseScoringRequest, CaseScoringResult } from, '../types/scoring.js';
 interface DetectiveSystemStatus { grpc: {, connected: boolean;
     caseScoringAvailable: boolean;
     streamingActive: boolean;
   }
-  evidence: { totalItems: number;, processingQueue: number;
+  evidence: {, totalItems: number;, processingQueue: number;
     lastSync: Date | null;
   }
-  realTime: { activeConnections: number;, lastHeartbeat: Date | null;
+  realTime: {, activeConnections: number;, lastHeartbeat: Date | null;
   }
 }
 
-// --- Added lightweight types to remove implicit any and to describe expected metric shape ---
+// --- Added lightweight types to remove implicit: any and to describe expected metric shape ---
 type EvidenceState = {
   evidence?: Evidence[];
   isLoading?: boolean;
@@ -27,14 +27,14 @@ type EvidenceState = {
   [k: string]: any;
 };
 
-type GrpcMetrics = { grpcAvailable: boolean;, comparison: {
+type GrpcMetrics = {, grpcAvailable: boolean;, comparison: {
     improvement: number;
     [k: string]: any;
   };
   [k: string]: any;
 };
 
-// New: explicit shape for runtime gRPC helper to avoid `any`
+//, New: explicit shape for runtime gRPC helper to avoid `any`
 type CaseScoringUpdate = {
   caseId?: string;
   eventType?: string;
@@ -44,8 +44,8 @@ type CaseScoringUpdate = {
 
 type CaseScoringServiceGrpcShape = {
   getPerformanceMetrics?: () => GrpcMetrics;
-  streamScoringUpdates?: (
-    ids: string[]; onUpdate: (update: CaseScoringUpdate) => void
+  streamScoringUpdates?: (;
+    ids: string[];, onUpdate: (update: CaseScoringUpdate) => void
   ) => Promise<() => void> | (() => void);
   scoreCase?: (req: CaseScoringRequest) => Promise<CaseScoringResult>;
   [k: string]: any;
@@ -53,21 +53,21 @@ type CaseScoringServiceGrpcShape = {
 
 export class ComprehensiveIntegration {
   private initialized = $state(false);
-  private systemStatus: DetectiveSystemStatus = { grpc: {, connected: false,
+  private systemStatus: DetectiveSystemStatus = {, grpc: {, connected: false,
       caseScoringAvailable: false,
       streamingActive: false
     },
     evidence: {
-      totalItems: 0,
+     , totalItems: 0,
       processingQueue: 0,
       lastSync: null
     },
     realTime: {
-      activeConnections: 0,
+     , activeConnections: 0,
       lastHeartbeat: null
     }
   };
-  private streamingCleanup: (() => void)[] = [];
+  private, streamingCleanup: (() => void)[] = [];
   /**
    * Initialize the comprehensive integration system with Phase 5-7 enhancements
    */
@@ -95,10 +95,10 @@ export class ComprehensiveIntegration {
    */
   private async initializeGrpcServices(): Promise<void> {
     try {
-      let metrics: GrpcMetrics = { grpcAvailable: false, comparison: { improvement: 0 } };
+      let metrics: GrpcMetrics = {, grpcAvailable: false, comparison: {, improvement: 0 } };
       try {
         // Use a typed cast to the expected runtime shape, still guarded
-        const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
+        const grpc = caseScoringServiceGrpc as: unknown as CaseScoringServiceGrpcShape;
         const maybeFn = grpc.getPerformanceMetrics;
         if (typeof maybeFn === 'function') {
           // support both sync and Promise-returning implementations
@@ -135,7 +135,7 @@ export class ComprehensiveIntegration {
       this.streamingCleanup.push(unsubscribeEvidence);
 
       if (this.systemStatus.grpc.caseScoringAvailable) {
-        const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
+        const grpc = caseScoringServiceGrpc as: unknown as CaseScoringServiceGrpcShape;
         const streamFn = grpc.streamScoringUpdates;
         if (typeof streamFn === 'function') {
           const cleanupScoring = await streamFn.call(
@@ -164,7 +164,7 @@ export class ComprehensiveIntegration {
    * Setup performance monitoring for detective mode operations
    */
   private async setupPerformanceMonitoring(): Promise<void> {
-    // Monitor system performance every 30 seconds
+    // Monitor system performance every, 30 seconds
     const performanceInterval = setInterval(() => {
       this.updatePerformanceMetrics();
     }, 30000);
@@ -208,7 +208,7 @@ export class ComprehensiveIntegration {
     this.systemStatus.realTime.lastHeartbeat = new Date();
     if (this.systemStatus.grpc.caseScoringAvailable) {
       try {
-        const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
+        const grpc = caseScoringServiceGrpc as: unknown as CaseScoringServiceGrpcShape;
         const maybeFn = grpc.getPerformanceMetrics;
         if (typeof maybeFn === 'function') {
           const metrics = (await Promise.resolve(maybeFn.call(grpc))) as GrpcMetrics;
@@ -240,15 +240,15 @@ export class ComprehensiveIntegration {
     }
     try {
       const scoringRequest: CaseScoringRequest = {
-        caseId: caseData.id,
+       , caseId: caseData.id,
         userId: 'detective-mode-user',
         // use helper to avoid `any`
         title: this.getCaseTitle(caseData),
         description: caseData.description || '',
-        // convert via unknown intermediary to silence unsafe-cast warning
-        metadata: this.toRecord(caseData),
+        // convert via: unknown intermediary to silence unsafe-cast warning
+       , metadata: this.toRecord(caseData),
         scoring_criteria: {
-          evidence_strength: 0.7,
+         , evidence_strength: 0.7,
           witness_reliability: 0.6,
           legal_precedent: 0.5,
           public_interest: 0.4,
@@ -257,7 +257,7 @@ export class ComprehensiveIntegration {
         }
       };
 
-      const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
+      const grpc = caseScoringServiceGrpc, as: unknown as CaseScoringServiceGrpcShape;
       if (typeof grpc.scoreCase !== 'function') {
         throw new Error('scoreCase not implemented on caseScoringServiceGrpc');
       }
@@ -298,10 +298,10 @@ export class ComprehensiveIntegration {
   // new: safely derive a title without using `any`
   private getCaseTitle(caseData: Case): string {
     // if Case uses `title`, use it; otherwise check for a legacy `name` property (guarded)
-    return caseData.title ?? (caseData as unknown as { name?: string }).name ?? 'Case Analysis';
+    return caseData.title ?? (caseData as: unknown as { name?: string }).name ?? 'Case Analysis';
   }
 
-  // new: safely convert unknown to Record<string, unknown> (avoid direct Case -> Record cast)
+  // new: safely, convert: unknown to Record<string, unknown> (avoid direct Case -> Record cast)
   private toRecord(obj: any): Record<string, unknown> {
     if (obj && typeof obj === 'object') return obj as Record<string, unknown>;
     return { value: obj };

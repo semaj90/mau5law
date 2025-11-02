@@ -1,7 +1,7 @@
 <!--
   Document LOD Viewer - N64-Inspired PDF Visualization
   Implements progressive document detail similar to N64 texture streaming:
-  - LOD 0: Full resolution (2048x2048 texture)
+  - LOD, 0: Full resolution (2048x2048 texture)
   - LOD 1: High detail (1024x1024 texture)
   - LOD 2: Medium detail (512x512 texture)
   - LOD 3: Low detail (256x256 texture) - N64 style pixelated,
@@ -12,33 +12,33 @@
   - Cached Palace integration for instant page access
 -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { browser } from '$app/environment';
-  import { onMount, onDestroy } from 'svelte';
-  import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/Card.svelte';
-  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { browser } from, '$app/environment';
+  import { onMount, onDestroy } from, 'svelte';
+  import { LoadingButton } from, '$lib/headless';
+  import * as Card from, '$lib/components/ui/Card.svelte';
+  import  Badge  from, "$lib/components/ui/badge/Badge.svelte";
   import {
     ZoomIn, ZoomOut, RotateCw, FileText,
     Eye, Layers, Download, Navigation
-  } from 'lucide-svelte';
+  } from, 'lucide-svelte';
   interface DocumentPage {
     pageNumber: number;
     textContent: string;
     annotations: Annotation[];
-    lodTextures: Map<number, GPUTexture>;
+   , lodTextures: Map<number, GPUTexture>;
     currentLOD: number;
   }
   interface Annotation {
     id: string;
     type: 'highlight' | 'note' | 'redaction';
-    bounds: { x: number; y: number; width: number; height: number }
+    bounds: { x: number; y: number; width: number; height: number };
     content: string;
   }
   interface DocumentLODViewerProps {
-    documentId: string;
+   , documentId: string;
     documentUrl?: string;
     initialZoom?: number;
     enableWebGPU?: boolean;
@@ -57,8 +57,8 @@ import type { Document } from '$lib/types';
     onPageChange,
     onLODChange
   }: DocumentLODViewerProps = $props();
-  // Svelte 5 state management
-  let canvasElement: HTMLCanvasElement = $state(undefined as any);
+  // Svelte, 5 state management
+  let canvasElement: HTMLCanvasElement = $state(undefined, as: any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let isWebGPUReady = $state<boolean>(false);
@@ -73,10 +73,10 @@ import type { Document } from '$lib/types';
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
   // LOD configuration based on N64 constraints
   const lodConfig = {
-    0: { textureSize: 2048, quality: 1.0, description: 'Ultra High' },
-    1: { textureSize: 1024, quality: 0.8, description: 'High' },
-    2: { textureSize: 512, quality: 0.6, description: 'Medium' },
-    3: { textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
+    0: {, textureSize: 2048, quality: 1.0, description: 'Ultra High' },
+    1: {, textureSize: 1024, quality: 0.8, description: 'High' },
+    2: {, textureSize: 512, quality: 0.6, description: 'Medium' },
+    3: {, textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
   }
   // Derived values for automatic LOD switching
   let recommendedLOD = $derived(() => {
@@ -122,7 +122,7 @@ if (!browser || !enableWebGPU) return;
     gpuDevice = await adapter.requestDevice({
       requiredFeatures: ['texture-compression-bc'],
       requiredLimits: {
-        maxTextureSize: 2048, // N64-style texture limit
+       , maxTextureSize: 2048, // N64-style texture limit
         maxBufferSize: 64 * 1024 * 1024 // 64MB like N64 cartridge
       }
     });
@@ -132,7 +132,7 @@ if (!browser || !enableWebGPU) return;
     // Configure canvas with N64-style settings
     context.configure({
       device: gpuDevice;
-      format: 'bgra8unorm',
+     , format: 'bgra8unorm',
       alphaMode: 'premultiplied',
       usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
@@ -211,7 +211,7 @@ if (!browser || !enableWebGPU) return;
   async function createPageTexture(imageData: ArrayBuffer, size: number): Promise<GPUTexture> {
     if (!gpuDevice) throw new Error('GPU device not available');
     const texture = gpuDevice.createTexture({
-      size: { width: size, height: size, depthOrArrayLayers: 1 },
+      size: {, width: size, height: size, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT;
     });
@@ -245,7 +245,7 @@ if (!browser || !enableWebGPU) return;
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{,
         view: textureView,
-        clearValue: { r: 0.1, g: 0.1, b: 0.2, a: 1.0 }, // NES-style dark blue
+        clearValue: {, r: 0.1, g: 0.1, b: 0.2, a: 1.0 }, // NES-style dark blue
         loadOp: 'clear',
         storeOp: 'store'
       }]
@@ -506,7 +506,7 @@ if (!browser || !enableWebGPU) return;
     align-items: center;
     margin-bottom: 1rem;
     padding: 1rem;
-    background: rgba(0, 0, 0, 0.3);
+   , background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
   }
   .navigation-controls {
@@ -522,7 +522,7 @@ if (!browser || !enableWebGPU) return;
   }
   .zoom-info {
     padding: 0.25rem 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
+   , background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     font-size: 0.875rem;
     min-width: 60px;
@@ -551,11 +551,11 @@ if (!browser || !enableWebGPU) return;
   }
   .loading-overlay {
     position: absolute;
-    top: 0,
+   , top: 0,
     left: 0;
-    right: 0,
+   , right: 0,
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -563,7 +563,7 @@ if (!browser || !enableWebGPU) return;
     gap: 1rem;
   }
   .lod-stats {
-    background: rgba(0, 0, 0, 0.4);
+   , background: rgba(0, 0, 0, 0.4);
   }
   .stats-grid {
     display: grid;
@@ -596,7 +596,7 @@ if (!browser || !enableWebGPU) return;
   /* N64-style animations */
   @keyframes indeterminate {
     0% {
-      transform: translateX(-100%);
+     , transform: translateX(-100%);
     }
     100% {
       transform: translateX(100%);
@@ -609,7 +609,7 @@ if (!browser || !enableWebGPU) return;
   @media (max-width: 768px) {
     .document-controls {
       grid-template-columns: 1fr;
-      gap: 0.5rem;
+     , gap: 0.5rem;
     }
     .navigation-controls,
     .view-controls,

@@ -1,8 +1,8 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import Search from 'lucide-svelte';
-  import X from 'lucide-svelte'; // use default import for X (TS hint suggested this)
-  // Convert to Svelte 5 runes pattern
+  // Svelte, 5 runes are auto-imported
+  import Search from, 'lucide-svelte';
+  import X from, 'lucide-svelte'; // use default import for X (TS hint suggested this)
+  // Convert to Svelte, 5 runes pattern
   let { placeholder = 'Search...', value = $bindable(''), debounceTime = 300, onsearch = undefined } = $props();
   let debounceTimer = $state<number | undefined>(undefined);
   let inputElement = $state<HTMLInputElement | null>(null);
@@ -43,7 +43,7 @@
   </div>
   <input
     bind:this={inputElement}
-    bind:value={value}
+   , bind:value={value}
     {placeholder}
     class="search-input"
     type="text"
@@ -65,10 +65,10 @@
     position: relative;
     display: flex;
     align-items: center;
-    background: var(--bg-primary);
+   , background: var(--bg-primary);
     border: 1px solid var(--border-light);
     border-radius: 8px;
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
     min-height: 40px;
   }
   .search-input-container:hover {
@@ -76,14 +76,14 @@
   }
   .search-input-container.focused {
     border-color: var(--harvard-crimson);
-    box-shadow: 0 0 0 2px var(--bg-secondary);
+    box-shadow: 0, 0 0 2px var(--bg-secondary);
   }
   .search-icon {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 12px;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     pointer-events: none;
   }
   .search-input {
@@ -92,11 +92,11 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--text-primary);
+   , color: var(--text-primary);
     font-size: 0.875rem;
   }
   .search-input::placeholder {
-    color: var(--text-muted);
+   , color: var(--text-muted);
     opacity: 1; /* Ensure consistent placeholder opacity across browsers */
   }
   .clear-button {
@@ -107,15 +107,15 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     border-radius: 4px;
     transition: all 0.2s ease;
   }
   .clear-button:hover {
-    color: var(--text-primary);
+   , color: var(--text-primary);
     background: var(--bg-tertiary);
   }
   .clear-button:active {
-    transform: scale(0.95);
+   , transform: scale(0.95);
   }
 </style>

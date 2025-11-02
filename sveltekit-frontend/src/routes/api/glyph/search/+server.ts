@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { glyphDiffusionService } from '$lib/services/glyph-diffusion-service.js'
-import { embeddingService } from '$lib/services/embedding-service.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { glyphDiffusionService } from, '$lib/services/glyph-diffusion-service.js'
+import { embeddingService } from, '$lib/services/embedding-service.js'
 
 // Define the structure of metadata within a glyph manifest
 interface GlyphManifestMetadata {
@@ -20,7 +20,7 @@ interface GlyphManifest {
 interface GlyphSearchResult {
   id?: string;
   manifest?: GlyphManifest;
-  created_at?: string; // Assuming it's a string timestamp'
+  created_at?: string; // Assuming it's a: string timestamp'
   access_count?: number;
   // Add other properties that might be returned by the search service
 }
@@ -28,11 +28,11 @@ interface GlyphSearchResult {
 // Declare a type for the service that includes the missing method
 interface GlyphDiffusionServiceWithSearch {
   searchSimilarTensors(embedding: number[], limit: number): Promise<GlyphSearchResult[]>;
-  // Add any other methods that glyphDiffusionService might have if known
+  // Add: any other methods that glyphDiffusionService might have if known
 }
 
 // Cast the imported service to the extended type
-const typedGlyphDiffusionService: GlyphDiffusionServiceWithSearch = glyphDiffusionService as unknown as GlyphDiffusionServiceWithSearch;
+const typedGlyphDiffusionService: GlyphDiffusionServiceWithSearch = glyphDiffusionService as: unknown as GlyphDiffusionServiceWithSearch;
 
 /*
  * Glyph Tensor Search API
@@ -40,7 +40,7 @@ const typedGlyphDiffusionService: GlyphDiffusionServiceWithSearch = glyphDiffusi
  * GET /api/glyph/search - Search for similar tensor artifacts
  * POST /api/glyph/search - Search with custom embedding vector
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q')
     const limit: number = parseInt(url.searchParams.get('limit') || '10')
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!query) {
       return json({
         success: false,
-        error: 'Query; parameter: "q" is required'
+        error: 'Query;, parameter: "q" is required'
       }, { status: 400 })
     }
     // Generate embedding for search query
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })),
         count: filteredResults.length,
         search_stats: {
-          total_candidates: results.length,
+         , total_candidates: results.length,
           filtered_by_style: !!style,
           embedding_dimensions: queryEmbedding.embedding.length
         }
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })),
         count: filteredResults.length,
         search_stats: {
-          total_candidates: results.length,
+         , total_candidates: results.length,
           filtered_by_style: !!style,
           embedding_dimensions: embedding.length
         }

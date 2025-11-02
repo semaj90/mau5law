@@ -2,8 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { HTMLAttributes } from 'svelte/elements';
+  // Svelte, 5 runes are auto-imported
+  import type { HTMLAttributes } from, 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLHeadingElement> {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
   }
@@ -40,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Oswald', 'Montserrat', sans-serif;
     font-weight: 600;
     color: #f59e0b;
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     line-height: 1.2;
   }
 </style>

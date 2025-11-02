@@ -296,7 +296,7 @@ if (browser) {
   }
 </script>
 
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Trigger>
     <Button variant="ghost" class="gap-2 bits-btn bits-btn">
       <MessageCircle class="h-4 w-4" />
@@ -441,7 +441,7 @@ if (browser) {
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 
 <style>/* Custom styles for enhanced appearance */ {}
   :global(.chat-message-content) {

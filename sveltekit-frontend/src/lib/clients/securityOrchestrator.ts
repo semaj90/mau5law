@@ -16,14 +16,14 @@ interface UserClient extends Record<string, unknown> { email: string;, username
   badgeNumber?: string;
 }
 
-export interface SecurityValidationRequestClient { task: 'security_validation';, fingerprint: Fingerprint;
-  user: UserClient;
+export interface SecurityValidationRequestClient {, task: 'security_validation';, fingerprint: Fingerprint;
+ , user: UserClient;
   context?: Record<string, unknown>;
 }
 
 export interface SecurityValidationResponseClient { requestId: string;, riskScore: number;
   securityScore: number;
-  verification: Record<string, unknown>;
+ , verification: Record<string, unknown>;
   signals: Array<Record<string, unknown>>;
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
@@ -32,7 +32,7 @@ export interface SecurityValidationResponseClient { requestId: string;, riskSco
 }
 
 export async function validateSecurity(
-  payload: SecurityValidationRequestClient
+ , payload: SecurityValidationRequestClient
 ): Promise<SecurityValidationResponseClient> {
   // Build safe defaults for name parsing
   const usernameParts = payload.user.username?.split?.('.') ?? [];
@@ -72,9 +72,9 @@ export async function validateSecurity(
   const apiResponse = (await res.json()) as Record<string, unknown>;
 
   const requestId =
-    typeof apiResponse['validationId'] === 'string' ? (apiResponse['validationId'] as string) : 'unknown';
-  const riskScore = typeof apiResponse['riskScore'] === 'number' ? (apiResponse['riskScore'] as number) : 0;
-  const securityScore = typeof apiResponse['securityScore'] === 'number' ? (apiResponse['securityScore'] as number) : 0;
+    typeof apiResponse['validationId'] === 'string' ? (apiResponse['validationId'] as: string) : 'unknown';
+  const riskScore = typeof apiResponse['riskScore'] === 'number' ? (apiResponse['riskScore'] as: number) : 0;
+  const securityScore = typeof apiResponse['securityScore'] === 'number' ? (apiResponse['securityScore'] as: number) : 0;
 
   const verification =
     apiResponse['professionalVerification'] && typeof apiResponse['professionalVerification'] === 'object'
@@ -95,9 +95,9 @@ export async function validateSecurity(
   const status: SecurityValidationResponseClient['status'] =
     riskLevel === 'critical' ? 'deny' : riskLevel === 'high' ? 'review' : 'allow';
 
-  const durationMs = typeof apiResponse['processingTime'] === 'number' ? (apiResponse['processingTime'] as number) : 0;
+  const durationMs = typeof apiResponse['processingTime'] === 'number' ? (apiResponse['processingTime'], as: number) : 0;
   const modelVersion =
-    typeof apiResponse['modelVersion'] === 'string' ? (apiResponse['modelVersion'] as string) : 'enhanced-rag-v1';
+    typeof apiResponse['modelVersion'] === 'string' ? (apiResponse['modelVersion'] as: string) : 'enhanced-rag-v1';
 
   return {
     requestId,

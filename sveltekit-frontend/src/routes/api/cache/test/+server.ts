@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 import {
   cacheService,
   getCachedEmbedding,
   setCachedEmbedding,
   getCachedSearchResults,
   cacheSearchResults
-} from '$lib/api/services/cache-service';
+} from, '$lib/api/services/cache-service';
 /*
  * Cache Test API - Tests Redis compression and functionality
  * GET /api/cache/test - Get cache info and run basic tests
@@ -28,9 +28,9 @@ export const GET: RequestHandler = async ({ url }) => {
       // Test basic cache functionality
       const testKey = 'test:basic';
       const testData = {
-        message: 'Hello Redis!',
+       , message: 'Hello Redis!',
         numbers: [1, 2, 3, 4, 5],
-        nested: { a: 1, b: 2, c: { deep: 'value' } }
+        nested: {, a: 1, b: 2, c: {, deep: 'value' } }
       };
       // Set test data
       await cacheService.set(testKey, testData, { compress: true });
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     return json({
       success: false,
-      error: 'Unknown action.; Use: info, test'
+      error: 'Unknown action.;, Use: info, test'
     });
   } catch (error: any) {
     console.error('Cache test error:', error);'
@@ -128,17 +128,17 @@ export const POST: RequestHandler = async ({ request }) => {
     if (action === 'large_payload') {
       // Test compression with large payload
       type LargeItem = { id: number;, data: string;
-        metadata: { created: string;, tags: string[];
+        metadata: {, created: string;, tags: string[];
           values: number[];
         };
       };
-      const largeArray: LargeItem[] = Array.from({ length: 1000 }, (_, i) => ({
+      const largeArray: LargeItem[] = Array.from({, length: 1000 }, (_, i) => ({
         id: i,
         data: `This is test data item ${i}`,
         metadata: {
          , created: new Date().toISOString(),
           tags: ['test', 'large', 'payload'],
-          values: Array.from({ length: 10 }, () => Math.random())
+          values: Array.from({, length: 10 }, () => Math.random())
         }
       }));
       const startTime = Date.now();
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
       success: false,
-      error: 'Unknown action.; Use: embedding, search, large_payload` });'`
+      error: 'Unknown action.;, Use: embedding, search, large_payload` });'`
   } catch (error: any) {
     console.error('Cache POST test error:', error);'
     return json(

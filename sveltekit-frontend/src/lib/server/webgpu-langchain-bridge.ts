@@ -3,16 +3,16 @@
  * High-performance bridge connecting WebGPU-optimized caching with LangChain extraction pipeline
  * Provides GPU-accelerated embedding generation and caching for legal document processing
  */
-import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from './embedding-cache-middleware.js';
-import { webgpuRedisOptimizer, optimizedCache } from './webgpu-redis-optimizer.js';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from, './embedding-cache-middleware.js';
+import { webgpuRedisOptimizer, optimizedCache } from, './webgpu-redis-optimizer.js';
+import { langExtractService } from, '$lib/services/langextract-ollama-service.js';
 export interface LangChainWebGPUConfig { useWebGPUCache: boolean;, batchSize: number;
   cacheEmbeddings: boolean;
   compressVectors: boolean;
   practiceArea: string;
   documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
 }
-export interface ProcessingResult { extraction: {, summary: string;
+export interface ProcessingResult {, extraction: {, summary: string;
     keyTerms: string[];
     entities: any[];
     contractTerms?: any[];
@@ -27,18 +27,18 @@ export interface ProcessingResult { extraction: {, summary: string;
     processingTime: number;
     cacheHit: boolean;
   }
-  performance: { totalTime: number;, extractionTime: number;
+  performance: {, totalTime: number;, extractionTime: number;
     embeddingTime: number;
     webgpuUtilized: boolean;
     throughput: number;
   }
-  metadata: { documentLength: number;, embeddingDimensions: number;
+  metadata: {, documentLength: number;, embeddingDimensions: number;
     sectionsProcessed: number;
     cacheStrategy: string;
   }
 }
 export class WebGPULangChainBridge {
-  private config: LangChainWebGPUConfig;
+  private, config: LangChainWebGPUConfig;
   constructor(config: Partial<LangChainWebGPUConfig> = {}) {
     this.config = {
       useWebGPUCache: config.useWebGPUCache ?? true,
@@ -53,7 +53,7 @@ export class WebGPULangChainBridge {
    * Process legal document with integrated LangChain extraction + WebGPU caching
    */
   async processLegalDocument(
-    documentText: string,
+   , documentText: string,
     options: Partial<LangChainWebGPUConfig> = {}
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
@@ -76,7 +76,7 @@ export class WebGPULangChainBridge {
         throughput: documentText.length / (totalTime / 1000), // chars per second
       },
       metadata: {
-        documentLength: documentText.length,
+       , documentLength: documentText.length,
         embeddingDimensions: embeddingResult.documentEmbedding.length,
         sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
         cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard' }'` }'`
@@ -85,7 +85,7 @@ export class WebGPULangChainBridge {
    * Batch process multiple documents with WebGPU optimization
    */
   async processBatchDocuments(
-    documents: Array<{, id: string; content: string; metadata?: any }>,
+   , documents: Array<{, id: string;, content: string; metadata?: any }>,
     options: Partial<LangChainWebGPUConfig> = {}
   ): Promise<ProcessingResult[]> {
     const mergedConfig = { ...this.config, ...options }
@@ -117,7 +117,7 @@ export class WebGPULangChainBridge {
       legalDates: any[];
       risks: any[];
     }
-    processingTime: number;
+   , processingTime: number;
   }> {
     const startTime = Date.now();
     try {
@@ -192,7 +192,7 @@ export class WebGPULangChainBridge {
     compressionRatio: number;
     processingTime: number;
     cacheHit: boolean;
-    webgpuUtilized: boolean;
+   , webgpuUtilized: boolean;
   }> {
     const startTime = Date.now();
     let cacheHit = false;
@@ -316,7 +316,7 @@ export class WebGPULangChainBridge {
    * Get comprehensive processing statistics
    */
   async getProcessingStats(): Promise<{ webgpuOptimizer: any;, embeddingCache: any;
-    langchainService: { available: boolean;, models: string[];
+    langchainService: {, available: boolean;, models: string[];
     }
   }> {
     const [webgpuStats, cacheStats, ollamaAvailable] = await Promise.all([
@@ -333,7 +333,7 @@ export class WebGPULangChainBridge {
     return {
       webgpuOptimizer: webgpuStats,
       embeddingCache: cacheStats,
-      langchainService: { available: ollamaAvailable;, models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
+      langchainService: {, available: ollamaAvailable;, models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
       }
     }
   }
@@ -361,7 +361,7 @@ export async function processLegalDocumentWithWebGPU(
   return webgpuLangChainBridge.processLegalDocument(text, options);
 }
 export async function processBatchDocumentsWithWebGPU(
-  documents: Array<{, id: string; content: string; metadata?: any }>,
+  documents: Array<{, id: string;, content: string; metadata?: any }>,
   options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult[]> {
   return webgpuLangChainBridge.processBatchDocuments(documents, options);

@@ -13,7 +13,7 @@ interface ParseOptions {
   structured_clone?: boolean;
 }
 export class SIMDJSONWorkerClient {
-  private worker: Worker | null = null;
+  private, worker: Worker | null = null;
   private messageId = 0;
   private pendingRequests = new Map<
     string,
@@ -72,24 +72,24 @@ export class SIMDJSONWorkerClient {
     this.pendingRequests.delete(id);
     // Resolve or reject based on message type
     switch (type) {
-      case 'PARSE_COMPLETE':
-      case 'BATCH_COMPLETE':
-      case 'VECTOR_PARSE_COMPLETE':
-      case 'STATS':
-      case 'BENCHMARK_COMPLETE':
-      case 'STATS_RESET':
+      case, 'PARSE_COMPLETE':
+      case, 'BATCH_COMPLETE':
+      case, 'VECTOR_PARSE_COMPLETE':
+      case, 'STATS':
+      case, 'BENCHMARK_COMPLETE':
+      case, 'STATS_RESET':
         pending.resolve({
           data: message.data,
           metadata: message.metadata,
           success: true
         });
         break;
-      case 'PARSE_ERROR':
-      case 'ERROR':
+      case, 'PARSE_ERROR':
+      case, 'ERROR':
         pending.reject(new Error(message.error || 'Unknown worker error'));
         break;
       default:
-        pending.reject(new Error(`Unknown message; type: ${type}`));
+        pending.reject(new Error(`Unknown message;, type: ${type}`));
     }
   }
   /**
@@ -141,7 +141,7 @@ export class SIMDJSONWorkerClient {
     return this.initPromise;
   }
   /**
-   * Parse JSON string using SIMD acceleration
+   * Parse JSON: string using SIMD acceleration
    */
   async parseJSON(jsonString: string, options: ParseOptions = {}): Promise<any> {
     if (!this.isReady) {

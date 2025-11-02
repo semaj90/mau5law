@@ -1,11 +1,11 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 // Mock agent system status (in production, this would be real system monitoring)
 const systemStatus = {
   agents: {
     'demo-agent-1': {
-      id: 'demo-agent-1',
+     , id: 'demo-agent-1',
       name: 'Legal AI Agent Alpha',
       status: 'idle',
       capabilities: ['typescript', 'svelte', 'legal-document-processing'],
@@ -26,7 +26,7 @@ const systemStatus = {
     }
   },
   system: {
-    status: 'operational',
+   , status: 'operational',
     uptime: '2d 14h 32m',
     activeAgents: 2,
     idleAgents: 2,
@@ -36,16 +36,16 @@ const systemStatus = {
     systemLoad: 0.35,
     memoryUsage: '12.4GB / 30GB'
   },
-  integration: { ragSystem: {, status: 'connected', lastQuery: '2 minutes ago' },
-    gemma3: { status: 'connected', model: 'gemma3:legal-latest', gpu: 'RTX 3060 Ti' },
-    tensorrt: { status: 'optimized', accelerated: true, speedup: '2.3x' },
-    pgvector: { status: 'connected', embeddings: 15420 },
-    redis: { status: 'connected', cached_items: 847 },
-    postgresql: { status: 'connected', uptime: '2d 14h 32m' }
+  integration: {, ragSystem: {, status: 'connected', lastQuery: '2 minutes ago' },
+    gemma3: {, status: 'connected', model: 'gemma3:legal-latest', gpu: 'RTX, 3060 Ti' },
+    tensorrt: {, status: 'optimized', accelerated: true, speedup: '2.3x' },
+    pgvector: {, status: 'connected', embeddings: 15420 },
+    redis: {, status: 'connected', cached_items: 847 },
+    postgresql: {, status: 'connected', uptime: '2d 14h 32m' }
   }
 };
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const agentId = url.searchParams.get('agentId');
     const detailed = url.searchParams.get('detailed') === 'true';
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
           errorRate: 1 - agent.successRate,
           specializations: agent.capabilities,
           performance: {
-            speed: agent.successRate > 0.9 ? 'excellent' : agent.successRate > 0.8 ? 'good' : 'needs_improvement',
+           , speed: agent.successRate > 0.9 ? 'excellent' : agent.successRate > 0.8 ? 'good' : 'needs_improvement',
             reliability: agent.successRate,
             availability: agent.status === 'idle' ? 1.0 : 0.0
           }
@@ -104,13 +104,13 @@ export const GET: RequestHandler = async ({ url }) => {
           gpuUtilization: '23%'
         },
         reliability: {
-          systemUptime: 99.8,
+         , systemUptime: 99.8,
           agentAvailability: 100.0,
           errorRate: 0.07,
           lastIncident: '3 days ago'
         },
         capacity: {
-          maxConcurrentTasks: 8,
+         , maxConcurrentTasks: 8,
           currentLoad: 0.35,
           scalingThreshold: 0.8,
           autoScalingEnabled: true

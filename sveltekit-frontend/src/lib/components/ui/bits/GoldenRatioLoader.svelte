@@ -1,9 +1,9 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  	import { tweened } from 'svelte/motion';
-  import { cubicInOut, elasticOut } from 'svelte/easing';
-  	// import * as Progress from 'bits-ui'; // Removed - not needed for this component
-  	import { onMount } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  	import { tweened } from, 'svelte/motion';
+  import { cubicInOut, elasticOut } from, 'svelte/easing';
+  	// import * as Progress from, 'bits-ui'; // Removed - not needed for this component
+  	import { onMount } from, 'svelte';
   	// Props
   	interface Props {
   		status?: 'loading' | 'processing' | 'success' | 'error';
@@ -24,23 +24,23 @@
   	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
   	// Animated properties
   	const progressValue = tweened(0, {
-  		duration 800,
+  		duration, 800,
   		easing: cubicInOut;
   	});
   	const containerWidth = tweened(100, {
-  		duration 1200,
+  		duration, 1200,
   		easing: elasticOut;
   	});
   	const containerHeight = tweened(8, {
-  		duration 1200,
+  		duration, 1200,
   		easing: elasticOut;
   	});
   	const borderRadius = tweened(4, {
-  		duration 1000,
+  		duration, 1000,
   		easing: cubicInOut;
   	});
   	const opacity = tweened(1, {
-  		duration 600,
+  		duration, 600,
   		easing: cubicInOut;
   	});
   	// Progress state management
@@ -49,25 +49,25 @@
   	$effect(() => {
   		progressValue.set(progress);
   		switch (status) {
-  			case 'loading':
+  			case, 'loading':
   				containerWidth.set(100);
   				containerHeight.set(8);
   				borderRadius.set(4);
   				opacity.set(1);
   				break;
-  			case 'processing':
+  			case, 'processing':
   				containerWidth.set(100 * GOLDEN_RATIO);
   				containerHeight.set(12);
   				borderRadius.set(6);
   				opacity.set(0.9);
   				break;
-  			case 'success':
+  			case, 'success':
   				containerWidth.set(100 * GOLDEN_RATIO * GOLDEN_RATIO);
   				containerHeight.set(200);
   				borderRadius.set(12);
   				opacity.set(1);
   				break;
-  			case 'error':
+  			case, 'error':
   				containerWidth.set(80);
   				containerHeight.set(10);
   				borderRadius.set(8);
@@ -114,7 +114,7 @@
   style:opacity={$opacity}
 >
   {#if status === 'loading' || status === 'processing'}
-    <!-- Loading State: Progress Bar with Golden, Ratio, Proportions -->
+    <!-- Loading, State: Progress Bar with Golden, Ratio, Proportions -->
     <div
       class="relative w-full h-full bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg overflow-hidden"
     >
@@ -137,7 +137,7 @@
         </p>
         <!-- Spiral, Dots, Animation -->
         <div class="relative w-full, h-16, mt-2">
-          <svg class="absolute inset-0 w-full h-full" viewBox="0 0, 100, 100">
+          <svg class="absolute inset-0 w-full h-full" viewBox="0, 0, 100, 100">
             {#each spiralPoints as point, i}
               <circle
                 cx={point.x}
@@ -153,7 +153,7 @@
       </div>
     </div>
   {:else if status === 'success'}
-    <!-- Success State: Expanded Card with, AI, Output -->
+    <!-- Success, State: Expanded Card with, AI, Output -->
     <div
       class="w-full h-full bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 border border-amber-300 rounded-xl shadow-lg p-6 relative overflow-hidden"
     >
@@ -189,7 +189,7 @@
           <button
             class="px-6 py-2 bg-white hover:bg-amber-50 text-amber-700 border border-amber-300 rounded-lg transition-colors duration-200"
             ;
-            style:flex="0 0 {100 / GOLDEN_RATIO}%"
+           , style:flex="0, 0 {100 / GOLDEN_RATIO}%"
           >
             Export
           </button>
@@ -222,7 +222,7 @@
   }
   /* Golden ratio inspired gradients */
   .bg-golden-gradient {
-    background: linear-gradient(
+   , background: linear-gradient(
       137.508deg,
       /* Golden angle */ #fbbf24 0%,
       #f59e0b 61.8%,
@@ -234,14 +234,14 @@
     width: 4px;
   }
   .ai-output::-webkit-scrollbar-track {
-    background: rgba(251, 191, 36, 0.1);
+   , background: rgba(251, 191, 36, 0.1);
     border-radius: 2px;
   }
   .ai-output::-webkit-scrollbar-thumb {
-    background: rgba(251, 191, 36, 0.5);
+   , background: rgba(251, 191, 36, 0.5);
     border-radius: 2px;
   }
   .ai-output::-webkit-scrollbar-thumb:hover {
-    background: rgba(251, 191, 36, 0.7);
+   , background: rgba(251, 191, 36, 0.7);
   }
 </style>

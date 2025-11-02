@@ -2,22 +2,22 @@
  * Comprehensive Ingestion API
  * Integrates XState workflow + LokiJS tracking + RabbitMQ + Drizzle ORM
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { ingestionService } from '$lib/server/workflows/ingestion-service.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { ingestionService } from, '$lib/server/workflows/ingestion-service.js'
 
 // Define types for job details
 interface JobDetails { id: string;, status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'retrying' | 'paused';
-  progress: number; // 0-100
-  metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'; createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+ , progress: number; // 0-100
+  metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'; createdAt: string; // ISO date: string;
+  updatedAt: string; // ISO, date: string
   error?: string;
   // Add other relevant job properties as needed by ingestionService
 }
 
 // Define types for workflow details (simplified XState representation)
 interface WorkflowState {
-  state: string | Record<string, string>; // Changed: 'value'; to: 'state' to match ingestionService output; context: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
+  state: string | Record<string, string>; // Changed: 'value'; to: 'state' to match ingestionService output;, context: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
   history?: string[]; // Optional history of states
   // Add other relevant XState properties as needed by ingestionService
 }
@@ -47,7 +47,7 @@ interface IngestionDashboardData {
 
 // Define types for POST request body actions using a discriminated union
 type PostAction =
-  | { action: 'submit_document'; documentId: string; chunks: string[]; metadata?: Record<string, unknown> } // Changed: 'unknown[]'; to: 'string[]'
+  | { action: 'submit_document'; documentId: string;, chunks: string[]; metadata?: Record<string, unknown> } // Changed: 'unknown[]'; to: 'string[]'
   | { action: 'get_job'; jobId: string }
   | { action: 'get_dashboard' }
   | { action: 'retry_job'; jobId: string }
@@ -56,10 +56,10 @@ type PostAction =
   | { action: 'resume_processing' }
   | { action: 'set_concurrency'; concurrency: number }
   | { action: 'clear_completed' }
-  | { action: 'reset_stats' };
+  | {, action: 'reset_stats' };
 
 // Initialize the ingestion service
-// await ingestionService.initialize() // REMOVED: This was causing; the: "Declaration or statement expected" error.
+// await ingestionService.initialize() // REMOVED: This was causing;, the: "Declaration or statement expected" error.
 
 let isIngestionServiceInitialized = $state<boolean>(false);
 
@@ -76,15 +76,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const data: PostAction = await request.json(); // Type assertion for incoming data
     const { action, ...params } = data; // params will be correctly typed based on action
     switch (action) {
-      case 'submit_document': {
-        // params is now { documentId: string; chunks: any[]; metadata?: Record<string, any> }
+      case, 'submit_document': {
+        // params is now { documentId: string;, chunks: any[]; metadata?: Record<string, any> }
         const { documentId, chunks, metadata } = params as Extract<PostAction, { action: 'submit_document' }>;
         // Validate input
         if (!documentId || !chunks || !Array.isArray(chunks)) {
           return json(
             {
               success: false,
-              error: 'Missing required; fields: documentId, chunks'
+              error: 'Missing required;, fields: documentId, chunks'
             },
             { status: 400 }
           );
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedTime: result.estimatedTime,
           trackingUrl: '/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}' });
       }
-      case 'get_job': {
+      case, 'get_job': {
         // params is now { jobId: string }
         const { jobId } = params as Extract<PostAction, { action: 'get_job' }>;
         if (!jobId) {
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
           workflow: result.workflow
         });
       }
-      case 'get_dashboard': {
+      case, 'get_dashboard': {
         // params is now {}
         const dashboardData: IngestionDashboardData = ingestionService.getDashboardData();
         return json({
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
           dashboard: dashboardData
         });
       }
-      case 'retry_job': {
+      case, 'retry_job': {
         // params is now { jobId: string }
         const { jobId } = params as Extract<PostAction, { action: 'retry_job' }>;
         if (!jobId) {
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message
         });
       }
-      case 'cancel_job': {
+      case, 'cancel_job': {
         // params is now { jobId: string }
         const { jobId } = params as Extract<PostAction, { action: 'cancel_job' }>;
         if (!jobId) {
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message
         });
       }
-      case 'pause_processing': {
+      case, 'pause_processing': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.pauseProcessing();
         if (!result.success) {
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Processing paused successfully'
         });
       }
-      case 'resume_processing': {
+      case, 'resume_processing': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.resumeProcessing();
         if (!result.success) {
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Processing resumed successfully'
         });
       }
-      case 'set_concurrency': {
+      case, 'set_concurrency': {
         // params is now { concurrency: number }
         const { concurrency } = params as Extract<PostAction, { action: 'set_concurrency' }>;
         if (!concurrency) {
@@ -215,7 +215,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message
         });
       }
-      case 'clear_completed': {
+      case, 'clear_completed': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.clearCompletedJobs();
         if (!result.success) {
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Completed jobs cleared successfully'
         });
       }
-      case 'reset_stats': {
+      case, 'reset_stats': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.resetStats();
         if (!result.success) {
@@ -244,8 +244,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json(
           {
-            success: false,
-            error: `Unknown; action: ${action}' },'`
+           , success: false,
+            error: `Unknown;, action: ${action}' },'`
           { status: 400 }
         );
     }
@@ -282,7 +282,7 @@ export const GET: RequestHandler = async ({ url }) => {
       });
     }
     // default: return API documentation
-    const dashboardDataForDocs: IngestionDashboardData = ingestionService.getDashboardData();
+    const, dashboardDataForDocs: IngestionDashboardData = ingestionService.getDashboardData();
     return json({
       success: true,
       api: {
@@ -328,7 +328,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
   // or by integrating with a dedicated WebSocket server.
   try {
     const body = await request.json(); // Read the request body to avoid: 'request' being unused
-    console.log('Received PATCH request for ingestion real-time updates:', body);
+    console.log('Received PATCH request for ingestion real-time, updates:', body);
 
     return json(
       {

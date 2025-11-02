@@ -107,7 +107,7 @@
   <div
     class="fixed inset-0 bg-black/50 z-30 lg:hidden"
     onclick={toggleSidebar}
-    transition:fade={{ duration: 200 }}
+    use:fade={{ duration: 200 }}
   ></div>
 {/if}
 <!-- Sidebar Container -->
@@ -149,7 +149,7 @@
       {#if isExpanded}
         <span
           class="ml-3 font-medium whitespace-nowrap"
-          transition:fly={{ x: -20, duration: 200, delay: 100 }}
+          use:fly={{ x: -20, duration: 200, delay: 100 }}
         >
           {homeLabel}
         </span>
@@ -196,7 +196,7 @@
               {#if isExpanded}
                 <div
                   class="ml-3 flex-1 flex items-center justify-between min-w-0";
-                  transition:fly={{ x: -20, duration: 200, delay: 50 }}
+                  use:fly={{ x: -20, duration: 200, delay: 50 }}
                 >
                   <span class="font-medium truncate">
                     {item.label}
@@ -241,7 +241,7 @@
             {#if isExpanded && item.children && item.children.length > 0}
               <ul
                 class="mt-2 ml-6 space-y-1 border-l border-gray-200 dark: border-gray-700 pl-4";
-                transition:fly={{ x: -10, duration: 200, delay: 100 }}
+                use:fly={{ x: -10, duration: 200, delay: 100 }}
               >
                 {#each item.children as child (child.id)}
                   <li>
@@ -306,7 +306,7 @@
         {#if isExpanded}
           <span
             class="ml-2 text-sm font-medium"
-            transition:fly={{ x: -20, duration: 200, delay: 50 }}
+            use:fly={{ x: -20, duration: 200, delay: 50 }}
           >
             {isCollapsed ? 'Expand' : 'Collapse'}
           </span>

@@ -1,14 +1,14 @@
 // @ts-nocheck
-import { building } from '$app/environment';
-import * as schema from '$lib/server/db/schema-postgres';
-import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { Pool } from 'pg';
+import { building } from, '$app/environment';
+import * as schema from, '$lib/server/db/schema-postgres';
+import { drizzle, type PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { Pool } from, 'pg';
 let _db: PostgresJsDatabase<typeof schema> | null = null;
-let _pool: Pool | null = null;
+let, _pool: Pool | null = null;
 function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   if (building) {
     console.log('Skipping database initialization during build');
-    return null;
+    return: null;
   }
   if (_db) return _db;
   const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/prosecutor_db';
@@ -20,7 +20,7 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   console.log('✅ PostgreSQL database connected successfully');
   return _db;
 }
-export const db: PostgresJsDatabase<typeof, schema> = new Proxy({} as any, {
+export const db: PostgresJsDatabase<typeof, schema> = new Proxy({} as: any, {
   get(target, prop, receiver) {
     const database = initializeDatabase();
     if (!database) {
@@ -31,7 +31,7 @@ export const db: PostgresJsDatabase<typeof, schema> = new Proxy({} as any, {
 });
 export const isPostgreSQL = true;
 export const isSQLite = false;
-export * from '$lib/server/db/schema-postgres';
+export * from, '$lib/server/db/schema-postgres';
 export function closeDatabase() {
   if (_pool) {
     _pool.end();

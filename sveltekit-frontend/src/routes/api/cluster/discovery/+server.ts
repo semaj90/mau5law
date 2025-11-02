@@ -1,53 +1,53 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit';
 /*
  * Service Discovery and Failover API
  * Automatic service discovery, health monitoring, and failover mechanisms
- * Integrates with cluster-manager Go service on port 8103
+ * Integrates with cluster-manager Go service on port, 8103
  */
-import { productionServiceClient } from '$lib/services/productionServiceClient';
+import { productionServiceClient } from, '$lib/services/productionServiceClient';
 
 interface ServiceInstance { id: string;, name: string;
   host: string;
   port: number;
   protocols: string[];
   status: 'healthy' | 'unhealthy' | 'unknown' | 'starting' | 'stopping';
-  health: { score: number; // 0-100, latency: number;
+  health: {, score: number; // 0-100, latency: number;
     uptime: number;
     lastCheck: string;
     consecutiveFailures: number;
   };
-  metadata: { version: string;, capabilities: string[];
+  metadata: {, version: string;, capabilities: string[];
     region?: string;
     weight: number;
   };
-  failover: { primary: boolean;, backups: string[];
+  failover: {, primary: boolean;, backups: string[];
     autoFailover: boolean;
     failoverThreshold: number;
   };
 }
 interface DiscoveryRegistry {
-  services: Record<string, ServiceInstance[]>;
+ , services: Record<string, ServiceInstance[]>;
   totalServices: number;
   healthyServices: number;
   lastUpdate: string;
-  discoveryConfig: { checkInterval: number;, failoverTimeout: number;
+  discoveryConfig: {, checkInterval: number;, failoverTimeout: number;
     healthThreshold: number;
   };
 }
-interface FailoverEvent { id: string;, timestamp: string;
+interface FailoverEvent {, id: string;, timestamp: string;
   serviceId: string;
   reason: string;
-  from string;
+  from: string;
   to: string;
   duration: number;
-  success: boolean;
+ , success: boolean;
 }
 // Add the missing input type used by registerService()
 interface RegisterServiceInput {
   name: string;
   host?: string;
-  port: number;
+ , port: number;
   protocols?: string[];
   version?: string;
   capabilities?: string[];
@@ -66,29 +66,29 @@ const serviceRegistry = new Map<string, ServiceInstance[]>();
 const failoverHistory: FailoverEvent[] = [];
 // Initialize with known services from ecosystem
 const KNOWN_SERVICES = [
-  // Tier 1: Core Services,
+  // Tier, 1: Core Services,
   { name: 'enhanced-rag', port: 8094, protocols: ['http', 'quic'], primary: true },
   { name: 'upload-service', port: 8093, protocols: ['http'], primary: true },
   { name: 'kratos-server', port: 50051, protocols: ['grpc'], primary: true },
   // Tier 2: Advanced Services
-  { name: 'advanced-cuda', port: 8095, protocols: ['http', 'quic', 'grpc'], primary: false },
+  {, name: 'advanced-cuda', port: 8095, protocols: ['http', 'quic', 'grpc'], primary: false },
   { name: 'dimensional-cache', port: 8097, protocols: ['http', 'quic'], primary: false },
   { name: 'xstate-manager', port: 8098, protocols: ['http', 'websocket'], primary: false },
   { name: 'module-manager', port: 8099, protocols: ['http', 'grpc'], primary: false },
   { name: 'recommendation-engine', port: 8100, protocols: ['http', 'websocket'], primary: false },
-  // Additional services (sampling from the 37 total)
+  // Additional services (sampling from the, 37 total)
   { name: 'vector-service', port: 8101, protocols: ['http', 'grpc'], primary: false },
   { name: 'load-balancer', port: 8102, protocols: ['http', 'quic'], primary: true },
   { name: 'cluster-manager', port: 8103, protocols: ['http', 'grpc'], primary: true },
   { name: 't5-transformer', port: 8122, protocols: ['http'], primary: false },
   { name: 'multi-core-ollama', port: 8125, protocols: ['http'], primary: false }
 ];
-export const POST: RequestHandler = async ({ request, url }) => {
+export const, POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action') || 'discover';
     const body = await request.json();
     switch (action) {
-      case 'register': {
+      case, 'register': {
         const { service } = body;
         if (!service || !service.name || !service.port) {
           return json({
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'deregister': {
+      case, 'deregister': {
         const { serviceId } = body;
         const deregistered = await deregisterService(serviceId);
         return json({
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'health-check': {
+      case, 'health-check': {
         const { serviceId, force = false } = body;
         const health = serviceId ? await checkServiceHealth(serviceId, force) : await performFullHealthCheck(force);
         return json({
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'failover': {
+      case, 'failover': {
         const { serviceId, reason = 'manual', targetInstance } = body;
         const failoverResult = await executeFailover(serviceId, reason, targetInstance);
         return json({
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'update-config': {
+      case, 'update-config': {
         const { config } = body;
         const updated = await updateDiscoveryConfig(config);
         return json({
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'discover': {
+      case, 'discover': {
         const { force = false } = body;
         const discovered = await discoverServices(force);
         return json({
@@ -157,8 +157,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default: return json(
           {
-            success: false,
-            error: `Unknown; action: ${action}`,
+           , success: false,
+            error: `Unknown;, action: ${action}`,
             availableActions: ['register', 'deregister', 'health-check', 'failover', 'update-config', 'discover']
           },
           { status: 400 }
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Service mesh coordination',
       ],
       endpoints: {
-        registry: '/api/cluster/discovery (GET)',
+       , registry: '/api/cluster/discovery (GET)',
         service_instances: '/api/cluster/discovery?service={name} (GET)',
         register: '/api/cluster/discovery?action=register (POST)',
         health_check: '/api/cluster/discovery?action=health-check (POST)',
@@ -216,7 +216,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: Date.now()
     };
     if (includeHistory) {
-      response.failoverHistory = failoverHistory.slice(-20); // Last 20 events
+      response.failoverHistory = failoverHistory.slice(-20); // Last, 20 events
     }
     return json(response);
   } catch (error: any) {
@@ -253,7 +253,7 @@ type DiscoveryConfig = {
   healthThreshold?: number;
 };
 
-// small helper to format unknown errors
+// small helper to, format: unknown errors
 function formatError(err: any): string {
   if (err instanceof Error) return err.message;
   try {
@@ -278,7 +278,7 @@ async function getServiceRegistry(): Promise<DiscoveryRegistry> {
     healthyServices: healthyCount,
     lastUpdate: new Date().toISOString(),
     discoveryConfig: {
-      checkInterval: 30000, // 30 seconds
+     , checkInterval: 30000, // 30 seconds
       failoverTimeout: 5000, // 5 seconds
       healthThreshold: 70
     }
@@ -287,27 +287,27 @@ async function getServiceRegistry(): Promise<DiscoveryRegistry> {
 async function registerService(serviceData: RegisterServiceInput): Promise<ServiceInstance> {
   // <- typed, input
   const service: ServiceInstance = {
-    id: '${serviceData.name}-${serviceData.host ?? 'localhost` }-${serviceData.port}`,
+   , id: '${serviceData.name}-${serviceData.host ?? 'localhost` }-${serviceData.port}`,
     name: serviceData.name,
     host: serviceData.host || 'localhost',
     port: serviceData.port,
     protocols: serviceData.protocols || ['http'],
     status: 'unknown',
     health: {
-      score: 0,
+     , score: 0,
       latency: 0,
       uptime: 0,
       lastCheck: new Date().toISOString(),
       consecutiveFailures: 0
     },
     metadata: {
-      version: serviceData.version || '1.0.0',
+     , version: serviceData.version || '1.0.0',
       capabilities: serviceData.capabilities || [],
       region: serviceData.region,
       weight: serviceData.weight ?? 100
     },
     failover: {
-      primary: serviceData.primary || false,
+     , primary: serviceData.primary || false,
       backups: serviceData.backups || [],
       autoFailover: serviceData.autoFailover !== false,
       failoverThreshold: serviceData.failoverThreshold || 3
@@ -397,7 +397,7 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
 }
 async function performFullHealthCheck(force: boolean = false): Promise<{ summary: { total: number; healthy: number; unhealthy: number; healthPercentage: number };
   results: HealthCheckResult[];
-  timestamp: string;
+ , timestamp: string;
 }> {
   const allServices = Array.from(serviceRegistry.values()).flat();
   const results = await Promise.all(allServices.map(service => checkServiceHealth(service.id, force)));
@@ -447,7 +447,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
     target.failover.primary = true;
 
     const failoverEvent: FailoverEvent = {
-      id: `failover-${Date.now()}`,
+     , id: `failover-${Date.now()}`,
       timestamp: new Date().toISOString(),
       serviceId: service.id,
       reason,
@@ -470,7 +470,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
     };
   } catch (error: any) {
     const failoverEvent: FailoverEvent = {
-      id: `failover-failed-${Date.now()}`,
+     , id: `failover-failed-${Date.now()}`,
       timestamp: new Date().toISOString(),
       serviceId: service.id,
       reason,
@@ -509,7 +509,7 @@ async function discoverServices(force: boolean = false): Promise<ServiceInstance
 }
 async function updateDiscoveryConfig(config: Partial<DiscoveryConfig>): Promise<{ checkInterval: number;, failoverTimeout: number;
   healthThreshold: number;
-  updated: string;
+ , updated: string;
 }> {
   // In production, this would update persistent configuration
   return {
@@ -524,7 +524,7 @@ function findServiceById(serviceId: string): ServiceInstance | null {
     const service = instances.find(s => s.id === serviceId)
     if (service) return service
   }
-  return null
+  return: null
 }
 async function performHealthCheck(service: ServiceInstance): Promise<boolean> {
   try {

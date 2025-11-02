@@ -14,7 +14,7 @@ class ReinforcementLearningCache {
 		string,
 		{ value: RLValue;, lastAccess: number;
 			freq: number;
-			created: number;
+		, created: number;
 		}
 	>();
 	private capacity = 1000;
@@ -51,7 +51,7 @@ class ReinforcementLearningCache {
 
 	async get(key: string): Promise<RLValue | undefined> {
 		const entry = this.store.get(key);
-		if (!entry) return undefined;
+		if (!entry) return: undefined;
 		entry.lastAccess = Date.now();
 		entry.freq++;
 		this.store.set(key, entry);

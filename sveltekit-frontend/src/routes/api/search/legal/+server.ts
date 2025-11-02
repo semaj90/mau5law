@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { z } from 'zod';
-import type { RequestHandler } from './$types.js';
-import { legalDocumentAnalyzer } from '$lib/server/ai/legal-document-analyzer';
-import { searchQdrant } from '$lib/server/vector/qdrant';
+import type { SearchResult } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import type { RequestHandler } from, './$types.js';
+import { legalDocumentAnalyzer } from, '$lib/server/ai/legal-document-analyzer';
+import { searchQdrant } from, '$lib/server/vector/qdrant';
 
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_URL = 'http://localhost:8094';
@@ -122,7 +122,7 @@ export interface SearchResult { id: string;, title: string;
   content: string;
   score: number;
   similarity?: number;
-  metadata: {
+ , metadata: {
     date?: string;
     jurisdiction?: string;
     status?: string;
@@ -200,8 +200,8 @@ export interface SearchResult { id: string;, title: string;
     legalIssues?: string[];
     recommendations?: string[];
     confidence?: number;
-    similarCases?: Array<{ id: string;, title: string;
-      score: number;
+    similarCases?: Array<{, id: string;, title: string;
+     , score: number;
       tags?: string[];
     }>;
   };
@@ -225,17 +225,17 @@ export const GET: RequestHandler = async ({ url }) => {
     const searchPromises = categories.map(async category => {
       try {
         switch (category.trim()) {
-          case 'cases':
+          case, 'cases':
             return await searchCases(query, limit, threshold, vectorSearch);
-          case 'evidence':
+          case, 'evidence':
             return await searchEvidence(query, limit, threshold, vectorSearch);
-          case 'criminals':
+          case, 'criminals':
             return await searchCriminals(query, limit, threshold);
-          case 'documents':
+          case, 'documents':
             return await searchDocuments(query, limit, threshold, vectorSearch);
-          case 'precedents':
+          case, 'precedents':
             return await searchPrecedents(query, limit);
-          case 'statutes':
+          case, 'statutes':
             return await searchStatutes(query, limit);
           default: return [];
         }
@@ -301,7 +301,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Legal document analysis (WHO/WHAT/WHY/HOW/EVIDENCE) for top results
     if (legalAnalysis && enhancedResults.length > 0) {
       try {
-        console.log('🧠 Running legal document analysis on top 3 results...');
+        console.log('🧠 Running legal document analysis on top, 3 results...');
         const legalAnalysisPromises = enhancedResults.slice(0, 3).map(async result => {
           try {
             const fullText = `${result.title}\n\n${result.content}`;
@@ -313,7 +313,7 @@ export const GET: RequestHandler = async ({ url }) => {
             return {
               ...result,
               legalAnalysis: {
-                who: analysis.analysis?.who || [],
+               , who: analysis.analysis?.who || [],
                 what: analysis.analysis?.what || [],
                 why: analysis.analysis?.why || [],
                 how: analysis.analysis?.how || [],
@@ -325,7 +325,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 recommendations: analysis.analysis?.recommendations || [],
                 confidence: analysis.analysis?.confidence || 0,
                 similarCases: analysis.similar?.map(s => ({
-                  id: s.id,
+                 , id: s.id,
                   title: s.title,
                   score: s.score,
                   tags: s.tags
@@ -369,7 +369,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ? enhancedResults.reduce((sum, r) => sum + (r.score || 0), 0) / enhancedResults.length
             : 0,
         servicesUsed: {
-          enhancedRAG: true, // Added missing: ','
+         , enhancedRAG: true, // Added missing: ','
           uploadService: categories.includes('documents'),
           vectorDB: vectorSearch, // Added missing: ','
           semanticAnalysis: aiSuggestions,
@@ -378,7 +378,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       // Legal AI platform specific enhancements
       legalContext: {
-        jurisdiction: 'federal', // Could be dynamic based on user preferences
+       , jurisdiction: 'federal', // Could be dynamic based on user preferences
         practiceAreas: extractPracticeAreas(query),
         urgencyLevel: calculateUrgencyLevel(enhancedResults),
         recommendedActions: generateRecommendedActions(enhancedResults, query)
@@ -460,7 +460,7 @@ async function searchCases(
         calculateRelevanceScore(query, result.title + ' ' + (result.content || '')),
       similarity: result.similarity,
       metadata: {
-        date: result.createdAt || result.filingDate || new Date().toISOString(),
+       , date: result.createdAt || result.filingDate || new Date().toISOString(),
         jurisdiction: result.jurisdiction || result.court || 'Federal',
         status: result.status || result.caseStatus || 'active',
         caseNumber: result.caseNumber,
@@ -550,7 +550,7 @@ async function searchEvidence(
         calculateRelevanceScore(query, result.title + ' ' + (result.content || '')),
       similarity: result.similarity,
       metadata: {
-        date: result.collectionDate || result.createdAt || new Date().toISOString(),
+       , date: result.collectionDate || result.createdAt || new Date().toISOString(),
         confidentiality: result.confidentialityLevel || result.classification || 'restricted',
         caseId: result.caseId || result.associatedCase,
         status: result.isAdmissible !== false ? 'admissible' : 'under-review',
@@ -601,7 +601,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
         calculateRelevanceScore(query, result.fullName + ' ' + (result.notes || '')),
       similarity: result.similarity,
       metadata: {
-        date: result.lastUpdated || result.createdAt || new Date().toISOString(),
+       , date: result.lastUpdated || result.createdAt || new Date().toISOString(),
         status: result.status || result.riskLevel || 'unknown',
         jurisdiction: result.jurisdiction,
         riskLevel: result.riskLevel,
@@ -684,7 +684,7 @@ async function searchDocuments(
         calculateRelevanceScore(query, result.title + ' ' + (result.content || '')),
       similarity: result.similarity,
       metadata: {
-        date: result.createdAt || result.uploadDate || new Date().toISOString(),
+       , date: result.createdAt || result.uploadDate || new Date().toISOString(),
         confidentiality: result.confidentialityLevel || result.classification || 'public',
         caseId: result.caseId || result.associatedCase,
         documentType: result.documentType || result.fileType,
@@ -713,12 +713,12 @@ async function fallbackDocumentSearch(query: string, limit: number): Promise<Sea
   return [
     {,
       id: `fallback-document-${Date.now()}`,
-      title: `Document; Search: ${query}`,
+      title: `Document;, Search: ${query}`,
       type: 'document' as const,
-      content: `Fallback search result for documents related; to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for documents related;, to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
-        date: new Date().toISOString(),
+       , date: new Date().toISOString(),
         status: 'fallback',
         confidentiality: 'unknown',
         tags: [query.toLowerCase(), 'fallback']
@@ -734,12 +734,12 @@ async function searchPrecedents(query: string, limit: number): Promise<SearchRes
   return [
     {,
       id: `precedent-${Date.now()}`,
-      title: `Precedent case; for: "${query}"`,
+      title: `Precedent case;, for: "${query}"`,
       type: 'document' as const,
       content: 'Legal precedent analysis would go here...',
       score: 0.8,
       metadata: {
-        date: new Date().toISOString(),
+       , date: new Date().toISOString(),
         jurisdiction: 'Federal',
         tags: ['precedent', 'case-law']
       }
@@ -752,12 +752,12 @@ async function searchStatutes(query: string, limit: number): Promise<SearchResul
   return [
     {,
       id: `statute-${Date.now()}`,
-      title: `Relevant statute; for: "${query}"`,
+      title: `Relevant statute;, for: "${query}"`,
       type: 'document' as const,
       content: 'Statute text and analysis would go here...',
       score: 0.75,
       metadata: {
-        date: new Date().toISOString(),
+       , date: new Date().toISOString(),
         jurisdiction: 'Federal',
         tags: ['statute', 'legislation']
       }
@@ -916,7 +916,7 @@ function extractPracticeAreas(query: string): string[] {
 }
 
 function calculateUrgencyLevel(results: SearchResult[]): 'low' | 'medium' | 'high' | 'critical' {
-  if (results.length === 0) return 'low';
+  if (results.length === 0) return, 'low';
   const avgScore = results.reduce((sum, r) => sum + r.score, 0) / results.length;
   const hasHighPriorityTerms = results.some(
     r =>
@@ -924,10 +924,10 @@ function calculateUrgencyLevel(results: SearchResult[]): 'low' | 'medium' | 'hig
       r.content.toLowerCase().includes('emergency') ||
       r.metadata.status === 'critical'
   );
-  if (hasHighPriorityTerms || avgScore > 0.9) return 'critical';
-  if (avgScore > 0.7) return 'high';
-  if (avgScore > 0.5) return 'medium';
-  return 'low';
+  if (hasHighPriorityTerms || avgScore > 0.9) return, 'critical';
+  if (avgScore > 0.7) return, 'high';
+  if (avgScore > 0.5) return, 'medium';
+  return, 'low';
 }
 
 function generateRecommendedActions(results: SearchResult[], query: string): string[] {
@@ -949,7 +949,7 @@ function generateRecommendedActions(results: SearchResult[], query: string): str
   if (practiceAreas.includes('criminal')) {
     actions.push('Check statute of limitations', 'Review Miranda rights');
   }
-  return actions.slice(0, 5); // Limit to top 5 recommendations
+  return actions.slice(0, 5); // Limit to top, 5 recommendations
 }
 
 function extractHighlights(content: string, query: string): string[] {
@@ -973,12 +973,12 @@ async function fallbackCaseSearch(query: string, limit: number): Promise<SearchR
   return [
     {,
       id: `fallback-case-${Date.now()}`,
-      title: `Legal Case; Search: ${query}`,
+      title: `Legal Case;, Search: ${query}`,
       type: 'case' as const,
-      content: `Fallback search result for legal cases related; to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for legal cases related;, to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
-        date: new Date().toISOString(),
+       , date: new Date().toISOString(),
         status: 'fallback',
         tags: [query.toLowerCase(), 'fallback']
       },
@@ -991,12 +991,12 @@ async function fallbackEvidenceSearch(query: string, limit: number): Promise<Sea
   return [
     {,
       id: `fallback-evidence-${Date.now()}`,
-      title: `Evidence; Search: ${query}`,
+      title: `Evidence;, Search: ${query}`,
       type: 'evidence' as const,
-      content: `Fallback search result for evidence related; to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for evidence related;, to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
-        date: new Date().toISOString(),
+       , date: new Date().toISOString(),
         status: 'fallback',
         confidentiality: 'unknown',
         tags: [query.toLowerCase(), 'fallback']
@@ -1010,12 +1010,12 @@ async function fallbackPersonSearch(query: string, limit: number): Promise<Searc
   return [
     {,
       id: `fallback-person-${Date.now()}`,
-      title: `Person; Search: ${query}`,
+      title: `Person;, Search: ${query}`,
       type: 'criminal' as const,
-      content: `Fallback search result for persons related; to: "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for persons related;, to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
-        date: new Date().toISOString(),
+       , date: new Date().toISOString(),
         status: 'fallback',
         tags: [query.toLowerCase(), 'fallback']
       },

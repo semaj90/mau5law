@@ -2,10 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Replaced script to fix Svelte 5 runes, imports, types and logic typos
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import  Textarea  from "$lib/components/ui/textarea.svelte";
+import type { Case } from, '$lib/types';
+  // Replaced script to fix Svelte, 5 runes, imports, types and logic typos
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from, "$lib/components/ui/textarea.svelte";
   import {
     aiPersonality,
     chatActions,
@@ -14,15 +14,15 @@ import type { Case } from '$lib/types';
     isTyping,
     showProactivePrompt,
     notifications
-  } from '$lib/stores/unified';
-  import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
-  import { Bot, Loader2, Send } from 'lucide-svelte';
-  import { onDestroy, tick } from 'svelte';
-  import  ChatMessage  from "./ChatMessage.svelte";
-  import  ProactivePrompt  from "./ProactivePrompt.svelte";
-  import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
-  import { ThinkingProcessor } from '$lib/ai/thinking-processor';
-  // props (Svelte 5 runes)
+  } from, '$lib/stores/unified';
+  import type { ApiResponse, ChatRequest, ChatResponse } from, '$lib/types/api';
+  import { Bot, Loader2, Send } from, 'lucide-svelte';
+  import { onDestroy, tick } from, 'svelte';
+  import  ChatMessage  from, "./ChatMessage.svelte";
+  import  ProactivePrompt  from, "./ProactivePrompt.svelte";
+  import  ThinkingStyleToggle  from, "./ThinkingStyleToggle.svelte";
+  import { ThinkingProcessor } from, '$lib/ai/thinking-processor';
+  // props (Svelte, 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
   // reactive state
   let messageInput = $state<string>('');
@@ -75,7 +75,7 @@ import type { Case } from '$lib/types';
         });
       } else {
         const requestBody: ChatRequest = {
-          messages: $currentConversation?.messages || [],
+         , messages: $currentConversation?.messages || [],
           context: {
             caseId,
             currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
@@ -127,7 +127,7 @@ import type { Case } from '$lib/types';
     }
   }
   function formatAnalysisResponse(analysis: any, metadata: any): string {
-    if (!analysis) return 'Analysis completed.';
+    if (!analysis) return, 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {
       responseText += '## 🧠 Reasoning Process\n\n';
@@ -169,7 +169,7 @@ import type { Case } from '$lib/types';
       responseText += `• **Confidence:** ${confidence}%\n`;
       responseText += `• **Model:** ${metadata?.model_used || metadata?.model || 'unknown'}\n`;
       responseText += `• **Processing Time:** ${metadata?.processing_time ?? 'N/A'}ms\n`;
-      responseText += `• **Thinking Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
+      responseText += `• **Thinking, Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
       if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
         responseText += '\n**Reasoning Steps:**\n';
         analysis.reasoning_steps.forEach((step: string, index: number) => {
@@ -188,7 +188,7 @@ import type { Case } from '$lib/types';
       chatActions.setTyping(true);
       showProactivePrompt.set(false);
       const requestBody: ChatRequest = {
-        messages: $currentConversation.messages,
+       , messages: $currentConversation.messages,
         context: {
           caseId,
           currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
@@ -400,7 +400,7 @@ import type { Case } from '$lib/types';
       <div class="mx-auto, px-4, max-w-7xl">
         <Textarea
           bind:element={inputElement}
-          bind:value={messageInput}
+         , bind:value={messageInput}
           placeholder={thinkingStyleEnabled
             ? 'Ask for detailed analysis... (Enter to send, Shift+Enter for new line)'
             : 'Type your message... (Enter to send, Shift+Enter for new line)'}
@@ -449,7 +449,7 @@ import type { Case } from '$lib/types';
   :global(.message-content p) {
     margin-bottom: 0.5rem;
   }
-  :global(.message-content p:last-child) {
+  :global(.message-content, p:last-child) {
     margin-bottom: 0;
   }
   :global(.message-content ul, .message-content ol) {
@@ -464,7 +464,7 @@ import type { Case } from '$lib/types';
   }
   :global(.message-content h1, .message-content h2, .message-content h3) {
     font-weight: 600;
-    margin: 1rem 0 0.5rem 0;
+   , margin: 1rem, 0 0.5rem 0;
   }
   :global(.message-content h1) {
     font-size: 1.25rem;

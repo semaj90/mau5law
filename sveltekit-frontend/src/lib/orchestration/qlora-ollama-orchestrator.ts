@@ -3,9 +3,9 @@
  * Uses AutoGen/CrewAI patterns for multi-agent coordination
  * Integrates with Ollama for distilled model management
  */
-import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
-import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
-import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
+import { qloraWasmLoader } from, '$lib/wasm/qlora-wasm-loader';
+import { predictiveAssetEngine } from, '$lib/services/predictive-asset-engine';
+import type { Gemma3LegalConfig } from, '$lib/config/gemma3-legal-config';
 // Agent Types for AutoGen-style orchestration
 interface LegalAgent { id: string;, role: 'router' | 'contract' | 'litigation' | 'compliance' | 'research' | 'synthesis';
   name: string;
@@ -16,20 +16,20 @@ interface LegalAgent { id: string;, role: 'router' | 'contract' | 'litigation' 
   isActive: boolean;
 }
 // Query Analysis Result
-interface QueryIntent { primaryDomain: 'contract' | 'litigation' | 'compliance' | 'research' | 'general';, complexity: 'simple' | 'moderate' | 'complex' | 'expert';
+interface QueryIntent {, primaryDomain: 'contract' | 'litigation' | 'compliance' | 'research' | 'general';, complexity: 'simple' | 'moderate' | 'complex' | 'expert';
   urgency: 'low' | 'medium' | 'high' | 'critical';
   requiredAgents: string[];
   suggestedWorkflow: string[];
   confidence: number;
 }
 // Orchestration Plan
-interface OrchestrationPlan { queryId: string;, intent: QueryIntent;
+interface OrchestrationPlan {, queryId: string;, intent: QueryIntent;
   selectedAgents: LegalAgent[];
   executionSteps: ExecutionStep[];
   expectedDuration: number;
   fallbackPlan?: OrchestrationPlan;
 }
-interface ExecutionStep { stepId: string;, agentId: string;
+interface ExecutionStep {, stepId: string;, agentId: string;
   action: 'analyze' | 'research' | 'draft' | 'review' | 'synthesize';
   prompt: string;
   expectedOutput: string;
@@ -37,22 +37,22 @@ interface ExecutionStep { stepId: string;, agentId: string;
   timeout: number;
 }
 // Ollama Integration
-interface OllamaModelInfo { name: string;, size: number;
+interface OllamaModelInfo {, name: string;, size: number;
   digest: string;
   modified_at: string;
-  details: { format: string;, family: string;
+  details: {, format: string;, family: string;
     families: string[];
     parameter_size: string;
     quantization_level: string;
   }
 }
 export class QLoRAOllamaOrchestrator {
-  private agents: Map<string, LegalAgent> = new Map();
+  private, agents: Map<string, LegalAgent> = new Map();
   private activeModels: Map<string, string> = new Map(); // agentId -> modelKey
   private ollamaEndpoint: string;
   private distilledModelsPath: string;
   // CrewAI-style agent coordination
-  private agentCrew: Map<string, LegalAgent[]> = new Map();
+  private, agentCrew: Map<string, LegalAgent[]> = new Map();
   private workflowHistory: Array<any> = [];
   constructor(ollamaEndpoint = 'http://localhost:11434') {
     this.ollamaEndpoint = ollamaEndpoint;
@@ -67,7 +67,7 @@ export class QLoRAOllamaOrchestrator {
   private initializeAgents(): void {
     const agents: LegalAgent[] = [
       {
-        id: 'router',
+       , id: 'router',
         role: 'router',
         name: 'Query Router',
         description: 'Analyzes user queries and routes to appropriate specialists',
@@ -173,8 +173,7 @@ export class QLoRAOllamaOrchestrator {
       throw new Error('Router agent not available');
     }
     const intentAnalysisPrompt = `
-Analyze this legal query and provide structured intent classification:; Query: "${query}"
-Context: ${JSON.stringify(context)}
+Analyze this legal query and provide structured intent classification:; Query: "${query}", Context: ${JSON.stringify(context)}
 Classify the query and respond with JSON:;
 {
   "primaryDomain": "contract|litigation|compliance|research|general",
@@ -255,7 +254,7 @@ Classify the query and respond with JSON:;
         finalSynthesis,
         duration,
         metadata: {
-          agentsUsed: plan.selectedAgents.length,
+         , agentsUsed: plan.selectedAgents.length,
           stepsExecuted: plan.executionSteps.length,
           avgStepTime: duration / plan.executionSteps.length
         }
@@ -268,7 +267,7 @@ Classify the query and respond with JSON:;
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
         success: false;
-        duration: performance.now() - startTime
+       , duration: performance.now() - startTime
       });
       // Try fallback plan if available
       if (plan.fallbackPlan) {
@@ -390,20 +389,20 @@ Classify the query and respond with JSON:;
     selectedAgents.push(this.agents.get('router')!);
     // Add specialized agents based on domain
     switch (intent.primaryDomain) {
-      case 'contract':
+      case, 'contract':
         selectedAgents.push(this.agents.get('contract_specialist')!);
         if (intent.complexity === 'complex' || intent.complexity === 'expert') {
           selectedAgents.push(this.agents.get('compliance_specialist')!);
         }
         break;
-      case 'litigation':
+      case, 'litigation':
         selectedAgents.push(this.agents.get('litigation_specialist')!);
         selectedAgents.push(this.agents.get('research_specialist')!);
         break;
-      case 'compliance':
+      case, 'compliance':
         selectedAgents.push(this.agents.get('compliance_specialist')!);
         break;
-      case 'research':
+      case, 'research':
         selectedAgents.push(this.agents.get('research_specialist')!);
         break;
       default:
@@ -417,7 +416,7 @@ Classify the query and respond with JSON:;
     }
     const executionSteps = this.createExecutionSteps(query, intent, selectedAgents);
     const plan: OrchestrationPlan = {
-      queryId: `plan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+     , queryId: `plan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       intent,
       selectedAgents,
       executionSteps,
@@ -444,9 +443,8 @@ ${result}
 Provide a comprehensive synthesis that:
 1. Integrates all expert perspectives
 2. Highlights key findings and recommendations
-3. Identifies any contradictions or gaps
-4. Provides clear next steps
-Synthesis: ';'
+3. Identifies: any contradictions or gaps
+4. Provides clear next steps, Synthesis: ';'
     const modelKey = this.activeModels.get(synthesisAgent.id)!;
     const synthesis = await qloraWasmLoader.generateText(modelKey, synthesisPrompt, {
       maxTokens: 512,
@@ -510,7 +508,7 @@ Synthesis: ';'
     return {
       queryId: `fallback_${Date.now()}`,
       intent: {
-        primaryDomain: 'general',
+       , primaryDomain: 'general',
         complexity: 'simple',
         urgency: 'low',
         requiredAgents: ['router'],
@@ -538,7 +536,7 @@ Synthesis: ';'
     const avgDuration = successfulRuns.length > 0
       ? successfulRuns.reduce((sum, h) => sum + h.duration, 0) / successfulRuns.length: 0;
     return {
-      totalQueries: this.workflowHistory.length,
+     , totalQueries: this.workflowHistory.length,
       successRate: successfulRuns.length / Math.max(this.workflowHistory.length, 1),
       averageDuration: avgDuration,
       activeAgents: Array.from(this.activeModels.keys()),

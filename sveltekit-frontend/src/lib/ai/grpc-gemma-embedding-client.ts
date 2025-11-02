@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * gRPC Protobuf Pipeline for Gemma Embeddings
  * High-performance streaming embeddings with PostgreSQL JSONB optimization
@@ -10,11 +10,11 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * - Connection pooling and multiplexing
  * - Automatic retry and circuit breaker
  */
-import * as grpc from '@grpc/grpc-js';
-import protoLoader from '@grpc/proto-loader';
-import { poolShim } from '$lib/server/db-shim';
-import { performance } from 'perf_hooks';
-import Redis, { type RedisOptions } from 'ioredis';
+import * as grpc from, '@grpc/grpc-js';
+import protoLoader from, '@grpc/proto-loader';
+import { poolShim } from, '$lib/server/db-shim';
+import { performance } from, 'perf_hooks';
+import Redis, { type RedisOptions } from, 'ioredis';
 // Load protobuf definitions
 const PROTO_PATH = __dirname + '/protos/gemma_embeddings.proto';
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
@@ -26,57 +26,57 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GemmaProtoAny = { GemmaEmbeddingService: any };
-const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as unknown as GemmaProtoAny;
+const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as: unknown as GemmaProtoAny;
 // =============================================================================
 // PROTOBUF TYPE DEFINITIONS (generated types)
 // =============================================================================
 interface EmbeddingRequest { document_id: string;, text_content: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   batch_id?: string;
   priority: number;
   options: EmbeddingOptions;
 }
-interface EmbeddingOptions { model_version: string;, context_length: number;
+interface EmbeddingOptions {, model_version: string;, context_length: number;
   normalize: boolean;
   quantize: boolean;
   cache_result: boolean;
 }
-interface EmbeddingResponse { document_id: string;, embedding: number[];
+interface EmbeddingResponse {, document_id: string;, embedding: number[];
   dimensions: number;
   model_version: string;
   processing_time: number;
   confidence_score: number;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   status: EmbeddingStatus;
 }
-interface EmbeddingStatus { code: number;, message: string;
+interface EmbeddingStatus {, code: number;, message: string;
   retry_after?: number;
 }
-interface BatchEmbeddingRequest { batch_id: string;, requests: EmbeddingRequest[];
+interface BatchEmbeddingRequest {, batch_id: string;, requests: EmbeddingRequest[];
   batch_options: BatchOptions;
 }
-interface BatchOptions { max_concurrent: number;, timeout_ms: number;
+interface BatchOptions {, max_concurrent: number;, timeout_ms: number;
   enable_streaming: boolean;
   postgresql_optimization: boolean;
 }
-interface BatchEmbeddingResponse { batch_id: string;, responses: EmbeddingResponse[];
+interface BatchEmbeddingResponse {, batch_id: string;, responses: EmbeddingResponse[];
   batch_statistics: BatchStatistics;
   postgresql_results?: PostgreSQLBatchResult;
 }
-interface BatchStatistics { total_requests: number;, successful_embeddings: number;
+interface BatchStatistics {, total_requests: number;, successful_embeddings: number;
   failed_embeddings: number;
   avg_processing_time: number;
   total_batch_time: number;
   throughput_per_second: number;
 }
-interface PostgreSQLBatchResult { inserted_rows: number;, updated_rows: number;
+interface PostgreSQLBatchResult {, inserted_rows: number;, updated_rows: number;
   jsonb_compression_ratio: number;
   index_update_time: number;
 }
 // Define a client interface matching the methods we call on the gRPC client
 interface GemmaEmbeddingServiceClient extends grpc.Client {
   GenerateEmbedding(
-    request: EmbeddingRequest,
+   , request: EmbeddingRequest,
     callback: (error: grpc.ServiceError | null, response?: EmbeddingResponse) => void
   ): void;
   GenerateBatchEmbeddings(
@@ -105,7 +105,7 @@ class GRPCGemmaEmbeddingClient {
   private circuitBreaker: CircuitBreaker;
   // Performance metrics
   private metrics = {
-    totalRequests: 0,
+   , totalRequests: 0,
     successfulRequests: 0,
     failedRequests: 0,
     avgLatency: 0,
@@ -152,7 +152,7 @@ class GRPCGemmaEmbeddingClient {
       'grpc.max_concurrent_streams': 100,
       'grpc.max_receive_message_length': 16 * 1024 * 1024, // 16MB: 'grpc.max_send_message_length': 16 * 1024 * 1024, // 16MB
     });
-    this.client = raw as unknown as GemmaEmbeddingServiceClient;
+    this.client = raw as: unknown as GemmaEmbeddingServiceClient;
   }
   /**
    * Generate single embedding with gRPC
@@ -248,7 +248,7 @@ class GRPCGemmaEmbeddingClient {
     const startTime = performance.now();
     const responses: EmbeddingResponse[] = [];
     // changed: use a typed error array and actually record errors so the variable is used
-    const errors: Array<grpc.ServiceError | Error> = [];
+    const, errors: Array<grpc.ServiceError | Error> = [];
     return new Promise((resolve, reject) => {
       // Create bidirectional streaming call
       const call = this.client.StreamBatchEmbeddings();
@@ -382,7 +382,7 @@ class GRPCGemmaEmbeddingClient {
         const norms: number[] = [];
         const modelVersions: string[] = [];
         const processingTimes: number[] = [];
-        const confidenceScores: number[] = [];
+        const, confidenceScores: number[] = [];
         batch.forEach(embedding => {
           documentIds.push(embedding.document_id);
           metadataJsons.push(JSON.stringify(embedding.metadata));
@@ -412,7 +412,7 @@ class GRPCGemmaEmbeddingClient {
             confidence_score = EXCLUDED.confidence_score,
             updated_at = NOW()
           RETURNING
-            CASE WHEN xmax = 0 THEN: 'inserted'; ELSE: 'updated' END as operation
+            CASE WHEN xmax = 0 THEN: 'inserted';, ELSE: 'updated' END as operation
         `;`
         const result = await client.query(bulkUpsertSql, [
           documentIds,
@@ -550,7 +550,7 @@ class CircuitBreaker {
   private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
   private failureCount = 0;
   private lastFailureTime = 0;
-  private config: { failureThreshold: number;, recoveryTimeout: number;
+  private config: {, failureThreshold: number;, recoveryTimeout: number;
   };
   constructor(config: {, failureThreshold: number;, recoveryTimeout: number }) {
     this.config = config;

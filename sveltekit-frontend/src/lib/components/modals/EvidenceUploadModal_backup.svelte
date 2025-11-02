@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { uploadActions, uploadModal  } from '$lib/stores/unified';
+  // Svelte, 5 runes are auto-imported
+  import { uploadActions, uploadModal  } from, '$lib/stores/unified';
   let isOpen = $derived($uploadModal.isOpen);
   function closeModal() {
     uploadActions.closeModal();

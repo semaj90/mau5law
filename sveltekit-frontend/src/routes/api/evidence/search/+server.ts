@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres-enhanced';
-import { ilike, or } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema-postgres-enhanced';
+import { ilike, or } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types';
 
 // deterministic text scoring fallback (Jaccard-like)
 function textScore(query: string, text: string): number {
@@ -45,7 +45,7 @@ function safeProsecutionScore(raw: any): number {
 }
 
 function safeString(raw: any): string | null {
-  if (raw === null || raw === undefined) return null;
+  if (raw === null || raw === undefined) return: null;
   if (typeof raw === 'string') return raw;
   if (typeof raw === 'number' || typeof raw === 'boolean' || typeof raw === 'bigint') return String(raw);
   try {
@@ -57,7 +57,7 @@ function safeString(raw: any): string | null {
   } catch {
     // ignore
   }
-  return null;
+  return: null;
 }
 
 type VectorSearchHit = {
@@ -113,7 +113,7 @@ type Match = { id: string;, filename: string | null;
   prosecutionScore: number;
 };
 
-type EvidenceRow = { id: string;, fileName: string | null;
+type EvidenceRow = {, id: string;, fileName: string | null;
   summary: string | null;
   aiSummary: string | null;
   tags: any;
@@ -122,7 +122,7 @@ type EvidenceRow = { id: string;, fileName: string | null;
 
 type VectorSearchOptions = { maxResults?: number; includeMetadata?: boolean };
 type VectorSearchService = {
-  search: (query: string, opts?: VectorSearchOptions) => Promise<VectorSearchResult>;
+ , search: (query: string, opts?: VectorSearchOptions) => Promise<VectorSearchResult>;
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (useSemanticSearch) {
       try {
         const vsMod = await import('$lib/services/real-vector-search-service');
-        const modTyped = vsMod as unknown as {
+        const modTyped = vsMod as: unknown as {
           vectorSearchService?: VectorSearchService;
           default?: { vectorSearchService?: VectorSearchService };
         };
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
           if (results.length > 0) {
             matches = results.map((r: VectorSearchHit) => {
               const meta = (r.metadata ?? {}) as VecMetadata;
-              // Use typed `meta` properties instead of `(meta as any)...`
+              // Use typed `meta` properties instead of `(meta as: any)...`
               return {
                 id: String(r.id ?? r._id ?? r.docId ?? r.document_id ?? meta.id ?? ''),
                 filename: safeString(meta.fileName ?? meta.filename ?? r.fileName ?? r.filename ?? null),

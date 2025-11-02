@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * HMM (Hidden Markov Model) State Machine for Pattern Detection
  *
@@ -11,10 +11,10 @@ import type {
   HMMState,
   ConversationTurn,
   NextStepPrediction
-} from '$lib/types/sharedTypes';
+} from, '$lib/types/sharedTypes';
 interface HMMStateTransition { fromState: number;, toState: number;
   probability: number;
-  observedPattern: number[];
+ , observedPattern: number[];
 }
 /**
  * HMM States for Legal AI Conversations
@@ -102,7 +102,7 @@ export class HMMStateMachine {
     predictions: NextStepPrediction[];
   } {
     // Get possible transitions from current state
-    const possibleTransitions: Array<{ state: number; prob: number }> = [];
+    const possibleTransitions: Array<{ state: number;, prob: number }> = [];
     for (const [key, transition] of this.transitions.entries()) {
       if (transition.fromState === currentState) {
         possibleTransitions.push({
@@ -139,7 +139,7 @@ export class HMMStateMachine {
       estimatedDuration: number;
     }> = {
       [LegalConversationState.GREETING]: {
-        action: 'greet_user',
+       , action: 'greet_user',
         reasoning: 'User is initiating conversation',
         requiredContext: [],
         estimatedDuration: 5000
@@ -188,13 +188,13 @@ export class HMMStateMachine {
       }
     };
     const actionInfo = stateActions[state] || {
-      action: 'unknown',
+     , action: 'unknown',
       reasoning: 'Unknown state',
       requiredContext: [],
       estimatedDuration: 30000
     };
     return {
-      action: actionInfo.action,
+     , action: actionInfo.action,
       confidence,
       reasoning: actionInfo.reasoning,
       requiredContext: actionInfo.requiredContext,
@@ -205,14 +205,14 @@ export class HMMStateMachine {
    * Update HMM state based on new conversation turn
    */
   updateState(
-    currentHMMState: HMMState,
+   , currentHMMState: HMMState,
     newTurn: ConversationTurn
   ): HMMState {
     // Classify conversation turn intent to determine next state
     const nextState = this.classifyIntent(newTurn.intent);
     // Update state history
     const updatedHistory = [...currentHMMState.stateHistory, nextState];
-    // Update pattern (keep last 10 states)
+    // Update pattern (keep last, 10 states)
     const updatedPattern = [...currentHMMState.pattern, nextState].slice(-10);
     // Get transition probability
     const transitionKey = `${currentHMMState.currentState}->${nextState}`;

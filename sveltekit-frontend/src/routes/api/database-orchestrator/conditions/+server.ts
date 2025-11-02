@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
-// --- ADDED: explicit types for conditions/orchestrator to avoid unknown/any inference ---
+// --- ADDED: explicit types for conditions/orchestrator to avoid: unknown/any inference ---
 type Condition = {
   id?: string;
-  type: string;
+ , type: string;
   condition?: Record<string, unknown>;
   action: string;
   isActive?: boolean;
@@ -12,7 +12,7 @@ type Condition = {
   [key: string]: any;
 };
 
-declare const databaseOrchestrator: { getStatus: () => {, isRunning: boolean };
+declare const databaseOrchestrator: {, getStatus: () => {, isRunning: boolean };
   conditions?: Map<string, Condition>;
   addCondition: (condition: Condition & {, id: string }) => void;
   removeCondition: (id: string) => void;
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async () => {
 
     // ensure typed Map so Array.from().map receives [string, Condition]
     const map = databaseOrchestrator.conditions ?? new Map<string, Condition>();
-    const conditions: Array<Condition & { id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
+    const conditions: Array<Condition & {, id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
       id,
       ...(condition as Condition)
     }));
@@ -68,14 +68,14 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing or invalid required; fields: id (string), type (string), action (string)'
+          error: 'Missing or invalid required;, fields: id (string), type (string), action (string)'
         },
         { status: 400 }
       );
     }
 
     const condition: Condition & { id: string } = {
-      id: conditionData.id,
+     , id: conditionData.id,
       type: String(conditionData.type),
       condition: (conditionData.condition as Record<string, unknown>) ?? {},
       action: String(conditionData.action),

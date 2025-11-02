@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
 
 // New narrow types and helpers
 type GPURequestBody = { service: string;, operation: string;
@@ -7,7 +7,7 @@ type GPURequestBody = { service: string;, operation: string;
   [key: string]: any;
 };
 
-type ErrorBody = { message: string; details?: any };
+type ErrorBody = {, message: string; details?: any };
 
 function isGPURequestBody(body: any): body is GPURequestBody {
   if (typeof body !== 'object' || body === null) return false;
@@ -28,11 +28,11 @@ function getErrorMessage(err: any): string {
 }
 
 // Minimal GPU proxy stub: validates basic shape and returns a deterministic response.
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const raw = await request.json();
     if (!isGPURequestBody(raw)) {
-      const body: ErrorBody = { message: 'service, operation and non-empty numeric data array required' };
+      const body: ErrorBody = {, message: 'service, operation and non-empty numeric data array required' };
       return error(400, body);
     }
 
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err: any) {
     console.error('GPU proxy error:', getErrorMessage(err));'
-    const body: ErrorBody = { message: 'GPU proxy failed', details: getErrorMessage(err) };
+    const body: ErrorBody = {, message: 'GPU proxy failed', details: getErrorMessage(err) };
     return error(500, body);
   }
 };

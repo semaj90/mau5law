@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // @ts-nocheck
 /**
  * GPU Shader Cache Database Schema - PostgreSQL + pgvector Integration
  * Supports reinforcement learning, predictive preloading, and multi-dimensional recall
  * Optimized for legal document visualization AI workflows
  */
-import { pgTable, serial, text, jsonb, timestamp, boolean, integer, real, uuid } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle';
+import { pgTable, serial, text, jsonb, timestamp, boolean, integer, real, uuid } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle';
 // ============================================================================
 // CORE SHADER CACHE TABLES
 // ============================================================================
@@ -57,7 +57,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   loadLatencyMs: integer('load_latency_ms'),
   cacheHit: boolean('cache_hit'),
   preloadSuccessful: boolean('preload_successful'),
-  userSatisfaction: real('user_satisfaction'), // -1 to 1
+  userSatisfaction: real('user_satisfaction'), // -1 to, 1
   // Contextual metadata
   documentContext: jsonb('document_context').$type<Record<string, unknown> | null>(),
   // Reinforcement learning features

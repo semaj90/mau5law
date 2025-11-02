@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Evidence } from "$lib/types";
+  import type { Evidence } from, "$lib/types";
   // add a local view type to include optional UI properties
   interface LocalEvidence extends Evidence {
     id: string; // ensure an id for keyed each block
@@ -10,11 +10,11 @@
   }
   // Props definition to satisfy TypeScript
   interface Props {
-    caseId: string;
+   , caseId: string;
     onEvidenceDrop?: (evidence: LocalEvidence) => void;
   }
   let { caseId, onEvidenceDrop = () => {} }: Props = $props();
-  // State using Svelte 5 runes
+  // State using Svelte, 5 runes
   let evidenceList = $state<LocalEvidence[]>([]);
   let isUploading = $state<boolean>(false);
   async function fetchEvidence(): Promise<Response> {
@@ -99,7 +99,7 @@
     {#if evidenceList.length === 0 && !isUploading}
       <div, class="empty-state">
         <p>No evidence uploaded yet.</p>
-        <p, class="empty-hint">Click "Upload Evidence" to add files to this case.</p>
+        <p, class="empty-hint">Click, "Upload Evidence" to add files to this case.</p>
       {/if}
   </div>
 </section>
@@ -136,7 +136,7 @@
     border: none;
   }
   .evidence-upload-btn:hover {
-    background: #2563eb;
+   , background: #2563eb;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .uploading {
@@ -151,10 +151,10 @@
     background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    padding: 0.75rem;
+   , padding: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     cursor: grab;
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
     min-width: 180px;
     max-width: 220px;
     user-select: none;
@@ -175,7 +175,7 @@
   }
   .evidence-tags {
     font-size: 0.75rem;
-    background: rgba(59, 130, 246, 0.1);
+   , background: rgba(59, 130, 246, 0.1);
     color: #3b82f6;
     padding: 0.125rem 0.5rem;
     border-radius: 12px;
@@ -210,6 +210,6 @@
   .empty-hint {
     font-size: 0.875rem;
     margin-top: 0.5rem;
-    opacity: 0.8;
+   , opacity: 0.8;
   }
 </style>

@@ -14,8 +14,8 @@ export type RouterFeatures = {
   [key: string]: number | undefined;
 };
 
-export interface RouterDecision { useGPU: boolean;, useQUIC: boolean;
-  useCache: boolean;
+export interface RouterDecision {, useGPU: boolean;, useQUIC: boolean;
+ , useCache: boolean;
   score?: number; // optional confidence score from model (0..1)
 }
 
@@ -54,10 +54,10 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
       // Normalize common keys if the model used a different shape
       const obj = json as Record<string, unknown>;
       const normalized: RouterDecision = {
-        useGPU: Boolean(obj['useGPU'] === true || obj['useGPU'] === 'true'),
+       , useGPU: Boolean(obj['useGPU'] === true || obj['useGPU'] === 'true'),
         useQUIC: Boolean(obj['useQUIC'] === true || obj['useQUIC'] === 'true'),
         useCache: Boolean(obj['useCache'] === true || obj['useCache'] === 'true'),
-        score: typeof obj['score'] === 'number' ? (obj['score'] as number) : undefined
+        score: typeof obj['score'] === 'number' ? (obj['score'], as: number) : undefined
       };
       return normalized;
     }

@@ -1,8 +1,8 @@
-import type { ServerLoad } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
-import { getUserId } from '$lib/server/auth/utils';
-import pool from '$lib/server/db/client';
-import { sql } from 'drizzle-orm';
+import type { ServerLoad } from, '@sveltejs/kit';
+import { redirect } from, '@sveltejs/kit';
+import { getUserId } from, '$lib/server/auth/utils';
+import pool from, '$lib/server/db/client';
+import { sql } from, 'drizzle-orm';
 
 export type CaseSummary = { id: string;, title: string;
   status: string;
@@ -11,7 +11,7 @@ export type CaseSummary = { id: string;, title: string;
   lastUpdate: Date;
 };
 
-export const load: ServerLoad = async ({ locals }) => {
+export const, load: ServerLoad = async ({ locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw redirect(303, '/login');
@@ -39,10 +39,10 @@ export const load: ServerLoad = async ({ locals }) => {
         status: string;
         progress: number | null;
         updated_at: string | Date | null;
-        evidence_count: string | number; // COUNT(*) can be a string from some drivers
+       , evidence_count: string | number; // COUNT(*) can be a: string from some drivers
     };
 
-    cases = (result as unknown as CaseRow[]).map(row => ({
+    cases = (result, as: unknown as CaseRow[]).map(row => ({
       id: row.id,
       title: row.title,
       status: row.status,
@@ -57,7 +57,7 @@ export const load: ServerLoad = async ({ locals }) => {
     cases = [
         {,
           id: 'err-001',
-          title: 'Database; Error: Could not load cases.',
+          title: 'Database;, Error: Could not load cases.',
           status: 'error',
           progress: 0,
           evidenceCount: 0,

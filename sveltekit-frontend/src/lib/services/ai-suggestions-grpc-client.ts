@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 
 // Types & enums (fixed unmatched braces / typos)
 export interface ServiceError extends Error {
@@ -40,9 +40,9 @@ export interface SuggestionContext {
   user_profile?: UserProfile;
   document_metadata?: DocumentMetadata;
 }
-export interface VectorContext { document_id: string;, content: string;
+export interface VectorContext {, document_id: string;, content: string;
   similarity_score: number;
-  document_type: string;
+ , document_type: string;
   metadata?: Record<string, string>;
 }
 export interface GraphContext {
@@ -57,7 +57,7 @@ export interface GraphRelationship { from_node: string;, to_node: string;
   weight?: number;
 }
 export interface UserProfile {
-  user_type: string; // attorney, paralegal, investigator
+ , user_type: string; // attorney, paralegal, investigator
   experience_level: string; // junior, mid, senior, expert
   specializations?: string[];
   preferences?: UserPreferences;
@@ -100,11 +100,11 @@ export interface SuggestionResponse { suggestions: Suggestion[];, model: string
   metrics?: ProcessingMetrics;
   request_id?: string;
 }
-export interface Suggestion { id: string;, content: string;
+export interface Suggestion {, id: string;, content: string;
   type: SuggestionType;
   confidence: number;
   priority: number;
-  category: SuggestionCategory;
+ , category: SuggestionCategory;
   supporting_evidence?: string[];
   relevant_statutes?: string[];
   case_citations?: string[];
@@ -145,8 +145,8 @@ export interface ProcessingMetrics {
   gpu_utilization?: number;
   tokens_processed?: number;
 }
-export interface SuggestionRating { suggestion_id: string;, user_id: string;
-  rating: Rating;
+export interface SuggestionRating {, suggestion_id: string;, user_id: string;
+ , rating: Rating;
   feedback?: string;
   was_applied?: boolean;
   timestamp?: number;
@@ -169,10 +169,10 @@ export interface RatingResponse {
  * Enhanced AI Suggestions gRPC Client
  */
 export class AISuggestionsGRPCClient {
-  private client: GrpcClientLike | null = null;
+  private, client: GrpcClientLike | null = null;
   private isConnected = $state(false);
   private readonly serviceUrl: string;
-  private readonly clientOptions: ClientOptions;
+  private readonly, clientOptions: ClientOptions;
 
   constructor(serviceUrl: string = 'localhost:8095', options: Partial<ClientOptions> = {}) {
     this.serviceUrl = serviceUrl;
@@ -366,7 +366,7 @@ export class AISuggestionsGRPCClient {
   }
 
   getConnectionStatus(): { connected: boolean; serviceUrl: string } {
-    return { connected: this.isConnected, serviceUrl: this.serviceUrl };
+    return {, connected: this.isConnected, serviceUrl: this.serviceUrl };
   }
 }
 
@@ -397,7 +397,7 @@ export async function generateContextualLegalSuggestions(
   options: Partial<SuggestionRequest> = {}
 ): Promise<SuggestionResponse> {
   const request: ContextualSuggestionRequest = {
-    base_request: {
+   , base_request: {
       content,
       report_type: ReportType.PROSECUTION_MEMO,
       max_suggestions: 5,
@@ -419,7 +419,7 @@ export async function rateLegalSuggestion(
   wasApplied = false
 ): Promise<RatingResponse> {
   const request: SuggestionRating = {
-    suggestion_id: suggestionId,
+   , suggestion_id: suggestionId,
     user_id: userId,
     rating,
     feedback,
@@ -433,21 +433,21 @@ export async function rateLegalSuggestion(
 export const ReportTypeUtils = {
   fromString(type: string): ReportType {
     switch (type.toLowerCase()) {
-      case 'prosecution_memo':
+      case, 'prosecution_memo':
         return ReportType.PROSECUTION_MEMO;
-      case 'case_brief':
+      case, 'case_brief':
         return ReportType.CASE_BRIEF;
-      case 'evidence_summary':
+      case, 'evidence_summary':
         return ReportType.EVIDENCE_SUMMARY;
-      case 'motion':
+      case, 'motion':
         return ReportType.MOTION;
-      case 'discovery_request':
+      case, 'discovery_request':
         return ReportType.DISCOVERY_REQUEST;
-      case 'witness_statement':
+      case, 'witness_statement':
         return ReportType.WITNESS_STATEMENT;
-      case 'legal_research':
+      case, 'legal_research':
         return ReportType.LEGAL_RESEARCH;
-      case 'closing_argument':
+      case, 'closing_argument':
         return ReportType.CLOSING_ARGUMENT;
       default: return ReportType.REPORT_TYPE_UNSPECIFIED;
     }
@@ -455,22 +455,22 @@ export const ReportTypeUtils = {
   toString(type: ReportType): string {
     switch (type) {
       case ReportType.PROSECUTION_MEMO:
-        return 'prosecution_memo';
+        return, 'prosecution_memo';
       case ReportType.CASE_BRIEF:
-        return 'case_brief';
+        return, 'case_brief';
       case ReportType.EVIDENCE_SUMMARY:
-        return 'evidence_summary';
+        return, 'evidence_summary';
       case ReportType.MOTION:
-        return 'motion';
+        return, 'motion';
       case ReportType.DISCOVERY_REQUEST:
-        return 'discovery_request';
+        return, 'discovery_request';
       case ReportType.WITNESS_STATEMENT:
-        return 'witness_statement';
+        return, 'witness_statement';
       case ReportType.LEGAL_RESEARCH:
-        return 'legal_research';
+        return, 'legal_research';
       case ReportType.CLOSING_ARGUMENT:
-        return 'closing_argument';
-      default: return 'unspecified';
+        return, 'closing_argument';
+      default: return, 'unspecified';
     }
   }
 };
@@ -488,16 +488,16 @@ export const RatingUtils = {
   toString(rating: Rating): string {
     switch (rating) {
       case Rating.VERY_POOR:
-        return 'Very Poor';
+        return, 'Very Poor';
       case Rating.POOR:
-        return 'Poor';
+        return, 'Poor';
       case Rating.FAIR:
-        return 'Fair';
+        return, 'Fair';
       case Rating.GOOD:
-        return 'Good';
+        return, 'Good';
       case Rating.EXCELLENT:
-        return 'Excellent';
-      default: return 'Unspecified';
+        return, 'Excellent';
+      default: return, 'Unspecified';
     }
   }
 };

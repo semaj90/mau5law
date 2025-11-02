@@ -3,11 +3,11 @@
  * GET /api/v1/cases - List user's cases (with pagination)'
  * POST /api/v1/cases - Create new case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, CreateCaseSchema, type CreateCaseData } from '$lib/server/services/user-scoped-crud';
-import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { CasesCRUDService, CreateCaseSchema, type CreateCaseData } from, '$lib/server/services/user-scoped-crud';
+import { queueCaseSynthesis } from, '$lib/server/services/background-job-queue';
+import { z } from, 'zod';
 // Query parameters schema for GET requests
 const CasesQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         success: z.literal(true),
         data: z.array(CaseItemSchema),
         pagination: z.object({
-          page: z.number(),
+         , page: z.number(),
           limit: z.number(),
           total: z.number(),
           totalPages: z.number(),
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: (result as { items?: any; pagination?: any }).items,
       pagination: {
-        page: (result as { items?: any; pagination?: any }).pagination.page,
+       , page: (result as { items?: any; pagination?: any }).pagination.page,
         limit: (result as { items?: any; pagination?: any }).pagination.limit,
         total: (result as { items?: any; pagination?: any }).pagination.totalCount,
         totalPages: (result as { items?: any; pagination?: any }).pagination.totalPages,
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     };

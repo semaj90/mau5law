@@ -2,8 +2,8 @@
  * RabbitMQ-Tensor Integration API Endpoint
  * Provides HTTP interface for WASM-accelerated tensor processing via RabbitMQ
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 import {
   rabbitMQTensorIntegration,
   initializeIntegration,
@@ -11,14 +11,14 @@ import {
   getIntegrationStatus,
   WASM_SERVICE_PORTS,
   WASM_QUEUE_ROUTING
-} from '$lib/integrations/rabbitmq-tensor-integration.js';
-import { readBodyFastWithMetrics, getSIMDStatus, benchmarkJSONParsing } from '$lib/simd/simd-json-integration.js';
+} from, '$lib/integrations/rabbitmq-tensor-integration.js';
+import { readBodyFastWithMetrics, getSIMDStatus, benchmarkJSONParsing } from, '$lib/simd/simd-json-integration.js';
 // GET: Get integration status and health
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'status': {
+      case, 'status': {
         const status = getIntegrationStatus();
         return json({
           success: true,
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'health': {
+      case, 'health': {
         const healthStatus = getIntegrationStatus();
         const isHealthy = healthStatus.integrated && healthStatus.bridge.wasmReady;
         return json(
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         );
       }
-      case 'ports': {
+      case, 'ports': {
         return json({
           success: true,
           data: {
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       }
-      case 'queues': {
+      case, 'queues': {
         return json({
           success: true,
           data: {
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       }
-      case 'simd': {
+      case, 'simd': {
         const simdStatus = getSIMDStatus();
         return json({
           success: true,
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       }
-      case 'benchmark': {
+      case, 'benchmark': {
         const benchmark = await benchmarkJSONParsing(1000);
         return json({
           success: true,
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
       default: {
-        // default: Return comprehensive status
+        //, default: Return comprehensive status
         const fullStatus = getIntegrationStatus();
         return json({
           success: true,
@@ -125,13 +125,13 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 // POST: Control integration operations and submit tensor jobs
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     // Use SIMD-accelerated JSON parsing for hot endpoint
     const body = await readBodyFastWithMetrics(request);
     const { action, ...payload } = body;
     switch (action) {
-      case 'initialize': {
+      case, 'initialize': {
         console.log('🔗 Initializing RabbitMQ-Tensor Integration...');
         const initialized = await initializeIntegration();
         return json({
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'submit_job': {
+      case, 'submit_job': {
         const { jobType: submittedJobType, data, priority = 2 } = payload;
         if (!submittedJobType || !data) {
           return json(
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'similarity': {
+      case, 'similarity': {
         const { queryVector, candidateVectors, algorithm = 'cosine' } = payload;
         if (!queryVector || !candidateVectors) {
           return json(
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'normalize': {
+      case, 'normalize': {
         const { vectors, batchProcess = false } = payload;
         if (!vectors || !Array.isArray(vectors)) {
           return json(
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
         return json({
           success: true,
-          message: 'Vector ${batchProcess ? 'batch ' : '' }normalization submitted`,'`
+          message: 'Vector ${batchProcess ? 'batch, ' : '' }normalization submitted`,'`
           data: {
            , jobId: normalizeJobId,
             vectorCount: vectors.length,
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'compress': {
+      case, 'compress': {
         const { embeddings, compressionRatio = 0.5 } = payload;
         if (!embeddings) {
           return json(
@@ -259,7 +259,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'benchmark': {
+      case, 'benchmark': {
         // Run performance benchmark comparing WASM vs JS
         const benchmarkVectors = Array.from({ length: 100 }, () => Array.from({ length: 768 }, () => Math.random()));
         const benchmarkQuery = Array.from({ length: 768 }, () => Math.random());
@@ -286,7 +286,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: {
         return json(
           {
-            success: false,
+           , success: false,
             error: {, message: `Unknown, action: ${action}` }
           },
           { status: 400 }
@@ -309,13 +309,13 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 // PUT: Update integration configuration
-export const PUT: RequestHandler = async ({ request }) => {
+export const, PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { config } = body;
     // For future implementation: Update integration configuration
     return json({
-      success: true,
+     , success: true,
       message: 'Integration configuration update received',
       data: {
        , appliedConfig: config,
@@ -339,11 +339,11 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 // DELETE: Shutdown integration or clear jobs
-export const DELETE: RequestHandler = async ({ url }) => {
+export const, DELETE: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'shutdown': {
+      case, 'shutdown': {
         await rabbitMQTensorIntegration.shutdown();
         return json({
           success: true,
@@ -353,20 +353,20 @@ export const DELETE: RequestHandler = async ({ url }) => {
           }
         });
       }
-      case 'clear_cache': {
+      case, 'clear_cache': {
         // Future implementation: Clear WASM result cache
         return json({
-          success: true,
+         , success: true,
           message: 'Tensor cache clearing initiated (simulation)',
           data: {
-            cleared_at: new Date().toISOString()
+           , cleared_at: new Date().toISOString()
           }
         });
       }
       default: {
         return json(
           {
-            success: false,
+           , success: false,
             error: {, message: `Action required for DELETE operation` }
           },
           { status: 400 }

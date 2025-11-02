@@ -3,15 +3,15 @@ Essential Route Page Template with CSS Bits UI Integration
 Use this template for all essential routes
 -->
 <script, lang="ts">
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
-  // Svelte 5 runes are auto-imported
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
-	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
-	import Button from '$lib/components/ui/enhanced-bits.svelte';
-	import * as Card from '$lib/components/ui/Card.svelte';
-	import  ButtonBits, CardBits, DialogBits  from "$lib/components/ui/bits-ui.svelte";
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
+  // Svelte, 5 runes are auto-imported
+	import { onMount } from, 'svelte';
+	import { browser } from, '$app/environment';
+	import { page } from, '$app/stores';
+	import ProductionLayout from, '$lib/components/layout/ProductionLayout.svelte';
+	import Button from, '$lib/components/ui/enhanced-bits.svelte';
+	import * as Card from, '$lib/components/ui/Card.svelte';
+	import  ButtonBits, CardBits, DialogBits  from, "$lib/components/ui/bits-ui.svelte";
 	// Props
 	interface Props {
 		pageTitle: string;
@@ -45,7 +45,7 @@ Use this template for all essential routes
 <ProductionLayout>
 	<div, class="essential-route-page {className}">
 		<!-- Header -->
-		<Card.Root class="mb-6, nes-container, is-rounded">
+		<Card class="mb-6, nes-container, is-rounded">
 			<CardHeader>
 				<div class="flex, justify-between, items-center">
 					<div class="flex, items-center, gap-4">
@@ -135,7 +135,7 @@ Use this template for all essential routes
 	}
 	.essential-route-main {
 		max-width: 1200px;
-		margin: 0 auto;
+	, margin: 0 auto;
 	}
 /* NES.css theme integration */ {}
 	:global(.nes-container.is-rounded) {

@@ -1,6 +1,6 @@
 // Dynamic Port Management System
 // Provides port arrays [0-9] for each service to avoid conflicts
-import { createServer } from 'net';
+import { createServer } from, 'net';
 
 export interface ServicePort { name: string;, basePort: number;
   currentPort?: number;
@@ -9,7 +9,7 @@ export interface ServicePort { name: string;, basePort: number;
 }
 
 export class DynamicPortManager {
-  private services: Map<string, ServicePort> = new Map();
+  private, services: Map<string, ServicePort> = new Map();
   private usedPorts: Set<number> = new Set();
 
   constructor() {

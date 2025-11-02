@@ -331,7 +331,7 @@
 	</div>
 	<!-- RAG Ingestion Progress -->
 	{#if isIngesting}
-		<div class="rag-progress" transition:fly={{ y: -20, duration: 300 }}>
+		<div class="rag-progress" use:fly={{ y: -20, duration: 300 }}>
 			<div class="progress-header">
 				<span>🧠 RAG Analysis</span>
 				<span>{ingestionProgress}%</span>
@@ -343,7 +343,7 @@
 	{/if}
 	<!-- RAG Context -->
 	{#if ragContext.length > 0}
-		<div class="rag-context" transition:scale={{ duration: 300 }}>
+		<div class="rag-context" use:scale={{ duration: 300 }}>
 			<h4>📚 Found Legal Context</h4>
 			{#each ragContext as context (context.title)}
 				<div class="context-item">
@@ -357,7 +357,7 @@
 	<!-- Chat Messages -->
 	<div class="chat-container" bind:this={chatContainer}>
 		{#each messages as message (message.id)}
-			<div class="message message-{message.type}" transition:fly={{ y: 20, duration: 300 }}>
+			<div class="message message-{message.type}" use:fly={{ y: 20, duration: 300 }}>
 				<div class="message-content">
 					{message.content}
 				</div>
@@ -367,7 +367,7 @@
 			</div>
 		{/each}
 		{#if isTyping}
-			<div class="message message-assistant typing-indicator" transition:fade>
+			<div class="message message-assistant typing-indicator" use:fade>
 				<div class="typing-dots">
 					<span></span>
 					<span></span>
@@ -378,7 +378,7 @@
 	</div>
 	<!-- Workflow Interface -->
 	{#if workflowActive && currentStep < workflowSteps.length}
-		<div class="workflow-interface" transition:fly={{ y: 20, duration: 400 }}>
+		<div class="workflow-interface" use:fly={{ y: 20, duration: 400 }}>
 			<div class="workflow-header">
 				<span class="workflow-icon">{workflowSteps[currentStep].icon}</span>
 				<span class="workflow-title">{workflowSteps[currentStep].key.toUpperCase()}</span>

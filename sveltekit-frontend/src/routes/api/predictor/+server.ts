@@ -1,8 +1,8 @@
 // SvelteKit API endpoint for Redis-cached Markov predictor
 // Integrates with CUDA + pgvector + SIMD acceleration
-import { json } from '@sveltejs/kit'
-import { predictor } from '$lib/server/chrrom/predictor.js'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import { predictor } from, '$lib/server/chrrom/predictor.js'
+import type { RequestHandler } from, './$types.js'
 interface RecordRequest { userId: string, action: string
   context?: {
     docId?: string
@@ -20,7 +20,7 @@ interface PredictRequest {
   enhancedMode?: boolean
 }
 // Record user action for learning
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as RecordRequest;
     if (!body.userId || !body.action) {

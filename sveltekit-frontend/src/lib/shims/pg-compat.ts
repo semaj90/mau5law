@@ -1,4 +1,4 @@
-import postgres from 'postgres';
+import postgres from, 'postgres';
 
 type PoolConfig = { connectionString?: string; max?: number };
 type ListenerCallback = (...args: any[]) => void;
@@ -10,7 +10,7 @@ export interface QueryResult {
 
 // Define a minimal interface for the PoolClient that thread-safe-postgres.ts expects
 export interface PgClient {
-  query: (text: string, params?: any[]) => Promise<QueryResult>;
+ , query: (text: string, params?: any[]) => Promise<QueryResult>;
   release: () => void;
 }
 
@@ -28,9 +28,9 @@ export class Pool {
   totalCount = 0;
   idleCount = 0;
   waitingCount = 0;
-  private listeners: Record<string, ListenerCallback[]> = {};
+  private, listeners: Record<string, ListenerCallback[]> = {};
 
-  // constructor: narrow config type instead of any
+  // constructor: narrow config type instead, of: any
   constructor(config?: PoolConfig) {
     this.connectionString = config?.connectionString || process.env.DATABASE_URL;
     // lazy init client to avoid creating sockets at import time
@@ -66,12 +66,12 @@ export class Pool {
     });
   }
 
-  // explicit return types; avoid: 'any' by using unknown and runtime checks
+  // explicit return types; avoid: 'any' by, using: unknown and runtime checks
   async connect(): Promise<PgClient> {
     const client = this.ensureClient();
 
     // Narrow-view of possible shapes on the postgres-js client
-    const clientLike = client as unknown as {
+    const clientLike = client as: unknown as {
       query?: (text: string, params?: any[]) => Promise<unknown>;
       unsafe?: (text: string, params?: any[]) => Promise<unknown>;
       (...args: any[]): Promise<unknown>;
@@ -88,15 +88,15 @@ export class Pool {
           res = await clientLike.unsafe(text, params);
         } else {
           // last resort: call as function (tagged template fallback)
-          res = await (clientLike as unknown as (...a: any[]) => Promise<unknown>)(text, ...(params ?? []));
+          res = await (clientLike as: unknown as (...a: any[]) => Promise<unknown>)(text, ...(params ?? []));
         }
 
         // Normalize result to { rows: [...] } shape, handling both array (postgres-js)
-        // and object-with-rows (node-postgres) responses.
+        // and: object-with-rows (node-postgres) responses.
         if (Array.isArray(res)) {
           return { rows: res };
         }
-        if (res && typeof res === 'object' && 'rows' in res && Array.isArray((res as { rows: any }).rows)) {
+        if (res && typeof res === 'object' && 'rows' in res && Array.isArray((res as {, rows: any }).rows)) {
           return { rows: (res as {, rows: any[] }).rows };
         }
 
@@ -111,7 +111,7 @@ export class Pool {
 
   async end(): Promise<void> {
     if (this.client) {
-      const maybeWithEnd = this.client as unknown as { end?: () => Promise<void> };
+      const maybeWithEnd = this.client as: unknown as { end?: () => Promise<void> };
       if (typeof maybeWithEnd.end === 'function') {
         try {
           await maybeWithEnd.end();

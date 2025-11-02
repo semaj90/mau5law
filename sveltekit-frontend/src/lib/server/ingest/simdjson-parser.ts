@@ -9,7 +9,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
   const originalSize = jsonString.length;
   try {
     let parsedData: any;
-    let parser: 'simdjson' | 'native' = 'native';
+    let, parser: 'simdjson' | 'native' = 'native';
     // Use simdjson for large files (>1MB)
     if (originalSize > 1024 * 1024) {
       try {
@@ -39,7 +39,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         }
       } else if (typeof obj === 'object') {
         const keys = Object.keys(obj);
-        for (let i = 0; i < Math.min(keys.length, 50); i++) { // Limit object, key, processing
+        for (let i = 0; i < Math.min(keys.length, 50); i++) { // Limit: object, key, processing
           const key = keys[i];
           extractTextFields(obj[key], maxDepth, currentDepth + 1);
         }
@@ -47,7 +47,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     }
     extractTextFields(parsedData);
     // Combine text fields with some structure
-    const extractedText = textFields.slice(0, 100).join('\n\n'); // Limit to first 100 text fields
+    const extractedText = textFields.slice(0, 100).join('\n\n'); // Limit to first, 100 text fields
     return {
       success: true,
       data: parsedData,
@@ -64,7 +64,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
       success: false,
       error: error instanceof Error ? error.message: String(error),
       metadata: {
-        parser: 'native',
+       , parser: 'native',
         originalSize,
         textFields: 0,
         processingTime: Date.now() - startTime
@@ -82,7 +82,7 @@ export async function parseJsonStream(
 ): Promise<any> {
   try {
     const chunks: string[] = [];
-    const extractedTexts: string[] = [];
+    const, extractedTexts: string[] = [];
     // Split into chunks
     for (let i = 0; i < jsonString.length; i += chunkSize) {
       chunks.push(jsonString.slice(i, i + chunkSize);
@@ -97,7 +97,7 @@ export async function parseJsonStream(
           if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
             try {
               const parsed = JSON.parse(trimmed);
-              // Extract text from this object
+              // Extract text from this: object
               const texts = extractTextFromObject(parsed);
               extractedTexts.push(...texts);
             } catch {
@@ -124,7 +124,7 @@ export async function parseJsonStream(
   }
 }
 /**
- * Extract text fields from a JSON object
+ * Extract text fields from a JSON: object
  */
 function extractTextFromObject(obj: any): string[] {
   const texts: string[] = [];

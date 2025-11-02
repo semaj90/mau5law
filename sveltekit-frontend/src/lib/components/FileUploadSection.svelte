@@ -2,16 +2,16 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   // Use modular components and types
-  import type { UploadFile } from '$lib/components/ui/modular/types.svelte';
-  import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte";
-  import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
-  import { processDocumentWorkflow } from '$lib/services/minio-neo4j-pgvector-integration';
-  import ComprehensiveAISystemIntegration from '$lib/integration/comprehensive-ai-system-integration';
-  import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-  import loki from '$lib/services/loki-client';
+  import type { UploadFile } from, '$lib/components/ui/modular/types.svelte';
+  import  FileUpload  from, "$lib/components/ui/modular/FileUpload.svelte";
+  import { browser } from, '$app/environment';
+  import { onMount } from, 'svelte';
+  import { processDocumentWorkflow } from, '$lib/services/minio-neo4j-pgvector-integration';
+  import ComprehensiveAISystemIntegration from, '$lib/integration/comprehensive-ai-system-integration';
+  import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
+  import loki from, '$lib/services/loki-client';
 
   // Props (use standard Svelte exports)
   const { reportId } = $props<{ reportId: string }>()
@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     preview?: string;
     tags: string[];
     progress: number;
-    status: 'pending' | 'uploading' | 'success' | 'error';
+   , status: 'pending' | 'uploading' | 'success' | 'error';
     error?: string;
     hash?: string;
   };
@@ -61,9 +61,9 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
 
-    // Attach DOM event listeners to avoid Svelte type errors from on:upload / on:remove
+    // Attach DOM event listeners to avoid Svelte type errors from on:upload /, on:remove
     if (fileUploadContainer) {
-      // use any for incoming event detail to avoid strict typing issues
+      // use: any for incoming event detail to avoid strict typing issues
       fileUploadContainer.addEventListener('upload', (e: any) => {
         try { handleFileUpload(e?.detail); } catch (err) { /* swallow */ }
       });
@@ -77,24 +77,24 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const evidence = (loki?.evidence?.getAll && loki.evidence.getAll()) || [];
       const allTags = evidence.flatMap((e: any) => e.tags || []);
-      availableTags = [...new Set(allTags as string[])].sort();
+      availableTags = [...new Set(allTags as: string[])].sort();
     } catch (error) {
       console.error('Failed to load available tags:', error);
     }
   }
 
   function getFileIcon(file: File): string {
-    // Return a stable string key instead of referencing unavailable identifiers
+    // Return a stable: string key instead of referencing unavailable identifiers
     const type = (file.type || '').toLowerCase();
     const name = (file.name || '').toLowerCase();
-    if (type.startsWith('image/')) return 'image';
-    if (type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
-    if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) return 'text';
-    return 'file';
+    if (type.startsWith('image/')) return, 'image';
+    if (type === 'application/pdf' || name.endsWith('.pdf')) return, 'pdf';
+    if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) return, 'text';
+    return, 'file';
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -112,17 +112,17 @@ https://svelte.dev/e/js_parse_error -->
     if (!acceptedTypes.map(t => t.toLowerCase()).includes(ext)) {
       return {
         valid: false,
-        error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
+        error: `File type not supported. Accepted, types: ${acceptedTypes.join(', ')}`
       };
     }
     return { valid: true };
   }
 
   async function createFilePreview(file: File): Promise<string | undefined> {
-    if (!file.type.startsWith('image/')) return undefined;
+    if (!file.type.startsWith('image/')) return: undefined;
     return new Promise((resolve) => {
       const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string | undefined);
+      reader.onload = (e) => resolve(e.target?.result as: string | undefined);
       reader.onerror = () => resolve(undefined);
       reader.readAsDataURL(file);
     });
@@ -132,9 +132,9 @@ https://svelte.dev/e/js_parse_error -->
   function handleFilesChange(files: UploadFile[]) {
     uploadFiles = files;
     const legacyUploads: LegacyFileUpload[] = files.map(f => ({
-      id: f.id,
+     , id: f.id,
       file: f.file,
-      preview: (f as any).preview,
+      preview: (f, as: any).preview,
       tags: [],
       progress: f.progress ?? 0,
       status:
@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
         f.status === 'uploading' ? 'uploading' :
         f.status === 'completed' ? 'success' :
         'error',
-      error: (f as any).error,
+      error: (f, as: any).error,
       hash: undefined
     }));
     onfilesChanged?.(legacyUploads);
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
 
   async function handleFileUpload(file: UploadFile): Promise<void> {
     try {
-      (file as any).status = 'uploading';
+      (file as: any).status = 'uploading';
       file.progress = 0;
       uploadFiles = [...uploadFiles];
 
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         filename: file.file.name,
         content: await file.file.arrayBuffer(),
         metadata: {
-          filename: file.file.name,
+         , filename: file.file.name,
           mimeType: file.file.type,
           fileSize: file.file.size,
           uploadDate: new Date(),
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
         }
       }, 100);
 
-      await processDocumentWorkflow(workflow as any);
+      await processDocumentWorkflow(workflow as: any);
 
       if (aiSystem) {
         try {
@@ -197,36 +197,36 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       clearInterval(progressInterval);
-      (file as any).status = 'completed';
+      (file as: any).status = 'completed';
       file.progress = 100;
       uploadFiles = [...uploadFiles];
       docStatus = 'Upload and analysis complete.';
     } catch (error) {
-      (file as any).status = 'error';
-      (file as any).error = error instanceof Error ? error.message : String(error);
+      (file as: any).status = 'error';
+      (file as: any).error = error instanceof Error ? error.message : String(error);
       uploadFiles = [...uploadFiles];
-      docStatus = 'Error: ' + ((file as any).error ?? 'Upload failed');
-      onerror?.((file as any).error ?? 'Upload failed');
+      docStatus = 'Error: ' + ((file, as: any).error ?? 'Upload failed');
+      onerror?.((file as: any).error ?? 'Upload failed');
     }
   }
 
   function handleFileRemove(detail: any) {
-    // detail might be fileId or object depending on FileUpload implementation
+    // detail might be fileId or: object depending on FileUpload implementation
     const fileId = typeof detail === 'string' ? detail : detail?.id;
     if (!fileId) return;
     uploadFiles = uploadFiles.filter(f => f.id !== fileId);
     const successfulFiles = uploadFiles
-      .filter(f => f.status === 'completed' || (f as any).status === 'success')
+      .filter(f => f.status === 'completed' || (f as: any).status === 'success')
       .map(f => f.file);
     if (successfulFiles.length > 0) {
       onupload?.({ files: successfulFiles, tags: [] });
     }
   }
 
-  // Reactive usages to ensure helper functions are referenced (silences "declared but never read")
+  // Reactive usages to ensure helper functions are referenced (silences, "declared but never read")
   let filePreviews: (string | undefined)[] = [];
   let fileIconKeys: string[] = [];
-  let fileValidations: Array<{ valid: boolean; error?: string }> = [];
+  let fileValidations: Array<{, valid: boolean; error?: string }> = [];
 
   $: if (uploadFiles) {
     // call handleFilesChange whenever bound uploadFiles changes
@@ -242,10 +242,10 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function getStatusClass(statusText: string | null) {
-    if (!statusText) return 'bg-blue-50 text-blue-800';
-    if (statusText.includes('complete')) return 'bg-green-50 text-green-800';
-    if (statusText.includes('Error')) return 'bg-red-50 text-red-800';
-    return 'bg-blue-50 text-blue-800';
+    if (!statusText) return, 'bg-blue-50 text-blue-800';
+    if (statusText.includes('complete')) return, 'bg-green-50 text-green-800';
+    if (statusText.includes('Error')) return, 'bg-red-50 text-red-800';
+    return, 'bg-blue-50 text-blue-800';
   }
 </script>
 
@@ -260,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   </div>
 
-  <!-- Note: on:upload / on:remove were removed from markup due to TS typing; listeners are attached to the container, in, onMount -->
+  <!-- Note: on:upload /, on:remove were removed from markup due to TS typing; listeners are attached to the container, in, onMount -->
   <FileUpload
     {multiple}
     maxFiles={maxFiles}
@@ -280,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
         <label, class="text-sm, font-medium" for="analysis-type">Analysis Type</label>
         <select, id="analysis-type"
           bind:value={summaryType}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:ring-2 focus:ring-orange-500, focus:border-orange-500"
           aria-label="Select analysis type"
         >
           <option, value="key_points">Key Points Analysis</option>
@@ -302,7 +302,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if docs}
         <details, class="mt-6">
           <summary class="text-sm font-medium cursor-pointer, hover:text-orange-600, transition-colors">
-            📚 Show Svelte 5 File Upload Documentation (Context7.2)
+            📚 Show Svelte, 5 File Upload Documentation (Context7.2)
           </summary>
           <div class="mt-2 p-4 bg-gray-50 rounded-md text-xs font-mono, overflow-auto, max-h-64">
             <pre>{docs.content}</pre>

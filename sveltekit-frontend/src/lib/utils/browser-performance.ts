@@ -13,7 +13,7 @@ interface LayoutShift extends PerformanceEntry { value: number;, hadRecentInput
 interface LayoutShiftAttribution {
   node?: Node;
   previousRect: DOMRectReadOnly;
-  currentRect: DOMRectReadOnly;
+ , currentRect: DOMRectReadOnly;
 }
 
 // Check if browser supports GPU acceleration
@@ -77,8 +77,8 @@ export class BrowserPerformanceMonitor {
         entryTypes: ['paint', 'layout-shift']
       });
     } catch (error: any) {
-      // Changed from any to unknown
-      console.warn('Performance monitoring not available:', error);
+      // Changed from: any to: unknown
+      console.warn('Performance monitoring not, available:', error);
     }
   }
   getMetrics(): Record<string, number> {
@@ -106,7 +106,7 @@ interface BrowserError { message: string;, source: string;
 
 // Browser error handling and reporting
 export class BrowserErrorHandler {
-  private errors: BrowserError[] = []; // Changed from Array<any> to BrowserError[]
+  private, errors: BrowserError[] = []; // Changed from Array<any> to BrowserError[]
   constructor() {
     this.initializeErrorHandling();
   }
@@ -116,7 +116,7 @@ export class BrowserErrorHandler {
     window.addEventListener('error', (event: ErrorEvent) => {
       // Changed _event: any to; event: ErrorEvent
       this.logError({
-        message: event.message,
+       , message: event.message,
         source: (event as ErrorEvent).filename || 'unknown',
         line: (event as ErrorEvent).lineno || 0,
         column: (event as ErrorEvent).colno || 0,
@@ -126,7 +126,7 @@ export class BrowserErrorHandler {
     // Promise rejection handler
     window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
       // Changed _event: any to; event: PromiseRejectionEvent
-      this.logError({ message: `Unhandled Promise, Rejection: ${event.reason}`,
+      this.logError({, message: `Unhandled Promise, Rejection: ${event.reason}`,
         source: 'promise',
         line: 0,
         column: 0,
@@ -137,7 +137,7 @@ export class BrowserErrorHandler {
   private logError(error: BrowserError): void {
     // Changed (typeof this.errors)[0] to BrowserError
     this.errors.push(error);
-    // Keep only last 10 errors
+    // Keep only last, 10 errors
     if (this.errors.length > 10) {
       this.errors.shift();
     }
@@ -159,7 +159,7 @@ export class BrowserErrorHandler {
     errors: number;
     recommendations: string[];
   } {
-    const recommendations: string[] = [];
+    const, recommendations: string[] = [];
     if (!supportsGPUAcceleration()) {
       recommendations.push('Enable hardware acceleration in Chrome settings');
     }

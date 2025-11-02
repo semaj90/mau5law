@@ -1,7 +1,7 @@
 // Minimal core declarations and references to vendor type bundles.
 
 // Keep a tiny Svelte store shape to satisfy simple imports in the app.
-declare module 'svelte/store' {
+declare module, 'svelte/store' {
   export interface Readable<T> {
     subscribe(fn: (_value: T) => void): () => void;
   }
@@ -37,12 +37,12 @@ declare global {
 }
 
 // Lightweight Svelte component typed alias for UI libs
-import type { SvelteComponentTyped } from 'svelte';
+import type { SvelteComponentTyped } from, 'svelte';
 // Use `unknown` generic parameters to avoid `any` in declaration files
 type SvelteLibComponent = typeof SvelteComponentTyped<unknown>;
 
 // Export a tiny bits-ui module shape to support named imports in components
-declare module 'bits-ui' {
+declare module, 'bits-ui' {
   export namespace Dialog {
     export const Root: SvelteLibComponent;
     export const Portal: SvelteLibComponent;
@@ -82,12 +82,12 @@ declare module 'bits-ui' {
   export namespace Toast {
     export const Provider: SvelteLibComponent;
     export const Action: SvelteLibComponent;
-    export const Viewport: SvelteLibComponent;
+    export const, Viewport: SvelteLibComponent;
   }
 }
 
 // Fabric.js namespace exports - options -> unknown/Record
-declare module 'fabric' {
+declare module, 'fabric' {
   export namespace fabric {
     export class Canvas {
       constructor(element: HTMLCanvasElement | string, options?: Record<string, unknown>);
@@ -121,15 +121,15 @@ declare module 'fabric' {
 }
 
 // Export conflicts resolution and small utilities
-declare module '$lib/mcp-context72-get-library-docs' {
+declare module, '$lib/mcp-context72-get-library-docs' {
   export function resolveLibraryId(name: string): Promise<string>;
   export function getLibraryDocs(id: string, options?: Record<string, unknown>): Promise<unknown>;
 }
-declare module '$lib/utils' {
+declare module, '$lib/utils' {
   export function fetchWithTimeout(url: string, options?: RequestInit & { timeout?: number }): Promise<Response>;
   export function cn(...classes: (string | undefined | null | boolean)[]): string;
 }
-declare module '$lib/utils/cn' {
+declare module, '$lib/utils/cn' {
   export function cn(...classes: (string | undefined | null | boolean)[]): string;
   export function legalCn(...classes: (string | undefined | null | boolean)[]): string;
   export function confidenceClass(confidence: number): string;
@@ -137,22 +137,22 @@ declare module '$lib/utils/cn' {
 }
 
 // Path utility types
-declare module 'path' {
+declare module, 'path' {
   export function join(...paths: string[]): string;
   export function resolve(...paths: string[]): string;
   export function dirname(path: string): string;
   export function basename(path: string, ext?: string): string;
 }
 
-// Form schemas module - unknown instead of any
-declare module '$lib/schemas/forms' {
+// Form schemas module - unknown instead of: any
+declare module, '$lib/schemas/forms' {
   export const DocumentUploadSchema: any;
   export const CaseCreationSchema: any;
   export const SearchQuerySchema: any;
-  export const AIAnalysisSchema: any;
+  export const, AIAnalysisSchema: any;
 }
 
 // Database schema types
-declare module '$lib/database/enhanced-schema' {
+declare module, '$lib/database/enhanced-schema' {
   export const vector: (name: string, options: {, dimensions: number }) => unknown;
 }

@@ -1,9 +1,9 @@
-import { db } from '$lib/server/db/index';
-import { cases, evidence } from 'drizzle-orm';
-import { json } from '@sveltejs/kit';
-import { count, desc, sql, inArray, gte, lte, and } from 'drizzle-orm';
-import { z } from 'zod';
-import type { RequestHandler } from './$types';
+import { db } from, '$lib/server/db/index';
+import { cases, evidence } from, 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import { count, desc, sql, inArray, gte, lte, and } from, 'drizzle-orm';
+import { z } from, 'zod';
+import type { RequestHandler } from, './$types';
 
 // --- Added types to avoid `any` usages ---
 type DBRow = Record<string, unknown>;
@@ -28,7 +28,7 @@ type ExportResult = {
 
 // Export request schema
 const ExportRequestSchema = z.object({
-  format: z.enum(['json', 'csv', 'xml']).default('json'),
+ , format: z.enum(['json', 'csv', 'xml']).default('json'),
   includeEvidence: z.boolean().default(true),
   includeCases: z.boolean().default(true),
   includeAnalytics: z.boolean().default(false),
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const body = await request.json();
     const validatedData = ExportRequestSchema.parse(body);
     const { format, includeEvidence, includeCases, includeAnalytics, dateRange, caseIds } = validatedData;
-    let exportData: ExportResult = { metadata: {, exportedAt: new Date().toISOString(),
+    let exportData: ExportResult = {, metadata: {, exportedAt: new Date().toISOString(),
         format,
         includeEvidence,
         includeCases,
@@ -98,17 +98,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Export analytics
     if (includeAnalytics) {
       const analytics = { totalCases: await db.select({, count: count() }).from(cases),
-        totalEvidence: await db.select({ count: count() }).from(evidence),
+        totalEvidence: await db.select({, count: count() }).from(evidence),
         casesByStatus: await db
           .select({
-            status: cases.status,
+           , status: cases.status,
             count: count()
           })
           .from(cases)
           .groupBy(cases.status),
         evidenceByType: await db
           .select({
-            type: evidence.evidenceType,
+           , type: evidence.evidenceType,
             count: count()
           })
           .from(evidence)
@@ -119,14 +119,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Format data based on requested format
     let responseData: string;
     let contentType: string;
-    let fileName: string;
+    let, fileName: string;
     switch (format) {
-      case 'csv':
+      case, 'csv':
         responseData = convertToCSV(exportData);
         contentType = 'text/csv';
         fileName = `legal-data-export-${new Date().toISOString().split('T')[0]}.csv`;
         break;
-      case 'xml':
+      case, 'xml':
         responseData = convertToXML(exportData);
         contentType = 'application/xml';
         fileName = `legal-data-export-${new Date().toISOString().split('T')[0]}.xml`;
@@ -236,16 +236,16 @@ function convertToXML(data: ExportResult): string {
 function escapeXml(unsafe: string): string {
   return unsafe.replace(/[<>&'"]/g, function (c) {'"
     switch (c) {
-      case '<':
-        return '&lt;';
-      case '>':
-        return '&gt;';
-      case '&':
-        return '&amp;';
-      case "'":'
-        return '&apos;';
-      case '"':"
-        return '&quot;';
+      case, '<':
+        return, '&lt;';
+      case, '>':
+        return, '&gt;';
+      case, '&':
+        return, '&amp;';
+      case, "'":'
+        return, '&apos;';
+      case, '"':"
+        return, '&quot;';
       default: return c;
     }
   });

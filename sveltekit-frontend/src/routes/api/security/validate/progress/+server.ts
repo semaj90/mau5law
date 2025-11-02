@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit'
 /*
  * WebSocket endpoint for real-time security validation progress updates
  * This handles WebSocket upgrade requests for the registration form
@@ -40,13 +40,13 @@ export interface ValidationProgressMessage {
 /*
  * Example WebSocket message flow for validation progress:
  *
- * 1. { type: 'progress', message: 'Initializing validation...', percentage: 0 }
- * 2. { type: 'progress', message: 'Checking email format...', percentage: 10 }
- * 3. { type: 'progress', message: 'Validating password strength...', percentage: 20 }
- * 4. { type: 'progress', message: 'Running threat intelligence analysis...', percentage: 40 }
- * 5. { type: 'progress', message: 'Verifying professional credentials...', percentage: 60 }
- * 6. { type: 'progress', message: 'Finalizing security assessment...', percentage: 80 }
- * 7. { type: 'complete', message: 'Validation complete', percentage: 100 }
+ * 1. {, type: 'progress', message: 'Initializing validation...', percentage: 0 }
+ * 2. {, type: 'progress', message: 'Checking email format...', percentage: 10 }
+ * 3. {, type: 'progress', message: 'Validating password strength...', percentage: 20 }
+ * 4. {, type: 'progress', message: 'Running threat intelligence analysis...', percentage: 40 }
+ * 5. {, type: 'progress', message: 'Verifying professional credentials...', percentage: 60 }
+ * 6. {, type: 'progress', message: 'Finalizing security assessment...', percentage: 80 }
+ * 7. {, type: 'complete', message: 'Validation complete', percentage: 100 }
  */
-// Note: Actual WebSocket implementation would be handled by the SvelteKit adapter
+//, Note: Actual WebSocket implementation would be handled by the SvelteKit adapter
 // This endpoint serves as documentation and fallback for non-WebSocket requests;

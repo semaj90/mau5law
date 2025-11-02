@@ -1,17 +1,17 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Redis Configuration Service for Legal AI Platform
  * Centralized configuration management for all Redis connections
  * Integrates with: redis-service.ts, loki-redis-integration.ts, redis-helper.ts
  */
-import type { RedisOptions } from 'ioredis';
+import type { RedisOptions } from, 'ioredis';
 // Environment-based configuration
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 // Base Redis configuration
 export const REDIS_BASE_CONFIG: RedisOptions = {
-  host: process.env.REDIS_HOST || 'localhost',
+ , host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD || undefined,
   db: parseInt(process.env.REDIS_DB || '0'),
@@ -29,14 +29,14 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   maxLoadingTimeout: 5000
 };
 // Development-specific optimizations
-export const REDIS_DEV_CONFIG: RedisOptions = {
+export const, REDIS_DEV_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
   maxRetriesPerRequest: 1,
   connectTimeout: 5000,
   retryStrategy: (times: number) => {
     if (times > 2) {
       console.log('Redis: Max reconnection attempts reached in dev mode');
-      return null;
+      return: null;
     }
     return Math.min(times * 500, 1500);
   }
@@ -51,7 +51,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   retryStrategy: (times: number) => {
     if (times > 10) {
       console.error('Redis: Max reconnection attempts reached in production');
-      return null;
+      return: null;
     }
     const delay = Math.min(times * 100, 3000);
     console.log(`Redis: Retrying connection in ${delay}ms (attempt ${times})`);
@@ -63,7 +63,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
 };
 // Database assignments for different services
 export const REDIS_DATABASES = {
-  CACHE: 0, // General caching (redis-service.ts)
+ , CACHE: 0, // General caching (redis-service.ts)
   SESSIONS: 1, // User sessions
   RATE_LIMITING: 2, // Rate limiting (redisRateLimit.ts)
   LOKI_CACHE: 3, // Loki.js integration cache
@@ -116,7 +116,7 @@ export const SERVICE_CONFIGS = {
   // Pub/Sub for real-time features
   PUBSUB: {
     ...REDIS_BASE_CONFIG,
-    db: 0, // Pub/Sub uses db 0
+    db: 0, // Pub/Sub uses db, 0
     lazyConnect: false, // Immediate connection for pub/sub
     enableOfflineQueue: false
   },
@@ -167,9 +167,9 @@ export function getRedisUrl(database?: number): string {
 }
 // Health check configuration
 export const HEALTH_CHECK_CONFIG = {
-  timeout: 5000,
+ , timeout: 5000,
   retries: 3,
-  interval: 30000, // Check every 30 seconds
+  interval: 30000, // Check every, 30 seconds
 };
 // Cache TTL configurations by data type
 export const CACHE_TTL = {
@@ -235,7 +235,7 @@ export const LUA_SCRIPTS = {
         if diff > 0 then retryAfter = math.floor(diff / 1000) end
       end
     end
-    return { allowed and 1 or 0, count, retryAfter }
+    return { allowed and, 1 or, 0, count, retryAfter }
   `,`
   // Cache with TTL and LRU
   CACHE_SET_WITH_LRU: '
@@ -256,13 +256,13 @@ export const LUA_SCRIPTS = {
         redis.call('ZREM', 'cache:lru', k)
       end
     end
-    return 'OK'
+    return, 'OK'
   ` } as const;'`
 // Connection pool configuration
 export const POOL_CONFIG = {
   // Development pool (smaller)
   development: {
-    min: 2,
+   , min: 2,
     max: 10,
     acquireTimeoutMillis: 30000,
     createTimeoutMillis: 30000,
@@ -273,7 +273,7 @@ export const POOL_CONFIG = {
   },
   // Production pool (larger)
   production: {
-    min: 5,
+   , min: 5,
     max: 50,
     acquireTimeoutMillis: 60000,
     createTimeoutMillis: 30000,
@@ -297,7 +297,7 @@ export const MONITORING_CONFIG = {
   enableLatencyMonitoring: true,
   enableMemoryMonitoring: true,
   alertThresholds: {
-    memoryUsage: 0.85, // 85% memory usage alert
+   , memoryUsage: 0.85, // 85% memory usage alert
     connectionCount: 0.9, // 90% max connections alert
     slowQueries: 100, // Alert if > 100 slow queries/min
     responseTime: 1000, // Alert if > 1000ms average response time

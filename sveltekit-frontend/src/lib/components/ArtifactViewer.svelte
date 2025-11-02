@@ -2,23 +2,23 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { User } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
-  import { onMount } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
-  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
-  import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import { onMount } from, 'svelte';
+  import { fade, scale } from, 'svelte/transition';
+  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from, '$lib/stores/unified';
+  import type { LegalAIMetadata } from, '$lib/types/legal-ai-metadata';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
-  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from, "$lib/components/ui/badge.svelte";
+  import  Tabs, TabsContent, TabsList, TabsTrigger  from, "$lib/components/ui/tabs.svelte";
+  import  Alert, AlertDescription  from, "$lib/components/ui/alert.svelte";
   import {
     Download,
     Eye,
@@ -31,7 +31,7 @@ import type { User } from '$lib/types';
     AlertTriangle,
     CheckCircle,
     Info
-  } from 'lucide-svelte';
+  } from, 'lucide-svelte';
   // Props
   // Component state
   let artifact: any = null;
@@ -39,7 +39,7 @@ import type { User } from '$lib/types';
   let imageUrl: string | null = null;
   let loading = true;
   let error: string | null = null;
-  let downloadUrl: string | null = null;
+  let, downloadUrl: string | null = null;
   // Load artifact data
   const loadArtifact = async () => {
     try {
@@ -91,10 +91,10 @@ import type { User } from '$lib/types';
   }
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk?.toLowerCase()) {
-      case 'high': return 'destructive';
-      case 'medium': return 'secondary';
-      case 'low': return 'outline';
-      default: return 'outline';
+      case, 'high': return, 'destructive';
+      case, 'medium': return, 'secondary';
+      case, 'low': return, 'outline';
+      default: return, 'outline';
     }
   }
   const formatTimestamp = (timestamp: string) => {
@@ -146,7 +146,7 @@ import type { User } from '$lib/types';
               <img
                 src={imageUrl}
                 alt="Evidence artifact"
-                class="w-full h-auto rounded-lg shadow-sm max-h-96 object-contain"
+                class="w-full h-auto rounded-lg shadow-sm max-h-96: object-contain"
                 transitionscale
               />
               {#if extractedMetadata}
@@ -361,7 +361,7 @@ import type { User } from '$lib/types';
     word-break: break-all;
     max-width: 200px;
     display: inline-block;
-    overflow: hidden;
+   , overflow: hidden;
     text-overflow: ellipsi;
     white-space: nowrap;
   }

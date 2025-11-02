@@ -5,11 +5,11 @@
  * - Supports hybrid caching and async lazy embedding
  */
 
-import { cache, getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis';
-import { formatError } from '$lib/server/cache/redis';
-import { embeddingGemma } from '$lib/server/ai/embeddinggemma-service'; // use exported name
-import { qdrant } from '$lib/server/vector/qdrant-client'; // Qdrant client instance
-// removed invalid @qdrant/js-client-rest type imports (use any to avoid missing-export errors)
+import { cache, getCachedEmbedding, cacheEmbedding } from, '$lib/server/cache/redis';
+import { formatError } from, '$lib/server/cache/redis';
+import { embeddingGemma } from, '$lib/server/ai/embeddinggemma-service'; // use exported name
+import { qdrant } from, '$lib/server/vector/qdrant-client'; // Qdrant client instance
+// removed invalid @qdrant/js-client-rest type imports (use: any to avoid missing-export errors)
 
 /* -------------------------------------------------------------------------- */
 /*  Config                                                                    */
@@ -26,7 +26,7 @@ const DEFAULT_TOP_K = 5;
 type Vector = number[];
 
 interface QdrantPoint {
-	id: string | number;
+, id: string | number;
 	vector?: Vector;
 	payload?: Record<string, unknown>;
 	score?: number;
@@ -52,12 +52,12 @@ type EmbeddingFn = (text: string, model?: string) => Promise<Vector> | Vector;
 async function callEmbeddingService(text: string, model?: string): Promise<Vector> {
 	try {
 		// 1. If the import is a function
-		if (typeof (embeddingGemma as unknown) === 'function') {
-			return await (embeddingGemma as unknown as EmbeddingFn)(text, model);
+		if (typeof (embeddingGemma as: unknown) === 'function') {
+			return await (embeddingGemma as: unknown as EmbeddingFn)(text, model);
 		}
 
 		// 2. If the import exposes a common method
-		const svc = embeddingGemma as unknown as Record<string, unknown>;
+		const svc = embeddingGemma as: unknown as Record<string, unknown>;
 		const candidates = ['embed', 'encode', 'createEmbedding', 'getEmbedding'];
 		for (const fnName of candidates) {
 			const fn = svc[fnName];
@@ -103,7 +103,7 @@ async function embedText(text: string, model?: string): Promise<number[]> {
 	try {
 		// Try cache first (implementations often accept text or a stable key)
 		const cached = await getCachedEmbedding(text, model).catch(() => null);
-		if (Array.isArray(cached) && cached.length) return cached as number[];
+		if (Array.isArray(cached) && cached.length) return cached as: number[];
 
 		// Call underlying embedding service adapter
 		const emb = await callEmbeddingService(text, model);
@@ -112,7 +112,7 @@ async function embedText(text: string, model?: string): Promise<number[]> {
 		// Cache the produced embedding; ignore cache errors
 		try {
 			// use strongly-typed alias instead of `any`
-			await (cacheEmbedding as unknown as CacheEmbedFn)(text, model, emb);
+			await (cacheEmbedding as: unknown as CacheEmbedFn)(text, model, emb);
 		} catch (err) {
 			// non-fatal
 			console.warn('cacheEmbedding warning:', formatError(err));
@@ -183,17 +183,17 @@ export async function getVectorById(id: string): Promise<QdrantPoint | null> {
     const res = await qdrant.retrieve(COLLECTION_NAME, { ids: [id], with_vectors: true });
     // qdrant client may return an array or a wrapped result; handle both
     if (Array.isArray(res) && res.length) {
-      const first = res[0] as unknown as QdrantPoint;
+      const first = res[0] as: unknown as QdrantPoint;
       return first ?? null;
     }
     // try common wrapper shape: { result: [...] } or { points: [...] }
-    const wrapped = res as unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
+    const wrapped = res, as: unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
     const arr = wrapped.result ?? wrapped.points;
     if (Array.isArray(arr) && arr.length) return arr[0];
-    return null;
+    return: null;
   } catch (err) {
     console.error('getVectorById error:', formatError(err));'
-    return null;
+    return: null;
   }
 }
 
@@ -202,22 +202,22 @@ export async function getVectorById(id: string): Promise<QdrantPoint | null> {
  * Optionally caches results in Redis for repeated queries.
  */
 export async function semanticSearch(
-	query: string,
+, query: string,
 	options: { topK?: number; filter?: Record<string, unknown>; useCache?: boolean } = {}
 ): Promise<QdrantPoint[]> {
 	const { topK = DEFAULT_TOP_K, filter = {}, useCache = true } = options;
 	try {
-		// Step 1 — Try cached results
+		// Step, 1 — Try cached results
 		if (useCache) {
 			const cached = await cache.getSearchResults(query, COLLECTION_NAME, filter);
 			if (cached) return cached as QdrantPoint[];
 		}
 
-		// Step 2 — Embed query text
+		// Step, 2 — Embed query text
 		const vector = await embedText(query, EMBEDDING_MODEL);
 		if (!vector?.length) return [];
 
-		// Step 3 — Ensure collection and query Qdrant
+		// Step, 3 — Ensure collection and query Qdrant
 		await ensureCollection(vector.length);
 		const results = await qdrant.search(COLLECTION_NAME, {
 			vector,
@@ -229,13 +229,13 @@ export async function semanticSearch(
 		// Normalize possible return shapes to QdrantPoint[]
 		let points: QdrantPoint[] = [];
 		if (Array.isArray(results)) {
-			points = results as unknown as QdrantPoint[];
+			points = results as: unknown as QdrantPoint[];
 		} else if (results && typeof results === 'object') {
-			const wrapped = results as unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
+			const wrapped = results as: unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
 			points = wrapped.result ?? wrapped.points ?? [];
 		}
 
-		// Step 4 — Cache results in Redis
+		// Step, 4 — Cache results in Redis
 		if (useCache && points.length) {
 			await cache.setSearchResults(query, COLLECTION_NAME, points, filter);
 		}
@@ -253,7 +253,7 @@ export async function semanticSearch(
  * - Falls back to EmbeddingGemma + Qdrant
  */
 export async function hybridSemanticFetch(
-	text: string,
+, text: string,
 	opts: { topK?: number; filter?: Record<string, unknown> } = {}
 ): Promise<QdrantPoint[]> {
 	const { topK = DEFAULT_TOP_K, filter = {} } = opts;
@@ -303,7 +303,7 @@ export async function embedAndUpsertText(
 		// also cache by id (best-effort). Many cache helpers accept arbitrary keys.
 		try {
 			// use strongly-typed alias instead of `any`
-			await (cacheEmbedding as unknown as CacheEmbedFn)(id, model, embedding).catch(() => null);
+			await (cacheEmbedding as: unknown as CacheEmbedFn)(id, model, embedding).catch(() => null);
 		} catch {
 			/* swallow */
 		}

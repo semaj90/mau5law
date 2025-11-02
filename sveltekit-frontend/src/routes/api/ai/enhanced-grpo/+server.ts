@@ -9,19 +9,19 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 // Enhanced GRPO-thinking API endpoint - Simplified working version
 // Integrates with existing infrastructure and new GRPO database tables
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/db/connection'
-import { sql } from 'drizzle-orm'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { db } from, '$lib/db/connection'
+import { sql } from, 'drizzle-orm'
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
 // Generate embedding using nomic-embed-text
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -91,7 +91,7 @@ function extractStructuredReasoning(thinking: string) {
     .filter(line => line.length > 0);
 
   const matchers: { [key: string]: RegExp } = {
-    premises: /premise|given|established/i,
+   , premises: /premise|given|established/i,
     inferences: /therefore|infer|follows/i,
     conclusions: /conclude|conclusion|result/i,
     legal_principles: /principle|rule|doctrine/i,
@@ -138,16 +138,16 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
       LIMIT ${maxResults}
     `)`
     return results.rows.map(row => ({
-      id: row.id as string,
-      similarity: row.similarity as number,
-      temporal_factor: calculateTemporalScore(new Date(row.created_at as string)),
-      final_score: (row.similarity as number) * 0.7 + calculateTemporalScore(new Date(row.created_at as string)) * 0.3,
-      snippet: (row.response as string).slice(0, 200) + '...',
+      id: row.id, as: string,
+      similarity: row.similarity, as: number,
+      temporal_factor: calculateTemporalScore(new Date(row.created_at, as: string)),
+      final_score: (row.similarity, as: number) * 0.7 + calculateTemporalScore(new Date(row.created_at as: string)) * 0.3,
+      snippet: (row.response, as: string).slice(0, 200) + '...',
       metadata: {
-        legal_domain: row.legal_domain as string,
-        created_at: row.created_at as string,
-        usage_count: row.usage_count as number,
-        confidence: row.confidence as string
+        legal_domain: row.legal_domain, as: string,
+        created_at: row.created_at, as: string,
+        usage_count: row.usage_count, as: number,
+        confidence: row.confidence, as: string
       }
     }))
   } catch (error) {
@@ -156,7 +156,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
   }
 }
 // Save enhanced response to database
-async function saveEnhancedResponse(data: {, query: string, response: string; thinking: string; structuredReasoning: any; queryEmbedding: number[];, responseEmbedding: number[];
+async function saveEnhancedResponse(data: {, query: string, response: string; thinking: string; structuredReasoning: any;, queryEmbedding: number[];, responseEmbedding: number[];
  , confidence: number
   userId?: string
   legalDomain?: string
@@ -193,13 +193,13 @@ async function saveEnhancedResponse(data: {, query: string, response: string; 
         NOW()
       ) RETURNING id
     `)`
-    return (result as { rows?: any }).rows[0]?.id as string
+    return (result as { rows?: any }).rows[0]?.id as: string
   } catch (error) {
     console.error('Failed to save enhanced response:', error)
-    return null
+    return: null
   }
 }
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
+const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const startTime = Date.now()
     const requestData = await request.json()
@@ -235,7 +235,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     // Step 5: Save to database
     const grpoId = await saveEnhancedResponse({
-      query: inputText,
+     , query: inputText,
       response: aiResponse.response,
       thinking: aiResponse.thinking,
       structuredReasoning,
@@ -256,13 +256,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         AND legal_domain IS NOT NULL
       GROUP BY legal_domain
       ORDER BY count DESC, avg_confidence DESC
-      LIMIT 5
+      LIMIT, 5
     `)`
     const processingTime = Date.now() - startTime
     const response = {
       success: true,
       analysis: {
-        thinking: aiResponse.thinking,
+       , thinking: aiResponse.thinking,
         response: aiResponse.response,
         confidence: aiResponse.confidence,
         reasoning_steps: structuredReasoning.premises
@@ -278,7 +278,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           confidence: parseFloat(rec.metadata.confidence || '0.8'),
           snippet: rec.snippet,
           metadata: {
-            similarity: rec.similarity,
+           , similarity: rec.similarity,
             temporal_factor: rec.temporal_factor,
             legal_domain: rec.metadata.legal_domain,
             created_at: rec.metadata.created_at
@@ -286,13 +286,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         })),
         // Context
         trending_topics: trendingTopics.rows.map(row => ({,
-          topic: row.topic as string,
-          count: parseInt(row.count as string),
-          avg_confidence: parseFloat(row.avg_confidence as string)
+          topic: row.topic, as: string,
+          count: parseInt(row.count, as: string),
+          avg_confidence: parseFloat(row.avg_confidence, as: string)
         })),
         // Reasoning breakdown
         reasoning_components: {
-          premises: structuredReasoning.premises,
+         , premises: structuredReasoning.premises,
           inferences: structuredReasoning.inferences,
           conclusions: structuredReasoning.conclusions,
           legal_principles: structuredReasoning.legal_principles,
@@ -301,7 +301,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
       },
       metadata: {
-        processing_time: processingTime,
+       , processing_time: processingTime,
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
         grpo_id: grpoId,
@@ -343,7 +343,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     const operation = url.searchParams.get('operation') || 'trending'
     const limit = parseInt(url.searchParams.get('limit') || '10')
     switch (operation) {
-      case 'trending':
+      case, 'trending':
         const days = parseInt(url.searchParams.get('days') || '7')
         const trendingTopics = await db.execute(sql`
           SELECT
@@ -361,14 +361,14 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           trending_topics: trendingTopics.rows.map(row => ({,
-            topic: row.topic as string,
-            count: parseInt(row.count as string),
-            avg_confidence: parseFloat(row.avg_confidence as string),
-            latest_activity: row.latest_activity as string
+            topic: row.topic, as: string,
+            count: parseInt(row.count, as: string),
+            avg_confidence: parseFloat(row.avg_confidence, as: string),
+            latest_activity: row.latest_activity, as: string
           })),
           period_days: days
         })
-      case 'recent':
+      case, 'recent':
         const recentResponses = await db.execute(sql`
           SELECT
             id,
@@ -385,13 +385,13 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           recent_responses: recentResponses.rows.map(row => ({
-           , id: row.id as string,
-            query: row.query as string,
-            snippet: (row.response as string).slice(0, 200) + '...',
-            confidence: parseFloat(row.confidence as string || '0.8'),
-            legal_domain: row.legal_domain as string,
-            created_at: row.created_at as string,
-            usage_count: row.usage_count as number
+           , id: row.id, as: string,
+            query: row.query, as: string,
+            snippet: (row.response, as: string).slice(0, 200) + '...',
+            confidence: parseFloat(row.confidence, as: string || '0.8'),
+            legal_domain: row.legal_domain, as: string,
+            created_at: row.created_at, as: string,
+            usage_count: row.usage_count, as: number
           })
         })
       default: return json({,

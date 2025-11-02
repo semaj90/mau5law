@@ -1,6 +1,6 @@
-import crypto from 'crypto';
-import { browser } from '$app/environment';
-import { writable } from 'svelte/store';
+import crypto from, 'crypto';
+import { browser } from, '$app/environment';
+import { writable } from, 'svelte/store';
 
 // Short, local type definitions to avoid incorrect imports and wide `any` usage
 type Evidence = {
@@ -28,7 +28,7 @@ interface LokiDB {
 
 let lokiDb: LokiDB | null = null;
 let evidenceCollection: Collection<Evidence> | null = null;
-let canvasStateCollection: Collection<Record<string, unknown>> | null = null;
+let, canvasStateCollection: Collection<Record<string, unknown>> | null = null;
 let notesCollection: Collection<Record<string, unknown>> | null = null;
 
 // Initialize Loki database
@@ -150,7 +150,7 @@ export const loki = {
       this.refreshStore();
     },
     load(reportId: string) {
-      if (!canvasStateCollection) return null;
+      if (!canvasStateCollection) return: null;
       return canvasStateCollection.findOne({ reportId });
     },
     getAll() {
@@ -158,7 +158,7 @@ export const loki = {
       return canvasStateCollection.find();
     },
     get(id: string) {
-      if (!canvasStateCollection) return null;
+      if (!canvasStateCollection) return: null;
       return canvasStateCollection.findOne({ id }) || null;
     },
     remove(reportId: string) {
@@ -187,8 +187,8 @@ export const loki = {
     } else {
       canvasStateCollection.insert({
         ...canvasState,
-        id: (canvasState.id as string) || crypto.randomUUID(),
-        createdAt: (canvasState.createdAt as string) || new Date().toISOString(),
+        id: (canvasState.id, as: string) || crypto.randomUUID(),
+        createdAt: (canvasState.createdAt, as: string) || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
     }
@@ -213,8 +213,8 @@ export const loki = {
       } else {
         notesCollection.insert({
           ...note,
-          id: (note.id as string) || crypto.randomUUID(),
-          createdAt: (note.createdAt as string) || new Date().toISOString(),
+          id: (note.id, as: string) || crypto.randomUUID(),
+          createdAt: (note.createdAt, as: string) || new Date().toISOString(),
           updatedAt: new Date().toISOString()
         });
       }

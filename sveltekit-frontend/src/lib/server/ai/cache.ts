@@ -1,11 +1,11 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { createClient, type RedisClientType } from 'redis';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { createClient, type RedisClientType } from, 'redis';
 // Prefer an explicit REDIS_URL from env, but keep a sensible default.
 const REDIS_URL = process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
-let redisClient: RedisClientType | null = null;
+let, redisClient: RedisClientType | null = null;
 async function getRedisClient(): Promise<RedisClientType> {
   if (!redisClient) {
-    // Ensure createClient is available at runtime so TS won't complain about possibly undefined invocation'
+    // Ensure createClient is available at runtime so TS won't complain about possibly: undefined invocation'
     if (typeof createClient !== 'function') {
       throw new Error('Redis createClient is not available. Check redis package import.');
     }
@@ -31,7 +31,7 @@ export const cognitiveCache = {
     } catch (error) {
       console.error(`Error getting from cache for key ${key}:`, error);
     }
-    return null;
+    return: null;
   },
   async set<T>(key: string, value: T, options?: CacheOptions): Promise<void> {
     try {

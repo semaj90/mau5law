@@ -6,16 +6,16 @@
  * - RabbitMQ for async message queuing
  * - WebSocket orchestrator for real-time updates
  *
- * Use cases:
+ * Use, cases:
  * - Document processing workflows (OCR → Embedding → Storage)
  * - Background AI analysis
  * - Long-running legal document analysis
  * - Multi-step evidence processing
  */
 
-import { createMachine, createActor, fromPromise, assign } from 'xstate';
-import { rabbitMQService, type DocumentProcessingJob } from './rabbitmq-service';
-import type { Connection } from 'amqplib';
+import { createMachine, createActor, fromPromise, assign } from, 'xstate';
+import { rabbitMQService, type DocumentProcessingJob } from, './rabbitmq-service';
+import type { Connection } from, 'amqplib';
 
 // ============================================================================
 // Types
@@ -70,7 +70,7 @@ export interface DocumentWorkflowEvent {
 // ============================================================================
 
 export const documentProcessingMachine = createMachine({
-  id: 'documentProcessing',
+ , id: 'documentProcessing',
   initial: 'idle',
   context: {
    , documentId: '',
@@ -92,29 +92,29 @@ export const documentProcessingMachine = createMachine({
       }
     },
 
-    uploading: { invoke: {, src: fromPromise(async ({ input }) => {
+    uploading: {, invoke: {, src: fromPromise(async ({ input }) => {
           // Upload to MinIO/S3 (placeholder - use your existing upload service)
           const uploadResult = await uploadToStorage(input.context);
           return uploadResult;
         }),
         onDone: {
-          target: 'queued',
+         , target: 'queued',
           actions: assign({
-            s3Key: ({ event }) => event.output.s3Key,
+           , s3Key: ({ event }) => event.output.s3Key,
             s3Bucket: ({ event }) => event.output.s3Bucket
           })
         },
         onError: {
-          target: 'failed',
-          actions: assign({ error: ({ event }) => event.error.message })
+         , target: 'failed',
+          actions: assign({, error: ({ event }) => event.error.message })
         }
       }
     },
 
-    queued: { invoke: {, src: fromPromise(async ({ input }) => {
+    queued: {, invoke: {, src: fromPromise(async ({ input }) => {
           // Publish to RabbitMQ for async processing
           const job: DocumentProcessingJob = {
-            documentId: input.context.documentId,
+           , documentId: input.context.documentId,
             s3Key: input.context.s3Key!,
             s3Bucket: input.context.s3Bucket!,
             originalName: input.context.originalName!,
@@ -130,19 +130,19 @@ export const documentProcessingMachine = createMachine({
           return { jobId: job.documentId };
         }),
         onDone: {
-          target: 'processing_ocr'
+         , target: 'processing_ocr'
         },
         onError: {
-          target: 'failed',
-          actions: assign({ error: ({ event }) => event.error.message })
+         , target: 'failed',
+          actions: assign({, error: ({ event }) => event.error.message })
         }
       }
     },
 
-    processing_ocr: { on: {, OCR_COMPLETED: {
-          target: 'processing_embedding',
+    processing_ocr: {, on: {, OCR_COMPLETED: {
+         , target: 'processing_embedding',
           actions: assign({
-            results: ({ context, event }) => ({
+           , results: ({ context, event }) => ({
               ...context.results,
               ocrText: event.data.text
             }),
@@ -150,17 +150,17 @@ export const documentProcessingMachine = createMachine({
           })
         },
         PROCESSING_FAILED: {
-          target: 'failed',
-          actions: assign({ error: ({ event }) => event.error })
+         , target: 'failed',
+          actions: assign({, error: ({ event }) => event.error })
         }
       }
     },
 
     processing_embedding: {
-      entry: async ({ context }) => {
+     , entry: async ({ context }) => {
         // Publish embedding job to RabbitMQ
         const job: DocumentProcessingJob = {
-          documentId: context.documentId,
+         , documentId: context.documentId,
           s3Key: context.s3Key!,
           s3Bucket: context.s3Bucket!,
           originalName: context.originalName!,
@@ -171,9 +171,9 @@ export const documentProcessingMachine = createMachine({
         };
         await rabbitMQService.publishDocumentProcessingJob(job);
       },
-      on: { EMBEDDING_COMPLETED: {, target: 'processing_summarization',
+      on: {, EMBEDDING_COMPLETED: {, target: 'processing_summarization',
           actions: assign({
-            results: ({ context, event }) => ({
+           , results: ({ context, event }) => ({
               ...context.results,
               embeddings: event.data.embeddings
             }),
@@ -181,17 +181,17 @@ export const documentProcessingMachine = createMachine({
           })
         },
         PROCESSING_FAILED: {
-          target: 'failed',
-          actions: assign({ error: ({ event }) => event.error })
+         , target: 'failed',
+          actions: assign({, error: ({ event }) => event.error })
         }
       }
     },
 
     processing_summarization: {
-      entry: async ({ context }) => {
+     , entry: async ({ context }) => {
         // Publish summarization job to RabbitMQ
         const job: DocumentProcessingJob = {
-          documentId: context.documentId,
+         , documentId: context.documentId,
           s3Key: context.s3Key!,
           s3Bucket: context.s3Bucket!,
           originalName: context.originalName!,
@@ -202,9 +202,9 @@ export const documentProcessingMachine = createMachine({
         };
         await rabbitMQService.publishDocumentProcessingJob(job);
       },
-      on: { SUMMARIZATION_COMPLETED: {, target: 'storing',
+      on: {, SUMMARIZATION_COMPLETED: {, target: 'storing',
           actions: assign({
-            results: ({ context, event }) => ({
+           , results: ({ context, event }) => ({
               ...context.results,
               summary: event.data.summary
             }),
@@ -212,39 +212,39 @@ export const documentProcessingMachine = createMachine({
           })
         },
         PROCESSING_FAILED: {
-          target: 'failed',
-          actions: assign({ error: ({ event }) => event.error })
+         , target: 'failed',
+          actions: assign({, error: ({ event }) => event.error })
         }
       }
     },
 
-    storing: { invoke: {, src: fromPromise(async ({ input }) => {
+    storing: {, invoke: {, src: fromPromise(async ({ input }) => {
           // Store final results in PostgreSQL
           await storeProcessingResults(input.context);
           return { success: true };
         }),
         onDone: {
-          target: 'completed'
+         , target: 'completed'
         },
         onError: {
-          target: 'failed',
-          actions: assign({ error: ({ event }) => event.error.message })
+         , target: 'failed',
+          actions: assign({, error: ({ event }) => event.error.message })
         }
       }
     },
 
     completed: {
-      type: 'final',
+     , type: 'final',
       entry: () => {
         console.log('✅ Document processing workflow completed');
       }
     },
 
-    failed: { on: {, RETRY: [
+    failed: {, on: {, RETRY: [
           {,
             target: 'queued',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({ retryCount: ({ context }) => context.retryCount + 1 })
+            actions: assign({, retryCount: ({ context }) => context.retryCount + 1 })
           },
           {
             target: 'failed',
@@ -293,7 +293,7 @@ export class RabbitMQXStateConsumer {
       console.log(`📊 Document ${documentId} state: ', snapshot.value);'`
 
       // Broadcast state changes via WebSocket orchestrator
-      this.broadcastStateChange(documentId, snapshot.value as string, snapshot.context);
+      this.broadcastStateChange(documentId, snapshot.value as: string, snapshot.context);
     });
 
     actor.start();
@@ -326,7 +326,7 @@ export class RabbitMQXStateConsumer {
       documentId,
       state,
       context: {
-        currentStep: context.currentStep,
+       , currentStep: context.currentStep,
         totalSteps: context.processingSteps.length,
         results: context.results
       }
@@ -364,13 +364,13 @@ export class RabbitMQXStateConsumer {
 async function uploadToStorage(context: Partial<DocumentWorkflowContext>): Promise<any> {
   // TODO: Implement with your MinIO/S3 upload service
   return {
-    s3Key: `documents/${context.documentId}/${context.originalName}`,
+   , s3Key: `documents/${context.documentId}/${context.originalName}`,
     s3Bucket: 'legal-documents' };
 }
 
 async function storeProcessingResults(context: DocumentWorkflowContext): Promise<any> {
   // TODO: Implement with your PostgreSQL storage
-  console.log('💾 Storing processing results:', {
+  console.log('💾 Storing processing, results:', {
     documentId: context.documentId,
     results: context.results
   });
@@ -408,7 +408,7 @@ export const rabbitmqXStateConsumer = new RabbitMQXStateConsumer();
  * // Workers send events back to XState actor:
  *
  * actor.send({
- *   type: 'OCR_COMPLETED',
+ *  , type: 'OCR_COMPLETED',
  *   data: {, text: 'Extracted text...' }
  * });
  *

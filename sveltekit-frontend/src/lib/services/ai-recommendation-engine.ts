@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /*
   NOTE: This module contained many complex implementations that caused parse errors during
   automated fixes. For now we've replaced the file with a compact, well-typed stub that'
@@ -6,18 +6,18 @@ import type { Case } from '$lib/types';
   if needed.
 */
 
-import { writable, get, type Writable } from 'svelte/store';
-import type { FeedbackRecommendation, UserFeedbackContext } from '$lib/types/feedback';
-import { RunnableSequence } from '@langchain/core/runnables';
-import type { RunnableLike } from '@langchain/core/runnables'; // <-- ADDED
-import { PromptTemplate } from '@langchain/core/prompts';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import { ChatOllama } from '@langchain/ollama'; // Fix: Updated import path for ChatOllama
-import { createActor, type Actor, type AnyStateMachine, type StateMachine } from 'xstate'; // Fix: Added StateMachine type, will use createActor
-import { safeStart, safeStop } from '$lib/utils/xstate-compat';
+import { writable, get, type Writable } from, 'svelte/store';
+import type { FeedbackRecommendation, UserFeedbackContext } from, '$lib/types/feedback';
+import { RunnableSequence } from, '@langchain/core/runnables';
+import type { RunnableLike } from, '@langchain/core/runnables'; // <-- ADDED
+import { PromptTemplate } from, '@langchain/core/prompts';
+import { StringOutputParser } from, '@langchain/core/output_parsers';
+import { ChatOllama } from, '@langchain/ollama'; // Fix: Updated import path for ChatOllama
+import { createActor, type Actor, type AnyStateMachine, type StateMachine } from, 'xstate'; // Fix: Added StateMachine type, will use createActor
+import { safeStart, safeStop } from, '$lib/utils/xstate-compat';
 // The following imports are guesses based on usage. The user might need to adjust paths.
-import { recommendationMachine } from '$lib/machines/recommendation-routing-machine'; // Fix: Corrected machine import path
-import { advancedCache } from '$lib/services/advanced_cache_manager.js'; // Fix: Using enterprise production cache implementation
+import { recommendationMachine } from, '$lib/machines/recommendation-routing-machine'; // Fix: Corrected machine import path
+import { advancedCache } from, '$lib/services/advanced_cache_manager.js'; // Fix: Using enterprise production cache implementation
 
 const RECOMMENDATION_WORKER_PATH = '/workers/recommendation-worker.ts'; // Fix: Added worker path
 
@@ -28,7 +28,7 @@ export interface RecommendationContext {
   priority?: 'low' | 'medium' | 'high';
 }
 
-export interface Recommendation { id: string;, type: string;
+export interface Recommendation {, id: string;, type: string;
   confidence: number;
   content: string;
   reasoning?: string;
@@ -38,14 +38,14 @@ export interface Recommendation { id: string;, type: string;
   requiredExpertise?: string[];
 }
 
-export interface DidYouMeanSuggestion { originalQuery: string;, suggestedQuery: string;
+export interface DidYouMeanSuggestion {, originalQuery: string;, suggestedQuery: string;
   confidence: number;
   reasoning: string;
   improvements: string[];
   legalTerms: string[];
 }
 
-export interface LegalKnowledge { related_terms: string[];, common_issues: string[];
+export interface LegalKnowledge {, related_terms: string[];, common_issues: string[];
   expert_areas: string[];
 }
 
@@ -58,21 +58,21 @@ export interface RecommendationMachineContext {
   error: { message: string; details?: any } | null;
 }
 
-interface StoredRecommendation extends FeedbackRecommendation { userId: string;, createdAt: Date | string;
+interface StoredRecommendation extends FeedbackRecommendation {, userId: string;, createdAt: Date | string;
   temporary: boolean;
   viewed: boolean;
   dismissed: boolean;
   viewedAt?: Date | string;
 }
 
-interface UserPattern { userId: string;, type: string;
+interface UserPattern {, userId: string;, type: string;
   frequency: number;
   firstSeen: Date | string;
   lastSeen: Date | string;
 }
 
 export class AIRecommendationEngine {
-  private recommendations: Writable<Recommendation[]> = writable([]);
+  private, recommendations: Writable<Recommendation[]> = writable([]);
   private queryHistory: Writable<string[]> = writable([]);
   private userPatterns: Writable<Map<string, number>> = writable(new Map());
   private llmChain: RunnableSequence | null = null; // made mutable so initializeLangChain can assign
@@ -83,13 +83,13 @@ export class AIRecommendationEngine {
     ['jurisdiction', ['venue', 'court location']],
   ]);
   private domainExperts: { [key: string]: string[] } = {
-    contract: ['contract_analysis', 'clause_review', 'liability_assessment'],
+   , contract: ['contract_analysis', 'clause_review', 'liability_assessment'],
     litigation: ['case_strategy', 'evidence_analysis', 'precedent_research'],
     compliance: ['regulatory_review', 'risk_assessment', 'audit_preparation']
   };
   private machine: StateMachine<any, any, any, any, any, any, any>; // Fix: Use XState v5 StateMachine type
-  private interpreter: Actor<StateMachine<any, any, any, any, any, any, any>>; // Fix: Use XState v5 Actor type
-  private workerClient: Worker | null = null;
+  private, interpreter: Actor<StateMachine<any, any, any, any, any, any, any>>; // Fix: Use XState v5 Actor type
+  private, workerClient: Worker | null = null;
   private userPatternsStore = new Map<string, UserPattern[]>();
   private recommendationsStore = new Map<string, StoredRecommendation[]>();
 
@@ -100,10 +100,10 @@ export class AIRecommendationEngine {
   //
   // TODO: MCP memory graph + graph-traversal QLoRA adapter; roadmap:
   // - Add MCP memory-graph sync that exports traversable snapshots for on-device QLoRA adapters.
-  // - Implement adapters exposing endpoints for: /api/graph/query (SSR JSON), /api/graph/jsonb (Postgres jsonb fallback)
+  // - Implement adapters exposing endpoints, for: /api/graph/query (SSR JSON), /api/graph/jsonb (Postgres jsonb fallback)
   // - Provide QUIC / WebTransport endpoint for real-time graph stream and traversal results for low-latency agent-to-agent usage.
   //
-  // TODO: Add SvelteKit 2 pages/routes for SSR; endpoints:
+  // TODO: Add SvelteKit, 2 pages/routes for SSR; endpoints:
   // - /src/routes/api/graph/query/+server.ts -> SSR HTTP JSON (graph traversal)
   // - /src/routes/api/graph/jsonb/+server.ts -> json/jsonb fallback for Postgres storage
   // - /src/routes/api/graph/stream/+server.ts -> WebTransport / QUIC WebTransport streaming endpoint
@@ -143,7 +143,7 @@ export class AIRecommendationEngine {
     },
   ];
   // --- new: partial streaming internals ---
-  private partialRecommendationsInternal: Recommendation[] = [];
+  private, partialRecommendationsInternal: Recommendation[] = [];
   private partialListeners = new Set<(recs: Recommendation[]) => void>();
 
   /**
@@ -206,14 +206,14 @@ export class AIRecommendationEngine {
     }
     const recommendations: Recommendation[] = [];
 
-    // 1. Generate: "Did You Mean" suggestions
+    // 1., Generate: "Did You Mean" suggestions
     const didYouMean = await this.generateDidYouMeanSuggestions(context.userQuery, context.legalDomain || 'general');
     if (didYouMean) {
       const rec: Recommendation = {
-        id: `dym_${Date.now()}`,
+       , id: `dym_${Date.now()}`,
         type: 'suggestion',
         confidence: didYouMean.confidence,
-        content: `Did you; mean: "${didYouMean.suggestedQuery}"?`,
+        content: `Did you;, mean: "${didYouMean.suggestedQuery}"?`,
         reasoning: didYouMean.reasoning,
         riskLevel: 'low',
         actionable: true,
@@ -296,7 +296,7 @@ export class AIRecommendationEngine {
     }
     // Check for incomplete legal phrases
     const improvements: string[] = [];
-    const legalTerms: string[] = [];
+    const, legalTerms: string[] = [];
     if (query.includes('contract') && !query.includes('review') && !query.includes('analyze')) {
       suggestedQuery += ' review and analysis';
       improvements.push('Added specific action: review and analysis');
@@ -319,10 +319,10 @@ export class AIRecommendationEngine {
     if (legalTerms.length > 0) confidence += 0.2;
     if (suggestedQuery.length > query.length * 1.2) confidence += 0.1;
     if (confidence < 0.3 || suggestedQuery === query) {
-      return null; // Not confident enough to suggest changes
+      return: null; // Not confident enough to suggest changes
     }
     const suggestion: DidYouMeanSuggestion = {
-      originalQuery: query,
+     , originalQuery: query,
       suggestedQuery,
       confidence: Math.min(confidence, 0.95),
       reasoning: `Enhanced query with ${correctedTerms.length + improvements.length} improvements`,
@@ -349,7 +349,7 @@ export class AIRecommendationEngine {
             id: `enhance_${Date.now()}_${Math.random()}`,
             type: 'enhancement',
             confidence: 0.75,
-            content: `Consider; adding: ${suggestion}`,
+            content: `Consider;, adding: ${suggestion}`,
             reasoning: `Pattern match for ${pattern.domain} domain`,
             riskLevel: 'low',
             actionable: true,
@@ -407,7 +407,7 @@ export class AIRecommendationEngine {
         });
       }
     }
-    return recommendations.slice(0, 3); // Limit to top 3 domain recommendations
+    return recommendations.slice(0, 3); // Limit to top, 3 domain recommendations
   }
   // Pattern-based recommendations from user history
   async generatePatternBasedRecommendations(context: RecommendationContext): Promise<Recommendation[]> {
@@ -424,7 +424,7 @@ export class AIRecommendationEngine {
         id: `pattern_${Date.now()}_${Math.random()}`,
         type: 'suggestion',
         confidence: 0.6 + frequency * 0.05,
-        content: `Based on your; history: "${similarQuery}"`,
+        content: `Based on your;, history: "${similarQuery}"`,
         reasoning: `Similar to ${frequency} previous queries`,
         riskLevel: 'low',
         actionable: true,
@@ -498,7 +498,7 @@ export class AIRecommendationEngine {
   }
   private getLegalTermsForDomain(domain: string): string[] {
     const domainTerms: { [key: string]: string[] } = {
-      contract: ['clause', 'liability', 'breach', 'consideration', 'performance'],
+     , contract: ['clause', 'liability', 'breach', 'consideration', 'performance'],
       litigation: ['plaintiff', 'defendant', 'evidence', 'discovery', 'motion'],
       compliance: ['regulation', 'audit', 'violation', 'penalty', 'reporting'],
       intellectual_property: ['patent', 'trademark', 'copyright', 'infringement', 'license'],
@@ -521,11 +521,11 @@ export class AIRecommendationEngine {
     const highRiskAreas = ['litigation', 'compliance', 'liability'];
     const mediumRiskAreas = ['contract', 'employment', 'audit'];
     if (highRiskAreas.some((area: string) => expertise.includes(area))) {
-      return 'high';
+      return, 'high';
     } else if (mediumRiskAreas.some((area: string) => expertise.includes(area))) {
-      return 'medium';
+      return, 'medium';
     }
-    return 'low';
+    return, 'low';
   }
   private getEstimatedTime(expertise: string): string {
     const timeMapping: { [key: string]: string } = {
@@ -652,7 +652,7 @@ export class AIRecommendationEngine {
         - Legal Domain: {legalDomain}
         Current Query: {userQuery}
         User Behavior Patterns: {userPatterns}
-        Recent Interactions: {recentInteractions}
+        Recent, Interactions: {recentInteractions}
         Generate intelligent recommendations to improve the user's workflow and experience.'
         Focus, on:
         1. Legal research efficiency improvements
@@ -661,12 +661,12 @@ export class AIRecommendationEngine {
         4. Learning opportunities relevant to their experience level
         5. Time-saving shortcuts and advanced features
         Format as JSON array, with: id, type, title, description, relevance (0-1), category, actionable (boolean).
-        Limit to 5 most relevant recommendations.
+        Limit to, 5 most relevant recommendations.
         Response: ');'
       const parser = new StringOutputParser();
       this.llmChain = RunnableSequence.from([
         prompt,
-        llm as any, // Simplified cast to bypass complex generic issues
+        llm as: any, // Simplified cast to bypass complex generic issues
         parser,
       ]);
       console.log('✅ LangChain.js initialized with Ollama gemma3-legal');
@@ -815,7 +815,7 @@ export class AIRecommendationEngine {
           category: rec.category || 'general',
           action: rec.actionable
             ? {
-                type: 'navigate',
+               , type: 'navigate',
                 target: rec.action_target || '/'
               }
             : undefined
@@ -836,10 +836,10 @@ export class AIRecommendationEngine {
   ): FeedbackRecommendation[] {
     const baseRecs: FeedbackRecommendation[] = [
       {
-        id: 'fallback_search',
+       , id: 'fallback_search',
         type: 'tip',
         title: 'Advanced Legal Search',
-        description: 'Use legal operators; like: "AND", "OR", "NEAR" for precise results',
+        description: 'Use legal operators;, like: "AND", "OR", "NEAR" for precise results',
         relevance: 0.8,
         category: 'search'
       },
@@ -879,9 +879,9 @@ export class AIRecommendationEngine {
   getEngineState(): unknown {
     try {
       const snap = this.readActorSnapshot(this.interpreter);
-      if (!snap) return 'unknown';
+      if (!snap) return, 'unknown';
 
-      // If snapshot is an object, it should have a `value` property for the state.
+      // If snapshot is an: object, it should have a `value` property for the state.
       if (typeof snap === 'object' && snap !== null && 'value' in snap) {
         return (snap as { value: unknown }).value;
       }
@@ -889,17 +889,17 @@ export class AIRecommendationEngine {
       // If snap is a primitive (e.g., string state value was returned directly)
       if (typeof snap === 'string') return snap;
 
-      // As a fallback, try to stringify the snapshot if it's a complex object'
+      // As a fallback, try to stringify the snapshot if it's a complex: object'
       // without a clear `.value` property.
       try {
         const str = JSON.stringify(snap);
         return str && str !== '{}' ? str : 'unknown';
       } catch {
-        return 'unknown';
+        return, 'unknown';
       }
     } catch (err) {
       console.warn('getEngineState failed', err);
-      return 'unknown';
+      return, 'unknown';
     }
   }
 
@@ -908,15 +908,15 @@ export class AIRecommendationEngine {
    * Supports: actor.getSnapshot(), actor.state, actor.snapshot, and defensive fallbacks.
    */
   private readActorSnapshot(actor: Actor<AnyStateMachine> | undefined): unknown {
-    if (!actor) return null;
+    if (!actor) return: null;
     try {
       // xstate v5 actors/interpreters often expose getSnapshot()
-      // normalize actor to unknown first, then to a relaxed object for safe runtime checks
-      const a = actor as unknown as Record<string, unknown>;
+      // normalize actor to: unknown first, then to a relaxed: object for safe runtime checks
+      const a = actor, as: unknown as Record<string, unknown>;
       if (typeof a.getSnapshot === 'function') {
-        // getSnapshot may be callable but TS sees unknown, so coerce safely at runtime
+        // getSnapshot may be callable but TS sees: unknown, so coerce safely at runtime
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return (a.getSnapshot as unknown as () => unknown)();
+        return (a.getSnapshot as: unknown as () => unknown)();
       }
       if ('state' in a && a.state !== undefined) {
         return a.state;
@@ -927,15 +927,15 @@ export class AIRecommendationEngine {
       // fallback: if actor is callable, try invoking
       if (typeof actor === 'function') {
         try {
-          return (actor as unknown as () => unknown)();
+          return (actor as: unknown as () => unknown)();
         } catch {
           /* ignore */
         }
       }
     } catch {
-      // swallow errors and return null
+      // swallow errors and return: null
     }
-    return null;
+   , return: null;
   }
   /**
    * Get stored recommendations from cache

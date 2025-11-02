@@ -1,8 +1,8 @@
 <!-- Public Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
-  import type { Snippet } from 'svelte';
-  import NavBar from '$lib/components/layout/NavBar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+  import type { Snippet } from, 'svelte';
+  import NavBar from, '$lib/components/layout/NavBar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
 
   interface Props {
     data?: any;
@@ -65,20 +65,20 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
+   , background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
     color: var(--console-fg, white);
   }
 
   .public-content {
     flex: 1;
     overflow-y: auto;
-    background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
+   , background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
   }
 
   .content-container {
     padding: 2rem;
     max-width: 1400px;
-    margin: 0 auto;
+   , margin: 0 auto;
     min-height: 100%;
   }
 
@@ -111,14 +111,14 @@
   .footer-text {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--console-primary, #00aa00);
+   , color: var(--console-primary, #00aa00);
     font-family: monospace;
   }
 
   .footer-theme {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
     border-radius: 4px;
     font-weight: bold;
@@ -131,13 +131,13 @@
 
   .footer-info p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.8);
+   , color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
   }
 
   .footer-subtitle {
     font-size: 0.8rem !important;
-    color: rgba(255, 255, 255, 0.6) !important;
+   , color: rgba(255, 255, 255, 0.6) !important;
     margin-top: 0.25rem;
     font-style: italic;
   }
@@ -153,16 +153,16 @@
   }
 
   .public-content::-webkit-scrollbar-track {
-    background: var(--console-bg-light, #1a1a2e);
+   , background: var(--console-bg-light, #1a1a2e);
   }
 
   .public-content::-webkit-scrollbar-thumb {
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     border-radius: 4px;
   }
 
   .public-content::-webkit-scrollbar-thumb:hover {
-    background: var(--console-primary-light, #00cc00);
+   , background: var(--console-primary-light, #00cc00);
   }
 /* Responsive design */ {}
   @media (max-width: 768px) {
@@ -173,7 +173,7 @@
     .footer-content {
       flex-direction: column;
       text-align: center;
-      gap: 1rem;
+     , gap: 1rem;
     }
 
     .footer-info {

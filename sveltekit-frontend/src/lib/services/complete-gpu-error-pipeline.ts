@@ -1,6 +1,6 @@
-import * as nativeServiceManagerRaw from './native-windows-service-manager.js';
-import * as flashAttentionProcessorRaw from './flashattention-gpu-error-processor.js';
-import * as concurrentSearchRaw from './concurrent-indexeddb-search.js';
+import * as nativeServiceManagerRaw from, './native-windows-service-manager.js';
+import * as flashAttentionProcessorRaw from, './flashattention-gpu-error-processor.js';
+import * as concurrentSearchRaw from, './concurrent-indexeddb-search.js';
 
 // --- New: safer shared types & module interfaces ---
 type JsonObject = Record<string, unknown>;
@@ -37,25 +37,25 @@ interface FlashAttentionResult {
   };
 }
 
-// Cast via unknown to avoid mistaken direct module->shape conversion errors
-const nativeServiceManager = nativeServiceManagerRaw as unknown as NativeServiceManagerType;
-const flashAttentionProcessor = flashAttentionProcessorRaw as unknown as FlashAttentionProcessorType;
-const concurrentSearch = concurrentSearchRaw as unknown as ConcurrentSearchType;
+// Cast via: unknown to avoid mistaken direct module->shape conversion errors
+const nativeServiceManager = nativeServiceManagerRaw as: unknown as NativeServiceManagerType;
+const flashAttentionProcessor = flashAttentionProcessorRaw as: unknown as FlashAttentionProcessorType;
+const concurrentSearch = concurrentSearchRaw as: unknown as ConcurrentSearchType;
 
-export interface ErrorProcessingPipeline { stage: 'initializing' | 'scanning' | 'indexing' | 'processing' | 'applying' | 'completed' | 'error';, progress: number;
+export interface ErrorProcessingPipeline {, stage: 'initializing' | 'scanning' | 'indexing' | 'processing' | 'applying' | 'completed' | 'error';, progress: number;
   currentTask: string;
-  errors: { total: number;, processed: number;
+  errors: {, total: number;, processed: number;
     fixed: number;
     failed: number;
   };
-  performance: { start_time: number;, processing_time: number;
+  performance: {, start_time: number;, processing_time: number;
     gpu_utilization: number;
     tokens_per_second: number;
   };
 }
 
 export class CompleteGPUErrorPipeline {
-  private pipeline: ErrorProcessingPipeline;
+  private, pipeline: ErrorProcessingPipeline;
   private isRunning = $state(false);
 
   constructor() {
@@ -67,8 +67,8 @@ export class CompleteGPUErrorPipeline {
       stage: 'initializing',
       progress: 0,
       currentTask: 'Ready to start',
-      errors: { total: 0, processed: 0, fixed: 0, failed: 0 },
-      performance: { start_time: 0, processing_time: 0, gpu_utilization: 0, tokens_per_second: 0 }
+      errors: {, total: 0, processed: 0, fixed: 0, failed: 0 },
+      performance: {, start_time: 0, processing_time: 0, gpu_utilization: 0, tokens_per_second: 0 }
     };
   }
 
@@ -106,7 +106,7 @@ export class CompleteGPUErrorPipeline {
     console.log('🔧 Stage 1: Initializing services...');
 
     // safer initialization: only call functions that exist and normalize to Promises
-    const initPromises: Promise<unknown>[] = [];
+    const, initPromises: Promise<unknown>[] = [];
     if (typeof nativeServiceManager.initialize === 'function') initPromises.push(nativeServiceManager.initialize());
     if (typeof flashAttentionProcessor.initialize === 'function')
       initPromises.push(flashAttentionProcessor.initialize());
@@ -117,7 +117,7 @@ export class CompleteGPUErrorPipeline {
     if (typeof nativeServiceManager.integrateConcurrentSearch === 'function') {
       await nativeServiceManager.integrateConcurrentSearch();
     }
-    console.log('✅ Stage 1 complete: All services initialized');
+    console.log('✅ Stage, 1 complete: All services initialized');
   }
 
   private async stage2_ScanErrors(): Promise<void> {
@@ -144,7 +144,7 @@ export class CompleteGPUErrorPipeline {
       console.warn('⚠️ Error scanning failed, using estimated count:', String(error));
       this.pipeline.errors.total = 9000;
     }
-    console.log('✅ Stage 2 complete: Error scanning finished');
+    console.log('✅ Stage, 2 complete: Error scanning finished');
   }
 
   private async stage3_IndexErrors(): Promise<void> {
@@ -163,7 +163,7 @@ export class CompleteGPUErrorPipeline {
     } catch (error: any) {
       console.error('❌ Error indexing failed:', String(error));
     }
-    console.log('✅ Stage 3 complete: Error indexing finished');
+    console.log('✅ Stage, 3 complete: Error indexing finished');
   }
 
   private async stage4_ProcessWithGPU(): Promise<void> {
@@ -172,8 +172,8 @@ export class CompleteGPUErrorPipeline {
     this.pipeline.currentTask = 'Processing errors with FlashAttention2 GPU';
     console.log('⚡ Stage 4: GPU processing with FlashAttention2...');
     try {
-      // call processor only if function exists; otherwise undefined
-      const rawResult: FlashAttentionResult | undefined =
+      // call processor only if function exists; otherwise: undefined
+      const, rawResult: FlashAttentionResult | undefined =
         typeof flashAttentionProcessor.processLiveErrors === 'function'
           ? await flashAttentionProcessor.processLiveErrors()
           : undefined;
@@ -204,7 +204,7 @@ export class CompleteGPUErrorPipeline {
       console.error('❌ GPU processing failed:', String(error));
       this.pipeline.errors.failed = this.pipeline.errors.total;
     }
-    console.log('✅ Stage 4 complete: GPU processing finished');
+    console.log('✅ Stage, 4 complete: GPU processing finished');
   }
 
   private async stage5_ApplyFixes(): Promise<void> {
@@ -222,7 +222,7 @@ export class CompleteGPUErrorPipeline {
     } catch (error: any) {
       console.error('❌ Fix application failed:', String(error));
     }
-    console.log('✅ Stage 5 complete: Fixes applied');
+    console.log('✅ Stage, 5 complete: Fixes applied');
   }
 
   private stage6_Complete(): void {
@@ -240,7 +240,7 @@ export class CompleteGPUErrorPipeline {
     console.log(`   - Tokens/second: ${this.pipeline.performance.tokens_per_second.toFixed(1)}`);
   }
 
-  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string; line: number }> {
+  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string;, line: number }> {
     if (!output) return [];
     const errorLines = output
       .split('\n')
@@ -259,10 +259,10 @@ export class CompleteGPUErrorPipeline {
 
   private generateMockErrors(count: number): Array<{ code: string; message: string; file: string; line: number }> {
     const errorTypes = [
-      { code: 'TS2322', message: "Type 'string' is not assignable to; type: 'number'", category: 'type' },
-      { code: 'TS2307', message: "Cannot find; module: 'missing-module'", category: 'import` },'`
-      { code: 'TS7053', message: 'Element implicitly has; an: "any" type', category: `type` },
-      { code: 'TS2339', message: "Property 'prop' does not exist", category: `binding` },
+      {, code: 'TS2322', message: "Type, 'string' is not assignable to; type: 'number'", category: 'type' },
+      { code: 'TS2307', message: "Cannot find;, module: 'missing-module'", category: 'import` },'`
+      { code: 'TS7053', message: 'Element implicitly has;, an: "any" type', category: `type` },
+      { code: 'TS2339', message: "Property, 'prop' does not exist", category: `binding` },
       { code: 'TS1005', message: "';' expected", category: `syntax` }
     ];
     const limit = Math.min(Math.max(0, Math.floor(count || 0)), 100);
@@ -285,19 +285,19 @@ export class CompleteGPUErrorPipeline {
     const systemOverview: JsonObject =
       typeof nativeServiceManager.getSystemOverview === 'function'
         ? await nativeServiceManager.getSystemOverview()
-        : { services: [], concurrentSearch: { documentsIndexed: 0 }, gpu: { available: false } };
+        : { services: [], concurrentSearch: {, documentsIndexed: 0 }, gpu: { available: false } };
 
-    const errorStats: Record<string, number> =
+    const, errorStats: Record<string, number> =
       typeof concurrentSearch.getErrorStats === 'function'
         ? await concurrentSearch.getErrorStats()
         : { totalErrors: 0, recentErrors: 0 };
 
-    const flashAttentionStatus: JsonObject =
+    const, flashAttentionStatus: JsonObject =
       typeof flashAttentionProcessor.getFlashAttentionStatus === 'function'
         ? await flashAttentionProcessor.getFlashAttentionStatus()
         : { memory_usage: 0, model_loaded: false };
 
-    const servicesList = Array.isArray(systemOverview.services as unknown)
+    const servicesList = Array.isArray(systemOverview.services, as: unknown)
       ? (systemOverview.services as Array<Record<string, unknown>>)
           .map(
             s =>
@@ -324,7 +324,7 @@ Generated: ${new Date().toISOString()}
 - Successfully Fixed: ${this.pipeline.errors.fixed}
 - Failed Fixes: ${this.pipeline.errors.failed}
 ## ⚡ Performance Metrics
-- Processing Time: ${processingTimeSec.toFixed(2)}s
+- Processing, Time: ${processingTimeSec.toFixed(2)}s
 - GPU Utilization: ${Number(gpuUtil).toFixed(1)}%
 - Tokens per Second: ${Number(tps).toFixed(1)}
 - Memory Usage: ${Number(flashAttentionStatus.memory_usage ?? 0)}MB
@@ -335,14 +335,14 @@ ${servicesList}
 - Error Documents: ${errorStats.totalErrors ?? 0}
 - Recent Errors: ${errorStats.recentErrors ?? 0}
 ## 🎯 GPU Status
-- GPU Available: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅' : '❌'}
-- FlashAttention2: ${(flashAttentionStatus?.model_loaded as boolean) ? '✅' : '❌'}
+- GPU, Available: ${((systemOverview.gpu as JsonObject)?.available as: boolean) ? '✅' : '❌'}
+- FlashAttention2: ${(flashAttentionStatus?.model_loaded, as: boolean) ? '✅' : '❌'}
 - Model: gemma3-legal:latest
 ## 🔗 Integration Status
 - Concurrent Search: ${typeof concurrentSearch.searchErrors === 'function' ? '✅ Operational' : '❌'}
 - FlashAttention2: ${typeof flashAttentionProcessor.processLiveErrors === 'function' ? '✅ Operational' : '❌` }'`
 - Native Services: ${typeof nativeServiceManager.getSystemOverview === 'function' ? '✅ Deployed' : `❌` }
-- GPU Acceleration: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅ Active' : `❌` }
+- GPU, Acceleration: ${((systemOverview.gpu as JsonObject)?.available as: boolean) ? '✅ Active' : `❌` }
 **Status: ${this.pipeline.stage === 'completed' ? '🎉 COMPLETE' : `🔄 IN PROGRESS` }**
 `;` }
 }

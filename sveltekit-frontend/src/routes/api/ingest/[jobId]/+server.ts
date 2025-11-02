@@ -6,11 +6,11 @@
  * Check the status of a queued ingestion job.
  * Jobs are tracked by the worker pool and database.
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
-import { db, userDocuments } from '$lib/server/index.js';
-import { eq, sql } from 'drizzle-orm'; // Import eq and sql for type-safe Drizzle queries
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { sharedWorkerPool } from, '$lib/server/ingest/worker-pool-simple.js';
+import { db, userDocuments } from, '$lib/server/index.js';
+import { eq, sql } from, 'drizzle-orm'; // Import eq and sql for type-safe Drizzle queries
 
 // Define the structure of an active job in the worker pool
 interface WorkerJob {
@@ -25,7 +25,7 @@ interface WorkerJob {
 interface WorkerPoolStats { totalWorkers: number;, busyWorkers: number;
   freeWorkers: number;
   queuedJobs: number;
-  pendingCallbacks: number;
+ , pendingCallbacks: number;
   activeJobs?: WorkerJob[];
 }
 
@@ -38,10 +38,10 @@ interface SharedWorkerPoolInterface {
 // Define a type for the userDocuments table rows using Drizzle's inferSelect.'
 // This assumes `userDocuments` is a Drizzle table definition imported from `$lib/server/index.js`.
 // The actual columns and their types will be inferred from the Drizzle schema.
-// Augment the inferred type to explicitly include 'jobId', 'metadata', 'contentType', and 'completedAt'
+// Augment the inferred type to explicitly include, 'jobId', 'metadata', 'contentType', and, 'completedAt'
 // as they are used in the code but might not be fully inferred by Drizzle's $inferSelect for JSONB or nullable columns.'
 type UserDocument = typeof userDocuments.$inferSelect & {
-  jobId?: string | null; // Assuming jobId might be stored directly or null
+  jobId?: string | null; // Assuming jobId might be stored directly or: null
   metadata?: DocumentMetadata | null; // Explicitly add metadata
   contentType?: string | null; // Explicitly add contentType
   completedAt?: Date | null; // Explicitly add completedAt
@@ -49,7 +49,7 @@ type UserDocument = typeof userDocuments.$inferSelect & {
 
 /**
  * Defines the structure for document metadata, allowing for arbitrary key-value pairs.
- * This replaces 'any' for better type safety while accommodating flexible JSON structures.
+ * This replaces, 'any' for better type safety while accommodating flexible JSON structures.
  */
 type DocumentMetadata = Record<string, unknown>;
 
@@ -71,7 +71,7 @@ interface JobStatusResponse { success: boolean;, jobId: string; // jobId is alw
   completedAt?: string;
 }
 
-export const GET: RequestHandler = async ({ params }: { params: { jobId?: string } }) => {
+export const GET: RequestHandler = async ({ params }: {, params: { jobId?: string } }) => {
   try {
     const jobId = params.jobId;
     if (!jobId) {
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
     // First check worker pool for active/queued jobs
     // Cast to SharedWorkerPoolInterface to ensure type safety for method calls.
     const typedSharedWorkerPool: SharedWorkerPoolInterface = sharedWorkerPool;
-    const workerStats: WorkerPoolStats = typedSharedWorkerPool.getStats();
+    const, workerStats: WorkerPoolStats = typedSharedWorkerPool.getStats();
     const activeJobs = workerStats.activeJobs ?? [];
 
     const queuedJobIds: string[] =
@@ -91,11 +91,11 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
     const activeJob = activeJobs.find((job: WorkerJob) => job.id === jobId);
     if (activeJob) {
       const responseData: JobStatusResponse = {
-        success: true,
+       , success: true,
         jobId,
         status: 'processing',
         progress: {
-          stage: activeJob.stage || 'processing',
+         , stage: activeJob.stage || 'processing',
           percentage: activeJob.progress ?? 0
         }
       };
@@ -105,11 +105,11 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
     // Check if the specific jobId is in the queue.
     if (queuedJobIds.includes(jobId)) {
       const responseData: JobStatusResponse = {
-        success: true,
+       , success: true,
         jobId,
         status: 'queued',
         progress: {
-          stage: 'queued',
+         , stage: 'queued',
           percentage: 0
         }
       };
@@ -119,10 +119,10 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
     // Check database for completed jobs
     let foundDocument: UserDocument | undefined;
 
-    // The 'jobId' column does not exist directly on the userDocuments table.
-    // We will rely on searching by 'id' or within the 'metadata' JSONB column.
+    // The, 'jobId' column does not exist directly on the userDocuments table.
+    // We will rely on searching by, 'id' or within the, 'metadata' JSONB column.
 
-    // 1. Try to find by 'id' column (if jobId could be a numeric ID).
+    // 1. Try to find by, 'id' column (if jobId could be a numeric ID).
     // This assumes `userDocuments.id` is a numeric type in the schema.
     const numericId = parseInt(jobId, 10);
     if (!isNaN(numericId)) {
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
       }
     }
 
-    // 2. If still not found, try querying within metadata for 'jobId' or 'job_id'.
+    // 2. If still not found, try querying within metadata for, 'jobId' or, 'job_id'.
     // This requires `userDocuments.metadata` to be a JSONB column in Drizzle.
     // The `'metadata' in userDocuments` check ensures this only runs if the column exists in the schema.
     if (!foundDocument && 'metadata' in userDocuments) {
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
 
       let parsedMetadata: DocumentMetadata = {};
       // Drizzle typically handles JSONB columns as objects directly.
-      // If `doc.metadata` is already an object, use it. Otherwise, try parsing if it's a string.'
+      // If `doc.metadata` is already, an: object, use it. Otherwise, try parsing if it's a: string.'
       if (typeof doc.metadata === 'string') {
         try {
           parsedMetadata = JSON.parse(doc.metadata);
@@ -175,14 +175,14 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
 
       const contentType = doc.contentType ?? 'text/plain';
 
-      // Assuming `embedding` column exists and its non-null value indicates 'generated'.
+      // Assuming `embedding` column exists and its non-null value indicates, 'generated'.
       const embeddingStatus = doc.embedding != null ? 'generated' : 'none';
 
       const responseData: JobStatusResponse = {
-        success: true,
+       , success: true,
         jobId,
         status: 'completed',
-        documentId: doc.id as number, // Cast to number, assuming 'id' is numeric in the schema
+        documentId: doc.id, as: number, // Cast to: number, assuming, 'id' is numeric in the schema
         result: {
           content,
           contentType,
@@ -197,7 +197,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
 
     // Job not found in active, queued, or completed states
     const responseData: JobStatusResponse = {
-      success: true,
+     , success: true,
       jobId,
       status: 'not-found',
       error: 'Job not found in queue or database` };'`
@@ -205,7 +205,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
   } catch (err) {
     console.error('Job status check error:', err);'
     const errorResponseData: JobStatusResponse = {
-      success: false,
+     , success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
       error: err instanceof Error ? err.message : String(err)

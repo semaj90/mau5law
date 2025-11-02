@@ -359,7 +359,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <div
             class="work-item";
             class:active={selectedWork?.id === workItem.id}
-            transition:slide={{ duration: 200, easing: cubicOut }}
+            use:slide={{ duration: 200, easing: cubicOut }}
           >
             <div class="work-main" onclick={() => selectedWork = selectedWork?.id === workItem.id ? null : workItem}>
               <div class="work-header">
@@ -405,7 +405,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
               </div>
               <!-- Expanded Details -->
               {#if selectedWork?.id === workItem.id}
-                <div class="work-details" transition:slide={{ duration: 300 }}>
+                <div class="work-details" use:slide={{ duration: 300 }}>
                   <!-- Recent Activities -->
                   <div class="activities-section">
                     <h5>Recent Activities ({workItem.activities.length})</h5>

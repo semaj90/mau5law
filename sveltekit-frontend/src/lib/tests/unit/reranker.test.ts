@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { serverRerank, generateComprehensiveSummary } from '$lib/server/ai/reranker';
+import { describe, it, expect } from, 'vitest';
+import { serverRerank, generateComprehensiveSummary } from, '$lib/server/ai/reranker';
 
 describe('Server Reranker', () => {
   it('reranks candidates correctly', async () => {
@@ -8,13 +8,13 @@ describe('Server Reranker', () => {
       { id: '1', text: 'This contract has a breach clause.' },
       { id: '2', text: 'Unrelated legal text' }
     ];
-    const result = await serverRerank({ query, candidates } as any);
+    const result = await serverRerank({ query, candidates } as: any);
     expect(result.length).toBeGreaterThan(0);
     expect(result[0].score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles empty query', async () => {
-    const result = await serverRerank({ query: '', candidates: [] } as any);
+    const result = await serverRerank({ query: '', candidates: [] }, as: any);
     expect(result).toEqual([]);
   });
 

@@ -1,4 +1,4 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from, '@sveltejs/kit';
 // Minimal recommendations endpoint to restore route integrity
 export const GET: RequestHandler = async ({ url }) => {
   const caseId = url.searchParams.get('caseId') ?? undefined;

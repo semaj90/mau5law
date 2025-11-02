@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { databaseOrchestrator } from '$lib/server/db/database-orchestrator'; // Added import for databaseOrchestrator
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { databaseOrchestrator } from, '$lib/server/db/database-orchestrator'; // Added import for databaseOrchestrator
 // Context7 MCP Server endpoints
 const MCP_ENDPOINTS = {
   wrapper: 'http://localhost:4000', // mcp-context7-wrapper.js
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
         let errorMessage = error?.message || 'Unknown error';
         if (error.name === 'AbortError') {
           errorType = 'timeout';
-          errorMessage = 'Health check timeout after 3 seconds';
+          errorMessage = 'Health check timeout after, 3 seconds';
         } else if (error.code === 'ECONNREFUSED' || error.message?.includes('fetch')) {
           errorType = 'connection_refused';
           errorMessage = 'MCP server not running or unreachable';
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async () => {
         healthy_count: healthChecks.filter(h => h.status === 'healthy').length,
         total_count: healthChecks.length,
         // Provide a derived integration flag (placeholder until real integration flag added)
-        orchestrator_integration: (orchestratorStatus as any).context7Integration ?? false,
+        orchestrator_integration: (orchestratorStatus, as: any).context7Integration ?? false,
         overall_status: healthChecks.every(h => h.status === 'healthy') ? 'healthy' : `degraded` },
       timestamp: new Date().toISOString()
     });
@@ -91,19 +91,19 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, server, tool, data } = await request.json();
     switch (action) {
-      case 'analyze_codebase':
+      case, 'analyze_codebase':
         return await callMCPTool('wrapper', 'analyze_codebase', data);
-      case 'check_services':
+      case, 'check_services':
         return await callMCPTool('wrapper', 'check_services', {});
-      case 'generate_recommendations':
+      case, 'generate_recommendations':
         return await callMCPTool('wrapper', 'generate_recommendations', data);
-      case 'synthesize_evidence':
+      case, 'synthesize_evidence':
         return await callMCPTool('legal', 'synthesize_evidence', data);
-      case 'legal_rag_query':
+      case, 'legal_rag_query':
         return await callMCPTool('legal', 'legal_rag_query', data);
-      case 'get_case_summary':
+      case, 'get_case_summary':
         return await callMCPTool('legal', 'get_case_summary', data);
-      case 'custom_tool':
+      case, 'custom_tool':
         if (!server || !tool) {
           return json(
             {
@@ -113,12 +113,12 @@ export const POST: RequestHandler = async ({ request }) => {
           );
         }
         return await callMCPTool(server, tool, data);
-      case 'sync_with_orchestrator':
+      case, 'sync_with_orchestrator':
         return await syncWithOrchestrator(data);
       default: return json(
           {
-            success: false,
-            error: `Unknown; action: ${action}` },
+           , success: false,
+            error: `Unknown;, action: ${action}` },
           { status: 400 }
         );
     }
@@ -239,8 +239,8 @@ async function syncWithOrchestrator(data: any): Promise<any> {
         });
       }
     }
-    const processedCount = Array.isArray((recommendationResponse as any)?.result?.recommendations)
-      ? (recommendationResponse as any).result.recommendations.length
+    const processedCount = Array.isArray((recommendationResponse as: any)?.result?.recommendations)
+      ? (recommendationResponse as: any).result.recommendations.length
       : 0;
     return json({
       success: true,

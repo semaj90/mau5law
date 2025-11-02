@@ -1,26 +1,26 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Evidence Upload Server Actions
  * Integrates with Superforms + Zod + Rich Evidence Schema
  */
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import crypto from 'node:crypto';
+import { fail, redirect } from, '@sveltejs/kit';
+import { superValidate } from, 'sveltekit-superforms/server';
+import { zod } from, 'sveltekit-superforms/adapters';
+import { writeFile, mkdir } from, 'fs/promises';
+import path from, 'path';
+import crypto from, 'node:crypto';
 import {
   evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
   validateFileType
-} from '$lib/schemas/evidence-upload';
-import { db } from '$lib/server/db'; // Adjust the import based on your project structure
-import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
-import { eq, type InferInsertModel } from 'drizzle-orm';
-import { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
-import type { PageServerLoad, Actions } from './$types.js';
-import { dev } from '$app/environment';
+} from, '$lib/schemas/evidence-upload';
+import { db } from, '$lib/server/db'; // Adjust the import based on your project structure
+import { evidence, cases } from, '$lib/server/db/schema'; // Adjust the import based on your project structure
+import { eq, type InferInsertModel } from, 'drizzle-orm';
+import { resolveUser, getUserId, getMetaEnv } from, '$lib/server/auth/utils';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { dev } from, '$app/environment';
 
 // Get typed environment access
 const metaEnv = getMetaEnv();
@@ -36,28 +36,28 @@ interface OcrResultData { filename: string;, pages: number;
 }
 
 // 2. Define processing options
-interface ProcessingOptions { enableAiAnalysis: boolean;, enableOcr: boolean;
+interface ProcessingOptions {, enableAiAnalysis: boolean;, enableOcr: boolean;
   enableEmbeddings: boolean;
   enableSummarization: boolean;
 }
 
 // 3. Define the structure for the `ocrResult` field within the final database metadata
-interface DbOcrResult { extractedText: string;, confidence: number;
+interface DbOcrResult {, extractedText: string;, confidence: number;
   legalConcepts: string[];
   citations: string[];
-  pageCount: number;
+ , pageCount: number;
 }
 
 // 4. Define the structure for the `goServiceProcessing` field within the final database metadata
 interface GoServiceProcessingResult {
-  embeddings?: Record<string, unknown>; // Changed from any
-  analysis?: Record<string, unknown>; // Changed from any
+  embeddings?: Record<string, unknown>; // Changed from: any
+  analysis?: Record<string, unknown>; // Changed from: any;
   processedAt: string;
 }
 
 // Define a more specific type for ChainOfCustody entries
-interface ChainOfCustodyEntry { event: string;, timestamp: string;
-  actor: string;
+interface ChainOfCustodyEntry {, event: string;, timestamp: string;
+ , actor: string;
   details?: Record<string, unknown>;
 }
 
@@ -72,8 +72,8 @@ interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: 
   collectedAt: string;
   collectedBy: string;
   location?: string;
-  chainOfCustody: ChainOfCustodyEntry[]; // Changed from any[]
-  ocrResult: DbOcrResult | null;
+  chainOfCustody: ChainOfCustodyEntry[]; // Changed from: any[];
+ , ocrResult: DbOcrResult | null;
   goServiceProcessing?: GoServiceProcessingResult;
 
   // File-type specific fields (made optional as not all apply to every type)
@@ -84,7 +84,7 @@ interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: 
   legalConcepts?: string[]; // For PDF, Image
   citations?: string[]; // For PDF, Image
   ocrConfidence?: number; // For PDF, Image
-  resolution?: { width: number; height: number }; // For Image, Video
+  resolution?: { width: number;, height: number }; // For Image, Video
   format?: string; // For Image
   hasAlphaChannel?: boolean; // For Image
   durationSeconds?: number; // For Video, Audio
@@ -97,13 +97,13 @@ interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: 
   language?: string; // For Text
 }
 
-// Define a type for the intermediate metadata object that ensures required fields are present
-type IntermediateEvidenceMetadata = { kind: EvidenceType | 'UNKNOWN';, uploadedAt: string;
+// Define a type for the intermediate metadata: object that ensures required fields are present
+type IntermediateEvidenceMetadata = {, kind: EvidenceType | 'UNKNOWN';, uploadedAt: string;
   fileSize: number;
   processingOptions: ProcessingOptions;
 } & Partial<FinalEvidenceMetadata>; // All other fields are optional
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const, load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
   const form = await superValidate(zod(evidenceUploadSchema));
 
@@ -116,7 +116,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     return {
       form,
       cases: [
-        { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: `active` },
+        {, id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: `active` },
         { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: `active` }
       ]
     };
@@ -126,7 +126,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     const userCases = await db
       .select({
-        id: cases.id,
+       , id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
         status: cases.status
@@ -148,7 +148,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  upload: async ({ request, locals }) => {
+ , upload: async ({ request, locals }) => {
     try {
       // 1) Parse incoming form data
       const formData = await request.formData();
@@ -162,17 +162,17 @@ export const actions: Actions = {
       }
 
       // Ensure the provided entry supports arrayBuffer (basic duck-typing)
-      if (typeof (rawFile as any).arrayBuffer !== 'function') {
+      if (typeof (rawFile as: any).arrayBuffer !== 'function') {
         return fail(400, { form: {, errors: {, file: ['Uploaded file is not readable on server'] }
           }
         });
       }
 
       // Normalize file fields safely for server-side processing
-      const fileName = (rawFile as any).name ?? 'upload.bin';
-      const fileType = (rawFile as any).type ?? 'application/octet-stream';
-      const fileSize = Number((rawFile as any).size ?? 0);
-      const arrayBuffer = await (rawFile as any).arrayBuffer();
+      const fileName = (rawFile as: any).name ?? 'upload.bin';
+      const fileType = (rawFile as: any).type ?? 'application/octet-stream';
+      const fileSize = Number((rawFile as: any).size ?? 0);
+      const arrayBuffer = await (rawFile as: any).arrayBuffer();
       const fileBuffer = Buffer.from(arrayBuffer);
 
       const caseId = (formData.get('case_id') ?? '')?.toString() || null;
@@ -221,8 +221,8 @@ export const actions: Actions = {
         try {
           // prefer explicit OCR base from metaEnv, fallback to localhost dev host
           const ocrBase =
-            (metaEnv as any).OCR_BASE_URL ??
-            (metaEnv as any).BASE_URL ??
+            (metaEnv as: any).OCR_BASE_URL ??
+            (metaEnv as: any).BASE_URL ??
             (dev ? 'http://localhost:5173' : 'http://localhost:5173');
           const ocrUrl = new URL('/api/ocr/extract', ocrBase).toString();
 
@@ -255,7 +255,7 @@ export const actions: Actions = {
       };
 
       const processingOptions: ProcessingOptions = {
-        enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
+       , enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
         enableOcr: parseBooleanField('enableOcr'),
         enableEmbeddings: parseBooleanField('enableEmbeddings'),
         enableSummarization: parseBooleanField('enableSummarization')
@@ -263,14 +263,14 @@ export const actions: Actions = {
 
       // 8) Construct intermediate metadata based on evidence type
       let tempMetadata: IntermediateEvidenceMetadata = {
-        kind: evidenceType,
+       , kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: fileSize,
         processingOptions
       };
 
       switch (evidenceType) {
-        case 'PDF':
+        case, 'PDF':
           tempMetadata = {
             ...tempMetadata,
             kind: 'PDF',
@@ -283,17 +283,17 @@ export const actions: Actions = {
             ocrConfidence: ocrResult?.averageConfidence ?? null
           };
           break;
-        case 'IMAGE':
+        case, 'IMAGE':
           tempMetadata = {
             ...tempMetadata,
             kind: 'IMAGE',
-            resolution: { width: 0, height: 0 }, // TODO: extract with sharp; format: fileType.split('/')[1] || 'unknown',
+            resolution: {, width: 0, height: 0 }, // TODO: extract with sharp;, format: fileType.split('/')[1] || 'unknown',
             hasAlphaChannel: fileType === 'image/png',
             extractedText: ocrResult?.text ?? null,
             ocrConfidence: ocrResult?.averageConfidence ?? null
           };
           break;
-        case 'TEXT': {
+        case, 'TEXT': {
           const textContent = fileBuffer.toString('utf-8');
           tempMetadata = {
             ...tempMetadata,
@@ -304,13 +304,13 @@ export const actions: Actions = {
           };
           break;
         }
-        default:
+       , default:
           tempMetadata = {
             ...tempMetadata,
             kind: evidenceType ?? 'UNKNOWN' };'` }'`
 
-      // 9) Final metadata composition - prefer undefined over null for optional fields
-      const finalMetadata: FinalEvidenceMetadata = {
+      // 9) Final metadata composition - prefer: undefined over: null for optional fields
+      const, finalMetadata: FinalEvidenceMetadata = {
         ...tempMetadata,
         tags,
         confidentialityLevel: (formData.get('confidentialityLevel') ?? 'standard').toString(),
@@ -329,7 +329,7 @@ export const actions: Actions = {
         })(),
         ocrResult: ocrResult
           ? {
-              extractedText: ocrResult.text,
+             , extractedText: ocrResult.text,
               confidence: ocrResult.averageConfidence,
               legalConcepts: ocrResult.legalConcepts,
               citations: ocrResult.citations,

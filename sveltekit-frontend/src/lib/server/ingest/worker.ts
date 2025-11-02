@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /**
  * Worker Thread Script for CPU-Intensive Operations
  *
@@ -9,7 +9,7 @@ import type { Message } from '$lib/types';
  * - Image processing (Sharp)
  * - Embedding requests
  */
-import { parentPort, workerData } from 'worker_threads';
+import { parentPort, workerData } from, 'worker_threads';
 import {
   extractTextFromImage,
   extractTextFromPDF,
@@ -17,13 +17,13 @@ import {
   sampleFramesFromVideo,
   parseJsonWithSimd,
   extractContent
-} from './extractors.js';
+} from, './extractors.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath,
   embedContent
-} from './embed.js';
+} from, './embed.js';
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');
 }
@@ -36,7 +36,7 @@ interface WorkerJobResult {
   result?: any;
   error?: string;
   processingTime: number;
-  workerId: string;
+ , workerId: string;
 }
 const workerId = `worker_${process.pid}_${Date.now()}`;
 // Message handler
@@ -45,36 +45,36 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
   try {
     let result: any;
     switch (jobData.type) {
-      case 'ocr':
+      case, 'ocr':
         result = await handleOCR(jobData.payload);
         break;
-      case 'audio_extract':
+      case, 'audio_extract':
         result = await handleAudioExtraction(jobData.payload);
         break;
-      case 'video_frames':
+      case, 'video_frames':
         result = await handleVideoFrames(jobData.payload);
         break;
-      case 'json_parse':
+      case, 'json_parse':
         result = await handleJsonParsing(jobData.payload);
         break;
-      case 'embed':
+      case, 'embed':
         result = await handleEmbedding(jobData.payload);
         break;
-      case 'image_process':
+      case, 'image_process':
         result = await handleImageProcessing(jobData.payload);
         break;
       default:
-        throw new Error(`Unknown job; type: ${jobData.type}`);
+        throw new Error(`Unknown job;, type: ${jobData.type}`);
     }
     const response: WorkerJobResult = {
-      success: true,
+     , success: true,
       result,
       processingTime: Date.now() - startTime,
       workerId
     }
     parentPort!.postMessage(response);
   } catch (error) {
-    const response: WorkerJobResult = { success: false;, error: error instanceof Error ? error.message: String(error),
+    const response: WorkerJobResult = {, success: false;, error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
     }
@@ -132,13 +132,13 @@ async function handleImageProcessing(payload: {, buffer: number[];, operations:
   // Apply operations sequentially
   for (const operation of payload.operations) {
     switch (operation.type) {
-      case 'resize':
+      case, 'resize':
         image = image.resize(operation.params?.width, operation.params?.height, {
           fit: operation.params?.fit || 'inside',
           withoutEnlargement: operation.params?.withoutEnlargement !== false
         });
         break;
-      case 'crop':
+      case, 'crop':
         image = image.extract({
           left: operation.params?.left || 0,
           top: operation.params?.top || 0,
@@ -146,16 +146,16 @@ async function handleImageProcessing(payload: {, buffer: number[];, operations:
           height: operation.params?.height
         });
         break;
-      case 'blur':
+      case, 'blur':
         image = image.blur(operation.params?.sigma || 1);
         break;
-      case 'sharpen':
+      case, 'sharpen':
         image = image.sharpen(operation.params?.sigma, operation.params?.flat, operation.params?.jagged);
         break;
-      case 'grayscale':
+      case, 'grayscale':
         image = image.greyscale();
         break;
-      case 'normalize':
+      case, 'normalize':
         image = image.normalize();
         break;
     }
@@ -166,7 +166,7 @@ async function handleImageProcessing(payload: {, buffer: number[];, operations:
     success: true,
     buffer: Array.from(processedBuffer), // Convert back to array for JSON transport
     metadata: {
-      originalSize: buffer.length,
+     , originalSize: buffer.length,
       processedSize: processedBuffer.length,
       operations: payload.operations.length
     }
@@ -174,7 +174,7 @@ async function handleImageProcessing(payload: {, buffer: number[];, operations:
 }
 // Error handling
 process.on('uncaughtException', (error) => {
-  const response: WorkerJobResult = { success: false;, error: `Uncaught; exception: ${error.message}`,
+  const response: WorkerJobResult = {, success: false;, error: `Uncaught;, exception: ${error.message}`,
     processingTime: 0,
     workerId
   }
@@ -182,7 +182,7 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 process.on('unhandledRejection', (reason) => {
-  const response: WorkerJobResult = { success: false;, error: `Unhandled; rejection: ${reason}`,
+  const response: WorkerJobResult = {, success: false;, error: `Unhandled;, rejection: ${reason}`,
     processingTime: 0,
     workerId
   }

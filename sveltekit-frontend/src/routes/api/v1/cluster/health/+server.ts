@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Cluster Health Monitoring API
- * Real-time health checks for all 37 Go services + external dependencies
+ * Real-time health checks for all, 37 Go services + external dependencies
  */
-import { getRedisService } from '$lib/server/redis/redis-service.js';
-import { minioService } from '$lib/server/storage/minio-service.js';
-import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
+import { getRedisService } from, '$lib/server/redis/redis-service.js';
+import { minioService } from, '$lib/server/storage/minio-service.js';
+import { rabbitmqService } from, '$lib/server/messaging/rabbitmq-service.js';
 
 /*
  * Lightweight types to avoid `any` while matching common service shapes
@@ -22,10 +22,10 @@ type ServiceHealthProvider = {
 
 /* helper: safely probe a service's healthCheck if available and normalize shape */'
 async function probeServiceHealth(
-  service: ServiceHealthProvider | null | undefined,
+ , service: ServiceHealthProvider | null | undefined,
   fallbackName = 'service'
-): Promise<{ status: string; details: any }> {
-  if (!service) return { status: 'unhealthy', details: { error: `${fallbackName} missing` } };
+): Promise<{ status: string;, details: any }> {
+  if (!service) return { status: 'unhealthy', details: {, error: `${fallbackName} missing` } };
 
   if (typeof service.healthCheck === 'function') {
     try {
@@ -52,11 +52,11 @@ async function probeServiceHealth(
         details
       };
     } catch (err) {
-      return { status: 'unhealthy', details: { error: String(err) } };
+      return { status: 'unhealthy', details: {, error: String(err) } };
     }
   }
 
-  // fallback checks for common boolean connection methods
+  // fallback checks for common: boolean connection methods
   if (typeof service.isConnectedToRedis === 'function') {
     const connected = !!service.isConnectedToRedis();
     return { status: connected ? 'healthy' : 'unhealthy', details: { connected } };
@@ -67,10 +67,10 @@ async function probeServiceHealth(
   }
 
   // unknown service shape
-  return { status: 'unknown', details: {} };
+  return {, status: 'unknown', details: {} };
 }
 
-// small helper to format unknown errors
+// small helper to, format: unknown errors
 function formatError(err: any): string {
   if (err instanceof Error) {
     return err.message;
@@ -78,7 +78,7 @@ function formatError(err: any): string {
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // normalize redis result
       (async () => ({
         status: redisService.isConnectedToRedis() ? 'healthy' : 'unhealthy',
-        details: { connected: redisService.isConnectedToRedis() }
+        details: {, connected: redisService.isConnectedToRedis() }
       }))(),
       probeServiceHealth(minioService, 'minio'),
       probeServiceHealth(rabbitmqService, 'rabbitmq'),
@@ -113,12 +113,12 @@ export const GET: RequestHandler = async ({ url }) => {
       status:
         totalHealthy === totalServices && totalServices > 0 ? 'operational' : totalHealthy > 0 ? 'degraded' : 'down',
       summary: {
-        total: totalServices,
+       , total: totalServices,
         healthy: totalHealthy,
         degraded: totalServices - totalHealthy
       },
       services: {
-        internal: internalServices,
+       , internal: internalServices,
         external: externalServices
       },
       ...(includeMetrics && { details: {, redis: redisHealth.details,
@@ -146,13 +146,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case 'force_health_check': {
+      case, 'force_health_check': {
         // Force refresh of all service health checks (block scoped)
         const redisService = getRedisService();
         const [redisHealth, minioHealth, rabbitmqHealth] = await Promise.all([
           (async () => ({
             status: redisService.isConnectedToRedis() ? 'healthy' : 'unhealthy',
-            details: { connected: redisService.isConnectedToRedis() }
+            details: {, connected: redisService.isConnectedToRedis() }
           }))(),
           probeServiceHealth(minioService, 'minio'),
           probeServiceHealth(rabbitmqService, 'rabbitmq'),
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString()
         });
       }
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     return json(
@@ -187,7 +187,7 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
     { name: 'ollama', url: `http://localhost:11434/api/tags` },
     { name: 'sveltekit', url: `http://localhost:5173/` }
   ];
-  const results: Record<string, boolean> = {};
+  const, results: Record<string, boolean> = {};
   await Promise.all(
     externalChecks.map(async ({ name, url }) => {
       const controller = new AbortController();

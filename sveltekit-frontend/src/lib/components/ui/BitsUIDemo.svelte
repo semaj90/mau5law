@@ -1,12 +1,12 @@
 <!-- Comprehensive Bits-UI Demo for Legal, AI, App -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import  BitsDialog  from "./dialog/BitsDialog.svelte";
-  import  BitsSelect  from "./select/BitsSelect.svelte";
-  import  BitsInput  from "./input/BitsInput.svelte";
-  import  Button  from "./button/Button.svelte";
-  import { Search, FileText, Users, Scale, Plus, Edit, Eye } from 'lucide-svelte';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import  BitsDialog  from, "./dialog/BitsDialog.svelte";
+  import  BitsSelect  from, "./select/BitsSelect.svelte";
+  import  BitsInput  from, "./input/BitsInput.svelte";
+  import  Button  from, "./button/Button.svelte";
+  import { Search, FileText, Users, Scale, Plus, Edit, Eye } from, 'lucide-svelte';
   // Demo state
   let showDialog = $state<boolean>(false);
   let selectedCaseType = $state<string>('');
@@ -23,7 +23,7 @@ import type { Case } from '$lib/types';
     { value: 'employment', label: 'Employment Law' }
   ];
   const sampleCases = [
-    { id: '1', name: 'Smith vs. Johnson', type: 'Civil Litigation', status: 'Active' },
+    {, id: '1', name: 'Smith vs. Johnson', type: 'Civil Litigation', status: 'Active' },
     { id: '2', name: 'Corporate Merger - TechCorp', type: 'Corporate Law', status: 'Pending' },
     { id: '3', name: 'Patent Dispute - Innovation Inc', type: 'Intellectual Property', status: 'Active' }
   ];
@@ -43,7 +43,7 @@ import type { Case } from '$lib/types';
       Legal AI Platform - Bits-UI Components
     </h1>
     <p class="text-yorha-text-secondary, font-mono, text-sm">
-      Modern Svelte 5 components with bits-ui primitives
+      Modern Svelte, 5 components with bits-ui primitives
     </p>
   </div>
   <!-- Search, Bar, Demo -->
@@ -203,7 +203,7 @@ showDialog = true}
     <h2 class="text-xl font-semibold, text-yorha-text-primary, font-mono">
       ✅ Component Status
     </h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4, text-sm, font-mono">
+    <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3 gap-4, text-sm, font-mono">
       <div class="bg-green-500/10 border border-green-500/20, rounded, p-3">
         <div, class="text-green-400, font-semibold">✅ BitsDialog</div>
         <div, class="text-yorha-text-secondary">Accessible modal component</div>
@@ -218,7 +218,7 @@ showDialog = true}
       </div>
       <div class="bg-green-500/10 border border-green-500/20, rounded, p-3">
         <div, class="text-green-400, font-semibold">✅ Button</div>
-        <div, class="text-yorha-text-secondary">Svelte 5 compatible</div>
+        <div, class="text-yorha-text-secondary">Svelte, 5 compatible</div>
       </div>
       <div class="bg-blue-500/10 border border-blue-500/20, rounded, p-3">
         <div, class="text-blue-400, font-semibold">🔨 More Coming</div>

@@ -18,9 +18,9 @@ export function safeWriteBuffer(
 }
 // Helper to get GPU adapter info safely
 export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: string } {
-  // GPUAdapter doesn't have a direct: 'name' property in the spec'
+  // GPUAdapter doesn't have a, direct: 'name' property in the spec'
   // Use info property if available, or fallback
-  const info = (adapter as any).info;
+  const info = (adapter as: any).info;
   if (info) {
     return {
       name: info.device || info.description || 'Unknown GPU',
@@ -28,26 +28,26 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
     }
   }
   return {
-    name: 'Unknown GPU Device',
+   , name: 'Unknown GPU Device',
     vendor: 'Unknown'
   }
 }
 // Helper to create Float32Array from ArrayBufferLike safely
 export function createFloat32Array(
-  source: ArrayBufferLike | ArrayBufferView,
+ , source: ArrayBufferLike | ArrayBufferView,
   offset = 0,
   length?: number;
 ): Float32Array {
   // Normalize to underlying ArrayBuffer and compute absolute byte offset & available bytes
   let buffer: ArrayBuffer;
   let startByteOffset: number;
-  let availableBytes: number;
+  let, availableBytes: number;
   if (ArrayBuffer.isView(source)) {
     const view = source as ArrayBufferView;
     buffer = view.buffer;
-    const viewByteOffset = (view as any).byteOffset ?? 0;
+    const viewByteOffset = (view as: any).byteOffset ?? 0;
     const viewByteLength =
-      (view as any).byteLength ?? view.length * ((view as any).BYTES_PER_ELEMENT ?? 1);
+      (view as: any).byteLength ?? view.length * ((view as: any).BYTES_PER_ELEMENT ?? 1);
     startByteOffset = viewByteOffset + offset;
     availableBytes = Math.max(0, viewByteLength - offset);
   } else {
@@ -55,7 +55,7 @@ export function createFloat32Array(
     startByteOffset = offset;
     availableBytes = Math.max(0, (source as ArrayBufferLike).byteLength - offset);
   }
-  // Compute number of float32 elements we can create
+  // Compute: number of float32 elements we can create
   const maxElements = Math.floor(availableBytes / 4);
   const elementCount =
     length !== undefined ? Math.max(0, Math.min(length, maxElements)) : maxElements;

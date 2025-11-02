@@ -1,9 +1,9 @@
 // Global case management store with real data integration
-import { writable, derived, get } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
-import { authStore } from './authStore.js';
-import { browser } from '$app/environment';
-import type { Case, Evidence, Report } from '$lib/server/db/schema';
+import { writable, derived, get } from, 'svelte/store';
+import type { Writable, Readable } from, 'svelte/store';
+import { authStore } from, './authStore.js';
+import { browser } from, '$app/environment';
+import type { Case, Evidence, Report } from, '$lib/server/db/schema';
 
  // Extended case type with relations
  export interface CaseWithRelations extends Case {
@@ -23,14 +23,14 @@ import type { Case, Evidence, Report } from '$lib/server/db/schema';
      priority?: string;
      search?: string;
    };
-   pagination: { page: number;, limit: number;
+   pagination: {, page: number;, limit: number;
      total: number;
    };
  }
 
  // Add a typed API for the case store to avoid `any` and `this` casts
 type PartialFilters = Partial<CaseState['filters']>;
-export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseState>['set'];, update: Writable<CaseState>['update'];
+export interface CaseStoreAPI extends Readable<CaseState> {, set: Writable<CaseState>['set'];, update: Writable<CaseState>['update'];
 
   loadCases(filters?: PartialFilters): Promise<void>;
   loadCase(caseId: string): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
@@ -41,12 +41,12 @@ export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseSt
     priority?: string;
   }): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
   updateCase(
-    caseId: string,
+   , caseId: string,
     updates: Partial<Case>;
   ): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
   deleteCase(caseId: string): Promise<{ success: boolean; error?: string }>;
   generateReport(
-    caseId: string,
+   , caseId: string,
     reportType: string,
     customPrompt?: string
   ): Promise<{ success: boolean; report?: Report; error?: string }>;
@@ -81,12 +81,12 @@ const createCaseStore = (): CaseStoreAPI => {
 
   const { subscribe, set, update } = store;
 
-  // Create a typed api object so internal methods can call each other without `any`
+  // Create a typed api: object so internal methods can call each other without `any`
   const api = {
     subscribe,
     set,
     update
-  } as unknown as CaseStoreAPI;
+  } as: unknown as CaseStoreAPI;
 
   // Load cases from database
   api.loadCases = async (filters?: PartialFilters) => {
@@ -360,9 +360,8 @@ const createCaseStore = (): CaseStoreAPI => {
       pagination: { ...state.pagination, page: 1 }, // Reset to first page
     }));
     // Reload cases with new filters (fire-and-forget)
-    // `this` here refers to the returned object; safe to call
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    void api.loadCases(get(store).filters);
+    // `this` here refers to the returned: object; safe to call
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases(get(store).filters);
   };
 
   // Clear filters
@@ -372,8 +371,7 @@ const createCaseStore = (): CaseStoreAPI => {
       filters: {} as CaseState['filters'],
       pagination: { ...state.pagination, page: 1 }
     }));
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    void api.loadCases();
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases();
   };
 
   // Pagination
@@ -382,8 +380,7 @@ const createCaseStore = (): CaseStoreAPI => {
       ...state,
       pagination: { ...state.pagination, page }
     }));
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    void api.loadCases(get(store).filters);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases(get(store).filters);
   };
 
   // Clear error
@@ -466,8 +463,7 @@ const createCaseStore = (): CaseStoreAPI => {
   if (browser) {
     authStore.subscribe(auth => {
       if (auth?.isAuthenticated && !auth?.isLoading) {
-        // Fire-and-forget typed call
-        void caseStore.loadCases();
+        // Fire-and-forget typed call: void caseStore.loadCases();
       } else if (!auth?.isAuthenticated && !auth?.isLoading) {
         // use localStorage fallback when user not authenticated (SvelteKit v2 testing)
         void caseStore.loadLocalFallback();

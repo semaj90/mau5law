@@ -1,11 +1,11 @@
 <!-- Enhanced-Bits Legal, AI, Dashboard -->
 <!-- Complete integration of Citations, Reports, and, POI, systems -->
 <script, lang="ts">
-  import { Input } from '$lib/components/ui/input';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
-import type { Case } from '$lib/types';
-  import { onMount } from 'svelte';
+  import { Input } from, '$lib/components/ui/input';
+  import { Button } from, '$lib/components/ui/button';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
+import type { Case } from, '$lib/types';
+  import { onMount } from, 'svelte';
   import {
     Button,
     Card,
@@ -17,14 +17,14 @@ import type { Case } from '$lib/types';
     Select,
     initializeEnhancedBits,
     LegalDesignTokens
-  } from './index';
-  import  LegalPOICard  from "./LegalPOICard.svelte";
+  } from, './index';
+  import  LegalPOICard  from, "./LegalPOICard.svelte";
   // Import all three legal systems
-  import { citationsStore } from '$lib/stores/legal-citations.js';
-  import { reportsStore } from '$lib/stores/legal-reports.js';
-  import { poiStore } from '$lib/stores/legal-poi.js';
-  import { legalPlatformStore, unifiedSearch } from '$lib/stores/legal-platform-integration.js';
-  // Component state using Svelte 5 runes
+  import { citationsStore } from, '$lib/stores/legal-citations.js';
+  import { reportsStore } from, '$lib/stores/legal-reports.js';
+  import { poiStore } from, '$lib/stores/legal-poi.js';
+  import { legalPlatformStore, unifiedSearch } from, '$lib/stores/legal-platform-integration.js';
+  // Component state using Svelte, 5 runes
   let activeTab = $state<string>('dashboard');
   let searchQuery = $state<string>('');
   let searchResults = $state<any>({});
@@ -80,13 +80,13 @@ import type { Case } from '$lib/types';
       court: 'District Court',
       filingDate: new Date().toISOString(),
       financials: {
-        budgetAllocated: 50000,
+       , budgetAllocated: 50000,
         costToDate: 0,
         billingRate: 350,
         timeSpent: 0
       },
       aiInsights: {
-        riskScore: 50,
+       , riskScore: 50,
         complexityScore: 30,
         timelineRisk: 'on_track',
         recommendedActions: [],
@@ -109,7 +109,7 @@ import type { Case } from '$lib/types';
       entityType: 'individual',
       status: 'wanted',
       metadata: {
-        riskLevel: 'critical',
+       , riskLevel: 'critical',
         threatLevel: 'severe',
         publicSafetyRisk: true,
         credibilityScore: 25,
@@ -119,13 +119,13 @@ import type { Case } from '$lib/types';
         lastInteraction: '2024-01-15',
         interactionCount: 12,
         personality: {
-          traits: ['violent', 'unpredictable', 'anti-authority'],
+         , traits: ['violent', 'unpredictable', 'anti-authority'],
           communication: [],
           predictedBehavior: [],
           negotiationStyle: 'hostile',
           riskFactors: ['violence history', 'weapon access'],
           psychologicalProfile: {
-            stability: 0.2,
+           , stability: 0.2,
             aggressionLevel: 0.9,
             predictability: 0.3,
             cooperationLikelihood: 0.1
@@ -133,21 +133,21 @@ import type { Case } from '$lib/types';
         },
         documentReferences: [],
         network: {
-          connections: [],
+         , connections: [],
           centralityScore: 0.8,
           clusterMembership: []
         }
       },
       contact: {
-        emails: [],
+       , emails: [],
         phones: [],
         addresses: []
       },
       legal: {
-        criminalHistory: []
+       , criminalHistory: []
       },
       criminalProfile: {
-        aliases: ['Johnny D'],
+       , aliases: ['Johnny D'],
         mugshots: [],
         warrants: [
           {,
@@ -169,7 +169,7 @@ import type { Case } from '$lib/types';
         ],
         knownAssociates: [],
         criminalPattern: {
-          preferredCrimes: ['robbery', 'assault'],
+         , preferredCrimes: ['robbery', 'assault'],
           operatingAreas: ['Los Angeles'],
           methods: ['armed intimidation'],
           timingPatterns: ['nighttime'],
@@ -179,7 +179,7 @@ import type { Case } from '$lib/types';
         armedAndDangerous: true,
         escapeRisk: 'high',
         lastKnownLocation: {
-          address: '123 Main St, Los Angeles, CA',
+         , address: '123 Main St, Los Angeles, CA',
           date: '2024-01-10',
           source: 'witness',
           reliability: 0.8
@@ -192,7 +192,7 @@ import type { Case } from '$lib/types';
       createdBy: 'system',
       tags: ['violent', 'armed'],
       aiProcessing: {
-        lastAnalyzed: '2024-01-15',
+       , lastAnalyzed: '2024-01-15',
         profileComplete: true,
         networkMapped: false,
         riskAssessed: true,
@@ -240,7 +240,7 @@ import type { Case } from '$lib/types';
               <CardContent>
                 <div, class="stat-value">{dashboardData.totalCases}</div>
               </CardContent>
-            </Card.Root>
+            </Card>
             <Card.Root, class="stat-card">
               <CardHeader>
                 <CardTitle>📚 Citations</CardTitle>
@@ -249,7 +249,7 @@ import type { Case } from '$lib/types';
                 <div, class="stat-value">{dashboardData.totalCitations}</div>
                 <div, class="stat-detail">{dashboardData.activeCitations} verified</div>
               </CardContent>
-            </Card.Root>
+            </Card>
             <Card.Root, class="stat-card">
               <CardHeader>
                 <CardTitle>📊 Reports</CardTitle>
@@ -258,7 +258,7 @@ import type { Case } from '$lib/types';
                 <div, class="stat-value">{dashboardData.totalReports}</div>
                 <div, class="stat-detail">{dashboardData.pendingReports} pending</div>
               </CardContent>
-            </Card.Root>
+            </Card>
             <Card.Root, class="stat-card">
               <CardHeader>
                 <CardTitle>👥 Persons of Interest</CardTitle>
@@ -267,7 +267,7 @@ import type { Case } from '$lib/types';
                 <div, class="stat-value">{dashboardData.totalPOIs}</div>
                 <div, class="stat-detail, high-risk">{dashboardData.highRiskPOIs} high risk</div>
               </CardContent>
-            </Card.Root>
+            </Card>
           </div>
           <!-- Recent, Activity -->
           <div, class="recent-activity">
@@ -385,7 +385,7 @@ import type { Case } from '$lib/types';
                 {#each Array.isArray(searchResults.poi.slice(0, 3)) ? searchResults.poi.slice(0, 3) : [] as person}
                   <div, class="search-result-item">
                     <strong>{person.name}</strong>
-                    <p>Role: {person.role} | Risk: {person.metadata.riskLevel}</p>
+                    <p>Role: {person.role} |, Risk: {person.metadata.riskLevel}</p>
                   </div>
                 {/each}
               </CardContent>
@@ -411,7 +411,7 @@ import type { Case } from '$lib/types';
 <style>
   .legal-dashboard {
     min-height: 100vh;
-    background: var(--enhanced-bits-background);
+   , background: var(--enhanced-bits-background);
     color: var(--enhanced-bits-text);
   }
   .dashboard-header {
@@ -428,7 +428,7 @@ import type { Case } from '$lib/types';
   }
   .header-content h1 {
     margin: 0;
-    color: var(--enhanced-bits-primary);
+   , color: var(--enhanced-bits-primary);
     font-size: 1.75rem;
     font-weight: bold;
   }
@@ -446,10 +446,10 @@ import type { Case } from '$lib/types';
     position: fixed;
     bottom: 2rem;
     left: 50%;
-    transform: translateX(-50%);
+   , transform: translateX(-50%);
     display: flex;
     gap: 0.5rem;
-    background: var(--enhanced-bits-surface);
+   , background: var(--enhanced-bits-surface);
     padding: 0.75rem;
     border-radius: var(--enhanced-bits-radius-lg);
     box-shadow: var(--enhanced-bits-shadow-lg);
@@ -467,16 +467,16 @@ import type { Case } from '$lib/types';
   .stat-value {
     font-size: 2.5rem;
     font-weight: bold;
-    color: var(--enhanced-bits-primary);
+   , color: var(--enhanced-bits-primary);
     line-height: 1;
   }
   .stat-detail {
     font-size: 0.875rem;
-    color: var(--enhanced-bits-textMuted);
+   , color: var(--enhanced-bits-textMuted);
     margin-top: 0.25rem;
   }
   .stat-detail.high-risk {
-    color: var(--enhanced-bits-error);
+   , color: var(--enhanced-bits-error);
     font-weight: 600;
   }
   .recent-activity {
@@ -492,7 +492,7 @@ import type { Case } from '$lib/types';
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: var(--enhanced-bits-background);
+   , background: var(--enhanced-bits-background);
     border-radius: var(--enhanced-bits-radius-md);
     border: 1px solid var(--enhanced-bits-border);
   }
@@ -505,7 +505,7 @@ import type { Case } from '$lib/types';
   }
   .activity-time {
     font-size: 0.75rem;
-    color: var(--enhanced-bits-textMuted);
+   , color: var(--enhanced-bits-textMuted);
   }
   .section-header {
     display: flex;
@@ -515,7 +515,7 @@ import type { Case } from '$lib/types';
   }
   .section-header h2 {
     margin: 0;
-    color: var(--enhanced-bits-primary);
+   , color: var(--enhanced-bits-primary);
   }
   .poi-grid {
     display: grid;
@@ -526,23 +526,23 @@ import type { Case } from '$lib/types';
     margin-top: 2rem;
   }
   .search-results h2 {
-    color: var(--enhanced-bits-primary);
+   , color: var(--enhanced-bits-primary);
     margin-bottom: 1.5rem;
   }
   .search-result-item {
-    padding: 0.75rem 0;
+   , padding: 0.75rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .search-result-item:last-child {
     border-bottom: none;
   }
   .search-result-item strong {
-    color: var(--enhanced-bits-primary);
+   , color: var(--enhanced-bits-primary);
   }
   .search-result-item p {
-    margin: 0.25rem 0 0 0;
+    margin: 0.25rem, 0 0 0;
     font-size: 0.875rem;
-    color: var(--enhanced-bits-textMuted);
+   , color: var(--enhanced-bits-textMuted);
   }
   @media (max-width: 768px) {
     .header-content {
@@ -564,7 +564,7 @@ import type { Case } from '$lib/types';
     }
     .dashboard-nav {
       position: static;
-      transform: none;
+     , transform: none;
       margin-top: 2rem;
       justify-content: center;
     }

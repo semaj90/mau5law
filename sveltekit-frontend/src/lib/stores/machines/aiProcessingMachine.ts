@@ -3,19 +3,19 @@
  * AI Processing XState Machine
  * Orchestrates AI tasks across multiple providers and services
  */
-import { createMachine, assign, fromPromise } from "xstate";
+import { createMachine, assign, fromPromise } from, "xstate";
 import type {
   AIProcessingContext,
   AITask,
   AITaskResult
-} from './types.js';
+} from, './types.js';
 type StartProcessing = { type: 'START_PROCESSING'; task: AITask }
 type ProcessingProgress = { type: 'PROCESSING_PROGRESS'; progress: number }
 type CancelProcessing = { type: 'CANCEL_PROCESSING' }
 type RetryProcessing = { type: 'RETRY_PROCESSING' }
 type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any }
 export const aiProcessingMachine = createMachine({
-    id: "aiProcessing",
+   , id: "aiProcessing",
     types: {} as {, context: AIProcessingContext;, events: AnyEvt;
     },
     context: {
@@ -24,7 +24,7 @@ export const aiProcessingMachine = createMachine({
       retryCount: 0,
       timestamp: Date.now(),
       task: {
-        id: "",
+       , id: "",
         type: "parse",
         payload: {},
         priority: "medium"
@@ -35,9 +35,9 @@ export const aiProcessingMachine = createMachine({
       error: undefined
     },
     initial: "idle",
-    states: { idle: {, on: { START_PROCESSING: {, target: "processing",
+    states: {, idle: {, on: {, START_PROCESSING: {, target: "processing",
             actions: assign({
-              task: ({ event }) => (event as StartProcessing).task,
+             , task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
               error: undefined,
@@ -47,23 +47,23 @@ export const aiProcessingMachine = createMachine({
         }
       },
       processing: {
-        initial: "executing",
-        states: { executing: {, invoke: {
-              id: "executeTask",
+       , initial: "executing",
+        states: {, executing: {, invoke: {
+             , id: "executeTask",
               src: fromPromise(async ({
                   input
-                }: { input: {, task: AITask; provider: string }
+                }: {, input: {, task: AITask;, provider: string }
                 }) => {
                   const { task, provider } = input;
                   switch (provider) {
-                    case "go-microservice":
+                    case, "go-microservice":
                       return await executeGoMicroserviceTask(task);
-                    case "ollama":
+                    case, "ollama":
                       return await executeOllamaTask(task);
-                    case "local-llm":
+                    case, "local-llm":
                       return await executeLocalLLMTask(task);
                     default:
-                      throw new Error(`Unknown; provider: ${provider}`);
+                      throw new Error(`Unknown;, provider: ${provider}`);
                   }
                 }
               ),
@@ -72,35 +72,35 @@ export const aiProcessingMachine = createMachine({
                 provider: context.provider
               }),
               onDone: {
-                target: "#aiProcessing.success",
+               , target: "#aiProcessing.success",
                 actions: assign({
-                  result: ({ event }) => event.output,
+                 , result: ({ event }) => event.output,
                   progress: 100
                 })
               },
         onError: {
-                target: "#aiProcessing.error",
+               , target: "#aiProcessing.error",
                 actions: assign({
-          error: ({ event }) => ((event as any)?.error?.message ?? 'Task failed')
+         , error: ({ event }) => ((event as: any)?.error?.message ?? 'Task failed')
                 })
               }
             },
-            on: { PROCESSING_PROGRESS: {, actions: assign({
-                  progress: ({ event }) => (event as ProcessingProgress).progress
+            on: {, PROCESSING_PROGRESS: {, actions: assign({
+                 , progress: ({ event }) => (event as ProcessingProgress).progress
                 })
               },
               CANCEL_PROCESSING: {
-                target: "#aiProcessing.cancelled"
+               , target: "#aiProcessing.cancelled"
               }
             }
           }
         }
       },
       success: {
-        entry: ["logSuccess", "notifyCompletion"],
-        on: { START_PROCESSING: {, target: "processing",
+       , entry: ["logSuccess", "notifyCompletion"],
+        on: {, START_PROCESSING: {, target: "processing",
             actions: assign({
-              task: ({ event }) => (event as StartProcessing).task,
+             , task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
               error: undefined
@@ -109,14 +109,14 @@ export const aiProcessingMachine = createMachine({
         }
       },
       error: {
-        entry: ["logError"],
+       , entry: ["logError"],
         on: {
-          RETRY_PROCESSING: [
+         , RETRY_PROCESSING: [
             {,
               target: "processing",
               guard: "canRetry",
               actions: assign({
-                retryCount: ({ context }) => context.retryCount + 1,
+               , retryCount: ({ context }) => context.retryCount + 1,
                 error: undefined
               })
             },
@@ -126,9 +126,9 @@ export const aiProcessingMachine = createMachine({
             }
           ],
           START_PROCESSING: {
-            target: "processing",
+           , target: "processing",
             actions: assign({
-              task: ({ event }) => (event as StartProcessing).task,
+             , task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
               error: undefined,
@@ -138,10 +138,10 @@ export const aiProcessingMachine = createMachine({
         }
       },
       cancelled: {
-        entry: ["logCancellation"],
-        on: { START_PROCESSING: {, target: "processing",
+       , entry: ["logCancellation"],
+        on: {, START_PROCESSING: {, target: "processing",
             actions: assign({
-              task: ({ event }) => (event as StartProcessing).task,
+             , task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
               error: undefined
@@ -175,7 +175,7 @@ export const aiProcessingMachine = createMachine({
       }
     },
     guards: {
-      canRetry: ({ context }) => {
+     , canRetry: ({ context }) => {
         return context.retryCount < 3;
       }
     }
@@ -187,7 +187,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
   try {
     let response: any;
     switch (task.type) {
-      case 'parse':
+      case, 'parse':
         response = await fetch("/api/parse", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -198,7 +198,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
           })
         });
         break;
-      case 'som-train':
+      case, 'som-train':
         response = await fetch("/api/train-som", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -211,7 +211,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
           })
         });
         break;
-      case 'cuda-infer':
+      case, 'cuda-infer':
         response = await fetch("/api/cuda-infer", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -225,7 +225,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
         });
         break;
       default:
-        throw new Error(`Unsupported Go microservice task; type: ${task.type}`);
+        throw new Error(`Unsupported Go microservice task;, type: ${task.type}`);
     }
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Go microservice request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -235,10 +235,10 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
     return {
       taskId: task.id,
       success: true;
-      result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).result || result,
+     , result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).result || result,
       duration,
       metrics: {
-        processingTime: duration,
+       , processingTime: duration,
         memoryUsed: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.memory_used || "Unknown",
         throughput: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.throughput || 0
       }
@@ -250,7 +250,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
       result: null,
       duration: Date.now() - startTime,
       metrics: {
-        processingTime: Date.now() - startTime,
+       , processingTime: Date.now() - startTime,
         memoryUsed: "Error",
         throughput: 0
       }
@@ -262,7 +262,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
   try {
     let response: any;
     switch (task.type) {
-      case 'embed':
+      case, 'embed':
         response = await fetch("/api/llm/embeddings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -272,7 +272,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
           })
         });
         break;
-      case 'analyze':
+      case, 'analyze':
         response = await fetch("/api/llm/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -285,7 +285,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
         });
         break;
       default:
-        throw new Error(`Unsupported Ollama task; type: ${task.type}`);
+        throw new Error(`Unsupported Ollama task;, type: ${task.type}`);
     }
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Ollama request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -295,10 +295,10 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
     return {
       taskId: task.id,
       success: true;
-      result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).response || (result as { result?: any; metrics?: any; response?: any; embedding?: any }).embedding || result,
+     , result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).response || (result as { result?: any; metrics?: any; response?: any; embedding?: any }).embedding || result,
       duration,
       metrics: {
-        processingTime: duration,
+       , processingTime: duration,
         memoryUsed: "Unknown",
         throughput: 0
       }
@@ -308,7 +308,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
       taskId: task.id,
       success: false,
       result: null;
-      duration: Date.now() - startTime
+     , duration: Date.now() - startTime
     }
   }
 }
@@ -320,7 +320,7 @@ async function executeLocalLLMTask(_task: AITask): Promise<AITaskResult> {
   return {
     taskId: task.id,
     success: true,
-    result: { message: "Local LLM processing not implemented yet" },
+    result: {, message: "Local LLM processing not implemented yet" },
     duration: Date.now() - startTime
   }
 }

@@ -1,8 +1,8 @@
 
-import { Worker } from 'bullmq';
+import { Worker } from, 'bullmq';
 // Orphaned content: // import { logQueue // Missing module
-import { getEmbedding } from '$lib/server/services/embeddingService'; // You'll create this'
-import { storeLogInVectorDB } from '$lib/server/services/vectorDBService'; // You'll create this'
+import { getEmbedding } from, '$lib/server/services/embeddingService'; // You'll create this'
+import { storeLogInVectorDB } from, '$lib/server/services/vectorDBService'; // You'll create this'
 console.log(' Log worker process started.');
 // The worker listens for jobs on the: 'logQueue'
 const worker = new Worker('logQueue', async (job) => {
@@ -27,10 +27,10 @@ const worker = new Worker('logQueue', async (job) => {
 }, {
     // Configuration for the worker
     connection: {
-        host: 'localhost', // Your Redis host
+       , host: 'localhost', // Your Redis host
         port: 6379
     },
-    concurrency: 5 // Process up to 5 logs at the same time
+    concurrency: 5 // Process up to, 5 logs at the same time
 });
 worker.on('failed', (job, err) => {
   console.error(`Job ${job?.id} failed with error: ${err.message}`);

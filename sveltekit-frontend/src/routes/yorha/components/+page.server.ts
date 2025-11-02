@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from, './$types.js';
 export const load: PageServerLoad = async ({ url, fetch }) => {
   try {
     // Define YoRHa 3D component specifications for SSR
@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         sizes: ['small', 'medium', 'large', 'xl'],
         features: ['glowEffect', 'hoverAnimation', 'clickFeedback', 'loadingState'],
         defaultConfig: {
-          text: 'YoRHa Button',
+         , text: 'YoRHa Button',
           variant: 'primary',
           size: 'medium',
           icon: 'terminal',
@@ -23,14 +23,14 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         }
       },
       panel: {
-        id: 'yorha-panel-3d',
+       , id: 'yorha-panel-3d',
         name: 'YoRHa Panel 3D',
         description: 'Futuristic panel with holographic effects',
         category: 'layout',
         variants: ['default', 'terminal', 'status', 'data'],
         features: ['borderGlow', 'glitchEffect', 'collapsible', 'scrollable'],
         defaultConfig: {
-          title: 'YoRHa Panel',
+         , title: 'YoRHa Panel',
           variant: 'default',
           width: 400,
           height: 300,
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         }
       },
       input: {
-        id: 'yorha-input-3d',
+       , id: 'yorha-input-3d',
         name: 'YoRHa Input 3D',
         description: 'Advanced input field with neural interface styling',
         category: 'input',
@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         variants: ['default', 'terminal', 'secure', 'scanner'],
         features: ['autoComplete', 'validation', 'neuralGlow', 'scanlineEffect'],
         defaultConfig: {
-          placeholder: 'Enter command...',
+         , placeholder: 'Enter command...',
           type: 'text',
           variant: 'terminal',
           value: '',
@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         }
       },
       modal: {
-        id: 'yorha-modal-3d',
+       , id: 'yorha-modal-3d',
         name: 'YoRHa Modal 3D',
         description: 'Immersive modal dialog with depth effects',
         category: 'overlay',
@@ -67,7 +67,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         sizes: ['small', 'medium', 'large', 'xl', 'fullscreen'],
         features: ['backdropBlur', 'depthEffect', 'enterAnimation', 'exitAnimation'],
         defaultConfig: {
-          title: 'YoRHa Modal',
+         , title: 'YoRHa Modal',
           variant: 'default',
           size: 'medium',
           closable: true,
@@ -76,14 +76,14 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         }
       },
       terminal: {
-        id: 'yorha-terminal-3d',
+       , id: 'yorha-terminal-3d',
         name: 'YoRHa Terminal 3D',
         description: 'Advanced terminal interface with command processing',
         category: 'utility',
         themes: ['dark', 'amber', 'green', 'blue'],
         features: ['commandHistory', 'autoComplete', 'syntaxHighlight', 'typewriter'],
         defaultConfig: {
-          theme: 'amber',
+         , theme: 'amber',
           prompt: 'YORHA:~$',
           history: [],
           autoComplete: true,
@@ -91,14 +91,14 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         }
       },
       dataviz: {
-        id: 'yorha-dataviz-3d',
+       , id: 'yorha-dataviz-3d',
         name: 'YoRHa Data Visualization',
         description: 'Real-time data visualization with 3D charts',
         category: 'display',
         chartTypes: ['line', 'bar', 'pie', 'scatter', 'heatmap', 'network'],
         features: ['realTime', 'animation', 'interaction', 'export'],
         defaultConfig: {
-          type: 'line',
+         , type: 'line',
           animated: true,
           realTime: true,
           theme: 'cyberpunk'
@@ -107,7 +107,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     };
     // Generate component gallery data
     const galleryData = {
-      categories: [
+     , categories: [
         ,
         { id: 'input', name: 'Input Components', count: 2 },
         { id: 'layout', name: 'Layout Components', count: 1 },
@@ -126,8 +126,8 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     };
     // Generate demo code snippets
     const codeSnippets = {
-      button: '<script>,'
-  import { YoRHaButton3D } from '$lib/components/three/yorha-ui.svelte';
+     , button: '<script>,'
+  import { YoRHaButton3D } from, '$lib/components/three/yorha-ui.svelte';
   let buttonConfig = {
     text: 'Execute Command',
     variant: 'primary',
@@ -140,7 +140,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   onclick={() => console.log('YoRHa button clicked')}
 />`,`
       panel: '<script>,'
-  import { YoRHaPanel3D } from '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaPanel3D } from, '$lib/components/three/yorha-ui.svelte';
 </script>
 <YoRHaPanel3D
   title="System Status"
@@ -152,7 +152,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   </div>
 </YoRHaPanel3D>`,`
       input: '<script>,'
-  import { YoRHaInput3D } from '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaInput3D } from, '$lib/components/three/yorha-ui.svelte';
   let inputValue = '';
 </script>
 <YoRHaInput3D
@@ -162,7 +162,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   neuralGlow={true}
 />`,`
       modal: '<script>,'
-  import { YoRHaModal3D } from '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaModal3D } from, '$lib/components/three/yorha-ui.svelte';
   let showModal = $state<boolean>(false);
 </script>
 <YoRHaModal3D
@@ -186,7 +186,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     console.error('Error loading YoRHa components data: ', error);'`'`
     return {
       specs: {},
-      gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
+      gallery: {, categories: [], components: [], totalComponents: 0, previewModes: [] },
       codeSnippets: {},
       initialLoad: false,
       timestamp: new Date().toISOString(),

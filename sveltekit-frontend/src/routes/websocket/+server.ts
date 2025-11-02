@@ -2,7 +2,7 @@
  * WebSocket endpoint for binary QLoRA streaming
  * Handles WebSocket upgrade requests and delegates to the WebSocket server
  */
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
 export const GET: RequestHandler = async ({ request }) => {
   // Check if this is a WebSocket upgrade request
   if (request.headers.get('upgrade')?.toLowerCase() === 'websocket') {

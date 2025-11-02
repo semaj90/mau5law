@@ -3,12 +3,12 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import { onMount } from 'svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Textarea  from "$lib/components/ui/textarea.svelte";
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import { onMount } from, 'svelte';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from, "$lib/components/ui/badge.svelte";
+  import  Textarea  from, "$lib/components/ui/textarea.svelte";
   import {
     Cpu,
     Brain,
@@ -21,16 +21,16 @@ import type { Document } from '$lib/types';
     Activity,
     Users,
     Workflow
-  } from 'lucide-svelte';
-  import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
-  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
-  import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
+  } from, 'lucide-svelte';
+  import LLMSelector from, '$lib/components/ai/LLMSelector.svelte';
+  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from, '$lib/services/ai-worker-manager.js';
+  import type { AITask, LLMModel } from, '$lib/types/ai-worker.js';
   // dynamic orchestrator component (workaround for modules without a typed default export)
   let OrchestratorComponent: any = null;
   onMount(async () => {
     try {
       const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
-      OrchestratorComponent = (mod && (mod as any).default) ?? (mod as any).MultiLLMOrchestrator ?? mod;
+      OrchestratorComponent = (mod && (mod as: any).default) ?? (mod as: any).MultiLLMOrchestrator ?? mod;
     } catch (err) {
       console.warn('Failed to load orchestrator component dynamically:', err);
     }
@@ -55,7 +55,7 @@ import type { Document } from '$lib/types';
       description: 'Parallel analysis across multiple AI models',
       prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
-        { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
+        {, provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
         { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' }
       ]
@@ -65,7 +65,7 @@ import type { Document } from '$lib/types';
       description: 'Multi-stage evidence analysis pipeline',
       prompt: 'Process and categorize evidence files for case preparation.',
       tasks: [
-        { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
+        {, provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' }
       ]
@@ -75,7 +75,7 @@ import type { Document } from '$lib/types';
       description: 'Comprehensive legal research workflow',
       prompt: 'Research relevant case law and statutes for this legal matter.',
       tasks: [
-        { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
+        {, provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Case law analysis' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Statute interpretation' }
       ]
@@ -98,7 +98,7 @@ import type { Document } from '$lib/types';
             priority: 'high',
             maxTokens: 512,
             params: { temperature: 0.1 }
-          } as any)
+          }, as: any)
         )
       );
 
@@ -106,7 +106,7 @@ import type { Document } from '$lib/types';
 
       const taskPromises = tasks.map(async (task) => {
         try {
-          const taskId = await aiWorkerManager.submitTask(task as any);
+          const taskId = await aiWorkerManager.submitTask(task as: any);
           const result = await aiWorkerManager.waitForTask(taskId);
           demoResults = demoResults.map((r) =>
             r.task === task ? { ...r, response: result } : r
@@ -136,21 +136,21 @@ import type { Document } from '$lib/types';
     try {
       task = createGenerationTask(
         userPrompt,
-        (selectedModel as any).name,
-        (selectedModel as any).provider,
+        (selectedModel as: any).name,
+        (selectedModel as: any).provider,
         ({
           priority: 'high',
           maxTokens: 1024,
           params: { temperature: 0.1 }
-        } as any)
-      ) as any;
+        }, as: any)
+      ) as: any;
 
       if (task) {
         demoResults = [{ task }];
-        const taskId = await aiWorkerManager.submitTask(task as any);
+        const taskId = await aiWorkerManager.submitTask(task as: any);
         const result = await aiWorkerManager.waitForTask(taskId);
         demoResults = [{ task, response: result }];
-        console.log('Custom task completed:', result);
+        console.log('Custom task, completed:', result);
       }
     } catch (error) {
       console.error('Custom task failed:', error);
@@ -168,13 +168,13 @@ import type { Document } from '$lib/types';
 
   function getProviderIcon(providerId: string) {
     switch (providerId) {
-      case 'ollama':
+      case, 'ollama':
         return Cpu;
-      case 'vllm':
+      case, 'vllm':
         return Zap;
-      case 'autogen':
+      case, 'autogen':
         return Brain;
-      case 'crewai':
+      case, 'crewai':
         return Database;
       default: return Activity;
     }
@@ -189,7 +189,7 @@ import type { Document } from '$lib/types';
 <svelte:head>
   <title>Multi-LLM Orchestrator - Legal AI System</title>
 </svelte:head>
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900, dark:via-gray-800, dark:to-gray-900">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50, dark:from-gray-900, dark:via-gray-800, dark:to-gray-900">
   <!-- Header, Section -->
   <div class="bg-white dark:bg-gray-800, shadow-sm, border-b">
     <div class="max-w-7xl mx-auto, px-6, py-8">
@@ -221,7 +221,7 @@ import type { Document } from '$lib/types';
           </div>
         </div>
         <div, class="text-right">
-          <p class="text-sm, text-gray-500, dark:text-gray-400">Phase 2 Implementation</p>
+          <p class="text-sm, text-gray-500, dark:text-gray-400">Phase, 2 Implementation</p>
           <p class="text-lg font-semibold, text-gray-800, dark:text-gray-200">Service Worker Multi-threading</p>
         </div>
       </div>
@@ -349,7 +349,7 @@ runDemoScenario(scenario)}
             <div class="space-y-3, max-h-96, overflow-y-auto">
               {#each Array.isArray(demoResults) ? demoResults : [] as result}
                 {@const SvelteComponent_1 = getProviderIcon(result.task.providerId)}
-                <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200, bg-yellow-50, dark:bg-yellow-900/20'}">
+                <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50, dark:bg-green-900/20' : 'border-yellow-200, bg-yellow-50, dark:bg-yellow-900/20'}">
                   <div class="flex items-start, justify-between, mb-2">
                     <div class="flex, items-center, gap-2">
                       <div class="h-4, w-4, text-blue-500">
@@ -392,7 +392,7 @@ runDemoScenario(scenario)}
                       {/if}
                     </div>
                   {:else if result.error}
-                    <div class="mt-2 p-2 bg-red-100 dark:bg-red-900/30, rounded, text-xs">
+                    <div class="mt-2 p-2 bg-red-100, dark:bg-red-900/30, rounded, text-xs">
                       <p class="font-medium text-red-700, dark:text-red-400, mb-1">Error:</p>
                       <p, class="text-red-600, dark:text-red-400">{result.error}</p>
                     </div>
@@ -470,7 +470,7 @@ runDemoScenario(scenario)}
         </div>
         <div class="mt-6 p-4 bg-blue-50, dark:bg-blue-900/20, rounded-lg">
           <p class="text-sm, text-blue-800, dark:text-blue-300">
-            <strong>Phase 2 Complete:</strong> Service worker infrastructure enables true multi-threading for AI tasks,
+            <strong>Phase, 2 Complete:</strong> Service worker infrastructure enables true multi-threading for AI tasks,
             allowing parallel processing across different LLM providers while maintaining responsive UI interactions.
             Next phase will implement AutoGen and CrewAI agent coordination.
           </p>

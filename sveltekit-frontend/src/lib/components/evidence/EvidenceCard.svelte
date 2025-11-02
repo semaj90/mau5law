@@ -7,10 +7,10 @@
     Tag,
     Video,
     Search
-  } from "lucide-svelte";
-  import { quintOut } from "svelte/easing";
-  import { scale } from "svelte/transition";
-  import type { Evidence } from '$lib/types/evidence';
+  } from, "lucide-svelte";
+  import { quintOut } from, "svelte/easing";
+  import { scale } from, "svelte/transition";
+  import type { Evidence } from, '$lib/types/evidence';
   // Props
   const { evidence } = $props<{ evidence: Evidence }>()
   const { draggable = true } = $props()
@@ -18,7 +18,7 @@
   const { expandOnHover = $state(false) } = $props()
   const { showCompare = $state(false) } = $props()
   const { autoCompare = $state(false) } = $props()
-  // Svelte 5 event handling
+  // Svelte, 5 event handling
   let { $$events } = $props<{
     compare: (evidence: Evidence) => void;
     compared: (data: {, evidence: Evidence;, result: any }) => void;
@@ -27,21 +27,21 @@
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434');
   const getIcon = (type: Evidence["type"]) => {
     switch (type) {
-      case "document":
+      case, "document":
         return FileText;
-      case "image":
+      case, "image":
         return Image;
-      case "video":
+      case, "video":
         return Video;
-      case "audio":
+      case, "audio":
         return Headphones;
-      case "link":
+      case, "link":
         return Link;
       default: return FileText;
     }
   };
   const formatFileSize = (bytes: number): string => {
-    if (!bytes || bytes === 0) return "0 Bytes";
+    if (!bytes || bytes === 0) return, "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -65,7 +65,7 @@
       $$events.compare(evidence); // Use $$events
       if (!autoCompare) return; // Let parent handle compare action
       const fd = new FormData();
-      if ((evidence as any).url) fd.append('fileUrl', String((evidence as any).url));
+      if ((evidence as: any).url) fd.append('fileUrl', String((evidence as: any).url));
       if (evidence.description) fd.append('text', evidence.description);
       if (Array.isArray(evidence.tags) && evidence.tags.length) fd.append('tags', evidence.tags.join(','));
       fd.append('topK', '8');
@@ -91,7 +91,7 @@
   class:shadow-2xl={isHovered}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
-  transitionscale={{ duration: 200, easing: quintOut }}
+  transitionscale={{, duration: 200, easing: quintOut }}
 >
   <!-- Header -->
   <div class="flex items-center justify-between px-3 py-3 bg-gray-50, border-b, border-gray-200">
@@ -122,7 +122,7 @@
       <slot, name="actions" {evidence}>
         {#if showCompare}
           <button
-            class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+            class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100, hover:text-blue-600"
             onclick={handleCompareClick}
             title={comparing ? 'Analyzing…' : 'Analyze & compare'}
             aria-busy={comparing}
@@ -143,7 +143,7 @@
           src={evidence.url}
           alt={evidence.title ?? 'evidence'}
           loading="lazy"
-          class="w-full h-auto max-h-48 object-cover"
+          class="w-full h-auto max-h-48: object-cover"
           onerror={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
       </div>

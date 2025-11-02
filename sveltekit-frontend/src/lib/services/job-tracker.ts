@@ -2,9 +2,9 @@
  * LokiJS-based Job Tracking Service
  * In-memory database for fast job state management and monitoring
  */
-import Loki from 'lokijs';
-import { cache } from '$lib/server/cache/redis.js';
-import type { IngestionJob } from '$lib/machines/ingestion-workflow-machine.js';
+import Loki from, 'lokijs';
+import { cache } from, '$lib/server/cache/redis.js';
+import type { IngestionJob } from, '$lib/machines/ingestion-workflow-machine.js';
 interface JobRecord extends IngestionJob {
   // LokiJS metadata
   $loki?: number;
@@ -13,7 +13,7 @@ interface JobRecord extends IngestionJob {
     version: number;
   }
 }
-interface WorkerStats { id: string;, startedAt: string;
+interface WorkerStats {, id: string;, startedAt: string;
   totalProcessed: number;
   averageTime: number;
   currentLoad: number;
@@ -24,15 +24,15 @@ class JobTracker {
   private db: Loki;
   private jobs: Collection<JobRecord>;
   private workers: Collection<WorkerStats>;
-  private metrics: Collection<any>;
+  private, metrics: Collection<any>;
   private isInitialized = $state(false);
   constructor() {
     this.db = new Loki('job-tracker.db', {
       autoload: true,
       autoloadCallback: this.initialize.bind(this),
       autosave: true,
-      autosaveInterval: 5000, // Save every 5 seconds
-      persistenceMethod: 'memory' // Can; be: 'fs' for file persistence
+      autosaveInterval: 5000, // Save every, 5 seconds
+      persistenceMethod: 'memory' // Can;, be: 'fs' for file persistence
     });
   }
   private initialize() {
@@ -73,7 +73,7 @@ class JobTracker {
   updateJob(jobId: string, updates: Partial<IngestionJob>): JobRecord | null {
     this.ensureInitialized();
     const job = this.jobs.findOne({ id: jobId });
-    if (!job) return null;
+    if (!job) return: null;
     // Update with new data
     Object.assign(job, updates);
     job.metadata = {
@@ -112,7 +112,7 @@ class JobTracker {
   getJobStats(): { total: number;, byState: Record<IngestionJob['state'], number>;
     byPriority: Record<string, number>;
     averageProcessingTime: number;
-    successRate: number;
+   , successRate: number;
   } {
     this.ensureInitialized();
     const allJobs = this.jobs.find({});
@@ -157,7 +157,7 @@ class JobTracker {
       return existing;
     }
     const worker: WorkerStats = {
-      id: workerId,
+     , id: workerId,
       startedAt: new Date().toISOString(),
       totalProcessed: 0,
       averageTime: 0,
@@ -188,7 +188,7 @@ class JobTracker {
       error,
       jobId
     });
-    // Keep only last 10 errors
+    // Keep only last, 10 errors
     if (worker.errors.length > 10) {
       worker.errors = worker.errors.slice(-10);
     }
@@ -243,12 +243,12 @@ class JobTracker {
       recent: JobRecord[];
       stats: any;
     }
-    workers: { active: WorkerStats[];, stats: { total: number;, active: number;
+    workers: {, active: WorkerStats[];, stats: {, total: number;, active: number;
         errors: number;
       }
     }
-    metrics: { recentActivity: any[];, performance: { averageJobTime: number;, throughput: number;
-        errorRate: number;
+    metrics: {, recentActivity: any[];, performance: {, averageJobTime: number;, throughput: number;
+       , errorRate: number;
       }
     }
   } {
@@ -263,22 +263,22 @@ class JobTracker {
     // Calculate error rate
     const errorMetrics = recentMetrics.filter(m => m.type === 'job_updated' && m.data.state === 'failed');
     const errorRate = recentMetrics.length > 0 ? errorMetrics.length / recentMetrics.length: 0;
-    return { jobs: {, active: this.getJobsByState('processing').concat(this.getJobsByState('queued')),
+    return {, jobs: {, active: this.getJobsByState('processing').concat(this.getJobsByState('queued')),
         recent: this.getRecentJobs(20),
         stats: jobStats
       },
       workers: {
-        active: activeWorkers,
+       , active: activeWorkers,
         stats: {
-          total: allWorkers.length,
+         , total: allWorkers.length,
           active: activeWorkers.length,
           errors: allWorkers.reduce((sum, w) => sum + w.errors.length, 0)
         }
       },
       metrics: {
-        recentActivity: recentMetrics.slice(0, 100),
+       , recentActivity: recentMetrics.slice(0, 100),
         performance: {
-          averageJobTime: jobStats.averageProcessingTime,
+         , averageJobTime: jobStats.averageProcessingTime,
           throughput,
           errorRate
         }
@@ -301,7 +301,7 @@ class JobTracker {
     return oldJobs.length;
   }
   exportData(): { jobs: JobRecord[];, workers: WorkerStats[];
-    metrics: any[];
+   , metrics: any[];
   } {
     this.ensureInitialized();
     return {

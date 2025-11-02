@@ -16,7 +16,7 @@ export interface EntityEndpoints { list: string;, create: string;
 }
 export class DatabaseSyncManager {
   private static instance: DatabaseSyncManager;
-  private syncQueue: Map<string, unknown[]> = new Map();
+  private, syncQueue: Map<string, unknown[]> = new Map();
   private pendingOperations: Set<string> = new Set();
   private endpoints: Record<string, EntityEndpoints> = { cases: {, list: '/api/cases',
       create: '/api/cases',
@@ -26,7 +26,7 @@ export class DatabaseSyncManager {
       patch: '/api/cases'
     },
     evidence: {
-      list: '/api/evidence',
+     , list: '/api/evidence',
       create: '/api/evidence',
       read: '/api/evidence',
       update: '/api/evidence',
@@ -34,7 +34,7 @@ export class DatabaseSyncManager {
       patch: '/api/evidence'
     },
     reports: {
-      list: '/api/reports',
+     , list: '/api/reports',
       create: '/api/reports',
       read: '/api/reports',
       update: '/api/reports',
@@ -42,7 +42,7 @@ export class DatabaseSyncManager {
       patch: '/api/reports'
     },
     criminals: {
-      list: '/api/criminals',
+     , list: '/api/criminals',
       create: '/api/criminals',
       read: '/api/criminals',
       update: '/api/criminals',
@@ -50,7 +50,7 @@ export class DatabaseSyncManager {
       patch: '/api/criminals'
     },
     activities: {
-      list: '/api/activities',
+     , list: '/api/activities',
       create: '/api/activities',
       read: '/api/activities',
       update: '/api/activities',
@@ -58,7 +58,7 @@ export class DatabaseSyncManager {
       patch: '/api/activities'
     },
     users: {
-      list: '/api/users',
+     , list: '/api/users',
       create: '/api/users',
       read: '/api/users',
       update: '/api/users',
@@ -66,7 +66,7 @@ export class DatabaseSyncManager {
       patch: '/api/users'
     },
     canvasStates: {
-      list: '/api/canvas-states',
+     , list: '/api/canvas-states',
       create: '/api/canvas-states',
       read: '/api/canvas-states',
       update: '/api/canvas-states',
@@ -265,19 +265,19 @@ export class DatabaseSyncManager {
       try {
         let result;
         switch (op.operation) {
-          case 'create':
+          case, 'create':
             result = await this.create(op.entity, op.data, op.options);
             break;
-          case 'read':
+          case, 'read':
             result = await this.read(op.entity, op.id, op.data, op.options);
             break;
-          case 'update':
+          case, 'update':
             result = await this.update(op.entity, op.id!, op.data, op.options);
             break;
-          case 'patch':
+          case, 'patch':
             result = await this.patch(op.entity, op.id!, op.data, op.options);
             break;
-          case 'delete':
+          case, 'delete':
             result = await this.delete(op.entity, op.id!, op.options);
             break;
         }
@@ -316,22 +316,22 @@ export class DatabaseSyncManager {
     const requiredFields: Record<string, Record<string, string[]>> = { cases: {, create: ['title', 'caseNumber']
       },
       evidence: {
-        create: ['title', 'evidenceType']
+       , create: ['title', 'evidenceType']
       },
       reports: {
-        create: ['title', 'caseId']
+       , create: ['title', 'caseId']
       },
       criminals: {
-        create: ['firstName', 'lastName']
+       , create: ['firstName', 'lastName']
       },
       activities: {
-        create: ['caseId', 'title', 'activityType']
+       , create: ['caseId', 'title', 'activityType']
       },
       users: {
-        create: ['email', 'password']
+       , create: ['email', 'password']
       },
       canvasStates: {
-        create: ['name', 'canvasData']
+       , create: ['name', 'canvasData']
       }
     };
     return requiredFields[entity]?.[operation] || [];
@@ -383,19 +383,19 @@ export class DatabaseSyncManager {
       const cacheKey = `sync-cache-${entity}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey) || '{}');
       switch (operation) {
-        case 'create':
+        case, 'create':
           if (data && typeof (data as Record<string, unknown>)['id'] !== 'undefined') {
             const key = String((data as Record<string, unknown>)['id']);
             cache[key] = data as Record<string, unknown>;
           }
           break;
-        case 'update':
-        case 'patch':
+        case, 'update':
+        case, 'patch':
           if (id && cache[id]) {
             cache[id] = { ...cache[id], ...data };
           }
           break;
-        case 'delete':
+        case, 'delete':
           if (id && cache[id]) {
             delete cache[id];
           }

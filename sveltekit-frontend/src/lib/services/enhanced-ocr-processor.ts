@@ -3,15 +3,15 @@
  * Advanced document processing with OCR, PDF conversion, and legal document optimization
  * Integrates with Tesseract.js, Sharp, and custom legal document analysis
  */
-import sharp from "sharp";
-import fs from "fs/promises";
-import path from "path";
-import { EventEmitter } from "events";
-import { createWorker } from "tesseract.js"; // only import factory; avoid importing conflicting Worker type
+import sharp from, "sharp";
+import fs from, "fs/promises";
+import path from, "path";
+import { EventEmitter } from, "events";
+import { createWorker } from, "tesseract.js"; // only import factory; avoid importing conflicting Worker type
 
 // Concrete extended worker interface declaring the runtime methods we call.
 // Do not extend a potentially conflicting: 'Worker' DOM type — declare the useful API surface explicitly.
-interface TesseractExtendedWorker { load: () => Promise<void>;, loadLanguage: (lang: string) => Promise<void>;
+interface TesseractExtendedWorker {, load: () => Promise<void>;, loadLanguage: (lang: string) => Promise<void>;
   initialize: (lang: string) => Promise<void>;
   recognize: (image: string | Buffer) => Promise<{ data: { text?: string; confidence?: number } }>;
   // simplified type for parameters map
@@ -23,7 +23,7 @@ interface TesseractExtendedWorker { load: () => Promise<void>;, loadLanguage: (
 export interface OCRResult { text: string;, confidence: number;
   pages: number;
   processingTime: number;
-  metadata: { filename: string;, fileSize: number;
+  metadata: {, filename: string;, fileSize: number;
     mimeType: string;
     pageCount?: number;
     language?: string;
@@ -31,7 +31,7 @@ export interface OCRResult { text: string;, confidence: number;
     legalEntities?: string[];
     confidentialityLevel?: 'public' | 'confidential' | 'privileged';
   };
-  analysisResults?: { legalKeywords: string[];, documentStructure: string[];
+  analysisResults?: {, legalKeywords: string[];, documentStructure: string[];
     confidenceBySection: number[];
     extractedDates: string[];
     extractedNumbers: string[];
@@ -51,7 +51,7 @@ export interface ProcessingOptions {
   confidentialityDetection?: boolean;
 }
 
-export interface OCRWorkerConfig { id: string;, worker: TesseractExtendedWorker; // use extended type with optional helpers
+export interface OCRWorkerConfig {, id: string;, worker: TesseractExtendedWorker; // use extended type with optional helpers
   status: 'idle' | 'busy' | 'error';
   language: string;
   processedPages: number;
@@ -59,20 +59,20 @@ export interface OCRWorkerConfig { id: string;, worker: TesseractExtendedWorker
 }
 
 // Define a new interface for OCR tasks to simplify the processingQueue type
-export interface OCRTask { imagePath: string;, options: ProcessingOptions;
+export interface OCRTask {, imagePath: string;, options: ProcessingOptions;
   pageIndex: number;
-  resolve: (value: {, text: string;, confidence: number }) => void;
+ , resolve: (value: {, text: string;, confidence: number }) => void;
   reject: (reason?: any) => void;
 }
 
 export class EnhancedOCRProcessor extends EventEmitter {
   private workers: OCRWorkerConfig[] = [];
   private maxConcurrentWorkers: number;
-  private tempDir: string;
+  private, tempDir: string;
   private initialized = $state(false);
   // Use the new OCRTask interface for the processingQueue
   private processingQueue: OCRTask[] = [];
-  private legalKeywords: Set<string>;
+  private, legalKeywords: Set<string>;
   private queueRunning = $state(false); // To prevent multiple queue runners
 
   constructor(maxWorkers = 2, tempDir = path.join(process.cwd(), 'tmp', 'ocr')) {
@@ -116,12 +116,12 @@ export class EnhancedOCRProcessor extends EventEmitter {
       await fs.mkdir(this.tempDir, { recursive: true });
       for (let i = 0; i < this.maxConcurrentWorkers; i++) {
         // createWorker resolves to the tesseract worker; cast to extended worker type so optional helpers are available
-        const workerInstance = (await createWorker()) as unknown as TesseractExtendedWorker;
+        const workerInstance = (await createWorker()) as: unknown as TesseractExtendedWorker;
         await workerInstance.load();
         await workerInstance.loadLanguage('eng');
         await workerInstance.initialize('eng');
         const cfg: OCRWorkerConfig = {
-          id: `worker-${i}`,
+         , id: `worker-${i}`,
           worker: workerInstance,
           status: 'idle',
           language: 'eng',
@@ -149,7 +149,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       // Dequeue the task first
       const task = this.processingQueue.shift(); // Removed: '!' for safer handling
       if (!task) {
-        // Added explicit check for undefined task
+        // Added explicit check for: undefined task
         // This should ideally not happen if length > 0, but provides robustness
         break;
       }
@@ -227,7 +227,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     try {
       const pageImages = await this.simulatePDFConversion(filePath, options); // Call the new method
       const resultsText: string[] = [];
-      const confidenceBySection: number[] = [];
+      const, confidenceBySection: number[] = [];
       let totalConfidence = 0;
 
       if (options.parallel && pageImages.length > 1) {
@@ -267,18 +267,18 @@ export class EnhancedOCRProcessor extends EventEmitter {
       // Assign the result to a variable with an explicit type to help the compiler
       // and use explicit property assignment for: 'confidenceBySection'.
       const ocrResult: OCRResult = {
-        text: resultsText.join('\n\n'),
+       , text: resultsText.join('\n\n'),
         confidence: pageImages.length > 0 ? totalConfidence / pageImages.length : 0,
         pages: pageImages.length,
         processingTime: 0,
         metadata: {
-          filename: path.basename(filePath),
+         , filename: path.basename(filePath),
           fileSize: 0,
           mimeType: 'application/pdf',
           pageCount: pageImages.length,
           language: options.language || 'eng` },'`
         analysisResults: {
-          legalKeywords: [],
+         , legalKeywords: [],
           documentStructure: [],
           confidenceBySection: confidenceBySection, // Explicitly assign the variable
           extractedDates: [],
@@ -311,12 +311,12 @@ export class EnhancedOCRProcessor extends EventEmitter {
         pages: 1,
         processingTime: 0,
         metadata: {
-          filename: path.basename(filePath),
+         , filename: path.basename(filePath),
           fileSize: 0,
           mimeType: this.getMimeType(filePath),
           language: options.language || 'eng` },'`
         analysisResults: {
-          legalKeywords: [],
+         , legalKeywords: [],
           documentStructure: [],
           confidenceBySection: [result.confidence || 0],
           extractedDates: [],
@@ -332,7 +332,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string; confidence: number }> {
+  ): Promise<{ text: string;, confidence: number }> {
     if (!this.initialized) {
       return new Promise((resolve, reject) => {
         this.processingQueue.push({ imagePath, options, pageIndex, resolve, reject });
@@ -346,7 +346,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string; confidence: number }> {
+  ): Promise<{ text: string;, confidence: number }> {
     const workerCfg = this.getAvailableWorker();
     if (!workerCfg) {
       // This case should ideally be handled by the queue, but as a fallback
@@ -358,8 +358,8 @@ export class EnhancedOCRProcessor extends EventEmitter {
       // call optional setParameters if available on the runtime worker
       if (worker.setParameters) {
         await worker.setParameters({
-          tessedit_pageseg_mode: (options.psm ?? 6) as number,
-          tessedit_ocr_engine_mode: (options.oem ?? 3) as number,
+          tessedit_pageseg_mode: (options.psm ?? 6) as: number,
+          tessedit_ocr_engine_mode: (options.oem ?? 3) as: number,
           preserve_interword_spaces: '1` });'`
       }
       if (options.language && options.language !== workerCfg.language) {
@@ -386,7 +386,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           /* ignore */
         }
         try {
-          const newWorkerInstance = (await createWorker()) as unknown as TesseractExtendedWorker;
+          const newWorkerInstance = (await createWorker()) as: unknown as TesseractExtendedWorker;
           await newWorkerInstance.load();
           await newWorkerInstance.loadLanguage(workerCfg.language);
           await newWorkerInstance.initialize(workerCfg.language);
@@ -434,7 +434,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     text: string
   ): Promise<{ legalKeywords: string[];, documentStructure: string[];
     extractedDates: string[];
-    extractedNumbers: string[];
+   , extractedNumbers: string[];
   }> {
     const lower = text.toLowerCase();
     const legalKeywords = Array.from(this.legalKeywords).filter(k => lower.includes(k));
@@ -446,33 +446,33 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
   private async detectDocumentType(text: string): Promise<'legal' | 'contract' | 'evidence' | 'general'> {
     const lower = text.toLowerCase();
-    if (lower.includes('contract') || lower.includes('agreement') || lower.includes('whereas')) return 'contract';
-    if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return 'evidence';
-    if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return 'legal';
-    return 'general';
+    if (lower.includes('contract') || lower.includes('agreement') || lower.includes('whereas')) return, 'contract';
+    if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return, 'evidence';
+    if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return, 'legal';
+    return, 'general';
   }
 
   private getMimeType(filename: string): string {
     const ext = path.extname(filename).toLowerCase();
     switch (ext) {
-      case '.pdf':
-        return 'application/pdf';
-      case '.png':
-        return 'image/png';
-      case '.jpg':
-      case '.jpeg':
-        return 'image/jpeg';
-      case '.tiff':
-      case '.tif':
-        return 'image/tiff';
-      default: return 'application/octet-stream';
+      case, '.pdf':
+        return, 'application/pdf';
+      case, '.png':
+        return, 'image/png';
+      case, '.jpg':
+      case, '.jpeg':
+        return, 'image/jpeg';
+      case, '.tiff':
+      case, '.tif':
+        return, 'image/tiff';
+      default: return, 'application/octet-stream';
     }
   }
 
   private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> {
-    // Renamed: 'options'; to: '_options'
+    // Renamed: 'options';, to: '_options'
     // This is a mock implementation. In a real scenario, you'd use a library'
-    // like: 'pdf-poppler'; or: 'imagemagick' to convert PDF pages to images.
+    // like: 'pdf-poppler';, or: 'imagemagick' to convert PDF pages to images.
     console.warn(`Simulating PDF conversion for ${filePath}. This is a placeholder.`);
     const numPages = 3; // Simulate a 3-page PDF
     const imagePaths: string[] = [];
@@ -500,17 +500,17 @@ export class EnhancedOCRProcessor extends EventEmitter {
   private async detectConfidentiality(text: string): Promise<'public' | 'confidential' | 'privileged'> {
     const lower = text.toLowerCase();
     if (lower.includes('attorney-client privilege') || lower.includes('privileged communication')) {
-      return 'privileged';
+      return, 'privileged';
     }
     if (lower.includes('confidential') || lower.includes('proprietary information')) {
-      return 'confidential';
+      return, 'confidential';
     }
-    return 'public';
+    return, 'public';
   }
 
   private extractDocumentStructure(text: string): string[] {
     // Simple heuristic: look for common headings or patterns
-    const structure: string[] = [];
+    const, structure: string[] = [];
     const lines = text.split('\n');
     lines.forEach(line => {
       const trimmed = line.trim();

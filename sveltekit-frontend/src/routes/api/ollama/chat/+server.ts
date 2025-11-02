@@ -1,11 +1,11 @@
-import type { Message } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { Message } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Ollama Chat API Endpoint
  * Handles streaming and non-streaming chat requests with legal context
  */
-import { ollamaChatStream } from '$lib/services/ollamaChatStream';
+import { ollamaChatStream } from, '$lib/services/ollamaChatStream';
 // GET method for health check and model info
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
             console.error('Streaming error:', error);'
             const errorChunk = {
               text: 'An error occurred while processing your request.',
-              metadata: { type: 'error', error: error.message }
+              metadata: {, type: 'error', error: error.message }
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();

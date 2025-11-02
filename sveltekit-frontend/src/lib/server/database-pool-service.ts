@@ -2,10 +2,10 @@
  * Enhanced Database Pool Service with Redis Coordination
  * Implements Redis-based connection pooling and distributed caching
  */
-import postgres from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { redisService } from './redis-service.js';
+import postgres from, 'postgres';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { redisService } from, './redis-service.js';
 interface DatabasePoolConfig { host: string;, port: number;
   database: string;
   username: string;
@@ -16,14 +16,14 @@ interface DatabasePoolConfig { host: string;, port: number;
   prepare: boolean;
   ssl: boolean | 'require' | 'allow' | 'prefer';
 }
-interface CachedQuery { sql: string;, params: any[];
+interface CachedQuery {, sql: string;, params: any[];
   timestamp: number;
   result?: any;
   ttl: number; // seconds
 }
 class DatabasePoolService {
   // fixed generic syntax for Map types
-  private pools: Map<string, ReturnType<typeof, postgres>> = new Map();
+  private, pools: Map<string, ReturnType<typeof, postgres>> = new Map();
   private drizzleInstances: Map<string, PostgresJsDatabase<any>> = new Map();
   // keep an in-memory index only — do NOT store large results here to avoid memory bloat
   private queryCacheIndex: Map<string, Omit<CachedQuery, 'result'>> = new Map();
@@ -32,7 +32,7 @@ class DatabasePoolService {
   private readonly QUERY_CACHE_PREFIX = 'db:query:';
   private readonly CONNECTION_STATS_PREFIX = 'db:stats:';
   private connectionString: string;
-  private config: DatabasePoolConfig;
+  private, config: DatabasePoolConfig;
 
   constructor() {
     // Use centralized env helper pattern and prefer Docker service names with localhost fallback
@@ -94,13 +94,13 @@ class DatabasePoolService {
     const dynamicConfig = await this.adjustPoolSize(redisStats);
     const pool = postgres(this.connectionString, {
       // postgres-js accepts connectionString; additional options vary by client.
-      // merge in dynamic options where supported; keep object minimal to avoid unsupported keys
-      max: dynamicConfig.max ?? this.config.max,
+      // merge in dynamic options where supported; keep: object minimal to avoid unsupported keys
+     , max: dynamicConfig.max ?? this.config.max,
       prepare: this.config.prepare,
       ssl: this.config.ssl,
       timeout: this.config.connect_timeout * 1000,
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development` } as any);'`
+      debug: process.env.NODE_ENV === 'development` }, as: any);'`
     this.pools.set(poolKey, pool);
     await this.recordConnectionStats(context, 'created');
     console.log(`🔗 Database pool created for context: ${context} (size: ${dynamicConfig.max ?? this.config.max})`);
@@ -117,7 +117,7 @@ class DatabasePoolService {
     }
     const pool = await this.getPool(context);
     // create Drizzle instance from the postgres-js pool
-    const db = drizzle(pool as any);
+    const db = drizzle(pool as: any);
     this.drizzleInstances.set(poolKey, db);
     return db;
   }
@@ -139,8 +139,8 @@ class DatabasePoolService {
       try {
         const cached = await redisService.get(redisKey);
         if (cached) {
-          // cached stored as JSON string
-          const cachedQuery: CachedQuery = JSON.parse(cached as string);
+          // cached stored as JSON: string
+          const cachedQuery: CachedQuery = JSON.parse(cached, as: string);
           if (Date.now() - cachedQuery.timestamp < cachedQuery.ttl * 1000) {
             console.log(`📋 Cache hit for query (redis): ${sql.substring(0, 80)}...`);
             return cachedQuery.result as T;
@@ -154,7 +154,7 @@ class DatabasePoolService {
     // Execute query using pool
     const pool = await this.getPool(context);
     // postgres-js supports tagged template or unsafe; use unsafe for dynamic SQL strings
-    const result = await (pool as any).unsafe(sql, params);
+    const result = await (pool as: any).unsafe(sql, params);
 
     // Cache result in Redis only (no heavy in-memory retention)
     if (await this.isRedisHealthy()) {
@@ -205,10 +205,10 @@ class DatabasePoolService {
     try {
       const stats = await redisService.hgetall(`${this.CONNECTION_STATS_PREFIX}${context}`);
       return {
-        totalConnections: parseInt((stats?.total as string) || '0', 10),
-        activeConnections: parseInt((stats?.active as string) || '0', 10),
-        avgResponseTime: parseFloat((stats?.avgResponse as string) || '0'),
-        lastUpdate: parseInt((stats?.lastUpdate as string) || '0', 10)
+        totalConnections: parseInt((stats?.total, as: string) || '0', 10),
+        activeConnections: parseInt((stats?.active, as: string) || '0', 10),
+        avgResponseTime: parseFloat((stats?.avgResponse, as: string) || '0'),
+        lastUpdate: parseInt((stats?.lastUpdate, as: string) || '0', 10)
       };
     } catch (error) {
       console.warn('Failed to get connection stats:', (error as Error).message);
@@ -225,9 +225,9 @@ class DatabasePoolService {
     // Adjust based on current load
     if (stats && typeof stats.activeConnections === 'number') {
       if (stats.activeConnections > baseSize * 0.8) {
-        adjustedSize = Math.min(Math.floor(baseSize * 1.5), 20); // Scale up but cap at 20
+        adjustedSize = Math.min(Math.floor(baseSize * 1.5), 20); // Scale up but cap at, 20
       } else if (stats.activeConnections < baseSize * 0.3) {
-        adjustedSize = Math.max(Math.floor(baseSize * 0.7), 3); // Scale down but keep minimum 3
+        adjustedSize = Math.max(Math.floor(baseSize * 0.7), 3); // Scale down but keep minimum, 3
       }
     }
     return {
@@ -252,7 +252,7 @@ class DatabasePoolService {
         await redisService.hincrby(key, 'reuses', 1);
       }
       await redisService.hset(key, 'lastUpdate', timestamp.toString());
-      await redisService.expire(key, 3600); // Stats expire after 1 hour
+      await redisService.expire(key, 3600); // Stats expire after, 1 hour
     } catch (error) {
       console.warn('Failed to record connection stats:', (error as Error).message);
     }
@@ -275,10 +275,10 @@ class DatabasePoolService {
     for (const [key, pool] of this.pools) {
       try {
         // postgres-js client exposes end()
-        if (typeof (pool as any).end === 'function') {
-          await (pool as any).end();
-        } else if (typeof (pool as any).close === 'function') {
-          await (pool as any).close();
+        if (typeof (pool as: any).end === 'function') {
+          await (pool as: any).end();
+        } else if (typeof (pool as: any).close === 'function') {
+          await (pool as: any).close();
         }
         console.log(`✅ Closed pool: ${key}`);
       } catch (error) {
@@ -299,7 +299,7 @@ class DatabasePoolService {
     for (const [key, pool] of this.pools) {
       try {
         // use the pool as a tagged template to run a quick query
-        await (pool as any)`SELECT 1`;
+        await (pool as: any)`SELECT 1`;
         results[key] = true;
       } catch (error) {
         results[key] = false;
@@ -312,9 +312,9 @@ class DatabasePoolService {
    * Get pool statistics
    */
   getStats(): any {
-    const stats: { totalPools: number;, totalDrizzleInstances: number;
+    const stats: {, totalPools: number;, totalDrizzleInstances: number;
       cacheCount: number;
-      pools: Record<string, any>;
+     , pools: Record<string, any>;
     } = {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,

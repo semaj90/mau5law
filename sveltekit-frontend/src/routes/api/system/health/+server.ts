@@ -1,38 +1,38 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import * as os from 'os'; // Import the: 'os' module
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import * as os from, 'os'; // Import the: 'os' module
 
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     // Comprehensive system health check
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      services: { svelteKit: {, status: 'healthy',
+      services: {, svelteKit: {, status: 'healthy',
           uptime: process.uptime(),
           memory: process.memoryUsage()
         },
         database: {
-          status: 'unknown',
+         , status: 'unknown',
           message: 'PostgreSQL connection check not implemented'
         },
         redis: {
-          status: 'unknown',
+         , status: 'unknown',
           message: 'Redis connection check not implemented'
         },
         storage: {
-          status: 'degraded',
+         , status: 'degraded',
           message: 'MinIO service unavailable - running in degraded mode'
         }
       },
       metadata: {
-        nodeVersion: process.version,
+       , nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
         pid: process.pid
       },
       performance: {
-        memoryUsage: process.memoryUsage(),
+       , memoryUsage: process.memoryUsage(),
         cpuUsage: process.cpuUsage(),
         loadAverage: process.platform !== 'win32' ? os.loadavg() : 'N/A (Windows)'
       }
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async () => {
       healthStatus.services.redis.message = 'Redis connection assumed healthy';
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('Health check error:', error);'
+      console.error('Health check, error:', error);'
       healthStatus.status = 'degraded';
     }
     return json(healthStatus, {
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async () => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('System health check failed:', error);
+    console.error('System health check, failed:', error);
     return json(
       {
         status: 'unhealthy',

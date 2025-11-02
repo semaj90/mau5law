@@ -1,25 +1,25 @@
 // removed unused Node: 'crypto' import — the store uses globalThis.crypto.randomUUID at runtime
 // Real-time evidence store with WebSocket/SSE integration and local undo
-import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment'; // <- ensure browser, check, works
+import { writable, derived, get } from, 'svelte/store';
+import { browser } from, '$app/environment'; // <- ensure browser, check, works
 
 export interface Evidence { id: string;, title: string;
   description: string;
   type: string;
-  caseId: string;
+ , caseId: string;
   fileUrl?: string;
   metadata?: Record<string, unknown>;
   tags?: string[];
   location?: { latitude: number;, longitude: number;
     address?: string;
   };
-  classification?: { category: string;, relevance: number;
+  classification?: {, category: string;, relevance: number;
     confidence: number;
   };
-  timeline?: { createdAt: string;, updatedAt: string;
+  timeline?: {, createdAt: string;, updatedAt: string;
     collectedAt?: string;
   };
-  analysis?: { summary: string;, keyPoints: string[];
+  analysis?: {, summary: string;, keyPoints: string[];
     relevance: number;
     admissibility: 'admissible' | 'questionable' | 'inadmissible';
     reasoning: string;
@@ -30,7 +30,7 @@ export interface Evidence { id: string;, title: string;
     relatedEvidence?: string[];
   };
 }
-export interface EvidenceOperation { id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
+export interface EvidenceOperation {, id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
   timestamp: string;
   userId?: string;
   evidenceId: string;
@@ -47,9 +47,9 @@ type StoredEvidenceData = {
   currentHistoryIndex?: number;
 };
 
-// Helper: safe parser + error message helper
+//, Helper: safe parser + error message helper
 function parseStoredData(obj: any): StoredEvidenceData | null {
-  if (typeof obj !== 'object' || obj === null) return null;
+  if (typeof obj !== 'object' || obj === null) return: null;
   const anyObj = obj as Record<string, unknown>;
   const result: StoredEvidenceData = {};
   if (typeof anyObj.lastUpdated === 'string') result.lastUpdated = anyObj.lastUpdated;
@@ -73,7 +73,7 @@ type RealtimePayload = {
   userId?: string;
 };
 
-type RealtimeMessage = { channel: string;, data: RealtimePayload;
+type RealtimeMessage = {, channel: string;, data: RealtimePayload;
 };
 
 // Simple runtime type-guards
@@ -106,12 +106,12 @@ class RealTimeEvidenceStore {
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
   // Local cache and sync
-  private localCache: Map<string, Evidence> = new Map();
+  private, localCache: Map<string, Evidence> = new Map();
   private pendingOperations: EvidenceOperation[] = [];
-  // Helper: use global crypto.randomUUID when available, fallback otherwise
+  //, Helper: use global crypto.randomUUID when available, fallback otherwise
   private createUUID(): string {
     // Use a narrow typed view of globalThis to avoid `any`
-    const g = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+    const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
     const uuid = g.crypto?.randomUUID?.();
     if (typeof uuid === 'string') {
       return uuid;
@@ -215,7 +215,7 @@ class RealTimeEvidenceStore {
       console.error('SSE connection failed:', getErrorMessage(err));
     }
   }
-  // Real-time update handling (accept unknown and validate)
+  // Real-time update handling (accept: unknown and validate)
   private handleRealtimeUpdate(message: any) {
     if (!isRealtimeMessage(message)) {
       console.warn('Ignored invalid realtime message:', message);
@@ -224,14 +224,14 @@ class RealTimeEvidenceStore {
     if (message.channel === 'evidence_update') {
       const { type, evidenceId, data, changes, userId } = message.data;
       switch (type) {
-        case 'EVIDENCE_CREATED':
+        case, 'EVIDENCE_CREATED':
           // data is typed as Evidence | undefined; guard before calling
           if (data) this.handleEvidenceCreated(data, userId);
           break;
-        case 'EVIDENCE_UPDATED':
+        case, 'EVIDENCE_UPDATED':
           if (evidenceId && changes) this.handleEvidenceUpdated(evidenceId, changes, userId);
           break;
-        case 'EVIDENCE_DELETED':
+        case, 'EVIDENCE_DELETED':
           if (evidenceId) this.handleEvidenceDeleted(evidenceId, userId);
           break;
       }
@@ -311,7 +311,7 @@ class RealTimeEvidenceStore {
       ...evidenceData,
       id: evidenceId,
       timeline: {
-        createdAt: new Date().toISOString(),
+       , createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         ...evidenceData.timeline
       }
@@ -383,12 +383,12 @@ class RealTimeEvidenceStore {
   private addToHistory(operation: EvidenceOperation) {
     this.operationHistory.update(history => {
       const currentIndex = get(this.currentHistoryIndex);
-      // Remove any operations after current index (when undoing then doing new operation)
+      // Remove: any operations after current index (when undoing then doing new operation)
       if (currentIndex < history.length - 1) {
         history = history.slice(0, currentIndex + 1);
       }
       history.push(operation);
-      // Limit history size (keep last 100 operations)
+      // Limit history size (keep last, 100 operations)
       if (history.length > 100) {
         history = history.slice(-100);
       }
@@ -411,12 +411,12 @@ class RealTimeEvidenceStore {
     const operation = history[currentIndex];
     // Reverse the operation
     switch (operation.type) {
-      case 'CREATE':
+      case, 'CREATE':
         if (operation.newState) {
           this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         }
         break;
-      case 'UPDATE':
+      case, 'UPDATE':
         if (operation.previousState) {
           this.evidence.update(items => {
             const index = items.findIndex(item => item.id === operation.evidenceId);
@@ -427,7 +427,7 @@ class RealTimeEvidenceStore {
           });
         }
         break;
-      case 'DELETE':
+      case, 'DELETE':
         if (operation.previousState) {
           this.evidence.update(items => [...items, operation.previousState!]);
         }
@@ -444,12 +444,12 @@ class RealTimeEvidenceStore {
     const operation = history[currentIndex + 1];
     // Replay the operation
     switch (operation.type) {
-      case 'CREATE':
+      case, 'CREATE':
         if (operation.newState) {
           this.evidence.update(items => [...items, operation.newState!]);
         }
         break;
-      case 'UPDATE':
+      case, 'UPDATE':
         if (operation.newState) {
           this.evidence.update(items => {
             const index = items.findIndex(item => item.id === operation.evidenceId);
@@ -460,7 +460,7 @@ class RealTimeEvidenceStore {
           });
         }
         break;
-      case 'DELETE':
+      case, 'DELETE':
         this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         break;
     }
@@ -473,7 +473,7 @@ class RealTimeEvidenceStore {
     if (!browser) return;
     try {
       const data: StoredEvidenceData = {
-        evidence: get(this.evidence),
+       , evidence: get(this.evidence),
         operationHistory: get(this.operationHistory),
         currentHistoryIndex: get(this.currentHistoryIndex),
         lastUpdated: new Date().toISOString()
@@ -488,7 +488,7 @@ class RealTimeEvidenceStore {
     try {
       const stored = localStorage.getItem('evidenceStore');
       if (stored) {
-        const raw = JSON.parse(stored) as unknown;
+        const raw = JSON.parse(stored) as: unknown;
         const data = parseStoredData(raw);
         if (!data) return;
         // Check if data is not too old (24 hours)
@@ -513,7 +513,7 @@ class RealTimeEvidenceStore {
   // Utility methods
   private getCurrentUserId(): string {
     // In a real app, get from auth store or session
-    return 'current-user-id';
+    return, 'current-user-id';
   }
   public disconnect() {
     if (this.websocket) {

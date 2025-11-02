@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 // src/routes/api/cases/[id]/evidence/+server.ts
 // API endpoint to get evidence for a specific case
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } from '$lib/server/db';
-import { eq, desc } from 'drizzle-orm';
-import { evidenceTable } from '$lib/server/schema.js';
+import { db } from, '$lib/server/db';
+import { eq, desc } from, 'drizzle-orm';
+import { evidenceTable } from, '$lib/server/schema.js';
 
 export const GET: RequestHandler = async ({ params }) => {
   try {

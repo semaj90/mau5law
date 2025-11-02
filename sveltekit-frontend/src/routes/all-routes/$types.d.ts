@@ -1,4 +1,4 @@
-import type * as Kit from '@sveltejs/kit';
+import type * as Kit from, '@sveltejs/kit';
 
 type RouteParams = Record<string, never>;
 
@@ -11,7 +11,7 @@ type ServiceStatus = {
   name?: string;
   baseUrl?: string;
   healthPath?: string;
-  status: 'healthy' | 'degraded' | 'unhealthy' | string;
+ , status: 'healthy' | 'degraded' | 'unhealthy' | string;
   lastChecked?: string;
   responseTimeMs?: number;
   protocols?: string[];
@@ -32,24 +32,24 @@ export type PageServerLoad = (
     icon: string;
     description: string;
   }>;
-  routeInventory: { fileRoutesSample: string[];, counts: { config: number;, fileBased: number;
+  routeInventory: {, fileRoutesSample: string[];, counts: {, config: number;, fileBased: number;
       api: number;
       configMissingFiles: number;
       filesMissingConfig: number;
       consolidatable: number;
     };
   };
-  serviceHealth: { system_overview: {, healthy_services: number;
+  serviceHealth: {, system_overview: {, healthy_services: number;
       total_services: number;
       uptime_hours: number;
       last_updated: string;
     };
     services: ServiceStatus[]; // replaced `Array<any>` with ServiceStatus[]
-    performance: { cpu_usage: number;, memory_usage: number;
+    performance: {, cpu_usage: number;, memory_usage: number;
       disk_usage: number;
     };
   };
-  recommendedRouteLayout: RecommendedRouteLayout; // replaced `any` with concrete type
+ , recommendedRouteLayout: RecommendedRouteLayout; // replaced `any` with concrete type
 }>;
 
 // Use the local AppParentData directly instead of non-existent Kit.AwaitedProperties

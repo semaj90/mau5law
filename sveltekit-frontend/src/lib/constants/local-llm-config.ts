@@ -3,15 +3,15 @@
  * Local LLM Configuration - Enforces Local Ollama GPU Usage Only
  *
  * This configuration ensures the application only uses locally hosted
- * LLMs via Ollama and prevents any remote model downloads or API calls.
+ * LLMs via Ollama and prevents: any remote model downloads or API calls.
  */
 export const LOCAL_LLM_CONFIG = {
   // Force local-only operation
-  ENFORCE_LOCAL_ONLY: true,
+ , ENFORCE_LOCAL_ONLY: true,
   // Local TensorRT Bridge configuration
   OLLAMA_BASE_URL: "http://localhost:8086",
   OLLAMA_MODELS: {
-    LEGAL_DETAILED: "gemma3-legal:latest",
+   , LEGAL_DETAILED: "gemma3-legal:latest",
     GENERAL: "gemma3-legal:latest",
     EMBEDDINGS: "nomic-embed-text"
   },
@@ -59,7 +59,7 @@ if (typeof console !== "undefined") {
 ✅ Available, Models: ${Object.values(LOCAL_LLM_CONFIG.OLLAMA_MODELS).join(", ")}
 🚫 Remote downloads: DISABLED
 🚫 External APIs: BLOCKED
-💾 GPU Memory: ${LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION * 100}% allocated
+💾 GPU, Memory: ${LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION * 100}% allocated
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `);`
 }

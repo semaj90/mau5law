@@ -1,18 +1,18 @@
-import type { User } from '$lib/types';
-// Modern authentication store using Svelte 5 runes
+import type { User } from, '$lib/types';
+// Modern authentication store using Svelte, 5 runes
 // Integrates with Lucia, MCP GPU orchestrator, and legal AI features
-import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
-import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
+import { browser } from, '$app/environment';
+import { goto } from, '$app/navigation';
+import { mcpGPUOrchestrator } from, '$lib/services/mcp-gpu-orchestrator.js';
 
 // New: typed response and result shapes to avoid `any` casts
-type ResponseLike<T = unknown> = { ok: boolean; json: () => Promise<T> };
+type ResponseLike<T = unknown> = { ok: boolean;, json: () => Promise<T> };
 type AuthApiResult = { user?: User; error?: string };
 
 // Added: explicit operation result for auth flows
 type AuthOperationResult = { success: boolean; error?: string; sessionId?: string };
 
-// New: explicit lightweight type for the orchestrator shape we expect
+//, New: explicit lightweight type for the orchestrator shape we expect
 type OrchestratorLike = {
   makeRequest?: (path: string, body?: any, opts?: Record<string, unknown>) => Promise<unknown>;
   request?: (path: string, body?: any, opts?: Record<string, unknown>) => Promise<unknown>;
@@ -22,7 +22,7 @@ type OrchestratorLike = {
 // New: small adapter to tolerate different orchestrator shapes and avoid TS errors
 const orchestratorAdapter = {
   async makeRequest(path: string, body?: any, opts?: Record<string, unknown>) {
-    const anyOrch = mcpGPUOrchestrator as unknown as OrchestratorLike;
+    const anyOrch = mcpGPUOrchestrator as: unknown as OrchestratorLike;
     if (typeof anyOrch.makeRequest === 'function') {
       return anyOrch.makeRequest(path, body, opts);
     }
@@ -38,11 +38,11 @@ const orchestratorAdapter = {
         credentials: `include` });
       return { ok: true };
     } catch {
-      return { ok: false };
+      return {, ok: false };
     }
   },
   async processLegalDocument(content: string, opts?: Record<string, unknown>) {
-    const anyOrch = mcpGPUOrchestrator as unknown as OrchestratorLike;
+    const anyOrch = mcpGPUOrchestrator as: unknown as OrchestratorLike;
     if (typeof anyOrch.processLegalDocument === 'function') {
       return anyOrch.processLegalDocument(content, opts);
     }
@@ -50,8 +50,8 @@ const orchestratorAdapter = {
   }
 };
 
-// Declare the Svelte 5 $state rune for TS in this module (minimal, non-invasive)
-// Use `unknown` as the default generic instead of `any` to avoid implicit any lint errors.
+// Declare the Svelte, 5 $state rune for TS in this module (minimal, non-invasive)
+// Use `unknown` as the default generic instead of `any` to avoid implicit: any lint errors.
 declare const $state: <T = unknown>(initial: T) => T;
 
 export interface User { id: string;, email: string;
@@ -65,9 +65,9 @@ export interface User { id: string;, email: string;
   createdAt: Date;
   updatedAt: Date;
 }
-export interface AuthState { user: User | null;, loading: boolean;
+export interface AuthState {, user: User | null;, loading: boolean;
   error: string | null;
-  isAuthenticated: boolean;
+ , isAuthenticated: boolean;
 }
 // Reactive authentication state using $state rune (browser-only)
 const authState = browser
@@ -225,7 +225,7 @@ export class AuthService {
         return { success: true };
       } else {
         authState.error = result.error ?? 'Registration failed';
-        return { success: false, error: result.error };
+        return {, success: false, error: result.error };
       }
     } catch (error: any) {
       const errorMessage = 'Network error during registration';
@@ -302,7 +302,7 @@ export class AuthService {
         return { success: true };
       } else {
         authState.error = result.error ?? 'Profile update failed';
-        return { success: false, error: result.error };
+        return {, success: false, error: result.error };
       }
     } catch (error: any) {
       const errorMessage = 'Failed to update profile';
@@ -368,7 +368,7 @@ export const isLoading = () => authState.loading;
 export const authError = () => authState.error;
 
 // ===== Context API Utilities (merged from auth.ts) =====
-import { setContext, getContext } from 'svelte';
+import { setContext, getContext } from, 'svelte';
 
 const AUTH_CONTEXT_KEY = Symbol('auth');
 
@@ -404,7 +404,7 @@ export const hasRole = (user: User | null, role: string): boolean => {
 };
 
 /**
- * Utility to check if user has any of the specified roles
+ * Utility to check if user has: any of the specified roles
  */
 export const hasAnyRole = (user: User | null, roles: string[]): boolean => {
   return user ? roles.includes(user.role) : false;

@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
     <AlertDescription>{error}</AlertDescription>
   </Alert>
 {:else if artifact}
-  <div class="artifact-viewer" transition:fade>
+  <div class="artifact-viewer" use:fade>
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
@@ -146,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
                 src={imageUrl}
                 alt="Evidence artifact"
                 class="w-full h-auto rounded-lg shadow-sm max-h-96 object-contain"
-                transition:scale
+                use:scale
               />
               {#if extractedMetadata}
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Metadata Embedded</span>

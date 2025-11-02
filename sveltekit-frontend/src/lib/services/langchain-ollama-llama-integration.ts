@@ -1,33 +1,33 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * LangChain.js Integration with Ollama and llama.cpp GPU Parsing
  * Complete AI pipeline with Go microservice integration
  */
-import { Ollama } from '@langchain/ollama';
-import { ChatOllama } from '@langchain/ollama';
-import { OllamaEmbeddings } from '@langchain/ollama';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { RetrievalQAChain } from 'langchain/chains';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import type { Document } from 'langchain/document';
-import { PromptTemplate } from '@langchain/core/prompts';
-import crypto from 'crypto';
+import { Ollama } from, '@langchain/ollama';
+import { ChatOllama } from, '@langchain/ollama';
+import { OllamaEmbeddings } from, '@langchain/ollama';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import { MemoryVectorStore } from, 'langchain/vectorstores/memory';
+import { RetrievalQAChain } from, 'langchain/chains';
+import { StringOutputParser } from, '@langchain/core/output_parsers';
+import type { Document } from, 'langchain/document';
+import { PromptTemplate } from, '@langchain/core/prompts';
+import crypto from, 'crypto';
 
-export interface LangChainConfig { ollamaBaseUrl: string;, models: { chat: 'gemma3-legal';, embedding: 'embeddinggemma' | 'nomic-embed-text';
+export interface LangChainConfig { ollamaBaseUrl: string;, models: {, chat: 'gemma3-legal';, embedding: 'embeddinggemma' | 'nomic-embed-text';
   };
-  gpu: { enabled: boolean;, device: 'RTX3060Ti';
+  gpu: {, enabled: boolean;, device: 'RTX3060Ti';
     llamaCppConfig: {
-      ngl: number; // GPU layers,
+     , ngl: number; // GPU layers,
       contextSize: number;
       batchSize: number;
     };
   };
-  goMicroservice: { enhancedRAGUrl: string;, uploadServiceUrl: string;
+  goMicroservice: {, enhancedRAGUrl: string;, uploadServiceUrl: string;
     quicProxyUrl: string;
   };
 }
-export interface ProcessingResult { text: string;, embedding: number[];
+export interface ProcessingResult {, text: string;, embedding: number[];
   summary: string;
   entities: string[];
   confidence: number;
@@ -35,7 +35,7 @@ export interface ProcessingResult { text: string;, embedding: number[];
   gpuUtilization?: number;
 }
 
-interface GpuParsingResult { confidence: number;, gpuUtilization: number;
+interface GpuParsingResult {, confidence: number;, gpuUtilization: number;
   entities: string[];
 }
 
@@ -51,8 +51,8 @@ interface GoApiResponse {
   sourceDocuments?: Document[];
 }
 
-interface RagResult { answer: string;, sources: Document[];
-  confidence: number;
+interface RagResult {, answer: string;, sources: Document[];
+ , confidence: number;
 }
 
 /**
@@ -64,26 +64,26 @@ export class LangChainOllamaIntegration {
   private embeddingModel: OllamaEmbeddings | null = null;
   private vectorStore: MemoryVectorStore | null = null;
   private qaChain: RetrievalQAChain | null = null;
-  private textSplitter: RecursiveCharacterTextSplitter;
+  private, textSplitter: RecursiveCharacterTextSplitter;
   private isInitialized = $state(false);
   constructor(config: Partial<LangChainConfig> = {}) {
     this.config = {
       ollamaBaseUrl: 'http://localhost:11434',
       models: {
-        chat: 'gemma3-legal',
+       , chat: 'gemma3-legal',
         embedding: 'nomic-embed-text'
       },
       gpu: {
-        enabled: true,
+       , enabled: true,
         device: 'RTX3060Ti',
         llamaCppConfig: {
-          ngl: 35, // Use 35 GPU layers for RTX 3060 Ti
+         , ngl: 35, // Use, 35 GPU layers for RTX, 3060 Ti
           contextSize: 4096,
           batchSize: 8
         }
       },
       goMicroservice: {
-        enhancedRAGUrl: 'http://localhost:8094',
+       , enhancedRAGUrl: 'http://localhost:8094',
         uploadServiceUrl: 'http://localhost:8093',
         quicProxyUrl: 'http://localhost:8095'
       },
@@ -179,13 +179,13 @@ export class LangChainOllamaIntegration {
       const chunks = await this.textSplitter.splitText(content);
       console.log(`📑 Document split into ${chunks.length} chunks`);
       // Step 2: Generate embeddings for all chunks
-      const embeddings: number[][] = [];
+      const, embeddings: number[][] = [];
       for (const chunk of chunks) {
         const embedding = await this.embeddingModel!.embedQuery(chunk);
         embeddings.push(embedding);
       }
       // Step 3: Use Go microservice for GPU parsing if enabled
-      let gpuParsingResult: GpuParsingResult | null = null;
+      let, gpuParsingResult: GpuParsingResult | null = null;
       if (options.useGPUParsing) {
         gpuParsingResult = await this.callGoMicroserviceGPUParsing(content, title);
       }
@@ -195,7 +195,7 @@ export class LangChainOllamaIntegration {
         summary = await this.generateLegalSummary(content);
       }
       // Step 5: Extract legal entities
-      let entities: string[] = [];
+      let, entities: string[] = [];
       if (options.extractEntities) {
         entities = await this.extractLegalEntities(content);
       }
@@ -216,7 +216,7 @@ export class LangChainOllamaIntegration {
       }
       const processingTime = performance.now() - startTime;
       const result: ProcessingResult = {
-        text: content,
+       , text: content,
         embedding: embeddings[0] || [], // First chunk embedding as document embedding
         summary,
         entities,
@@ -287,7 +287,7 @@ export class LangChainOllamaIntegration {
       return result || 'Summary generation failed';
     } catch (error: any) {
       console.error('❌ Summary generation failed:', error);
-      return 'Summary could not be generated due to processing error.';
+      return, 'Summary could not be generated due to processing error.';
     }
   }
   /**
@@ -379,7 +379,7 @@ export class LangChainOllamaIntegration {
   private async callGoMicroserviceRAG(
     question: string,
     context: string[]
-  ): Promise<{ success: boolean; data: RagResult | null }> {
+  ): Promise<{ success: boolean;, data: RagResult | null }> {
     try {
       const response = await fetch(`${this.config.goMicroservice.enhancedRAGUrl}/api/rag`, {
         method: 'POST',
@@ -401,7 +401,7 @@ export class LangChainOllamaIntegration {
       return {
         success: true,
         data: {
-          answer: result.response || result.answer || '',
+         , answer: result.response || result.answer || '',
           sources: result.sources || [],
           confidence: result.confidence || 0.8
         }
@@ -430,9 +430,9 @@ export class LangChainOllamaIntegration {
       // Create QA chain if not exists
       if (!this.qaChain) {
         this.qaChain = RetrievalQAChain.fromLLM(
-          this.chatModel as any, // Workaround for library type issue
+          this.chatModel as: any, // Workaround for library type issue
           this.vectorStore.asRetriever({
-            k: 5, // Retrieve top 5 relevant documents
+            k: 5, // Retrieve top, 5 relevant documents
             searchType: `similarity` })
         );
       }
@@ -476,7 +476,7 @@ export class LangChainOllamaIntegration {
    * Batch process multiple documents
    */
   async batchProcessDocuments(
-    documents: Array<{, content: string; title: string }>,
+    documents: Array<{, content: string;, title: string }>,
     options: {
       useGPUAcceleration?: boolean;
       generateSummaries?: boolean;
@@ -528,13 +528,13 @@ export class LangChainOllamaIntegration {
       Instructions:
       - Provide accurate legal analysis based on the context
       - Cite relevant sources when possible
-      - Highlight any potential legal issues or precedents
+      -, Highlight: any potential legal issues or precedents
       - Use professional legal terminology
       - If uncertain, state limitations clearly
       Answer: ';'
     const prompt = PromptTemplate.fromTemplate(legalPrompt);
     this.qaChain = RetrievalQAChain.fromLLM(
-      this.chatModel as any, // Workaround for library type issue
+      this.chatModel as: any, // Workaround for library type issue
       this.vectorStore.asRetriever({
         k: 8, // Retrieve more documents for legal context
         searchType: 'similarity_score_threshold',
@@ -554,19 +554,19 @@ export class LangChainOllamaIntegration {
     return {
       initialized: this.isInitialized,
       models: {
-        chat: this.chatModel ? 'ready' : 'not_initialized',
+       , chat: this.chatModel ? 'ready' : 'not_initialized',
         embedding: this.embeddingModel ? 'ready' : 'not_initialized` },'`
       vectorStore: {
-        ready: !!this.vectorStore,
+       , ready: !!this.vectorStore,
         documentCount: this.vectorStore ? 'unknown' : 0
       },
       gpu: {
-        enabled: this.config.gpu.enabled,
+       , enabled: this.config.gpu.enabled,
         device: this.config.gpu.device,
         layers: this.config.gpu.llamaCppConfig.ngl
       },
       goServices: {
-        enhancedRAG: this.config.goMicroservice.enhancedRAGUrl,
+       , enhancedRAG: this.config.goMicroservice.enhancedRAGUrl,
         uploadService: this.config.goMicroservice.uploadServiceUrl,
         quicProxy: this.config.goMicroservice.quicProxyUrl
       }
@@ -594,7 +594,7 @@ export const langChainOllamaService = new LangChainOllamaIntegration({
    , enabled: true,
     device: 'RTX3060Ti',
     llamaCppConfig: {
-     , ngl: 35, // RTX 3060 Ti optimized
+     , ngl: 35, // RTX, 3060 Ti optimized
       contextSize: 4096,
       batchSize: 8
     }
@@ -610,4 +610,4 @@ if (typeof window !== 'undefined') {
 }
 // Export types and utilities
 export type { LangChainConfig, ProcessingResult, SearchResult };
-export { SearchableItem, SearchOptions } from './fuse-lazy-search-indexeddb.js';
+export { SearchableItem, SearchOptions } from, './fuse-lazy-search-indexeddb.js';

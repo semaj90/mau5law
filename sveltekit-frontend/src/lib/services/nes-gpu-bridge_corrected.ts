@@ -2,10 +2,10 @@
  * NES-Style GPU Bridge - Integrates NES caching architecture with GPU acceleration
  * Provides 8-bit efficiency optimizations for modern GPU computing
  */
-import type { CanvasState } from '$lib/types';
-import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker';
-import { createActor } from 'xstate';
-import { systemMonitorMachine } from '$lib/machines/system-monitor';
+import type { CanvasState } from, '$lib/types';
+import type { MultiDimArray, GPUProcessingStats } from, '$lib/workers/gpu-tensor-worker';
+import { createActor } from, 'xstate';
+import { systemMonitorMachine } from, '$lib/machines/system-monitor';
 
 // NES-style memory hierarchy mapping to modern GPU
 export interface NESGPUMemoryHierarchy { prgRom: Float32Array;      // Global Memory (VRAM), chrRom: Uint8ClampedArray; // L2 Cache (pattern tables)
@@ -14,12 +14,12 @@ export interface NESGPUMemoryHierarchy { prgRom: Float32Array;      // Global Me
 }
 
 // Bit depth profiles for browser optimization
-export interface BitDepthProfile { standard: number;, modern: number;
+export interface BitDepthProfile {, standard: number;, modern: number;
   premium: number;
   target: number;
   compressed: number;
   minimal: number;
-  totalBits: number;
+ , totalBits: number;
 }
 
 // Cache optimization table (NES-style)
@@ -31,9 +31,9 @@ export interface CacheTable { alphabet: string;, numbers: string;
   byteValues: number[];
 }
 
-export interface CachedTensor { tensor: MultiDimArray;, timestamp: number;
+export interface CachedTensor {, tensor: MultiDimArray;, timestamp: number;
   hitCount: number;
-  memoryLevel: keyof NESGPUMemoryHierarchy;
+ , memoryLevel: keyof NESGPUMemoryHierarchy;
 }
 
 // Add a small, local worker message type for stronger typing where used
@@ -45,7 +45,7 @@ interface GPUMessage {
 }
 
 // Replace the BridgeStats definition so it matches actual fields used across the class
-export interface BridgeStats { totalConversions: number;, cacheHitRate: number;
+export interface BridgeStats {, totalConversions: number;, cacheHitRate: number;
   averageCompressionRatio: number;
   bitDepthOptimizations: number;
   gpuAccelerations: number;
@@ -58,21 +58,21 @@ export interface BridgeStats { totalConversions: number;, cacheHitRate: number;
 
 export class NESStyleGPUBridge {
   private gpuWorker: Worker | null = null;
-  private tensorCache: Map<string, CachedTensor> = new Map();
+  private, tensorCache: Map<string, CachedTensor> = new Map();
   private memoryHierarchy: NESGPUMemoryHierarchy;
   private cacheTable: CacheTable;
   private stats: BridgeStats;
   private sharedBuffer: SharedArrayBuffer | null = null;
 
   // Added/missing properties
-  private verbose: boolean = $state(false);
+  private, verbose: boolean = $state(false);
   private webgpuAdapter: any | null = null;
-  private queue: Map<string, (msg: GPUMessage | any) => void> = new Map();
+  private, queue: Map<string, (msg: GPUMessage | any) => void> = new Map();
   private bitDepthDetector: BitDepthDetector = new BitDepthDetector();
 
   // XState integration (system monitor actor + local fallback flag)
   private systemMonitor: any | null = null;
-  private useFallback: boolean = $state(false);
+  private, useFallback: boolean = $state(false);
 
   // Expose constructor (was private) and initialize stats with fields that exist in BridgeStats
   constructor() {
@@ -89,7 +89,7 @@ export class NESStyleGPUBridge {
       avgConversionTime: 0
     };
     this.memoryHierarchy = {
-      prgRom: new Float32Array(32768),
+     , prgRom: new Float32Array(32768),
       chrRom: new Uint8ClampedArray(8192),
       ram: new Float32Array(2048),
       ppu: new Int32Array(64)
@@ -154,7 +154,7 @@ export class NESStyleGPUBridge {
       }
       const size = 1024 * 1024 * 8; // 8 MB
       this.sharedBuffer = new SharedArrayBuffer(size);
-      if (this.verbose) console.log('🧩 Shared buffer initialized 8 MB');
+      if (this.verbose) console.log('🧩 Shared buffer initialized, 8 MB');
     } catch (e) {
       console.warn('SharedArrayBuffer initialization failed:', e);
       this.sharedBuffer = null;
@@ -284,13 +284,13 @@ export class NESStyleGPUBridge {
   async canvasStateToTensor(state: CanvasState): Promise<MultiDimArray> {
     const startTime = this.now();
     try {
-      const fabricJSON = (state as any).fabricJSON as any;
+      const fabricJSON = (state as: any).fabricJSON as: any;
       const objects = fabricJSON?.objects || [];
       const tensorShape = this.calculateOptimalShape(objects);
       const nesOptimizedData = await this.optimizeForNESStyle(objects, tensorShape);
       const quantizedData = this.applyBitDepthOptimization(nesOptimizedData);
       const tensor: MultiDimArray = {
-        shape: tensorShape,
+       , shape: tensorShape,
         data: quantizedData,
         dimensions: tensorShape.length,
         layout: 'nes_optimized',
@@ -353,7 +353,7 @@ export class NESStyleGPUBridge {
       ...optimizedState,
       id: `${optimizedState.id}_nes_optimized`,
       metadata: {
-        ...((optimizedState as any).metadata ?? {}),
+        ...((optimizedState, as: any).metadata ?? {}),
         nesOptimized: true,
         bitDepth: optimalBitDepth,
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
@@ -365,14 +365,14 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return 'ppu';
-    if (dataSize <= 2048) return 'ram';
-    if (dataSize <= 8192) return 'chrRom';
-    return 'prgRom';
+    if (dataSize <= 64) return, 'ppu';
+    if (dataSize <= 2048) return, 'ram';
+    if (dataSize <= 8192) return, 'chrRom';
+    return, 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
-    const hierarchy = this.memoryHierarchy[level] as any;
+    const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
@@ -432,28 +432,28 @@ export class NESStyleGPUBridge {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
       ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
 
     // Normalize incoming objects into frames: frames[t] = array of objects for time t
-    let frames: any[][] = [];
+    let, frames: any[][] = [];
 
     if (dims.time > 1) {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
-        frames = (objects as any[][]).slice(0, dims.time);
+        frames = (objects as: any[][]).slice(0, dims.time);
       } else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
-          frames.push(Array.isArray(objects) ? (objects as any[]).slice(start, start + dims.objects) : []);
+          frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
         }
       }
     } else {
-      frames = [Array.isArray(objects) ? (objects as any[]) : []];
+      frames = [Array.isArray(objects) ? (objects as: any[]) : []];
     }
 
     // Ensure frames array has length dims.time
@@ -586,7 +586,7 @@ export class NESStyleGPUBridge {
       cached.hitCount++;
       return cached;
     }
-    return null;
+    return: null;
   }
 
   private cacheInNESHierarchy(cacheKey: string, tensor: MultiDimArray): void {
@@ -714,7 +714,7 @@ export class NESStyleGPUBridge {
       ...optimizedState,
       id: `${optimizedState.id}_nes_optimized`,
       metadata: {
-        ...((optimizedState as any).metadata ?? {}),
+        ...((optimizedState, as: any).metadata ?? {}),
         nesOptimized: true,
         bitDepth: optimalBitDepth,
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
@@ -726,14 +726,14 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return 'ppu';
-    if (dataSize <= 2048) return 'ram';
-    if (dataSize <= 8192) return 'chrRom';
-    return 'prgRom';
+    if (dataSize <= 64) return, 'ppu';
+    if (dataSize <= 2048) return, 'ram';
+    if (dataSize <= 8192) return, 'chrRom';
+    return, 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
-    const hierarchy = this.memoryHierarchy[level] as any;
+    const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
@@ -793,28 +793,28 @@ export class NESStyleGPUBridge {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
       ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
 
     // Normalize incoming objects into frames: frames[t] = array of objects for time t
-    let frames: any[][] = [];
+    let, frames: any[][] = [];
 
     if (dims.time > 1) {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
-        frames = (objects as any[][]).slice(0, dims.time);
+        frames = (objects as: any[][]).slice(0, dims.time);
       } else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
-          frames.push(Array.isArray(objects) ? (objects as any[]).slice(start, start + dims.objects) : []);
+          frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
         }
       }
     } else {
-      frames = [Array.isArray(objects) ? (objects as any[]) : []];
+      frames = [Array.isArray(objects) ? (objects as: any[]) : []];
     }
 
     // Ensure frames array has length dims.time
@@ -947,7 +947,7 @@ export class NESStyleGPUBridge {
       cached.hitCount++;
       return cached;
     }
-    return null;
+    return: null;
   }
 
   private cacheInNESHierarchy(cacheKey: string, tensor: MultiDimArray): void {
@@ -1075,7 +1075,7 @@ export class NESStyleGPUBridge {
       ...optimizedState,
       id: `${optimizedState.id}_nes_optimized`,
       metadata: {
-        ...((optimizedState as any).metadata ?? {}),
+        ...((optimizedState, as: any).metadata ?? {}),
         nesOptimized: true,
         bitDepth: optimalBitDepth,
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
@@ -1087,14 +1087,14 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return 'ppu';
-    if (dataSize <= 2048) return 'ram';
-    if (dataSize <= 8192) return 'chrRom';
-    return 'prgRom';
+    if (dataSize <= 64) return, 'ppu';
+    if (dataSize <= 2048) return, 'ram';
+    if (dataSize <= 8192) return, 'chrRom';
+    return, 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
-    const hierarchy = this.memoryHierarchy[level] as any;
+    const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
@@ -1154,28 +1154,28 @@ export class NESStyleGPUBridge {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
       ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
 
     // Normalize incoming objects into frames: frames[t] = array of objects for time t
-    let frames: any[][] = [];
+    let, frames: any[][] = [];
 
     if (dims.time > 1) {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
-        frames = (objects as any[][]).slice(0, dims.time);
+        frames = (objects as: any[][]).slice(0, dims.time);
       } else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
-          frames.push(Array.isArray(objects) ? (objects as any[]).slice(start, start + dims.objects) : []);
+          frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
         }
       }
     } else {
-      frames = [Array.isArray(objects) ? (objects as any[]) : []];
+      frames = [Array.isArray(objects) ? (objects as: any[]) : []];
     }
 
     // Ensure frames array has length dims.time
@@ -1308,7 +1308,7 @@ export class NESStyleGPUBridge {
       cached.hitCount++;
       return cached;
     }
-    return null;
+    return: null;
   }
 
   private cacheInNESHierarchy(cacheKey: string, tensor: MultiDimArray): void {
@@ -1436,7 +1436,7 @@ export class NESStyleGPUBridge {
       ...optimizedState,
       id: `${optimizedState.id}_nes_optimized`,
       metadata: {
-        ...((optimizedState as any).metadata ?? {}),
+        ...((optimizedState, as: any).metadata ?? {}),
         nesOptimized: true,
         bitDepth: optimalBitDepth,
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
@@ -1448,14 +1448,14 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return 'ppu';
-    if (dataSize <= 2048) return 'ram';
-    if (dataSize <= 8192) return 'chrRom';
-    return 'prgRom';
+    if (dataSize <= 64) return, 'ppu';
+    if (dataSize <= 2048) return, 'ram';
+    if (dataSize <= 8192) return, 'chrRom';
+    return, 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
-    const hierarchy = this.memoryHierarchy[level] as any;
+    const hierarchy = this.memoryHierarchy[level] as: any;
     if (hierarchy instanceof Float32Array) {
       const length = Math.min((tensor.data as Float32Array).length, hierarchy.length);
       hierarchy.set((tensor.data as Float32Array).subarray(0, length));
@@ -1515,28 +1515,28 @@ export class NESStyleGPUBridge {
     // shape can be [N, P, E] or [T, N, P, E]
     const dims = shape.length === 4
       ? { time: shape[0], objects: shape[1], props: shape[2], embed: shape[3] }
-      : { time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
+      : {, time: 1, objects: shape[0], props: shape[1], embed: shape[2] };
 
     const totalElements = dims.time * dims.objects * dims.props * dims.embed;
     const optimized = new Float32Array(totalElements);
 
     // Normalize incoming objects into frames: frames[t] = array of objects for time t
-    let frames: any[][] = [];
+    let, frames: any[][] = [];
 
     if (dims.time > 1) {
       // If objects is array-of-frames (first element is an array), use it directly
       if (Array.isArray(objects) && objects.length > 0 && Array.isArray(objects[0])) {
-        frames = (objects as any[][]).slice(0, dims.time);
+        frames = (objects as: any[][]).slice(0, dims.time);
       } else {
         // Partition flat objects into time slices (may produce shorter frames)
         frames = [];
         for (let t = 0; t < dims.time; t++) {
           const start = t * dims.objects;
-          frames.push(Array.isArray(objects) ? (objects as any[]).slice(start, start + dims.objects) : []);
+          frames.push(Array.isArray(objects) ? (objects as: any[]).slice(start, start + dims.objects) : []);
         }
       }
     } else {
-      frames = [Array.isArray(objects) ? (objects as any[]) : []];
+      frames = [Array.isArray(objects) ? (objects as: any[]) : []];
     }
 
     // Ensure frames array has length dims.time

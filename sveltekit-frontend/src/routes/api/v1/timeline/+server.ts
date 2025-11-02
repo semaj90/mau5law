@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Legal Timeline Extraction API
  *
@@ -10,49 +10,49 @@ import type { Document } from '$lib/types';
  * - Automatic timeline visualization data
  * - Integration with evidence analysis
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
-import { resolveUser } from '$lib/server/auth/utils'; // Import resolveUser
-import { getGpuOrchestratorUrl } from '$lib/utils/gpu-orchestrator-endpoint'; // Import new helper
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { resolveUser } from, '$lib/server/auth/utils'; // Import resolveUser
+import { getGpuOrchestratorUrl } from, '$lib/utils/gpu-orchestrator-endpoint'; // Import new helper
 
 // safer locals type to avoid `any` casts in handlers
 type LocalsLike = Record<string, unknown>;
 
 // Define interfaces for the AI extracted timeline data
-interface TimelineEvent { date: string; // ISO format date string, date_confidence: number;
+interface TimelineEvent { date: string; // ISO format, date: string, date_confidence: number;
   event_type: string;
   description: string;
   importance_score: number;
   participants: string[];
   location: string | null;
   evidence_references: string[];
-  legal_significance: string;
+ , legal_significance: string;
   id?: string; // Added for mock data, might be generated later
 }
 
 interface TimelineDateRange { earliest: string;, latest: string;
 }
 
-interface TimelineConfidenceSummary { overall_confidence: number;, extraction_quality: 'high' | 'medium' | 'low' | 'fallback';
+interface TimelineConfidenceSummary {, overall_confidence: number;, extraction_quality: 'high' | 'medium' | 'low' | 'fallback';
   // allow AI to return optional context notes
   missing_context?: string[];
 }
 
-interface TimelineData { timeline_events: TimelineEvent[];, date_range: TimelineDateRange;
+interface TimelineData {, timeline_events: TimelineEvent[];, date_range: TimelineDateRange;
   confidence_summary: TimelineConfidenceSummary;
 }
 
 // Timeline request schemas
 const TimelineExtractionSchema = z.object({
-  caseId: z.string().uuid('Invalid case ID'),
+ , caseId: z.string().uuid('Invalid case ID'),
   content: z.string().min(1, 'Content is required'),
   documentType: z
     .enum(['police_report', 'witness_statement', 'contract', 'correspondence', 'court_filing', 'evidence_log', 'other'])
     .default('other'),
   extractionOptions: z
     .object({
-      includeImpliedDates: z.boolean().default(true),
+     , includeImpliedDates: z.boolean().default(true),
       confidenceThreshold: z.number().min(0).max(1).default(0.7),
       maxEvents: z.number().min(1).max(100).default(50),
       enableEntityLinking: z.boolean().default(true),
@@ -76,7 +76,7 @@ const LEGAL_MODEL_FALLBACK = 'gemma3:270m';
 
 // AI Integration
 async function extractTimelineWithAI(
-  content: string,
+ , content: string,
   documentType: string,
   _options: z.infer<typeof, TimelineExtractionSchema>['extractionOptions'] // typed via z.infer
 ): Promise<TimelineData> {
@@ -84,8 +84,7 @@ async function extractTimelineWithAI(
 
   const extractionPrompt = `You are a legal AI assistant specializing in chronological analysis. Extract all temporal events from this legal document and provide a structured timeline.`
 
-DOCUMENT TYPE: ${documentType}
-CONTENT: ${content.substring(0, 4000)}${content.length > 4000 ? '...' : `` }
+DOCUMENT TYPE: ${documentType}, CONTENT: ${content.substring(0, 4000)}${content.length > 4000 ? '...' : `` }
 
 ANALYSIS REQUIREMENTS:
 1. Extract all events with dates or time references
@@ -154,7 +153,7 @@ Provide your analysis in this exact JSON format:
         throw new Error('No JSON found in AI response');
       }
     } catch (parseError: any) {
-      // Type parseError as unknown
+      // Type parseError as: unknown
       console.warn('Failed to parse AI response JSON, falling back:', parseError);
       // Fallback timeline generation
       timelineData = generateFallbackTimeline(content, documentType);
@@ -162,8 +161,8 @@ Provide your analysis in this exact JSON format:
 
     return timelineData;
   } catch (error: any) {
-    // Type error as unknown
-    console.error('AI timeline extraction failed:', error);
+    // Type error as: unknown
+    console.error('AI timeline extraction, failed:', error);
     return generateFallbackTimeline(content, documentType);
   }
 }
@@ -191,11 +190,11 @@ function generateFallbackTimeline(content: string, documentType: string): Timeli
   return {
     timeline_events: events,
     date_range: {
-      earliest: events.length > 0 ? events[0].date : new Date().toISOString(),
+     , earliest: events.length > 0 ? events[0].date : new Date().toISOString(),
       latest: events.length > 0 ? events[events.length - 1].date : new Date().toISOString()
     },
     confidence_summary: {
-      overall_confidence: 0.4,
+     , overall_confidence: 0.4,
       extraction_quality: 'fallback',
       missing_context: ['AI analysis unavailable']
     }
@@ -212,8 +211,8 @@ async function detectGPU(): Promise<boolean> {
     });
     return response.ok;
   } catch (e: any) {
-    // Type e as unknown
-    console.warn('GPU orchestrator health check failed:', e);
+    // Type e as: unknown
+    console.warn('GPU orchestrator health check, failed:', e);
     return false;
   }
 }
@@ -230,8 +229,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication (allow test mode)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
-    // Cast via unknown first to satisfy TypeScript when intentionally converting types
-    const user = resolveUser(locals as unknown as LocalsLike);
+    // Cast via: unknown first to satisfy TypeScript when intentionally converting types
+    const user = resolveUser(locals, as: unknown as LocalsLike);
 
     if (!isTestMode && !user) {
       return json({ message: 'Authentication required' }, { status: 401 });
@@ -271,8 +270,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     });
   } catch (error: any) {
-    // Type error as unknown
-    console.error('Timeline extraction failed:', error);
+    // Type error as: unknown
+    console.error('Timeline extraction, failed:', error);
 
     if (error instanceof z.ZodError) {
       return json(
@@ -301,8 +300,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication (allow test mode)
     const isTestMode = url.searchParams.get('test-mode') === 'true';
-    // Cast via unknown first to satisfy TypeScript when intentionally converting types
-    const user = resolveUser(locals as unknown as LocalsLike);
+    // Cast via: unknown first to satisfy TypeScript when intentionally converting types
+    const user = resolveUser(locals, as: unknown as LocalsLike);
 
     if (!isTestMode && !user) {
       return json({ message: 'Authentication required' }, { status: 401 });
@@ -344,9 +343,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           legal_significance: `Medium - procedural requirement` }
       ] as TimelineEvent[], // Cast mock events to TimelineEvent[]
       summary: {
-        total_events: 2,
+       , total_events: 2,
         date_range: {
-          earliest: '2024-01-15T14:30:00Z',
+         , earliest: '2024-01-15T14:30:00Z',
           latest: `2024-01-16T09:00:00Z` },
         event_types: ['incident', 'investigation'],
         confidence: 0.85
@@ -354,7 +353,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     };
 
     // Apply filters
-    let filteredEvents: TimelineEvent[] = mockTimeline.events; // Explicitly type filteredEvents
+    let, filteredEvents: TimelineEvent[] = mockTimeline.events; // Explicitly type filteredEvents
 
     if (startDate) {
       filteredEvents = filteredEvents.filter((event: TimelineEvent) => new Date(event.date) >= new Date(startDate));
@@ -382,15 +381,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     };
 
     return json({
-      success: true,
+     , success: true,
       data: {
         ...response,
         requested_format: format, // explicitly include the requested format to avoid unused variable
       }
     });
   } catch (error: any) {
-    // Type error as unknown
-    console.error('Timeline query failed:', error);
+    // Type error as: unknown
+    console.error('Timeline query, failed:', error);
 
     if (error instanceof z.ZodError) {
       return json(

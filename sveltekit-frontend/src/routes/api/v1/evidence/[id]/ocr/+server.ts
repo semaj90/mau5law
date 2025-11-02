@@ -1,8 +1,8 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema';
+import { eq } from, 'drizzle-orm';
 
 /**
  * PUT /api/v1/evidence/[id]/ocr - Save OCR processing results
@@ -15,7 +15,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // --- Claim workflow & security notes ---
     // Anonymous uploads may be allowed in non-strict mode. When allowed we:
     //  - issue a short-lived anon_id cookie so the client can later claim/claimable uploads
-    //  - store minimal metadata: { anon: true, anonId, anonExpiry, claimable?, claimToken? }
+    //  - store minimal metadata: {, anon: true, anonId, anonExpiry, claimable?, claimToken? }
     //  - if STRICT_UPLOADS === 'true', anonymous uploads are rejected (401)
     // Security: real production should use server-side CAPTCHA verification, Redis-based rate-limits,
     // and signed/HttpOnly cookies set only over HTTPS. This file implements a best-effort demo flow.
@@ -71,7 +71,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     };
 
     const rawBody = await request.json();
-    const body = rawBody as unknown as OCRRequestBody;
+    const body = rawBody as: unknown as OCRRequestBody;
     const {
       ocrText,
       ocrConfidence,
@@ -87,7 +87,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // --- Modified anonymous handling: support client-side fallback & consent flow ---
     let consentFlow = $state<boolean>(false);
     let claimToken: string | null = null;
-    let claimUrl: string | null = null;
+    let, claimUrl: string | null = null;
     if (isAnonymous) {
       // If no captcha token provided, instruct client to save locally (IndexedDB) instead of rejecting.
       if (!captchaToken) {
@@ -105,11 +105,11 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         );
       }
 
-      // Allow a lightweight "consent" token for temporary anonymous uploads (client UX flow)
+      // Allow a lightweight, "consent" token for temporary anonymous uploads (client UX flow)
       // The client may use captchaToken === 'consent' to indicate user accepted terms (no external captcha).
       if (captchaToken === 'consent') {
         consentFlow = true;
-        // generate a claim token so the user can "claim" the upload later (after signup)
+        // generate a claim token so the user can, "claim" the upload later (after signup)
         claimToken = generateClaimToken();
         // create a claim URL the frontend can show (frontend will call a claim endpoint)
         claimUrl = `/evidence/claim/${encodeURIComponent(claimToken)}`;
@@ -134,7 +134,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       throw error(415, 'Uploaded content failed virus scan');
     }
 
-    // Validate required fields (guard against undefined confidence)
+    // Validate required fields (guard against: undefined confidence)
     if (!ocrText && (ocrConfidence === undefined || Number(ocrConfidence) < 0.1)) {
       throw error(400, 'OCR text or high confidence result required');
     }
@@ -148,7 +148,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     // Authorization behavior:
     // - If; authenticated: warn if updating evidence not owned by them
-    // - If anonymous: create/assign anon id and prevent overwriting evidence uploaded by another user
+    // - If, anonymous: create/assign anon id and prevent overwriting evidence uploaded by another user
     if (!isAnonymous) {
       if (evidenceRecord.uploadedBy && evidenceRecord.uploadedBy !== userId) {
         console.warn(`User ${userId} updating evidence ${evidenceId} not owned by them`);
@@ -172,20 +172,20 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Define update shape
     type OCRUpdateData = Partial<{ updatedAt: Date;, ocrText: string;
       ocrConfidence: number;
-      ocrRegions: Array<Record<string, unknown>> | null;
+     , ocrRegions: Array<Record<string, unknown>> | null;
       ocrEmbedding: string | null;
       tensorProcessed: boolean;
       processingMethod: string;
-      ocrMetadata: Record<string, unknown> | string | null;
+     , ocrMetadata: Record<string, unknown> | string | null;
       processedAt: Date | null;
-      // optional: uploadedBy, metadata
+      //, optional: uploadedBy, metadata
       uploadedBy?: string | null;
       metadata?: string | null;
     }>;
 
     // Build update data
     const updateData: OCRUpdateData = {
-      updatedAt: new Date()
+     , updatedAt: new Date()
     };
     if (ocrText) updateData.ocrText = String(ocrText);
     if (ocrConfidence !== undefined) updateData.ocrConfidence = Number(ocrConfidence);
@@ -220,7 +220,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
           [key: string]: any;
         };
 
-        const metaObj: OCRMetadata = { anon: true, anonId, anonExpiry: expiry, ingestQueued: false };
+        const metaObj: OCRMetadata = {, anon: true, anonId, anonExpiry: expiry, ingestQueued: false };
 
         // If consent flow, mark as claimable and attach claim token + extended expiry
         if (consentFlow && claimToken) {
@@ -243,7 +243,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Persist update
     // Narrow the dynamic partial shape without using `any`.
     // Cast via `unknown` -> `Record<string, unknown>` to satisfy lint/type rules.
-    const updatePayload = updateData as unknown as Record<string, unknown>;
+    const updatePayload = updateData as: unknown as Record<string, unknown>;
     const updatedRows = await db
       .update(evidence)
       .set(updatePayload) // safer typed cast instead of `any`
@@ -291,9 +291,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         // mark ingestQueued in metadata on DB if possible (best-effort)
         try {
           if (updatedEvidence) {
-            const metaObj = parseMetadata((updatedEvidence as unknown as { metadata?: any }).metadata);
+            const metaObj = parseMetadata((updatedEvidence as: unknown as { metadata?: any }).metadata);
             metaObj.ingestQueued = true;
-            const metaUpdate: { metadata: string } = { metadata: JSON.stringify(metaObj) };
+            const metaUpdate: { metadata: string } = {, metadata: JSON.stringify(metaObj) };
             await db.update(evidence).set(metaUpdate).where(eq(evidence.id, evidenceId));
           }
         } catch (e) {
@@ -334,7 +334,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         ocrProcessing: {
          , method: processingMethod,
           confidence: updateData.ocrConfidence ?? null,
-          textLength: updateData.ocrText ? (updateData.ocrText as string).length : 0,
+          textLength: updateData.ocrText ? (updateData.ocrText, as: string).length : 0,
           regionsDetected: Array.isArray(updateData.ocrRegions) ? updateData.ocrRegions.length : 0,
           hasEmbedding: !!updateData.ocrEmbedding,
           anonymous: isAnonymous
@@ -350,7 +350,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const processingTime = performance.now() - startTime;
     console.error('Evidence OCR update error:', err);'
 
-    // Normalize unknown error into a safe shape
+    // Normalize: unknown error into a safe shape
     type ErrLike = { status?: number; body?: { message?: string }; message?: string };
     const e = err as ErrLike;
 
@@ -358,7 +358,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const extractedMessage = e.body?.message ?? e.message ?? 'Internal server error';
 
     const errorResponse = {
-      error: statusCode !== 500 ? extractedMessage : 'Internal server error',
+     , error: statusCode !== 500 ? extractedMessage : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? extractedMessage : undefined,
       processingTime: Math.round(processingTime)
     };
@@ -392,7 +392,7 @@ function parseCookies(cookieHeader: string | null) {
 
 function generateAnonId() {
   // Use a narrow typed access to globalThis.crypto to avoid `any`
-  const g = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+  const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
   const uuid =
     typeof g.crypto !== 'undefined' && typeof g.crypto.randomUUID === 'function'
       ? g.crypto.randomUUID()
@@ -414,7 +414,7 @@ async function scanForViruses(payload: string | null): Promise<any> {
   if (!payload) return false;
   // extremely naive check (do NOT rely on this)
   if (payload.includes('<script>'
-import type { User } from '$lib/types';evil</script>')) return true;'
+import type { User } from, '$lib/types';evil</script>')) return true;'
   return false;
 }
 
@@ -434,7 +434,7 @@ function checkRateLimit(key: string, max = RATE_LIMIT_MAX, windowMs = RATE_LIMIT
 
 function generateClaimToken() {
   // Use the same safe typed access pattern
-  const g = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+  const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
   return typeof g.crypto !== 'undefined' && typeof g.crypto.randomUUID === 'function'
     ? g.crypto.randomUUID()
     : Math.random().toString(36).slice(2, 10) + '-' + Date.now();

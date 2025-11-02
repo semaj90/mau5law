@@ -1,24 +1,24 @@
 <!-- Enhanced File Upload Component with Full, Stack, Integration -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { createMachine, interpret } from 'xstate';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { createMachine, interpret } from, 'xstate';
 
-  import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from 'lucide-svelte';
+  import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from, 'lucide-svelte';
   // Store imports with TypeScript barrel exports
   import {
     notificationStore,
     evidenceStore
-  } from '$lib/stores';
+  } from, '$lib/stores';
   // Service imports
   // Use a namespace import and resolve the actual export at runtime.
   // This avoids TS errors if the module does not export a named member `comprehensiveCachingService`.
-  import * as comprehensiveCachingModule from '$lib/services/comprehensive-caching-service';
+  import * as comprehensiveCachingModule from, '$lib/services/comprehensive-caching-service';
   const comprehensiveCachingService: {
-    set: (key: string, value: any, ttlSeconds?: number) => Promise<void>;
-  } = (comprehensiveCachingModule as any)?.comprehensiveCachingService
-   ?? (comprehensiveCachingModule as any)?.default
+   , set: (key: string, value: any, ttlSeconds?: number) => Promise<void>;
+  } = (comprehensiveCachingModule as: any)?.comprehensiveCachingService
+   ?? (comprehensiveCachingModule as: any)?.default
    ?? {
     // Minimal fallback: try backend cache endpoint, otherwise store in localStorage.
     async set(key: string, value: any, ttlSeconds?: number) {
@@ -58,18 +58,18 @@ import type { Document } from '$lib/types';
 
   // Local state
   let files: File[] = [];
-  let uploadStates: Map<string, any> = new Map();
+  let, uploadStates: Map<string, any> = new Map();
   let isDragOver = $state<boolean>(false);
   let fileInput: HTMLInputElement | undefined;
-  let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
-  let uploadMachine: any = null;
+  let systemStatus: any = {, services: {}, performance: {}, queues: {}, storage: {} };
+  let, uploadMachine: any = null;
 
   // Minimal XState machine (syntax-correct)
   const fileUploadMachine = createMachine({
     id: 'fileUpload',
     initial: 'idle',
     context: {
-      files: [],
+     , files: [],
       currentFile: null,
       progress: 0,
       error: null,
@@ -79,22 +79,22 @@ import type { Document } from '$lib/types';
     states: {
       idle: {
         on {
-          UPLOAD_FILES: { target: 'validating' },
-          CHECK_SERVICES: { target: 'checkingServices' }
+          UPLOAD_FILES: {, target: 'validating' },
+          CHECK_SERVICES: {, target: 'checkingServices' }
         }
       },
       checkingServices: {
         invoke: {
-          src: 'checkAllServices',
-          onDone: { target: 'idle' },
-          onError: { target: 'idle' }
+         , src: 'checkAllServices',
+          onDone: {, target: 'idle' },
+          onError: {, target: 'idle' }
         }
       },
-      validating: { always: { target: 'uploading' } },
-      uploading: { on { PROGRESS_UPDATE: {} } },
+      validating: { always: {, target: 'uploading' } },
+      uploading: { on {, PROGRESS_UPDATE: {} } },
       processing: {},
-      completed: { on { RESET: 'idle' } },
-      error: { on { RETRY: 'validating', RESET: 'idle' } }
+      completed: { on {, RESET: 'idle' } },
+      error: { on {, RETRY: 'validating', RESET: 'idle' } }
     }
   });
 
@@ -106,17 +106,17 @@ import type { Document } from '$lib/types';
       // Cast fetch results to `any` before property access to satisfy TypeScript checks.
       const ragStatus = (await fetch('/api/v1/cluster/rag-status')
         .then(r => r.ok ? r.json() : {})
-        .catch(() => ({}))) as any;
+        .catch(() => ({}))) as: any;
       const systemHealth = (await fetch('/api/v1/cluster/health')
         .then(r => r.ok ? r.json() : {})
-        .catch(() => ({}))) as any;
+        .catch(() => ({}))) as: any;
       // Fetch WebGPU support in parallel
       const [webgpuSupported] = await Promise.all([
         enableWebGPU ? checkWebGPUSupport() : Promise.resolve(false)
       ]);
       systemStatus = {
         services: {
-          postgresql: !!ragStatus.postgresql,
+         , postgresql: !!ragStatus.postgresql,
           minio: !!ragStatus.minio,
           qdrant: !!ragStatus.qdrant,
           redis: !!ragStatus.redis,
@@ -143,7 +143,7 @@ import type { Document } from '$lib/types';
       // @ts-ignore navigator.gpu may be not in types
       if (!('gpu' in navigator)) return false;
       // @ts-ignore
-      const adapter = await (navigator as any).gpu.requestAdapter();
+      const adapter = await (navigator as: any).gpu.requestAdapter();
       return !!adapter;
     } catch {
       return false;
@@ -187,7 +187,7 @@ import type { Document } from '$lib/types';
       fileSize: file.size,
       fileType: file.type,
       stages: {
-        validation: 'pending',
+       , validation: 'pending',
         storage: 'pending',
         ocr: enableOCR ? 'pending' : 'skipped',
         embedding: enableEmbedding ? 'pending' : 'skipped',
@@ -197,7 +197,7 @@ import type { Document } from '$lib/types';
         caching: 'pending'
       },
       results: {
-        documentId: null,
+       , documentId: null,
         minioPath: null,
         embeddingId: null,
         vectorId: null,
@@ -205,7 +205,7 @@ import type { Document } from '$lib/types';
         metadata: {}
       },
       performance: {
-        startTime: Date.now(),
+       , startTime: Date.now(),
         endTime: null,
         totalTime: null,
         stageTimings: {}
@@ -240,7 +240,7 @@ import type { Document } from '$lib/types';
         await updateStage(fileId, 'ocr', 'completed');
       }
 
-      // Stage 5 & 6: Embedding + vector store
+      // Stage, 5 & 6: Embedding + vector store
       if (enableEmbedding) {
         await updateStage(fileId, 'embedding', 'processing');
         const embeddingResult = await generateEmbeddings(file, extractedText, fileId);
@@ -361,11 +361,11 @@ import type { Document } from '$lib/types';
       uploadId: fileId,
       caseId,
       metadata: {
-        originalName: file.name,
+       , originalName: file.name,
         uploadTime: new Date().toISOString(),
         userAgent: navigator.userAgent,
         enabledFeatures: {
-          ocr: enableOCR,
+         , ocr: enableOCR,
           embedding: enableEmbedding,
           rag: enableRAG,
           autoTags: enableAutoTags,
@@ -399,7 +399,7 @@ import type { Document } from '$lib/types';
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
+       , model: 'nomic-embed-text',
         prompt: content,
         fileId
       })
@@ -421,7 +421,7 @@ import type { Document } from '$lib/types';
       id: documentRecord.id,
       vector: embeddingResult.embedding,
       payload: {
-        fileName: documentRecord.fileName,
+       , fileName: documentRecord.fileName,
         fileType: documentRecord.fileType,
         caseId: documentRecord.caseId,
         uploadId: fileId,
@@ -431,7 +431,7 @@ import type { Document } from '$lib/types';
     const response = await fetch('/api/v1/qdrant/points/upsert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ collection: 'legal-documents', points: [vectorData] })
+      body: JSON.stringify({, collection: 'legal-documents', points: [vectorData] })
     });
     if (!response.ok) throw new Error('Vector storage failed');
     return await response.json();
@@ -464,14 +464,14 @@ import type { Document } from '$lib/types';
     await fetch('/api/v1/rabbitmq/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ exchange: 'legal-events', routingKey: 'document.uploaded', message: event })
+      body: JSON.stringify({, exchange: 'legal-events', routingKey: 'document.uploaded', message: event })
     });
   }
   function removeFile(index: number) {
     files = files.filter((_, i) => i !== index);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -484,14 +484,14 @@ import type { Document } from '$lib/types';
   }
   function getStageIcon(stage: string) {
     switch (stage) {
-      case 'validation': return Check;
-      case 'storage': return Cloud;
-      case 'ocr': return Loader2;
-      case 'embedding': return Cpu;
-      case 'vectorization': return Database;
-      case 'indexing': return Database;
-      case 'tagging': return Zap;
-      case 'caching': return Database;
+      case, 'validation': return Check;
+      case, 'storage': return Cloud;
+      case, 'ocr': return Loader2;
+      case, 'embedding': return Cpu;
+      case, 'vectorization': return Database;
+      case, 'indexing': return Database;
+      case, 'tagging': return Zap;
+      case, 'caching': return Database;
       default: return Check;
     }
   }
@@ -558,7 +558,7 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- Enhanced, Upload, Zone -->
   <div
-    class="relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 {isDragOver ? 'border-blue-400 bg-blue-50 scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'}"
+    class="relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 {isDragOver ? 'border-blue-400 bg-blue-50 scale-102' : 'border-gray-300 hover:border-gray-400, hover:bg-gray-50'}"
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}

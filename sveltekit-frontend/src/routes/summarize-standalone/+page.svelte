@@ -10,8 +10,8 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with your existing legal AI platform
 -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
   // Removed unused imports (onMount, enhance) and invalid type import ActionData
 
   // Component state
@@ -35,20 +35,20 @@ import type { Document } from '$lib/types';
   const sampleLegalDoc = `MEMORANDUM OF LAW`
   TO: Senior Partner
   from Legal Research Team
-  DATE: August 25, 2025
+ , DATE: August, 25, 2025
   RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
   I. EXECUTIVE SUMMARY
-  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.'
+  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January, 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.'
   II. FACTUAL BACKGROUND
-  ABC Corporation entered into a Master Services Agreement with XYZ Industries on January 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June 30, 2024, with performance benchmarks of 99.5% uptime and response times under 2 seconds.
-  However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding 5 seconds.'
+  ABC Corporation entered into a Master Services Agreement with XYZ Industries on January, 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June, 30, 2024, with performance benchmarks of 99.5% uptime and response times under, 2 seconds.
+  However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over, 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding, 5 seconds.'
   III. LEGAL ANALYSIS
   A. Material Breach Standard
-  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.'
+  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d, 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.'
   Here, XYZ's delays and performance failures substantially frustrated ABC's legitimate expectations under the agreement. The 90-day delay caused ABC to lose a major client contract worth $2.3 million, and the ongoing performance issues have resulted in additional operational costs and customer complaints.
   B. Damages Calculation
   The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:'
-  1. Liquidated damages: $900,000 (90 days × $10,000)
+  1. Liquidated, damages: $900,000 (90 days × $10,000)
   2. Lost profits from terminated client contract: $2,300,000
   3. Additional operational costs: $150,000
   4. Consequential damages from customer loss: $400,000
@@ -56,11 +56,11 @@ import type { Document } from '$lib/types';
   IV. CONCLUSION AND RECOMMENDATIONS
   We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
   Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;'`
-  // Reactive calculations (use $effect in Svelte 5 runes)
+  // Reactive calculations (use $effect in Svelte, 5 runes)
   $effect(() => {
     wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0;
     charCount = reportText.length;
-    // Estimate processing time based on document length (roughly 1 second per 1000 chars)
+    // Estimate processing time based on document length (roughly, 1 second per, 1000 chars)
     estimatedProcessingTime = Math.ceil(charCount / 1000);
   });
   // Sample document loader
@@ -89,7 +89,7 @@ import type { Document } from '$lib/types';
     }
     const reader = new FileReader();
     reader.onload = (e) => {
-      reportText = e.target?.result as string;
+      reportText = e.target?.result as: string;
       activeTab = 'input';
     }
     reader.readAsText(file);
@@ -101,7 +101,7 @@ import type { Document } from '$lib/types';
       return;
     }
     if (reportText.length < 100) {
-      errorMessage = 'Document must be at least 100 characters for meaningful summarization.';
+      errorMessage = 'Document must be at least, 100 characters for meaningful summarization.';
       return;
     }
     isLoading = true;
@@ -122,7 +122,7 @@ import type { Document } from '$lib/types';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: reportText,
+         , text: reportText,
           options: {
             summaryLength,
             includeKeyTerms,
@@ -143,7 +143,7 @@ import type { Document } from '$lib/types';
           setTimeout(() => activeTab = 'analysis', 1000);
         }
       } else {
-        errorMessage = data.error || 'An unknown error occurred during summarization.';
+        errorMessage = data.error || 'An: unknown error occurred during summarization.';
         processingSteps.push('❌ Processing failed');
       }
     } catch (error) {
@@ -363,7 +363,7 @@ import type { Document } from '$lib/types';
         {:else}
           <div, class="empty-state">
             <h3>⚖️ No Legal Analysis Available</h3>
-            <p>Enable "Include Risk Analysis" in the options and process a document to see legal analysis here.</p>
+            <p>Enable, "Include Risk Analysis" in the options and process a document to see legal analysis here.</p>
           </div>
         {/if}
       </div>
@@ -375,7 +375,7 @@ import type { Document } from '$lib/types';
   .summarization-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+   , padding: 2rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   .page-header {
@@ -393,7 +393,7 @@ import type { Document } from '$lib/types';
   .subtitle {
     color: #6b7280;
     font-size: 1.1rem;
-    margin: 0.5rem 0 1.5rem;
+   , margin: 0.5rem, 0 1.5rem;
   }
   .status-bar {
     display: flex;
@@ -430,7 +430,7 @@ import type { Document } from '$lib/types';
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+   , gap: 0.5rem;
   }
   .tab:hover:not(:disabled) {
     background: rgba(59, 130, 246, 0.1);
@@ -448,7 +448,7 @@ import type { Document } from '$lib/types';
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
+    from {, transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
   }
 
@@ -464,7 +464,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 1rem;
   }
   .options-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
@@ -480,7 +480,7 @@ import type { Document } from '$lib/types';
   }
   .option-group label {
     font-weight: 500;
-    color: #374151;
+   , color: #374151;
   }
   .option-group select,
   .option-group input[type="range"] {
@@ -498,7 +498,7 @@ import type { Document } from '$lib/types';
   #document-input {
     width: 100%;
     padding: 1rem;
-    border: 2px solid #e5e7eb;
+   , border: 2px solid #e5e7eb;
     border-radius: 0.5rem;
     font-family: 'Consolas', 'Monaco', monospace;
     font-size: 0.9rem;
@@ -507,9 +507,9 @@ import type { Document } from '$lib/types';
     transition: border-color 0.2s ease;
   }
   #document-input:focus {
-    outline: none;
+   , outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
   .input-footer {
     margin-top: 1rem;
@@ -529,7 +529,7 @@ import type { Document } from '$lib/types';
   }
   .btn-primary {
     background: #3b82f6;
-    color: white;
+   , color: white;
   }
   .btn-primary:hover:not(:disabled) {
     background: #2563eb;
@@ -537,7 +537,7 @@ import type { Document } from '$lib/types';
   .btn-outline {
     background: transparent;
     border: 1px solid #d1d5db;
-    color: #374151;
+   , color: #374151;
   }
   .btn-outline:hover:not(:disabled) {
     background: #f9fafb;
@@ -569,7 +569,7 @@ import type { Document } from '$lib/types';
     animation: pulse 1s infinite;
   }
   .step.completed {
-    background: #f0fdf4;
+   , background: #f0fdf4;
     border-left: 4px solid #10b981;
   }
   @keyframes pulse {
@@ -605,7 +605,7 @@ import type { Document } from '$lib/types';
     border: 1px solid #e5e7eb;
   }
   .metadata-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
@@ -625,7 +625,7 @@ import type { Document } from '$lib/types';
   .term-tag {
     background: #3b82f6;
     color: white;
-    padding: 0.25rem 0.75rem;
+   , padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.8rem;
     font-weight: 500;
@@ -660,7 +660,7 @@ import type { Document } from '$lib/types';
   }
   /* File input styling */
   #file-input {
-    display: none;
+   , display: none;
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -681,7 +681,7 @@ import type { Document } from '$lib/types';
     .result-header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 1rem;
+     , gap: 1rem;
     }
     .metadata-grid {
       grid-template-columns: 1fr;

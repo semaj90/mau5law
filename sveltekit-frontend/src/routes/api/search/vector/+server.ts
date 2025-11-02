@@ -13,11 +13,11 @@
  * GET  /api/search/vector   →  Return service health + status
  */
 
-import { json } from '@sveltejs/kit';
-import { enhancedVectorSearchService } from '$lib/server/ai/vector-search-service-instance';
-import { securityService } from '$lib/services/security.js';
-import { generateEmbedding } from '$lib/server/ai/embeddings-simple';
-import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
+import { json } from, '@sveltejs/kit';
+import { enhancedVectorSearchService } from, '$lib/server/ai/vector-search-service-instance';
+import { securityService } from, '$lib/services/security.js';
+import { generateEmbedding } from, '$lib/server/ai/embeddings-simple';
+import type { VectorSearchQueryResult, SearchResult } from, '$lib/types/search';
 
 // POST — Main vector search handler
 export const POST = async ({ request }) => {
@@ -79,7 +79,7 @@ export const GET = async () => {
         success: true,
         status: 'ok',
         services: svc.getStatus?.() ?? 'active',
-        endpoints: { search: 'POST /api/search/vector' },
+        endpoints: {, search: 'POST /api/search/vector' },
         timestamp: new Date().toISOString()
       },
       { headers: securityService.getSecurityHeaders() }

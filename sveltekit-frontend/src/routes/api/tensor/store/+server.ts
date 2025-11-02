@@ -3,8 +3,8 @@
  * Routes to QUIC /tensor/store → TensorManager.StoreTensor()
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 // Tensor storage schema per architecture docs
 const TensorStoreSchema = z.object({
   tensor_id: z.string(),
@@ -12,7 +12,7 @@ const TensorStoreSchema = z.object({
   dimensions: z.array(z.number()),
   dtype: z.enum(['float32', 'float64', 'int32', 'int64']).default('float32'),
   metadata: z.object({
-    model: z.string(),
+   , model: z.string(),
     source: z.string(),
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
     lod_levels: z.number().min(1).max(5).default(3)
@@ -20,7 +20,7 @@ const TensorStoreSchema = z.object({
 });
 type TensorStoreRequest = z.infer<typeof, TensorStoreSchema>;
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const, POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
@@ -31,10 +31,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const bodyTyped = body as TensorStoreRequest;
     const validatedData = TensorStoreSchema.safeParse(bodyTyped);
     if (!validatedData.success) {
-      // Return structured JSON for validation failures instead of using error() with an object
+      // Return structured JSON for validation failures instead of using error() with an: object
       return json(
         {
-          success: false,
+         , success: false,
           message: 'Invalid tensor data format',
           errors: validatedData.error.errors
         },

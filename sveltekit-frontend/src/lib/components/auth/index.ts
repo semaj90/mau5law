@@ -1,18 +1,18 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
- * Authentication Components Export - Svelte 5 Compatible
+ * Authentication Components Export - Svelte, 5 Compatible
  * User authentication and authorization components
  */
 // Core Auth Components
-export { default, as AuthGuard } from './AuthGuard.svelte.js';
-export { default, as RoleGuard } from './RoleGuard.svelte.js';
-export { default, as PermissionGuard } from './PermissionGuard.svelte.js';
-export { default, as LoginButton } from './LoginButton.svelte.js';
-export { default, as AuthProvider } from './AuthProvider.svelte.js';
-export { default, as AuthForm } from './AuthForm.svelte.js';
-export { default, as NesAuthModal } from './NesAuthModal.svelte.js';
+export { default, as AuthGuard } from, './AuthGuard.svelte.js';
+export { default, as RoleGuard } from, './RoleGuard.svelte.js';
+export { default, as PermissionGuard } from, './PermissionGuard.svelte.js';
+export { default, as LoginButton } from, './LoginButton.svelte.js';
+export { default, as AuthProvider } from, './AuthProvider.svelte.js';
+export { default, as AuthForm } from, './AuthForm.svelte.js';
+export { default, as NesAuthModal } from, './NesAuthModal.svelte.js';
 // Re-export auth store for convenience
-export { authStore, useAuth } from '$lib/stores/auth-store.svelte';
+export { authStore, useAuth } from, '$lib/stores/auth-store.svelte';
 // Auth utility types
 export type AuthComponentProps = {
   children?: import('svelte').Snippet;

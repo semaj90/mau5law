@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Case Transformation Utilities
  * Handles snake_case <-> camelCase conversion between database and frontend
@@ -44,15 +44,15 @@ export const REVERSE_FIELD_MAPPINGS = Object.fromEntries(
   Object.entries(COMMON_FIELD_MAPPINGS).map(([snake, camel]) => [camel, snake])
 ) as Record<string, string>;
 /**
- * Convert snake_case object keys to camelCase
+ * Convert snake_case: object keys to camelCase
  */
 export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
-  if (obj === null || obj === undefined) return obj as unknown as T;
+  if (obj === null || obj === undefined) return obj as: unknown as T;
   if (Array.isArray(obj)) {
     return obj.map(item => typeof item === 'object' ? toCamelCase(item) : item) as T;
   }
-  if (typeof obj !== 'object') return obj as unknown as T;
-  const converted: { [key: string]: any } = {}
+  if (typeof obj !== 'object') return obj as: unknown as T;
+  const, converted: { [key: string]: any } = {}
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit mapping first, then fallback to auto-conversion
     const camelKey = COMMON_FIELD_MAPPINGS[key as keyof typeof COMMON_FIELD_MAPPINGS] ||
@@ -64,18 +64,18 @@ export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
       converted[camelKey] = value;
     }
   }
-  return converted as unknown as T;
+  return converted as: unknown as T;
 }
 /**
- * Convert camelCase object keys to snake_case
+ * Convert, camelCase: object keys to snake_case
  */
 export function toSnakeCase<T = any>(obj: { [key: string]: any }): T {
-  if (obj === null || obj === undefined) return obj as unknown as T;
+  if (obj === null || obj === undefined) return obj as: unknown as T;
   if (Array.isArray(obj)) {
     return obj.map(item => typeof item === 'object' ? toSnakeCase(item) : item) as T;
   }
-  if (typeof obj !== 'object') return obj as unknown as T;
-  const converted: { [key: string]: any } = {}
+  if (typeof obj !== 'object') return obj as: unknown as T;
+  const, converted: { [key: string]: any } = {}
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit reverse mapping first, then fallback to auto-conversion
     const snakeKey = REVERSE_FIELD_MAPPINGS[key] ||
@@ -87,7 +87,7 @@ export function toSnakeCase<T = any>(obj: { [key: string]: any }): T {
       converted[snakeKey] = value;
     }
   }
-  return converted as unknown as T;
+  return converted as: unknown as T;
 }
 /**
  * Database-safe query helper - converts camelCase input to snake_case for SQL
@@ -115,14 +115,14 @@ export interface DatabaseUser { id: string;, email: string;
   avatar_url?: string;
   [key: string]: any;
 }
-export interface FrontendUser { id: string;, email: string;
+export interface FrontendUser {, id: string;, email: string;
   firstName?: string;
   lastName?: string;
   hashedPassword?: string;
   isActive: boolean;
   emailVerified: boolean;
   createdAt: Date;
-  updatedAt: Date;
+ , updatedAt: Date;
   avatarUrl?: string;
   [key: string]: any;
 }

@@ -14,9 +14,9 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-import fetch from 'node-fetch';
-import type { GemmaEmbeddingService } from './gemma-embedding-service';
-import type { PgVectorIndexingService } from './pgvector-indexing-service';
+import fetch from, 'node-fetch';
+import type { GemmaEmbeddingService } from, './gemma-embedding-service';
+import type { PgVectorIndexingService } from, './pgvector-indexing-service';
 /**
  * MCP Context7 Configuration
  */
@@ -28,8 +28,8 @@ export interface MCPContext7Config { baseUrl: string;, workers: number;
 /**
  * Function Call Request
  */
-export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';, input: {
-    text: string;
+export interface FunctionCallRequest {, functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';, input: {
+   , text: string;
     context?: string;
     query?: string;
     parameters?: Record<string, unknown>;
@@ -50,14 +50,14 @@ export interface FunctionCallResponse { functionName: string;, result: any;
 /**
  * Parallel Embedding Request
  */
-export interface ParallelEmbeddingRequest { texts: string[];, embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
+export interface ParallelEmbeddingRequest {, texts: string[];, embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
   parallelism?: number;
   cacheKeys?: string[];
 }
 /**
  * Parallel Embedding Response
  */
-export interface ParallelEmbeddingResponse { embeddings: number[][];, processingTime: number;
+export interface ParallelEmbeddingResponse {, embeddings: number[][];, processingTime: number;
   workersUsed: number;
   cacheHitCount: number;
   successRate: number;
@@ -65,7 +65,7 @@ export interface ParallelEmbeddingResponse { embeddings: number[][];, processin
 /**
  * Task Distribution Result
  */
-export interface TaskDistributionResult { taskId: string;, workerIds: string[];
+export interface TaskDistributionResult {, taskId: string;, workerIds: string[];
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
   results?: any[];
@@ -75,11 +75,11 @@ export interface TaskDistributionResult { taskId: string;, workerIds: string[];
  * MCP Context7 Embedding Integration Service
  */
 export class MCPContext7EmbeddingIntegration {
-  private config: MCPContext7Config;
+  private, config: MCPContext7Config;
   private embeddingService?: GemmaEmbeddingService;
   private vectorService?: PgVectorIndexingService;
   private isAvailable = $state(false);
-  private workerPool: Map<string, { busy: boolean; tasksCompleted: number }> = new Map();
+  private workerPool: Map<string, { busy: boolean;, tasksCompleted: number }> = new Map();
   constructor(
     config: MCPContext7Config,
     embeddingService?: GemmaEmbeddingService,
@@ -172,7 +172,7 @@ export class MCPContext7EmbeddingIntegration {
     workerId: string,
     embeddingType: string
   ): Promise<{ embeddings: number[][];, cacheHitCount: number;
-    success: boolean;
+   , success: boolean;
   }> {
     try {
       const response = await fetch(`${this.config.baseUrl}/embed`, {
@@ -232,7 +232,7 @@ export class MCPContext7EmbeddingIntegration {
       const data = (await response.json()) as { result: any;, model: string;
       };
       return {
-        functionName: request.functionName,
+       , functionName: request.functionName,
         result: data.result,
         processingTime: Date.now() - startTime,
         model: data.model,
@@ -255,7 +255,7 @@ export class MCPContext7EmbeddingIntegration {
    * Batch function calling for multiple inputs
    */
   async batchFunctionCall(
-    requests: FunctionCallRequest[]
+   , requests: FunctionCallRequest[]
   ): Promise<FunctionCallResponse[]> {
     try {
       // Distribute across available workers
@@ -284,7 +284,7 @@ export class MCPContext7EmbeddingIntegration {
    * Local fallback: parallel embedding without MCP
    */
   private async localParallelEmbedding(
-    request: ParallelEmbeddingRequest
+   , request: ParallelEmbeddingRequest
   ): Promise<ParallelEmbeddingResponse> {
     // const $startTime = Date.now(); // Performance timing for future optimization
     if (!this.embeddingService) {
@@ -308,7 +308,7 @@ export class MCPContext7EmbeddingIntegration {
    * Local fallback: function call using direct Ollama
    */
   private async localFunctionCall(
-    request: FunctionCallRequest
+   , request: FunctionCallRequest
   ): Promise<FunctionCallResponse> {
     // Placeholder for local function call implementation
     // Would typically call Ollama directly with prompt engineering
@@ -325,7 +325,7 @@ export class MCPContext7EmbeddingIntegration {
    */
   getWorkerStats(): { totalWorkers: number;, busyWorkers: number;
     totalTasksCompleted: number;
-    averageTasksPerWorker: number;
+   , averageTasksPerWorker: number;
   } {
     let busyCount = 0;
     let totalTasks = 0;
@@ -342,7 +342,7 @@ export class MCPContext7EmbeddingIntegration {
     };
   }
   /**
-   * Utility: chunk array for distribution
+   *, Utility: chunk array for distribution
    */
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
@@ -373,7 +373,7 @@ export async function createMCPContext7EmbeddingIntegration(
  * Default MCP Context7 Configuration
  */
 export const DEFAULT_MCP_CONFIG: Partial<MCPContext7Config> = {
-  baseUrl: 'http://localhost:3002',
+ , baseUrl: 'http://localhost:3002',
   workers: 8,
   timeout: 30000,
   retryAttempts: 3,

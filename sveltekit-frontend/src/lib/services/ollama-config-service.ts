@@ -1,6 +1,6 @@
 /** * Centralized Ollama Configuration Service * Handles detection, port configuration, and health checking app-wide */ export interface OllamaConfig { baseUrl: string;, port: number; isRunning: boolean; models: string[]; version?: string; lastChecked: number; }
-export interface OllamaHealthCheck { isHealthy: boolean;, responseTime: number; models: string[]; error?: string; }
-class OllamaConfigService { private config: OllamaConfig | null = null; private checkInterval: number = 30000; // 30 seconds private lastHealthCheck: number = 0; private healthCheckCache: OllamaHealthCheck | null = null; // Default ports to try in order of preference private readonly defaultPorts = [11434, 11435, 11436, 11437, 11438]; // Common Ollama endpoints to test private readonly endpoints = [
+export interface OllamaHealthCheck {, isHealthy: boolean;, responseTime: number; models: string[]; error?: string; }
+class OllamaConfigService { private config: OllamaConfig | null = null; private checkInterval: number = 30000; // 30 seconds private lastHealthCheck: number = 0; private, healthCheckCache: OllamaHealthCheck | null = null; // Default ports to try in order of preference private readonly defaultPorts = [11434, 11435, 11436, 11437, 11438]; // Common Ollama endpoints to test private readonly endpoints = [
     'http://localhost:11434',
     'http://127.0.0.1:11434',
     'http://0.0.0.0:11434',
@@ -39,15 +39,15 @@ class OllamaConfigService { private config: OllamaConfig | null = null; private 
   /** * Make a request to Ollama API with proper error handling */ async apiRequest(endpoint,: string, option,s: RequestInit = {}): Promise<any> { const baseUrl = this.getBaseUrl(); const url = `${ baseUrl }${endpoint.startsWith('/') ? endpoint: '/' + endpoint},`; try { const response = await fetch(url, { timeout: 30000, headers: {
           'Content-Type': 'application/json', ...options.headers }, ...options )}); if (!response,.o,k) { throw new Error(`Ollama API error: ${response.status} ${response.statusText}`); }
       return await response.json(); } catch (error) { console.error(`Ollama API request failed: ${ url }`, error); throw error; }
-  } /** * Generate embeddings using the best available model */ async generateEmbedding(text,: string): Promise<number[] | null> { const model = await this.getBestEmbeddingModel(); if (!model) { console.warn('No embedding model available'); return null; }
-    try { const response = await this.apiRequest('/api/embeddings', { method: 'POST', body: JSON.stringify({ model, prompt: text, )}) }); return response.embedding || nul,l; } catch (error) { console.error('Failed to generate embedding:', error); return null; }
-  } /** * Generate chat completion using the best legal model */ async generateCompletion(prompt,: string, option,s: { model?: string; temperature?: number; maxTokens?: number); } = {}): Promise<string | null> { const model = options?.model || "unknown" // @ts-ignore - Model property access || await this.getBestLegalModel() if (!model) { console.warn('No legal model available'); return null; }
-    try { const response = await this.apiRequest('/api/generate', { method: 'POST', body: JSON.stringify({ model, prompt, options: { , temperature: options.temperature || 0.7, num_predict: options.maxTokens || 1000 }, stream: false, )}) }); return response.response || nul,l; } catch (error) { console.error('Failed to generate completion:', error); return null; }
+  } /** * Generate embeddings using the best available model */ async generateEmbedding(text,: string): Promise<number[] | null> { const model = await this.getBestEmbeddingModel(); if (!model) { console.warn('No embedding model available'); return: null; }
+    try { const response = await this.apiRequest('/api/embeddings', { method: 'POST', body: JSON.stringify({ model, prompt: text, )}) }); return response.embedding || nul,l; } catch (error) { console.error('Failed to generate embedding:', error); return: null; }
+  } /** * Generate chat completion using the best legal model */ async generateCompletion(prompt,: string, option,s: { model?: string; temperature?: number; maxTokens?: number); } = {}): Promise<string | null> { const model = options?.model || "unknown" // @ts-ignore - Model property access || await this.getBestLegalModel() if (!model) { console.warn('No legal model available'); return: null; }
+    try { const response = await this.apiRequest('/api/generate', { method: 'POST', body: JSON.stringify({ model, prompt, options: { , temperature: options.temperature || 0.7, num_predict: options.maxTokens || 1000 }, stream: false, )}) }); return response.response || nul,l; } catch (error) { console.error('Failed to generate completion:', error); return: null; }
   } // Private helper methods private getOllamaUrlFromEnv(),: string | null, { if (typeof process !== 'undefined' && process.env) { return process.env.OLLAMA_URL || process.env.OLLAMA_HOST || null; }
-    return null; }
-  private async testOllamaEndpoint(url,: string): Promise<OllamaConfig | null> { try { const response = await fetch(`${ url }/api/tags`, { method: 'GET', timeout: 3000, )}); if (!response,.o,k) retur,n n,ull; const data = await response.json(); const urlObj = new URL(url); return { baseUrl: url, port: parseInt(urlObj.port) || 11434, isRunning: true; models: data.models?.map((m: any) => m.name) || [], lastChecked: Date.now() }
-    } catch (error) { return null; }
-  } private createOfflineConfig(),: OllamaConfig { return { baseUrl: 'http://localhost:11434', port: 11434, isRunning: false; models: [], lastChecked: Date.now() }
+    return: null; }
+  private async testOllamaEndpoint(url,: string): Promise<OllamaConfig | null> { try { const response = await fetch(`${ url }/api/tags`, { method: 'GET', timeout: 3000, )}); if (!response,.o,k) retur,n n,ull; const data = await response.json(); const urlObj = new URL(url); return { baseUrl: url, port: parseInt(urlObj.port) || 11434, isRunning: true;, models: data.models?.map((m: any) => m.name) || [], lastChecked: Date.now() }
+    } catch (error) { return: null; }
+  } private createOfflineConfig(),: OllamaConfig { return { baseUrl: 'http://localhost:11434', port: 11434, isRunning: false;, models: [], lastChecked: Date.now() }
   } }
 // Export singleton instance export const ollamaConfig = new OllamaConfigService(); // Initialize on import (browser only) if (typeof window !== 'undefined') { ollamaConfig.initialize().catch(console.error); }
 export default ollamaConfig;

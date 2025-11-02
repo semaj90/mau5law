@@ -1,6 +1,6 @@
-import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
-import postgres from 'postgres';
-import * as schema from './schema-postgres.js';
+import { drizzle, type NodePgDatabase } from, 'drizzle-orm/node-postgres';
+import postgres from, 'postgres';
+import * as schema from, './schema-postgres.js';
 // ===============================
 // Configuration & Environment
 // ===============================
@@ -28,7 +28,7 @@ function getAdminDatabaseUrl(): string {
 let runtimeConnectionSingleton: postgres.Sql | null = null;
 let adminConnectionSingleton: postgres.Sql | null = null;
 let runtimeDb: NodePgDatabase<typeof schema> | null = null;
-let adminDb: NodePgDatabase<typeof schema> | null = null;
+let, adminDb: NodePgDatabase<typeof schema> | null = null;
 // ===============================
 // Connection Creators
 // ===============================
@@ -38,8 +38,8 @@ export function createRuntimeConnection(): NodePgDatabase<typeof, schema> {
     runtimeConnectionSingleton = postgres(url, {
       max: Number(process.env.PG_MAX_CLIENTS ?? 10)
     });
-    // drizzle's inferred return may be typed as unknown here -> cast to the expected NodePgDatabase type'
-    runtimeDb = drizzle(runtimeConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof, schema>;
+    // drizzle's inferred return may be typed as: unknown here -> cast to the expected NodePgDatabase type'
+    runtimeDb = drizzle(runtimeConnectionSingleton, { schema }) as: unknown as NodePgDatabase<typeof, schema>;
   }
   return runtimeDb!;
 }
@@ -50,7 +50,7 @@ export function createAdminConnection(): NodePgDatabase<typeof, schema> {
       max: Number(process.env.PG_ADMIN_MAX_CLIENTS ?? 5)
     });
     // same cast for admin DB
-    adminDb = drizzle(adminConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof, schema>;
+    adminDb = drizzle(adminConnectionSingleton, { schema }) as: unknown as NodePgDatabase<typeof, schema>;
   }
   return adminDb!;
 }
@@ -60,13 +60,13 @@ export function createAdminConnection(): NodePgDatabase<typeof, schema> {
 export async function testRuntimeConnection(): Promise<boolean> {
   try {
     const client = runtimeConnectionSingleton ?? postgres(getDatabaseUrl());
-    // avoid `any` by using unknown and runtime checks
-    const res: Array<{ ok: number }> = await client`SELECT 1 as ok`;
+    // avoid `any` by using: unknown and runtime checks
+    const res: Array<{, ok: number }> = await client`SELECT, 1 as ok`;
     // Only close if we created a temporary connection and it supports .end()
     if (!runtimeConnectionSingleton && typeof (client as { end?: () => Promise<void> }).end === 'function') {
       await (client as { end: () => Promise<void> }).end();
     }
-    return Array.isArray(res) && (res as unknown[]).length > 0;
+    return Array.isArray(res) && (res as: unknown[]).length > 0;
   } catch (err) {
     console.error('❌ Runtime DB connection test failed:', err);
     return false;
@@ -75,12 +75,12 @@ export async function testRuntimeConnection(): Promise<boolean> {
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = adminConnectionSingleton ?? postgres(getAdminDatabaseUrl());
-    const res: Array<{ ok: number }> = await client`SELECT 1 as ok`;
+    const res: Array<{, ok: number }> = await client`SELECT, 1 as ok`;
     // Only close the connection if we created a new one and it's not the singleton'
-    if (!adminConnectionSingleton && typeof (client as unknown as { end?: () => Promise<void> }).end === 'function') {
-      await (client as unknown as { end: () => Promise<void> }).end();
+    if (!adminConnectionSingleton && typeof (client as: unknown as { end?: () => Promise<void> }).end === 'function') {
+      await (client as: unknown as {, end: () => Promise<void> }).end();
     }
-    return Array.isArray(res) && (res as unknown[]).length > 0;
+    return Array.isArray(res) && (res as: unknown[]).length > 0;
   } catch (err) {
     console.error('❌ Admin DB connection test failed:', err);
     return false;
@@ -118,7 +118,7 @@ async function initializeDatabase(): Promise<void> {
   if (!isDev) {
     console.log('🔄 initializeDatabase: production initialization placeholder');
     // Recommended: Use Drizzle ORM migrations.
-    // Example: import { migrate } from 'drizzle-orm/node-postgres/migrator';
+    //, Example: import { migrate } from, 'drizzle-orm/node-postgres/migrator';
     // await migrate(runtimeDb, { migrationsFolder: `./drizzle/migrations` });
     // See https://orm.drizzle.team/docs/migrations for details.
   }
@@ -148,4 +148,4 @@ export const getAdminDbClient = createAdminConnection;
 // ===============================
 // Re-export schema
 // ===============================
-export * from './schema-postgres.js';
+export * from, './schema-postgres.js';

@@ -2,11 +2,11 @@
  * Legal Case Management State Machine
  * Comprehensive XState v5 machine for managing legal case workflows
  */
-import { setup, assign, createActor, fromPromise } from 'xstate';
-import type { Case, Evidence, NewCase, NewEvidence } from '../server/db/schema-types.js';
-import { aiSummarizationService } from '../services/ai-summarization-service.js';
-import { vectorSearchService } from '../services/vector-search-service.js';
-import { embedText } from '../server/ai/embedder.js';
+import { setup, assign, createActor, fromPromise } from, 'xstate';
+import type { Case, Evidence, NewCase, NewEvidence } from, '../server/db/schema-types.js';
+import { aiSummarizationService } from, '../services/ai-summarization-service.js';
+import { vectorSearchService } from, '../services/vector-search-service.js';
+import { embedText } from, '../server/ai/embedder.js';
 // Context types
 export interface LegalCaseContext {
   // Case data
@@ -36,7 +36,7 @@ export interface LegalCaseContext {
   isLoading: boolean;
   error: string | null;
   // Form data
-  formData: { caseForm: Partial<NewCase>;, evidenceForm: Partial<NewEvidence>;
+  formData: {, caseForm: Partial<NewCase>;, evidenceForm: Partial<NewEvidence>;
   }
   // Workflow state
   workflowStage: 'investigation' | 'analysis' | 'preparation' | 'review' | 'closed';
@@ -45,7 +45,7 @@ export interface LegalCaseContext {
   collaborators: Array<any>;
   notifications: Array<any>;
   // Performance tracking
-  stats: { totalEvidence: number;, processedEvidence: number;
+  stats: {, totalEvidence: number;, processedEvidence: number;
     averageConfidence: number;
     processingTime: number;
   }
@@ -87,7 +87,7 @@ export type LegalCaseEvents =
   | { type: 'DISMISS_ERROR' }
   // Generic events
   | { type: 'REFRESH' }
-  | { type: 'RESET' }
+  | {, type: 'RESET' }
 // === Services (async operations) ===
 // XState expects functions of the form (context, event) => Promise<any>
 // below we expose functions that return promises; when invoked by the machine we pass them directly
@@ -133,8 +133,8 @@ const searchService = async (_context: LegalCaseContext, event: any): Promise<an
   const query = event?.query ?? '';
   const results = await vectorSearchService.search({
     query,
-    filters: (_context as any).filters,
-    options: { limit: 20 }
+    filters: (_context, as: any).filters,
+    options: {, limit: 20 }
   });
   return results;
 }
@@ -174,7 +174,7 @@ const searchRelatedEvidenceService = async (context: LegalCaseContext, event: an
 // === Guards ===
 const isValidCaseData = ({ context }: { context: LegalCaseContext }) => {
   const { caseForm } = context.formData;
-  return !!(caseForm && (caseForm as any).title && (caseForm as any).description && (caseForm as any).caseNumber);
+  return !!(caseForm && (caseForm as: any).title && (caseForm as: any).description && (caseForm as: any).caseNumber);
 }
 const hasEvidence = ({ context }: { context: LegalCaseContext }) => {
   return Array.isArray(context.evidence) && context.evidence.length > 0;
@@ -201,11 +201,11 @@ const assignEvidence = assign({
   })
 });
 const assignSearchResults = assign({
-  searchResults: (_ctx, event: any) => ((event?.data?.results ?? []) as any[]),
-  searchQuery: (_ctx, event: any) => ((event?.query ?? '') as string)
+  searchResults: (_ctx, event: any) => ((event?.data?.results ?? []) as: any[]),
+  searchQuery: (_ctx, event: any) => ((event?.query ?? '') as: string)
 });
 const assignError = assign({
-  error: (_ctx, event: any) => ((event?.data?.message ?? String(event?.data ?? event?.error ?? 'An error occurred')) as string),
+  error: (_ctx, event: any) => ((event?.data?.message ?? String(event?.data ?? event?.error ?? 'An error occurred')) as: string),
   isLoading: () => false
 });
 const setLoading = assign({
@@ -234,14 +234,14 @@ const updateWorkflowStage = assign({
       review: ['Final review', 'Quality check', 'Prepare for court'],
       closed: ['Archive case', 'Generate reports', 'Post-case analysis']
     }
-    return (nextActionsMap as any)[event.stage] || [];
+    return (nextActionsMap as: any)[event.stage] || [];
   }
 });
 const assignAIProgress = assign({
   aiAnalysisProgress: (_ctx, event: any) => (event?.progress ?? 0)
 });
 const assignAISummary = assign({
-  aiSummary: (_ctx, event: any) => ((event?.data?.summary ?? null) as string | null),
+  aiSummary: (_ctx, event: any) => ((event?.data?.summary ?? null) as: string | null),
   aiAnalysisProgress: () => 100,
   stats: (context: LegalCaseContext, event: any) => ({
     ...context.stats,
@@ -264,7 +264,7 @@ const assignRelatedEvidence = assign({
 export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>({
   id: 'legalCase',
   context: {
-    case null,
+   , case: null,
     caseId: null,
     evidence: [],
     selectedEvidence: null,
@@ -281,7 +281,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     isLoading: false,
     error: null,
     formData: {
-      caseForm: { [key,: strin,g]: any },
+     , caseForm: { [key,: strin,g]: any },
       evidenceForm: { [key,: strin,g]: any }
     },
     workflowStage: 'investigation',
@@ -289,27 +289,27 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     collaborators: [],
     notifications: [],
     stats: {
-      totalEvidence: 0,
+     , totalEvidence: 0,
       processedEvidence: 0,
       averageConfidence: 0,
       processingTime: 0
     }
   },
   initial: 'idle',
-  states: { idle: {, on: { LOAD_CASE: {, target: 'loadingCase',
+  states: {, idle: {, on: {, LOAD_CASE: {, target: 'loadingCase',
           actions: 'setLoading'
         },
         CREATE_CASE: {
-          target: 'creatingCase',
+         , target: 'creatingCase',
           cond: 'isValidCaseData',
           actions: 'setLoading'
         },
         SEARCH: {
-          target: 'searching',
+         , target: 'searching',
           actions: 'setLoading'
         },
         SWITCH_TAB: {
-          actions: 'switchTab'
+         , actions: 'switchTab'
         }
       }
     },
@@ -336,31 +336,31 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           ]
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions,: 'assignError'
         }
       }
     },
     caseLoaded: {
-      initial: 'loadingEvidence',
+     , initial: 'loadingEvidence',
       entry,: [
         assign({ isLoading: () => false })
       ],
       states,: { loadingEvidence: {, invoke: {
-            id: 'loadEvidence',
+           , id: 'loadEvidence',
             src,: loadEvidenceService
             onDone: {
-              target: 'ready',
+             , target: 'ready',
               actions,: 'assignEvidence'
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: 'assignError'
             }
           }
         },
-        ready: { on: {, ADD_EVIDENCE: {
-              target: 'uploadingEvidence',
+        ready: {, on: {, ADD_EVIDENCE: {
+             , target: 'uploadingEvidence',
               actions,: [
                 'setLoading',
                 assign({
@@ -369,37 +369,37 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               ]
             },
             PROCESS_EVIDENCE: {
-              target: 'processingEvidence',
+             , target: 'processingEvidence',
               actions,: 'setLoading'
             },
             START_AI_ANALYSIS: {
-              target: 'aiAnalysis',
+             , target: 'aiAnalysis',
               actions,: 'setLoading',
               cond,: 'hasEvidence'
             },
             FIND_SIMILAR_CASES: {
-              target: 'findingSimilarCases',
+             , target: 'findingSimilarCases',
               actions,: 'setLoading'
             },
             GENERATE_EMBEDDING: {
-              target: 'generatingEmbedding',
+             , target: 'generatingEmbedding',
               actions,: 'setLoading'
             },
             SEARCH_RELATED_EVIDENCE: {
-              target: 'searchingRelatedEvidence',
+             , target: 'searchingRelatedEvidence',
               actions,: 'setLoading'
             },
             UPDATE_CASE: {
-              target: 'updatingCase',
+             , target: 'updatingCase',
               actions,: 'setLoading'
             },
             DELETE_CASE: {
-              target: 'deletingCase',
+             , target: 'deletingCase',
               actions,: 'setLoading'
             }
           }
         },
-        uploadingEvidence: { invoke: {, id: 'uploadEvidence',
+        uploadingEvidence: {, invoke: {, id: 'uploadEvidence',
             src,: async (context: LegalCaseContext) => {
               const formData = new FormData();
               (context.uploadQueue || []).forEach((file: any) => formData.append('files', file);
@@ -429,15 +429,15 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               ]
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: 'assignError'
             }
           }
         },
-        processingEvidence: { invoke: {, id: 'processEvidence',
+        processingEvidence: {, invoke: {, id: 'processEvidence',
             src,: processEvidenceService
             onDone: {
-              target: 'ready',
+             , target: 'ready',
               actions,: [
                 assign({ isLoading: () => false }),
                 assign({
@@ -451,15 +451,15 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               ]
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: 'assignError'
             }
           }
         },
         aiAnalysis: {
-          initial: 'analyzing',
+         , initial: 'analyzing',
           states,: { analyzing: {, invoke: {
-                id: 'aiSummarizeCase',
+               , id: 'aiSummarizeCase',
                 src,: async (context: LegalCaseContext) => {
                   if (!context.caseId) throw new Error('Missing caseId for AI analysis');
                   return await aiSummarizationService.summarizeCase(context.caseId);
@@ -469,15 +469,15 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
                   actions,: 'assignAISummary'
                 },
                 onError: {
-                  target: '#legalCase.caseLoaded.ready',
+                 , target: '#legalCase.caseLoaded.ready',
                   actions,: 'assignError'
                 }
               },
-              on: { AI_ANALYSIS_PROGRESS: {, actions: 'assignAIProgress' }'` }'`
+              on: {, AI_ANALYSIS_PROGRESS: {, actions: 'assignAIProgress' }'` }'`
             },
             complete: {
               entry: [
-                assign({ isLoading: () => false }),
+                assign({, isLoading: () => false }),
                 assign({
                   notifications: (ctx) => [
                     ...ctx.notifications,
@@ -496,21 +496,21 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             }
           }
         },
-        findingSimilarCases: { invoke: {, id: 'findSimilarCases',
+        findingSimilarCases: {, invoke: {, id: 'findSimilarCases',
             src,: findSimilarCasesService
             onDone: {
-              target: 'ready',
+             , target: 'ready',
               actions,: [
                 assign({ isLoading: () => false }),
                 'assignSimilarCases'
               ]
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: `assignError` }
           }
         },
-        updatingCase: { invoke: {, id: 'updateCase',
+        updatingCase: {, invoke: {, id: 'updateCase',
             src,: async (context: LegalCaseContext, event: any) => {
               const caseId = context.caseId;
               if (!caseId) throw new Error('Missing caseId for update');
@@ -530,11 +530,11 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               ]
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: `assignError` }
           }
         },
-        deletingCase: { invoke: {, id: 'deleteCase',
+        deletingCase: {, invoke: {, id: 'deleteCase',
             src,: async (context: LegalCaseContext) => {
               if (!context.caseId) throw new Error('Missing caseId for delete');
               const response = await fetch(`/api/cases/${context.caseId}`, {
@@ -556,10 +556,10 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               })
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: 'assignError' }'` }'`
         },
-        generatingEmbedding: { invoke: {, id: 'generateEmbedding',
+        generatingEmbedding: {, invoke: {, id: 'generateEmbedding',
             src,: generateEmbeddingService
             onDone: [
               {,
@@ -571,10 +571,10 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               actions,: `assignError` }
           }
         },
-        searchingRelatedEvidence: { invoke: {, id: 'searchRelatedEvidence',
+        searchingRelatedEvidence: {, invoke: {, id: 'searchRelatedEvidence',
             src,: searchRelatedEvidenceService
             onDone: {
-              target: 'ready',
+             , target: 'ready',
               actions,: [
                 'assignRelatedEvidence',
                 assign({
@@ -590,54 +590,54 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               ]
             },
             onError: {
-              target: 'ready',
+             , target: 'ready',
               actions,: 'assignError'
             }
           }
         }
       },
-      on: { SWITCH_TAB: {, actions: 'switchTab'
+      on: {, SWITCH_TAB: {, actions: 'switchTab'
         },
         SET_WORKFLOW_STAGE: {
-          actions: 'updateWorkflowStage'
+         , actions: 'updateWorkflowStage'
         },
         UPDATE_CASE_FORM: {
-          actions: 'updateFormData'
+         , actions: 'updateFormData'
         },
-        SELECT_EVIDENCE: { actions: assign({, selectedEvidence: (_ctx, event: any) => event.evidence
+        SELECT_EVIDENCE: {, actions: assign({, selectedEvidence: (_ctx, event: any) => event.evidence
           })
         },
-        APPLY_FILTERS: { actions: assign({, filters: (_ctx, event: any) => event.filters
+        APPLY_FILTERS: {, actions: assign({, filters: (_ctx, event: any) => event.filters
           })
         },
         REFRESH: {
-          target: '.loadingEvidence' }'` }'`
+         , target: '.loadingEvidence' }'` }'`
     },
-    searching: { invoke: {, id: 'search',
+    searching: {, invoke: {, id: 'search',
         src,: searchService
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions,: [
             assign({ isLoading: () => false }),
             'assignSearchResults'
           ]
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions,: `assignError` }
       }
     },
-    error: { entry: assign({, isLoading: () => false }),
+    error: {, entry: assign({, isLoading: () => false }),
       on,: { RETRY: {, target: 'idle',
           actions,: `clearError` },
         DISMISS_ERROR: {
-          actions: `clearError` }
+         , actions: `clearError` }
       }
     }
   },
-  on: { RESET: {, target: 'idle',
+  on: {, RESET: {, target: 'idle',
       actions,: assign(() => ({,
-        case null,
+        case: null,
         caseId: null,
         evidence: [],
         selectedEvidence: null,
@@ -669,7 +669,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
   }
 },
 {
-  // machine implementations: guards and action mappings; guards: {
+  // machine implementations: guards and action mappings;, guards: {
     isValidCaseData,
     hasEvidence,
     hasAIAnalysis

@@ -6,7 +6,7 @@ export class RetroAudioEngine {
   private audioContext: AudioContext | null = null;
   private getContext(): AudioContext {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext || (window as: any).webkitAudioContext)();
     }
     return this.audioContext;
   }

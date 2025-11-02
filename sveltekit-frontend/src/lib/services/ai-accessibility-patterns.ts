@@ -2,7 +2,7 @@
  * AI-Specific Accessibility Patterns for Legal AI Application
  * Enhanced accessibility features tailored for AI interactions and complex legal outputs
  */
-import { accessibilityService } from './accessibility-service.js';
+import { accessibilityService } from, './accessibility-service.js';
 export interface AIAccessibilityOptions {
   enableVoiceCommands?: boolean;
   progressiveDisclosure?: boolean;
@@ -13,7 +13,7 @@ export interface AIAccessibilityOptions {
 export class AIAccessibilityPatterns {
   private options: Required<AIAccessibilityOptions>;
   private voiceRecognition: SpeechRecognition | null = null;
-  private currentAIContext: string | null = null;
+  private, currentAIContext: string | null = null;
   constructor(_options: AIAccessibilityOptions = {}) {
     this.options = {
       enableVoiceCommands: options.enableVoiceCommands ?? true,
@@ -40,7 +40,7 @@ export class AIAccessibilityPatterns {
       return;
     }
     const SR: typeof window extends { SpeechRecognition: infer T } ? any : any =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      (window, as: any).SpeechRecognition || (window as: any).webkitSpeechRecognition;
     this.voiceRecognition = new SR();
     this.voiceRecognition.continuous = $state(false);
     this.voiceRecognition.interimResults = $state(false);
@@ -89,35 +89,35 @@ export class AIAccessibilityPatterns {
       .ai-component:focus-visible,
       .ai-result:focus-visible,
       .ai-action:focus-visible {
-        outline: 3px solid #00bcd4;
+       , outline: 3px solid #00bcd4;
         outline-offset: 2px;
         border-radius: 4px;
-        box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.2);
+        box-shadow: 0, 0 0 6px rgba(0, 188, 212, 0.2);
         transition: all 0.2s ease;
       }
   .ai-processing:focus-visible {
         outline-color: #ff9800;
-        box-shadow: 0 0 0 6px rgba(255, 152, 0, 0.2);
+        box-shadow: 0, 0 0 6px rgba(255, 152, 0, 0.2);
       }
   .ai-error:focus-visible {
         outline-color: #f44336;
-        box-shadow: 0 0 0 6px rgba(244, 67, 54, 0.2);
+        box-shadow: 0, 0 0 6px rgba(244, 67, 54, 0.2);
       }
   .ai-success:focus-visible {
         outline-color: #4caf50;
-        box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.2);
+        box-shadow: 0, 0 0 6px rgba(76, 175, 80, 0.2);
       }
       /* High contrast mode enhancements */
       @media (prefers-contrast: high) {
         .ai-component:focus-visible {
           outline-width: 4px;
-          box-shadow: 0 0 0 8px rgba(0, 188, 212, 0.4);
+          box-shadow: 0, 0 0 8px rgba(0, 188, 212, 0.4);
         }
       }
       /* Reduced motion support */
       @media (prefers-reduced-motion: reduce) {
         .ai-component:focus-visible {
-          transition: none;
+         , transition: none;
         }
       }
     `;`
@@ -129,7 +129,7 @@ export class AIAccessibilityPatterns {
   createProgressiveDisclosure(
     container: HTMLElement,
     data: any;
-    options: { summary: string; levels: Array<{ label: string; content: any; level: number }> }
+    options: { summary: string; levels: Array<{ label: string; content: any;, level: number }> }
   ) {
     if (typeof document === 'undefined' || !this.options.progressiveDisclosure) {
       if (typeof document !== 'undefined') {
@@ -208,21 +208,21 @@ export class AIAccessibilityPatterns {
     card.className = 'ai-result-card ai-component';
     card.setAttribute('role', 'article');
     card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `AI analysis result: ${(result as any)?.title || 'Untitled` }`);'`
+    card.setAttribute('aria-label', `AI analysis result: ${(result, as: any)?.title || 'Untitled` }`);'`
     card.innerHTML = `
       <header, class="ai-result-header">
-        <h3>${(result as any)?.title || 'AI Analysis Result` }</h3>'`
+        <h3>${(result as: any)?.title || 'AI Analysis Result` }</h3>'`
         <div, class="ai-result-meta" aria-label="Result, metadata">
           <span, class="confidence" aria-label="Confidence, score">
-            Confidence: ${Math.round(((result as any)?.confidence || 0) * 100)}%
+            Confidence: ${Math.round(((result, as: any)?.confidence || 0) * 100)}%
           </span>
           <span, class="timestamp" aria-label="Analysis, time">
-            ${new Date((result as any)?.timestamp || Date.now()).toLocaleString()}
+            ${new Date((result as: any)?.timestamp || Date.now()).toLocaleString()}
           </span>
         </div>
       </header>
       <div, class="ai-result-content" role="region" aria-label="Analysis, content">
-        ${this.formatAIContent((result as any)?.content || result)}
+        ${this.formatAIContent((result as: any)?.content || result)}
       </div>
       <footer, class="ai-result-actions">
         <button class="action-btn, nes-btn, is-success"
@@ -352,7 +352,7 @@ export class AIAccessibilityPatterns {
       - "Next result" or: "Previous result" to navigate between results
       - "Expand details" or: "Collapse details" to show or hide detailed information
       - "Stop analysis" to halt the current AI operation
-      You can also use keyboard navigation:
+      You can also use keyboard, navigation:
       - Tab to move between elements
       - Enter or Space to activate buttons
       - Alt+A to open accessibility settings

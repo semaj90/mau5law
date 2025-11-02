@@ -1,14 +1,14 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
 
 async function generateSummary(content: string): Promise<string> {
   const response = await fetch(getOllamaEndpoint('api/generate'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gemma3-legal:latest',
-      prompt: `Summarize this legal; document:\n\n${content}`,
+     , model: 'gemma3-legal:latest',
+      prompt: `Summarize this legal;, document:\n\n${content}`,
       stream: false
     })
   });
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { content } = await request.json();
 
     if (!content || typeof content !== 'string') {
-      return json({ error: ''content' is required and must be a string.' }, { status: 400 });
+      return json({ error: ''content' is required and must be, a: string.' }, { status: 400 });
     }
 
     const summary = await generateSummary(content);

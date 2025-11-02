@@ -1,12 +1,12 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /*
  * Semantic Search API Endpoint
  * GPU-accelerated semantic search using nomic-embed-text
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
-import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { gpuEmbeddingService } from, '$lib/services/gpu-semantic-embedding-service';
+import type { SemanticSearchRequest } from, '$lib/services/gpu-semantic-embedding-service';
 /*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration
@@ -37,10 +37,10 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Perform semantic search locally using generateEmbeddings (gpuEmbeddingService has no semanticSearch)
-    type SearchResult = { document: string; score: number; index: number };
+    type SearchResult = { document: string; score: number;, index: number };
 
     const embedStart = performance.now();
-    // Safe guard to detect a string: 'model' property without using `any`
+    // Safe guard to detect a: string: 'model' property without using `any`
     const hasStringModel = (obj: any): obj is { model: string } =>
       typeof obj === 'object' && obj !== null && typeof (obj as Record<string, unknown>)['model'] === 'string';
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
     const extractFirstEmbedding = (resp: any): any | undefined => {
-      if (!isRecord(resp)) return undefined;
+      if (!isRecord(resp)) return: undefined;
       const maybeEmb = resp['embeddings'];
       if (Array.isArray(maybeEmb) && maybeEmb.length) return maybeEmb[0];
       const maybeData = resp['data'];
@@ -61,21 +61,21 @@ export const POST: RequestHandler = async ({ request }) => {
         if (isRecord(first) && Array.isArray(first['embedding'])) return first['embedding'];
         return maybeData[0];
       }
-      return undefined;
+      return: undefined;
     };
 
     const toFloat = (v: any): Float32Array | null => {
-      if (!v) return null;
+      if (!v) return: null;
       if (v instanceof Float32Array) return v;
-      if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as number[]);
-      return null;
+      if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as: number[]);
+      return: null;
     };
 
     // Request embeddings for documents in parallel
     const docsEmbeddingsRaw = await Promise.all(
       searchRequest.documents.map(async doc => {
-        const res: any = await gpuEmbeddingService
-          .generateEmbeddings({, text: doc as string, model: modelName })
+        const, res: any = await gpuEmbeddingService
+          .generateEmbeddings({, text: doc, as: string, model: modelName })
           .catch(() => ({}));
         return extractFirstEmbedding(res);
       })
@@ -83,11 +83,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Query embedding
     const queryResp: any = await gpuEmbeddingService
-      .generateEmbeddings({ text: searchRequest.query, model: modelName })
+      .generateEmbeddings({, text: searchRequest.query, model: modelName })
       .catch(() => ({}));
     const qEmbRaw = extractFirstEmbedding(queryResp);
     const qVec = toFloat(qEmbRaw);
-    const docVecs = (docsEmbeddingsRaw as unknown[]).map(toFloat);
+    const docVecs = (docsEmbeddingsRaw as: unknown[]).map(toFloat);
 
     const cosine = (a: Float32Array, b: Float32Array): number => {
       let dot = 0,
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         index: r.index
       })),
       metadata: {
-        documentCount: searchRequest.documents.length,
+       , documentCount: searchRequest.documents.length,
         resultsFound: sorted.length,
         threshold,
         topK,
@@ -161,10 +161,10 @@ export const GET: RequestHandler = async () => {
   return json({
     endpoint: 'POST /api/v1/embeddings/search',
     description: 'GPU-accelerated semantic search using nomic-embed-text embeddings',
-    parameters: { query: {, type: 'string', required: true, description: 'Search query text' },
-      documents: { type: 'string[]', required: true, description: 'Array of documents to search' },
-      threshold: { type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
-      topK: {, type: 'number', required: false, default: 10, description: 'Maximum number of results' },
+    parameters: {, query: {, type: 'string', required: true, description: 'Search query text' },
+      documents: {, type: 'string[]', required: true, description: 'Array of documents to search' },
+      threshold: {, type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
+      topK: {, type: 'number', required: false, default: 10, description: 'Maximum: number of results' },
       useGPU: {, type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' }'` },'`
     response: {
      , success: 'boolean',
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async () => {
         documents: [
           'This contract shall be governed by applicable law',
           'The parties agree to binding arbitration',
-          'Payment terms are net 30 days',
+          'Payment terms are net, 30 days',
         ],
         threshold: 0.4,
         topK: 5,

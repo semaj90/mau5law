@@ -1,4 +1,4 @@
-// Type-Safe API Client for SvelteKit 2
+// Type-Safe API Client for SvelteKit, 2
 // Production-ready client with comprehensive error handling
 import type {
   CaseAPI,
@@ -8,8 +8,8 @@ import type {
   HealthAPI,
   StandardApiResponse,
   RequestOf
-} from '../types/api-contracts.js';
-import { browser } from '$app/environment';
+} from, '../types/api-contracts.js';
+import { browser } from, '$app/environment';
 // API Client Configuration
 export interface ApiClientConfig {
   baseUrl?: string;
@@ -20,7 +20,7 @@ export interface ApiClientConfig {
 // API Client Error Classes
 export class ApiClientError extends Error {
   public readonly statusCode: number;
-  public readonly code: string;
+  public readonly, code: string;
   public readonly details?: Record<string, unknown>;
   public readonly requestId?: string;
   constructor(
@@ -51,7 +51,7 @@ export class TimeoutError extends ApiClientError {
 // Enhanced API Client Class
 class EnhancedApiClient {
   private config: Required<ApiClientConfig>;
-  private abortControllers: Map<string, AbortController> = new Map();
+  private, abortControllers: Map<string, AbortController> = new Map();
   constructor(config: ApiClientConfig = {}) {
     this.config = {
       baseUrl: config.baseUrl || (browser ? '' : 'http://localhost:5173'),
@@ -281,20 +281,20 @@ export const api = { cases: {, list: (params: RequestOf<CaseAPI.List>) => apiCl
     get: (id: string) => apiClient.getCase(id)
   },
   evidence: {
-    list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
+   , list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
     create: (data: RequestOf<EvidenceAPI.Create>) => apiClient.createEvidence(data),
     update: (id: string, data: RequestOf<EvidenceAPI.Update>, custodyNotes?: string) =>
       apiClient.updateEvidence(id, data, custodyNotes),
     delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason)
   },
   ai: {
-    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data)
+   , chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data)
   },
   vectorSearch: {
-    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data)
+   , search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data)
   },
   health: {
-    check: (detailed = false) => apiClient.healthCheck(detailed),
+   , check: (detailed = false) => apiClient.healthCheck(detailed),
     maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) => apiClient.performMaintenance(action)
   }
 };

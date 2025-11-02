@@ -1,14 +1,14 @@
-import { setup, assign, fromPromise } from 'xstate';
-import { writable } from 'svelte/store';
-import type { Actor, StateFrom } from 'xstate';
+import { setup, assign, fromPromise } from, 'xstate';
+import { writable } from, 'svelte/store';
+import type { Actor, StateFrom } from, 'xstate';
 // Recommendation Engine Context with RabbitMQ routing
 export interface RecommendationContext { sessionId: string;, userId: string;
   caseId?: string;
-  currentDocument?: { id: string;, type: 'evidence' | 'contract' | 'brief' | 'deposition';
+  currentDocument?: {, id: string;, type: 'evidence' | 'contract' | 'brief' | 'deposition';
     confidence: number;
   };
-  rabbitMQRouting: { exchange: string;, routingKeys: string[];
-    queues: { highPriority: string;, standardPriority: string;
+  rabbitMQRouting: {, exchange: string;, routingKeys: string[];
+    queues: {, highPriority: string;, standardPriority: string;
       backgroundProcessing: string;
       aiAnalysis: string;
       recommendations: string;
@@ -16,37 +16,37 @@ export interface RecommendationContext { sessionId: string;, userId: string;
     currentQueue?: string;
     messageId?: string;
   };
-  recommendations: { legal: LegalRecommendation[];, documents: DocumentRecommendation[];
+  recommendations: {, legal: LegalRecommendation[];, documents: DocumentRecommendation[];
     actions: ActionRecommendation[];
     risks: RiskRecommendation[];
   };
-  aiModels: { primary: string; //, gemma3:legal-latest,
+  aiModels: {, primary: string; //, gemma3:legal-latest,
     fallback: string[];
     currentModel?: string;
     confidence: number;
   };
-  processingMetrics: { averageLatency: number;, queueDepth: number;
+  processingMetrics: {, averageLatency: number;, queueDepth: number;
     throughput: number;
     errorRate: number;
   };
-  cache: { redisKeys: string[];, hitRate: number;
+  cache: {, redisKeys: string[];, hitRate: number;
     lastUpdate: Date;
   };
   error?: string;
 }
 // Recommendation types
-export interface LegalRecommendation { id: string;, type: 'precedent' | 'statute' | 'regulation' | 'case_law';
+export interface LegalRecommendation {, id: string;, type: 'precedent' | 'statute' | 'regulation' | 'case_law';
   title: string;
   relevance: number;
   summary: string;
   citation?: string;
   confidence: number;
 }
-export interface DocumentRecommendation { id: string;, filename: string;
+export interface DocumentRecommendation {, id: string;, filename: string;
   documentType: string;
   similarity: number;
   excerpt: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 export interface ActionRecommendation { id: string;, action: 'review' | 'investigate' | 'file_motion' | 'gather_evidence' | 'analyze_risk';
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -54,7 +54,7 @@ export interface ActionRecommendation { id: string;, action: 'review' | 'invest
   reasoning: string;
   estimatedTime: string;
 }
-export interface RiskRecommendation { id: string;, category: string;
+export interface RiskRecommendation {, id: string;, category: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   probability: number;
   impact: string;
@@ -66,28 +66,28 @@ type RecommendationRequestPayload = {
   userId?: string;
   caseId?: string;
   documentId?: string;
-  // include any small subset fields that callers may provide
+  // include: any small subset fields that callers may provide
 };
-type CacheHitData = { cachedData: RecommendationContext['recommendations'];, hitRate: number;
+type CacheHitData = {, cachedData: RecommendationContext['recommendations'];, hitRate: number;
   keys: string[];
   cacheHit: true;
 };
-type ProcessingResult = { recommendations: RecommendationContext['recommendations'];, metrics: { latency: number; throughput: number; errorRate?: number };
+type ProcessingResult = {, recommendations: RecommendationContext['recommendations'];, metrics: { latency: number; throughput: number; errorRate?: number };
 };
 // API Response Types
-type RoutingAnalysisResponse = { routingKeys: string[];, recommendedQueue: string;
+type RoutingAnalysisResponse = {, routingKeys: string[];, recommendedQueue: string;
   recommendedModel: string;
 };
 type QueuePublishResponse = {
   messageId: string;
   [key: string]: any;
 };
-type CacheCheckResponse = { cacheHit: boolean;, hitRate: number;
+type CacheCheckResponse = {, cacheHit: boolean;, hitRate: number;
   cachedData?: RecommendationContext['recommendations'];
   keys?: string[];
   [key: string]: any;
 };
-type GenerateRecommendationsResponse = { recommendations: RecommendationContext['recommendations'];, metrics: { latency: number; throughput: number; errorRate?: number };
+type GenerateRecommendationsResponse = {, recommendations: RecommendationContext['recommendations'];, metrics: { latency: number; throughput: number; errorRate?: number };
   [key: string]: any;
 };
 type CacheStoreResponse = {
@@ -110,7 +110,7 @@ type RecommendationEvent =
   | { type: `RESET` };
 // Smart routing recommendation engine with RabbitMQ
 export const recommendationRoutingMachine = setup({
-  types: {} as {, context: RecommendationContext;, events: RecommendationEvent;
+ , types: {} as {, context: RecommendationContext;, events: RecommendationEvent;
   },
   actors: {
     // Analyze routing requirements based on document type and system load
@@ -145,7 +145,7 @@ export const recommendationRoutingMachine = setup({
     routeMessageToQueue: fromPromise(
       async ({
         input
-      }: { input: {, exchange: string;
+      }: {, input: {, exchange: string;
          , routingKey: string;
          , message: Record<string, unknown>;
         };
@@ -174,7 +174,7 @@ export const recommendationRoutingMachine = setup({
     checkRecommendationCache: fromPromise(
       async ({
         input
-      }: { input: {, sessionId: string;
+      }: {, input: {, sessionId: string;
           documentId?: string;
           caseId?: string;
          , cacheKeys: string[];
@@ -199,7 +199,7 @@ export const recommendationRoutingMachine = setup({
     serveCachedData: fromPromise(
       async ({
         input
-      }: { input: {, recommendations: RecommendationContext['recommendations'];
+      }: {, input: {, recommendations: RecommendationContext['recommendations'];
          , sessionId: string;
         };
       }) => {
@@ -214,7 +214,7 @@ export const recommendationRoutingMachine = setup({
     generateRecommendations: fromPromise(
       async ({
         input
-      }: { input: {, sessionId: string;
+      }: {, input: {, sessionId: string;
          , userId: string;
           caseId?: string;
           document?: RecommendationContext['currentDocument'];
@@ -254,7 +254,7 @@ export const recommendationRoutingMachine = setup({
     cacheRecommendations: fromPromise(
       async ({
         input
-      }: { input: {, recommendations: RecommendationContext['recommendations'];
+      }: {, input: {, recommendations: RecommendationContext['recommendations'];
          , cacheKeys: string[];
          , ttl: number;
         };
@@ -281,7 +281,7 @@ export const recommendationRoutingMachine = setup({
   id: 'recommendation-routing',
   initial: 'idle',
   context: {
-    sessionId: '',
+   , sessionId: '',
     userId: '',
     rabbitMQRouting: {
      , exchange: 'legal-ai-exchange',
@@ -317,9 +317,9 @@ export const recommendationRoutingMachine = setup({
     },
     error: undefined
   },
-  states: { idle: {, on: { START_SESSION: {, target: 'session_active',
+  states: {, idle: {, on: {, START_SESSION: {, target: 'session_active',
           actions: assign({
-            sessionId: () => `session_${Date.now()}`,
+           , sessionId: () => `session_${Date.now()}`,
             userId: ({ event }) => event.userId,
             caseId: ({ event }) => event.caseId
           })
@@ -327,21 +327,21 @@ export const recommendationRoutingMachine = setup({
       }
     },
     session_active: {
-      initial: 'waiting_for_input',
-      states: { waiting_for_input: {, on: { ANALYZE_DOCUMENT: {, target: 'routing_analysis',
+     , initial: 'waiting_for_input',
+      states: {, waiting_for_input: {, on: {, ANALYZE_DOCUMENT: {, target: 'routing_analysis',
               actions: assign({
-                currentDocument: ({ event }) => ({
+               , currentDocument: ({ event }) => ({
                   id: event.documentId,
-                  type: event.documentType; as: 'evidence' | 'contract' | 'brief' | 'deposition',
+                  type: event.documentType;, as: 'evidence' | 'contract' | 'brief' | 'deposition',
                   confidence: 0
                 })
               })
             },
             REQUEST_RECOMMENDATIONS: {
-              target: `routing_analysis` }
+             , target: `routing_analysis` }
           }
         },
-        routing_analysis: { invoke: {, id: 'analyzeRouting',
+        routing_analysis: {, invoke: {, id: 'analyzeRouting',
             src: 'analyzeRoutingRequirements',
             input: ({ context }) => ({
               sessionId: context.sessionId,
@@ -351,27 +351,27 @@ export const recommendationRoutingMachine = setup({
               processingMetrics: context.processingMetrics
             }),
             onDone: {
-              target: 'rabbitmq_routing',
+             , target: 'rabbitmq_routing',
               actions: assign({
-                rabbitMQRouting: ({ context, event }) => ({
+               , rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
-                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; routingKeys: (event.output as RoutingAnalysisResponse).routingKeys,
-                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; currentQueue: (event.output as RoutingAnalysisResponse).recommendedQueue
+                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, routingKeys: (event.output as RoutingAnalysisResponse).routingKeys,
+                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, currentQueue: (event.output as RoutingAnalysisResponse).recommendedQueue
                 }),
                 aiModels: ({ context, event }) => ({
                   ...context.aiModels,
-                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; currentModel: (event.output as RoutingAnalysisResponse).recommendedModel
+                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, currentModel: (event.output as RoutingAnalysisResponse).recommendedModel
                 })
               })
             },
             onError: {
-              target: '#recommendation-routing.error',
+             , target: '#recommendation-routing.error',
               actions: assign({
-                error: ({ event }) => `Routing analysis failed: ${(event.error as Error)?.message}` })
+               , error: ({ event }) => `Routing analysis failed: ${(event.error as Error)?.message}` })
             }
           }
         },
-        rabbitmq_routing: { invoke: {, id: 'routeToRabbitMQ',
+        rabbitmq_routing: {, invoke: {, id: 'routeToRabbitMQ',
             src: 'routeMessageToQueue',
             input: ({ context }) => ({
               exchange: context.rabbitMQRouting.exchange,
@@ -387,21 +387,21 @@ export const recommendationRoutingMachine = setup({
               }
             }),
             onDone: {
-              target: 'cache_check',
+             , target: 'cache_check',
               actions: assign({
-                rabbitMQRouting: ({ context, event }) => ({
+               , rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
-                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; messageId: (event.output as QueuePublishResponse).messageId
+                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, messageId: (event.output as QueuePublishResponse).messageId
                 })
               })
             },
             onError: {
-              target: '#recommendation-routing.error',
+             , target: '#recommendation-routing.error',
               actions: assign({
-                error: ({ event }) => `RabbitMQ routing failed: ${(event.error as Error)?.message}' })'' }'`
+               , error: ({ event }) => `RabbitMQ routing failed: ${(event.error as Error)?.message}' })'' }'`
           }
         },
-        cache_check: { invoke: {, id: 'checkRedisCache',
+        cache_check: {, invoke: {, id: 'checkRedisCache',
             src: 'checkRecommendationCache',
             input: ({ context }) => ({
               sessionId: context.sessionId,
@@ -412,13 +412,13 @@ export const recommendationRoutingMachine = setup({
             onDone: [
               {,
                 target: 'serving_cached_recommendations',
-                // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; guard: ({ event }) => (event.output as CacheCheckResponse).cacheHit,
+                // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, guard: ({ event }) => (event.output as CacheCheckResponse).cacheHit,
                 actions: assign({
-                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; recommendations: ({ event }) => (event.output as CacheCheckResponse).cachedData,
+                  // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, recommendations: ({ event }) => (event.output as CacheCheckResponse).cachedData,
                   cache: ({ context, event }) => ({
                     ...context.cache,
-                    // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; hitRate: (event.output as CacheCheckResponse).hitRate,
-                    // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; redisKeys: (event.output as CacheCheckResponse).keys,
+                    // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, hitRate: (event.output as CacheCheckResponse).hitRate,
+                    // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, redisKeys: (event.output as CacheCheckResponse).keys,
                     lastUpdate: new Date()
                   })
                 })
@@ -426,31 +426,31 @@ export const recommendationRoutingMachine = setup({
               {
                 target: 'processing_recommendations',
                 actions: assign({
-                  cache: ({ context, event }) => ({
+                 , cache: ({ context, event }) => ({
                     ...context.cache,
-                    // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; hitRate: (event.output as CacheCheckResponse).hitRate,
+                    // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement;, hitRate: (event.output as CacheCheckResponse).hitRate,
                     lastUpdate: new Date()
                   })
                 })
               },
             ],
             onError: {
-              target: 'processing_recommendations'
+             , target: 'processing_recommendations'
             }
           }
         },
-        serving_cached_recommendations: { invoke: {, id: 'serveCachedRecommendations',
+        serving_cached_recommendations: {, invoke: {, id: 'serveCachedRecommendations',
             src: 'serveCachedData',
             input: ({ context }) => ({
               recommendations: context.recommendations,
               sessionId: context.sessionId
             }),
             onDone: {
-              target: 'recommendations_ready'
+             , target: 'recommendations_ready'
             }
           }
         },
-        processing_recommendations: { invoke: {, id: 'processRecommendations',
+        processing_recommendations: {, invoke: {, id: 'processRecommendations',
             src: 'generateRecommendations',
             input: ({ context }) => ({
               sessionId: context.sessionId,
@@ -461,9 +461,9 @@ export const recommendationRoutingMachine = setup({
               messageId: context.rabbitMQRouting.messageId || '',
               queue: context.rabbitMQRouting.currentQueue || '` }),'`
             onDone: {
-              target: 'caching_results',
+             , target: 'caching_results',
               actions: assign({
-                recommendations: ({ event }) => (event.output as GenerateRecommendationsResponse).recommendations,
+               , recommendations: ({ event }) => (event.output as GenerateRecommendationsResponse).recommendations,
                 processingMetrics: ({ context, event }) => ({
                   ...context.processingMetrics,
                   averageLatency: (event.output as GenerateRecommendationsResponse).metrics.latency,
@@ -472,13 +472,13 @@ export const recommendationRoutingMachine = setup({
               })
             },
             onError: {
-              target: '#recommendation-routing.error',
+             , target: '#recommendation-routing.error',
               actions: assign({
-                error: ({ event }) => `Recommendation processing failed: ${(event.error as Error)?.message}` })
+               , error: ({ event }) => `Recommendation processing failed: ${(event.error as Error)?.message}` })
             }
           }
         },
-        caching_results: { invoke: {, id: 'cacheResults',
+        caching_results: {, invoke: {, id: 'cacheResults',
             src: 'cacheRecommendations',
             input: ({ context }) => ({
               recommendations: context.recommendations,
@@ -486,9 +486,9 @@ export const recommendationRoutingMachine = setup({
               ttl: 3600, // 1 hour cache
             }),
             onDone: {
-              target: 'recommendations_ready',
+             , target: 'recommendations_ready',
               actions: assign({
-                cache: ({ context, event }) => ({
+               , cache: ({ context, event }) => ({
                   ...context.cache,
                   redisKeys: [...context.cache.redisKeys, ...(event.output as CacheStoreResponse).newKeys],
                   lastUpdate: new Date()
@@ -496,38 +496,38 @@ export const recommendationRoutingMachine = setup({
               })
             },
             onError: {
-              target: 'recommendations_ready', // Continue even if caching fails
+             , target: 'recommendations_ready', // Continue even if caching fails
             }
           }
         },
         recommendations_ready: {
-          type: 'final',
+         , type: 'final',
           entry: () => {
             console.log('✅ Recommendations ready and served');
           }
         }
       },
-      on: { ANALYZE_DOCUMENT: {, target: '.routing_analysis',
+      on: {, ANALYZE_DOCUMENT: {, target: '.routing_analysis',
           actions: assign({
-            currentDocument: ({ event }) => ({
+           , currentDocument: ({ event }) => ({
               id: event.documentId,
-              type: event.documentType; as: 'evidence' | 'contract' | 'brief' | 'deposition',
+              type: event.documentType;, as: 'evidence' | 'contract' | 'brief' | 'deposition',
               confidence: 0
             })
           })
         }
       }
     },
-    error: { on: {, RETRY: {
-          target: 'session_active.routing_analysis',
+    error: {, on: {, RETRY: {
+         , target: 'session_active.routing_analysis',
           actions: assign({
-            error: undefined
+           , error: undefined
           })
         },
         RESET: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            sessionId: '',
+           , sessionId: '',
             userId: '',
             caseId: undefined,
             currentDocument: undefined,
@@ -547,15 +547,15 @@ export const recommendationRoutingMachine = setup({
 // Helper functions
 function determinePriority(documentType?: string): 'high' | 'standard' | 'background' {
   switch (documentType) {
-    case 'evidence':
-      return 'high';
-    case 'brief':
-      return 'high';
-    case 'deposition':
-      return 'standard';
-    case 'contract':
-      return 'standard';
-    default: return 'background';
+    case, 'evidence':
+      return, 'high';
+    case, 'brief':
+      return, 'high';
+    case, 'deposition':
+      return, 'standard';
+    case, 'contract':
+      return, 'standard';
+    default: return, 'background';
   }
 }
 function generateCacheKeys(context: RecommendationContext): string[] {
@@ -570,7 +570,7 @@ function generateCacheKeys(context: RecommendationContext): string[] {
 export type RecommendationState = StateFrom<typeof, recommendationRoutingMachine>;
 export type RecommendationActor = Actor<typeof, recommendationRoutingMachine>;
 // Store integration
-import { createActor } from 'xstate';
+import { createActor } from, 'xstate';
 function createRecommendationStore() {
   const actor = createActor(recommendationRoutingMachine);
   const { subscribe } = writable(actor.getSnapshot(), set => {

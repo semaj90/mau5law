@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     ondispatch?.({ step: 'evidence', data: formData });
   }
 </script>
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" use:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Evidence Analysis</h2>
     <p class="text-gray-600">Extract entities, identify key facts, and analyze legal issues from uploaded documents</p>
@@ -227,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Analysis Progress -->
   {#if isAnalyzing}
-    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:slide>
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" use:slide>
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-medium text-blue-900">Analyzing Documents...</h3>
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if formData.extracted_entities.length > 0}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {#each formData.extracted_entities as entity, index}
-          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3" transition:fade>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3" use:fade>
             <div class="flex items-center justify-between">
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-gray-900 truncate">{entity.value}</p>
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if formData.key_facts.length > 0}
       <div class="space-y-3">
         {#each formData.key_facts as fact, index}
-          <div class="flex gap-3" transition:fade>
+          <div class="flex gap-3" use:fade>
             <div class="flex-1">
               <textarease;
                 bind:value={formData.key_facts[index]}
@@ -324,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if formData.legal_issues.length > 0}
       <div class="space-y-3">
         {#each formData.legal_issues as issue, index}
-          <div class="flex gap-3" transition:fade>
+          <div class="flex gap-3" use:fade>
             <select;
               bind:value={formData.legal_issues[index]}
               class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -353,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="text-lg font-medium text-gray-900 mb-4">Relevant Precedents</h3>
       <div class="space-y-3">
         {#each formData.precedents as precedent}
-          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" transition:fade>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" use:fade>
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="text-sm font-medium text-yellow-900">{precedent.case_name}</h4>

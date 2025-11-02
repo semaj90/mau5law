@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Test file for Enhanced Caching Integration
  * Validates embedding cache, query cache, and pgvector integration
  */
-import { enhancedCachingService } from './enhanced-caching-service.js';
-import { cachedRAGService } from './cached-rag-service.js';
-import { enhancedRAGQueryWithCache } from './enhanced-rag-semantic-analyzer.js';
-import type { RAGQuery } from './enhanced-rag-semantic-analyzer.js';
+import { enhancedCachingService } from, './enhanced-caching-service.js';
+import { cachedRAGService } from, './cached-rag-service.js';
+import { enhancedRAGQueryWithCache } from, './enhanced-rag-semantic-analyzer.js';
+import type { RAGQuery } from, './enhanced-rag-semantic-analyzer.js';
 
 export interface CacheTestResult { test: string;, success: boolean;
   duration: number;
@@ -14,7 +14,7 @@ export interface CacheTestResult { test: string;, success: boolean;
   error?: string;
 }
 export class CachingIntegrationTester {
-  private testResults: CacheTestResult[] = [];
+  private, testResults: CacheTestResult[] = [];
   /**
    * Run comprehensive caching tests
    */
@@ -66,12 +66,12 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: { firstCall: { , cached: result1.cached, 
+        details: {, firstCall: { , cached: result1.cached, 
             dimensions: result1.dimensions, 
             model: result1?.model || "unknown"
           },
           secondCall: { 
-            cached: result2.cached, 
+           , cached: result2.cached, 
             dimensions: result2.dimensions, 
             model: result2?.model || "unknown"
           },
@@ -116,10 +116,10 @@ export class CachingIntegrationTester {
         success: true,
         duration: Date.now() - startTime,
         details: {
-          totalDocs: testDocs.length,
+         , totalDocs: testDocs.length,
           cachedCount,
           freshCount,
-          results: results.map(r => ({ id: r.id, cached: r.cached, dimensions: r.dimensions }))
+          results: results.map(r => ({, id: r.id, cached: r.cached, dimensions: r.dimensions }))
         }
       });
       console.log(`✅ Batch embedding cache test passed: ${cachedCount} cached, ${freshCount} fresh`);
@@ -151,14 +151,14 @@ export class CachingIntegrationTester {
             documentId: "legal-doc-1",
             score: 0.95,
             content: "A breach of contract occurs when one party fails to perform their obligations...",
-            metadata: { source: "legal-database" }
+            metadata: {, source: "legal-database" }
           },
           {
             id: "doc2",
             documentId: "legal-doc-2",
             score: 0.87,
             content: "Contract breaches can be material or immaterial depending on the significance...",
-            metadata: { source: "case-law" }
+            metadata: {, source: "case-law" }
           }
         ];
       }
@@ -184,8 +184,8 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: { firstCall: {, cached: result1.cached, resultsCount: result1.results.length },
-          secondCall: { cached: result2.cached, resultsCount: result2.results.length },
+        details: {, firstCall: {, cached: result1.cached, resultsCount: result1.results.length },
+          secondCall: {, cached: result2.cached, resultsCount: result2.results.length },
           model: result1?.model || "unknown" // @ts-ignore - Model property access
         }
       });
@@ -210,14 +210,14 @@ export class CachingIntegrationTester {
     try {
       console.log('🔬 Testing full RAG pipeline with caching...');
       const testQuery: RAGQuery = {
-        query: "What are the elements of negligence in tort law?",
+       , query: "What are the elements of negligence in tort law?",
         semantic: {
-          useEmbeddings: true,
+         , useEmbeddings: true,
           expandConcepts: true,
           includeRelated: true
         },
         filters: {
-          legalCategories: ["TORT"],
+         , legalCategories: ["TORT"],
           confidenceThreshold: 0.7
         }
       }
@@ -229,14 +229,14 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: { firstCall: {, resultsCount: result1.results.length,
+        details: {, firstCall: {, resultsCount: result1.results.length,
             processingTime: result1.processingTime,
-            cacheStats: (result1 as any).cacheStats
+            cacheStats: (result1, as: any).cacheStats
           },
           secondCall: {
-            resultsCount: result2.results.length,
+           , resultsCount: result2.results.length,
             processingTime: result2.processingTime,
-            cacheStats: (result2 as any).cacheStats
+            cacheStats: (result2, as: any).cacheStats
           }
         }
       });
@@ -268,14 +268,14 @@ export class CachingIntegrationTester {
         test: testName,
         success: true,
         duration: Date.now() - startTime,
-        details: { metrics: {, embeddings: {
-              totalRequests: metrics.embeddings.totalRequests,
+        details: {, metrics: {, embeddings: {
+             , totalRequests: metrics.embeddings.totalRequests,
               hits: metrics.embeddings.hits,
               misses: metrics.embeddings.misses,
               hitRate: metrics.embeddings.hitRate
             },
             queries: {
-              totalRequests: metrics.queries.totalRequests,
+             , totalRequests: metrics.queries.totalRequests,
               hits: metrics.queries.hits,
               misses: metrics.queries.misses,
               hitRate: metrics.queries.hitRate
@@ -307,7 +307,7 @@ export class CachingIntegrationTester {
         id: "test-legal-doc-001",
         content: "This is a comprehensive legal document about contract law. It covers the essential elements of contract formation, including offer, acceptance, consideration, and capacity. The document also discusses various types of contracts such as bilateral and unilateral contracts, as well as express and implied contracts. Contract law is fundamental to business transactions and governs the relationships between parties who enter into agreements.",
         metadata: {
-          type: "legal-document",
+         , type: "legal-document",
           category: "contract-law",
           source: "test-suite"
         }
@@ -325,7 +325,7 @@ export class CachingIntegrationTester {
         success: true,
         duration: Date.now() - startTime,
         details: {
-          documentId: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).documentId,
+         , documentId: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).documentId,
           chunksProcessed: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).chunksProcessed,
           embeddingsGenerated: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).embeddingsGenerated,
           embeddingsCached: (result as { chunksProcessed?: any; documentId?: any; embeddingsGenerated?: any; embeddingsCached?: any; processingTime?: any; storedInPgVector?: any }).embeddingsCached,
@@ -359,7 +359,7 @@ export class CachingIntegrationTester {
         success: true,
         duration: Date.now() - startTime,
         details: {
-          message: "Cache warmup completed successfully"
+         , message: "Cache warmup completed successfully"
         }
       });
       console.log('✅ Cache warmup test passed');

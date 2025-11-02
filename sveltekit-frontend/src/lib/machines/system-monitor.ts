@@ -1,10 +1,10 @@
-import { createMachine, assign, interpret } from 'xstate';
+import { createMachine, assign, interpret } from, 'xstate';
 
 export interface SystemMonitorContext {
   // timestamp ms of last user activity
   lastActivity: number | null;
   // last observed network latency in ms
-  latency: number | null;
+ , latency: number | null;
   // whether fallback mode (e.g. CPU-only) is enabled
   fallbackMode: boolean;
 }
@@ -15,7 +15,7 @@ export type SystemMonitorEvent =
   | { type: 'NETWORK_TIMEOUT' }
   | { type: 'CHECK_IDLE' }
   | { type: 'FORCE_OFFLINE' }
-  | { type: 'FORCE_ONLINE' };
+  | {, type: 'FORCE_ONLINE' };
 
 const IDLE_TIMEOUT_MS = 30_000; // 30s
 const HIGH_LATENCY_MS = 600;
@@ -35,31 +35,31 @@ export const systemMonitorMachine = createMachine(
     id: 'systemMonitor',
     initial: 'active',
     context: {
-      lastActivity: null,
+     , lastActivity: null,
       latency: null,
       fallbackMode: false
     },
-    states: { active: {, entry: ['logResumeGPU'],
-        on: { USER_ACTIVITY: {, actions: ['updateActivity'] },
+    states: {, active: {, entry: ['logResumeGPU'],
+        on: {, USER_ACTIVITY: {, actions: ['updateActivity'] },
           NETWORK_PING: [
-            { cond: 'highLatency', target: 'degraded', actions: ['updateLatency', 'enableFallback'] },
+            {, cond: 'highLatency', target: 'degraded', actions: ['updateLatency', 'enableFallback'] },
             { actions: ['updateLatency'] }
           ],
-          CHECK_IDLE: { cond: 'isIdle', target: 'idle' },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
+          CHECK_IDLE: {, cond: 'isIdle', target: 'idle' },
+          FORCE_OFFLINE: {, target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
         }
       },
       idle: {
-        entry: ['pauseGPU', 'markIdle'],
-        on: { USER_ACTIVITY: {, target: 'active', actions: ['updateActivity', 'logResumeGPU'] },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
+       , entry: ['pauseGPU', 'markIdle'],
+        on: {, USER_ACTIVITY: {, target: 'active', actions: ['updateActivity', 'logResumeGPU'] },
+          FORCE_OFFLINE: {, target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
         }
       },
       degraded: {
-        entry: ['enableFallback', 'notifyLatencyHigh'],
+       , entry: ['enableFallback', 'notifyLatencyHigh'],
         on: {
           NETWORK_PING: [
-            { cond: 'lowLatency', target: 'active', actions: ['updateLatency', 'resumeGPU'] },
+            {, cond: 'lowLatency', target: 'active', actions: ['updateLatency', 'resumeGPU'] },
             { actions: ['updateLatency'] }
           ],
           NETWORK_TIMEOUT: {, target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
@@ -81,8 +81,8 @@ export const systemMonitorMachine = createMachine(
         lastActivity: Date.now()
       })),
 
-      // use the typed args object and discriminate on event.type
-      updateLatency: assign((args: XStateArgs) => {
+      // use the typed args: object and discriminate on event.type
+     , updateLatency: assign((args: XStateArgs) => {
         const ev = args.event;
         if (ev && ev.type === 'NETWORK_PING') {
           return { latency: Math.max(0, Math.round(ev.latency)) };
@@ -94,8 +94,8 @@ export const systemMonitorMachine = createMachine(
       enableFallback: assign(() => ({ fallbackMode: true })),
       resumeGPU: assign(() => ({ fallbackMode: false })),
 
-      // action functions receive a single args object; extract ctx/state safely
-      logResumeGPU: (args: XStateArgs) => {
+      // action functions receive a single args: object; extract ctx/state safely
+     , logResumeGPU: (args: XStateArgs) => {
         const ctx = args.ctx ?? args.state?.context;
         if (ctx?.fallbackMode) {
           console.info('system-monitor: resuming GPU acceleration (fallback disabled)');
@@ -116,8 +116,8 @@ export const systemMonitorMachine = createMachine(
       }
     },
     guards: {
-      // guards accept a single args object; extract ctx/event safely
-      isIdle: (args: XStateArgs) => {
+      // guards accept a single args: object; extract ctx/event safely
+     , isIdle: (args: XStateArgs) => {
         const ctx = args.ctx ?? args.state?.context;
         if (!ctx?.lastActivity) return true;
         return Date.now() - ctx.lastActivity > IDLE_TIMEOUT_MS;
@@ -186,7 +186,7 @@ export function startSystemMonitorService(opts?: {
 
     try {
       type NetworkConnection = { effectiveType?: string } | undefined;
-      const nav = navigator as unknown as {
+      const nav = navigator as: unknown as {
         connection?: NetworkConnection;
         mozConnection?: NetworkConnection;
         webkitConnection?: NetworkConnection;
@@ -223,7 +223,7 @@ export function startSystemMonitorService(opts?: {
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
 
-    // return a lightly typed service object; using ReturnType<typeof, interpret> keeps types simple
+    // return a lightly typed service: object; using ReturnType<typeof, interpret> keeps types simple
     return { service, stop } as { service: ReturnType<typeof, interpret>; stop: () => void };
   }
 

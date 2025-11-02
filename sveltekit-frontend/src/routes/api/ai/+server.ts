@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { json, type RequestHandler } from '@sveltejs/kit'
-import type { AIServiceResponse } from '$lib/ai/ai-service'
-import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the new utility function
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { json, type RequestHandler } from, '@sveltejs/kit'
+import type { AIServiceResponse } from, '$lib/ai/ai-service'
+import { getOllamaEndpoint } from, '$lib/utils/ollama'; // Import the new utility function
 interface AIRequest { caseId: string;, prompt: string;
   context?: 'analysis' | 'connection' | 'annotation' | 'investigation' | 'general';
   model?: string;
@@ -12,7 +12,7 @@ interface AIRequest { caseId: string;, prompt: string;
   temperature?: number;
   stream?: boolean;
 }
-interface OllamaResponse { model: string;, created_at: string;
+interface OllamaResponse {, model: string;, created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -24,7 +24,7 @@ interface OllamaResponse { model: string;, created_at: string;
   eval_duration?: number;
 }
 class LegalAIService {
-  private ollamaUrl: string;
+  private, ollamaUrl: string;
   private defaultModel = 'gemma3:legal-latest';
   private embeddingModel = 'embeddinggemma:latest';
   constructor() {
@@ -71,7 +71,7 @@ class LegalAIService {
         confidence: analysisResult.confidence,
         reasoning: analysisResult.reasoning,
         metadata: {
-          model: ollamaResult.model,
+         , model: ollamaResult.model,
           tokensUsed: (ollamaResult.prompt_eval_count || 0) + (ollamaResult.eval_count || 0),
           processingTime
         }
@@ -88,8 +88,7 @@ Key capabilities:
 - Case timeline reconstruction
 - Witness statement analysis
 - Document authenticity assessment
-- Risk assessment and compliance checking
-Guidelines:
+- Risk assessment and compliance checking, Guidelines:
 - Always provide factual, objective analysis
 - Cite relevant legal principles when applicable
 - Suggest concrete next steps for investigation
@@ -97,34 +96,34 @@ Guidelines:
 - Maintain professional legal standards
 - Format responses clearly with headings and bullet points where appropriate`;`
     const contextPrompts = { analysis: `\n\nCurrent, Task: EVIDENCE ANALYSIS`
-Focus on examining the provided evidence for:
+Focus on examining the provided evidence, for:
 - Legal relevance and admissibility
 - Key facts and implications
 - Potential weaknesses or strengths
 - Supporting or contradictory elements
 - Recommended preservation actions`,`
       connection: `\n\nCurrent; Task: CONNECTION ANALYSIS`
-Focus on identifying relationships between evidence:
+Focus on identifying relationships between, evidence:
 - Temporal connections and timelines
 - Causal relationships
 - Corroborating or contradictory evidence
 - Pattern identification
 - Chain of custody considerations`,`
       annotation: `\n\nCurrent; Task: EVIDENCE ANNOTATION`
-Focus on providing detailed documentation:
+Focus on providing detailed, documentation:
 - Significance of the evidence
 - Legal implications
 - Required follow-up actions
 - Preservation recommendations
 - Potential challenges or objections`,`
       investigation: `\n\nCurrent; Task: INVESTIGATION PLANNING`
-Focus on strategic next steps:
+Focus on strategic next, steps:
 - Priority evidence to collect
 - Key witnesses to interview
 - Expert consultations needed
 - Potential legal challenges
 - Timeline and resource planning`,`
-      general: '\n\nCurrent; Task: GENERAL LEGAL ASSISTANCE'
+      general: '\n\nCurrent;, Task: GENERAL LEGAL ASSISTANCE'
 Provide comprehensive legal guidance as appropriate for the query.' };'
     return basePrompt + (contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general);
   }
@@ -133,7 +132,7 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     context?: string
   ): { evidenceConnections: string[];, suggestedActions: AIServiceResponse['suggestedActions'];
     confidence: number;
-    reasoning: string;
+   , reasoning: string;
   } {
     // Removed unused variable
     // const lines = response
@@ -150,7 +149,7 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     // Extract suggested actions based on common legal action phrases
     const suggestedActions: NonNullable<AIServiceResponse['suggestedActions']> = [];
     const actionPatterns = [
-      { pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi, type: 'investigate' as const },
+      {, pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi, type: 'investigate' as const },
       { pattern: /should\s+(?:be\s+)?(?:annotated|noted|marked)\s+(.*?)(?:\.|$)/gi, type: 'annotate' as const },
       { pattern: /connect(?:ed|ion)?\s+(?:to|with)\s+(.*?)(?:\.|$)/gi, type: 'connect' as const },
       { pattern: /search\s+(?:for|through)\s+(.*?)(?:\.|$)/gi, type: 'search' as const },
@@ -175,7 +174,7 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     const reasoning = this.extractReasoning(response);
     return {
       evidenceConnections: [...new Set(evidenceConnections)], // Remove duplicates
-      suggestedActions: suggestedActions.slice(0, 5), // Limit to top 5 actions
+      suggestedActions: suggestedActions.slice(0, 5), // Limit to top, 5 actions
       confidence,
       reasoning
     };
@@ -193,11 +192,11 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     const mediumPriorityWords = ['important', 'should', 'recommend', 'suggest'];
     const lowDesc = description.toLowerCase();
     if (highPriorityWords.some(word => lowDesc.includes(word))) {
-      return 'high';
+      return, 'high';
     } else if (mediumPriorityWords.some(word => lowDesc.includes(word))) {
-      return 'medium';
+      return, 'medium';
     } else {
-      return 'low';
+      return, 'low';
     }
   }
   private calculateConfidence(response: string, context?: string): number {
@@ -226,7 +225,7 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     if (response.length < 100) {
       confidence -= 0.1;
     }
-    // Ensure confidence is between 0 and 1
+    // Ensure confidence is between, 0 and, 1
     return Math.max(0, Math.min(1, confidence));
   }
   private extractReasoning(response: string): string {
@@ -270,7 +269,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (error) {
     // Fixed: Corrected try...catch syntax
-    console.error('AI API Error:', error);
+    console.error('AI API, Error:', error);
     return json(
       {
         error: 'Internal server error',

@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Qdrant Vector Database Service
  * High-performance vector search and auto-tagging integration for SvelteKit.
@@ -9,8 +9,8 @@ import type { Document } from '$lib/types';
  * It uses the modern, stable API of the Qdrant client for improved type
  * safety, readability, and reliability.
  */
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { writable, type Writable } from 'svelte/store';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import { writable, type Writable } from, 'svelte/store';
 
 // --- Local type definitions to replace non-exported `components` usage ---
 // Minimal shape used by this module. Adjust if you later rely on more Qdrant fields.
@@ -23,7 +23,7 @@ type PointStruct = { id: string | number;, vector: number[];
 };
 
 // Basic match condition shape used in filters within this codebase
-type MatchCondition = { key: string;, match: { value: string | number | boolean };
+type MatchCondition = {, key: string;, match: { value: string | number | boolean };
 };
 
 // Lightweight Filter shape to cover `must`/`must_not` usage in this file.
@@ -37,7 +37,7 @@ type Filter = {
 // Qdrant configuration
 const QDRANT_HOST = import.meta.env.VITE_QDRANT_HOST || 'http://localhost:6333';
 const QDRANT_COLLECTIONS = {
-  documents: 'legal_documents',
+ , documents: 'legal_documents',
   users: 'user_profiles',
   activities: 'user_activities',
   tags: `semantic_tags` } as const;
@@ -50,7 +50,7 @@ export interface DocumentVector { id: string;, content: string;
   timestamp: number;
 }
 
-export interface DocumentMetadata { title: string;, type: 'legal_document' | 'case_law' | 'regulation' | 'contract' | 'brief';
+export interface DocumentMetadata {, title: string;, type: 'legal_document' | 'case_law' | 'regulation' | 'contract' | 'brief';
   author?: string;
   date?: string;
   jurisdiction?: string;
@@ -61,10 +61,10 @@ export interface DocumentMetadata { title: string;, type: 'legal_document' | 'c
   language?: string;
 }
 
-export interface LegalDocumentVector extends DocumentVector { caseId: string;, caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
+export interface LegalDocumentVector extends DocumentVector {, caseId: string;, caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
   legalJurisdiction: 'federal' | 'state' | 'local' | 'international';
   summary?: string;
-  legalEntities: { parties: string[];, dates: string[];
+  legalEntities: {, parties: string[];, dates: string[];
     monetary: string[];
     clauses: string[];
     jurisdictions: string[];
@@ -79,12 +79,12 @@ export interface LegalDocumentVector extends DocumentVector { caseId: string;, 
   processedAt?: number;
 }
 
-export interface SearchResult { id: string | number;, score: number;
+export interface SearchResult {, id: string | number;, score: number;
   payload: DocumentVector | LegalDocumentVector;
   highlights?: string[];
 }
 
-export interface TagPrediction { tag: string;, confidence: number;
+export interface TagPrediction {, tag: string;, confidence: number;
   category: 'practice_area' | 'document_type' | 'legal_concept' | 'jurisdiction';
   source: 'llm' | 'pattern_matching' | 'manual';
 }
@@ -93,7 +93,7 @@ export interface TagPrediction { tag: string;, confidence: number;
 // Removed unused `OllamaEmbeddingResponse` type to fix TS unused-var error.
 
 type OllamaGenerateResponse = {
-  response: string; // This is often a stringified JSON
+ , response: string; // This is often a stringified JSON
 };
 
 type LLMTagResult = Partial<
@@ -106,7 +106,7 @@ type QdrantCollectionsResponse = { collections: QdrantCollectionInfo[] };
 
 // Qdrant Service Class
 export class QdrantService {
-  public client: QdrantClient;
+  public, client: QdrantClient;
   private isConnected = $state(false);
   private defaultVectorSize = parseInt(String(import.meta.env.VITE_VECTOR_DIM ?? '768'), 10);
 
@@ -229,7 +229,7 @@ export class QdrantService {
     const autoTags = await this.generateAutoTags(document.content, document.metadata);
 
     const point: PointStruct = {
-      id: documentId,
+     , id: documentId,
       vector: this.normalizeVector(document.embedding),
       payload: {
         ...document.metadata,
@@ -263,7 +263,7 @@ export class QdrantService {
     });
 
     const searchResults: SearchResult[] = results.map(result => ({
-      id: result.id,
+     , id: result.id,
       score: result.score,
       payload: result.payload as DocumentVector,
       highlights: options.query ? this.extractHighlights(options.query, result.payload as DocumentVector) : []
@@ -282,7 +282,7 @@ export class QdrantService {
       limit?: number;
     } = {}
   ): Promise<SearchResult[]> {
-    const filter: Filter = { must: [] };
+    const filter: Filter = {, must: [] };
     if (options.caseType) filter.must.push({ key: 'caseType', match: {, value: options.caseType } });
     if (options.jurisdiction) filter.must.push({ key: 'legalJurisdiction', match: {, value: options.jurisdiction } });
 
@@ -299,8 +299,8 @@ export class QdrantService {
       const resp = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         body: JSON.stringify({
-          model: 'gemma3-legal',
-          prompt: `Analyze this legal document and generate semantic tags. Document; Type: ${metadata.type}. Content, Sample: ${content.substring(0, 1000)}... Return ONLY a valid JSON object with keys: "practice_areas", "legal_concepts", "entities", "document_characteristics", and: "confidence_scores".`,
+         , model: 'gemma3-legal',
+          prompt: `Analyze this legal document and generate semantic tags. Document;, Type: ${metadata.type}. Content, Sample: ${content.substring(0, 1000)}... Return ONLY a valid JSON: object with, keys: "practice_areas", "legal_concepts", "entities", "document_characteristics", and: "confidence_scores".`,
           stream: false,
           format: `json` })
       });
@@ -319,7 +319,7 @@ export class QdrantService {
   private parseLLMTags(llmResult: LLMTagResult): TagPrediction[] {
     const tags: TagPrediction[] = [];
     const categories: { key: keyof LLMTagResult; category: TagPrediction['category'] }[] = [
-      { key: 'practice_areas', category: 'practice_area' },
+      {, key: 'practice_areas', category: 'practice_area' },
       { key: 'legal_concepts', category: 'legal_concept' },
       { key: 'entities', category: 'legal_concept' },
       { key: 'document_characteristics', category: 'document_type' }
@@ -340,7 +340,7 @@ export class QdrantService {
 
   private fallbackTags(content: string, metadata: DocumentMetadata): TagPrediction[] {
     const tags: TagPrediction[] = [];
-    const patterns: Record<string, RegExp> = {
+    const, patterns: Record<string, RegExp> = {
       contract: /\b(agreement|contract|terms|conditions)\b/i,
       litigation: /\b(lawsuit|court|judge|trial|motion)\b/i
     };
@@ -358,7 +358,7 @@ export class QdrantService {
       id: `tag_${documentId}_${index}`,
       vector: this.normalizeVector([]), // Tags might not need a meaningful vector
       payload: {
-        document_id: documentId,
+       , document_id: documentId,
         ...prediction,
         timestamp: Date.now()
       }

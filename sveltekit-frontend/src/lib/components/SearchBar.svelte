@@ -1,11 +1,11 @@
 <script, lang="ts">
-  import  SearchInput  from "./SearchInput.svelte";
-  import Filter from 'lucide-svelte';
+  import  SearchInput  from, "./SearchInput.svelte";
+  import Filter from, 'lucide-svelte';
   interface Props {
     placeholder?: string;
     value?: string;
     showFilters?: boolean;
-    sortOptions?: Array<{ id: string; label: string }>;
+    sortOptions?: Array<{ id: string;, label: string }>;
     onsearch?: (_event: CustomEvent) => void;
     onsortChanged?: (_event: CustomEvent) => void;
     onfiltersChanged?: (_event: CustomEvent) => void;
@@ -29,7 +29,7 @@
   // Filter state
   let selectedFileTypes: string[] = $state([]);
   let dateRange = $state({
-    from ','
+    from, ','
     to: ''
   });
   function handleSearch(_event: CustomEvent) {
@@ -63,7 +63,7 @@
   function dispatchFilters() {
     onfiltersChanged?.(new CustomEvent('filtersChanged', {
       detail: {
-        fileTypes: selectedFileTypes,
+       , fileTypes: selectedFileTypes,
         dateRange: dateRange
       }
     }));
@@ -88,7 +88,7 @@
           {/each}
         </select>
         <!-- Inline chevron / sort icon to avoid, import, mismatch -->
-        <svg width="16" height="16" viewBox="0 0, 24, 24" fill="none" aria-hidden="true" focusable="false">
+        <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" aria-hidden="true" focusable="false">
           <path d="M6 9l6-6, 6, 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M18, 15l-6, 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -164,7 +164,7 @@
           type="date"
           class="date-input"
           aria-label="To date"
-          bind:value={dateRange.to}
+         , bind:value={dateRange.to}
           onchange={handleDateChange}
         />
       </div>
@@ -175,7 +175,7 @@
         class="clear-filters-btn"
         onclick={() => {
           selectedFileTypes = [];
-          dateRange = { from ', to: '' };'
+          dateRange = { from, ', to: '' };'
           dispatchFilters();
         }}
       >
@@ -204,12 +204,12 @@
   }
   .sort-select {
     appearance: none;
-    background: var(--bg-primary);
+   , background: var(--bg-primary);
     border: 1px solid var(--border-light);
     border-radius: 6px;
     padding: 0.5rem 2rem 0.5rem 0.75rem;
     font-size: 0.875rem;
-    color: var(--text-primary);
+   , color: var(--text-primary);
     cursor: pointer;
     min-width: 100px;
   }
@@ -217,9 +217,9 @@
     position: absolute;
     right: 0.5rem;
     top: 50%;
-    transform: translateY(-50%);
+   , transform: translateY(-50%);
     pointer-events: none;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
   .filter-button {
     display: flex;
@@ -227,15 +227,15 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: var(--bg-primary);
+   , background: var(--bg-primary);
     border: 1px solid var(--border-light);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
   .filter-button:hover {
-    background: var(--bg-tertiary);
+   , background: var(--bg-tertiary);
     border-color: var(--harvard-crimson);
     color: var(--harvard-crimson);
   }
@@ -247,19 +247,19 @@
   .filters-panel {
     margin-top: 1rem;
     padding: 1rem;
-    background: var(--bg-secondary);
+   , background: var(--bg-secondary);
     border: 1px solid var(--border-light);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+   , gap: 1rem;
   }
   .filter-group label,
   .filter-group .filter-label {
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-primary);
+   , color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
   .filter-options {
@@ -285,9 +285,9 @@
   }
   .date-input {
     padding: 0.5rem;
-    border: 1px solid var(--border-light);
+   , border: 1px solid var(--border-light);
     border-radius: 4px;
-    background: var(--bg-primary);
+   , background: var(--bg-primary);
     color: var(--text-primary);
   }
   .filter-actions {
@@ -299,15 +299,15 @@
   .clear-filters-btn {
     padding: 0.5rem 1rem;
     background: transparent;
-    border: 1px solid var(--border-light);
+   , border: 1px solid var(--border-light);
     border-radius: 4px;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     cursor: pointer;
     font-size: 0.875rem;
     transition: all 0.2s ease;
   }
   .clear-filters-btn:hover {
-    background: var(--bg-tertiary);
+   , background: var(--bg-tertiary);
     border-color: var(--harvard-crimson);
     color: var(--harvard-crimson);
   }
@@ -322,7 +322,7 @@
     }
     .filter-options {
       flex-direction: column;
-      gap: 0.5rem;
+     , gap: 0.5rem;
     }
     .date-range {
       flex-direction: column;

@@ -1,5 +1,5 @@
 /**
- * UI State Composables using Svelte 5 Runes
+ * UI State Composables using Svelte, 5 Runes
  * Reusable state management for common UI patterns
  */
 // Modal/Dialog state management
@@ -45,7 +45,7 @@ interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
-  createdAt: number;
+ , createdAt: number;
 }
 export function useToast() {
   let toasts = $state<Toast[]>([]);
@@ -104,7 +104,7 @@ export function useForm<T, extends, Record<string, any>>(initialValues: T) {
   let touched = $state<Partial<Record<keyof, T, boolean>>>({});
   let isSubmitting = $state<boolean>(false);
   let isValid = $derived(() => Object.keys(errors).length === 0);
-  let isDirty = $derived(() => Object.keys(values).some(key => (values as any)[key] !== (initialValues as any)[key]));
+  let isDirty = $derived(() => Object.keys(values).some(key => (values as: any)[key] !== (initialValues as: any)[key]));
   function setValue<K extends, keyof, T>(field: K, value: T[K]): void {
     values[field] = value;
     touched[field] = true;
@@ -141,8 +141,8 @@ export function useForm<T, extends, Record<string, any>>(initialValues: T) {
     Object.keys(validators).forEach(field => {
       const key = field as keyof T;
       const validator = validators[key];
-      if (validator && (values as any)[key] !== undefined) {
-        const result = validator((values as any)[key]);
+      if (validator && (values as: any)[key] !== undefined) {
+        const result = validator((values as: any)[key]);
         if (result !== null) {
           newErrors[key] = result;
           hasErrors = true;

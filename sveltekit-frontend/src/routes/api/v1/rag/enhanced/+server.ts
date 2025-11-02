@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { ragRequestSchema, ragResponseSchema } from '$lib/schemas/vector';
-import type { z } from 'zod';
-import { safeFetchJson } from '$lib/server/fetch-wrapper';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { ragRequestSchema, ragResponseSchema } from, '$lib/schemas/vector';
+import type { z } from, 'zod';
+import { safeFetchJson } from, '$lib/server/fetch-wrapper';
 const RAG_BASE = process.env.RAG_SERVICE_URL || 'http://localhost:8094';
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => ({}));
   const parsed = ragRequestSchema.safeParse(body);
   if (!parsed.success) {

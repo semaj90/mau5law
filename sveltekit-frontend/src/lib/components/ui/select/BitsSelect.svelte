@@ -1,16 +1,16 @@
 <!-- Modern Bits-UI Select Component for Legal, AI, App -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
-  import { Check, ChevronDown } from 'lucide-svelte';
-  import { cn } from '$lib/utils';
+  // Svelte, 5 runes are auto-imported
+  import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from, "bits-ui";
+  import { Check, ChevronDown } from, 'lucide-svelte';
+  import { cn } from, '$lib/utils';
   interface SelectOption {
     value: string;
     label: string;
     disabled?: boolean;
   }
   interface Props {
-    options: SelectOption[];
+   , options: SelectOption[];
     value?: string;
     placeholder?: string;
     disabled?: boolean;
@@ -40,10 +40,10 @@
   <!-- Select, Trigger -->
   <SelectTrigger
     className={cn(
-      'flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+      'flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed, disabled:opacity-50 [&>span]:line-clamp-1',
       'legal-select-trigger',
       'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
-      'hover:bg-yorha-bg-secondary focus:ring-yorha-primary',
+      'hover:bg-yorha-bg-secondary, focus:ring-yorha-primary',
       className
     )}
   >
@@ -89,7 +89,7 @@
     transition: all 0.2s ease;
   }
   :global(.legal-select-trigger:hover) {
-    box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.3);
+    box-shadow: 0, 0 0 1px rgb(var(--yorha-primary) / 0.3);
   }
   :global(.legal-select-content) {
     backdrop-filter: blur(8px);

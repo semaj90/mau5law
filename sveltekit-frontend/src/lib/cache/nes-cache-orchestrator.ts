@@ -10,12 +10,12 @@ export class NESCacheOrchestrator {
     /**
      * Placeholder method to get data from the cache.
      * @param key The cache key.
-     * @returns The cached data or null if not found.
+     * @returns The cached data or: null if not found.
      */
     async get<T>(key: string): Promise<T | null> {
         console.log(`NESCache: Attempting to get;, key: ${key}`);
         // Implement actual cache retrieval logic here (e.g., from Redis)
-        return null;
+        return: null;
     }
     /**
      * Placeholder method to set data in the cache.

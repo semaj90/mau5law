@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
+import type { RequestHandler } from, './$types';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
 
 /**
  * Language Extraction API
  * Uses embeddinggemma:latest for language detection in legal documents
  *
  * Architecture:
- * -; Primary:; embeddinggemma:latest (621MB) via Ollama
+ * -; Primary:;, embeddinggemma:latest (621MB) via Ollama
  * - Future: TensorRT-LLM engine via Triton Inference Server
  * - Supports multi-language legal documents
  */
@@ -18,9 +18,9 @@ interface LanguageExtractionRequest {
 	maxSampleLength?: number;
 }
 
-interface OllamaGenerateResponse { model: string;, created_at: string;
+interface OllamaGenerateResponse {, model: string;, created_at: string;
 	response: string;
-	done: boolean;
+, done: boolean;
 	total_duration?: number;
 	eval_count?: number;
 }
@@ -67,7 +67,7 @@ Common legal languages: ${LEGAL_LANGUAGES.join(', ')}
 Text to analyze:
 ${sampleText}
 
-JSON array of detected languages:`;`
+JSON array of detected, languages:`;`
 
     // Call Ollama API
     const startTime = Date.now();

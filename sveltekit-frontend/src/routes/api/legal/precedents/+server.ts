@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Minimal repaired Legal Precedents API
-import { db } from '$lib/server/db/index';
+import { db } from, '$lib/server/db/index';
 // Import with fallback for different schema files
 let legalPrecedents: any;
 try {
@@ -10,8 +10,8 @@ try {
 } catch (error: any) {
   console.warn('Legal precedents schema not available');
 }
-import { eq } from 'drizzle-orm';
-import crypto from 'crypto';
+import { eq } from, 'drizzle-orm';
+import crypto from, 'crypto';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {,
         id: 'mock-precedent-001',
         caseTitle: 'Mock vs. TechCorp Employment Dispute',
-        citation: '123 F.3d 456 (9th Cir. 2024)',
+        citation: '123 F.3d, 456 (9th Cir. 2024)',
         year: 2024,
         court: '9th Circuit Court of Appeals',
         summary: 'Mock precedent establishing employment law standards',
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         id: 'mock-precedent-002',
         caseTitle: 'Mock Patent Rights Coalition vs. Innovation Inc.',
-        citation: '456 F.3d 789 (Fed. Cir. 2024)',
+        citation: '456 F.3d, 789 (Fed. Cir. 2024)',
         year: 2024,
         court: 'Federal Circuit',
         summary: 'Mock precedent on patent prior art analysis',

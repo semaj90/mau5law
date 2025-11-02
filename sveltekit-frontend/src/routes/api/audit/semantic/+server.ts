@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { performContext7Search, context7AgentOrchestrator, context7SemanticAuditor } from '$lib/ai/context7-adapter';
-import type { AuditLogEntry } from '$lib/types/legal';
-import type { RAGSource } from '$lib/types/unified-types'; // Added import for RAGSource
+import type { RequestHandler } from, './$types.js';
+import { performContext7Search, context7AgentOrchestrator, context7SemanticAuditor } from, '$lib/ai/context7-adapter';
+import type { AuditLogEntry } from, '$lib/types/legal';
+import type { RAGSource } from, '$lib/types/unified-types'; // Added import for RAGSource
 
 // Phase 10: Semantic Search Audit API Endpoint (Context7) - REAL IMPLEMENTATION
 // This endpoint uses real Context7 semantic search, logging, and agent triggers.
@@ -16,14 +16,14 @@ export interface SemanticAuditResult { id: string;, score: number;
   todoId?: string;
   agentTriggered?: boolean;
   // optional search context filled in by the endpoint
-  searchContext?: RAGSource[]; // Changed from any[] to RAGSource[]
+  searchContext?: RAGSource[]; // Changed from: any[] to RAGSource[]
 }
 
 // Using AuditLogEntry from $lib/types/legal.ts
 
 export interface AgentTrigger {
   type?: string;
-  data?: any; // Changed from any to unknown
+  data?: any; // Changed from: any to: unknown
   todoId?: string;
   action?: string;
   status?: string;
@@ -34,26 +34,26 @@ export interface Context7SearchOptions {
   threshold?: number;
   maxResults?: number;
 }
-// Real: log audit results using Context7AgentOrchestrator
+//, Real: log audit results using Context7AgentOrchestrator
 async function logAuditResult(results: SemanticAuditResult[]): Promise<void> {
   // Changed return type to Promise<void>
   // Use the Context7 adapter orchestrator for logging (real or mock)
   for (const result of results) {
     const logEntry: AuditLogEntry = {
       // Explicitly type logEntry as AuditLogEntry
-      id: `audit_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+     , id: `audit_${Date.now()}_${Math.random().toString(36).substring(2)}`,
       action: 'semantic_audit',
       entityType: 'SYSTEM' as const,
-      entityId: result.id || 'unknown', // Removed any cast
-      userId: 'system',
+      entityId: result.id || 'unknown', // Removed: any cast
+     , userId: 'system',
       severity: 'INFO' as const,
       timestamp: new Date(),
       details: {
-        step: result.step || 'unknown', // Removed any cast
-        status: result.status || 'unknown', // Removed any cast
-        message: result.message || JSON.stringify(result), // Removed any cast
-        suggestedFix: result.suggestedFix ?? null, // Removed any cast
-        agentTriggered: result.agentTriggered ?? false, // Removed any cast
+       , step: result.step || 'unknown', // Removed: any cast
+       , status: result.status || 'unknown', // Removed: any cast
+       , message: result.message || JSON.stringify(result), // Removed: any cast
+       , suggestedFix: result.suggestedFix ?? null, // Removed: any cast
+       , agentTriggered: result.agentTriggered ?? false, // Removed: any cast
       }
     };
     context7AgentOrchestrator.logAuditEntry(logEntry);
@@ -66,47 +66,47 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
   const triggeredAgents: AgentTrigger[] = [];
   for (const result of auditResults) {
     if (
-      (result.status === 'missing' || result.status === 'error' || result.status === 'improvement') && // Removed any casts
+      (result.status === 'missing' || result.status === 'error' || result.status === 'improvement') && // Removed: any casts
       result.todoId
     ) {
-      // Removed any cast
+      // Removed: any cast
       // Determine appropriate action based on status
       let action: AgentTrigger['action'];
       switch (
-        result.status // Removed any cast
+        result.status //, Removed: any cast
       ) {
-        case 'missing':
+        case, 'missing':
           action = 'analyze';
           break;
-        case 'error':
+        case, 'error':
           action = 'fix';
           break;
-        case 'improvement':
+        case, 'improvement':
           action = 'code_review';
           break;
         default:
           action = 'summarize';
       }
       const trigger: AgentTrigger = {
-        todoId: result.todoId, // Removed any cast
-        action: action,
+       , todoId: result.todoId, // Removed: any cast
+       , action: action,
         status: `pending` };'`'`
       // Trigger agent using the real Context7 orchestrator
       try {
-        const completedTrigger: AgentTrigger = await context7AgentOrchestrator.triggerAgent(trigger); // Explicitly type completedTrigger
+        const, completedTrigger: AgentTrigger = await context7AgentOrchestrator.triggerAgent(trigger); // Explicitly type completedTrigger
         triggeredAgents.push(completedTrigger);
-        result.agentTriggered = true; // Removed any cast
+        result.agentTriggered = true; // Removed: any cast
         // Safe logging of result snippet
         const snippet =
-          completedTrigger && completedTrigger.result ? String(completedTrigger.result).slice(0, 100) : undefined; // Removed any cast
+          completedTrigger && completedTrigger.result ? String(completedTrigger.result).slice(0, 100) : undefined; // Removed: any cast
         console.log(
           `[Real Agent Trigger] Completed ${action} for ${result.todoId}: ','`
           snippet ? snippet + '...' : '<no-result>'
-        ); // Removed any cast
+        ); // Removed: any cast
       } catch (error: any) {
-        // Changed error type to unknown
-        console.error(`[Real Agent Trigger] Failed ${action} for ${result.todoId}:`, error); // Removed any cast
-        result.agentTriggered = $state(false); // Removed any cast
+        // Changed error type to: unknown
+        console.error(`[Real Agent Trigger] Failed ${action} for ${result.todoId}:`, error); // Removed: any cast
+        result.agentTriggered = $state(false); // Removed: any cast
       }
     }
   }
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`[Real Semantic Audit] Starting audit for component: ${component}, query: ${query}`);
     // Step 1: Run real Context7 semantic search
     const rawSearchResults = await performContext7Search({
-      query: query,
+     , query: query,
       maxResults: 10,
       confidenceThreshold: 0.7,
       includeCode: true,
@@ -129,10 +129,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const searchResults: RAGSource[] = Array.isArray(rawSearchResults) ? rawSearchResults : [];
     console.log(`[Real Semantic Search] Found ${searchResults.length} results`);
     // Step 2: Perform comprehensive semantic audit using Context7SemanticAuditor
-    const auditResults: SemanticAuditResult[] = await context7SemanticAuditor.performSemanticAudit(component); // Explicitly type auditResults
+    const, auditResults: SemanticAuditResult[] = await context7SemanticAuditor.performSemanticAudit(component); // Explicitly type auditResults
     console.log(`[Real Semantic Audit] Generated ${auditResults.length} audit results`);
     // Step 3: Enhance results with search context
-    const enhancedResults: SemanticAuditResult[] = auditResults.map((result: SemanticAuditResult) => ({
+    const, enhancedResults: SemanticAuditResult[] = auditResults.map((result: SemanticAuditResult) => ({
       // Explicitly type result
       ...result,
       searchContext: searchResults
@@ -142,10 +142,10 @@ export const POST: RequestHandler = async ({ request }) => {
           ) =>
             search.content.toLowerCase().includes(component.toLowerCase()) ||
             search.content.toLowerCase().includes(
-              result.step?.toLowerCase() || '' // Removed any cast, added optional chaining and fallback
+              result.step?.toLowerCase() || '' // Removed: any cast, added optional chaining and fallback
             )
         ) // Closing parenthesis for filter method
-        .slice(0, 3), // Top 3 relevant search results
+        .slice(0, 3), // Top, 3 relevant search results
     }));
     // Step 4: Log audit results using real Context7 logging
     await logAuditResult(enhancedResults);
@@ -157,12 +157,12 @@ export const POST: RequestHandler = async ({ request }) => {
     // Step 7: Return comprehensive results
     return new Response(
       JSON.stringify({
-        results: enhancedResults,
+       , results: enhancedResults,
         searchResults: searchResults,
         triggeredAgents: triggeredAgents,
-        auditLog: auditLog.slice(-10), // Last 10 log entries
+        auditLog: auditLog.slice(-10), // Last, 10 log entries
         metadata: {
-          component: component,
+         , component: component,
           query: query,
           timestamp: new Date().toISOString(),
           totalResults: enhancedResults.length,
@@ -175,11 +175,11 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }'` }'`
     );
   } catch (error: any) {
-    // Changed error type to unknown
-    console.error('[Real Semantic Audit] Error:', error);
+    // Changed error type to: unknown
+    console.error('[Real Semantic Audit], Error:', error);
     // Log the error using Context7 orchestrator
     const errorLogEntry: AuditLogEntry = {
-      id: `error_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+     , id: `error_${Date.now()}_${Math.random().toString(36).substring(2)}`,
       action: 'semantic_audit_error',
       entityType: 'SYSTEM',
       entityId: 'semantic_audit',
@@ -187,10 +187,10 @@ export const POST: RequestHandler = async ({ request }) => {
       severity: 'ERROR',
       timestamp: new Date(),
       details: {
-        step: 'semantic_audit_error',
+       , step: 'semantic_audit_error',
         status: 'error',
-        message: `Semantic audit; failed: ${String(error)}`, // Cast error to string
-        agentTriggered: false
+        message: `Semantic audit;, failed: ${String(error)}`, // Cast error to: string
+       , agentTriggered: false
       }
     };
     context7AgentOrchestrator.logAuditEntry(errorLogEntry);

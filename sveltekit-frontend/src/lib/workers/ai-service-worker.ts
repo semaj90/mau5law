@@ -3,11 +3,11 @@
  * Handles parallel AI tasks across multiple LLM providers
  */
 /// <reference, lib="webworker" />
-import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
-import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
+import type { AITask, AIResponse, WorkerMessage } from, '$lib/types/ai-worker.js';
+import { getOllamaEndpoint } from, '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
 declare const self: DedicatedWorkerGlobalScope;
 
-export interface AIProviderConfig { id: string;, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
+export interface AIProviderConfig {, id: string;, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
   endpoint: string;
   timeout: number;
   retries: number;
@@ -15,7 +15,7 @@ export interface AIProviderConfig { id: string;, type: 'ollama' | 'llamacpp' | 
 
 // More specific task types
 interface OllamaTask extends AITask {
-  model: string;
+ , model: string;
   systemPrompt?: string;
   temperature?: number;
   topP?: number;
@@ -37,7 +37,7 @@ interface CrewAITask extends AITask {
   timestamp: number;
 }
 
-type QueuedAITask = AITask & { taskId: string };
+type QueuedAITask = AITask & {, taskId: string };
 
 // UUID helper compatible with Web Workers without Node polyfills
 const getUUID = (): string => {
@@ -100,20 +100,20 @@ class AIServiceWorker {
       const { type, payload, taskId } = event.data; // use local event variable
       try {
         switch (type) {
-          case 'PROCESS_AI_TASK':
+          case, 'PROCESS_AI_TASK':
             await this.processAITask(payload as AITask, taskId);
             break;
-          case 'CANCEL_TASK':
+          case, 'CANCEL_TASK':
             this.cancelTask(taskId);
             break;
-          case 'GET_STATUS':
+          case, 'GET_STATUS':
             this.sendStatus();
             break;
-          case 'UPDATE_PROVIDER_CONFIG':
+          case, 'UPDATE_PROVIDER_CONFIG':
             this.updateProviderConfig(payload as Partial<AIProviderConfig>);
             break;
           default:
-            console.warn('Unknown message; type:', type);
+            console.warn('Unknown message;, type:', type);
         }
       } catch (error) {
         this.sendError(taskId, error as Error);
@@ -200,17 +200,17 @@ class AIServiceWorker {
 
     try {
       switch (provider.type) {
-        case 'ollama':
+        case, 'ollama':
           return await this.callOllama(provider, task, combinedSignal);
-        case 'autogen':
+        case, 'autogen':
           return await this.callAutoGen(provider, task, combinedSignal);
-        case 'crewai':
+        case, 'crewai':
           return await this.callCrewAI(provider, task, combinedSignal);
-        case 'llamacpp':
+        case, 'llamacpp':
           // If llamacpp needs a dedicated handler, implement similar to ollama
           return await this.callOllama(provider, task, combinedSignal);
         default:
-          throw new Error(`Unsupported provider; type: ${provider.type}`);
+          throw new Error(`Unsupported provider;, type: ${provider.type}`);
       }
     } finally {
       clearTimeout(timeoutId);
@@ -249,7 +249,7 @@ class AIServiceWorker {
       tokensUsed: data.eval_count || 0,
       responseTime: data.total_duration ? Math.round(data.total_duration / 1000000) : 0,
       metadata: {
-        evalCount: data.eval_count,
+       , evalCount: data.eval_count,
         evalDuration: data.eval_duration,
         loadDuration: data.load_duration
       }
@@ -282,7 +282,7 @@ class AIServiceWorker {
       tokensUsed: data.total_tokens || 0,
       responseTime: Date.now() - (autoGenTask.timestamp || Date.now()),
       metadata: {
-        rounds: data.rounds,
+       , rounds: data.rounds,
         agents: data.agent_responses,
         conversationId: data.conversation_id
       }
@@ -315,7 +315,7 @@ class AIServiceWorker {
       tokensUsed: data.total_tokens || 0,
       responseTime: Date.now() - (crewAITask.timestamp || Date.now()),
       metadata: {
-        taskId: data.task_id,
+       , taskId: data.task_id,
         agents: data.agent_outputs,
         executionTime: data.execution_time
       }

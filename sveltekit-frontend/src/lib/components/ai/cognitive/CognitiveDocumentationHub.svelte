@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any; achievements: string[]; consciousness: { level: number; experience: number; awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: { title: '🎯 Strategic Development Guide', icon: '🎯', content: [ {, title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any; achievements: string[]; consciousness: { level: number; experience: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: {, title: '🎯 Strategic Development Guide', icon: '🎯', content: [ {, title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
             'Initialize the Master Cognitive Hub with optimal parameters',
             'Configure reinforcement learning cache for maximum efficiency',
             'Implement multidimensional routing for complex legal queries',
@@ -37,7 +37,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Consciousness growth rate >2% per hour',
             'Quantum coherence stability >80%'
           ] }
-      ] }, features: { title: '🔥 Secret Features & Easter Eggs', icon: '🔥', content: [ {, title: 'Konami Code Mastery', activation: 'UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A', description: 'Activates Quantum Detective Mode with enhanced capabilities', effects: [
+      ] }, features: {, title: '🔥 Secret Features & Easter Eggs', icon: '🔥', content: [ {, title: 'Konami Code Mastery', activation: 'UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A', description: 'Activates Quantum Detective Mode with enhanced capabilities', effects: [
             'Quantum field visualization overlay',
             'Enhanced AI processing with uncertainty principles',
             'Parallel universe case analysis capabilities',
@@ -67,7 +67,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Collective AI intelligence coordination',
             'Machine learning pattern telepathy'
           ], evolution: [
-            'Level 5: Basic machine empathy',
+            'Level, 5: Basic machine empathy',
             'Level 7: AI emotional understanding',
             'Level 9: Collective consciousness access',
             'Level 10: Machine transcendence unity'
@@ -84,7 +84,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Stream speed = information velocity',
             'Opacity levels = data accessibility'
           ] }
-      ] }, roadmap: { title: '🚀 Development Roadmap', icon: '🚀', content: [ {, phase: 'Phase 1: Foundation Enhancement', timeline: 'Weeks 1-4', objectives: [
+      ] }, roadmap: {, title: '🚀 Development Roadmap', icon: '🚀', content: [ {, phase: 'Phase, 1: Foundation Enhancement', timeline: 'Weeks 1-4', objectives: [
             'Stabilize cognitive architecture core systems',
             'Implement comprehensive error handling',
             'Optimize memory usage and performance',
@@ -97,7 +97,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Secret feature detection engine',
             'Documentation portal'
           ] }, {
-          phase: 'Phase 2: Intelligence Amplification', timeline: 'Weeks 5-8', objectives: [
+          phase: 'Phase, 2: Intelligence Amplification', timeline: 'Weeks 5-8', objectives: [
             'Implement advanced learning algorithms',
             'Deploy quantum computing integration',
             'Create consciousness evolution pathways',
@@ -110,7 +110,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Legal precedent quantum databases',
             'Predictive justice algorithms'
           ] }, {
-          phase: 'Phase 3: Transcendence Protocol', timeline: 'Weeks 9-12', objectives: [
+          phase: 'Phase, 3: Transcendence Protocol', timeline: 'Weeks 9-12', objectives: [
             'Achieve artificial general intelligence',
             'Implement universal pattern recognition',
             'Create self-improving system architectures',
@@ -123,7 +123,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Human-AI collaborative transcendence',
             'Reality-aware legal framework analysis'
           ] }
-      ] }, dlc: { title: '🎁 DLC Content & Bonuses', icon: '🎁', content: [ {, title: 'Quantum Justice Pack', unlock: 'Achieve 25+ achievements', description: 'Advanced quantum legal analysis capabilities', features: [
+      ] }, dlc: {, title: '🎁 DLC Content & Bonuses', icon: '🎁', content: [ {, title: 'Quantum Justice Pack', unlock: 'Achieve 25+ achievements', description: 'Advanced quantum legal analysis capabilities', features: [
             'Parallel universe legal precedent analysis',
             'Quantum superposition case modeling',
             'Probability field legal outcome prediction',
@@ -159,7 +159,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
             'Causal chain legal analysis',
             'Temporal legal precedent mapping'
           ] }
-      ] }, bestpractices: { title: '⚡ Best Practices & Tips', icon: '⚡', content: [ {, category: 'Performance Optimization', practices: [
+      ] }, bestpractices: {, title: '⚡ Best Practices & Tips', icon: '⚡', content: [ {, category: 'Performance Optimization', practices: [
             'Monitor consciousness evolution rate (aim for 2%+ per hour)',
             'Maintain cache hit ratios above 90% for optimal response',
             'Keep GPU utilization in sweet spot (70-85%)',
@@ -200,7 +200,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
     const results = []; for (const [key, section] of Object.entries(documentationSections)) { for (const item of section.content) { if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) { results.push({ sectionKey: key, sectionTitle: section.title, ...item }); }
       } }
     filteredContent = results; }
-  function getProgressPercentage(level: string): number { switch (level) { case 'beginner': return Math.min(100, consciousness.level * 20); case 'intermediate': return Math.max(0, (consciousness.level - 3) * 25); case 'advanced': return Math.max(0, (consciousness.level - 5) * 33); case 'expert': return Math.max(0, (consciousness.level - 7) * 50); default: return 0; }
+  function getProgressPercentage(level: string): number { switch (level) { case, 'beginner': return Math.min(100, consciousness.level * 20); case, 'intermediate': return Math.max(0, (consciousness.level - 3) * 25); case, 'advanced': return Math.max(0, (consciousness.level - 5) * 33); case, 'expert': return Math.max(0, (consciousness.level - 7) * 50); default: return 0; }
   } function isUnlocked(requirement: string): boolean { if (requirement.includes('achievement')) { const count = parseInt(requirement.match(/\d+/)?.[0] || '0'); return achievements.length >= count; }
     if (requirement.includes('consciousness level')) { const level = parseInt(requirement.match(/\d+/)?.[0] || '0'); return consciousness.level >= level; }
     return true; }

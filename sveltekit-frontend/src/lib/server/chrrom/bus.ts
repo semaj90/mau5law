@@ -1,5 +1,5 @@
 // Minimal in-memory SSE bus for CHR-ROM patterns
-import type { CHRPattern } from './patterns.js';
+import type { CHRPattern } from, './patterns.js';
 type WritableClient = { write: (chunk: string) => void };
 const clients = new Set<WritableClient>();
 export function addClient(c: WritableClient) {

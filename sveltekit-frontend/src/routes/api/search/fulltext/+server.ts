@@ -2,11 +2,11 @@
  * Full-Text Search API - PostgreSQL + Drizzle ORM + Loki.js
  * Traditional text search with advanced PostgreSQL features
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/connection';
-import { legalDocuments } from '$lib/server/db/schema';
-import { sql, and, or } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/db/connection';
+import { legalDocuments } from, '$lib/server/db/schema';
+import { sql, and, or } from, 'drizzle-orm';
 interface FullTextSearchQuery {
   query: string;
   limit?: number;
@@ -14,12 +14,12 @@ interface FullTextSearchQuery {
     practiceArea?: string;
     documentType?: string;
     caseId?: string;
-    dateRange?: { start: string;, end: string;
+    dateRange?: {, start: string;, end: string;
     };
   };
   searchMode?: 'simple' | 'advanced' | 'fuzzy';
 }
-interface FullTextResult { id: string;, title: string;
+interface FullTextResult {, id: string;, title: string;
   content: string;
   excerpt: string;
   rank: number;
@@ -33,7 +33,7 @@ interface FullTextResult { id: string;, title: string;
     highlights?: string[];
   };
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   console.log('📝 Full-Text Search API - Starting search...');
   try {
     const body = (await request.json()) as FullTextSearchQuery;
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTime: Date.now(),
         searchMode,
         sources: {
-          postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length : 0,
+         , postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length : 0,
           loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0
         }
       }
@@ -125,11 +125,11 @@ async function searchPostgreSQL(
       );
     }
 
-    // replace any[] with the concrete type
-    let searchResults: PostgresSearchRow[] = [];
+    // replace: any[] with the concrete type
+    let, searchResults: PostgresSearchRow[] = [];
 
     switch (searchMode) {
-      case 'advanced':
+      case, 'advanced':
         // Use PostgreSQL's full-text search with ranking - reference DB columns via sql fragments'
         searchResults = await db
           .select({
@@ -163,7 +163,7 @@ async function searchPostgreSQL(
           .limit(limit);
         break;
 
-      case 'fuzzy':
+      case, 'fuzzy':
         searchResults = await db
           .select({
             id: legalDocuments.id,
@@ -198,7 +198,7 @@ async function searchPostgreSQL(
       default: // 'simple'
         searchResults = await db
           .select({
-            id: legalDocuments.id,
+           , id: legalDocuments.id,
             title: legalDocuments.title,
             content: sql<string>`COALESCE(legal_documents.extracted_text, '')`.as('content'),
             practiceArea: sql<string>`COALESCE(legal_documents.practice_area, '')`.as('practiceArea'),
@@ -240,7 +240,7 @@ async function searchPostgreSQL(
         excerpt,
         rank: row.rank || 0,
         metadata: {
-          practiceArea: row.practiceArea,
+         , practiceArea: row.practiceArea,
           documentType: row.documentType,
           caseId: row.caseId,
           uploadDate: row.uploadDate
@@ -263,10 +263,10 @@ async function searchPostgreSQL(
         id: 'pg_ft_001',
         title: 'Legal Contract Analysis - Full Text Match',
         content: 'This legal document contains relevant information matching your search query',
-        excerpt: `Found relevant content; matching: "${query}" in legal contract analysis...`,
+        excerpt: `Found relevant content;, matching: "${query}" in legal contract analysis...`,
         rank: 0.85,
         metadata: {
-          practiceArea: 'Contract Law',
+         , practiceArea: 'Contract Law',
           documentType: 'PDF',
           caseId: 'case_ft_001',
           uploadDate: new Date().toISOString(),
@@ -294,13 +294,13 @@ async function searchLokiLogs(
       {,
         timestamp: new Date().toISOString(),
         level: 'info',
-        message: `Document processing completed for; query: ${query}`,
+        message: `Document processing completed for;, query: ${query}`,
         labels: {
-          job: 'legal-platform',
+         , job: 'legal-platform',
           service: 'document-processor',
           case_id: filters?.caseId || 'case_log_001` },'`
         metadata: {
-          processing_time: '2.3s',
+         , processing_time: '2.3s',
           document_count: 1,
           query_matched: true
         }
@@ -308,13 +308,13 @@ async function searchLokiLogs(
       {
         timestamp: new Date(Date.now() - 3600000).toISOString(),
         level: 'warn',
-        message: `Search; query: "${query}" took longer than expected`,
+        message: `Search;, query: "${query}" took longer than expected`,
         labels: {
-          job: 'legal-platform',
+         , job: 'legal-platform',
           service: 'search-engine',
           case_id: filters?.caseId || 'case_log_002` },'`
         metadata: {
-          search_time: '5.7s',
+         , search_time: '5.7s',
           result_count: 0,
           performance_warning: true
         }
@@ -322,12 +322,12 @@ async function searchLokiLogs(
     ];
     return mockLogResults.map((entry, index) => ({
       id: `loki_ft_${index}`,
-      title: `System; Log: ${entry.message}`,
+      title: `System;, Log: ${entry.message}`,
       content: `${entry.level.toUpperCase()}: ${entry.message}`,
       excerpt: entry.message.substring(0, 100) + '...',
       rank: entry.message.toLowerCase().includes(query.toLowerCase()) ? 0.7 : 0.3,
       metadata: {
-        practiceArea: 'System Operations',
+       , practiceArea: 'System Operations',
         documentType: 'Log',
         caseId: entry.labels.case_id,
         uploadDate: entry.timestamp,
@@ -346,7 +346,7 @@ async function searchLokiLogs(
 }
 // Utility functions
 function generateExcerpt(content: string, query: string, maxLength: number): string {
-  if (!content) return '';
+  if (!content) return, '';
   const queryIndex = content.toLowerCase().indexOf(query.toLowerCase());
   if (queryIndex === -1) {
     return content.substring(0, maxLength) + (content.length > maxLength ? '...' : '');

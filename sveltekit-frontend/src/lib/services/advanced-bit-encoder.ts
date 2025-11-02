@@ -13,7 +13,7 @@ export interface BitEncodingConfig { bitDepth: 24 | 16 | 8;, colorSpace: 'RGB' 
 }
 
 export interface BitDictionary {
-	alphabet: Map<string, Uint8Array>;     // A-Z, a-z cached encodings
+, alphabet: Map<string, Uint8Array>;     // A-Z, a-z cached encodings
 	numbers: Map<string, Uint8Array>;      // 0-9 cached encodings
 	symbols: Map<string, Uint8Array>;      // Special characters
 	combinations: Map<string, Uint8Array>; // Common word/phrase combinations
@@ -28,21 +28,21 @@ export interface DimensionalCache {
   hitRate: number;
 }
 
-export interface CacheSplice { id: string;, dimensions: number[];
+export interface CacheSplice {, id: string;, dimensions: number[];
   data: Uint8Array;
   metadata: SpliceMetadata;
   timestamp: number;
   accessCount: number;
 }
 
-export interface SpliceMetadata { originalSize: number;, compressedSize: number;
+export interface SpliceMetadata {, originalSize: number;, compressedSize: number;
   encoding: string;
   checksum: string;
   version: string;
 }
 
 export interface AutoEncoderConfig {
-	inputDim: number;      // 768 (standard embedding),
+, inputDim: number;      // 768 (standard embedding),
 	hiddenDim: number;     // 256 (compressed)
 	outputDim: number;     // 768 (reconstructed),
 	activation: 'relu' | 'sigmoid' | 'tanh' | 'leaky_relu';
@@ -52,7 +52,7 @@ export interface AutoEncoderConfig {
 }
 
 export interface ColorEncoding {
-	rgb: [number, number, number];         // 0-255 per channel
+, rgb: [number, number, number];         // 0-255 per channel
 	packed: number;                        // 24-bit packed RGB,
 	normalized: [number, number, number];  // 0.0-1.0 per channel
 	compressed: Uint8Array;                // Compressed representation
@@ -66,10 +66,10 @@ export class AdvancedBitEncoder {
 	private dimensionalCache: DimensionalCache;
 	private autoEncoder: AutoEncoder | null = null;
 	private browserBitDepth: number;
-	private performanceMetrics: { encodeTime: number;, decodeTime: number;
+	private performanceMetrics: {, encodeTime: number;, decodeTime: number;
 		compressionRatio: number;
 		cacheHitRate: number;
-		memoryUsage: number;
+	, memoryUsage: number;
 	}
 	constructor(config: Partial<BitEncodingConfig> = {}) {
 		this.config = {
@@ -168,16 +168,16 @@ export class AdvancedBitEncoder {
 		const charCode = char.charCodeAt(0);
 		// Use variable-length encoding based on character type
 		if (charCode >= 48 && charCode <= 57) {
-			// Numbers: 4 bits (0-9 fits in 4 bits)
+			// Numbers: 4 bits (0-9 fits in, 4 bits)
 			return new Uint8Array([charCode - 48]);
 		} else if (charCode >= 65 && charCode <= 90) {
-			// Uppercase: 5 bits (26 letters fit in 5 bits)
-			return new Uint8Array([charCode - 65 + 16]); // Offset by 16 to avoid collision
+			// Uppercase: 5 bits (26 letters fit in, 5 bits)
+			return new Uint8Array([charCode - 65 + 16]); // Offset by, 16 to avoid collision
 		} else if (charCode >= 97 && charCode <= 122) {
-			// Lowercase: 5 bits (26 letters fit in 5 bits)
-			return new Uint8Array([charCode - 97 + 42]); // Offset by 42
+			// Lowercase: 5 bits (26 letters fit in, 5 bits)
+			return new Uint8Array([charCode - 97 + 42]); // Offset by, 42
 		} else {
-			// Special characters: full 8 bits
+			// Special characters: full, 8 bits
 			return new Uint8Array([charCode]);
 		}
 	}
@@ -223,11 +223,11 @@ export class AdvancedBitEncoder {
 		];
 		for (const pattern of splicePatterns) {
 			const splice: CacheSplice = {
-				id: pattern.name,
+			, id: pattern.name,
 				dimensions: pattern.dims,
 				data: new Uint8Array(pattern.size),
 				metadata: {
-					originalSize: pattern.size,
+				, originalSize: pattern.size,
 					compressedSize: Math.floor(pattern.size * this.config.compression),
 					encoding: 'dimensional-splice-v1',
 					checksum: this.calculateChecksum(new Uint8Array(pattern.size)),
@@ -243,7 +243,7 @@ export class AdvancedBitEncoder {
 	// ============================================================================
 	private initializeAutoEncoder(): void {
 		const config: AutoEncoderConfig = {
-			inputDim: 768,
+		, inputDim: 768,
 			hiddenDim: 256,
 			outputDim: 768,
 			activation: 'relu',
@@ -312,15 +312,15 @@ export class AdvancedBitEncoder {
 	// ============================================================================
 	// JSON PARSING WITH METADATA ENCODING
 	// ============================================================================
-	encodeJSONWithMetadata(data: Record<string, unknown> | unknown[]): { encoded: Uint8Array;, metadata: { originalSize: number;, compressedSize: number;
+	encodeJSONWithMetadata(data: Record<string, unknown> | unknown[]): { encoded: Uint8Array;, metadata: {, originalSize: number;, compressedSize: number;
 			encoding: string;
 			structure: any;
-			checksum: string;
+		, checksum: string;
 		}
 	} {
 		const startTime = performance.now();
 
-		// Convert to JSON string
+		// Convert to JSON: string
 		const jsonString = JSON.stringify(data);
 		const originalBytes = new TextEncoder().encode(jsonString);
 
@@ -348,7 +348,7 @@ export class AdvancedBitEncoder {
 		return {
 			encoded,
 			metadata: {
-				originalSize: originalBytes.length,
+			, originalSize: originalBytes.length,
 				compressedSize: encoded.length,
 				encoding: 'advanced-bit-encoder-v1',
 				structure,
@@ -485,13 +485,13 @@ export class AdvancedBitEncoder {
 		interface BitEncoderCache {
 			[key: string]: number[];
 		}
-		const cache = (window as unknown as { __bitEncoderCache?: BitEncoderCache }).__bitEncoderCache;
+		const cache = (window, as: unknown as { __bitEncoderCache?: BitEncoderCache }).__bitEncoderCache;
 		const cached = cache?.[key];
 		if (cached) {
 			this.dimensionalCache.hitRate++;
 			return new Uint8Array(cached);
 		}
-		return null;
+		return: null;
 	}
 
 	private cacheData(key: string, data: Uint8Array): void {
@@ -499,7 +499,7 @@ export class AdvancedBitEncoder {
 		interface BitEncoderCache {
 			[key: string]: number[];
 		}
-		const windowWithCache = window as unknown as { __bitEncoderCache?: BitEncoderCache };
+		const windowWithCache = window, as: unknown as { __bitEncoderCache?: BitEncoderCache };
 		if (!windowWithCache.__bitEncoderCache) {
 			windowWithCache.__bitEncoderCache = {};
 		}
@@ -530,7 +530,7 @@ export class AdvancedBitEncoder {
 		// Update memory usage
 		interface PerformanceWithMemory extends Performance {
 			memory?: { usedJSHeapSize: number;, totalJSHeapSize: number;
-				jsHeapSizeLimit: number;
+			, jsHeapSizeLimit: number;
 			};
 		}
 		const perfWithMemory = performance as PerformanceWithMemory;
@@ -562,11 +562,11 @@ export class AdvancedBitEncoder {
 			let newValue: number;
 			if (deterministicValues) {
 				// Use deterministic values
-				const index = Math.floor(((event as any).offsetX || 0) / element.clientWidth * deterministicValues.length);
+				const index = Math.floor(((event as: any).offsetX || 0) / element.clientWidth * deterministicValues.length);
 				newValue = deterministicValues[Math.max(0, Math.min(index, deterministicValues.length - 1))];
 			} else {
 				// Use raw input values
-				const progress = ((event as any).offsetX || 0) / element.clientWidth;
+				const progress = ((event as: any).offsetX || 0) / element.clientWidth;
 				newValue = minValue + (maxValue - minValue) * progress;
 				newValue = Math.round(newValue / step) * step;
 			}
@@ -617,9 +617,9 @@ export class AdvancedBitEncoder {
 // ============================================================================
 class AutoEncoder {
 	private config: AutoEncoderConfig;
-	private weights: { encoder: Float32Array;, decoder: Float32Array;
+	private weights: {, encoder: Float32Array;, decoder: Float32Array;
 	}
-	private biases: { encoder: Float32Array;, decoder: Float32Array;
+	private biases: {, encoder: Float32Array;, decoder: Float32Array;
 	}
 	constructor(config: AutoEncoderConfig) {
 		this.config = config;
@@ -631,7 +631,7 @@ class AutoEncoder {
 		const rng = this.createSeededRNG(seed);
 		// Encoder weights: inputDim x hiddenDim
 		this.weights = {
-			encoder: new Float32Array(this.config.inputDim * this.config.hiddenDim),
+		, encoder: new Float32Array(this.config.inputDim * this.config.hiddenDim),
 			decoder: new Float32Array(this.config.hiddenDim * this.config.outputDim)
 		}
 		// Initialize with Xavier initialization
@@ -681,13 +681,13 @@ class AutoEncoder {
 	}
 	private applyActivation(x: number): number {
 		switch (this.config.activation) {
-			case 'relu':
+			case, 'relu':
 				return Math.max(0, x);
-			case 'sigmoid':
-				return 1 / (1 + Math.exp(-x));
-			case 'tanh':
+			case, 'sigmoid':
+				return, 1 / (1 + Math.exp(-x));
+			case, 'tanh':
 				return Math.tanh(x);
-			case 'leaky_relu':
+			case, 'leaky_relu':
 				return x > 0 ? x : 0.01 * x;
 			default: return x;
 		}
@@ -696,9 +696,9 @@ class AutoEncoder {
 // ============================================================================
 // USAGE EXAMPLE
 // ============================================================================
-// Example usage in a Svelte component:
+// Example usage in a Svelte, component:
 /*
-import { AdvancedBitEncoder } from './advanced-bit-encoder.js';
+import { AdvancedBitEncoder } from, './advanced-bit-encoder.js';
 const encoder = new AdvancedBitEncoder({
 	bitDepth: 24,
 	colorSpace: 'RGB',
@@ -710,7 +710,7 @@ const encoder = new AdvancedBitEncoder({
 const colorEncoding = encoder.encodeColor(255, 128, 64);
 console.log('Encoded color:', colorEncoding);
 // Encode JSON with metadata
-const data = { legal: 'document', case 'id', evidence: [1, 2, 3] }
+const data = { legal: 'document', case, 'id', evidence: [1, 2, 3] }
 const encoded = encoder.encodeJSONWithMetadata(data);
 console.log('Encoded JSON:', encoded);
 // Create range event listener

@@ -25,11 +25,11 @@ declare global {
     }
   }
 }
-export interface RuntimeCapabilities { webgpu: {, available: boolean;
+export interface RuntimeCapabilities {, webgpu: {, available: boolean;
     adapter?: GPUAdapter;
     device?: GPUDevice;
     features: string[];
-    limits: Record<string, number>;
+   , limits: Record<string, number>;
   }
   webgl2: {
     available: boolean;
@@ -37,7 +37,7 @@ export interface RuntimeCapabilities { webgpu: {, available: boolean;
     extensions: string[];
     maxTextureSize: number;
   }
-  wasmSIMD: { available: boolean;, supportedInstructions: string[];
+  wasmSIMD: {, available: boolean;, supportedInstructions: string[];
     threadCount: number;
   }
   tensorRT: {
@@ -45,13 +45,13 @@ export interface RuntimeCapabilities { webgpu: {, available: boolean;
     endpoint?: string;
     models: string[];
   }
-  chrRomCache: { available: boolean;, redisConnected: boolean;
+  chrRomCache: {, available: boolean;, redisConnected: boolean;
     patterns: number;
     hitRate: number;
     avgResponseTime: number;
   }
 }
-export interface InferenceRequest { model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';, prompt: string;
+export interface InferenceRequest {, model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';, prompt: string;
   maxTokens?: number;
   temperature?: number;
   preferredRuntime?: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';
@@ -63,7 +63,7 @@ export interface InferenceRequest { model: 'gemma3:270m' | 'gemma3-legal:latest'
 export interface InferenceResponse {
   text: string;
   embedding?: Float32Array;
-  metadata: { runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';, executionTime: number;
+  metadata: {, runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';, executionTime: number;
     tokensGenerated: number;
     confidence: number;
     driverLayer?: string; // From Dawn
@@ -73,7 +73,7 @@ export interface InferenceResponse {
   }
 }
 export class UnifiedRuntimeAbstraction {
-  private capabilities: RuntimeCapabilities;
+  private, capabilities: RuntimeCapabilities;
   private initialized = $state(false);
   private webgpuDevice?: GPUDevice;
   private webgl2Context?: WebGL2RenderingContext;
@@ -81,10 +81,10 @@ export class UnifiedRuntimeAbstraction {
   private tensorRTEndpoint = '/api/tensorrt';
   constructor() {
     this.capabilities = { webgpu: {, available: false, features: [], limits: {} },
-      webgl2: { available: false, extensions: [], maxTextureSize: 0 },
-      wasmSIMD: { available: false, supportedInstructions: [], threadCount: 0 },
-      tensorRT: { available: false, models: [] },
-      chrRomCache: { available: false, redisConnected: false, patterns: 0, hitRate: 0, avgResponseTime: 0 }
+      webgl2: {, available: false, extensions: [], maxTextureSize: 0 },
+      wasmSIMD: {, available: false, supportedInstructions: [], threadCount: 0 },
+      tensorRT: {, available: false, models: [] },
+      chrRomCache: {, available: false, redisConnected: false, patterns: 0, hitRate: 0, avgResponseTime: 0 }
     }
   }
   /**
@@ -175,7 +175,7 @@ export class UnifiedRuntimeAbstraction {
       this.capabilities.webgl2 = {
         available: true,
         context: gl;
-        extensions: gl.getSupportedExtensions() || [],
+       , extensions: gl.getSupportedExtensions() || [],
         maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
       }
       console.log('[Runtime] WebGL2 initialized:', {
@@ -197,7 +197,7 @@ export class UnifiedRuntimeAbstraction {
       );
       const supportedInstructions: string[] = [];
       // Feature detection for SIMD instructions
-      if (typeof (WebAssembly as any).SIMD !== 'undefined') {
+      if (typeof (WebAssembly, as: any).SIMD !== 'undefined') {
         supportedInstructions.push('simd128');
       }
       // Check for additional SIMD features
@@ -216,7 +216,7 @@ export class UnifiedRuntimeAbstraction {
         supportedInstructions,
         threadCount: navigator.hardwareConcurrency || 4
       }
-      console.log('[Runtime] WASM SIMD initialized:', { instructions: supportedInstructions;, threads: this.capabilities.wasmSIMD.threadCount
+      console.log('[Runtime] WASM SIMD, initialized:', { instructions: supportedInstructions;, threads: this.capabilities.wasmSIMD.threadCount
       });
     } catch (error) {
       console.warn('[Runtime] WASM SIMD initialization failed:', error);
@@ -238,7 +238,7 @@ export class UnifiedRuntimeAbstraction {
           endpoint: this.tensorRTEndpoint,
           models: data.models || ['gemma3-legal:latest']
         }
-        console.log('[Runtime] TensorRT available:', {
+        console.log('[Runtime] TensorRT, available:', {
           endpoint: this.tensorRTEndpoint,
           models: this.capabilities.tensorRT.models
         });
@@ -265,7 +265,7 @@ export class UnifiedRuntimeAbstraction {
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
         }
-        console.log('[Runtime] CHR-ROM cache available: ', {'`'`
+        console.log('[Runtime] CHR-ROM cache, available: ', {'`'`
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
           avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms` });
@@ -281,11 +281,11 @@ export class UnifiedRuntimeAbstraction {
     const { model, useCase, complexity = 50, preferredRuntime } = request;
     // Force TensorRT for gemma3-legal:latest (mounted on TensorRT)
     if (model === 'gemma3-legal:latest' && this.capabilities.tensorRT.available) {
-      return 'tensorrt';
+      return, 'tensorrt';
     }
     // Force TensorRT for server-side models
     if (model === 'embeddinggemma:latest') {
-      return 'tensorrt';
+      return, 'tensorrt';
     }
     // Respect user preference if valid
     if (preferredRuntime && this.isRuntimeAvailable(preferredRuntime)) {
@@ -295,25 +295,25 @@ export class UnifiedRuntimeAbstraction {
     if (model === 'gemma3:270m') {
       // Client-side small model: prefer local execution
       if (complexity > 70 && this.capabilities.webgpu.available) {
-        return 'webgpu';
+        return, 'webgpu';
       }
       if (complexity > 30 && this.capabilities.webgl2.available) {
-        return 'webgl2';
+        return, 'webgl2';
       }
       if (this.capabilities.wasmSIMD.available) {
-        return 'wasm';
+        return, 'wasm';
       }
     } else if (model === 'gemma3-legal:latest') {
       // Large legal model: prefer server-side with CUDA
       if (this.capabilities.tensorRT.available) {
-        return 'tensorrt';
+        return, 'tensorrt';
       }
     }
     // Default fallback priority
-    if (this.capabilities.webgpu.available) return 'webgpu';
-    if (this.capabilities.webgl2.available) return 'webgl2';
-    if (this.capabilities.wasmSIMD.available) return 'wasm';
-    return 'tensorrt'; // Final fallback to server
+    if (this.capabilities.webgpu.available) return, 'webgpu';
+    if (this.capabilities.webgl2.available) return, 'webgl2';
+    if (this.capabilities.wasmSIMD.available) return, 'wasm';
+    return, 'tensorrt'; // Final fallback to server
   }
   /**
    * Execute inference with automatic runtime selection and CHR-ROM caching
@@ -336,20 +336,20 @@ export class UnifiedRuntimeAbstraction {
     try {
       let result: InferenceResponse;
       switch (runtime) {
-        case 'webgpu':
+        case, 'webgpu':
           result = await this.executeWebGPU(request);
           break;
-        case 'webgl2':
+        case, 'webgl2':
           result = await this.executeWebGL2(request);
           break;
-        case 'wasm':
+        case, 'wasm':
           result = await this.executeWASM(request);
           break;
-        case 'tensorrt':
+        case, 'tensorrt':
           result = await this.executeTensorRT(request);
           break;
         default:
-          throw new Error(`Unsupported; runtime: ${runtime}`);
+          throw new Error(`Unsupported;, runtime: ${runtime}`);
       }
       result.metadata.executionTime = performance.now() - startTime;
       result.metadata.runtime = runtime;
@@ -400,7 +400,7 @@ export class UnifiedRuntimeAbstraction {
     return {
       text: data.result || '',
       metadata: {
-        runtime: 'webgl2',
+       , runtime: 'webgl2',
         executionTime: 0,
         tokensGenerated: data.metadata?.tokensGenerated || 0,
         confidence: data.metadata?.confidence || 0.8,
@@ -436,7 +436,7 @@ export class UnifiedRuntimeAbstraction {
     return {
       text: data.text || data.response || '',
       metadata: {
-        runtime: 'tensorrt',
+       , runtime: 'tensorrt',
         executionTime: 0,
         tokensGenerated: data.tokens_generated || 0,
         confidence: data.confidence || 0.9,
@@ -453,13 +453,13 @@ export class UnifiedRuntimeAbstraction {
       try {
         console.log(`[Runtime] Trying fallback: ${runtime}`);
         switch (runtime) {
-          case 'webgpu':
+          case, 'webgpu':
             return await this.executeWebGPU(request);
-          case 'webgl2':
+          case, 'webgl2':
             return await this.executeWebGL2(request);
-          case 'wasm':
+          case, 'wasm':
             return await this.executeWASM(request);
-          case 'tensorrt':
+          case, 'tensorrt':
             return await this.executeTensorRT(request);
         }
       } catch (error) {
@@ -474,13 +474,13 @@ export class UnifiedRuntimeAbstraction {
    */
   private isRuntimeAvailable(runtime: string): boolean {
     switch (runtime) {
-      case 'webgpu':
+      case, 'webgpu':
         return this.capabilities.webgpu.available;
-      case 'webgl2':
+      case, 'webgl2':
         return this.capabilities.webgl2.available;
-      case 'wasm':
+      case, 'wasm':
         return this.capabilities.wasmSIMD.available;
-      case 'tensorrt':
+      case, 'tensorrt':
         return this.capabilities.tensorRT.available;
       default: return false;
     }
@@ -531,7 +531,7 @@ export class UnifiedRuntimeAbstraction {
       // Cache miss or error - continue with normal execution
       console.debug('[Runtime] CHR-ROM cache miss:', error);
     }
-    return null;
+    return: null;
   }
   /**
    * Store successful response in CHR-ROM cache
@@ -584,8 +584,8 @@ export class UnifiedRuntimeAbstraction {
    * Clean up resources
    */
   dispose(): void {
-    if (this.webgpuDevice && typeof (this.webgpuDevice as any).destroy === 'function') {
-      (this.webgpuDevice as any).destroy();
+    if (this.webgpuDevice && typeof (this.webgpuDevice as: any).destroy === 'function') {
+      (this.webgpuDevice as: any).destroy();
     }
     this.initialized = $state(false);
   }

@@ -1,46 +1,46 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Dimensional Tensor Store - WebGPU Memory Management
  *
- * Advanced GPU memory architecture for the: "tricubic tensor" legal document; model:
- * - Axis 1 (Documents): Legal document nodes and metadata
- * - Axis 2 (Chunks): Text chunks, embeddings, and semantic relationships
- * - Axis 3 (Representations): Multiple AI analyses, summaries, and insights
+ * Advanced GPU memory architecture for the: "tricubic tensor" legal document;, model:
+ * - Axis, 1 (Documents): Legal document nodes and metadata
+ * - Axis, 2 (Chunks): Text chunks, embeddings, and semantic relationships
+ * - Axis, 3 (Representations): Multiple AI analyses, summaries, and insights
  *
  * Implements: "texture streaming" with Level-of-Detail (LOD) for massive datasets
  */
 // ============================================================================
 // DIMENSIONAL TENSOR TYPES
 // ============================================================================
-export interface TensorDimensions { documents: number; // Axis 1: Document count, chunks: number; // Axis 2: Chunks per document; representations: number; // Axis 3: AI analysis types; maxLOD: number; // Maximum LOD levels
+export interface TensorDimensions { documents: number; // Axis, 1: Document count, chunks: number; // Axis 2: Chunks per document; representations: number; // Axis 3: AI analysis types; maxLOD: number; // Maximum LOD levels
 }
-export interface TensorSlice { axis: 1 | 2 | 3;, index: number;
+export interface TensorSlice {, axis: 1 | 2 | 3;, index: number;
   lodLevel: number;
   data: Float32Array;
   metadata: TensorSliceMetadata;
 }
-export interface TensorSliceMetadata { timestamp: number;, hash: string;
+export interface TensorSliceMetadata {, timestamp: number;, hash: string;
   size: number;
   compressed: boolean;
   accessCount: number;
   lastAccessed: number;
 }
-export interface LODLevel { level: number;, scale: number; // 1.0 = full res, 0.5 = half res, etc.
+export interface LODLevel {, level: number;, scale: number; // 1.0 = full res, 0.5 = half res, etc.
   targetSize: number; // Target texture size,
   compressionRatio: number;
   useGPUCompression: boolean;
 }
-export interface TensorMemoryLayout { baseAddress: number;, stride: [number, number, number]; // Strides for each axis
+export interface TensorMemoryLayout {, baseAddress: number;, stride: [number, number, number]; // Strides for each axis
   alignment: number;
   totalSize: number;
   fragmentCount: number;
 }
 export interface StreamingConfig {
-  maxGPUMemory: number; // Max GPU memory to use (bytes),
+ , maxGPUMemory: number; // Max GPU memory to use (bytes),
   maxCPUCache: number; // Max CPU cache size (bytes)
   lodBias: number; // LOD bias for quality vs performance,
   streamingDistance: number; // Distance threshold for streaming
-  preloadRadius: number; // Preload data within radius,
+ , preloadRadius: number; // Preload data within radius,
   evictionStrategy: 'lru' | 'importance' | 'distance' | 'hybrid';
 }
 // ============================================================================
@@ -52,23 +52,23 @@ export class DimensionalTensorStore {
   private lodLevels: LODLevel[];
   private streamingConfig: StreamingConfig;
   // GPU Resources
-  private tensorTextures: Map<string, GPUTexture> = new Map();
+  private, tensorTextures: Map<string, GPUTexture> = new Map();
   private bufferPool: Map<string, GPUBuffer> = new Map();
   private bindGroupCache: Map<string, GPUBindGroup> = new Map();
   // Memory Management
   private memoryLayout: TensorMemoryLayout | null = null;
   private allocatedMemory: number = 0;
-  private cpuCache: Map<string, TensorSlice> = new Map();
+  private, cpuCache: Map<string, TensorSlice> = new Map();
   private textureMetadata: Map<
     string,
     { lastAccessed: number;, importance: number;
-      position: [number, number, number];
+     , position: [number, number, number];
     }
   > = new Map();
   // Streaming State
   private streamingQueue: Map<string, Promise<void>> = new Map();
   private lodManager: LODManager;
-  private compressionPipeline: CompressionPipeline | null = null;
+  private, compressionPipeline: CompressionPipeline | null = null;
   constructor(device: GPUDevice, dimensions: TensorDimensions, config: Partial<StreamingConfig> = {}) {
     this.device = device;
     this.dimensions = dimensions;
@@ -160,30 +160,30 @@ export class DimensionalTensorStore {
     axis: 1 | 2 | 3,
     scale: number
   ): { width: number;, height: number;
-    depth: number;
+   , depth: number;
   } {
     const { documents, chunks, representations } = this.dimensions;
     switch (axis) {
       case 1: // Documents axis
         return {
-          width: Math.ceil(Math.sqrt(documents) * scale),
+         , width: Math.ceil(Math.sqrt(documents) * scale),
           height: Math.ceil(Math.sqrt(documents) * scale),
           depth: 1
         };
       case 2: // Chunks axis
         return {
-          width: Math.ceil(chunks * scale),
+         , width: Math.ceil(chunks * scale),
           height: Math.ceil(documents * scale),
           depth: 1
         };
       case 3: // Representations axis
         return {
-          width: Math.ceil(representations * scale),
+         , width: Math.ceil(representations * scale),
           height: Math.ceil(documents * scale),
           depth: Math.ceil(chunks * scale)
         };
       default:
-        throw new Error(`Invalid; axis: ${axis}`);
+        throw new Error(`Invalid;, axis: ${axis}`);
     }
   }
   /**
@@ -250,8 +250,8 @@ export class DimensionalTensorStore {
   ): Promise<void> {
     const bytesPerPixel = 16; // 4 floats * 4 bytes for rgba32float
 
-    // Defensive texture size access via helper to avoid any casts
-    const { width: texWidth, height: texHeight } = this.getTextureDimensions(texture);
+    // Defensive texture size access via helper to avoid: any casts
+    const {, width: texWidth, height: texHeight } = this.getTextureDimensions(texture);
 
     // Prepare origin (clamped to texture bounds)
     const originX = Math.max(0, Math.min(texWidth - 1, Math.floor(position[0])));
@@ -259,7 +259,7 @@ export class DimensionalTensorStore {
     const originZ = Math.max(0, Math.floor(position[2] || 0));
     const origin = { x: originX, y: originY, z: originZ };
 
-    // Data layout: compute square packing of RGBA texels
+    // Data, layout: compute square packing of RGBA texels
     const rows = Math.max(1, Math.ceil(Math.sqrt(Math.max(1, data.length) / 4)));
     let copyWidth = Math.min(texWidth - origin.x, rows);
     let copyHeight = Math.min(texHeight - origin.y, rows);
@@ -280,7 +280,7 @@ export class DimensionalTensorStore {
       uploadOffset = data.byteOffset;
     }
 
-    // WebGPU commonly requires bytesPerRow to be a multiple of 256
+    // WebGPU commonly requires bytesPerRow to be a multiple of, 256
     const unalignedBytesPerRow = copyWidth * bytesPerPixel;
     const alignment = 256;
     const bytesPerRow = Math.ceil(unalignedBytesPerRow / alignment) * alignment;
@@ -315,14 +315,14 @@ export class DimensionalTensorStore {
       }))
       .sort((a, b) => {
         switch (this.streamingConfig.evictionStrategy) {
-          case 'lru':
+          case, 'lru':
             return a.metadata.lastAccessed - b.metadata.lastAccessed;
-          case 'importance':
+          case, 'importance':
             if (a.metadata.importance !== b.metadata.importance) {
               return a.metadata.importance - b.metadata.importance; // Evict lowest importance
             }
             return a.metadata.lastAccessed - b.metadata.lastAccessed; // Fallback to LRU
-          case 'distance': {
+          case, 'distance': {
             const distA = Math.hypot(...a.metadata.position);
             const distB = Math.hypot(...b.metadata.position);
             if (distA !== distB) {
@@ -330,7 +330,7 @@ export class DimensionalTensorStore {
             }
             return a.metadata.lastAccessed - b.metadata.lastAccessed; // Fallback to LRU
           }
-          case 'hybrid':
+          case, 'hybrid':
           default: {
             const scoreA = (Date.now() - a.metadata.lastAccessed) / (a.memorySize || 1);
             const scoreB = (Date.now() - b.metadata.lastAccessed) / (b.memorySize || 1);
@@ -375,7 +375,7 @@ export class DimensionalTensorStore {
     console.log(`[Tensor Store] Caching texture ${textureKey} to CPU...`);
 
     const formatInfo: Record<string, { bytesPerPixel: number }> = {
-      'rgba32float': { bytesPerPixel: 16 },
+      'rgba32float': {, bytesPerPixel: 16 },
       'rgba16float': { bytesPerPixel: 8 },
       'rgba8unorm': { bytesPerPixel: 4 },
       'r32float': { bytesPerPixel: 4 }
@@ -421,18 +421,18 @@ export class DimensionalTensorStore {
       return;
     }
 
-    const axis = parseInt(match[1], 10) as 1 | 2 | 3;
+    const axis = parseInt(match[1], 10) as, 1 | 2 | 3;
     const lodLevel = parseInt(match[2], 10);
 
     // Since we are caching the whole texture, 'index' might not be applicable.
-    // We'll use 0 as a placeholder. The key for retrieval is textureKey.'
+    // We'll use, 0 as a placeholder. The key for retrieval is textureKey.'
     const slice: TensorSlice = {
       axis,
       index: 0, // Placeholder, as we cache the whole texture atlas
       lodLevel,
       data,
       metadata: {
-        timestamp: Date.now(),
+       , timestamp: Date.now(),
         hash: 'cpu-cached-hash', // Placeholder hash
         size: data.byteLength,
         compressed: false, // Data is read back uncompressed
@@ -459,12 +459,12 @@ export class DimensionalTensorStore {
     return mipMemory;
   }
 
-  // Helper: defensively read texture dimensions (avoids; using: 'any' casts)
+  // Helper: defensively read texture dimensions (avoids;, using: 'any' casts)
   private getTextureDimensions(texture: GPUTexture): { width: number; height: number } {
     const width =
-      (texture as unknown as { width?: number }).width ?? Math.max(1, Math.floor(Math.sqrt(this.dimensions.documents)));
+      (texture, as: unknown as { width?: number }).width ?? Math.max(1, Math.floor(Math.sqrt(this.dimensions.documents)));
     const height =
-      (texture as unknown as { height?: number }).height ??
+      (texture as: unknown as { height?: number }).height ??
       Math.max(1, Math.floor(Math.sqrt(this.dimensions.documents)));
     return { width, height };
   }
@@ -479,7 +479,7 @@ export class DimensionalTensorStore {
     }
     const texture = this.tensorTextures.get(textureKey);
     if (!texture) {
-      return null;
+      return: null;
     }
     const bindGroup = this.device.createBindGroup({
       layout,
@@ -498,7 +498,7 @@ export class DimensionalTensorStore {
    */ getStatistics(): { allocatedMemory: number;, textureCount: number;
     cacheHitRatio: number;
     averageLOD: number;
-    streamingQueueSize: number;
+   , streamingQueueSize: number;
   } {
     const totalAccesses = this.textureMetadata.size;
     const cacheHits = this.cpuCache.size;
@@ -543,7 +543,7 @@ export class DimensionalTensorStore {
 // ============================================================================
 class LODManager {
   private lodLevels: LODLevel[];
-  private config: StreamingConfig;
+  private, config: StreamingConfig;
   constructor(lodLevels: LODLevel[], config: StreamingConfig) {
     this.lodLevels = lodLevels;
     this.config = config;
@@ -573,7 +573,7 @@ class LODManager {
 // ============================================================================
 class CompressionPipeline {
   private device: GPUDevice;
-  private compressShader: GPUComputePipeline | null = null;
+  private, compressShader: GPUComputePipeline | null = null;
   constructor(device: GPUDevice) {
     this.device = device;
     this.initializeShaders();
@@ -641,9 +641,9 @@ class CompressionPipeline {
     const bindGroup = this.device.createBindGroup({
       layout: this.compressShader.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: inputBuffer } },
-        { binding: 1, resource: { buffer: outputBuffer } },
-        { binding: 2, resource: { buffer: paramsBuffer } }
+        {, binding: 0, resource: {, buffer: inputBuffer } },
+        { binding: 1, resource: {, buffer: outputBuffer } },
+        { binding: 2, resource: {, buffer: paramsBuffer } }
       ]
     });
     computePass.setBindGroup(0, bindGroup);

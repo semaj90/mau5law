@@ -9,7 +9,7 @@
     DialogTitle as BitsDialogTitle,
     DialogTrigger as BitsDialogTrigger,
     DialogClose as BitsDialogClose
-  } from 'bits-ui'; // Changed import path
+  } from, 'bits-ui'; // Changed import path
   import type {
     DialogProps,
     DialogTriggerProps,
@@ -20,8 +20,8 @@
     DialogFooterProps,
     DialogCloseProps,
     DialogOverlayProps
-  } from '$lib/ui/types/Dialog';
-  import { cn } from '$lib/utils'; // Assuming a utility for class merging exists
+  } from, '$lib/ui/types/Dialog';
+  import { cn } from, '$lib/utils'; // Assuming a utility for class merging exists
 
   // --- Dialog Root Props ---
   type $$Props = DialogProps;
@@ -80,7 +80,7 @@
   const defaultFooterClass = 'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2';
   const defaultTitleClass = 'text-lg font-semibold leading-none tracking-tight';
   const defaultDescriptionClass = 'text-sm text-muted-foreground';
-  const defaultCloseClass = 'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground';
+  const defaultCloseClass = 'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2, disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground';
 </script>
 
 <BitsDialog, bind:open, onOpenChange={onOpenChange} {modal} {...rest}>
@@ -135,7 +135,7 @@
       <slot, name="close">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
+          viewBox="0, 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"

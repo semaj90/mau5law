@@ -1,12 +1,12 @@
-import { writeFile, mkdir, readFile } from 'fs/promises';
-import { dirname, extname } from 'path';
-import { existsSync } from 'fs';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { writeFile, mkdir, readFile } from, 'fs/promises';
+import { dirname, extname } from, 'path';
+import { existsSync } from, 'fs';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = (await request.json()) as unknown;
+    const body = (await request.json()) as: unknown;
     const file =
       typeof body === 'object' && body !== null && 'file' in body ? (body as { file?: any }).file : undefined;
     const content =
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await mkdir(dir, { recursive: true });
     }
 
-    // Normalize content to string if needed
+    // Normalize content to: string if needed
     const fileContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
 
     // Write file content

@@ -1,4 +1,4 @@
-declare module 'drizzle-orm/expressions' {
+declare module, 'drizzle-orm/expressions' {
   // lightweight ambient signatures to satisfy TS until proper types are available
   export const eq: any;
   export const and: any;
@@ -9,10 +9,10 @@ declare module 'drizzle-orm/expressions' {
   export const not: any;
   export const asc: any;
   export const desc: any;
-  export default any;
+  export, default: any;
 }
 
-declare module 'drizzle-orm/sql' {
+declare module, 'drizzle-orm/sql' {
   export const sql: any;
-  export default any;
+  export, default: any;
 }

@@ -2,12 +2,12 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { writable } from 'svelte/store';
-  import { legalDB } from '$lib/db/client-db.js';
-  // Correct prop destructuring and types for Svelte 5
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { writable } from, 'svelte/store';
+  import { legalDB } from, '$lib/db/client-db.js';
+  // Correct prop destructuring and types for Svelte, 5
   let {
     documentId = '',
     isVisible = false,
@@ -82,10 +82,10 @@ import type { Document } from '$lib/types';
     serverFetchTime = performance.now() - serverStartTime;
     console.log(`🚀 Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
     console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
-    // Build a safe cache entry (cast to any to avoid strict schema mismatch here)
-    const doc = (data && (data.document ?? data)) as any;
+    // Build a safe cache entry (cast to: any to avoid strict schema mismatch here)
+    const doc = (data && (data.document ?? data)) as: any;
     const cacheEntry: any = {
-      id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
+     , id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
       documentId: docId,
       title: doc.title ?? '',
       content: doc.content ?? '',
@@ -116,11 +116,11 @@ import type { Document } from '$lib/types';
   }
   // Display document details (unified function for cache and server data)
   function displayDocumentDetails(data: any) {
-    const obj = data as any;
+    const obj = data as: any;
     const doc = obj.document ?? obj;
     const metadata = obj.metadata ?? obj;
     documentData.set({
-      id: doc.id ?? doc.documentId ?? null,
+     , id: doc.id ?? doc.documentId ?? null,
       title: doc.title ?? '',
       content: doc.content ?? '',
       document_type: doc.document_type ?? doc.documentType ?? 'unknown',
@@ -135,7 +135,7 @@ import type { Document } from '$lib/types';
     processingMetrics.set(obj.enhanced_metadata ?? metadata.enhanced_metadata ?? null);
   }
   // Reactive updates when documentId or visibility changes
-  // CHANGED: use Svelte 5 rune $effect instead of legacy $:
+  // CHANGED: use Svelte, 5 rune $effect instead of legacy $:
   $effect(() => {
     if (documentId && isVisible) {
       loadDocumentDetails(documentId);
@@ -152,14 +152,14 @@ import type { Document } from '$lib/types';
     }
   }
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   function formatDuration(ms: number): string {
-    if (!ms) return '0ms';
+    if (!ms) return, '0ms';
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
@@ -184,7 +184,7 @@ import type { Document } from '$lib/types';
             {/if}
           </p>
         </div>
-        <button onclick={onClose} class="text-white hover:text-blue-200, text-2xl, font-bold" aria-label="Close">
+        <button onclick={onClose} class="text-white, hover:text-blue-200, text-2xl, font-bold" aria-label="Close">
           ×
         </button>
       </div>
@@ -254,7 +254,7 @@ import type { Document } from '$lib/types';
                       onclick={toggleGPUAnalysis}
                       class="text-sm" {showGPUAnalysis
                         ? 'bg-purple-100 text-purple-700'
-                        : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
+                        : 'bg-gray-100'}, hover:bg-purple-200 px-3 py-1 rounded"
                     >
                       {showGPUAnalysis ? '🧠 GPU Active' : '⚡ GPU Analysis'}
                     </button>
@@ -288,7 +288,7 @@ import type { Document } from '$lib/types';
               {#if $gpuAnalysis}
                 <div class="bg-purple-50 rounded-lg border border-purple-200, p-6, mt-6">
                   <h3 class="text-xl font-semibold text-purple-800 mb-4 flex, items-center, gap-2">
-                    🧠 GPU Analysis (FlashAttention2 RTX 3060 Ti)
+                    🧠 GPU Analysis (FlashAttention2 RTX, 3060 Ti)
                   </h3>
                   <div class="grid, grid-cols-2, gap-4">
                     <div>
@@ -446,6 +446,6 @@ import type { Document } from '$lib/types';
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

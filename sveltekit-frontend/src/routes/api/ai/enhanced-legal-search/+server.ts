@@ -9,19 +9,19 @@
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Memory, Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
 // Provides advanced semantic search with multiple strategies and intelligent ranking
-import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js';
+import { enhancedLegalSearch, type LegalSearchResult } from, '../../../../lib/server/ai/enhanced-legal-search.js';
 
-import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
+import redisOptimized from, '$lib/middleware/redis-orchestrator-middleware';
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
 const rateLimiter = { check: (_ip: string | undefined) => Promise.resolve({, allowed: true, retryAfter: null }),
@@ -41,7 +41,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
   const query = url.searchParams.get('q') || url.searchParams.get('query') || '';
   if (!query || query.trim().length < 2) {
     return json(
-      { success: false, error: 'Query; parameter: "q" is required and must be at least 2 characters' },
+      { success: false, error: 'Query;, parameter: "q" is required and must be at least, 2 characters' },
       { status: 400 }
     );
   }
@@ -101,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     return json(
       {
         success: false,
-        error: 'Query is required and must be at least 2 characters',
+        error: 'Query is required and must be at least, 2 characters',
         received: { query, type: typeof query }
       },
       { status: 400 }
@@ -245,13 +245,13 @@ interface AIEnhancementResult { summary: string;, topCategories: string[];
 }
 
 async function generateAIEnhancement(
-  query: string,
+ , query: string,
   topResults: LegalSearchResult[]
 ): Promise<AIEnhancementResult | null> {
   try {
     const resultsSummary = topResults.map(r => `${r.title} (${r.category}, ${r.jurisdiction})`).join('; ');
     return {
-      summary: `Found ${topResults.length} highly relevant legal documents related to: "${query}". Top results: ${resultsSummary}`,
+      summary: `Found ${topResults.length} highly relevant legal documents related to: "${query}". Top, results: ${resultsSummary}`,
       topCategories: Array.from(new Set(topResults.map(r => r.category))),
       topJurisdictions: Array.from(new Set(topResults.map(r => r.jurisdiction))),
       suggestions: [
@@ -264,11 +264,11 @@ async function generateAIEnhancement(
     };
   } catch (error: any) {
     console.warn('AI enhancement generation failed:', error);
-    return null;
+    return: null;
   }
 }
 // Health check endpoint
-export const OPTIONS: RequestHandler = async () => {
+export const, OPTIONS: RequestHandler = async () => {
   return json({
     status: 'healthy',
     service: 'enhanced-legal-search',

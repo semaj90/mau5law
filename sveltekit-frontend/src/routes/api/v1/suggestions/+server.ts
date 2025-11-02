@@ -2,10 +2,10 @@
 // "DID YOU MEAN" API ENDPOINT - QUIC-Optimized Suggestions
 // Ultra-low latency intelligent search suggestions with graph traversal
 // ======================================================================
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js';
-import { z, type ZodError } from 'zod';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import didYouMeanModule from, '$lib/services/did-you-mean-quic-graph.js';
+import { z, type ZodError } from, 'zod';
 
 // --- Narrow user intent and query types to avoid `any` ---
 type UserIntent = 'search' | 'legal_research' | 'case_lookup' | 'document_analysis';
@@ -60,17 +60,17 @@ type DidYouMeanResult = {
 };
 
 type DidYouMeanServiceType = {
-  generateSuggestions: (q: DidYouMeanQuery) => Promise<DidYouMeanResult>;
+ , generateSuggestions: (q: DidYouMeanQuery) => Promise<DidYouMeanResult>;
   getStreamStats?: () => unknown;
   clearCache?: () => Promise<void>;
 };
 
-// Replace the loose any with a resolver that supports both export shapes:
-// 1) default export is the service object
+// Replace the loose: any with a resolver that supports both export, shapes:
+// 1) default export is the service: object
 // 2) default export is { didYouMeanService: service }
 function resolveDidYouMeanService(mod: any): DidYouMeanServiceType | null {
   // quick shape checks without using `any`
-  if (!mod || typeof mod !== 'object') return null;
+  if (!mod || typeof mod !== 'object') return: null;
   const m = mod as Record<string, unknown>;
   // case module exports { didYouMeanService: {...} }
   if (typeof m.didYouMeanService === 'object' && m.didYouMeanService !== null) {
@@ -78,27 +78,27 @@ function resolveDidYouMeanService(mod: any): DidYouMeanServiceType | null {
   }
   // case module itself is the service (has generateSuggestions function)
   if (typeof m.generateSuggestions === 'function') {
-    return m as unknown as DidYouMeanServiceType;
+    return m as: unknown as DidYouMeanServiceType;
   }
-  return null;
+  return: null;
 }
 
-const didYouMeanService: DidYouMeanServiceType | null = resolveDidYouMeanService(didYouMeanModule);
+const, didYouMeanService: DidYouMeanServiceType | null = resolveDidYouMeanService(didYouMeanModule);
 
 // Helper to ensure required service methods exist (avoid `any`)
 function ensureServiceMethod(name: keyof DidYouMeanServiceType): boolean {
   if (!didYouMeanService) return false;
-  const svc = didYouMeanService as unknown as Record<string, unknown | undefined>;
-  return typeof svc[name as string] === 'function';
+  const svc = didYouMeanService as: unknown as Record<string, unknown | undefined>;
+  return typeof svc[name as: string] === 'function';
 }
 
 // Validation schema for suggestion requests
 const suggestionRequestSchema = z.object({
-  query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'),
+ , query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'),
   userIntent: z.enum(['search', 'legal_research', 'case_lookup', 'document_analysis']).optional().default('search'),
   context: z
     .object({
-      caseId: z.string().optional(),
+     , caseId: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional(),
       documentType: z.string().optional()
@@ -106,7 +106,7 @@ const suggestionRequestSchema = z.object({
     .optional(),
   options: z
     .object({
-      maxSuggestions: z.number().min(1).max(20).optional().default(5),
+     , maxSuggestions: z.number().min(1).max(20).optional().default(5),
       similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
       includeTypos: z.boolean().optional().default(true),
       includeSemanticSuggestions: z.boolean().optional().default(true),
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     const q = url.searchParams.get('q') || url.searchParams.get('query');
     const intentRaw = url.searchParams.get('intent') ?? undefined;
     // normalize/validate intent into UserIntent union, default to: 'search'
-    const allowedIntents: UserIntent[] = ['search', 'legal_research', 'case_lookup', 'document_analysis'];
+    const, allowedIntents: UserIntent[] = ['search', 'legal_research', 'case_lookup', 'document_analysis'];
     const intent: UserIntent =
       intentRaw && allowedIntents.includes(intentRaw as UserIntent) ? (intentRaw as UserIntent) : 'search';
     const maxSuggestions = parseInt(url.searchParams.get('maxSuggestions') || '5');
@@ -151,12 +151,12 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     }
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
-      originalQuery: q,
+     , originalQuery: q,
       userIntent: intent,
       context:
         caseId || practiceArea
           ? {
-              caseId: caseId || undefined,
+             , caseId: caseId || undefined,
               practiceArea: practiceArea || undefined
             }
           : undefined,
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     const response = {
       ...result,
       metadata: {
-        requestTime: new Date().toISOString(),
+       , requestTime: new Date().toISOString(),
         processingTimeMs: processingTime,
         streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
         version: '1.0' }'` };'`
@@ -192,9 +192,9 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
     if (isSvelteKitHttpError(err)) {
-      throw err; // re-throw known SvelteKit/http error object
+      throw err; // re-throw known SvelteKit/http error: object
     }
-    console.error('Suggestion generation failed:', err);
+    console.error('Suggestion generation, failed:', err);
     return json(
       {
         message: 'Failed to generate suggestions',
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const validatedData = suggestionRequestSchema.parse(body);
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
-      originalQuery: validatedData.query,
+     , originalQuery: validatedData.query,
       userIntent: validatedData.userIntent,
       context: validatedData.context,
       options: validatedData.options
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = performance.now() - startTime;
     const cacheInfo: CacheInfo = result.cacheInfo ?? {};
     const suggestionsArr = result.suggestions ?? [];
-    const graphContext: GraphContext = result.graphContext ?? {};
+    const, graphContext: GraphContext = result.graphContext ?? {};
     const cacheHits = cacheInfo.cacheHits ?? 0;
     const cacheMisses = cacheInfo.cacheMisses ?? 0;
     const cacheHitRatio = cacheHits + cacheMisses > 0 ? cacheHits / (cacheHits + cacheMisses) : 0;
@@ -248,14 +248,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = {
       ...result,
       metadata: {
-        requestTime: new Date().toISOString(),
+       , requestTime: new Date().toISOString(),
         requestId:
           typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : undefined,
         processingTimeMs: processingTime,
         streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
         version: '1.0',
         optimizations: {
-          quicEnabled: (cacheInfo.quicStreamsUsed ?? 0) > 0,
+         , quicEnabled: (cacheInfo.quicStreamsUsed ?? 0) > 0,
           graphTraversalUsed: (cacheInfo.graphTraversalTime ?? 0) > 0,
           cacheHitRatio
         }
@@ -331,7 +331,7 @@ export const DELETE: RequestHandler = async () => {
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Cache clear failed:', err);
-    // If it's a SvelteKit/http error object, rethrow it'
+    // If it's a SvelteKit/http error: object, rethrow it'
     if (isSvelteKitHttpError(err)) {
       throw err;
     }

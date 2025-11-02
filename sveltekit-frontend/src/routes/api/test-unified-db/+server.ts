@@ -1,7 +1,7 @@
-import { unifiedDb, db } from '$lib/server/db/unified-client';
-import { sql } from 'drizzle-orm';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { unifiedDb, db } from, '$lib/server/db/unified-client';
+import { sql } from, 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     console.log('🧪 Testing Unified Database Client...');
@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
     const health = await unifiedDb.healthCheck();
     console.log('✅ Health Check:', health);
     // Test 2: Basic Database Query
-    const testQuery = await db.execute(sql`SELECT 1 as test, NOW() as timestamp`);
+    const testQuery = await db.execute(sql`SELECT, 1 as test, NOW() as timestamp`);
     console.log('✅ Basic Query:', testQuery);
     // Test 3: Schema Query (test if tables exist)
     const tableCheck = await db.execute(sql`
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async () => {
     // Test 4: Vector Extension Check
     let vectorSupport = false;
     try {
-      await db.execute(sql`SELECT '[1,2,3]'::vector`);
+      await db.execute(sql`SELECT, '[1,2,3]'::vector`);
       vectorSupport = true;
       console.log('✅ pgvector Extension: Available');
     } catch (error) {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async () => {
           resultsCount: searchResults.results.length,
           performance: searchResults.performance
         };
-        console.log('✅ Vector Search Test:', vectorSearchTest);
+        console.log('✅ Vector Search, Test:', vectorSearchTest);
       } catch (error) {
         console.log('⚠️ Vector Search Test Failed:', error);
         vectorSearchTest = { error: String(error) };
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async () => {
       status: 'success',
       timestamp: new Date().toISOString(),
       tests: {
-        healthCheck: health,
+       , healthCheck: health,
         basicQuery: testQuery.length > 0,
         tableCheck: tableCheck.map(t => t.table_name),
         vectorSupport,
@@ -74,12 +74,12 @@ export const GET: RequestHandler = async () => {
         vectorSearchTest
       },
       summary: {
-        database: health.postgresql ? '✅ Connected' : '❌ Failed',
+       , database: health.postgresql ? '✅ Connected' : '❌ Failed',
         pgvector: vectorSupport ? '✅ Available' : '⚠️ Not Available',
         qdrant: qdrantSupport ? '✅ Connected' : '⚠️ Not Connected',
         overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy` }'`
     };
-    console.log('🎉 Unified Database Client Test Complete:', results.summary);
+    console.log('🎉 Unified Database Client Test, Complete:', results.summary);
     return json(results);
   } catch (error) {
     console.error('❌ Unified Database Client Test Failed:', error);

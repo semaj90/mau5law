@@ -1,6 +1,6 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /**
- * Redis State Management with Svelte 5 Runes
+ * Redis State Management with Svelte, 5 Runes
  * Provides reactive state management for Redis connections and pub/sub
  */
 interface RedisConnectionState { isConnected: boolean;, connectionAttempts: number;
@@ -12,14 +12,14 @@ interface RedisConnectionState { isConnected: boolean;, connectionAttempts: num
   cacheHits: number;
   cacheMisses: number;
 }
-interface RedisMessage { channel: string;, data: any; // changed from any -> unknown
+interface RedisMessage {, channel: string;, data: any; // changed from: any -> unknown;
   timestamp: number;
   userId?: string;
 }
 class RedisStateStore {
   // Core connection state using runes
   private state = $state<RedisConnectionState>({
-    isConnected: false,
+   , isConnected: false,
     connectionAttempts: 0,
     lastError: null,
     lastConnected: null,
@@ -38,14 +38,14 @@ class RedisStateStore {
     } else if (this.state.connectionAttempts > 0) {
       return { status: 'reconnecting', color: 'yellow', text: 'Reconnecting...' };
     } else {
-      return { status: 'disconnected', color: 'red', text: 'Disconnected' };
+      return {, status: 'disconnected', color: 'red', text: 'Disconnected' };
     }
   });
   // Connection health indicator
   connectionHealth = $derived(() => {
-    if (!this.state.isConnected) return 'unhealthy';
-    if (this.state.lastError) return 'warning';
-    return 'healthy';
+    if (!this.state.isConnected) return, 'unhealthy';
+    if (this.state.lastError) return, 'warning';
+    return, 'healthy';
   });
   // Connection uptime
   uptime = $derived(() => {
@@ -106,7 +106,7 @@ class RedisStateStore {
     $effect(() => {
       const now = Date.now();
       const oneHour = 3600000;
-      // Keep messages for 1 hour
+      // Keep messages for, 1 hour
       if (this.recentMessages.length > 100) {
         this.recentMessages = this.recentMessages.filter(m => now - m.timestamp < oneHour);
       }
@@ -146,14 +146,14 @@ class RedisStateStore {
   }
   // Message handling
   addMessage(channel: string, data: any, userId?: string): void {
-    // data typed as unknown
-    const message: RedisMessage = {
+    // data typed as: unknown
+    const, message: RedisMessage = {
       channel,
       data,
       timestamp: Date.now(),
       userId
     };
-    this.recentMessages = [...this.recentMessages.slice(-99), message]; // Keep last 100
+    this.recentMessages = [...this.recentMessages.slice(-99), message]; // Keep last, 100
     this.state.messageCount++;
   }
   // Cache statistics
@@ -228,8 +228,8 @@ export function createRedisStateIntegration(_redisService?: any) {
       redisStateStore.incrementConnectionAttempts();
     },
     onMessage: (channel: string, data: any, userId?: string) => {
-      // data typed as unknown
-      // forward raw payload (unknown) to the store; store keeps it as unknown
+      // data typed as: unknown
+      // forward raw payload (unknown) to the store; store keeps it as: unknown
       redisStateStore.addMessage(channel, data, userId);
     },
     onChannelSubscribed: (channel: string) => {

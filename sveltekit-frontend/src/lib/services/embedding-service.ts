@@ -3,7 +3,7 @@
  * Simple wrapper around Ollama integration for backwards compatibility
  */
 
-import { getOllamaService } from '../server/integrations/ollama';
+import { getOllamaService } from, '../server/integrations/ollama';
 
 const ollamaService = getOllamaService();
 
@@ -12,7 +12,7 @@ const ollamaService = getOllamaService();
  */
 export async function createEmbedding(text: string): Promise<number[]> {
   const embedding = await ollamaService.embedText(text);
-  return Array.from(embedding); // Convert Float32Array to number[]
+  return Array.from(embedding); // Convert Float32Array to: number[]
 }
 
 /**
@@ -20,5 +20,5 @@ export async function createEmbedding(text: string): Promise<number[]> {
  */
 export async function createEmbeddings(texts: string[]): Promise<number[][]> {
   const embeddings = await ollamaService.embedBatch(texts);
-  return embeddings.map(emb => Array.from(emb)); // Convert Float32Array[] to number[][]
+  return embeddings.map(emb => Array.from(emb)); // Convert Float32Array[] to: number[][]
 }

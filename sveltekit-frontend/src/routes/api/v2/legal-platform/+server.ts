@@ -1,20 +1,20 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * Legal AI Platform API Router v2
  * Centralized endpoint routing to Go microservices for the full-stack legal AI platform
  * Integrates: Enhanced RAG, Upload Service, Vector Search, Case Management, Evidence Processing
  */
-import { json, error } from '@sveltejs/kit';
-import { db } from '$lib/server/db/unified-client';
-import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres';
-import { eq, or, desc, ilike, and, SQL, sql } from 'drizzle-orm';
-import { createId } from '@paralleldrive/cuid2';
+import { json, error } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/unified-client';
+import { cases, evidence, criminals, legalDocuments } from, '$lib/server/db/schema-postgres';
+import { eq, or, desc, ilike, and, SQL, sql } from, 'drizzle-orm';
+import { createId } from, '@paralleldrive/cuid2';
 
 // Go Microservice Configuration
 const GO_SERVICES = { enhanced_rag: {, url: 'http://localhost:8094',
     endpoints: {
-      health: '/api/health',
+     , health: '/api/health',
       gpu_compute: '/api/gpu/compute',
       som_train: '/api/som/train',
       xstate_event: '/api/xstate/event',
@@ -22,41 +22,41 @@ const GO_SERVICES = { enhanced_rag: {, url: 'http://localhost:8094',
     }
   },
   upload_service: {
-    url: 'http://localhost:8093',
+   , url: 'http://localhost:8093',
     endpoints: {
-      upload: '/upload',
+     , upload: '/upload',
       status: '/status',
       health: '/health'
     }
   },
   vector_service: {
-    url: 'http://localhost:8095',
+   , url: 'http://localhost:8095',
     endpoints: {
-      search: '/api/vector/search',
+     , search: '/api/vector/search',
       similarity: '/api/vector/similarity'
     }
   },
   grpc_server: {
-    url: 'http://localhost:50051',
+   , url: 'http://localhost:50051',
     protocols: ['grpc', 'http']
   },
   load_balancer: {
-    url: 'http://localhost:8224',
+   , url: 'http://localhost:8224',
     endpoints: {
-      health: '/health',
+     , health: '/health',
       metrics: '/metrics'
     }
   }
 };
 // Request Types
-export interface LegalPlatformRequest { action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze';, entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai';
+export interface LegalPlatformRequest {, action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze';, entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai';
   data?: any;
   id?: string;
   filters?: { [key: string]: any };
 }
 // Utility function to call Go microservices
 async function callGoService(
-  service: keyof typeof GO_SERVICES,
+ , service: keyof typeof GO_SERVICES,
   endpoint: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
   data?: any
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const req: LegalPlatformRequest = await request.json();
     // Handle health check
-    if (req.action === ('health' as any)) {
+    if (req.action === ('health' as: any)) {
       let dbHealthy = false;
       try {
         // Simple query to check database connectivity
@@ -103,26 +103,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
         database: dbHealthy
       };
       return json({
-        success: true,
+       , success: true,
         data: { services },
         timestamp: new Date().toISOString(),
         message: `Health check completed' });'`
     }
     // Route based on entity and action
     switch (req.entity) {
-      case 'case':
+      case, 'case':
         return await handleCaseOperations(req);
-      case 'evidence':
+      case, 'evidence':
         return await handleEvidenceOperations(req);
-      case 'criminal':
+      case, 'criminal':
         return await handleCriminalOperations(req);
-      case 'document':
+      case, 'document':
         return await handleDocumentOperations(req);
-      case 'search':
+      case, 'search':
         return await handleSearchOperations(req);
-      case 'upload':
+      case, 'upload':
         return await handleUploadOperations(req);
-      case 'ai':
+      case, 'ai':
         return await handleAIOperations(req);
       default:
         throw error(400, `Unknown entity: ${req.entity}`);
@@ -140,19 +140,19 @@ export const GET: RequestHandler = async ({ url }) => {
     throw error(400, 'Missing required parameters: action and entity');
   }
   const req: LegalPlatformRequest = {
-    action: action as any,
-    entity: entity as any,
+    action: action, as: any,
+    entity: entity, as: any,
     id: id || undefined
   };
   return await POST({
-    request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
+   , request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
     url
-  } as any);
+  } as: any);
 };
 // Case Management Operations
 async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case 'create': {
+    case, 'create': {
       const newCase = await db
         .insert(cases)
         .values({
@@ -175,7 +175,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         success: true,
         data: newCase[0],
         message: 'Case created successfully' });'' }
-    case 'read': {
+    case, 'read': {
       if (req.id) {
         const caseData = await db.select().from(cases).where(eq(cases.id, req.id));
         if (caseData.length === 0) {
@@ -187,7 +187,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         return json({ success: true, data: allCases });
       }
     }
-    case 'update': {
+    case, 'update': {
       if (!req.id) throw error(400, 'Case ID required for update');
       const updatedCase = await db
         .update(cases)
@@ -202,14 +202,14 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         data: updatedCase[0],
         message: `Case updated successfully' });'`
     }
-    case 'delete': {
+    case, 'delete': {
       if (!req.id) throw error(400, 'Case ID required for deletion');
       await db.delete(cases).where(eq(cases.id, req.id));
       return json({
         success: true,
         message: `Case deleted successfully' });'`
     }
-    case 'search': {
+    case, 'search': {
       const searchResults = await db
         .select()
         .from(cases)
@@ -230,7 +230,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
 // Evidence Management Operations
 async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case 'create': {
+    case, 'create': {
       const newEvidence = await db
         .insert(evidence)
         .values({
@@ -254,7 +254,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
         data: newEvidence[0],
         message: `Evidence created successfully' });'`
     }
-    case 'read': {
+    case, 'read': {
       if (req.id) {
         const evidenceData = await db.select().from(evidence).where(eq(evidence.id, req.id));
         if (evidenceData.length === 0) {
@@ -276,7 +276,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
         return json({ success: true, data: allEvidence });
       }
     }
-    case 'analyze': {
+    case, 'analyze': {
       // Call enhanced RAG service for AI analysis
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
         type: 'evidence_analysis',
@@ -295,7 +295,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
 // Criminal Records Operations
 async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case 'create': {
+    case, 'create': {
       const newCriminal = await db
         .insert(criminals)
         .values({
@@ -319,7 +319,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Resp
         data: newCriminal[0],
         message: `Criminal record created successfully' });'`
     }
-    case 'read': {
+    case, 'read': {
       if (req.id) {
         const criminalData = await db.select().from(criminals).where(eq(criminals.id, req.id));
         if (criminalData.length === 0) {
@@ -338,7 +338,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Resp
 // Document Operations
 async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case 'create': {
+    case, 'create': {
       const newDocument = await db
         .insert(legalDocuments)
         .values({
@@ -360,7 +360,7 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Resp
         data: newDocument[0],
         message: `Document created successfully' });'`
     }
-    case 'read': {
+    case, 'read': {
       if (req.id) {
         const documentData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, req.id));
         if (documentData.length === 0) {
@@ -434,18 +434,18 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
   try {
     let result;
     switch (operation) {
-      case 'chat':
-      case 'analyze':
-      case 'summarize':
+      case, 'chat':
+      case, 'analyze':
+      case, 'summarize':
         result = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
           type: operation,
           ...data
         });
         break;
-      case 'train_som':
+      case, 'train_som':
         result = await callGoService('enhanced_rag', '/api/som/train', 'POST', data);
         break;
-      case 'xstate_event':
+      case, 'xstate_event':
         result = await callGoService('enhanced_rag', '/api/xstate/event', 'POST', data);
         break;
       default:
@@ -480,7 +480,7 @@ export const OPTIONS: RequestHandler = async () => {
     database: dbHealthy
   };
   return json({
-    success: true,
+   , success: true,
     services,
     timestamp: new Date().toISOString(),
     message: `Health check completed' });'`

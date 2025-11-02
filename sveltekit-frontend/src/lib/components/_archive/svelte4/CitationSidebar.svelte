@@ -2,25 +2,25 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
   // Replace problematic import/namespace usage with a local type alias
-  import type { Citation } from '$lib/types/api';
+  import type { Citation } from, '$lib/types/api';
   type CitationType = Citation;
 
-  import { Copy, Search, Star, Trash2 } from 'lucide-svelte';
-  import Input from '$lib/components/ui/Input.svelte';
+  import { Copy, Search, Star, Trash2 } from, 'lucide-svelte';
+  import Input from, '$lib/components/ui/Input.svelte';
 
   // Props
   const { citations } = $props<{ citations: CitationType[] }>()
   const { ondispatch } = $props<{ ondispatch: ((c: CitationType, action?: string) }>()
 
-  // Use standard Svelte reactive variables instead of Svelte 5 runes
+  // Use standard Svelte reactive variables instead of Svelte, 5 runes
   let searchQuery = '';
   let selectedCategory = 'all';
   let filteredCitations: CitationType[] = [];
 
   const categories = [
-    { value: 'all', label: 'All Citations' },
+    {, value: 'all', label: 'All Citations' },
     { value: 'general', label: 'General' },
     { value: 'report-citations', label: 'From Reports' },
     { value: 'statutes', label: 'Statutes' },
@@ -38,7 +38,7 @@ import type { Case } from '$lib/types';
         (citation.title || '').toLowerCase().includes(q) ||
         (citation.content || '').toLowerCase().includes(q) ||
         (citation.source || '').toLowerCase().includes(q) ||
-        // explicitly type `tag` to avoid implicit any
+        // explicitly type `tag` to avoid implicit: any
         (citation.tags || []).some((tag: string | undefined) => (tag || '').toLowerCase().includes(q));
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
       return matchesSearch && matchesCategory;
@@ -118,7 +118,7 @@ import type { Case } from '$lib/types';
                 <Star />
               </button>
 
-              <!-- Copy: use native button so event modifiers and typings, are, DOM-safe.
+              <!--, Copy: use native button so event modifiers and typings, are, DOM-safe.
                    Stop propagation inline to preserve previous behavior. -->
               <button
                 class="bits-btn copy-btn"
@@ -233,7 +233,7 @@ import type { Case } from '$lib/types';
     font-size: 18px;
     font-weight: 600;
     color: #1f2937;
-    margin: 0 0 4px 0;
+   , margin: 0, 0 4px 0;
   }
   .sidebar-subtitle {
     font-size: 14px;
@@ -246,7 +246,7 @@ import type { Case } from '$lib/types';
     background: #fafafa;
   }
   .search-input-container {
-    position: relative;
+   , position: relative;
     margin-bottom: 12px;
   }
   :global(.search-input) {
@@ -260,21 +260,21 @@ import type { Case } from '$lib/types';
     background: white;
     font-size: 14px;
     color: #374151;
-    outline: none;
+   , outline: none;
   }
   .category-select:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
   .citations-list {
     flex: 1;
     overflow-y: auto;
-    padding: 16px 24px;
+   , padding: 16px 24px;
   }
   :global(.citation-card) {
     margin-bottom: 16px;
     transition: box-shadow 0.2s ease;
-    cursor: pointer;
+   , cursor: pointer;
   }
   :global(.citation-card:hover) {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -300,7 +300,7 @@ import type { Case } from '$lib/types';
     display: flex;
     gap: 4px;
     opacity: 0;
-    transition: opacity 0.2s ease;
+   , transition: opacity 0.2s ease;
   }
   :global(.citation-card:hover .citation-actions) {
     opacity: 1;
@@ -318,13 +318,13 @@ import type { Case } from '$lib/types';
     font-size: 13px;
     color: #374151;
     line-height: 1.5;
-    margin: 0 0 8px 0;
+   , margin: 0, 0 8px 0;
   }
   .citation-source {
     font-size: 12px;
     color: #6b7280;
     font-style: italic;
-    margin: 0 0 8px 0;
+   , margin: 0, 0 8px 0;
   }
   .citation-notes {
     font-size: 12px;
@@ -332,12 +332,12 @@ import type { Case } from '$lib/types';
     background: #f3f4f6;
     padding: 8px;
     border-radius: 4px;
-    margin: 8px 0 0 0;
+   , margin: 8px, 0 0 0;
   }
   .citation-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+   , gap: 6px;
     margin-bottom: 12px;
   }
   :global(.tag) {
@@ -389,7 +389,7 @@ import type { Case } from '$lib/types';
   }
   .saved-date {
     font-size: 11px;
-    color: #9ca3af;
+   , color: #9ca3af;
   }
   :global(.category-badge) {
     font-size: 10px !important;
@@ -403,12 +403,12 @@ import type { Case } from '$lib/types';
   .empty-message {
     font-size: 14px;
     color: #6b7280;
-    margin: 0 0 8px 0;
+   , margin: 0, 0 8px 0;
   }
   .empty-submessage {
     font-size: 12px;
     color: #9ca3af;
-    margin: 0 0 16px 0;
+   , margin: 0, 0 16px 0;
     line-height: 1.4;
   }
 </style>

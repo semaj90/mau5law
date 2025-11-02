@@ -1,29 +1,29 @@
 <!-- Unified GPU/WASM Integration, Demo, Component -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import  Button  from "$lib/components/ui/Button.svelte";
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { writable } from, 'svelte/store';
+  import  Button  from, "$lib/components/ui/Button.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
 
   // System status and results
   const systemHealth = writable<any | null>(null);
   const activeOperations = writable<any[]>([]);
   const results = writable<any[]>([]);
   // fixed typo: latestMetric
-  const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
+  const metrics = writable<any>({, metrics: [], count: 0, latestMetric: null });
 
   let isLoading: boolean = false;
   let selectedOperation: string = 'processDocument';
   let testInput: string = '';
-  let errorMessage: string = '';
+  let, errorMessage: string = '';
 
   // Helper to generate a simple RGBA canvas payload
   function generateCanvasRGBA(width = 8, height = 8) {
@@ -43,22 +43,22 @@ import type { Document } from '$lib/types';
 This Service Agreement is entered into between Company A and Company B.
 TERMS AND CONDITIONS:
 1. Service Period: 12 months from execution
-2. Payment Terms: Net 30 days
+2. Payment, Terms: Net, 30 days
 3. Deliverables: As specified in Schedule A
-4. Termination Either party may terminate with 60 days notice
+4. Termination Either party may terminate with, 60 days notice
 Both parties acknowledge they have read and agree to these terms.`,`
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
     processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
     matmul: JSON.stringify({
-      a: [1, 2, 3, 4, 5, 6],
+     , a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
       m: 2,
       n: 3,
       k: 3
     }),
     attention: JSON.stringify({
-      key: Array.from({ length: 64 }, () => Math.random()),
-      value: Array.from({ length: 64 }, () => Math.random()),
+      key: Array.from({, length: 64 }, () => Math.random()),
+      value: Array.from({, length: 64 }, () => Math.random()),
       seq_len: 8,
       dim: 8
     })
@@ -108,51 +108,51 @@ Both parties acknowledge they have read and agree to these terms.`,`
     try {
       let requestData: any = null;
       switch (selectedOperation) {
-        case 'processDocument':
+        case, 'processDocument':
           requestData = {
             operation: 'processDocument',
             data: {
-              document: testInput,
+             , document: testInput,
               analysisType: 'comprehensive'
             },
             options: {
-              priority: 'HIGH',
+             , priority: 'HIGH',
               maxTokens: 1024
             }
           };
           break;
-        case 'performInference':
+        case, 'performInference':
           requestData = {
             operation: 'performInference',
             data: {
-              input: JSON.parse(testInput)
+             , input: JSON.parse(testInput)
             },
             options: {
-              priority: 'HIGH',
+             , priority: 'HIGH',
               modelType: 'transformer'
             }
           };
           break;
-        case 'processCanvas': {
+        case, 'processCanvas': {
           const canvasData = JSON.parse(testInput);
           requestData = {
             operation: 'processCanvas',
-            data: { canvasState: canvasData },
-            options: { priority: 'NORMAL', targetBitDepth: 24 }
+            data: {, canvasState: canvasData },
+            options: {, priority: 'NORMAL', targetBitDepth: 24 }
           };
           break;
         }
-        case 'matmul': {
+        case, 'matmul': {
           const matrixData = JSON.parse(testInput);
-          requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
+          requestData = { operation: 'matmul', data: matrixData, options: {, priority: 'HIGH' } };
           break;
         }
-        case 'attention': {
+        case, 'attention': {
           const attentionData = JSON.parse(testInput);
           requestData = { operation: 'attention', data: attentionData, options: { priority: 'HIGH' } };
           break;
         }
-        default:
+       , default:
           throw new Error('Unsupported operation');
       }
 
@@ -195,25 +195,25 @@ Both parties acknowledge they have read and agree to these terms.`,`
 
   function getHealthColor(status: string) {
     switch (status) {
-      case 'healthy':
-        return 'text-green-600';
-      case 'degraded':
-        return 'text-yellow-600';
-      case 'critical':
-        return 'text-red-600';
-      default: return 'text-gray-600';
+      case, 'healthy':
+        return, 'text-green-600';
+      case, 'degraded':
+        return, 'text-yellow-600';
+      case, 'critical':
+        return, 'text-red-600';
+      default: return, 'text-gray-600';
     }
   }
 
   function getServiceColor(status: string) {
     switch (status) {
-      case 'online':
-        return 'text-green-600';
-      case 'degraded':
-        return 'text-yellow-600';
-      case 'offline':
-        return 'text-red-600';
-      default: return 'text-gray-600';
+      case, 'online':
+        return, 'text-green-600';
+      case, 'degraded':
+        return, 'text-yellow-600';
+      case, 'offline':
+        return, 'text-red-600';
+      default: return, 'text-gray-600';
     }
   }
 
@@ -288,7 +288,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
               id="-operation-type-"
               bind:value={selectedOperation}
               onchange={onOperationChange}
-              class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
             >
               <option, value="processDocument">Legal Document Processing</option>
               <option, value="performInference">Neural Inference</option>
@@ -308,7 +308,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-              placeholder="Enter test data (example shapes: success + data)"
+              placeholder="Enter test data (example, shapes: success + data)"
             ></textarea>
           </div>
 
@@ -325,9 +325,9 @@ Both parties acknowledge they have read and agree to these terms.`,`
           >
 {#if isLoading}
               <span, class="inline-flex, items-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0, 24, 24">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0, 0, 24, 24">
                   <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824, 3, 7.938l3-2.647z"></path>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3, 7.938l3-2.647z"></path>
                 </svg>
                 Processing...
               </span>
@@ -453,6 +453,6 @@ Both parties acknowledge they have read and agree to these terms.`,`
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-attachment: fixed;
     min-height: 100vh;
-    background: #f8fafc;
+   , background: #f8fafc;
   }
 </style>

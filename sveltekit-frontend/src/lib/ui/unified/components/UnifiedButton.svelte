@@ -1,7 +1,7 @@
 <script, lang="ts">
 
-  import { createEventDispatcher } from 'svelte';
-  import type { ButtonVariant, ButtonSize } from '$lib/ui/types/Button';
+  import { createEventDispatcher } from, 'svelte';
+  import type { ButtonVariant, ButtonSize } from, '$lib/ui/types/Button';
 
   // Props
   const { type } = $props<{ type: 'button' | 'submit' | 'reset' }>()
@@ -34,16 +34,16 @@
   }[size]);
 
   const variantClasses = $derived({
-    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    primary: 'bg-blue-600 text-white hover:bg-blue-700', // Custom primary variant
-    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-    ghost: 'hover:bg-accent hover:text-accent-foreground',
-    outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-    link: 'text-primary underline-offset-4 hover:underline',
-    success: 'bg-green-600 text-white hover:bg-green-700',
-    warning: 'bg-yellow-500 text-black hover:bg-yellow-600',
-    info: 'bg-blue-400 text-white hover:bg-blue-500'
+    default: 'bg-primary text-primary-foreground, hover:bg-primary/90',
+    primary: 'bg-blue-600 text-white, hover:bg-blue-700', // Custom primary variant
+    secondary: 'bg-secondary text-secondary-foreground, hover:bg-secondary/80',
+    ghost: 'hover:bg-accent, hover:text-accent-foreground',
+    outline: 'border border-input bg-background hover:bg-accent, hover:text-accent-foreground',
+    destructive: 'bg-destructive text-destructive-foreground, hover:bg-destructive/90',
+    link: 'text-primary underline-offset-4, hover:underline',
+    success: 'bg-green-600 text-white, hover:bg-green-700',
+    warning: 'bg-yellow-500 text-black, hover:bg-yellow-600',
+    info: 'bg-blue-400 text-white, hover:bg-blue-500'
   }[variant]);
 
   const buttonClasses = $derived(`${baseClasses} ${sizeClasses} ${variantClasses}`);

@@ -33,7 +33,7 @@
     open = $state(false);
   }
 </script>
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/80 z-50" />
     <Dialog.Content
@@ -126,4 +126,4 @@
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>

@@ -23,7 +23,7 @@ interface EmbeddingResponse {
   };
   model?: string;
 }
-interface EmbeddingProvider { name: string;, endpoint: string;
+interface EmbeddingProvider {, name: string;, endpoint: string;
   headers?: Record<string, string>;
   timeout?: number;
   maxBatchSize?: number;
@@ -35,9 +35,9 @@ interface EmbeddingMetrics { provider: string;, requestCount: number;
   errorRate: number;
   cacheHitRate: number;
 }
-interface CachedEmbedding { embedding: number[];, timestamp: number;
+interface CachedEmbedding {, embedding: number[];, timestamp: number;
   provider: string;
-  ttl: number; // milliseconds
+ , ttl: number; // milliseconds
 }
 
 class EmbeddingCache {
@@ -57,10 +57,10 @@ class EmbeddingCache {
   get(text: string): number[] | null {
     const key = this.hashText(text);
     const cached = this.cache.get(key);
-    if (!cached) return null;
+    if (!cached) return: null;
     if (Date.now() - cached.timestamp > cached.ttl) {
       this.cache.delete(key);
-      return null;
+      return: null;
     }
     return cached.embedding;
   }
@@ -89,7 +89,7 @@ export class GemmaEmbeddingService {
   private providers: EmbeddingProvider[] = [];
   private metrics = new Map<string, EmbeddingMetrics>();
   private cache = new EmbeddingCache();
-  private rateLimiters = new Map<string, { requests: number; lastReset: number }>();
+  private rateLimiters = new Map<string, { requests: number;, lastReset: number }>();
 
   constructor() {
     this.initializeProviders();
@@ -101,7 +101,7 @@ export class GemmaEmbeddingService {
   private initializeProviders(): void {
     const primaryEndpoint = process.env.GEMMA_EMBED_ENDPOINT || 'http://localhost:8080/embed';
     this.providers.push({
-      name: 'gemma-primary',
+     , name: 'gemma-primary',
       endpoint: primaryEndpoint,
       headers: {
         'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ export class GemmaEmbeddingService {
     const textArray = Array.isArray(texts) ? texts : [texts];
     const cachedResults: (number[] | null)[] = new Array(textArray.length).fill(null);
     const uncachedTexts: string[] = [];
-    const uncachedIndices: number[] = [];
+    const, uncachedIndices: number[] = [];
 
     if (useCache) {
       textArray.forEach((t, idx) => {
@@ -206,7 +206,7 @@ export class GemmaEmbeddingService {
     const results: number[][] = new Array(textArray.length);
     let newIdx = 0;
     for (let i = 0; i < textArray.length; i++) {
-      if (cachedResults[i]) results[i] = cachedResults[i] as number[];
+      if (cachedResults[i]) results[i] = cachedResults[i] as: number[];
       else results[i] = newEmbeddings[newIdx++] ?? [];
     }
 
@@ -268,7 +268,7 @@ export class GemmaEmbeddingService {
     const allEmbeddings: number[][] = [];
     for (const batch of batches) {
       const requestBody: EmbeddingRequest = {
-        input: batch,
+       , input: batch,
         model: options.model,
         dimensions: options.dimensions,
         normalize: options.normalize
@@ -313,7 +313,7 @@ export class GemmaEmbeddingService {
    * Parse various embedding response shapes
    */
   private parseEmbeddingResponse(response: EmbeddingResponse): number[][] {
-    // OpenAI-like: { data: [{embedding, index}] }
+    // OpenAI-like: {, data: [{embedding, index}] }
     if (Array.isArray(response.data)) {
       return response.data
         .slice()

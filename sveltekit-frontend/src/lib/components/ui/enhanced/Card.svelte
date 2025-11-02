@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  	import type { HTMLAttributes } from 'svelte/elements';
+  // Svelte, 5 runes are auto-imported
+  	import type { HTMLAttributes } from, 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLDivElement> {
   		elevated?: boolean;
   		interactive?: boolean;
@@ -33,11 +33,10 @@
   .yorha-card::before {
     content: '';
     position: absolute;
-    top: 0,
+   , top: 0,
     left: 0;
-    right: 0,
-    height: 2px;
-background: linear-gradient( {}
+   , right: 0,
+    height: 2px;, background: linear-gradient( {}
 90deg, {}
 transparent 0%, {}
 var(--color-nier-border-primary) 10%, {}
@@ -48,6 +47,6 @@ transparent 100% {}
     transition: opacity 0.3s ease;
   }
   .yorha-card:hover::before {
-    opacity: 0.3;
+   , opacity: 0.3;
   }
 </style>

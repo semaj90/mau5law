@@ -1,8 +1,8 @@
-import { evidence, db } from '$lib/server/db';
-import path from 'path';
-import { json } from '@sveltejs/kit';
-import { randomUUID } from 'crypto';
-import { promises, as fs } from 'fs';
+import { evidence, db } from, '$lib/server/db';
+import path from, 'path';
+import { json } from, '@sveltejs/kit';
+import { randomUUID } from, 'crypto';
+import { promises, as fs } from, 'fs';
 
 export interface EvidenceRecord { id: string;, title: string;
   description: string;
@@ -18,9 +18,9 @@ export interface EvidenceRecord { id: string;, title: string;
   updatedAt: Date;
   fileName: string;
   summary: string | null;
-  aiSummary: string | null;
+ , aiSummary: string | null;
 }
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 export const POST: RequestHandler = async ({ request, locals }) => {
   const user = locals.user;
   if (!user || typeof user.id !== 'string') {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
   // Auto-tagging (simple: by file type)
   const tags: string[] = [ext.replace('.', ''), 'uploaded', `case:${caseId}`];
-  const newEvidence: EvidenceRecord = {
+  const, newEvidence: EvidenceRecord = {
     id,
     title: file.name,
     description,

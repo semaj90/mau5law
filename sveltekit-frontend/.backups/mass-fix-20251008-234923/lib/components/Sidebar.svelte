@@ -119,7 +119,7 @@
     <div class="nes-sidebar-trigger hover-trigger" aria-hidden="true"></div>
   {/if}
   {#if sidebarOpen}
-    <div class="yorha-3d-panel-inner neural-sprite-active" transition:slide={{ duration: 300, easing: quintOut, axis: "x" }}>
+    <div class="yorha-3d-panel-inner neural-sprite-active" use:slide={{ duration: 300, easing: quintOut, axis: "x" }}>
       <div class="nes-legal-header yorha-3d-button">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>
         <div class="nes-header-actions">

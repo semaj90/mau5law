@@ -9,15 +9,15 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestEvent } from '@sveltejs/kit'
-import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js'
-import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js';
+import type { RequestEvent } from, '@sveltejs/kit'
+import { ollamaSuggestionsService } from, '$lib/services/ollama-suggestions-service.js'
+import { enhancedRAGSuggestionsService } from, '$lib/services/enhanced-rag-suggestions-service.js';
 
 /*
  * Server-Sent Events endpoint for streaming AI suggestions
@@ -213,7 +213,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
     });
     return new Response(stream, { headers });
   } catch (error: any) {
-    // Changed: 'any'; to: 'unknown'
+    // Changed: 'any';, to: 'unknown'
     const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     console.error('Streaming endpoint error:', msg);'
     return new Response(

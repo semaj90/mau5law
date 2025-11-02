@@ -2,7 +2,7 @@ const wasmModule: any = {};
 export default wasmModule;
 // WASM Autoencoder Loader
 
-type EmscriptenModule = { HEAPF32: Float32Array;, _malloc: (n: number) => number;
+type EmscriptenModule = {, HEAPF32: Float32Array;, _malloc: (n: number) => number;
   _free: (p: number) => void;
   // Exposed run function compiled from C++
   _run: (ptr: number;, len: number) => number;
@@ -15,7 +15,7 @@ export async function initAutoencoderWASM(entryPath = '/native/autoencoder/som_a
   if (wasmModule) return wasmModule;
   // Dynamic import of emscripten-generated module
   // Adjust path based on where you serve the compiled JS/WASM
-  const mod = (await import(/* @vite-ignore */ entryPath)) as unknown as EmscriptenModule;
+  const mod = (await import(/* @vite-ignore */ entryPath)) as: unknown as EmscriptenModule;
   if (typeof mod.default === 'function') {
     await mod.default();
   }

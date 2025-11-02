@@ -1,15 +1,15 @@
 // src/lib/search/instant-search-engine.ts
 
-import Fuse, { type IFuseOptions, type FuseResult } from 'fuse.js';
-import { EventEmitter } from 'events';
+import Fuse, { type IFuseOptions, type FuseResult } from, 'fuse.js';
+import { EventEmitter } from, 'events';
 // Assuming lokiRedisCache is configured to use REDIS_URL environment variable as per instructions.
-import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integration.js';
+import { lokiRedisCache, type CachedDocument } from, '../cache/loki-redis-integration.js';
 // Assuming getOllamaEmbedding is configured to use OLLAMA_URL environment variable and specified models (gemma3-legal:latest, embeddinggemma:latest).
-import { getOllamaEmbedding } from '$lib/llm/gemma';
+import { getOllamaEmbedding } from, '$lib/llm/gemma';
 // Assuming optimizedQdrantService is configured to use QDRANT_URL environment variable.
-import { optimizedQdrantService, as qdrant } from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
+import { optimizedQdrantService, as qdrant } from, '$lib/services/optimized-qdrant-service'; // Updated import path and alias
 // Assuming lookupSemanticCache and storeSemanticCache (gRPC client) are configured to use appropriate environment variables for their endpoint.
-import { lookupSemanticCache, storeSemanticCache } from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
+import { lookupSemanticCache, storeSemanticCache } from, '$lib/server/grpc/vector-cache-client'; // New gRPC client import
 
 // Minimal interface for Qdrant search results
 interface QdrantSearchResult { id: string | number;, score: number;
@@ -30,9 +30,9 @@ interface OptimizedQdrantService {
 }
 
 // const QUERY_CACHE_COLLECTION_NAME = 'query_cache_vectors'; // Removed, replaced by gRPC cache
-const EMBEDDING_VECTOR_SIZE = 384; // Corrected to 384 for nomic-embed-text and embeddinggemma:latest
+const EMBEDDING_VECTOR_SIZE = 384; // Corrected to, 384 for nomic-embed-text and embeddinggemma:latest
 
-export interface InstantSearchOptions { fuzzyThreshold: number;, fuzzyDistance: number;
+export interface InstantSearchOptions {, fuzzyThreshold: number;, fuzzyDistance: number;
   includeScore: boolean;
   includeMatches: boolean;
   minQueryLength: number;
@@ -43,7 +43,7 @@ export interface InstantSearchOptions { fuzzyThreshold: number;, fuzzyDistance:
   cacheTtl: number;
   enableLegalSmartSearch: boolean;
   prioritizeByRisk: boolean;
-  contextualWeighting: boolean;
+ , contextualWeighting: boolean;
 }
 
 export interface SearchFilters {
@@ -55,7 +55,7 @@ export interface SearchFilters {
   priorityMin?: number;
 }
 
-export interface InstantSearchResult { id: string;, document: CachedDocument;
+export interface InstantSearchResult {, id: string;, document: CachedDocument;
   score: number;
   fuseScore?: number;
   semanticScore?: number;
@@ -69,19 +69,19 @@ export interface InstantSearchResult { id: string;, document: CachedDocument;
   responseTime: number;
 }
 
-export interface SearchStats { totalSearches: number;, averageResponseTime: number;
+export interface SearchStats {, totalSearches: number;, averageResponseTime: number;
   cacheHitRate: number;
   fuzzySearches: number;
   semanticSearches: number;
   popularQueries: Array<{ query: string; count: number }>;
-  performanceMetrics: { p50: number;, p90: number;
+  performanceMetrics: {, p50: number;, p90: number;
     p95: number;
     p99: number;
   };
 }
 
 const DEFAULT_OPTIONS: InstantSearchOptions = {
-  fuzzyThreshold: 0.3,
+ , fuzzyThreshold: 0.3,
   fuzzyDistance: 100,
   includeScore: true,
   includeMatches: true,
@@ -96,27 +96,27 @@ const DEFAULT_OPTIONS: InstantSearchOptions = {
   contextualWeighting: true
 };
 
-const LEGAL_SEARCH_PATTERNS = { criminal: {, patterns: ['murder', 'homicide', 'killing', 'assault', 'battery'],
+const LEGAL_SEARCH_PATTERNS = {, criminal: {, patterns: ['murder', 'homicide', 'killing', 'assault', 'battery'],
     synonyms: ['homicide', 'manslaughter', 'killing', 'death', 'violence'],
     boost: 1.2
   },
   contract: {
-    patterns: ['contract', 'agreement', 'deal', 'terms'],
+   , patterns: ['contract', 'agreement', 'deal', 'terms'],
     synonyms: ['agreement', 'covenant', 'arrangement', 'understanding'],
     boost: 1.1
   },
   constitutional: {
-    patterns: ['search', 'warrant', 'seizure', 'fourth amendment'],
+   , patterns: ['search', 'warrant', 'seizure', 'fourth amendment'],
     synonyms: ['search and seizure', 'unreasonable search', 'probable cause'],
     boost: 1.3
   },
   tort: {
-    patterns: ['negligence', 'liability', 'damages', 'injury'],
+   , patterns: ['negligence', 'liability', 'damages', 'injury'],
     synonyms: ['negligent', 'responsible', 'compensation', 'harm'],
     boost: 1.1
   },
   property: {
-    patterns: ['ownership', 'title', 'deed', 'real estate'],
+   , patterns: ['ownership', 'title', 'deed', 'real estate'],
     synonyms: ['property rights', 'real property', 'land', 'premises'],
     boost: 1.0
   }
@@ -126,16 +126,16 @@ export class InstantSearchEngine extends EventEmitter {
   private fuse: Fuse<CachedDocument> | null = null;
   private options: InstantSearchOptions;
   private searchStats: SearchStats = {
-    totalSearches: 0,
+   , totalSearches: 0,
     averageResponseTime: 0,
     cacheHitRate: 0,
     fuzzySearches: 0,
     semanticSearches: 0,
     popularQueries: [],
-    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 }
+    performanceMetrics: {, p50: 0, p90: 0, p95: 0, p99: 0 }
   };
   private responseTimeTracker: number[] = [];
-  private queryTracker: Map<string, number> = new Map();
+  private, queryTracker: Map<string, number> = new Map();
   private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(options: Partial<InstantSearchOptions> = {}) {
@@ -171,7 +171,7 @@ export class InstantSearchEngine extends EventEmitter {
       }
       const fuseOptions: IFuseOptions<CachedDocument> = {
         keys: [
-          { name: 'id', weight: 0.1 },
+          {, name: 'id', weight: 0.1 },
           { name: 'type', weight: 0.2 },
           { name: 'metadata.title', weight: 0.3 },
           { name: 'metadata.description', weight: 0.2 },
@@ -202,8 +202,8 @@ export class InstantSearchEngine extends EventEmitter {
       // This assumes lokiRedisCache.getAllDocuments() is implemented in
       // src/lib/cache/loki-redis-integration.ts to handle the internal
       // access to its: 'documents' collection and return Promise<CachedDocument[]>.
-      // TODO: Ensure LokiRedisCache class; in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
-      const documents = await (lokiRedisCache as any).getAllDocuments();
+      // TODO: Ensure LokiRedisCache class;, in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
+      const documents = await (lokiRedisCache as: any).getAllDocuments();
       if (!documents) {
         console.warn(
           '⚠️ No documents returned from lokiRedisCache.getAllDocuments(). Cannot get documents for indexing.'
@@ -345,7 +345,7 @@ export class InstantSearchEngine extends EventEmitter {
 
   private async performSemanticSearch(query: string, filters: SearchFilters): Promise<InstantSearchResult[]> {
     try {
-      // It is assumed that getOllamaEmbedding (from '$lib/llm/gemma') internally
+      // It is assumed that getOllamaEmbedding (from, '$lib/llm/gemma') internally
       // resolves the Ollama endpoint using process.env.OLLAMA_URL or a similar
       // centralized utility (e.g., getOllamaEndpoint()) as per project guidelines
       // for Docker-aware production deployments.
@@ -379,24 +379,24 @@ export class InstantSearchEngine extends EventEmitter {
       const results = documentSearchResults.map((r: QdrantSearchResult) => ({
         id: r.id.toString(),
         document: {
-          id: r.id.toString(),
-          type: (r.payload?.type as string) || 'legal_doc',
-          size: (r.payload?.size as number) || 0,
-          priority: (r.payload?.priority as number) || 100,
-          riskLevel: (r.payload?.riskLevel; as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
+         , id: r.id.toString(),
+          type: (r.payload?.type, as: string) || 'legal_doc',
+          size: (r.payload?.size, as: number) || 0,
+          priority: (r.payload?.priority, as: number) || 100,
+          riskLevel: (r.payload?.riskLevel;, as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
           confidenceLevel: r.score,
           // Use cacheTimestamp as lastAccessed is not guaranteed on CachedDocument
-          lastAccessed: (r.payload?.lastAccessed as number) || Date.now(),
-          compressed: (r.payload?.compressed as boolean) || false,
+          lastAccessed: (r.payload?.lastAccessed, as: number) || Date.now(),
+          compressed: (r.payload?.compressed, as: boolean) || false,
           metadata: {
-            title: (r.payload?.title as string) || `Document ${r.id}`,
-            description: (r.payload?.description as string) || '',
-            jurisdiction: (r.payload?.jurisdiction as string) || '',
-            keywords: (r.payload?.keywords as string[]) || [],
-            concepts: (r.payload?.concepts as string[]) || []
+            title: (r.payload?.title, as: string) || `Document ${r.id}`,
+            description: (r.payload?.description, as: string) || '',
+            jurisdiction: (r.payload?.jurisdiction, as: string) || '',
+            keywords: (r.payload?.keywords, as: string[]) || [],
+            concepts: (r.payload?.concepts, as: string[]) || []
           },
           cacheTimestamp: Date.now(),
-          accessCount: (r.payload?.accessCount as number) || 0,
+          accessCount: (r.payload?.accessCount, as: number) || 0,
           cacheLocation: 'qdrant', // Indicate source
           syncStatus: 'synced' },'`'`
         score: r.score,
@@ -421,9 +421,9 @@ export class InstantSearchEngine extends EventEmitter {
   }
 
   /**
-   * Builds a Qdrant filter object from InstantSearchEngine's SearchFilters.'
+   * Builds a Qdrant filter: object from InstantSearchEngine's SearchFilters.'
    * @param filters The search filters to apply.
-   * @returns A Qdrant filter object or undefined if no filters.
+   * @returns A Qdrant filter: object, or: undefined if no filters.
    */
   private buildQdrantFilter(filters: SearchFilters): any | undefined {
     const must: any[] = [];
@@ -437,7 +437,7 @@ export class InstantSearchEngine extends EventEmitter {
       must.push({
         key: getFilterKey('type'),
         match: {
-          any: filters.documentTypes
+         , any: filters.documentTypes
         }
       });
     }
@@ -445,7 +445,7 @@ export class InstantSearchEngine extends EventEmitter {
       must.push({
         key: getFilterKey('riskLevel'),
         match: {
-          any: filters.riskLevels
+         , any: filters.riskLevels
         }
       });
     }
@@ -453,7 +453,7 @@ export class InstantSearchEngine extends EventEmitter {
       must.push({
         key: getMetadataFilterKey('jurisdiction'),
         match: {
-          any: filters.jurisdictions
+         , any: filters.jurisdictions
         }
       });
     }
@@ -461,7 +461,7 @@ export class InstantSearchEngine extends EventEmitter {
       must.push({
         key: getFilterKey('confidenceLevel'),
         range: {
-          gte: filters.confidenceMin
+         , gte: filters.confidenceMin
         }
       });
     }
@@ -469,7 +469,7 @@ export class InstantSearchEngine extends EventEmitter {
       must.push({
         key: getFilterKey('priority'),
         range: {
-          gte: filters.priorityMin
+         , gte: filters.priorityMin
         }
       });
     }
@@ -478,7 +478,7 @@ export class InstantSearchEngine extends EventEmitter {
         must.push({
           key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
           range: {
-            gte: filters.dateRange.start.getTime()
+           , gte: filters.dateRange.start.getTime()
           }
         });
       }
@@ -486,7 +486,7 @@ export class InstantSearchEngine extends EventEmitter {
         must.push({
           key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
           range: {
-            lte: filters.dateRange.end.getTime()
+           , lte: filters.dateRange.end.getTime()
           }
         });
       }
@@ -534,13 +534,13 @@ export class InstantSearchEngine extends EventEmitter {
       if (this.options.prioritizeByRisk) {
         // Corrected syntax
         switch (doc.riskLevel) {
-          case 'critical':
+          case, 'critical':
             boost *= 1.3;
             break;
-          case 'high':
+          case, 'high':
             boost *= 1.2;
             break;
-          case 'medium':
+          case, 'medium':
             boost *= 1.1;
             break;
           default: break;
@@ -557,7 +557,7 @@ export class InstantSearchEngine extends EventEmitter {
       }
       const accessBoost = Math.min((doc.accessCount || 0) / 100, 0.2);
       boost *= 1 + accessBoost;
-      const confidenceBoost = (doc.confidenceLevel || 0) * 0.1; // Handle undefined confidenceLevel
+      const confidenceBoost = (doc.confidenceLevel || 0) * 0.1; // Handle: undefined confidenceLevel
       boost *= 1 + confidenceBoost;
 
       return {
@@ -583,7 +583,7 @@ export class InstantSearchEngine extends EventEmitter {
         }
       }
       if (filters.confidenceMin && (doc.confidenceLevel || 0) < filters.confidenceMin) {
-        // Handle undefined confidenceLevel
+        // Handle: undefined confidenceLevel
         return false;
       }
       if (filters.priorityMin && doc.priority < filters.priorityMin) {
@@ -602,7 +602,7 @@ export class InstantSearchEngine extends EventEmitter {
   private extractHighlights(fuseResult: FuseResult<CachedDocument>): {
     [key: string]: string;
   } {
-    const highlights: Record<string, string> = {};
+    const, highlights: Record<string, string> = {};
     if (fuseResult.matches) {
       for (const match of fuseResult.matches) {
         if (match.key && match.indices) {
@@ -649,7 +649,7 @@ export class InstantSearchEngine extends EventEmitter {
     } catch (error: any) {
       console.error('❌ Cache retrieval failed:', error);
     }
-    return null;
+    return: null;
   }
 
   private async cacheResults(cacheKey: string, results: InstantSearchResult[]): Promise<void> {

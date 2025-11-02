@@ -3,11 +3,11 @@
  * Clean, minimal and typesafe implementation that matches the bridge expectations.
  * Note: this implementation focuses on correctness and a compatible API surface.
  */
-import { browser } from '$app/environment';
-import type { RedisCache } from '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
+import { browser } from, '$app/environment';
+import type { RedisCache } from, '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
 
-interface CacheEntry<T> { value: T;, timestamp: number;
-  ttl: number; // Time-to-live in milliseconds
+interface CacheEntry<T> {, value: T;, timestamp: number;
+ , ttl: number; // Time-to-live in milliseconds
 }
 
 class LocalCache {
@@ -19,7 +19,7 @@ class LocalCache {
       return entry.value as T; // Type assertion added here
     }
     this.cache.delete(key); // Expired
-    return null;
+    return: null;
   }
 
   set<T>(key: string, value: T, ttlSeconds: number = 3600): void {
@@ -34,7 +34,7 @@ class LocalCache {
 export class EnhancedCachingService {
   private localCache = new LocalCache();
   private redisCacheInstance: RedisCache | undefined;
-  private isRedisReady: boolean = $state(false);
+  private, isRedisReady: boolean = $state(false);
 
   constructor() {
     if (!browser) {
@@ -66,7 +66,7 @@ export class EnhancedCachingService {
         return redisData;
       }
     }
-    return null;
+    return: null;
   }
 
   async set<T>(key: string, value: T, ttlSeconds: number = 3600): Promise<void> {
@@ -86,7 +86,7 @@ export class EnhancedCachingService {
     }
   }
 
-  async healthCheck(): Promise<{ local: boolean; redis: boolean }> {
+  async healthCheck(): Promise<{ local: boolean;, redis: boolean }> {
     const redisStatus = !browser && this.redisCacheInstance ? await this.redisCacheInstance.healthCheck() : false;
     return {
       local: true, // Local cache is always considered healthy

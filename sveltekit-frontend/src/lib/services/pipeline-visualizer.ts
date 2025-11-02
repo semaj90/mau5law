@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * 📊 Visual Pipeline Architecture Diagram
  * Shows complete flow: Redis → SIMD → GPU → Streaming → Storage
@@ -7,7 +7,7 @@ import type { Case } from '$lib/types';
 export const PIPELINE_ARCHITECTURE = `
 ╔══════════════════════════════════════════════════════════════════════════════════════╗
 ║                    🚀 ADVANCED SIMD + GPU TENSOR PIPELINE                           ║
-║                         (RTX 3060 Optimized)                                        ║
+║                         (RTX, 3060 Optimized)                                        ║
 ╚══════════════════════════════════════════════════════════════════════════════════════╝
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   📥 INPUT      │    │  🔍 REDIS CACHE  │    │  ⚡ SIMD JSON   │    │  📦 CHUNKING    │
@@ -23,7 +23,7 @@ export const PIPELINE_ARCHITECTURE = `
 │    STREAMS      │    │   SPLICING       │    │   PROCESSING    │    │   SLICING       │
 │                 │    │                  │    │                 │    │                 │
 │ • 4 Streams     │◀───│ • Multi-dim      │◀───│ • 32 batch size │◀───│ • 256-element   │
-│ • RTX 3060      │    │ • VRAM efficient │    │ • nomic-embed   │    │   slices        │
+│ • RTX, 3060      │    │ • VRAM efficient │    │ • nomic-embed   │    │   slices        │
 │ • 12GB VRAM     │    │ • Float32Array   │    │ • Concurrent    │    │ • Memory opt    │
 └─────────────────┘    └──────────────────┘    └─────────────────┘    └─────────────────┘
          │                         │                         │                    │
@@ -50,7 +50,7 @@ export const PIPELINE_ARCHITECTURE = `
 ║                              🎯 KEY ADVANTAGES                                      ║
 ╠══════════════════════════════════════════════════════════════════════════════════════╣
 ║ ✅ SIMD JSON parsing → 10x faster large dataset processing                          ║
-║ ✅ GPU tensor splicing → RTX 3060 VRAM optimized (12GB efficient)                  ║
+║ ✅ GPU tensor splicing → RTX, 3060 VRAM optimized (12GB efficient)                  ║
 ║ ✅ Parallel CUDA streams → 4x concurrent processing                                 ║
 ║ ✅ Streaming arrays → Non-blocking, incremental updates                             ║
 ║ ✅ Multi-layer caching → Redis → LokiJS → Fuse.js                                   ║
@@ -64,20 +64,20 @@ export const PIPELINE_ARCHITECTURE = `
 │ 2️⃣ Redis: Check cache (compressed) → Cache miss                                    │
 │ 3️⃣ SIMD: Parse large JSON arrays → 10x faster than native JSON                    │
 │ 4️⃣ Chunk: Split into 128-item chunks → GPU-friendly batches                       │
-│ 5️⃣ GPU: Process 32 items/batch on RTX 3060 → nomic-embed-text embeddings         │
+│ 5️⃣, GPU: Process, 32 items/batch on RTX, 3060 → nomic-embed-text embeddings         │
 │ 6️⃣ Tensor: Splice into 256-element slices → VRAM efficient                        │
-│ 7️⃣ Stream: Process 50 results/batch → Non-blocking UI                             │
+│ 7️⃣, Stream: Process, 50 results/batch → Non-blocking UI                             │
 │ 8️⃣ Store: LokiJS (offline) → Fuse.js (search) → Service Worker (routing)         │
 │ 9️⃣ Route: MinIO (tensors) + pgvector (embeddings) + PostgreSQL (metadata)        │
 │ 🔟 Search: Instant fuzzy search on processed results                               │
 │                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────┘
 `;`
-export const PERFORMANCE_METRICS = { simdJsonParsing: {, speedup: '10x faster than native JSON.parse',
+export const PERFORMANCE_METRICS = {, simdJsonParsing: {, speedup: '10x faster than native JSON.parse',
     memoryUsage: '50% less memory allocation',
     cpuUtilization: 'SIMD vectorized operations'
   },
-  gpuProcessing: { rtx3060Optimization: {, batchSize: 32,
+  gpuProcessing: {, rtx3060Optimization: {, batchSize: 32,
       tensorSlicing: 256,
       vramEfficiency: '85% utilization',
       cudaStreams: 4
@@ -86,15 +86,15 @@ export const PERFORMANCE_METRICS = { simdJsonParsing: {, speedup: '10x faster t
     tensorSplicing: 'Multi-dimensional memory optimization'
   },
   streamingArrayLoop: {
-    batchSize: 50,
+   , batchSize: 50,
     nonBlocking: 'Incremental UI updates',
     errorRecovery: `Graceful degradation` },'`'`
   caching: {
-    redis: 'Hot cache (15min TTL, gzip compressed)',
+   , redis: 'Hot cache (15min TTL, gzip compressed)',
     lokijs: 'Client IndexedDB (offline-first)',
     fusejs: `In-memory fuzzy search (threshold 0.3)` },
   storage: {
-    minio: 'Large tensor blobs',
+   , minio: 'Large tensor blobs',
     pgvector: '768-dim embeddings, cosine similarity',
     postgresql: `Metadata, relationships, full-text search` }
 };
@@ -125,7 +125,7 @@ export class PipelineVisualizer {
     return `;`
 ┌─ Pipeline Progress: \${progress}% ──────────────────────────────────────┐
 │                                                           │
-│ Current Step: \${currentStep}
+│ Current, Step: \${currentStep}
 │                                                           │
 │ [\${'█'.repeat(Math.floor(progress / 5))}\${'░'.repeat(20 - Math.floor(progress / 5))}] \${progress}%        │
 │                                                           │
@@ -156,7 +156,7 @@ The pipeline processes large arrays of legal data through multiple optimization 
 - **Performance**: 10x faster than native JSON.parse for large datasets
 - **Memory**: 50% less allocation overhead
 - **Use Case**: Parse large cached JSON arrays before processing
-### 3. GPU Tensor Processing (RTX 3060 Optimized)
+### 3. GPU Tensor Processing (RTX, 3060 Optimized)
 - **Batch Size**: 32 items per GPU batch
 - **CUDA Streams**: 4 concurrent streams
 - **Tensor Slicing**: 256 elements per slice (VRAM efficient)
@@ -194,7 +194,7 @@ await advancedPipeline.streamingArrayLoop(processed);
 const results = await advancedPipeline.searchProcessedTensors("legal contract)");
 \`\`\`
 ## Performance Characteristics
-- **Throughput**: 10,000+ documents/minute with RTX 3060
+- **Throughput**: 10,000+ documents/minute with RTX, 3060
 - **Memory**: Streaming processing, low memory footprint
 - **Latency**: <50ms for, cached, results, <2s for, fresh, embeddings>>
 - **Concurrency**: 4 CUDA streams + async service worker routing

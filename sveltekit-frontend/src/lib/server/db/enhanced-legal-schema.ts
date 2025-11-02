@@ -1,9 +1,9 @@
 // @ts-nocheck
 /**
  * Enhanced Legal Schema for Hybrid Vector Storage (Qdrant + PGVector)
- * Implements Phase 8 architecture with legal-specific AI enhancements
+ * Implements Phase, 8 architecture with legal-specific AI enhancements
  */
-import { relations, sql } from "drizzle-orm";
+import { relations, sql } from, "drizzle-orm";
 import {
   boolean,
   decimal,
@@ -15,8 +15,8 @@ import {
   timestamp,
   uuid,
   varchar
-} from "drizzle-orm/pg-core";
-import { vector } from "pgvector/drizzle-orm";
+} from, "drizzle-orm/pg-core";
+import { vector } from, "pgvector/drizzle-orm";
 // === ENHANCED LEGAL EVIDENCE WITH HYBRID VECTOR STORAGE ===
 export const enhancedEvidence = pgTable("enhanced_evidence", {
   id: uuid("id").primaryKey().defaultRandom(),

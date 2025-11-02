@@ -1,13 +1,13 @@
 // Hybrid: "Did You Mean" suggestion endpoint with AI intent prediction
 // Returns lexical (pg_trgm), semantic (pgvector), and AI-enhanced suggestions merged & ranked.
-import type { RequestHandler } from '@sveltejs/kit'
-import { db } from '$lib/server/database'; // drizzle instance
-import { getRedisService } from '$lib/server/redis/redis-service'
-import postgres from 'postgres'
-import { getEmbedding } from '$lib/server/services/embedding-service'
-import { userIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system'
+import type { RequestHandler } from, '@sveltejs/kit'
+import { db } from, '$lib/server/database'; // drizzle instance
+import { getRedisService } from, '$lib/server/redis/redis-service'
+import postgres from, 'postgres'
+import { getEmbedding } from, '$lib/server/services/embedding-service'
+import { userIntentPredictionSystem } from, '$lib/ai/user-intent-prediction-system'
 // NOTE: We fall back to a direct postgres-js client for raw SQL needed for pg_trgm & vector ops
-const sql = (db as any).session?.client as ReturnType<typeof postgres> | undefined
+const sql = (db, as: any).session?.client as ReturnType<typeof postgres> | undefined
 const REDIS_TTL_SECONDS = 600
 
 // Add a concise typed shape for AI: "did you mean" suggestions
@@ -28,7 +28,7 @@ type UserLearningInsights = {
   [key: string]: any;
 };
 
-// Use the imported instance (avoid referencing undefined class)
+// Use the imported instance (avoid, referencing: undefined class)
 const intentPredictionSystem = userIntentPredictionSystem
 
 async function semanticCandidates(query: string, limit: number): Promise<any> {
@@ -39,7 +39,7 @@ async function semanticCandidates(query: string, limit: number): Promise<any> {
     // 2. Dimension adaptation: ensure it matches stored passage embedding dim (assume 768).
     const sampleDimRow =
       await sql`SELECT vector_dims(embedding) as dim FROM passages WHERE embedding IS NOT NULL LIMIT 1`
-    const targetDim = (sampleDimRow as any[])[0]?.dim ?? queryEmbedding.length
+    const targetDim = (sampleDimRow as: any[])[0]?.dim ?? queryEmbedding.length
     if (queryEmbedding.length !== targetDim) {
       if (queryEmbedding.length > targetDim) {
         queryEmbedding = queryEmbedding.slice(0, targetDim)
@@ -61,9 +61,9 @@ async function semanticCandidates(query: string, limit: number): Promise<any> {
     `
     // 4. Token frequency weighted by similarity (simple TF * maxSim heuristic)
     const freq: Record<string, number> = {}
-    for (const r of rows as any[]) {
+    for (const r of rows as: any[]) {
       const weight = Number(r.similarity) || 0
-      for (const w of (r.text as string).split(/[^A-Za-z]+/)) {
+      for (const w of (r.text as: string).split(/[^A-Za-z]+/)) {
         const t = w.toLowerCase()
         if (t.length < 5 || t.length > 40) continue
         freq[t] = (freq[t] || 0) + weight
@@ -88,8 +88,8 @@ async function lexicalCandidates(query: string, limit: number): Promise<any> {
     ORDER BY score DESC
     LIMIT ${limit}
   `;`
-  return (rows as any[]).map(r => ({
-    term: r.term as string,
+  return (rows as: any[]).map(r => ({
+    term: r.term, as: string,
     score: Number(r.score),
     source: 'lexical' as const
   }));
@@ -160,10 +160,10 @@ export const POST: RequestHandler = async ({ request }) => {
   // initialize as resolved promises to keep Promise.all elements consistent
 
   // Safe invoker: call a method on intentPredictionSystem only if it exists,
-  // returning null otherwise. This avoids TS errors when the implementation
+  // returning: null otherwise. This avoids TS errors when the implementation
   // doesn't expose the named methods.'
   function callIntentMethod<T>(methodName: string, ...args: any[]): Promise<T | null> {
-    const fn = (intentPredictionSystem as any)?.[methodName];
+    const fn = (intentPredictionSystem as: any)?.[methodName];
     if (typeof fn === 'function') {
       try {
         const res = fn.apply(intentPredictionSystem, args);
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
   // strongly type the user insights promise so downstream usage is safe
   let userInsightsPromise: Promise<UserLearningInsights | null> = Promise.resolve(null);
   if (includeAI) {
-    // Use safe wrapper to call optional methods (avoids "property does not exist" TS errors).
+    // Use safe wrapper to call optional methods (avoids, "property does not exist" TS errors).
     aiSuggestionsPromise = callIntentMethod<{ didYouMean?: DidYouMeanSuggestion[] }>('getDidYouMeanSuggestions', query, userId || 'anonymous', context);
     if (includeTaskSuggestions) {
       taskSuggestionsPromise = callIntentMethod<unknown>('predictTaskCompletion', query, userId || 'anonymous');

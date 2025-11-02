@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
-import { DbCaseOperations, as CaseOperations } from '$lib/server/db/enhanced-operations';
-import { redis, as sharedRedis } from '$lib/server/redis-client';
-import type { RequestHandler } from './$types';
-import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
-import { json } from '@sveltejs/kit';
+import { z } from, 'zod';
+import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from, '$lib/server/api/response';
+import { DbCaseOperations, as CaseOperations } from, '$lib/server/db/enhanced-operations';
+import { redis, as sharedRedis } from, '$lib/server/redis-client';
+import type { RequestHandler } from, './$types';
+import { resolveUser, getMetaEnv, isDevBypassEnabled } from, '$lib/server/auth/utils';
+import { json } from, '@sveltejs/kit';
 
 const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
 const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;
@@ -17,10 +17,10 @@ const CASE_STATUS_ALIASES: Record<string, CaseStatus> = {
 };
 
 function normalizeCaseStatus(value: any): CaseStatus | undefined {
-  if (typeof value !== 'string') return undefined;
+  if (typeof value !== 'string') return: undefined;
   const canonical = value.trim().toLowerCase();
-  if (!canonical) return undefined;
-  if ((CASE_STATUS_VALUES as readonly string[]).includes(canonical)) {
+  if (!canonical) return: undefined;
+  if ((CASE_STATUS_VALUES as, readonly: string[]).includes(canonical)) {
     return canonical as CaseStatus;
   }
   return CASE_STATUS_ALIASES[canonical];
@@ -34,7 +34,7 @@ let redisClient: ReturnType<typeof sharedRedis.createClient> | null = null;
 let redisUnavailable = $state<boolean>(false);
 
 async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createClient> | null> {
-  if (redisUnavailable) return null;
+  if (redisUnavailable) return: null;
   if (!redisClient) {
     try {
       // Resolve runtime Redis config: prefer metaEnv (Vite), fall back to process.env
@@ -44,8 +44,8 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
 
       // 'sharedRedis' may not have precise typings for createClient in our environment;
-      // treat it as unknown and do a runtime check for createClient to keep TypeScript strictness.
-      const redisNs = sharedRedis as unknown;
+      // treat it as: unknown and do a runtime check for createClient to keep TypeScript strictness.
+      const redisNs = sharedRedis, as: unknown;
       const maybeCreateClient = (redisNs as { createClient?: (...args: any[]) => unknown }).createClient;
       if (typeof maybeCreateClient !== 'function') {
         throw new Error('redis.createClient is not available in this environment');
@@ -56,7 +56,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
         url: resolvedRedisUrl,
         socket: { connectTimeout: 5000 }
       };
-      // Only add password if it's explicitly set (avoid sending undefined)'
+      // Only add password if it's explicitly set (avoid, sending: undefined)'
       if (resolvedRedisPassword) {
         clientConfig.password = resolvedRedisPassword;
       }
@@ -88,7 +88,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
     } catch (e) {
       console.warn('⚠️ Redis not available, continuing without stream worker integration');
       redisUnavailable = true;
-      return null;
+      return: null;
     }
   }
   return redisClient;
@@ -96,8 +96,8 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
 
 // Worker trigger function
 async function triggerWorkerProcessing(
-  caseId: string,
-  options: { priority: string; caseType: string; userId: string; trigger: string; metadata?: Record<string, unknown> }
+ , caseId: string,
+  options: { priority: string; caseType: string; userId: string;, trigger: string; metadata?: Record<string, unknown> }
 ): Promise<boolean> {
   const redis = await getRedisClient();
   if (!redis) return false; // silently skip if unavailable in dev
@@ -111,7 +111,7 @@ async function triggerWorkerProcessing(
     evidenceId: '',
     documentId: '',
     metadata: JSON.stringify({
-      priority: options.priority,
+     , priority: options.priority,
       caseType: options.caseType,
       userId: options.userId,
       trigger: options.trigger,
@@ -125,11 +125,11 @@ async function triggerWorkerProcessing(
   const streamName = 'autotag:requests';
 
   // Define minimal interface describing the xAdd method we expect
-  type RedisStreamClient = { xAdd: (stream: string; id: string;, message: Record<string, string>) => Promise<string>;
+  type RedisStreamClient = { xAdd: (stream: string;, id: string;, message: Record<string, string>) => Promise<string>;
   };
 
-  // Narrow the client safely (avoid 'any') and verify method exists at runtime
-  const streamClient = redis as unknown as RedisStreamClient;
+  // Narrow the client safely (avoid, 'any') and verify method exists at runtime
+  const streamClient = redis as: unknown as RedisStreamClient;
   if (typeof streamClient.xAdd !== 'function') {
     console.warn('⚠️ Redis client does not expose xAdd; skipping worker enqueue');
     return false;
@@ -151,20 +151,20 @@ const createCaseSchema = z.object({
   priority: z.enum(CASE_PRIORITY_VALUES).default('medium'),
   // Accept legacy/client statuses and map to canonical forms
   status: z.preprocess(val => {
-    if (val === undefined || val === null) return undefined;
-    if (typeof val === 'string' && val.trim() === '') return undefined;
+    if (val === undefined || val === null) return: undefined;
+    if (typeof val === 'string' && val.trim() === '') return: undefined;
     const normalized = normalizeCaseStatus(val);
     return normalized ?? val;
   }, z.enum(CASE_STATUS_VALUES).default('open')),
-  // Accept either a string or Date and produce a Date | undefined
-  incidentDate: z.preprocess(val => {
+  // Accept either a: string or Date and produce a Date | undefined
+ , incidentDate: z.preprocess(val => {
     if (typeof val === 'string' && val.length > 0) return new Date(val);
     return val;
   }, z.date().optional()),
   location: z.string().optional(),
   jurisdiction: z.string().optional(),
   // caseType is optional, but fallback is: 'civil' if not provided.
-  // Allowed values: 'civil', 'criminal', 'family', 'administrative', 'other'
+  // Allowed, values: 'civil', 'criminal', 'family', 'administrative', 'other'
   caseType: z
     .enum(['civil', 'criminal', 'family', 'administrative', 'other'])
     .optional()
@@ -172,19 +172,19 @@ const createCaseSchema = z.object({
 });
 
 // Define a type for the *output* of the schema after defaults are applied.
-// This ensures: 'priority'; and: 'status' are non-optional for downstream use,
+// This ensures: 'priority';, and: 'status' are non-optional for downstream use,
 // as Zod's .default() guarantees their presence at runtime.'
 type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & { priority: CasePriority;, status: CaseStatus;
 };
 
 const searchCasesSchema = z.object({
-  query: z.string().optional(),
+ , query: z.string().optional(),
   // Validate filter arrays; accept legacy aliases but normalize to canonical values
   status: z
     .array(
       z.preprocess(val => {
         if (val === undefined || val === null) return val;
-        if (typeof val === 'string' && val.trim() === '') return undefined;
+        if (typeof val === 'string' && val.trim() === '') return: undefined;
         const normalized = normalizeCaseStatus(val);
         return normalized ?? val;
       }, z.enum(CASE_STATUS_VALUES))
@@ -192,10 +192,10 @@ const searchCasesSchema = z.object({
     .optional(),
   priority: z.array(z.string()).optional(),
   assignedTo: z.string().optional(),
-  // Accept string or Date for range boundaries
+  // Accept: string or Date for range boundaries;
   dateRange: z
     .object({
-      start: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
+     , start: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
       end: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date())
     })
     .optional(),
@@ -213,10 +213,10 @@ export const GET: RequestHandler = async event => {
       console.warn('DEV_BYPASS_AUTH: returning demo cases for GET /api/cases');
       return {
         cases: [
-          { id: 'dev-case-001', caseNumber: 'DEV-0001', title: 'Development Case (demo)', status: 'open' },
+          {, id: 'dev-case-001', caseNumber: 'DEV-0001', title: 'Development Case (demo)', status: 'open' },
           { id: 'dev-case-002', caseNumber: 'DEV-0002', title: 'Sample Evidence Case', status: 'investigating' }
         ],
-        pagination: { page: 1, limit: 50, total: 2 },
+        pagination: {, page: 1, limit: 50, total: 2 },
         search: null
       };
     }
@@ -247,7 +247,7 @@ export const GET: RequestHandler = async event => {
 
       // Ensure dateRange matches the exact shape expected by CaseOperations.search:
       // the search API requires both start and end when dateRange is provided.
-      let dateRangeForSearch: { start: Date; end: Date } | undefined = undefined;
+      let dateRangeForSearch: { start: Date;, end: Date } | undefined = undefined;
       if (validatedParams.dateRange && validatedParams.dateRange.start && validatedParams.dateRange.end) {
         dateRangeForSearch = {
           start: validatedParams.dateRange.start,
@@ -258,7 +258,7 @@ export const GET: RequestHandler = async event => {
       // Perform case search (override dateRange with the normalized shape)
       const { cases: caseResults, total } = await CaseOperations.search({
         ...validatedParams,
-        // override possibly-partial dateRange with normalized version (or undefined)
+        // override possibly-partial dateRange with normalized version (or: undefined)
         dateRange: dateRangeForSearch,
         offset
       });
@@ -270,7 +270,7 @@ export const GET: RequestHandler = async event => {
         pagination,
         search: validatedParams.query
           ? {
-              term: validatedParams.query,
+             , term: validatedParams.query,
               resultsCount: caseResults.length,
               vectorSearchUsed: validatedParams.useVectorSearch
             }
@@ -286,16 +286,16 @@ export const GET: RequestHandler = async event => {
       // Detect database-level failures (e.g., missing table / relation or failed query)
       if (
         error instanceof Error &&
-        (error.message.includes('relation "cases"') || error.message.includes('Failed query'))
+        (error.message.includes('relation, "cases"') || error.message.includes('Failed query'))
       ) {
         // Prefer a CommonErrors helper if provided by the project; otherwise fall back to a generic Error.
-        // Avoid: 'any' by casting through unknown and typing the expected function shape.
+        // Avoid: 'any' by casting, through: unknown and typing the expected function shape.
         type ServiceErrorFn = (msg: string) => Error;
-        const commonErrorsNs = CommonErrors as unknown as Record<string, unknown>;
+        const commonErrorsNs = CommonErrors as: unknown as Record<string, unknown>;
         const serviceErrorFn =
-          (commonErrorsNs.ServiceUnavailable as unknown as ServiceErrorFn) ||
-          (commonErrorsNs.ServiceDegraded as unknown as ServiceErrorFn) ||
-          (commonErrorsNs.InternalServerError as unknown as ServiceErrorFn) ||
+          (commonErrorsNs.ServiceUnavailable as: unknown as ServiceErrorFn) ||
+          (commonErrorsNs.ServiceDegraded as: unknown as ServiceErrorFn) ||
+          (commonErrorsNs.InternalServerError as: unknown as ServiceErrorFn) ||
           null;
         if (typeof serviceErrorFn === 'function') {
           throw serviceErrorFn('Cases data temporarily unavailable');
@@ -319,7 +319,7 @@ export const POST: RequestHandler = async event => {
     // Cast the parsed data to the refined type, as Zod's default() ensures these are present at runtime.'
     const validatedCaseData: CreateCaseValidatedData = caseData as CreateCaseValidatedData;
     try {
-      // --- Added: derive the exact payload type expected by CaseOperations.create
+      // ---, Added: derive the exact payload type expected by CaseOperations.create
       type CreateCasePayload = Parameters<typeof, CaseOperations.create>[0];
 
       // Runtime guard to make TS narrow the type and to fail-fast if something unexpected happened.
@@ -329,7 +329,7 @@ export const POST: RequestHandler = async event => {
 
       // Build explicit, well-typed payload to satisfy CaseOperations.create parameter expectations.
       const createPayload: CreateCasePayload = {
-        title: validatedCaseData.title,
+       , title: validatedCaseData.title,
         description: validatedCaseData.description ?? null,
         priority: validatedCaseData.priority,
         status: validatedCaseData.status,
@@ -349,8 +349,8 @@ export const POST: RequestHandler = async event => {
       let workerTriggered = $state<boolean>(false);
       try {
         workerTriggered = await triggerWorkerProcessing(newCase.id, {
-          priority: validatedCaseData.priority, // No: 'as string' needed, type is correct
-          caseType: validatedCaseData.caseType || 'civil', // No: 'as string' needed, type is correct
+          priority: validatedCaseData.priority, // No: 'as: string' needed, type is correct
+          caseType: validatedCaseData.caseType || 'civil', // No: 'as: string' needed, type is correct
           userId: user.id,
           trigger: 'api-case-creation',
           metadata: {
@@ -394,7 +394,7 @@ export const POST: RequestHandler = async event => {
 };
 // Additional endpoints
 // PUT - Update existing case
-export const PUT: RequestHandler = async event => {
+export const, PUT: RequestHandler = async event => {
   return withApiHandler(async ({ request, url, locals }) => {
     const user = resolveUser(locals);
     if (!user) throw CommonErrors.Unauthorized('User authentication required');
@@ -434,7 +434,7 @@ export const OPTIONS: RequestHandler = async () => {
 };
 
 // Note: Using: '*'; for: 'Access-Control-Allow-Origin' is only safe in development.
-// Replace: 'https://your-frontend-domain.com' with your actual production domain.
+//, Replace: 'https://your-frontend-domain.com' with your actual production domain.
 
 /*
   Try to use the project's Drizzle client & schema. If those are missing in some env,'

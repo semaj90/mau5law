@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * Redis cache service wrapper — prefers centralized createRedisInstance factory when available.
  */
-import { env } from '$env/dynamic/private';
-import type { IRedisCacheService } from '$lib/types/external-services';
+import { env } from, '$env/dynamic/private';
+import type { IRedisCacheService } from, '$lib/types/external-services';
 type RedisClientLike = { get: (k: string) => Promise<string | null>;, set: (k: string;, v: string, mode?: string, ttl?: number) => Promise<unknown>;
 };
 let client: RedisClientLike | null = null;
@@ -36,7 +36,7 @@ export const RedisCacheService: IRedisCacheService = {
   async setex(key: string, seconds: number, value: string) {
     if (!client) throw new Error('Redis client not initialized');
     const res = await client.set(key, value, 'EX', seconds);
-    return (res as unknown as string) ?? null;
+    return (res as: unknown, as: string) ?? null;
   },
   // convenience method (serializes objects)
   async set(key: string, value: any, ttl = 3600) {

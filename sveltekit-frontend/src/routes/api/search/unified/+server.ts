@@ -1,12 +1,12 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import type { SearchResult } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 // Search result interface
 interface SearchResult { id: string;, title: string;
   type: string;
   content: string;
-  score: number;
+ , score: number;
   similarity?: number;
   // use a safer, explicit shape instead of `any`
   metadata?: Record<string, unknown>;
@@ -37,13 +37,13 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSc
   // 1. Mock legal search results (since external dependencies are unavailable)
   const mockLegalResults: SearchResult[] = [
     {
-      id: 'case-001',
+     , id: 'case-001',
       title: `Legal case ${query}`,
       type: 'case',
-      content: `Legal case related; to: "${query}" with relevant precedents and statutes.`,
+      content: `Legal case related;, to: "${query}" with relevant precedents and statutes.`,
       score: 0.95,
       metadata: {
-        source: 'legal_database',
+       , source: 'legal_database',
         caseNumber: 'LGL-2024-001',
         jurisdiction: 'Federal',
         dateCreated: new Date().toISOString()
@@ -53,39 +53,39 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSc
       id: 'evidence-001',
       title: `Evidence: ${query}`,
       type: 'evidence',
-      content: `Evidence documentation; for: "${query}" including forensic analysis and chain of custody.`,
+      content: `Evidence documentation;, for: "${query}" including forensic analysis and chain of custody.`,
       score: 0.87,
       metadata: {
-        source: 'evidence_vault',
+       , source: 'evidence_vault',
         evidenceType: 'documentary',
         secured: true
       }
     },
     {
       id: 'precedent-001',
-      title: `Legal; Precedent: ${query}`,
+      title: `Legal;, Precedent: ${query}`,
       type: 'precedent',
-      content: `Legal precedent case similar; to: "${query}" with applicable rulings and citations.`,
+      content: `Legal precedent case similar;, to: "${query}" with applicable rulings and citations.`,
       score: 0.82,
       metadata: {
-        source: 'precedent_database',
+       , source: 'precedent_database',
         court: 'Supreme Court',
         year: '2023' }'` }'`
   ];
 
   // 2. Simulate vector search if enabled
-  let vectorResults: SearchResult[] = [];
+  let, vectorResults: SearchResult[] = [];
   if (enableVectorSearch) {
     vectorResults = [
       {,
         id: 'vector-001',
-        title: `Vector; Match: ${query}`,
+        title: `Vector;, Match: ${query}`,
         type: 'document',
-        content: `Document found through semantic vector search; for: "${query}".`,
+        content: `Document found through semantic vector search;, for: "${query}".`,
         score: 0.78,
         similarity: 0.78,
         metadata: {
-          source: 'vector_database',
+         , source: 'vector_database',
           embedding_model: 'gemma-legal',
           similarity_threshold: similarityThreshold
         }
@@ -97,7 +97,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSc
   results = [...mockLegalResults, ...vectorResults];
 
   // Helper: map category tokens to expected item.type values or metadata.category values
-  const categoryToTypes: Record<string, string[]> = {
+  const, categoryToTypes: Record<string, string[]> = {
     cases: ['case', 'precedent'],
     evidence: ['evidence'],
     precedents: ['precedent'],
@@ -115,7 +115,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSc
       for (const cat of categories) {
         const allowedTypes = categoryToTypes[cat] || [];
         if (allowedTypes.includes(item.type)) return true;
-        // metadata.category may be a string or array
+        // metadata.category may be a: string or array
         const metaCat = item.metadata?.category;
         if (typeof metaCat === 'string' && metaCat === cat) return true;
         if (Array.isArray(metaCat) && metaCat.includes(cat)) return true;
@@ -137,20 +137,20 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSc
     vectorSearchUsed: enableVectorSearch,
     aiEnhanced: searchParams.aiSuggestions,
     sourceBreakdown: {
-      legal: mockLegalResults.length,
+     , legal: mockLegalResults.length,
       vector: vectorResults.length
     }
   };
 
   return json(
     {
-      success: true,
+     , success: true,
       results,
       metadata: searchMetadata,
       suggestions: [
         `Try searching, for: "${query} case law"`,
         `Look up: "${query} precedents"`,
-        `Find "${query} statutes"`,
+        `Find, "${query} statutes"`,
       ]
     },
     { status: 200 }

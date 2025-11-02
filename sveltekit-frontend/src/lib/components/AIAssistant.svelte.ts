@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
-import { getOllamaEndpoint } from '$lib/server/clients/ollama';
+import { writable } from, 'svelte/store';
+import { getOllamaEndpoint } from, '$lib/server/clients/ollama';
 export class AIAssistant {
   private isLoading = writable(false);
   private response = writable('');
@@ -25,7 +25,7 @@ export class AIAssistant {
       // defensive: handle unexpected payloads
       this.response.set((data && (data.response ?? data.output)) || JSON.stringify(data) || '');
     } catch (error: any) {
-      // narrow unknown safely
+      // narrow: unknown safely
       if (error instanceof Error) {
         this.response.set(`Error: ${error.message}`);
       } else {

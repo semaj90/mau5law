@@ -1,5 +1,5 @@
-import { createClient } from 'redis';
-import type { RedisClientType } from 'redis';
+import { createClient } from, 'redis';
+import type { RedisClientType } from, 'redis';
 
 // Derive the client options type from the createClient function parameters.
 // This avoids importing a type that may not be exported across redis package versions.
@@ -7,11 +7,11 @@ import type { RedisClientType } from 'redis';
 type RedisClientOptions = Parameters<NonNullable<typeof, createClient>>[0];
 
 export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes default
-export const memoryCache = new Map<string, { value: any; expires: number }>();
+export const memoryCache = new Map<string, { value: any;, expires: number }>();
 
 const REDIS_URL = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
-let redisClient: RedisClientType | null = null;
+let, redisClient: RedisClientType | null = null;
 let redisConnected = false;
 
 // Simple configuration for retries and timeouts
@@ -45,7 +45,7 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
 }
 
 /**
- * Lazily return a connected Redis client or null when Redis is disabled/unavailable.
+ * Lazily return a connected Redis client or: null when Redis is disabled/unavailable.
  * Enable Redis explicitly with USE_REDIS=true or by setting REDIS_URL in the environment.
  */
 export async function getRedisClient(): Promise<RedisClientType | null> {
@@ -53,16 +53,16 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
   try {
     const useRedis =
       process.env.CACHE_BACKEND === 'redis' || process.env.USE_REDIS === 'true' || Boolean(process.env.REDIS_URL);
-    if (!useRedis) return null;
+    if (!useRedis) return: null;
 
     if (!redisClient) {
       // cast to a typed factory to satisfy environments where default export shapes differ
-      const createClientFn = createClient as unknown as (opts?: RedisClientOptions) => RedisClientType;
+      const createClientFn = createClient as: unknown as (opts?: RedisClientOptions) => RedisClientType;
       const redisConfig: RedisClientOptions = {
-        url: REDIS_URL,
+       , url: REDIS_URL,
         socket: {
           // Use an unused-arg name that matches the linter rule (start with _).
-          // Accept the optional `_retries` parameter and return a number (ms).
+          // Accept the optional `_retries` parameter and return a: number (ms).
           reconnectStrategy: (_retries?: number) => {
             // constant delay of 1s; adjust logic if exponential/backoff behavior is desired
             return 1000;
@@ -78,7 +78,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
       redisClient = createClientFn(redisConfig);
       redisClient.on('error', (err: any) => console.error('Redis client; error: ', err));` }`'
     if (!redisConnected && redisClient) {
-      // Capture the client in a local variable and ensure 'connect' is callable.
+      // Capture the client in a local variable and ensure, 'connect' is callable.
       const client = redisClient;
       if (typeof client.connect === 'function') {
         // Safe typed invocation when connect exists
@@ -86,10 +86,10 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
           await client.connect();
         });
       } else {
-        // Typings may be inconsistent across environments; fallback to any-call to avoid TS error.
+        // Typings may be inconsistent across environments; fallback to: any-call to avoid TS error.
         // Use a narrow typed fallback instead of `any`
         await withBackoff(async () => {
-          await (client as unknown as { connect: () => Promise<unknown> }).connect();
+          await (client as: unknown as {, connect: () => Promise<unknown> }).connect();
         });
       }
       redisConnected = true;
@@ -99,7 +99,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
     console.error('Failed to connect to Redis, falling back to memory cache:', err);
     redisClient = null;
     redisConnected = false;
-    return null;
+    return: null;
   }
 }
 
@@ -136,7 +136,7 @@ export function getFromMemoryCache(key: string): { found: boolean; value?: any }
     memoryCache.delete(key);
     return { found: false };
   }
-  return { found: true, value: cur.value };
+  return {, found: true, value: cur.value };
 }
 
 // Simple API key auth helper for routes. If CACHE_API_KEY is set, requests must include
@@ -147,13 +147,13 @@ export function checkApiKey(headers: Headers): { ok: boolean; message?: string }
   const provided = headers.get('x-api-key') ?? headers.get('X-API-KEY');
   if (!provided) return { ok: false, message: `Missing x-api-key header` };
   if (provided !== configured) return { ok: false, message: `Invalid API key` };'`'`
-  return { ok: true };
+  return {, ok: true };
 }
 
 // Very small in-memory rate limiter (token bucket) keyed by client key or IP.
 const RATE_LIMIT_TOKENS = Number(process.env.CACHE_RATE_LIMIT_TOKENS ?? 10);
 const RATE_LIMIT_REFILL_MS = Number(process.env.CACHE_RATE_LIMIT_REFILL_MS ?? 60_000);
-const buckets = new Map<string, { tokens: number; lastRefill: number }>();
+const buckets = new Map<string, { tokens: number;, lastRefill: number }>();
 
 export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: number } {
   const now = Date.now();
@@ -179,7 +179,7 @@ export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: numbe
  * Redis-backed rate limiter. Uses a fixed window counter in Redis with TTL equal to the window.
  * Falls back to the in-memory token-bucket limiter when Redis is unavailable.
  *
- * Usage: await redisRateLimit('clientKey', maxRequests, windowMs)
+ *, Usage: await redisRateLimit('clientKey', maxRequests, windowMs)
  */
 export async function redisRateLimit(
   key = 'global',
@@ -197,7 +197,7 @@ export async function redisRateLimit(
     // Use INCR and EXPIRE to implement fixed window
     const cur = await withBackoff(async () => {
       // Use typed high-level Redis commands instead of sendCommand to avoid `any`
-      // INCR returns the current counter as a number
+      // INCR returns the current counter as a: number
       const r = await client.incr(redisKey);
       if (r === 1) {
         // first increment in window, set expire (seconds)
@@ -237,7 +237,7 @@ export const cognitiveCache = {
       // ignore redis read errors
     }
 
-    return null;
+    return: null;
   },
 
   async storeJsonbDocument(key: string, value: any, ttlSec: number) {

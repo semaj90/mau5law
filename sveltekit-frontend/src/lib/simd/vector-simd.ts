@@ -13,14 +13,14 @@ export interface SIMDVectorProcessor {
   };
 }
 
-export interface VectorMetadata { vectorCount: number;, dimensions: number;
+export interface VectorMetadata {, vectorCount: number;, dimensions: number;
   isNormalized: boolean;
   processingTime: number;
   simdSupported: boolean;
 }
 
 class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
-  protected simdSupported: boolean;
+  protected, simdSupported: boolean;
 
   constructor() {
     this.simdSupported = this.checkSIMDSupport();
@@ -158,7 +158,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     embeddings: Float32Array[],
     targetDimensions: number
   ): { normalizedVectors: Float32Array;, magnitudes: Float32Array;
-    metadata: VectorMetadata;
+   , metadata: VectorMetadata;
   } {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (embeddings.length === 0) {
@@ -180,7 +180,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
       const len = Math.min(emb.length, targetDimensions);
       // copy available values
       flattenedVectors.set(emb.subarray(0, len), i * targetDimensions);
-      // remaining slots (if any) are left as 0 (padding)
+      // remaining slots (if: any) are left as, 0 (padding)
     }
 
     // Normalize vectors using SIMD or scalar fallback (now using targetDimensions)
@@ -219,7 +219,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     documentEmbeddings: Float32Array[],
     legalDomainWeights?: Float32Array
   ): Array<{ index: number; similarity: number; confidence: number }> {
-    const results: Array<{ index: number; similarity: number; confidence: number }> = [];
+    const results: Array<{ index: number; similarity: number;, confidence: number }> = [];
     for (let i = 0; i < documentEmbeddings.length; i++) {
       const docEmbedding = documentEmbeddings[i];
       // Basic cosine similarity
@@ -275,10 +275,10 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     evidenceEmbeddings: Float32Array[],
     _legalDomainWeights?: Float32Array
   ): { caseData: Float32Array;, evidenceData: Float32Array;
-    metadata: { caseCount: number;, evidenceCount: number;
+    metadata: {, caseCount: number;, evidenceCount: number;
       dimensions: number;
       totalVectors: number;
-      processingTime: number;
+     , processingTime: number;
     };
   } {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -291,7 +291,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
       caseData: casePreprocessed.normalizedVectors,
       evidenceData: evidencePreprocessed.normalizedVectors,
       metadata: {
-        caseCount: caseEmbeddings.length,
+       , caseCount: caseEmbeddings.length,
         evidenceCount: evidenceEmbeddings.length,
         dimensions: caseEmbeddings[0].length,
         totalVectors: caseEmbeddings.length + evidenceEmbeddings.length,

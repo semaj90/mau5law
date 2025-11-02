@@ -3,7 +3,7 @@
   Testing the LegalDocumentDrafting with Enhanced-Bits UI components
 -->
 <script, lang="ts">
-  import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
+  import LegalDocumentDrafting from, '$lib/components/ai/LegalDocumentDrafting.svelte';
 </script>
 
 <svelte:head>
@@ -21,6 +21,6 @@
 <style>
   .page-container {
     min-height: 100vh;
-    background: #f8fafc;
+   , background: #f8fafc;
   }
 </style>

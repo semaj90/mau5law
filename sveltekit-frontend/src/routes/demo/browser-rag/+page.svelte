@@ -2,17 +2,17 @@
   Browser RAG Demo - Privacy-Preserving Legal AI
 
   Complete RAG system running 100% in browser:
-  - Embedding: all-MiniLM-L6-v2 (384d)
-  - LLM: Gemma 3 270M
+  -, Embedding: all-MiniLM-L6-v2 (384d)
+  - LLM: Gemma, 3 270M
   - Vector Search: In-memory cosine similarity
 
   NO DATA LEAVES THE BROWSER!
 -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import { browserRAG } from '$lib/ai/browser-rag-chain';
-  import { onMount } from 'svelte';
-  import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from 'lucide-svelte';
+import type { Document } from, '$lib/types';
+  import { browserRAG } from, '$lib/ai/browser-rag-chain';
+  import { onMount } from, 'svelte';
+  import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from, 'lucide-svelte';
 
   // State
   let isInitialized = $state<boolean>(false);
@@ -25,17 +25,17 @@ import type { Document } from '$lib/types';
     {,
       id: 'contract1',
       content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
-      metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
+      metadata: {, type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
     },
     {
       id: 'precedent1',
       content: 'In Smith v. Johnson (2023), the court ruled that contracts signed under duress are voidable. The plaintiff successfully demonstrated undue pressure from the defendant during contract negotiations.',
-      metadata: { type: 'case_law', year: 2023, court: 'Superior Court' }
+      metadata: {, type: 'case_law', year: 2023, court: 'Superior Court' }
     },
     {
       id: 'statute1',
       content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
-      metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
+      metadata: {, type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
     }
   ]);
 
@@ -66,7 +66,7 @@ import type { Document } from '$lib/types';
       error = null;
     } catch (err) {
       error = `Initialization failed: ${err}`;
-      console.error('RAG Init Error:', err);
+      console.error('RAG Init, Error:', err);
     } finally {
       isLoading = false;
     }
@@ -94,7 +94,7 @@ import type { Document } from '$lib/types';
       duration = result.duration;
     } catch (err) {
       error = `Query failed: ${err}`;
-      console.error('Query Error:', err);
+      console.error('Query, Error:', err);
     } finally {
       isLoading = false;
     }
@@ -125,7 +125,7 @@ import type { Document } from '$lib/types';
       }
     } catch (err) {
       error = `Streaming failed: ${err}`;
-      console.error('Streaming Error:', err);
+      console.error('Streaming, Error:', err);
     } finally {
       isStreaming = false;
     }
@@ -134,8 +134,8 @@ import type { Document } from '$lib/types';
   function addCustomDocument() {
     const newDoc = {
       id: `custom-${Date.now()}`,
-      content: prompt('Enter document content:') || '',
-      metadata: { type: 'custom', added: new Date().toISOString() }
+      content: prompt('Enter document, content:') || '',
+      metadata: {, type: 'custom', added: new Date().toISOString() }
     };
 
     if (newDoc.content) {
@@ -155,7 +155,7 @@ import type { Document } from '$lib/types';
   <!-- Header -->
   <header, class="nes-container, is-dark">
     <h1, class="title">🔒 Privacy-Preserving Legal RAG</h1>
-    <p, class="subtitle">100% Browser-Based • Gemma 3 270M + LangChain.js + Transformer.js v3</p>
+    <p, class="subtitle">100% Browser-Based • Gemma, 3 270M + LangChain.js + Transformer.js v3</p>
 
     <div, class="privacy-badge">
       <Lock, size={20} />
@@ -204,7 +204,7 @@ import type { Document } from '$lib/types';
           <Zap, class="text-yellow-400" size={24} />
           <div>
             <p, class="text-xs, text-gray-400">Model</p>
-            <p, class="text-sm">Gemma 3 270M</p>
+            <p, class="text-sm">Gemma, 3 270M</p>
           </div>
         </div>
       </div>
@@ -256,7 +256,7 @@ import type { Document } from '$lib/types';
 
   <!-- Error -->
   {#if error}
-    <div, class="nes-container, is-rounded" style="background: #dc2626; color: white;">
+    <div, class="nes-container, is-rounded" style="background: #dc2626;, color: white;">
       <div class="flex, items-center, gap-2">
         <AlertCircle, size={20} />
         <p>{error}</p>
@@ -316,10 +316,10 @@ import type { Document } from '$lib/types';
     <h3>How It Works</h3>
     <ul class="nes-list, is-disc, text-sm">
       <li><strong>Embeddings:</strong> all-MiniLM-L6-v2 (384 dimensions) runs in browser with WebGPU</li>
-      <li><strong>LLM:</strong> Gemma 3 270M (quantized) generates answers entirely client-side</li>
+      <li><strong>LLM:</strong> Gemma, 3 270M (quantized) generates answers entirely client-side</li>
       <li><strong>RAG:</strong> LangChain.js orchestrates retrieval + generation pipeline</li>
       <li><strong>Privacy:</strong> All processing happens in your browser - zero server calls</li>
-      <li><strong>First Load:</strong> ~1.5GB model downloads once, then cached in IndexedDB</li>
+      <li><strong>First, Load:</strong> ~1.5GB model downloads once, then cached in IndexedDB</li>
     </ul>
   </div>
 </div>
@@ -329,7 +329,7 @@ import type { Document } from '$lib/types';
     min-height: 100vh;
     background: #212529;
     color: #d4af37;
-    padding: 2rem;
+   , padding: 2rem;
     font-family: 'Press Start 2P', 'Courier New', monospace;
   }
 
@@ -356,7 +356,7 @@ import type { Document } from '$lib/types';
   }
 
   .stats-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1.5rem 0;
@@ -446,6 +446,6 @@ import type { Document } from '$lib/types';
   }
 
   .inline {
-    display: inline;
+   , display: inline;
   }
 </style>

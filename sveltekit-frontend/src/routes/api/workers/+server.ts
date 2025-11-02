@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Define interfaces for the worker and service
 interface DocumentProcessingWorker { getStats: () => { isRunning: boolean; processedCount: number; failedCount: number; successRate: number };
-  start: () => Promise<void>;
+ , start: () => Promise<void>;
   stop: () => Promise<void>;
 }
 
@@ -24,7 +24,7 @@ interface QueueDetailStats {
   [key: string]: JsonValue;
 }
 
-interface QueueHealthDetail { name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+interface QueueHealthDetail {, name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   messages?: number;
   consumers?: number;
   // Allow for additional, less critical properties with JsonValue
@@ -32,13 +32,13 @@ interface QueueHealthDetail { name: string;, status: 'healthy' | 'degraded' | '
 }
 
 interface RabbitMQService {
-  getQueueStats: () => Promise<Record<string, QueueDetailStats>>;
+ , getQueueStats: () => Promise<Record<string, QueueDetailStats>>;
   healthCheck: () => Promise<{ healthy: boolean; queues: QueueHealthDetail[] }>;
 }
 
 // Import worker and services with error handling
 let documentProcessingWorker: DocumentProcessingWorker;
-let rabbitMQService: RabbitMQService;
+let, rabbitMQService: RabbitMQService;
 try {
   documentProcessingWorker = (await import('$lib/workers/document-processing-worker'))
     .documentProcessingWorker as DocumentProcessingWorker;
@@ -59,14 +59,14 @@ try {
   };
 }
 
-// Helper to convert unknown errors to a string message
+// Helper to convert: unknown errors to, a: string message
 function getErrorMessage(err: any): string {
   // Prefer Error message when available
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'status': {
+      case, 'status': {
         const workerStats = documentProcessingWorker.getStats();
         const queueStats = await rabbitMQService.getQueueStats();
         const healthCheck = await rabbitMQService.healthCheck();
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'health': {
+      case, 'health': {
         const health = await rabbitMQService.healthCheck();
         const stats = documentProcessingWorker.getStats();
         return json({
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default: return json(
           {
-            error: 'Invalid action. Use ?action=status or ?action=health'
+           , error: 'Invalid action. Use ?action=status or ?action=health'
           },
           { status: 400 }
         );
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case 'start':
+      case, 'start':
         if (documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is already running',
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Document processing worker started successfully',
           status: 'started'
         });
-      case 'stop':
+      case, 'stop':
         if (!documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is not running',
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Document processing worker stopped successfully',
           status: 'stopped'
         });
-      case 'restart':
+      case, 'restart':
         if (documentProcessingWorker.getStats().isRunning) {
           await documentProcessingWorker.stop();
           // Wait a moment before restarting
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       default: return json(
           {
-            error: 'Invalid action. Use start, stop, or restart'
+           , error: 'Invalid action. Use start, stop, or restart'
           },
           { status: 400 }
         );

@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit'
 /*
  * Production Health Check API
  * Comprehensive system status for all services
@@ -11,8 +11,8 @@ export interface ServiceStatus { name: string, status: 'healthy' | 'warning' | 
   details?: any
 }
 export interface HealthResponse {
-  overall_status: 'healthy' | 'warning' | 'error',
-  timestamp: string; services: ServiceStatus[]; system_info: { nodejs_version: string, memory_usage: NodeJS.MemoryUsage; uptime: number
+ , overall_status: 'healthy' | 'warning' | 'error',
+  timestamp: string; services: ServiceStatus[]; system_info: {, nodejs_version: string, memory_usage: NodeJS.MemoryUsage;, uptime: number
   }
 }
 async function checkService(name: string, url: string, timeout = 5000): Promise<ServiceStatus> {
@@ -32,7 +32,7 @@ async function checkService(name: string, url: string, timeout = 5000): Promise<
       status: response.ok ? 'healthy' : 'warning',
       response_time: responseTime,
       details: {
-        http_status: response.status,
+       , http_status: response.status,
         url
       }
     }
@@ -42,7 +42,7 @@ async function checkService(name: string, url: string, timeout = 5000): Promise<
       status: 'error',
       response_time: Date.now() - startTime,
       details: {
-        error: error.message,
+       , error: error.message,
         url
       }
     }
@@ -58,7 +58,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
       status: 'healthy',
       response_time: Date.now() - startTime,
       details: {
-        database: 'evidence_processing',
+       , database: 'evidence_processing',
         connection: 'active'
       }
     }
@@ -73,7 +73,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
     }
   }
 }
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
   try {
     // Check all production services in parallel
@@ -94,11 +94,11 @@ export const GET: RequestHandler = async ({ url }) => {
     } else if (warningCount > 0) {
       overallStatus = 'warning` }'`
     const response: HealthResponse = {
-      overall_status: overallStatus,
+     , overall_status: overallStatus,
       timestamp: new Date().toISOString(),
       services: serviceChecks,
       system_info: {
-        nodejs_version: process.version,
+       , nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
         uptime: process.uptime()
       }
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: error.message,
       services: [],
       system_info: {
-        nodejs_version: process.version,
+       , nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
         uptime: process.uptime()
       }

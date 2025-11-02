@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { Argon2id } from 'oslo/password';
-import { db } from '$lib/server/db/drizzle';
-import { users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import type { User } from, '$lib/types';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { fail, redirect } from, '@sveltejs/kit';
+import { auth } from, '$lib/server/auth';
+import { Argon2id } from, 'oslo/password';
+import { db } from, '$lib/server/db/drizzle';
+import { users } from, '$lib/server/db/schema';
+import { eq } from, 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
   // Redirect if already logged in
@@ -15,13 +15,13 @@ export const load: PageServerLoad = async (event) => {
   return {};
 };
 export const actions: Actions = {
-  register: async ({ request, cookies }) => {
+ , register: async ({ request, cookies }) => {
     const data = await request.formData();
-    const email = data.get('email') as string;
-    const firstName = data.get('firstName') as string;
-    const lastName = data.get('lastName') as string;
-    const password = data.get('password') as string;
-    const confirmPassword = data.get('confirmPassword') as string;
+    const email = data.get('email') as: string;
+    const firstName = data.get('firstName') as: string;
+    const lastName = data.get('lastName') as: string;
+    const password = data.get('password') as: string;
+    const confirmPassword = data.get('confirmPassword') as: string;
 
     // Basic validation
     if (!email || !firstName || !lastName || !password) {
@@ -33,7 +33,7 @@ export const actions: Actions = {
     }
 
     if (password.length < 8) {
-      return fail(400, { error: 'Password must be at least 8 characters' });
+      return fail(400, { error: 'Password must be at least, 8 characters' });
     }
 
     try {

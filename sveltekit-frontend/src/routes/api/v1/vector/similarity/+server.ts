@@ -2,9 +2,9 @@
  * Vector Similarity API - Client WebAssembly to Server CUDA Bridge
  * Handles cosine similarity, euclidean distance, and batch operations
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { PGVECTOR_CONFIG, getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl } from, '$lib/config/pgvector-gpu-config.js';
 interface VectorSimilarityRequest { operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';, vectorA: Float32Array | number[];
   vectorB?: Float32Array | number[];
   vectors?: Array<Float32Array | number[]>; // For batch operations
@@ -12,11 +12,11 @@ interface VectorSimilarityRequest { operation: 'cosine' | 'euclidean' | 'dot' | 
   useCUDA?: boolean;
   parallel?: boolean;
 }
-interface CUDAResponse { result: number | number[];, gpuTime: number;
+interface CUDAResponse {, result: number | number[];, gpuTime: number;
   parallelWorkers: number;
   memoryUsed: number;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   try {
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
               ? 'client_webgl2'
               : 'client_wasm',
         memoryOptimizations: {
-          chrRomRegion: shouldUseCUDA,
+         , chrRomRegion: shouldUseCUDA,
           vectorAlignment: true,
           cacheOptimized: true,
           simdFriendly: !shouldUseCUDA
@@ -134,7 +134,7 @@ async function processCUDAVectorOperation(params: {, operation: string;, vector
     operation,
     request_id: requestId,
     data: {
-      vectorA: Array.from(vectorA),
+     , vectorA: Array.from(vectorA),
       vectorB: vectorB ? Array.from(vectorB) : undefined,
       vectors: vectors?.map(v => Array.from(v)),
       algorithm,
@@ -142,7 +142,7 @@ async function processCUDAVectorOperation(params: {, operation: string;, vector
       vectorCount: vectors?.length || (vectorB ? 2 : 1)
     },
     gpu_config: {
-      use_tensor_cores: true,
+     , use_tensor_cores: true,
       memory_pool: 'CHR_ROM_optimized', // Enhanced memory region targeting
       batch_size: Math.min(PGVECTOR_CONFIG.performance.batchSize, vectors?.length || 1),
       parallel_workers: PGVECTOR_CONFIG.performance.maxParallelWorkers,
@@ -153,7 +153,7 @@ async function processCUDAVectorOperation(params: {, operation: string;, vector
       precision: 'mixed_fp16_fp32', // Tensor core optimized precision
     },
     performance_hints: {
-      expected_throughput: vectors?.length || 1,
+     , expected_throughput: vectors?.length || 1,
       memory_pattern: 'sequential_access',
       cache_locality: 'high',
       branch_prediction: `favorable' }'`
@@ -182,19 +182,19 @@ async function processCPUVectorOperation(params: {, operation: string;, vectorA
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
   switch (operation) {
-    case 'cosine':
+    case, 'cosine':
       if (!vectorB) throw new Error('vectorB required for cosine similarity');
       return cosineSimilarity(vectorA, vectorB);
-    case 'euclidean':
+    case, 'euclidean':
       if (!vectorB) throw new Error('vectorB required for euclidean distance');
       return euclideanDistance(vectorA, vectorB);
-    case 'dot':
+    case, 'dot':
       if (!vectorB) throw new Error('vectorB required for dot product');
       return dotProduct(vectorA, vectorB);
-    case 'manhattan':
+    case, 'manhattan':
       if (!vectorB) throw new Error('vectorB required for manhattan distance');
       return manhattanDistance(vectorA, vectorB);
-    case 'batch':
+    case, 'batch':
       if (!vectors) throw new Error('vectors required for batch operation');
       return vectors.map(vector => {
         switch (algorithm) {
@@ -210,7 +210,7 @@ async function processCPUVectorOperation(params: {, operation: string;, vectorA
         }
       });
     default:
-      throw new Error(`Unknown; operation: ${operation}`);
+      throw new Error(`Unknown;, operation: ${operation}`);
   }
 }
 // CPU fallback implementations

@@ -1,18 +1,18 @@
 <!-- Enhanced Bits UI: Keyboard, Mapping, Provider -->
 <!-- Global keyboard shortcut management for the, entire, application -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { setContext, onMount } from 'svelte';
-  import { writable, type Writable } from 'svelte/store';
-  import { browser } from '$app/environment';
-  import  KeyboardMapping  from "./KeyboardMapping.svelte";
-  import  KeyboardHelp  from "./KeyboardHelp.svelte";
+  // Svelte, 5 runes are auto-imported
+  import { setContext, onMount } from, 'svelte';
+  import { writable, type Writable } from, 'svelte/store';
+  import { browser } from, '$app/environment';
+  import  KeyboardMapping  from, "./KeyboardMapping.svelte";
+  import  KeyboardHelp  from, "./KeyboardHelp.svelte";
   // Types
   interface KeyboardShortcut {
     id: string;
     keys: string[];
-    description string;
-    category: string;
+    description: string;
+   , category: string;
     action () => void | Promise<void>;
     enabled?: boolean;
     priority?: number;
@@ -21,7 +21,7 @@
   }
   interface KeyboardContext {
     shortcuts: Writable<KeyboardShortcut[]>;
-    registerShortcut: (shortcut: KeyboardShortcut) => () => void;
+   , registerShortcut: (shortcut: KeyboardShortcut) => () => void;
     unregisterShortcut: (id: string) => void;
     executeShortcut: (id: string) => boolean;
     getShortcuts: () => KeyboardShortcut[];
@@ -47,11 +47,11 @@
   // Reference to the KeyboardMapping component
   let keyboardMappingRef: KeyboardMapping;
   // Keyboard context implementation
-  const keyboardContext: KeyboardContext = {
+  const, keyboardContext: KeyboardContext = {
     shortcuts,
     registerShortcut: (shortcut: KeyboardShortcut) => {
       shortcuts.update(current => {
-        // Remove any existing shortcut with the same ID
+        // Remove: any existing shortcut with the same ID
         const filtered = current.filter(s => s.id !== shortcut.id);
         return [...filtered, shortcut];
       });

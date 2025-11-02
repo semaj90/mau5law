@@ -369,7 +369,7 @@
   </main>
 </div>
 <!-- Pattern Details Dialog -->
-<Dialog.Root bind:open={showPatternDetails}>
+<Dialog bind:open={showPatternDetails}>
   <Dialog.Content class="pattern-details-dialog">
     {#if selectedPattern}
       <Dialog.Title>Pattern Analysis: {selectedPattern.title}</Dialog.Title>
@@ -483,7 +483,7 @@
       </div>
     {/if}
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   .pattern-detection-interface {
     max-width: 1400px;

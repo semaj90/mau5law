@@ -3,20 +3,20 @@
  * Mimics N64 cartridge progressive loading for legal document visualization
  *
  * LOD Levels:
- *; 0: 64x64 - High detail (active document view)
+ *;, 0: 64x64 - High detail (active document view)
  * 1: 32x32 - Medium detail (document preview)
  * 2: 16x16 - Low detail (timeline view)
  * 3: 8x8  - Minimal detail (overview/scrolling)
  */
-interface LODLevel { level: number;, resolution: { width: number; height: number }
+interface LODLevel { level: number;, resolution: { width: number; height: number };
   textureSize: number;
   maxDistance: number;
   description: string;
 }
-interface LODAsset { id: string;, baseTexture: ImageData | HTMLImageElement;
-  mipmaps: Map<number, ArrayBuffer>; // LOD level -> texture data
-  metadata: { documentType: 'contract' | 'evidence' | 'brief' | 'timeline';, priority: number;
-  size: number;
+interface LODAsset {, id: string;, baseTexture: ImageData | HTMLImageElement;
+ , mipmaps: Map<number, ArrayBuffer>; // LOD level -> texture data
+  metadata: {, documentType: 'contract' | 'evidence' | 'brief' | 'timeline';, priority: number;
+ , size: number;
   }
 }
 export class N64LODManager {
@@ -25,14 +25,14 @@ export class N64LODManager {
   private textureCache = new Map<string, ArrayBuffer>();
   // N64-inspired LOD thresholds
   private readonly LOD_LEVELS: LODLevel[] = [
-    { level: 0, resolution: { width: 64, height: 64 }, textureSize: 16384, maxDistance: 100, description: 'High Detail' },
-    { level: 1, resolution: { width: 32, height: 32 }, textureSize: 4096,  maxDistance: 300, description: 'Medium Detail' },
-    { level: 2, resolution: { width: 16, height: 16 }, textureSize: 1024,  maxDistance: 600, description: 'Low Detail' },
-    { level: 3, resolution: { width: 8, height: 8 },   textureSize: 256,   maxDistance: 1000, description: 'Minimal Detail' }
+    {, level: 0, resolution: {, width: 64, height: 64 }, textureSize: 16384, maxDistance: 100, description: 'High Detail' },
+    { level: 1, resolution: {, width: 32, height: 32 }, textureSize: 4096,  maxDistance: 300, description: 'Medium Detail' },
+    { level: 2, resolution: {, width: 16, height: 16 }, textureSize: 1024,  maxDistance: 600, description: 'Low Detail' },
+    { level: 3, resolution: {, width: 8, height: 8 },   textureSize: 256,   maxDistance: 1000, description: 'Minimal Detail' }
   ];
   // NES-style memory constraints
   private readonly MEMORY_BUDGET = {
-    CHR_ROM_SIZE: 8192,    // 8KB CHR-ROM bank
+   , CHR_ROM_SIZE: 8192,    // 8KB CHR-ROM bank
     PATTERN_TABLE_SIZE: 4096, // 4KB pattern table
     MAX_ACTIVE_TEXTURES: 64,  // Maximum textures in CHR-ROM
     BANK_SWITCH_THRESHOLD: 6144 // Switch banks at 75% capacity
@@ -66,16 +66,16 @@ export class N64LODManager {
     let baseLOD = this.calculateLOD(context.pageDistance);
     // Adjust based on reading mode
     switch (context.readingMode) {
-      case 'active':
+      case, 'active':
         baseLOD = Math.max(0, baseLOD - 1); // Force higher detail
         break;
-      case 'preview':
+      case, 'preview':
         baseLOD = Math.min(1, baseLOD); // Cap at medium detail
         break;
-      case 'timeline':
+      case, 'timeline':
         baseLOD = Math.max(2, baseLOD); // Force low detail for performance
         break;
-      case 'overview':
+      case, 'overview':
         baseLOD = 3; // Always minimal detail
         break;
     }
@@ -89,7 +89,7 @@ export class N64LODManager {
    * Generate NES-style mipmaps from base texture
    */
   async generateMipmaps()
-    baseTexture: ImageData | HTMLImageElement; assetId: string;
+    baseTexture: ImageData | HTMLImageElement;, assetId: string;
   ): Promise<LODAsset> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d'),!;
@@ -114,11 +114,11 @@ export class N64LODManager {
       mipmaps.set(level.level, chrRomData);
     }
     const asset: LODAsset = {
-      id: assetId,
+     , id: assetId,
       baseTexture: imageData,
       mipmaps,
       metadata: {
-        documentType: this.inferDocumentType(assetId),
+       , documentType: this.inferDocumentType(assetId),
         priority: this.calculateAssetPriority(assetId),
         size: imageData.data.length
       }
@@ -130,7 +130,7 @@ export class N64LODManager {
    * Stream texture chunk at specified LOD level
    */
   async streamTexture()
-    assetId: string; lodLevel: number; priority: 'immediate' | 'background', = 'background';
+    assetId: string; lodLevel: number;, priority: 'immediate' | 'background', = 'background';
   ): Promise<ArrayBuffer | null> {
     // Check if we need bank switching
     if (this.shouldPerformBankSwitch()) {
@@ -139,7 +139,7 @@ export class N64LODManager {
     const asset = this.assets.get(assetId);
     if (!asset) {
       console.warn(`Asset ${assetId} not found`);
-      return null;
+      return: null;
     }
     const cacheKey = `${assetId}:${lodLevel}`;
     // Check CHR-ROM cache first
@@ -147,7 +147,7 @@ export class N64LODManager {
       this.updateAccessTime(cacheKey);
       return this.textureCache.get(cacheKey)!;
     }
-    // Cancel any existing stream for this asset
+    // Cancel: any existing stream for this asset
     this.cancelStream(assetId);
     // Create new stream controller
     const controller = new AbortController();
@@ -163,14 +163,14 @@ export class N64LODManager {
       }
       // Check if stream was cancelled
       if (controller.signal.aborted) {
-        return null;
+        return: null;
       }
       // Store in CHR-ROM cache
       await this.storeinCHRROM(cacheKey, textureData);
       return textureData;
     } catch (error) {
       console.error(`Failed to stream texture ${assetId} at LOD ${lodLevel}: ', error);'`
-      return null;
+      return: null;
     } finally {
       this.activeStreams.delete(assetId);
     }
@@ -179,7 +179,7 @@ export class N64LODManager {
    * Progressive texture streaming - loads LOD levels progressively
    */
   async *streamTextureProgressive()
-    assetId: string; targetLOD: number;
+    assetId: string;, targetLOD: number;
   ): AsyncGenerator {
     // Start with lowest quality and stream up to target
     for (let lod = 3; lod >= targetLOD; lod--) {
@@ -193,7 +193,7 @@ export class N64LODManager {
    * Generate mipmap at specific resolution
    */
   private async generateMipmap()
-    source: ImageData; targetSize: { width: number); height: number }
+    source: ImageData; targetSize: {, width: number); height: number }
   ): Promise<ImageData> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d'),!;
@@ -270,14 +270,14 @@ export class N64LODManager {
    * Convert texture to CHR-ROM compatible format
    */
   private convertToCHRROM(imageData,: ImageData, lodLeve,l: numbe,r): ArrayBuffer {
-    // CHR-ROM stores 8x8 pixel tiles with 2 bits per pixel
+    // CHR-ROM stores 8x8 pixel tiles with, 2 bits per pixel
     const { width, height } = imageDat;a;
     const tileWidth = 8;
     const tileHeight = 8;
     const tilesX = Math.ceil(width / tileWidth);
     const tilesY = Math.ceil(height / tileHeight);
     const totalTiles = tilesX * tilesY;
-    // Each tile uses 16 bytes (8 bytes for plane 0, 8 bytes for plane 1)
+    // Each tile uses, 16 bytes (8 bytes for plane, 0, 8 bytes for plane 1)
     const buffer = new ArrayBuffer(totalTiles * 16);
     const view = new Uint8Array(buffer);
     let bufferOffset = 0;
@@ -417,10 +417,10 @@ export class N64LODManager {
     }
   }
   private inferDocumentType(assetId,: string): 'contract' | 'evidence' | 'brief' | 'timeline,' {
-    if (assetId.includes('contract')) return 'contract';
-    if (assetId.includes('evidence')) return 'evidence';
-    if (assetId.includes('brief')) return 'brief';
-    return 'timeline';
+    if (assetId.includes('contract')) return, 'contract';
+    if (assetId.includes('evidence')) return, 'evidence';
+    if (assetId.includes('brief')) return, 'brief';
+    return, 'timeline';
   }
   private calculateAssetPriority(assetId,: string): number {
     // Higher priority for critical legal documents
@@ -438,7 +438,7 @@ export class N64LODManager {
     activeStreams: number;
   } {
     return {
-      memoryUsage: this.currentMemoryUsage,
+     , memoryUsage: this.currentMemoryUsage,
       maxMemory: this.MEMORY_BUDGET.CHR_ROM_SIZE,
       activeBankId: this.activeBankId,
       textureCount: this.textureCache.size,

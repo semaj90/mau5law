@@ -2,13 +2,13 @@
  * Configuration Sync API Endpoint
  * Tests and validates all system connections and configurations
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Add small explicit types to avoid `any`
 type PostgresConnection = {
   initializeDatabase: () => Promise<boolean>;
-  // simple typed sql tagged template or function; return any[] for safety
-  sql: (query: TemplateStringsArray | string, ...args: any[]) => Promise<any[]>;
+  // simple typed sql tagged template or function; return: any[] for safety;
+ , sql: (query: TemplateStringsArray | string, ...args: any[]) => Promise<any[]>;
 };
 
 type MinIOServiceShape = {
@@ -21,20 +21,20 @@ type MinIOServiceShape = {
 
 // Replace loose `any` declarations
 let postgresConnection: PostgresConnection | null = null;
-let minioService: MinIOServiceShape | null = null;
+let, minioService: MinIOServiceShape | null = null;
 
 try {
   // Dynamic imports to handle server-only modules
   const pgModule = await import('$lib/server/db/connection.js');
   // prefer exported default, fall back to module itself
-  postgresConnection = (pgModule.default ?? pgModule) as unknown as PostgresConnection;
+  postgresConnection = (pgModule.default ?? pgModule) as: unknown as PostgresConnection;
 } catch (error) {
   console.warn('PostgreSQL module not available:', error);
 }
 try {
   const minioModule = await import('$lib/server/storage/minio-service.js');
   // cast getInstance result to our shape
-  minioService = (minioModule?.MinIOService?.getInstance?.() ?? null) as unknown as MinIOServiceShape | null;
+  minioService = (minioModule?.MinIOService?.getInstance?.() ?? null) as: unknown as MinIOServiceShape | null;
 } catch (error) {
   console.warn('MinIO module not available: ', error);'` }'`
 export const GET: RequestHandler = async ({ url }) => {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
     [key: string]: any;
   };
 
-  const testResults: SyncTestResults = {};
+  const, testResults: SyncTestResults = {};
   // Test PostgreSQL Connection
   try {
     if (postgresConnection) {
@@ -71,13 +71,13 @@ export const GET: RequestHandler = async ({ url }) => {
             version() as pg_version,
             current_database() as database_name,
             current_user as connected_user,
-            EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'vector') as pgvector_installed
+            EXISTS(SELECT, 1 FROM pg_extension WHERE extname = 'vector') as pgvector_installed
         `;`
         testResults.postgresql = {
           status: 'connected',
           message: 'PostgreSQL connection successful',
           details: {
-            version: result[0]?.pg_version,
+           , version: result[0]?.pg_version,
             database: result[0]?.database_name,
             user: result[0]?.connected_user,
             pgvectorInstalled: result[0]?.pgvector_installed,
@@ -85,18 +85,18 @@ export const GET: RequestHandler = async ({ url }) => {
         };
       } else {
         testResults.postgresql = {
-          status: 'error',
+         , status: 'error',
           message: 'PostgreSQL connection failed' };
       }
     } else {
       testResults.postgresql = {
-        status: 'unavailable',
+       , status: 'unavailable',
         message: 'PostgreSQL module not loaded' };
     }
   } catch (error) {
     testResults.postgresql = {
       status: 'error',
-      message: 'PostgreSQL; error: ${error}' };
+      message: 'PostgreSQL;, error: ${error}' };
   }
   // Test Redis Connection (using native test)
   try {
@@ -108,12 +108,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const redisTestResponse = await fetch('http://localhost:6379', {
       method: 'GET'
     }).catch(() => null);
-    // Redis doesn't respond to HTTP, so any response or connection attempt indicates it's running
+    // Redis doesn't respond to HTTP, so: any response or connection attempt indicates it's running
     testResults.redis = {
-      status: 'available',
-      message: 'Redis service is running on; localhost:6379',
+     , status: 'available',
+      message: 'Redis service is running on;, localhost:6379',
       details: {
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+       , url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
         note: 'Redis confirmed running (connection attempt successful)'
       }
     };
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
     testResults.redis = {
       status: 'unknown',
       message: 'Redis status could not be determined',
-      details: { error: String(error) }
+      details: {, error: String(error) }
     };
   }
   // Test MinIO Connection
@@ -138,21 +138,21 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'connected',
           message: 'MinIO connection successful',
           details: {
-            endpoint: '${import.meta.env.MINIO_HOST || 'localhost'}:${import.meta.env.MINIO_PORT || '9000` }`,
+           , endpoint: '${import.meta.env.MINIO_HOST || 'localhost'}:${import.meta.env.MINIO_PORT || '9000` }`,
             useSSL: import.meta.env.MINIO_USE_SSL === 'true',
             buckets: buckets?.length || 0,
             accessKey: import.meta.env.MINIO_ACCESS_KEY || 'minioadmin' }'` };'`
       } catch (minioError) {
         testResults.minio = {
           status: 'error',
-          message: `MinIO connection; failed: ${minioError}`,
+          message: `MinIO connection;, failed: ${minioError}`,
           details: {
-            endpoint: '${import.meta.env.MINIO_HOST || 'localhost'}:${import.meta.env.MINIO_PORT || '9000` }`,
+           , endpoint: '${import.meta.env.MINIO_HOST || 'localhost'}:${import.meta.env.MINIO_PORT || '9000` }`,
             useSSL: import.meta.env.MINIO_USE_SSL === 'true' }'' };
       }
     } else {
       testResults.minio = {
-        status: 'unavailable',
+       , status: 'unavailable',
         message: 'MinIO service not initialized' };
     }
   } catch (error) {
@@ -162,9 +162,9 @@ export const GET: RequestHandler = async ({ url }) => {
   }
   // Test Environment Variables
   testResults.environment = {
-    status: 'info',
+   , status: 'info',
     variables: {
-      DATABASE_URL: import.meta.env.DATABASE_URL ? '✅ Set' : '❌ Missing',
+     , DATABASE_URL: import.meta.env.DATABASE_URL ? '✅ Set' : '❌ Missing',
       DEV_DATABASE_URL: import.meta.env.DEV_DATABASE_URL ? '✅ Set' : '❌ Missing',
       REDIS_URL: import.meta.env.REDIS_URL ? '✅ Set' : '❌ Missing',
       MINIO_HOST: import.meta.env.MINIO_HOST ? '✅ Set' : '❌ Missing',
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async ({ url }) => {
       NODE_ENV: import.meta.env.NODE_ENV || 'undefined'
     },
     summary: {
-      database: import.meta.env.DATABASE_URL || import.meta.env.DEV_DATABASE_URL || 'Using fallback',
+     , database: import.meta.env.DATABASE_URL || import.meta.env.DEV_DATABASE_URL || 'Using fallback',
       user: import.meta.env.POSTGRES_USER || 'postgres',
       database_name: import.meta.env.POSTGRES_DB || 'legal_ai_db' }'` };'`
   const endTime = performance.now();

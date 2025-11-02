@@ -1,4 +1,4 @@
-import { Locator } from '@playwright/test';
+import { Locator } from, '@playwright/test';
 declare global {
   namespace PlaywrightTest {
     interface Matchers<R> {
@@ -9,7 +9,7 @@ declare global {
     }
   }
 }
-declare module '@playwright/test' {
+declare module, '@playwright/test' {
   // provide weaker types for expect.extend'd helpers used across tests'
   interface Matchers<R, T> {
     toHaveCountGreaterThan(n: number): Promise<R>;

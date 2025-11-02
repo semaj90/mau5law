@@ -8,16 +8,16 @@
   - Redis contextual caching
 -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import { onMount } from 'svelte';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import { onMount } from, 'svelte';
   import type {
     ContextualState,
     NextStepPrediction,
     LegalEntity,
     ConversationTurn
-  } from '$lib/types/sharedTypes';
+  } from, '$lib/types/sharedTypes';
   // Props
   interface Props {
     sessionId?: string;
@@ -41,7 +41,7 @@ import type { Document } from '$lib/types';
     totalTurns: number;
     avgConfidence: number;
     stateTransitions: number;
-    mostCommonState: string;
+   , mostCommonState: string;
   } | null>(null);
   // Derived state names
   const stateNames = {
@@ -369,10 +369,10 @@ import type { Document } from '$lib/types';
     flex-direction: column;
     height: 100%;
     max-height: 800px;
-    border: 1px solid var(--border, #e5e7eb);
+   , border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px;
     overflow: hidden;
-    background: var(--background, #ffffff);
+   , background: var(--background, #ffffff);
   }
   .demo-header {
     padding: 1rem 1.5rem;
@@ -380,7 +380,7 @@ import type { Document } from '$lib/types';
     background: var(--muted, #f9fafb);
   }
   .demo-header h2 {
-    margin: 0 0 0.5rem 0;
+    margin: 0, 0 0.5rem 0;
     font-size: 1.25rem;
     font-weight: 600;
   }
@@ -388,7 +388,7 @@ import type { Document } from '$lib/types';
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
   }
   .demo-content {
     display: grid;
@@ -398,14 +398,14 @@ import type { Document } from '$lib/types';
   }
   /* Chat Panel */
   .chat-panel {
-    display: flex;
+   , display: flex;
     flex-direction: column;
     border-right: 1px solid var(--border, #e5e7eb);
   }
   .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+   , padding: 1rem;
   }
   .message-group {
     margin-bottom: 1.5rem;
@@ -418,7 +418,7 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
   }
   .message-content {
     padding: 0.75rem 1rem;
@@ -426,24 +426,24 @@ import type { Document } from '$lib/types';
     line-height: 1.5;
   }
   .user-message .message-content {
-    background: var(--primary, #3b82f6);
+   , background: var(--primary, #3b82f6);
     color: white;
     margin-left: 2rem;
   }
   .agent-message .message-content {
-    background: var(--muted, #f9fafb);
+   , background: var(--muted, #f9fafb);
     border: 1px solid var(--border, #e5e7eb);
   }
   .message-meta {
     font-size: 0.75rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
     margin-top: 0.25rem;
     padding-left: 1rem;
   }
   .empty-state {
     text-align: center;
     padding: 3rem 2rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
   }
   .empty-state p {
     margin: 0.5rem 0;
@@ -451,7 +451,7 @@ import type { Document } from '$lib/types';
   .chat-input {
     border-top: 1px solid var(--border, #e5e7eb);
     padding: 1rem;
-    background: var(--background, #ffffff);
+   , background: var(--background, #ffffff);
   }
   .error-banner {
     padding: 0.75rem;
@@ -464,16 +464,16 @@ import type { Document } from '$lib/types';
   textarea {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid var(--border, #e5e7eb);
+   , border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px;
     resize: none;
     font-family: inherit;
     font-size: 0.875rem;
   }
   textarea:focus {
-    outline: none;
+   , outline: none;
     border-color: var(--primary, #3b82f6);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.1);
   }
   textarea:disabled {
     opacity: 0.5;
@@ -497,15 +497,15 @@ import type { Document } from '$lib/types';
   }
   button {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--border, #e5e7eb);
+   , border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px;
-    background: var(--background, #ffffff);
+   , background: var(--background, #ffffff);
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.2s;
   }
-  buttonhover:not(:disabled) {
+ , buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb);
   }
   buttondisabled {
@@ -519,7 +519,7 @@ import type { Document } from '$lib/types';
     gap: 1rem;
     padding: 1rem;
     overflow-y: auto;
-    background: var(--muted, #f9fafb);
+   , background: var(--muted, #f9fafb);
   }
   .state-card,
   .predictions-card,
@@ -528,13 +528,13 @@ import type { Document } from '$lib/types';
     background: var(--background, #ffffff);
     border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px;
-    padding: 1rem;
+   , padding: 1rem;
   }
   .state-card h3,
   .predictions-card h3,
   .entities-card h3,
   .stats-card h3 {
-    margin: 0 0 1rem 0;
+    margin: 0, 0 1rem 0;
     font-size: 1rem;
     font-weight: 600;
   }
@@ -544,12 +544,12 @@ import type { Document } from '$lib/types';
   .state-name {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary, #3b82f6);
+   , color: var(--primary, #3b82f6);
     margin-bottom: 0.5rem;
   }
   .state-confidence {
     font-size: 0.875rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
     margin-bottom: 1rem;
   }
   .state-history {
@@ -566,13 +566,13 @@ import type { Document } from '$lib/types';
   }
   .history-state {
     padding: 0.25rem 0.5rem;
-    background: var(--muted, #f9fafb);
+   , background: var(--muted, #f9fafb);
     border-radius: 4px;
     font-size: 0.75rem;
   }
   .no-data {
     text-align: center;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
     font-size: 0.875rem;
     margin: 1rem 0;
   }
@@ -592,17 +592,17 @@ import type { Document } from '$lib/types';
   }
   .prediction-confidence {
     font-size: 0.75rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
   }
   .prediction-bar {
     height: 4px;
-    background: var(--muted, #f9fafb);
+   , background: var(--muted, #f9fafb);
     border-radius: 2px;
     overflow: hidden;
   }
   .prediction-fill {
     height: 100%;
-    background: var(--primary, #3b82f6);
+   , background: var(--primary, #3b82f6);
     transition: width: 0.3s ease;
   }
   .entities-list {
@@ -615,13 +615,13 @@ import type { Document } from '$lib/types';
     justify-content: space-betweennn;
     align-items: center;
     padding: 0.5rem;
-    background: var(--muted, #f9fafb);
+   , background: var(--muted, #f9fafb);
     border-radius: 4px;
     font-size: 0.875rem;
   }
   .entity-type {
     font-weight: 600;
-    color: var(--primary, #3b82f6);
+   , color: var(--primary, #3b82f6);
   }
   .entity-value {
     color: var(--foreground, #111827);
@@ -636,12 +636,12 @@ import type { Document } from '$lib/types';
   }
   .stat-label {
     font-size: 0.75rem;
-    color: var(--muted-foreground, #6b7280);
+   , color: var(--muted-foreground, #6b7280);
     margin-bottom: 0.25rem;
   }
   .stat-value {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--foreground, #111827);
+   , color: var(--foreground, #111827);
   }
 </style>

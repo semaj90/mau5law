@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types.js';
-import { error } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { error } from, '@sveltejs/kit';
 // Environment variable for Go GPU server URL (updated to use new inference endpoint)
 const GO_GPU_SERVER_URL = process.env.GO_GPU_SERVER_URL || 'http://localhost:8080/api/v1/inference';
 // Streaming proxy to Go GPU server
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     // Get the request body (expecting JSON for inference endpoint)
     const body = await request.json();
@@ -15,13 +15,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const shortPrompt = body.prompt.length > 100 ? body.prompt.substring(0, 100) + '...' : body.prompt;
     console.log('Request prompt:', shortPrompt);
 
-    // Normalize model and temperature without overwriting valid 0 values
+    // Normalize model and temperature without overwriting valid, 0 values
     const model = typeof body.model === 'string' && body.model.trim() ? body.model : 'legal:latest';
     const temperature = typeof body.temperature === 'number' ? body.temperature : 0.1;
 
     // Create inference request for the Go GPU server
     const inferenceRequest = {
-      prompt: body.prompt,
+     , prompt: body.prompt,
       model,
       max_tokens: body.max_tokens || 512,
       temperature,

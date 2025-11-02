@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types.js';
-import { minioService } from '$lib/server/storage/minio-service';
+import type { RequestHandler } from, './$types.js';
+import { minioService } from, '$lib/server/storage/minio-service';
 /**
  * MinIO File Download API
  * GET: Download file by bucket and filename
- * Query parameters: bucket, file
+ * Query, parameters: bucket, file
  */
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -51,13 +51,13 @@ export const GET: RequestHandler = async ({ url }) => {
     const headers = new Headers();
     headers.set('Content-Type', fileData.contentType || 'application/octet-stream');
     headers.set('Content-Disposition', `attachment; filename="${fileData.originalName || fileName}"`);
-    headers.set('Cache-Control', 'private, max-age=3600'); // Cache for 1 hour
+    headers.set('Cache-Control', 'private, max-age=3600'); // Cache for, 1 hour
 
     // Convert buffer/ArrayBuffer-like to BodyInit (Blob/Uint8Array/string)
     // Safely access the raw buffer (unknown shape)
     const rawBuffer = (fileData as { buffer?: any }).buffer;
 
-    // Helper: convert unknown raw into BodyInit safely
+    // Helper: convert: unknown raw into BodyInit safely
     const toBodyInit = (raw: any): BodyInit => {
       if (raw == null) {
         return new Uint8Array();
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const view = raw as ArrayBufferView & {
           buffer: ArrayBufferLike;
           byteOffset?: number;
-          byteLength: number;
+         , byteLength: number;
         };
         const src = new Uint8Array(view.buffer, view.byteOffset ?? 0, view.byteLength);
         const copy = new Uint8Array(src.byteLength);
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else if (body instanceof ArrayBuffer) {
       contentLength = body.byteLength;
     } else {
-      // leave undefined if we can't determine'
+      // leave: undefined if we can't determine'
       contentLength = undefined;
     }
 

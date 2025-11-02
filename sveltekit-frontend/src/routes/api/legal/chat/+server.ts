@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Legal AI Chat API - Context7 Enhanced with Gemma3 Legal
-import { db } from '$lib/server/db/index';
+import { db } from, '$lib/server/db/index';
 
 // Add schema / query helper imports (adjust path if your project exports them elsewhere)
-import { legalAnalysisSessions, legalDocuments, legalPrecedents, eq, like, and, desc } from '$lib/server/db/schema';
+import { legalAnalysisSessions, legalDocuments, legalPrecedents, eq, like, and, desc } from, '$lib/server/db/schema';
 
 // Replace loose types with strict ones
 type DBCondition = unknown;
@@ -35,17 +35,17 @@ interface Source {
   relevanceScore?: number;
   [k: string]: any;
 }
-interface AnalysisResult { analysis: string;, confidence: number;
+interface AnalysisResult {, analysis: string;, confidence: number;
   recommendations: string[];
   [k: string]: any;
 }
-export interface LegalChatResponse { sessionId: string;, analysis: string;
+export interface LegalChatResponse {, sessionId: string;, analysis: string;
   confidence: number;
   sources: Source[];
   recommendations: string[];
   processingTime: number;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     // cast body first then destructure (TS does not allow type annotation directly on destructuring)
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       analysisResult: analysisResult.analysis,
       confidenceLevel: String(analysisResult.confidence),
       sourcesUsed: relevantSources.map(source => ({
-        type: source.type,
+       , type: source.type,
         id: source.id,
         title: source.title || source.caseTitle || source.citation,
         relevance: source.relevanceScore ?? 0.85
@@ -79,18 +79,18 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     const [session] = await db.insert(legalAnalysisSessions).values(sessionInsert).returning();
     const response: LegalChatResponse = {
-      sessionId: ((session as Record<string, unknown>)?.['id'] as string) || '',
+     , sessionId: ((session as Record<string, unknown>)?.['id'] as: string) || '',
       analysis: analysisResult.analysis,
       confidence: analysisResult.confidence,
       sources: relevantSources.map(source => ({
-        type: source.type,
+       , type: source.type,
         id: source.id,
         title: source.title || source.caseTitle || source.citation,
         relevance: source.relevanceScore ?? 0.85,
         excerpt: source.summary ?? (source.content ? String(source.content).substring(0, 200) + '...' : '')
       })),
       recommendations: analysisResult.recommendations,
-      processingTime: ((session as Record<string, unknown>)?.['processingTime'] as number) ?? Date.now() - startTime
+      processingTime: ((session as Record<string, unknown>)?.['processingTime'] as: number) ?? Date.now() - startTime
     };
     return json(response);
   } catch (error: any) {
@@ -135,14 +135,14 @@ async function findRelevantLegalSources(prompt: string, caseId?: string): Promis
           : like(legalDocuments.content, `%${prompt}%`)
       )
       .limit(5);
-    sources.push(...(documents as unknown as Source[]).map(doc => ({ ...doc, type: 'document' })));'`'`
+    sources.push(...(documents as: unknown as Source[]).map(doc => ({ ...doc, type: 'document' })));'`'`
     // Search legal precedents (vector similarity would be ideal here)
     const precedents = await db
       .select()
       .from(legalPrecedents)
       .where(like(legalPrecedents.summary, `%${prompt}%`))
       .limit(3);
-    sources.push(...(precedents as unknown as Source[]).map(prec => ({ ...prec, type: 'precedent' })));'' } catch (error: any) {
+    sources.push(...(precedents as: unknown as Source[]).map(prec => ({ ...prec, type: 'precedent' })));'' } catch (error: any) {
     console.warn('Error searching legal sources:', error);
   }
   return sources;
@@ -153,7 +153,7 @@ async function generateLegalAnalysis(prompt: string, sources: Source[], context?
     // Construct analysis prompt with legal context
     const legalPrompt = `
 As a legal AI assistant specialized in prosecutor case analysis, analyze the following:; QUERY: ${prompt}
-RELEVANT SOURCES:
+RELEVANT, SOURCES:
 ${sources
   .map(
     source => `
@@ -173,7 +173,7 @@ Format your response as structured JSON.
 `;`
     // In a real implementation, call the Gemma3 Legal model via Ollama
     const analysisResult: AnalysisResult = {
-      analysis: `Based on the legal query and available sources, the analysis indicates several key considerations for the prosecution. The relevant precedents and documents suggest a strong foundation for the case, with particular attention needed to evidence handling and procedural requirements.`
+     , analysis: `Based on the legal query and available sources, the analysis indicates several key considerations for the prosecution. The relevant precedents and documents suggest a strong foundation for the case, with particular attention needed to evidence handling and procedural requirements.`
 Key legal principles identified:
 - Chain of custody requirements must be strictly maintained
 - All evidence must meet admissibility standards under current jurisdiction

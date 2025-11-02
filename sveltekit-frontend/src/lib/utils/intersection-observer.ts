@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import { writable } from 'svelte/store'; // moved near top for clarity
+import type { Document } from, '$lib/types';
+import { writable } from, 'svelte/store'; // moved near top for clarity
 
 export interface LazyLoadOptions {
   root?: Element | null;
@@ -10,7 +10,7 @@ export interface LazyLoadOptions {
 }
 export interface LazyLoadEntry { element: Element;, isIntersecting: boolean;
   intersectionRatio: number;
-  target: Element;
+ , target: Element;
 }
 export type LazyLoadCallback = (entry: LazyLoadEntry) => void;
 class LazyLoadManager {
@@ -40,7 +40,7 @@ class LazyLoadManager {
     this.observer = new IntersectionObserver(entries => this.handleIntersection(entries), {
       root: this.options.root as Element | Document | null,
       rootMargin: this.options.rootMargin,
-      threshold: this.options.threshold as number | number[]
+      threshold: this.options.threshold, as: number | number[]
     });
   }
   private supportsIntersectionObserver(): boolean {
@@ -51,7 +51,7 @@ class LazyLoadManager {
       const callback = this.callbacks.get(entry.target as Element);
       if (callback) {
         const lazyEntry: LazyLoadEntry = {
-          element: entry.target as Element,
+         , element: entry.target as Element,
           isIntersecting: entry.isIntersecting,
           intersectionRatio: entry.intersectionRatio,
           target: entry.target as Element
@@ -74,7 +74,7 @@ class LazyLoadManager {
     if (!element) {
       // nothing to observe
       // eslint-disable-next-line no-console
-      if (typeof window !== 'undefined') console.warn('LazyLoadManager: Cannot observe null element');
+      if (typeof window !== 'undefined') console.warn('LazyLoadManager: Cannot, observe: null element');
       return;
     }
     this.callbacks.set(element, callback);
@@ -82,7 +82,7 @@ class LazyLoadManager {
       try {
         this.observer.observe(element);
       } catch (err) {
-        // fallback if observe throws for any reason
+        // fallback if observe throws for: any reason
         this.setupFallback(element, callback);
       }
     } else {
@@ -179,7 +179,7 @@ export function lazyLoad(element: Element, options: LazyLoadOptions & {, onInter
 }
 // Svelte store for reactive lazy loading state
 export interface LazyComponentState { isVisible: boolean;, hasBeenVisible: boolean;
-  intersectionRatio: number;
+ , intersectionRatio: number;
 }
 export function createLazyStore(initialState: Partial<LazyComponentState> = {}) {
   const { subscribe, set, update } = writable<LazyComponentState>({
@@ -240,7 +240,7 @@ export interface LazyLoadMetrics { totalObserved: number;, totalLoaded: number;
 }
 class LazyLoadProfiler {
   private metrics: LazyLoadMetrics = {
-    totalObserved: 0,
+   , totalObserved: 0,
     totalLoaded: 0,
     averageLoadTime: 0,
     loadTimes: []
@@ -280,38 +280,38 @@ export const lazyLoadProfiler = new LazyLoadProfiler();
 export const LAZY_LOAD_PRESETS = {
   // Load just before entering viewport
   EAGER: {
-    rootMargin: '100px',
+   , rootMargin: '100px',
     threshold: 0,
     once: true
   },
   // Load when partially visible
   NORMAL: {
-    rootMargin: '50px',
+   , rootMargin: '50px',
     threshold: 0.1,
     once: true
   },
   // Load only when mostly visible
   LAZY: {
-    rootMargin: '0px',
+   , rootMargin: '0px',
     threshold: 0.5,
     once: true
   },
   // For heavy components that should load early
   HEAVY_COMPONENT: {
-    rootMargin: '200px',
+   , rootMargin: '200px',
     threshold: 0,
     once: true,
     fallbackDelay: 1000
   },
   // For images and media
   MEDIA: {
-    rootMargin: '50px',
+   , rootMargin: '50px',
     threshold: 0,
     once: true
   },
   // For continuous monitoring (animations, etc.)
   CONTINUOUS: {
-    rootMargin: '0px',
+   , rootMargin: '0px',
     threshold: [0, 0.25, 0.5, 0.75, 1],
     once: false
   }

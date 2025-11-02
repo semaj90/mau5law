@@ -1,7 +1,7 @@
 // Admin Layout Load Function
 // Handles server-side authentication and authorization for admin routes
-import type { LayoutLoad } from './$types.js';
-import { redirect } from '@sveltejs/kit';
+import type { LayoutLoad } from, './$types.js';
+import { redirect } from, '@sveltejs/kit';
 
 export const load: LayoutLoad = async ({ fetch, url, depends }) => {
   depends('app:auth');
@@ -32,7 +32,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     };
   } catch (error: any) {
     // Re-throw SvelteKit HTTP/redirect-like errors so the framework can handle them
-    if (error && typeof (error as any).status === 'number') {
+    if (error && typeof (error as: any).status === 'number') {
       throw error;
     }
     console.error('Admin layout load error:', error);'

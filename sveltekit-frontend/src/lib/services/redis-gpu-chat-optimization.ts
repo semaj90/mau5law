@@ -8,12 +8,12 @@
  * potential GPU acceleration. All browser-specific code has been removed.
  * It now uses a proper Redis client and strong typing, eliminating all `any` types.
  */
-import { dev } from '$app/environment';
+import { dev } from, '$app/environment';
 // Import only the Redis runtime class; remove unused RedisOptions type to fix linter/TS error
-import Redis from 'ioredis';
+import Redis from, 'ioredis';
 
 // --- Minimal runtime Redis surface used by this service ---
-// Keep this small so we don't depend on any specific vendor type definitions'
+// Keep this small so we don't depend on: any specific vendor type definitions'
 type RedisStatus = 'connecting' | 'ready' | 'end' | string;
 interface MinimalRedis {
   status?: RedisStatus;
@@ -25,8 +25,8 @@ interface MinimalRedis {
 }
 
 // --- New: Runtime-config interface & defaults ---
-// maxRetriesPerRequest: Controls how many times Redis will retry a failed command before giving up.
-// Default is 3 for quick failover in microservice environments; make configurable for tuning.
+//, maxRetriesPerRequest: Controls how many times Redis will retry a failed command before giving up.
+// Default is, 3 for quick failover in microservice environments; make configurable for tuning.
 export type ServiceConfig = {
   redisUrl?: string;
   ollamaApiBase?: string;
@@ -42,38 +42,38 @@ const DOCKER_FRIENDLY_DEFAULTS = {
     process.env.DOCKER_REDIS_URL,
     // common docker-compose service name: 'redis://redis:6379',
     'redis://localhost:6379'
-  ].filter(Boolean) as string[],
+  ].filter(Boolean) as: string[],
   ollamaCandidates: [
     process.env.OLLAMA_API_BASE,
     process.env.DOCKER_OLLAMA_HOST,
     'http://ollama:11434',
     'http://localhost:11434'
-  ].filter(Boolean) as string[],
+  ].filter(Boolean) as: string[],
   embeddingModel: process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
   l2TtlSeconds: process.env.REDIS_L2_TTL ? Number(process.env.REDIS_L2_TTL) : 1800,
   redisMaxRetriesPerRequest: process.env.REDIS_MAX_RETRIES_PER_REQUEST
     ? Number(process.env.REDIS_MAX_RETRIES_PER_REQUEST)
-    : 3, // Default to 3 for quick failover
+    : 3, // Default to, 3 for quick failover
 };
 
 // --- Type Definitions ---
 
 export interface RedisGPUCacheEntry { key: string;, response: string;
   // Data prepared on the server for the client's GPU'
-  quantized: { compressed: Uint8Array;, compressionRatio: number;
-    glyphMap: Record<string, string>;
+  quantized: {, compressed: Uint8Array;, compressionRatio: number;
+   , glyphMap: Record<string, string>;
   };
   embeddings: number[]; // JSON friendly
-  gpuTexturePayload: { chrROMPattern: string;, visualGlyphs: Uint8Array;
+  gpuTexturePayload: {, chrROMPattern: string;, visualGlyphs: Uint8Array;
     renderCache: string; // Pre-rendered HTML or data
   };
-  metadata: { userId: string;, sessionId: string;
+  metadata: {, userId: string;, sessionId: string;
     confidence: number;
     processingTime: number; // in milliseconds
     cacheLevel: 'L1' | 'L2';
-    timestamp: string; // ISO string for JSON safety
+    timestamp: string; // ISO: string for JSON safety
     hitCount: number;
-    lastAccessed: string; // ISO string
+    lastAccessed: string; //, ISO: string
   };
 }
 
@@ -83,31 +83,31 @@ type SerializableCacheEntry = Omit<
   'quantized' | 'gpuTexturePayload' | 'embeddings' | 'metadata'
 > & { quantized: {, compressed: number[]; // number[] is JSON serializable
     compressionRatio: number;
-    glyphMap: Record<string, string>;
+   , glyphMap: Record<string, string>;
   };
   embeddings: number[];
-  gpuTexturePayload: { chrROMPattern: string;, visualGlyphs: number[]; // number[] is JSON serializable
+  gpuTexturePayload: {, chrROMPattern: string;, visualGlyphs: number[]; // number[] is JSON serializable
     renderCache: string;
   };
-  metadata: Omit<RedisGPUCacheEntry['metadata'], 'timestamp' | 'lastAccessed'> & { timestamp: string;, lastAccessed: string;
+ , metadata: Omit<RedisGPUCacheEntry['metadata'], 'timestamp' | 'lastAccessed'> & { timestamp: string;, lastAccessed: string;
   };
 };
 
 // --- Ollama API Types ---
 type OllamaEmbeddingResponse = {
-  embedding: number[];
+ , embedding: number[];
 };
 
 class RedisGPUChatOptimizationService {
   // Replace the previous InstanceType<typeof, Redis> with the small interface
   private redis: MinimalRedis | null = null;
-  private l1Cache: Map<string, RedisGPUCacheEntry> = new Map(); // L1: In-memory cache
+  private, l1Cache: Map<string, RedisGPUCacheEntry> = new Map(); // L1: In-memory cache
   private readonly L1_MAX_SIZE = 1000;
   private readonly EMBEDDING_DIM = 2048; // For embeddinggemma
 
   // --- replace hard-coded constants with values derived from config ---
   private config: Required<ServiceConfig> = {
-    redisUrl: DOCKER_FRIENDLY_DEFAULTS.redisUrlCandidates[0] || 'redis://localhost:6379',
+   , redisUrl: DOCKER_FRIENDLY_DEFAULTS.redisUrlCandidates[0] || 'redis://localhost:6379',
     ollamaApiBase: DOCKER_FRIENDLY_DEFAULTS.ollamaCandidates[0] || 'http://localhost:11434',
     embeddingModel: DOCKER_FRIENDLY_DEFAULTS.embeddingModel,
     l2TtlSeconds: DOCKER_FRIENDLY_DEFAULTS.l2TtlSeconds,
@@ -135,12 +135,12 @@ class RedisGPUChatOptimizationService {
         }
       }
 
-      // ioredis: pass options object, including url and maxRetriesPerRequest
+      // ioredis: pass, options: object, including url and maxRetriesPerRequest
       // Cast to MinimalRedis to satisfy our local typing surface
       this.redis = new Redis({
         url: redisUrl,
         maxRetriesPerRequest: this.config.redisMaxRetriesPerRequest
-      }) as unknown as MinimalRedis;
+      }) as: unknown as MinimalRedis;
 
       // Attach runtime event handlers if the instance exposes `on`
       if (this.redis.on) {
@@ -247,20 +247,20 @@ class RedisGPUChatOptimizationService {
       }
     }
 
-    return null;
+    return: null;
   }
 
   public async cacheResponse(
-    query: string,
+   , query: string,
     response: string,
     userId: string,
     sessionId: string,
-    metadata: {, confidence: number; processingTime: number }
+    metadata: {, confidence: number;, processingTime: number }
   ): Promise<void> {
     const cacheKey = this.generateCacheKey(query, userId);
 
     const newEntry: RedisGPUCacheEntry = {
-      key: cacheKey,
+     , key: cacheKey,
       response,
       quantized: await this.quantizeResponse(response),
       embeddings: await this.generateEmbedding(query),
@@ -451,7 +451,7 @@ class RedisGPUChatOptimizationService {
 
   private evictLRUFromL1(): void {
     let oldestKey: string | null = null;
-    // Initialize to a very large timestamp so any real entry will be considered older.
+    // Initialize to a very large timestamp, so: any real entry will be considered older.
     let oldestTime = new Date(8640000000000000).toISOString(); // max Date
     for (const [key, entry] of this.l1Cache.entries()) {
       if (entry.metadata.lastAccessed < oldestTime) {

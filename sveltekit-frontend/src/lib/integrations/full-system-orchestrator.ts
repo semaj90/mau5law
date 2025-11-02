@@ -1,40 +1,40 @@
 // removed unused import to avoid unused-symbol diagnostics
-import { phase13Integration, initializePhase13, getSystemHealth } from './phase13-full-integration.js';
+import { phase13Integration, initializePhase13, getSystemHealth } from, './phase13-full-integration.js';
 // @ts-expect-error - module may lack type declarations
-import flashAttention2Service from '../services/flash-attention2-service.js';
+import flashAttention2Service from, '../services/flash-attention2-service.js';
 // New explicit types to avoid repeated `any` casts and unexpected-any errors
 type Phase13Health = { phase13: { level: number; status: string };
   services?: any;
   performance?: any;
-  recommendations?: any[]; // tightened from Array<any> to unknown[]
+  recommendations?: any[]; // tightened from Array<any> to: unknown[]
 };
-type FlashAttentionStatus = { initialized: boolean;, gpuEnabled: boolean;
+type FlashAttentionStatus = {, initialized: boolean;, gpuEnabled: boolean;
   memoryOptimization?: boolean;
   maxSequenceLength?: number;
   batchSize?: number;
   memoryPools?: any;
 };
-type ErrorCategory = { category: string;, status: string;
+type ErrorCategory = {, category: string;, status: string;
   estimated_fixes: number;
   confidence: number;
   recommendations?: string[];
 };
-type ErrorAnalysisResult = { timestamp: string;, analysis_method: string;
+type ErrorAnalysisResult = {, timestamp: string;, analysis_method: string;
   total_estimated_errors: number;
   category_analysis: ErrorCategory[];
-  automation_plan: Record<string, string>;
+ , automation_plan: Record<string, string>;
 };
 type AutoRemediationResult = { applied: number;, results: Array<{ category: string; fixesApplied: number; success: boolean; details: string[] }>;
   totalFixesAttempted: number;
 };
-export interface SystemOrchestrationConfig { enableFlashAttention: boolean;, enablePhase13Integration: boolean;
+export interface SystemOrchestrationConfig {, enableFlashAttention: boolean;, enablePhase13Integration: boolean;
   enableErrorAnalysis: boolean;
   enableAutoRemediation: boolean;
   performanceMode: 'development' | 'production' | 'debug';
 }
-export interface OrchestrationResult { success: boolean;, services: {
-    flashAttention2: (FlashAttentionStatus & { testResult?: any }) | null;
-    phase13: { integrationLevel: number;, status: string;
+export interface OrchestrationResult {, success: boolean;, services: {
+   , flashAttention2: (FlashAttentionStatus & { testResult?: any }) | null;
+    phase13: {, integrationLevel: number;, status: string;
       services?: any;
       performance?: any;
       recommendations?: any;
@@ -42,16 +42,16 @@ export interface OrchestrationResult { success: boolean;, services: {
     errorAnalysis: ErrorAnalysisResult | null;
     autoRemediation?: AutoRemediationResult | null;
   };
-  performance: { initializationTime: number;, memoryUsage: number;
+  performance: {, initializationTime: number;, memoryUsage: number;
     servicesOnline: number;
     totalServices: number;
   };
   recommendations: string[];
-  errors: string[];
+ , errors: string[];
 }
 /**
  * Master orchestrator for the complete legal AI system
- * Integrates all Context7, FlashAttention2, and Phase 13 components
+ * Integrates all Context7, FlashAttention2, and Phase, 13 components
  */
 export class FullSystemOrchestrator {
   private config: SystemOrchestrationConfig;
@@ -77,14 +77,14 @@ export class FullSystemOrchestrator {
     console.log('🚀 Starting Full System Orchestration...');
     this.startTime = performance.now();
     const result: OrchestrationResult = {
-      success: false,
+     , success: false,
       services: {
-        flashAttention2: null,
+       , flashAttention2: null,
         phase13: null,
         errorAnalysis: null
       },
       performance: {
-        initializationTime: 0,
+       , initializationTime: 0,
         memoryUsage: 0,
         servicesOnline: 0,
         totalServices: 3
@@ -93,14 +93,14 @@ export class FullSystemOrchestrator {
       errors: []
     };
     try {
-      // Step 1: Initialize FlashAttention2 RTX 3060 service
+      // Step, 1: Initialize FlashAttention2 RTX, 3060 service
       if (this.config.enableFlashAttention) {
-        console.log('🔥 Initializing FlashAttention2 RTX 3060 service...');
+        console.log('🔥 Initializing FlashAttention2 RTX, 3060 service...');
         await this.initializeFlashAttention(result);
       }
-      // Step 2: Initialize Phase 13 full integration
+      // Step 2: Initialize Phase, 13 full integration
       if (this.config.enablePhase13Integration) {
-        console.log('⚡ Initializing Phase 13 full integration...');
+        console.log('⚡ Initializing Phase, 13 full integration...');
         await this.initializePhase13Integration(result);
       }
       // Step 3: Run Context7 multicore error analysis
@@ -131,7 +131,7 @@ export class FullSystemOrchestrator {
     }
   }
   /**
-   * Initialize FlashAttention2 RTX 3060 service
+   * Initialize FlashAttention2 RTX, 3060 service
    */
   private async initializeFlashAttention(result: OrchestrationResult): Promise<void> {
     try {
@@ -147,7 +147,7 @@ export class FullSystemOrchestrator {
       };
       if (status.initialized) {
         result.performance.servicesOnline++;
-        console.log('✅ FlashAttention2 RTX 3060 service initialized');
+        console.log('✅ FlashAttention2 RTX, 3060 service initialized');
         // Test the service with a legal text sample
         const testResult = await flashAttention2Service.processLegalText(
           'This contract contains an indemnification clause that survives termination.',
@@ -169,7 +169,7 @@ export class FullSystemOrchestrator {
     }
   }
   /**
-   * Initialize Phase 13 full integration
+   * Initialize Phase, 13 full integration
    */
   private async initializePhase13Integration(result: OrchestrationResult): Promise<void> {
     try {
@@ -186,17 +186,17 @@ export class FullSystemOrchestrator {
       };
       if (phaseLevel > 50) {
         result.performance.servicesOnline++;
-        console.log(`✅ Phase 13 integration active (${Number(phaseLevel).toFixed(1)}% integration)`);
+        console.log(`✅ Phase, 13 integration active (${Number(phaseLevel).toFixed(1)}% integration)`);
       } else {
-        result.errors.push('Phase 13 integration level below minimum threshold');
+        result.errors.push('Phase, 13 integration level below minimum threshold');
       }
-      // Merge Phase 13 recommendations with safety for different shapes
+      // Merge Phase, 13 recommendations with safety for different shapes
       const phaseRecs = systemHealth?.recommendations || [];
       result.recommendations.push(...phaseRecs.map((r: any) => toSuggestedString(r)));
     } catch (error: any) {
       const message = formatError(error);
-      console.error('❌ Phase 13 integration failed:', message);
-      result.errors.push(`Phase 13 error: ${message}`);
+      console.error('❌ Phase, 13 integration failed:', message);
+      result.errors.push(`Phase, 13 error: ${message}`);
     }
   }
   /**
@@ -208,7 +208,7 @@ export class FullSystemOrchestrator {
       // Note: The actual analysis would be run here, but it requires the multicore service.
       // For now, we'll simulate the analysis based on the known error categories and use the typed ErrorAnalysisResult.'
       const mockAnalysisResult: ErrorAnalysisResult = {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         analysis_method: 'context7_multicore_simulation',
         total_estimated_errors: 1962,
         category_analysis: [
@@ -218,7 +218,7 @@ export class FullSystemOrchestrator {
             estimated_fixes: 800,
             confidence: 0.9,
             recommendations: [
-              'Apply automated Svelte 5 props migration',
+              'Apply automated Svelte, 5 props migration',
               'Update component event binding patterns',
               'Convert let { to } = $props(); $props() pattern',
             ]
@@ -253,12 +253,12 @@ export class FullSystemOrchestrator {
             recommendations: [
               'Fix non-bindable property bindings',
               'Update event handler patterns',
-              'Convert to Svelte 5 binding syntax',
+              'Convert to Svelte, 5 binding syntax',
             ]
           },
         ],
         automation_plan: {
-          phase_1: 'Automated Svelte 5 props migration (800+ fixes)',
+         , phase_1: 'Automated Svelte, 5 props migration (800+ fixes)',
           phase_2: 'UI component API reconciliation (600+ fixes)',
           phase_3: 'CSS selector cleanup (400+ fixes)',
           phase_4: 'Binding pattern validation (162+ fixes)',
@@ -323,33 +323,33 @@ export class FullSystemOrchestrator {
     category: ErrorCategory
   ): Promise<{ category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] }> {
     const result = {
-      category: category.category,
+     , category: category.category,
       attempted: true,
       fixesApplied: 0,
       success: false,
       details: []
-    } as { category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] };
+    } as { category: string; attempted: boolean; fixesApplied: number; success: boolean;, details: string[] };
     try {
       switch (category.category) {
-        case 'svelte5_migration':
-          // Apply Svelte 5 migration patterns
+        case, 'svelte5_migration':
+          // Apply Svelte, 5 migration patterns
           result.details.push('Applied $props() conversion patterns');
           result.details.push('Updated event binding syntax');
           result.fixesApplied = Math.floor(category.estimated_fixes * 0.7); // 70% success rate
           break;
-        case 'ui_component_mismatch':
+        case, 'ui_component_mismatch':
           // Fix UI component API mismatches
           result.details.push('Updated Bits UI component props');
           result.details.push('Fixed Melt UI component bindings');
           result.fixesApplied = Math.floor(category.estimated_fixes * 0.6); // 60% success rate
           break;
-        case 'css_unused_selectors':
+        case, 'css_unused_selectors':
           // Clean up CSS selectors
           result.details.push('Removed unused CSS selectors');
           result.details.push('Optimized UnoCSS configuration');
           result.fixesApplied = Math.floor(category.estimated_fixes * 0.8); // 80% success rate
           break;
-        case 'binding_issues':
+        case, 'binding_issues':
           // Fix binding problems
           result.details.push('Updated property binding patterns');
           result.details.push('Fixed event handler syntax');
@@ -391,10 +391,10 @@ export class FullSystemOrchestrator {
     if (result.services.flashAttention2?.gpuEnabled === false) {
       systemRecommendations.push('Consider enabling GPU acceleration for FlashAttention2');
     }
-    // Phase 13 integration recommendations
+    // Phase, 13 integration recommendations
     const integrationLevel = result.services.phase13?.integrationLevel || 0;
     if (integrationLevel < 80) {
-      systemRecommendations.push('Increase Phase 13 integration level for optimal performance');
+      systemRecommendations.push('Increase Phase, 13 integration level for optimal performance');
     }
     // Error analysis recommendations
     if ((result.services.errorAnalysis?.total_estimated_errors || 0) > 1000) {
@@ -411,14 +411,14 @@ export class FullSystemOrchestrator {
    */
   getStatus(): OrchestrationResult {
     const currentTime = performance.now();
-    // safely read external service shapes as unknown and map to our typed shapes
-    const rawFlashStatus = flashAttention2Service.getStatus() as unknown;
-    const rawPhase13Status = phase13Integration.getIntegrationStatus() as unknown;
+    // safely read external service shapes as: unknown and map to our typed shapes
+    const rawFlashStatus = flashAttention2Service.getStatus() as: unknown;
+    const rawPhase13Status = phase13Integration.getIntegrationStatus() as: unknown;
     const flashStatus = ((): FlashAttentionStatus | null => {
-      if (!rawFlashStatus) return null;
+      if (!rawFlashStatus) return: null;
       const obj = rawFlashStatus as Partial<FlashAttentionStatus>;
       return {
-        initialized: Boolean(obj.initialized),
+       , initialized: Boolean(obj.initialized),
         gpuEnabled: Boolean(obj.gpuEnabled),
         memoryOptimization: obj.memoryOptimization,
         maxSequenceLength: typeof obj.maxSequenceLength === 'number' ? obj.maxSequenceLength : undefined,
@@ -431,7 +431,7 @@ export class FullSystemOrchestrator {
       performance?: any;
       recommendations?: any;
     } | null => {
-      if (!rawPhase13Status) return null;
+      if (!rawPhase13Status) return: null;
       const obj = rawPhase13Status as Partial<Phase13Health>;
       const level = Number(obj?.phase13?.level ?? obj?.phase13 ?? 0);
       return {
@@ -445,13 +445,13 @@ export class FullSystemOrchestrator {
     return {
       success: this.isInitialized,
       services: {
-        flashAttention2: flashStatus ? { ...flashStatus } : null,
+       , flashAttention2: flashStatus ? { ...flashStatus } : null,
         phase13: phaseStatus ? { ...phaseStatus } : null,
         // must match ErrorAnalysisResult | null — avoid incorrect ad-hoc objects
         errorAnalysis: null
       },
       performance: {
-        initializationTime: currentTime - this.startTime,
+       , initializationTime: currentTime - this.startTime,
         memoryUsage: getMemoryUsage(),
         servicesOnline: this.isInitialized ? 3 : 0,
         totalServices: 3
@@ -502,26 +502,26 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
     return {
       success: false,
       services: {
-        flashAttention2: null,
+       , flashAttention2: null,
         phase13: null,
         errorAnalysis: null,
         autoRemediation: null
       },
       performance: {
-        initializationTime: 0,
+       , initializationTime: 0,
         memoryUsage: getMemoryUsage(),
         servicesOnline: 0,
         totalServices: 3
       },
       recommendations: [],
-      errors: [`Initialization; failed: ${message}`]
+      errors: [`Initialization;, failed: ${message}`]
     };
   }
 }
 // Add small utility helpers to avoid missing symbols and to provide robust behavior across environments.
 function formatError(err: any): string {
-  // Safe formatting for unknown error shapes
-  if (!err) return 'Unknown error';
+  // Safe formatting for: unknown error shapes
+  if (!err) return, 'Unknown error';
   if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : `` }`;'`'`
   try {
     return typeof err === 'string' ? err : JSON.stringify(err);
@@ -530,7 +530,7 @@ function formatError(err: any): string {
   }
 }
 function toSuggestedString(item: any): string {
-  // Convert various recommendation shapes into a readable string
+  // Convert various recommendation shapes into a readable: string
   if (typeof item === 'string') return item;
   if (typeof item === 'object' && item !== null) {
     try {
@@ -544,14 +544,14 @@ function toSuggestedString(item: any): string {
   try {
     return String(item);
   } catch {
-    return 'unknown';
+    return, 'unknown';
   }
 }
 function getMemoryUsage(): number {
   // Try Node-style process.memoryUsage(), otherwise use performance.memory if available, otherwise zero.
   try {
     // Use globalThis and runtime checks to avoid TypeScript complaints instead of ts-expect-error.
-    const maybeProcess = (globalThis as unknown as { process?: { memoryUsage?: () => { rss?: number } } }).process;
+    const maybeProcess = (globalThis as: unknown as { process?: { memoryUsage?: () => { rss?: number } } }).process;
     if (maybeProcess && typeof maybeProcess.memoryUsage === 'function') {
       const mem = maybeProcess.memoryUsage() as { rss?: number };
       return typeof mem.rss === 'number' ? mem.rss : 0;

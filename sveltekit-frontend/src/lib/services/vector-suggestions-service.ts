@@ -1,15 +1,15 @@
-import { db } from '$lib/server/db/index.js';
-import { chatRecommendations, cases, evidence } from '$lib/server/db/schema-unified.js';
-import { eq } from 'drizzle-orm';
+import { db } from, '$lib/server/db/index.js';
+import { chatRecommendations, cases, evidence } from, '$lib/server/db/schema-unified.js';
+import { eq } from, 'drizzle-orm';
 import {
   searchSimilarMessages,
   searchSimilarEvidence,
   searchAcrossAllVectors,
   type VectorSearchResult
-} from '$lib/server/db/pgvector-utils.js';
+} from, '$lib/server/db/pgvector-utils.js';
 
 export interface GraphNode { id: string;, type: 'case' | 'evidence' | 'precedent' | 'person';
-  properties: Record<string, string>;
+ , properties: Record<string, string>;
 }
 
 export interface GraphRelationship { fromNode: string;, toNode: string;
@@ -17,10 +17,10 @@ export interface GraphRelationship { fromNode: string;, toNode: string;
   weight: number;
 }
 
-export interface GraphContext { relatedNodes: GraphNode[];, relationships: GraphRelationship[];
+export interface GraphContext {, relatedNodes: GraphNode[];, relationships: GraphRelationship[];
 }
 
-export interface ContextualSuggestion { content: string;, type: string;
+export interface ContextualSuggestion {, content: string;, type: string;
   confidence: number;
   reasoning: string;
   metadata: {
@@ -29,7 +29,7 @@ export interface ContextualSuggestion { content: string;, type: string;
     similarityScore?: number;
     contextNodes?: string[];
     keywords?: string[];
-    category: string;
+   , category: string;
     evidenceType?: string;
     evidenceTypeDetails?: Record<string, unknown>;
   } & Record<string, unknown>;
@@ -38,7 +38,7 @@ export interface ContextualSuggestion { content: string;, type: string;
 type VectorSearchContext = { documentId: string;, content: string;
   similarityScore: number;
   documentType: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 };
 
 export class VectorSuggestionsService {
@@ -116,7 +116,7 @@ export class VectorSuggestionsService {
             })
             .from(chatRecommendations)
             .where(eq(chatRecommendations.messageId, result.id))
-            .limit(3)) as Array<{ content: string; recommendationType: string; confidence: number }>;
+            .limit(3)) as Array<{ content: string; recommendationType: string;, confidence: number }>;
 
           const baseMetadata =
             typeof result.metadata === 'object' && result.metadata !== null
@@ -131,14 +131,14 @@ export class VectorSuggestionsService {
             metadata: {
               ...baseMetadata,
               recommendations: recs.map(r => ({
-                content: r.content,
+               , content: r.content,
                 type: r.recommendationType,
                 confidence: r.confidence
               }))
             }
           });
         } catch (err) {
-          console.warn('Failed to fetch recommendations for message:', (result as any)?.id, err);
+          console.warn('Failed to fetch recommendations for message:', (result as: any)?.id, err);
           const fallbackMetadata =
             typeof result.metadata === 'object' && result.metadata !== null
               ? (result.metadata as Record<string, unknown>)
@@ -166,7 +166,7 @@ export class VectorSuggestionsService {
   private async getGraphContext(caseId: string): Promise<GraphContext | null> {
     try {
       const caseInfo = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
-      if (!caseInfo || caseInfo.length === 0) return null;
+      if (!caseInfo || caseInfo.length === 0) return: null;
       const caseData = caseInfo[0];
 
       const relatedEvidence = (await db.select().from(evidence).where(eq(evidence.caseId, caseId)).limit(20)) as Array<{
@@ -180,10 +180,10 @@ export class VectorSuggestionsService {
 
       const nodes: GraphNode[] = [
         {
-          id: caseData.id,
+         , id: caseData.id,
           type: 'case',
           properties: {
-            title: caseData.title || '',
+           , title: caseData.title || '',
             description: caseData.description || '',
             status: caseData.status || '',
             caseNumber: caseData.caseNumber || ''
@@ -196,7 +196,7 @@ export class VectorSuggestionsService {
       relatedEvidence.forEach(ev => {
         const evMetadata = ev.metadata ?? {};
         nodes.push({
-          id: ev.id,
+         , id: ev.id,
           type: 'evidence',
           properties: {
            , description: ev.description ?? '',
@@ -216,7 +216,7 @@ export class VectorSuggestionsService {
       return { relatedNodes: nodes, relationships };
     } catch (error: any) {
       console.error('Failed to get graph context:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -224,7 +224,7 @@ export class VectorSuggestionsService {
    * Extract suggestions from vector search results
    */
   private extractSuggestionsFromVectorContext(
-    vectorContext: VectorSearchContext[],
+   , vectorContext: VectorSearchContext[],
     currentContent: string
   ): ContextualSuggestion[] {
     const suggestions: ContextualSuggestion[] = [];
@@ -239,7 +239,7 @@ export class VectorSuggestionsService {
           confidence: Math.min(1, (Number(rec.confidence ?? 0.7) || 0.7) * ctx.similarityScore),
           reasoning: `Based on similar content with ${(ctx.similarityScore * 100).toFixed(1)}% similarity`,
           metadata: {
-            source: 'vector_search',
+           , source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
             category: 'similarity_based` }'`
@@ -297,7 +297,7 @@ export class VectorSuggestionsService {
           confidence: 0.75,
           reasoning: 'Multiple evidence types available for cross-validation',
           metadata: {
-            source: 'graph_context',
+           , source: 'graph_context',
             contextNodes: evidenceNodes.map(n => n.id),
             keywords: Array.from(evidenceTypes),
             category: 'evidence_analysis` }'`
@@ -349,12 +349,12 @@ export class VectorSuggestionsService {
             const sim = typeof res.similarity === 'number' ? res.similarity : Number(res.similarity) || 0;
 
             suggestions.push({
-              content: `Review similar case "${case_data.title}" which has ${evidenceType} evidence with ${(sim * 100).toFixed(1)}% similarity to your content.`,
+              content: `Review similar case, "${case_data.title}" which has ${evidenceType} evidence with ${(sim * 100).toFixed(1)}% similarity to your content.`,
               type: 'case_precedent',
               confidence: Math.min(1, sim * 0.8),
               reasoning: 'Similar evidence found in related case with notable vector similarity',
               metadata: {
-                source: 'similar_cases',
+               , source: 'similar_cases',
                 sourceDocumentId: caseId,
                 similarityScore: sim,
                 keywords: [case_data.status || '', case_data.caseType || '', evidenceType].filter(Boolean),
@@ -400,7 +400,7 @@ export class VectorSuggestionsService {
             confidence: Math.min(1, sim * 0.8),
             reasoning: `High similarity (${(sim * 100).toFixed(1)}%) with ${evidenceType} evidence requiring authentication`,
             metadata: {
-              source: 'evidence_analysis',
+             , source: 'evidence_analysis',
               sourceDocumentId: String(res.id),
               similarityScore: sim,
               keywords: [evidenceType, 'authentication', 'chain of custody'],
@@ -418,7 +418,7 @@ export class VectorSuggestionsService {
             confidence: Math.min(1, sim * 0.7),
             reasoning: `Similar ${evidenceType} evidence found requiring specific handling procedures`,
             metadata: {
-              source: 'evidence_analysis',
+             , source: 'evidence_analysis',
               sourceDocumentId: String(res.id),
               similarityScore: sim,
               keywords: [evidenceType, 'procedures', 'handling'],
@@ -461,7 +461,7 @@ export class VectorSuggestionsService {
     try {
       // dynamically import server-only embedding helper to avoid client bundling
       const mod = await import('$lib/server/ai/embeddings-enhanced.js');
-      const gen = (mod.generateEnhancedEmbedding ?? mod.default) as unknown;
+      const gen = (mod.generateEnhancedEmbedding ?? mod.default) as: unknown;
       if (typeof gen !== 'function') {
         console.warn('generateEnhancedEmbedding not found in embeddings-enhanced module');
         return [];

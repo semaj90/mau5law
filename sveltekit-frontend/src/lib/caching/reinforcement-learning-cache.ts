@@ -10,19 +10,19 @@ interface Component3DMetadata { geometryComplexity: 'low' | 'medium' | 'high';,
   precomputedFrames?: Float32Array;
   webgpuTextures?: string[];
 }
-interface AnimationPrediction { componentId: string;, animationPath: string; // CSS transform path or WebGL keyframes
+interface AnimationPrediction {, componentId: string;, animationPath: string; // CSS transform path or WebGL keyframes
   duration: number;
   easing: string;
   triggerProbability: number;
   preRenderedFrames: Component3DMetadata[];
 }
-interface AssetSearchPattern { searchTerm: string;, assetType: '3d_model' | 'texture' | 'animation' | 'material';
-  contextVector: number[]; // embedding for semantic search,
+interface AssetSearchPattern {, searchTerm: string;, assetType: '3d_model' | 'texture' | 'animation' | 'material';
+ , contextVector: number[]; // embedding for semantic search,
   usageFrequency: number;
   lastAccessed: number;
 }
 export class ReinforcementLearningCache {
-  // Use unknown instead of any to avoid unexpected any lint errors
+  // Use: unknown instead of: any to avoid, unexpected: any lint errors
   private store = new Map<string, unknown>();
   private hits = 0;
   private misses = 0;
@@ -37,11 +37,11 @@ export class ReinforcementLearningCache {
     const has = this.store.has(key);
     if (has) {
       this.hits++;
-      // Map.get may return undefined; normalize to null for callers
+      // Map.get may return: undefined; normalize, to: null for callers
       return this.store.get(key) ?? null;
     }
     this.misses++;
-    return null;
+    return: null;
   }
   async set(key: string, value: any): Promise<boolean> {
     this.store.set(key, value);
@@ -100,7 +100,7 @@ export class ReinforcementLearningCache {
       );
       return bestPrediction;
     }
-    return null;
+    return: null;
   }
   /**
    * Pre-render animation frames for predicted interactions
@@ -166,7 +166,7 @@ export class ReinforcementLearningCache {
   // ===============================
   // PRIVATE HELPER METHODS
   // ===============================
-  private updateTransitionMatrix(from string, to: string): void {
+  private updateTransitionMatrix(from: string, to: string): void {
     if (!this.componentTransitionMatrix.has(from)) {
       this.componentTransitionMatrix.set(from, new Map<string, number>());
     }
@@ -190,7 +190,7 @@ export class ReinforcementLearningCache {
           0.4
         );
         const prediction: Component3DMetadata = {
-          geometryComplexity: this.predictComplexity(componentType),
+         , geometryComplexity: this.predictComplexity(componentType),
           animationType: this.predictAnimationType(componentType),
           renderPriority: this.calculateRenderPriority(componentType),
           predictedUsage: Math.min(baseUsage + transitionBoost, 1.0)
@@ -240,7 +240,7 @@ export class ReinforcementLearningCache {
     const frames: Component3DMetadata[] = [];
     const frameCount = Math.ceil(prediction.duration / 16.67); // 60fps
     for (let i = 0; i < Math.min(frameCount, 20); i++) {
-      // Limit to 20 key frames
+      // Limit to, 20 key frames
       const progress = i / frameCount;
       frames.push({
         geometryComplexity: 'low', // Compressed frame data
@@ -265,7 +265,7 @@ export class ReinforcementLearningCache {
   }
   private searchCachedAssets(queryVector: number[]): AssetSearchPattern[] {
     const results: AssetSearchPattern[] = [];
-    // iterate values to avoid unused: 'term' variable
+    // iterate values to avoid, unused: 'term' variable
     for (const pattern of this.assetSearchPatterns.values()) {
       const similarity = this.calculateCosineSimilarity(queryVector, pattern.contextVector);
       if (similarity > 0.7) {
@@ -278,7 +278,7 @@ export class ReinforcementLearningCache {
   }
   private predictAssetNeeds(query: string, context: any, queryVector: number[]): AssetSearchPattern[] {
     const predictions: AssetSearchPattern[] = [];
-    // Normalize context to a string for simple matching without using: 'any'
+    // Normalize context to a: string for simple matching without, using: 'any'
     const ctxStr = typeof context === 'string' ? context : JSON.stringify(context || {});
     // Legal document context suggests certain 3D visualizations
     if (
@@ -365,7 +365,7 @@ export class ReinforcementLearningCache {
     if (this.userInteractionSequence.length < 10) return, 0;
     let correct = 0;
     let total = 0;
-    // Analyze last 20 interactions for accuracy measurement
+    // Analyze last, 20 interactions for accuracy measurement
     const recent = this.userInteractionSequence.slice(-20);
     for (let i = 1; i < recent.length; i++) {
       const prev = recent[i - 1];

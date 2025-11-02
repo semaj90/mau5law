@@ -1,18 +1,18 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * PostgreSQL-First Worker Trigger API
  * Handles Redis events for auto-tagging and case processing
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { redisService } from '$lib/server/redis-service';
-import { z } from 'zod';
-import { db } from '$lib/server/db/index';
-import { cases } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import stream from 'stream';
-import { EventEmitter } from 'events';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { redisService } from, '$lib/server/redis-service';
+import { z } from, 'zod';
+import { db } from, '$lib/server/db/index';
+import { cases } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import stream from, 'stream';
+import { EventEmitter } from, 'events';
 // Validation schema for worker trigger requests
 const WorkerTriggerSchema = z.object({
   type: z.enum(['case_created', 'evidence_uploaded', 'document_processed', 'manual_trigger']),
@@ -22,7 +22,7 @@ const WorkerTriggerSchema = z.object({
   action: z.enum(['tag', 'process', 'mirror', 'analyze']).default('process'),
   metadata: z
     .object({
-      priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+     , priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
       caseType: z.string().optional(),
       tags: z.array(z.string()).optional(),
       trigger: z.string().optional(),
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     }
     // Ensure Redis connection (defensive cast to avoid ambient mismatches)
-    await (redisService as any).initialize();
+    await (redisService as: any).initialize();
     // Create Redis stream event
     const eventData = {
       id: triggerData.correlationId,
@@ -132,11 +132,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 // Based on node-redis types and usage in this file.
 interface RedisStreamInfo {
   length: number;
-  'first-entry': { id: string; message: Record<string, string> } | null;
-  'last-entry': { id: string; message: Record<string, string> } | null;
+  'first-entry': { id: string;, message: Record<string, string> } | null;
+  'last-entry': { id: string;, message: Record<string, string> } | null;
 }
 
-interface RedisStreamEvent { id: string;, message: { timestamp: string;, type: string;
+interface RedisStreamEvent { id: string;, message: {, timestamp: string;, type: string;
     action: string;
     caseId: string;
     evidenceId: string;
@@ -150,13 +150,13 @@ interface RedisStreamEvent { id: string;, message: { timestamp: string;, type:
  * GET /api/worker/autotag/trigger
  * Get worker trigger status and recent events
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     // Ensure Redis connection
     await redisService.initialize();
     const streamName = 'autotag:requests';
     // Get stream info
-    const streamInfo: RedisStreamInfo | null = await redisService.xInfoStream(streamName).catch(() => null);
+    const, streamInfo: RedisStreamInfo | null = await redisService.xInfoStream(streamName).catch(() => null);
     // Get recent events (last 10)
     const recentEvents: RedisStreamEvent[] = await redisService
       .xRevRange(streamName, '+', '-', { COUNT: 10 })
@@ -177,13 +177,13 @@ export const GET: RequestHandler = async () => {
       data: {
         streamInfo: streamInfo
           ? {
-              length: streamInfo.length,
+             , length: streamInfo.length,
               firstEntry: streamInfo['first-entry'],
               lastEntry: streamInfo['last-entry']
             }
           : null,
         recentEvents: events,
-        workerStatus: 'active', // TODO: Implement actual worker health check; lastProcessed: events.length > 0 ? events[0].timestamp : null
+        workerStatus: 'active', // TODO: Implement actual worker health check;, lastProcessed: events.length > 0 ? events[0].timestamp : null
       },
       metadata: {
        , timestamp: new Date().toISOString(),
@@ -218,7 +218,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     await redisService.initialize();
     const streamName = 'autotag:requests';
     // Get current stream info
-    const streamInfo: RedisStreamInfo | null = await redisService.xInfoStream(streamName).catch(() => null);
+    const, streamInfo: RedisStreamInfo | null = await redisService.xInfoStream(streamName).catch(() => null);
     // With RedisStreamInfo type, we can safely access length.
     const deletedCount = streamInfo?.length ?? 0;
     // Delete the entire stream
@@ -232,7 +232,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
         clearedAt: new Date().toISOString()
       },
       metadata: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         operation: 'stream-clear',
         version: `2.0` }
     });

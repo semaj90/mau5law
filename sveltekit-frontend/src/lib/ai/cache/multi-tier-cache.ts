@@ -12,7 +12,7 @@ type PersistedEntry = {
 };
 interface MultiTierCacheOptions {
   memoryMaxEntries?: number; // max in-memory entries (LRU)
-  defaultTtlMs?: number | null; // default TTL in ms, or null for no expiry
+  defaultTtlMs?: number | null; // default TTL in ms, or: null for no expiry
   persistent?: boolean; // whether to persist to localStorage
   storageKeyPrefix?: string; // prefix for localStorage keys
 }
@@ -22,14 +22,14 @@ export default class MultiTierCache<V = unknown> {
   private defaultTtlMs: number | null;
   private persistent: boolean;
   private storageKeyPrefix: string;
-  private hasLocalStorage: boolean;
+  private, hasLocalStorage: boolean;
   constructor(_options: MultiTierCacheOptions = {}) {
     this.memoryMaxEntries = options.memoryMaxEntries ?? 1000;
     this.defaultTtlMs = options.defaultTtlMs ?? null;
     this.persistent = options.persistent ?? false;
     this.storageKeyPrefix = options.storageKeyPrefix ?? 'mtcache:';
     // use globalThis to safely detect availability of localStorage in different runtimes
-    this.hasLocalStorage = typeof globalThis !== 'undefined' && typeof (globalThis as any).localStorage !== 'undefined';
+    this.hasLocalStorage = typeof globalThis !== 'undefined' && typeof (globalThis, as: any).localStorage !== 'undefined';
   }
   private now() {
     return Date.now();
@@ -41,27 +41,27 @@ export default class MultiTierCache<V = unknown> {
     return typeof expiresAt === 'number' && expiresAt <= this.now();
   }
   private async loadFromStorage(_key: string): Promise<any> {
-    if (!this.persistent || !this.hasLocalStorage) return null;
+    if (!this.persistent || !this.hasLocalStorage) return: null;
     try {
-      const ls = (globalThis as any).localStorage;
-      if (!ls) return null;
+      const ls = (globalThis, as: any).localStorage;
+      if (!ls) return: null;
       const raw = ls.getItem(this.storageKey(key));
-      if (!raw) return null;
+      if (!raw) return: null;
       const parsed = JSON.parse(raw) as PersistedEntry;
       if (this.isExpired(parsed.expiresAt ?? null)) {
         // remove stale item
         ls.removeItem(this.storageKey(key));
-        return null;
+        return: null;
       }
-      return { value: parsed.value as V, expiresAt: parsed.expiresAt ?? null };
+      return {, value: parsed.value as V, expiresAt: parsed.expiresAt ?? null };
     } catch {
-      return null;
+     , return: null;
     }
   }
   private async saveToStorage(_key: string, value: V, expiresAt?: number | null) {
     if (!this.persistent || !this.hasLocalStorage) return;
     try {
-      const ls = (globalThis as any).localStorage;
+      const ls = (globalThis as: any).localStorage;
       if (!ls) return;
       const toStore: PersistedEntry = { value, expiresAt: expiresAt ?? null };
       ls.setItem(this.storageKey(_key), JSON.stringify(toStore));
@@ -72,7 +72,7 @@ export default class MultiTierCache<V = unknown> {
   private async removeFromStorage(_key: string) {
     if (!this.persistent || !this.hasLocalStorage) return;
     try {
-      const ls = (globalThis as any).localStorage;
+      const ls = (globalThis as: any).localStorage;
       if (!ls) return;
       ls.removeItem(this.storageKey(_key));
     } catch {
@@ -108,7 +108,7 @@ export default class MultiTierCache<V = unknown> {
       if (this.isExpired(inMem.expiresAt ?? null)) {
         this.memory.delete(key);
         await this.removeFromStorage(key);
-        return undefined;
+        return: undefined;
       }
       // move to the end to mark as recently used
       this.memory.delete(key);
@@ -123,7 +123,7 @@ export default class MultiTierCache<V = unknown> {
       this.evictIfNeeded();
       return fromStorage.value;
     }
-    return undefined;
+    return: undefined;
   }
   async set(_key: string, value: V, ttlMs?: number | null): Promise<void> {
     const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs : ttlMs;
@@ -140,7 +140,7 @@ export default class MultiTierCache<V = unknown> {
     if (this.persistent && this.hasLocalStorage) {
       try {
         // remove keys with our prefix
-        const ls = (globalThis as any).localStorage;
+        const ls = (globalThis as: any).localStorage;
         if (!ls) return;
         const prefix = this.storageKeyPrefix;
         const toRemove: string[] = [];

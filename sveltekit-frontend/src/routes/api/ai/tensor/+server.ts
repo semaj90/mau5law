@@ -9,16 +9,16 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { cache, cacheEmbedding, cacheSearchResults } from, '$lib/server/cache/redis';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 // Accept text and return embedding tensor with caching and indexing hooks
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
@@ -80,7 +80,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         });
         if (vResp.ok) {
           const vJson = await vResp.json();
-          const emb: number[] | undefined = vJson?.data?.[0]?.embedding as number[] | undefined;
+          const emb: number[] | undefined = vJson?.data?.[0]?.embedding, as: number[] | undefined;
           if (Array.isArray(emb) && emb.length > 0) {
             return await finalize(emb, false, 'vllm');
           }
@@ -103,7 +103,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       if (oResp.ok) {
         const oJson = await oResp.json();
         const emb: number[] | undefined =
-          (oJson?.embedding as number[] | undefined) ?? (oJson?.data?.[0]?.embedding as number[] | undefined);
+          (oJson?.embedding, as: number[] | undefined) ?? (oJson?.data?.[0]?.embedding as: number[] | undefined);
         if (Array.isArray(emb) && emb.length > 0) {
           return await finalize(emb, false, 'ollama');
         }
@@ -116,8 +116,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const goReq = {
         operation: 'vectorize',
         documentId: key,
-        data: [] as number[],
-        options: { timeout: 5000 }
+        data: [], as: number[],
+        options: {, timeout: 5000 }
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
@@ -126,7 +126,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       });
       if (goResp.ok) {
         const goJson = await goResp.json();
-        const emb = goJson?.data?.result?.embeddings as number[] | undefined;
+        const emb = goJson?.data?.result?.embeddings as: number[] | undefined;
         if (Array.isArray(emb) && emb.length > 0) {
           return await finalize(emb, false, 'go');
         }

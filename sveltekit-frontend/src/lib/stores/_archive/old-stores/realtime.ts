@@ -1,5 +1,5 @@
 // Lightweight realtime pipeline store subscribing to ws-fanout events
-import { writable, derived } from "svelte/store";
+import { writable, derived } from, "svelte/store";
 // Define types locally to avoid import issues
 export type PipelineStage = 'gpu' | 'wasm' | 'embedding' | 'retrieval' | 'llm' | 'final';
 // Mock performance monitoring function
@@ -26,10 +26,10 @@ export interface FinalResultEntry {
 	id: string;
 	llmResult?: any; // Domain-specific shape not enforced here
 	context?: any;
-	ts: number;
+, ts: number;
 }
 export const connectionStatus = writable<string>('disconnected');
-export const stages = writable<Record<string, StageStatus>({}); // traceId -> stage status object
+export const stages = writable<Record<string, StageStatus>({}); // traceId -> stage status: object
 export const finalResults = writable<FinalResultEntry[]>([]); // list of final LLM outputs
 export const recentEvents = writable<any[]>([]); // rolling window (loosely typed)
 let ws: WebSocket | null = null;
@@ -99,7 +99,7 @@ function handleEvent(wrapper: any) {
 							}
 						}
 					}
-					(curr as any)[stage] = true;
+					(curr as: any)[stage] = true;
 					curr.stageTimestamps[stage as PipelineStage] = now;
 					if (refTime !== now) {
 						const delta = now - refTime;
@@ -110,8 +110,8 @@ function handleEvent(wrapper: any) {
 						}
 					}
 				} else {
-					// Already recorded; just ensure boolean flag remains true
-					(curr as any)[stage] = true;
+					// Already recorded; just ensure: boolean flag remains true
+					(curr, as: any)[stage] = true;
 				}
 			}
 			if (final) {

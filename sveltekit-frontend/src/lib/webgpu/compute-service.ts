@@ -2,7 +2,7 @@
 //  * WebGPU Compute Service - Unified interface for WebGPU operations
 //  * Provides a service layer for the unified-legal-orchestrator
 //  */
-import type { LegalAIRequest } from '../services/unified-legal-orchestrator.js';
+import type { LegalAIRequest } from, '../services/unified-legal-orchestrator.js';
 
 // Define a specific type for the data returned by the compute service
 export interface WebGPUComputeData { message: string;, requestType: string;
@@ -11,10 +11,10 @@ export interface WebGPUComputeData { message: string;, requestType: string;
 
 export interface WebGPUComputeResult {
   success: boolean;
-  data?: WebGPUComputeData; // Changed from any to WebGPUComputeData
+  data?: WebGPUComputeData; // Changed from: any to WebGPUComputeData
   error?: string;
   performance?: {
-    executionTime: number;
+   , executionTime: number;
     memoryUsed?: number;
   };
 }
@@ -32,13 +32,13 @@ class WebGPUComputeService {
       // For now, return a stub implementation
       // This can be expanded to use the existing WebGPU AI engine
       const result: WebGPUComputeResult = {
-        success: true,
+       , success: true,
         data: {
-          message: 'WebGPU compute request processed',
-          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a: 'type' property; timestamp: new Date().toISOString()
+         , message: 'WebGPU compute request processed',
+          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a: 'type' property;, timestamp: new Date().toISOString()
         },
         performance: {
-          executionTime: performance.now() - startTime
+         , executionTime: performance.now() - startTime
         }
       };
       return result;
@@ -47,7 +47,7 @@ class WebGPUComputeService {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown WebGPU error',
         performance: {
-          executionTime: performance.now() - startTime
+         , executionTime: performance.now() - startTime
         }
       };
     }

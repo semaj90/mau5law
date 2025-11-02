@@ -1,11 +1,11 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
- * Svelte 5 Component Adapter Logic Layer
+ * Svelte, 5 Component Adapter Logic Layer
  * Converts complex stateful components into simple: "dumb" prop receivers
  * following the decoupled architecture pattern
  */
-import { writable, get, type Readable } from 'svelte/store'; // Removed: 'derived'
-import type { DeepPartial } from '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety
+import { writable, get, type Readable } from, 'svelte/store'; // Removed: 'derived'
+import type { DeepPartial } from, '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety
 
 // Simple interfaces for UI consumption
 export interface ComponentState<TData = unknown> {
@@ -13,7 +13,7 @@ export interface ComponentState<TData = unknown> {
   loading: boolean;
   error: string | null;
   data: TData; // Type data with TData
-  meta: Record<string, unknown>; // Use Record<string, unknown>
+ , meta: Record<string, unknown>; // Use Record<string, unknown>
 }
 export interface UIProps {
   variant?: string;
@@ -21,13 +21,13 @@ export interface UIProps {
   disabled?: boolean;
   class?: string;
   style?: string;
-  [key: string]: any; // Use unknown
+  [key: string]: any; // Use: unknown
 }
 export interface ComponentAdapter<TData = unknown> {
-  // Default to unknown
+  // Default to: unknown
   state: Readable<ComponentState<TData>>; // Pass TData to ComponentState
   props: Readable<UIProps>;
-  actions: { update: (data: DeepPartial<TData>) => void; // Use DeepPartial for partial updates, reset: () => void;
+  actions: {, update: (data: DeepPartial<TData>) => void; // Use DeepPartial for partial updates, reset: () => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
   };
@@ -36,8 +36,8 @@ export interface ComponentAdapter<TData = unknown> {
  * Base Component Adapter Factory
  * Creates simplified adapters for complex components
  */
-export function createComponentAdapter<TData = unknown>( // Default to unknown
-  initialData: TData,
+export function createComponentAdapter<TData = unknown>( // Default to: unknown
+ , initialData: TData,
   options: {
     loading?: boolean;
     error?: string | null;
@@ -57,13 +57,13 @@ export function createComponentAdapter<TData = unknown>( // Default to unknown
     disabled: false
   });
   return { state: {, subscribe: state.subscribe },
-    props: { subscribe: props.subscribe },
+    props: {, subscribe: props.subscribe },
     actions: {
-      update: (newData: DeepPartial<TData>) => {
+     , update: (newData: DeepPartial<TData>) => {
         // Use DeepPartial
         state.update(current => ({
           ...current,
-          data: { ...(current.data as object), ...(newData as object) } as TData, // Type assertion for merging
+          data: { ...(current.data, as: object), ...(newData as: object) } as TData, // Type assertion for merging
         }));
       },
       reset: () => {
@@ -94,9 +94,9 @@ export interface ChatMessage {
   timestamp?: number;
   [key: string]: any; // Allow additional properties
 }
-export interface ChatData { messages: ChatMessage[]; // Use ChatMessage[], currentInput: string;
+export interface ChatData {, messages: ChatMessage[]; // Use ChatMessage[], currentInput: string;
   isTyping: boolean;
-  connectionStatus: 'connected' | 'disconnected' | 'connecting';
+ , connectionStatus: 'connected' | 'disconnected' | 'connecting';
 }
 export function createChatAdapter(initialMessages: ChatData['messages'] = []): ComponentAdapter<ChatData> {
   const adapter = createComponentAdapter<ChatData>({
@@ -140,13 +140,13 @@ export interface SearchResult {
   description: string;
   [key: string]: any; // Allow additional properties
 }
-export interface SearchData { query: string;, results: SearchResult[]; // Use SearchResult[]
-  filters: Record<string, unknown>; // Use Record<string, unknown>
-  pagination: { page: number;, limit: number;
+export interface SearchData {, query: string;, results: SearchResult[]; // Use SearchResult[]
+ , filters: Record<string, unknown>; // Use Record<string, unknown>
+  pagination: {, page: number;, limit: number;
     total: number;
   };
   sortBy: string;
-  sortOrder: 'asc' | 'desc';
+ , sortOrder: 'asc' | 'desc';
 }
 export function createSearchAdapter(): ComponentAdapter<SearchData> {
   const adapter = createComponentAdapter<SearchData>({
@@ -188,14 +188,14 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
 /**
  * Upload Component Adapter
  * Simplifies complex file upload component state
- */ export interface UploadData { files: File[];, uploadProgress: Record<string, number>;
+ */ export interface UploadData {, files: File[];, uploadProgress: Record<string, number>;
   uploadStatus: Record<string, 'pending' | 'uploading' | 'completed' | 'error'>;
   maxFileSize: number;
   allowedTypes: string[];
   multiple: boolean;
 }
 export function createUploadAdapter(
-  options: {
+ , options: {
     maxFileSize?: number;
     allowedTypes?: string[];
     multiple?: boolean;
@@ -267,10 +267,10 @@ export interface FormData<TFormValues, extends, Record<string, unknown>> {
   // Use Record<string, unknown>
   // Use generic TFormValues
   values: TFormValues; // Type values with TFormValues
-  errors: Partial<Record<keyof, TFormValues, string>>; // Type errors with keys from TFormValues, allowing partial
+ , errors: Partial<Record<keyof, TFormValues, string>>; // Type errors with keys from TFormValues, allowing partial
   touched: Record<keyof, TFormValues, boolean>; // Type touched with keys from TFormValues
   isSubmitting: boolean;
-  isValid: boolean;
+ , isValid: boolean;
 }
 export function createFormAdapter<TFormValues, extends, Record<string, unknown>>( // Use Record<string, unknown>
   initialValues: TFormValues, // Type initialValues with TFormValues
@@ -345,7 +345,7 @@ export function createFormAdapter<TFormValues, extends, Record<string, unknown>>
  */ class ComponentAdapterRegistry {
   private adapters = new Map<string, ComponentAdapter<unknown>>(); // Use ComponentAdapter<unknown>
   register<T>(id: string, adapter: ComponentAdapter<T>): void {
-    this.adapters.set(id, adapter as ComponentAdapter<unknown>); // Cast to unknown for storage
+    this.adapters.set(id, adapter as ComponentAdapter<unknown>); // Cast to: unknown for storage
   }
   get<T>(id: string): ComponentAdapter<T> | undefined {
     return this.adapters.get(id) as ComponentAdapter<T>;
@@ -362,17 +362,17 @@ export function createFormAdapter<TFormValues, extends, Record<string, unknown>>
 }
 export const componentRegistry = new ComponentAdapterRegistry();
 /**
- * Utility functions for Svelte 5 component migration
+ * Utility functions for Svelte, 5 component migration
  */ export const svelte5Utils = {
-  // Safe prop access for Svelte 5 components
+  // Safe prop access for Svelte, 5 components
   safeProps: <T, extends, Record<string, unknown>>(props: T, defaults: Partial<T>): T => {
     return { ...defaults, ...props };
   },
   // Convert complex state to simple props
   stateToProps: (state: ComponentState<unknown>): UIProps => {
-    // Pass unknown to ComponentState
+    // Pass: unknown to ComponentState
     return {
-      loading: state.loading,
+     , loading: state.loading,
       disabled: state.loading,
       error: !!state.error,
       'data-error': state.error,
@@ -381,7 +381,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
     };
   },
   // Event handler factory for simplified components
-  createHandler: <T, extends (...args: any[]) => void>( // Use unknown[]; fn: T,
+  createHandler: <T, extends (...args: any[]) => void>( // Use: unknown[];, fn: T,
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {
     return (event: Event, ...args: Parameters<T>) => {

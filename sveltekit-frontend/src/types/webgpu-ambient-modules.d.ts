@@ -1,15 +1,15 @@
-declare module '$lib/services/latency-logger' {
+declare module, '$lib/services/latency-logger' {
   export type LatencyEntry = any;
   export function captureLatency(entry: LatencyEntry): Promise<void>;
   export function startLatencyLogger(): void;
 }
 
-declare module '$lib/services/system-monitor-client' {
+declare module, '$lib/services/system-monitor-client' {
   export function startSystemMonitorClient(opts?: any): { push: (e: any) => void; stop: () => void };
   const _default: any;
   export default _default;
 }
 
-declare module '$lib/db/client-db' {
+declare module, '$lib/db/client-db' {
   export type GraphVisualizationData = any;
 }

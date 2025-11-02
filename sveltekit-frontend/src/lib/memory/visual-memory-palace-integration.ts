@@ -3,34 +3,34 @@
  * Combines Nintendo-inspired optimization with cognitive memory techniques
  * Achieves 127:1 compression ratio for legal AI interactions
  */
-import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
-import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache';
+import type { LegalDocumentJSON } from, '$lib/wasm/simd-json-wrapper';
+import type { CHRROMPattern } from, '$lib/cache/chr-rom-pattern-cache';
 export interface MemoryPalaceRoom { id: string;, name: string;
-  visualAnchor: string; // 7-bit compressed visual description,
+ , visualAnchor: string; // 7-bit compressed visual description,
   documents: string[]; // Document IDs stored in this room
-  patterns: string[]; // CHR-ROM pattern IDs associated with room,
+ , patterns: string[]; // CHR-ROM pattern IDs associated with room,
   cognitiveLoad: number; // 0-1, how much mental effort to recall
   accessFrequency: number; // How often this room is accessed,
   lastAccessed: number;
   spatialLayout: {
-    position: [number, number, number]; // 3D position in palace
+   , position: [number, number, number]; // 3D position in palace
     orientation: [number, number, number, number]; // Quaternion
     size: [number, number, number]; // Bounding box
   };
-  compressionData: { originalSize: number;, compressedSize: number;
+  compressionData: {, originalSize: number;, compressedSize: number;
     compressionRatio: number;
-    glyphMap: Map<string, number>; // 7-bit glyph mapping
+   , glyphMap: Map<string, number>; // 7-bit glyph mapping
   };
 }
 export interface MemoryPalace { id: string;, name: string;
   description: string;
-  rooms: Map<string, MemoryPalaceRoom>;
+ , rooms: Map<string, MemoryPalaceRoom>;
   navigationGraph: Map<string, string[]>; // Room connections
-  cognitiveMap: { totalLoad: number;, efficiencyScore: number;
+  cognitiveMap: {, totalLoad: number;, efficiencyScore: number;
     retrievalSpeed: number; // milliseconds average
   };
   visualEncoding: {
-    glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
+   , glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
     frequencyTable: Map<number, number>; // Character frequency for optimization
     compressionTree: CompressionNode;
   };
@@ -41,24 +41,24 @@ interface CompressionNode {
   left?: CompressionNode;
   right?: CompressionNode;
 }
-export interface MemoryQuery { type: 'spatial' | 'semantic' | 'temporal' | 'associative';, query: string;
+export interface MemoryQuery {, type: 'spatial' | 'semantic' | 'temporal' | 'associative';, query: string;
   context?: {
     currentRoom?: string;
     recentRooms?: string[];
     cognitiveState?: 'focused' | 'scattered' | 'tired' | 'alert';
   };
 }
-export interface MemoryRetrievalResult { rooms: MemoryPalaceRoom[];, documents: LegalDocumentJSON[];
+export interface MemoryRetrievalResult {, rooms: MemoryPalaceRoom[];, documents: LegalDocumentJSON[];
   patterns: CHRROMPattern[];
   retrievalPath: string[]; // Sequence of rooms visited
-  cognitiveEffort: number; // Mental effort required,
+ , cognitiveEffort: number; // Mental effort required,
   compressionSavings: number; // Bytes saved through compression
   retrievalTime: number; // Milliseconds
 }
 export class VisualMemoryPalaceManager {
-  private palaces: Map<string, MemoryPalace> = new Map();
+  private, palaces: Map<string, MemoryPalace> = new Map();
   private activeRooms: Set<string> = new Set(); // Currently: "loaded" rooms
-  private compressionDictionary: Map<string, number> = new Map();
+  private, compressionDictionary: Map<string, number> = new Map();
   private readonly MAX_7BIT = 127; // Maximum 7-bit value
   private readonly COMPRESSION_THRESHOLD = 50; // Minimum bytes to compress
   constructor() {
@@ -185,18 +185,18 @@ export class VisualMemoryPalaceManager {
   }
   private initializeDefaultPalace(): void {
     const defaultPalace: MemoryPalace = {
-      id: 'legal_practice_palace',
+     , id: 'legal_practice_palace',
       name: 'Legal Practice Memory Palace',
       description: 'Primary memory palace for legal document organization and retrieval',
       rooms: new Map(),
       navigationGraph: new Map(),
       cognitiveMap: {
-        totalLoad: 0,
+       , totalLoad: 0,
         efficiencyScore: 1.0,
         retrievalSpeed: 0
       },
       visualEncoding: {
-        glyphDictionary: new Map(this.compressionDictionary),
+       , glyphDictionary: new Map(this.compressionDictionary),
         frequencyTable: new Map(),
         compressionTree: this.buildCompressionTree()
       }
@@ -214,7 +214,7 @@ export class VisualMemoryPalaceManager {
     ];
     practiceAreas.forEach((area, index) => {
       const room: MemoryPalaceRoom = {
-        id: area.id,
+       , id: area.id,
         name: area.name,
         visualAnchor: this.compress7Bit(area.anchor),
         documents: [],
@@ -223,12 +223,12 @@ export class VisualMemoryPalaceManager {
         accessFrequency: 0,
         lastAccessed: Date.now(),
         spatialLayout: {
-          position: [index * 10, 0, 0], // Spread rooms along X axis
+         , position: [index * 10, 0, 0], // Spread rooms along X axis
           orientation: [0, 0, 0, 1], // No rotation;
           size: [8, 8, 8], // 8x8x8 room
         },
         compressionData: {
-          originalSize: area.anchor.length,
+         , originalSize: area.anchor.length,
           compressedSize: 0, // Will be calculated
           compressionRatio: 0,
           glyphMap: new Map()
@@ -261,16 +261,16 @@ export class VisualMemoryPalaceManager {
         compressed.push(compressedValue);
         totalCompressionRatio += word.length / 1; // 1 byte compressed vs word length
       } else {
-        // Use first 7 bits of each character for unknown words
+        // Use first, 7 bits of each character for: unknown words
         for (const char of word) {
           const charCode = char.charCodeAt(0);
-          compressed.push(charCode & 0x7f); // Mask to 7 bits
+          compressed.push(charCode & 0x7f); // Mask to, 7 bits
         }
         totalCompressionRatio += word.length / word.length; // No compression benefit
       }
     }
-    // Convert to compact string representation
-    return compressed.map(n => String.fromCharCode(n + 1)).join(''); // +1 to avoid null chars
+    // Convert to compact: string representation
+    return compressed.map(n => String.fromCharCode(n + 1)).join(''); // +1 to avoid: null chars
   }
   /**
    * Decompress 7-bit encoded text
@@ -296,8 +296,8 @@ export class VisualMemoryPalaceManager {
     // Simplified implementation for now
     return {
       frequency: 1,
-      left: { value: 0, frequency: 1 },
-      right: { value: 1, frequency: 1 }
+      left: {, value: 0, frequency: 1 },
+      right: {, value: 1, frequency: 1 }
     };
   }
   /**
@@ -317,10 +317,10 @@ export class VisualMemoryPalaceManager {
     // Store document reference
     room.documents.push(document.caseId);
     // Update cognitive load based on room capacity
-    room.cognitiveLoad = Math.min(1.0, room.documents.length / 50); // Max 50 docs per room
+    room.cognitiveLoad = Math.min(1.0, room.documents.length / 50); // Max, 50 docs per room
     // Update visual encoding
     const compressedTitle = this.compress7Bit(document.title);
-    const compressedContent = this.compress7Bit(document.content.substring(0, 500)); // First 500 chars
+    const compressedContent = this.compress7Bit(document.content.substring(0, 500)); // First, 500 chars
     // Calculate compression savings
     const originalSize = document.title.length + 500;
     const compressedSize = compressedTitle.length + compressedContent.length;
@@ -349,7 +349,7 @@ export class VisualMemoryPalaceManager {
     let totalCompressionSavings = 0;
     const visitedRooms: MemoryPalaceRoom[] = [];
     const documents: LegalDocumentJSON[] = [];
-    const patterns: CHRROMPattern[] = [];
+    const, patterns: CHRROMPattern[] = [];
     for (const roomId of retrievalPath) {
       const room = palace.rooms.get(roomId);
       if (!room) continue;
@@ -423,7 +423,7 @@ export class VisualMemoryPalaceManager {
         const similarity = this.calculateCompressionSimilarity(compressedQuery, room.visualAnchor);
         relevanceScore += similarity;
       } else if (query.type === 'temporal' && room.lastAccessed > Date.now() - 86400000) {
-        relevanceScore += 0.6; // Accessed within 24 hours
+        relevanceScore += 0.6; // Accessed within, 24 hours
       }
       // Factor in access frequency and cognitive load
       relevanceScore += room.accessFrequency * 0.1;
@@ -473,7 +473,7 @@ export class VisualMemoryPalaceManager {
             nextRoom = roomId;
             break;
           } else if (!nextRoom) {
-            nextRoom = roomId; // Fallback to any unvisited room
+            nextRoom = roomId; // Fallback to: any unvisited room
           }
         }
       }
@@ -499,7 +499,7 @@ export class VisualMemoryPalaceManager {
     });
     // Redistribute documents to balance cognitive load
     const overloadedRooms: string[] = [];
-    const underutilizedRooms: string[] = [];
+    const, underutilizedRooms: string[] = [];
     palace.rooms.forEach((room, roomId) => {
       if (room.cognitiveLoad > 0.7) {
         overloadedRooms.push(roomId);
@@ -534,7 +534,7 @@ export class VisualMemoryPalaceManager {
    * Get memory palace analytics
    */ getPalaceAnalytics(palaceId: string) {
     const palace = this.palaces.get(palaceId);
-    if (!palace) return null;
+    if (!palace) return: null;
     let totalDocuments = 0;
     let totalCompressionRatio = 0;
     let roomCount = 0;
@@ -557,10 +557,10 @@ export class VisualMemoryPalaceManager {
    * Create new memory palace
    */
   async createPalace(
-    id: string,
+   , id: string,
     name: string,
     description: string,
-    rooms: Array<any> //; Assuming: 'any' for now, as the original was incomplete
+    rooms: Array<any> //;, Assuming: 'any' for now, as the original was incomplete
   ): Promise<void> {
     const palace: MemoryPalace = {
       id,
@@ -569,12 +569,12 @@ export class VisualMemoryPalaceManager {
       rooms: new Map(),
       navigationGraph: new Map(),
       cognitiveMap: {
-        totalLoad: 0,
+       , totalLoad: 0,
         efficiencyScore: 1.0,
         retrievalSpeed: 0
       },
       visualEncoding: {
-        glyphDictionary: new Map(this.compressionDictionary),
+       , glyphDictionary: new Map(this.compressionDictionary),
         frequencyTable: new Map(),
         compressionTree: this.buildCompressionTree()
       }
@@ -582,7 +582,7 @@ export class VisualMemoryPalaceManager {
     // Create rooms with 7-bit compression
     rooms.forEach((roomDef, index) => {
       const room: MemoryPalaceRoom = {
-        id: roomDef.id,
+       , id: roomDef.id,
         name: roomDef.name,
         visualAnchor: this.compress7Bit(roomDef.anchor),
         documents: [],
@@ -591,12 +591,12 @@ export class VisualMemoryPalaceManager {
         accessFrequency: 0,
         lastAccessed: Date.now(),
         spatialLayout: {
-          position: [index * 10, 0, 0],
+         , position: [index * 10, 0, 0],
           orientation: [0, 0, 0, 1],
           size: [8, 8, 8]
         },
         compressionData: {
-          originalSize: roomDef.anchor.length,
+         , originalSize: roomDef.anchor.length,
           compressedSize: 0,
           compressionRatio: 0,
           glyphMap: new Map()

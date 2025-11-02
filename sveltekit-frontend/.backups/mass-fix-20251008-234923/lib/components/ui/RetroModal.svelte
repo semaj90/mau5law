@@ -25,7 +25,7 @@ https://svelte.dev/e/slot_snippet_conflict -->
 </script>
 
 <!-- bits-ui provides the functionality, nes.css provides the styling -->
-<Dialog.Root {open} onOpenChange={handleOpenChange}>
+<Dialog {open} onOpenChange={handleOpenChange}>
   <!-- Trigger button with retro styling -->
   <Dialog.Trigger class="nes-btn is-primary">
     {@render trigger?.()}
@@ -57,7 +57,7 @@ https://svelte.dev/e/slot_snippet_conflict -->
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 
 <style>/* Additional custom styling to enhance nes.css */ {}
   :global(.nes-dialog) {

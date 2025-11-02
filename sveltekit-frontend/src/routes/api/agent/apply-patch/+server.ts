@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 // new types to avoid `any`
 type PatchInput = {
@@ -20,10 +20,10 @@ type DemoPatch = { id: string;, filePath: string;
   confidence: number;
   createdAt: string;
   status: 'pending' | 'applied' | 'failed';
-  metadata: { agentId: string;, taskId: string;
+  metadata: {, agentId: string;, taskId: string;
     lineChanges: number;
     insertions: number;
-    deletions: number;
+   , deletions: number;
   };
   appliedAt?: string;
   backup?: string;
@@ -32,7 +32,7 @@ type DemoPatch = { id: string;, filePath: string;
 // Demo patches storage (in production, this would be in a database)
 const demoPatchStorage = new Map<string, DemoPatch>();
 
-// helper to safely stringify unknown errors
+// helper to safely stringify: unknown errors
 function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let patch = demoPatchStorage.get(patchId);
     if (!patch) {
       const created: DemoPatch = {
-        id: patchId,
+       , id: patchId,
         filePath: 'src/lib/components/Navigation.svelte',
         status: 'pending',
         description: 'Demo patch application',
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
         targetHash: 'demo-target-unknown',
         unifiedDiff: generateSampleDiff(),
         createdAt: new Date().toISOString(),
-        metadata: { agentId: 'demo', taskId: 'demo', lineChanges: 0, insertions: 0, deletions: 0 }
+        metadata: {, agentId: 'demo', taskId: 'demo', lineChanges: 0, insertions: 0, deletions: 0 }
       };
       demoPatchStorage.set(patchId, created);
       patch = created;
@@ -117,14 +117,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       patchId,
       filePath: updatedPatch.filePath,
-      message: `Successfully applied; patch: ${updatedPatch.description}`,
+      message: `Successfully applied;, patch: ${updatedPatch.description}`,
       linesChanged,
       backup: updatedPatch.backup,
       appliedAt: updatedPatch.appliedAt
     };
 
     // Log the application for monitoring
-    console.log(`✅ Patch applied: ${patchId} -> ${updatedPatch.filePath} (backup: ${backupPath})`);
+    console.log(`✅ Patch, applied: ${patchId} -> ${updatedPatch.filePath} (backup: ${backupPath})`);
     return json({
       success: true,
       result,
@@ -168,7 +168,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     // Create demo patch for testing
     const demoPatch: DemoPatch = {
-      id: patch.id || `patch-${Date.now()}`,
+     , id: patch.id || `patch-${Date.now()}`,
       filePath: patch.filePath || 'src/lib/components/Demo.svelte',
       originalHash: 'demo-hash-12345',
       targetHash: 'demo-target-67890',
@@ -178,7 +178,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       createdAt: new Date().toISOString(),
       status: 'pending',
       metadata: {
-        agentId: patch.agentId || 'demo-agent-1',
+       , agentId: patch.agentId || 'demo-agent-1',
         taskId: patch.taskId || 'demo-task-1',
         lineChanges: 5,
         insertions: 3,

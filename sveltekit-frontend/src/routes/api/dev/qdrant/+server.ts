@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { dev } from '$app/environment';
-import { db } from '$lib/server/db';
-import { embeddingCache, as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
-import { sql } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { dev } from, '$app/environment';
+import { db } from, '$lib/server/db';
+import { embeddingCache, as embeddingTable } from, '$lib/server/db/schema-postgres-enhanced';
+import { sql } from, 'drizzle-orm';
 
 const QDRANT_URL = process.env.QDRANT_URL || import.meta.env.QDRANT_URL || '';
 const COLLECTION = 'legal_evidence';
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (embB64) {
       // decode base64-encoded JSON array
       try {
-        const decoded = JSON.parse(Buffer.from(embB64, 'base64').toString('utf8')) as number[];
+        const decoded = JSON.parse(Buffer.from(embB64, 'base64').toString('utf8')) as: number[];
         embedding = decoded;
       } catch (e) {
         // ignore and fall back to DB sample
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
     let qdrantResult: any = null;
     if (QDRANT_URL) {
       try {
-        const qdrantBody: { vector: number[]; limit: number; filter?: {, must: Array<Record<string, unknown>> } } = {
+        const qdrantBody: { vector: number[];, limit: number; filter?: {, must: Array<Record<string, unknown>> } } = {
           vector: embedding,
           limit
         };

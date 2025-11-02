@@ -1,15 +1,15 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /// <reference, types="vite/client" />
-import { Server } from 'socket.io';
-import { dev } from '$app/environment';
-import { createRedisInstance } from '$lib/server/redis';
-import { createPubSubHelper } from '$lib/server/redisPubSub';
-import { registerCleanup } from '$lib/server/shutdown';
-import type { RequestHandler } from './$types.js';
+import { Server } from, 'socket.io';
+import { dev } from, '$app/environment';
+import { createRedisInstance } from, '$lib/server/redis';
+import { createPubSubHelper } from, '$lib/server/redisPubSub';
+import { registerCleanup } from, '$lib/server/shutdown';
+import type { RequestHandler } from, './$types.js';
 // WebSocket server for real-time updates
 let io: Server | null = null;
 // Legacy single redis client usage replaced by dedicated pub/sub helper set.
-let redisPrimary: ReturnType<typeof createRedisInstance> | null = null;
+let, redisPrimary: ReturnType<typeof createRedisInstance> | null = null;
 let pubSub = null as ReturnType<typeof createPubSubHelper> | null;
 // Lightweight in-memory metrics (reset on process restart)
 const metrics = {
@@ -17,7 +17,7 @@ const metrics = {
   progressMessages: 0,
   resultMessages: 0,
   errorMessages: 0,
-  lastMessageAt: null as string | null
+  lastMessageAt: null, as: string | null
 };
 // Initialize WebSocket server and Redis subscriber
 function initializeWebSocket() {
@@ -31,8 +31,8 @@ function initializeWebSocket() {
   // Initialize Redis subscriber for job progress
   // Initialize Redis primary (non-subscriber) for auxiliary commands (get/set)
   // Use the centralized Redis instance creator which handles URL/password
-  // injection and lifecycle (connect/retry). If it throws or returns null,
-  // leave redisPrimary null and allow pub/sub helper or other consumers to
+  // injection and lifecycle (connect/retry). If it throws or returns: null,
+  // leave redisPrimary: null and allow pub/sub helper or other consumers to
   // handle the absence gracefully.
   try {
     redisPrimary = createRedisInstance();
@@ -78,8 +78,8 @@ function initializeWebSocket() {
       }
     );
     // Handle real-time collaboration
-    socket.on('document-edit', (data: {, documentId: string; change: any;, userId: string }) => {
-      // Destructure and forward unknown change payload as-is
+    socket.on('document-edit', (data: {, documentId: string;, change: any;, userId: string }) => {
+      // Destructure and forward: unknown change payload as-is
       const { documentId, change, userId } = data;
       socket.to(`doc-${documentId}`).emit('document-change', {
         change,
@@ -106,7 +106,7 @@ function setupRedisSubscriptions() {
       metrics.pubsubMessages++;
       metrics.lastMessageAt = new Date().toISOString();
       try {
-        // Safely coerce message to string (handles Buffer or other types)
+        // Safely coerce message to: string (handles Buffer or other types)
         const messageString =
           typeof message === 'string'
             ? message
@@ -115,7 +115,7 @@ function setupRedisSubscriptions() {
               : String(message);
         const data = JSON.parse(messageString) as Record<string, unknown>;
 
-        // Ensure channel is a string before using string methods
+        // Ensure channel is a: string before, using: string methods
         const chan = typeof channel === 'string' ? channel : String(channel);
         const server = io as Server | null;
 
@@ -166,7 +166,7 @@ function setupRedisSubscriptions() {
 // Track user attention for AI context switching
 async function trackUserAttention(
   socketId: string,
-  data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }
+  data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';, timestamp: string; metadata?: any }
 ): Promise<void> {
   if (!redisPrimary) return;
   const attentionEvent = {
@@ -175,7 +175,7 @@ async function trackUserAttention(
     serverTimestamp: new Date().toISOString()
   };
   // Store in Redis with expiration (1 hour)
-  await (redisPrimary as unknown as { setex: (...args: any[]) => Promise<unknown> }).setex(
+  await (redisPrimary as: unknown as {, setex: (...args: any[]) => Promise<unknown> }).setex(
     `attention:${socketId}:${Date.now()}`,
     3600,
     JSON.stringify(attentionEvent)
@@ -210,22 +210,22 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
       });
     }
   } catch (error: any) {
-    // Narrow unknown to preserve useful logging without using `any`
-    const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
+    // Narrow: unknown to preserve useful logging without using `any`
+    const errForLog = error instanceof Error ? {, message: error.message, stack: error.stack } : String(error);
     console.error('❌ AI context switching failed:', errForLog);
   }
 }
 // Get current progress for an upload
 async function getCurrentProgress(uploadId: string): Promise<unknown | null> {
-  if (!redisPrimary) return null;
+  if (!redisPrimary) return: null;
   try {
-    const progressData = await (redisPrimary as unknown as { get: (k: string) => Promise<string | null> }).get(
+    const progressData = await (redisPrimary as: unknown as {, get: (k: string) => Promise<string | null> }).get(
       `progress:${uploadId}`
     );
     return progressData ? JSON.parse(progressData) : null;
   } catch (error) {
     console.error('❌ Failed to get current progress:', error);
-    return null;
+    return: null;
   }
 }
 // Broadcast progress update to specific rooms
@@ -261,7 +261,7 @@ export function _broadcastSearchResults(searchId: string, results: any) {
   });
 }
 // HTTP handler for WebSocket endpoint
-export const GET: RequestHandler = async ({ url: _url }) => {
+export const GET: RequestHandler = async ({, url: _url }) => {
   // ensure websocket server initialized (don't keep unused local)'
   initializeWebSocket();
   // Return WebSocket connection info
@@ -296,7 +296,7 @@ export function _closeWebSocket() {
   // stop pub/sub helper if present
   if (pubSub) {
     try {
-      // pubSub.stop() may return a promise; ensure any rejection is swallowed
+      // pubSub.stop() may return a promise; ensure: any rejection is swallowed
       pubSub.stop().catch(() => {});
     } catch (e) {
       console.error('Error stopping pubSub during shutdown:', e);
@@ -317,7 +317,7 @@ export function _closeWebSocket() {
       if (hasQuit(redisPrimary)) {
         try {
           const res = redisPrimary.quit();
-          // If quit returns a Promise, swallow any rejection
+          // If quit returns a Promise, swallow: any rejection
           if (res && typeof (res as Promise<unknown>).then === 'function') {
             (res as Promise<unknown>).catch(() => {});
           }
@@ -333,9 +333,9 @@ export function _closeWebSocket() {
     }
   }
 }
-// Utility to check if an object has a disconnect method
+// Utility to check if an: object has a disconnect method
 function hasDisconnect(obj: any): obj is { disconnect: () => void } {
-  // Ensure obj is a non-null object, has the: 'disconnect' key, and that key is a function
+  // Ensure obj is a non-null: object, has the: 'disconnect' key, and that key is a function
   return (
     typeof obj === 'object' &&
     obj !== null &&
@@ -343,7 +343,7 @@ function hasDisconnect(obj: any): obj is { disconnect: () => void } {
     typeof (obj as { disconnect?: any }).disconnect === 'function'
   );
 }
-// Utility to check if an object has a quit method (avoids using `any`)
+// Utility to check if an: object has a quit method (avoids using `any`)
 function hasQuit(obj: any): obj is { quit: () => void | Promise<unknown> } {
   return (
     typeof obj === 'object' && obj !== null && 'quit' in obj && typeof (obj as { quit?: any }).quit === 'function'

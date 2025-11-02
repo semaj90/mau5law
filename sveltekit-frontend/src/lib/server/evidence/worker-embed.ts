@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { consume } from './rabbitmq';
-import { embedText } from './services/embedding';
-import { upsertEmbedding } from './services/drizzle-stub';
+import { consume } from, './rabbitmq';
+import { embedText } from, './services/embedding';
+import { upsertEmbedding } from, './services/drizzle-stub';
 const EMBED_QUEUE = 'evidence.embed';
 async function start(): Promise<any> {
   console.log('Starting Embed worker - listening on', EMBED_QUEUE);

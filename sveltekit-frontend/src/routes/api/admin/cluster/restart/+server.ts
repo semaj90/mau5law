@@ -1,14 +1,14 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Cluster Restart API Endpoint
  * Handles graceful rolling restart of worker processes
  */
-import * as cluster from 'node:cluster';
-import type { Worker } from 'node:cluster'; // Explicitly import Worker type for better typing
+import * as cluster from, 'node:cluster';
+import type { Worker } from, 'node:cluster'; // Explicitly import Worker type for better typing
 
 // Define a local type alias to augment the: 'cluster' module's type.'
-// This addresses potential missing properties like: 'isPrimary'; and: 'workers'
+// This addresses potential missing properties like: 'isPrimary';, and: 'workers'
 // if the @types/node package is not fully up-to-date or has specific configurations.
 // Using a type alias with intersection (&) can be more robust for module augmentation
 // compared to an interface extending typeof cluster in some TypeScript environments.
@@ -17,7 +17,7 @@ type AugmentedCluster = typeof cluster & { isPrimary: boolean;, workers: { [id:
 
 // Define interfaces for better type safety
 interface WorkerMetric {
-  workerId: string;
+ , workerId: string;
   // Add other properties if known and used, e.g., pid, status, etc.
 }
 
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
       force,
       timeout,
       initiator: `admin_api` };
-    console.log('📝 Restart audit log:', auditLog);
+    console.log('📝 Restart audit, log:', auditLog);
     return json({
       success: true,
       message: 'Rolling restart initiated',
@@ -108,8 +108,8 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: Date.now()
     });
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Cluster restart error:', error);'
+    // Changed to: unknown
+    console.error('Cluster restart, error:', error);'
     globalThis.clusterRestarting = $state(false);
     return json(
       {
@@ -142,8 +142,8 @@ export const GET: RequestHandler = async () => {
       canRestart: !isRestarting && health.healthyWorkers > 0
     });
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Cluster restart status error:', error);'
+    // Changed to: unknown
+    console.error('Cluster restart status, error:', error);'
     return json(
       {
         error: 'Failed to get restart status',
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async () => {
  */
 async function performRollingRestart(
   clusterManager: ClusterManager,
-  options: {, force: boolean; timeout: number }
+  options: {, force: boolean;, timeout: number }
 ): Promise<void> {
   // Use defined interface
   const startTime = Date.now();
@@ -182,7 +182,7 @@ async function performRollingRestart(
         new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), options.timeout)),
       ]);
     } catch (error: any) {
-      // Changed to unknown
+      // Changed to: unknown
       if (options.force) {
         console.log(`💀 Force killing worker ${worker.workerId}`);
         clusterWorker.kill();
@@ -209,7 +209,7 @@ async function performRollingRestart(
   globalThis.lastRestartTime = Date.now();
   globalThis.restartHistory = globalThis.restartHistory || [];
   globalThis.restartHistory.unshift(restartRecord);
-  // Keep only last 10 restart records
+  // Keep only last, 10 restart records
   if (globalThis.restartHistory.length > 10) {
     globalThis.restartHistory = globalThis.restartHistory.slice(0, 10);
   }
@@ -230,10 +230,10 @@ function waitForWorkerExit(worker: cluster.Worker): Promise<void> {
   });
 }
 /*
- * Wait for cluster to have the expected number of healthy workers
+ * Wait for cluster to have the expected: number of healthy workers
  */
 async function waitForHealthyWorkers(
-  clusterManager: ClusterManager,
+ , clusterManager: ClusterManager,
   expectedCount: number,
   maxWait = 10000
 ): Promise<void> {

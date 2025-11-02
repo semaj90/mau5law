@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // XState v5 Document Processing Workflow - Minimal Stub
-import { createMachine } from 'xstate';
+import { createMachine } from, 'xstate';
 
 export interface DocumentProcessingContext { documentId: string;, content: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   chunks: string[];
   progress: number;
   errors: string[];
@@ -16,7 +16,7 @@ export type DocumentProcessingEvent =
   | { type: 'FAIL'; error: string };
 
 export const documentProcessingMachine = createMachine({
-  id: 'documentProcessing',
+ , id: 'documentProcessing',
   initial: 'idle',
   context: {
    , documentId: '',

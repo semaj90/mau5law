@@ -227,7 +227,7 @@
   {#if isHovered}
     <div
       class="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center"
-      transition:fade={{ duration: 150 }}
+      use:fade={{ duration: 150 }}
     >
       <div class="flex space-x-2">
         {#if onDownload}
@@ -293,7 +293,7 @@
   <div
     class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
     onclick={() => showModal = false}
-    transition:fade={{ duration: 200 }}
+    use:fade={{ duration: 200 }}
   >
     <div
       class={`
@@ -302,7 +302,7 @@
         ${theme === 'gaming' ? 'shadow-[0_0_30px_rgba(0,255,65,0.3)]' : 'shadow-2xl'}
       `}
       onclick={(e) => e.stopPropagation()}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      use:scale={{ duration: 200, easing: quintOut }}
     >
       <!-- Close Button -->
       <button

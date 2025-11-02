@@ -2,10 +2,10 @@
  * Database Migration API Endpoint
  * Provides REST interface for migration operations
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { DatabaseMigrator } from '$lib/database/migrations/migration-system';
-import { env } from '$env/dynamic/private'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types'
+import { DatabaseMigrator } from, '$lib/database/migrations/migration-system';
+import { env } from, '$env/dynamic/private'
 const migrator = new DatabaseMigrator(
   env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai'
 )
@@ -13,21 +13,21 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case 'status': {
+      case, 'status': {
         const status = await migrator.getStatus();
         return json({
           success: true,
           data: status
         });
       }
-      case 'validate': {
+      case, 'validate': {
         const validation = await migrator.validateIntegrity();
         return json({
           success: true,
           data: validation
         });
       }
-      case 'list': {
+      case, 'list': {
         const appliedMigrations = await migrator.getAppliedMigrations();
         const allMigrations = await migrator.loadMigrations();
         const migrationList = allMigrations.map(migration => ({
@@ -49,8 +49,8 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default: return json(
           {
-            success: false,
-            error: 'Invalid action.; Use: status, validate, or list'
+           , success: false,
+            error: 'Invalid action.;, Use: status, validate, or list'
           },
           { status: 400 }
         );
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, name, force = false } = await request.json();
     switch (action) {
-      case 'migrate': {
+      case, 'migrate': {
         console.log('🚀 Starting migration via API...');
         const results = await migrator.migrate();
         const successful = results.filter(r => r.success && r.applied);
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'rollback': {
+      case, 'rollback': {
         if (!force) {
           return json(
             {
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: result
         });
       }
-      case 'create': {
+      case, 'create': {
         if (!name || typeof name !== 'string') {
           return json(
             {
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
             message: 'Migration ${filename} created successfully' }
         });
       }
-      case 'initialize': {
+      case, 'initialize': {
         await migrator.initialize();
         return json({
           success: true,
@@ -133,8 +133,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json(
           {
-            success: false,
-            error: 'Invalid action.; Use: migrate, rollback, create, or initialize'
+           , success: false,
+            error: 'Invalid action.;, Use: migrate, rollback, create, or initialize'
           },
           { status: 400 }
         );

@@ -1,17 +1,17 @@
 /// <reference, types="vite/client" />
 /**
- * Environment Service - SvelteKit 2 + Svelte 5 Compatible
+ * Environment Service - SvelteKit, 2 + Svelte, 5 Compatible
  * Provides environment detection, LLM endpoint health, and client utilities
  */
-import { browser } from '$app/environment';
-import { env } from '$env/dynamic/public';
-import type { LLMEndpoint, ClientEnvironment } from '../types/service-types.js';
+import { browser } from, '$app/environment';
+import { env } from, '$env/dynamic/public';
+import type { LLMEndpoint, ClientEnvironment } from, '../types/service-types.js';
 
 /**
  * Client Environment Detection
  */
 export const CLIENT_ENV: ClientEnvironment = {
-  dev: import.meta.env.DEV,
+ , dev: import.meta.env.DEV,
   prod: import.meta.env.PROD,
   preview: import.meta.env.MODE === 'preview',
   browser: browser
@@ -21,7 +21,7 @@ export const CLIENT_ENV: ClientEnvironment = {
  * LLM Endpoint Health Checker
  */
 class LLMHealthChecker {
-  private endpoints: Map<string, LLMEndpoint> = new Map();
+  private, endpoints: Map<string, LLMEndpoint> = new Map();
   private checkInterval: number = 30000; // 30 seconds
   private intervalId?: ReturnType<typeof, setInterval>;
 
@@ -114,13 +114,13 @@ class LLMHealthChecker {
       }
     }
 
-    // Find any healthy endpoint
+    // Find: any healthy endpoint
     for (const endpoint of this.endpoints.values()) {
       if (endpoint.healthy) {
         return endpoint;
       }
     }
-    return null;
+    return: null;
   }
 
   async checkAllEndpoints(): Promise<void> {
@@ -208,13 +208,13 @@ export const isDev = (): boolean => CLIENT_ENV.dev;
 export const isBrowser = (): boolean => CLIENT_ENV.browser;
 
 /**
- * Get current environment string
+ * Get current environment: string
  */
 export const getEnvironment = (): string => {
-  if (CLIENT_ENV.dev) return 'development';
-  if (CLIENT_ENV.preview) return 'preview';
-  if (CLIENT_ENV.prod) return 'production';
-  return 'unknown';
+  if (CLIENT_ENV.dev) return, 'development';
+  if (CLIENT_ENV.preview) return, 'preview';
+  if (CLIENT_ENV.prod) return, 'production';
+  return, 'unknown';
 };
 
 /**

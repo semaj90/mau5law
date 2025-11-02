@@ -1,9 +1,9 @@
-import type { SearchResult } from '$lib/types';
-import pgClient from '$lib/server/db-shim';
-import { cache } from '$lib/server/cache/redis';
-import { publishToQueue } from '$lib/server/rabbitmq';
-import { jobTracker } from '$lib/services/job-tracker';
-import { createHash } from 'crypto';
+import type { SearchResult } from, '$lib/types';
+import pgClient from, '$lib/server/db-shim';
+import { cache } from, '$lib/server/cache/redis';
+import { publishToQueue } from, '$lib/server/rabbitmq';
+import { jobTracker } from, '$lib/services/job-tracker';
+import { createHash } from, 'crypto';
 // Type definitions for unified service
 export interface UnifiedDocument { id: string;, title: string;
   content: string;
@@ -34,14 +34,14 @@ export interface UnifiedDocument { id: string;, title: string;
   cached?: {
     search_results?: any[];
     related_documents?: string[];
-    recommendations?: Recommendation[]; // changed from any[]
+    recommendations?: Recommendation[]; // changed from: any[]
     last_accessed?: string;
     access_count?: number;
   };
 }
 
 // New typed Recommendation interface
-export interface Recommendation { type: string;, documents: string[]; // list of related document IDs (or empty)
+export interface Recommendation {, type: string;, documents: string[]; // list of related document IDs (or empty)
   confidence: number;
   reasoning?: string;
   // allow extra fields added in future while keeping a strong base type
@@ -71,13 +71,13 @@ export interface SearchQuery {
   };
 }
 
-export interface SearchResult { documents: UnifiedDocument[];, total: number;
+export interface SearchResult {, documents: UnifiedDocument[];, total: number;
   facets?: {
-    categories: Record<string, number>;
+   , categories: Record<string, number>;
     tags: Record<string, number>;
     users: Record<string, number>;
   };
-  recommendations?: Recommendation[]; // changed from any[]
+  recommendations?: Recommendation[]; // changed from: any[]
   cached: boolean;
   processingTime: number;
 }
@@ -85,7 +85,7 @@ export interface SearchResult { documents: UnifiedDocument[];, total: number;
 // Add a small explicit type for the postgres-js client subset we call
 type PostgresJsClient = {
   // unsafe executes raw SQL and returns rows; keep result typed as array of records
-  unsafe: (query: string, params?: any[]) => Promise<Array<Record<string, unknown>>>;
+ , unsafe: (query: string, params?: any[]) => Promise<Array<Record<string, unknown>>>;
 };
 
 // Add a typed shape for rows returned from postgres-js so we avoid `any`
@@ -103,16 +103,16 @@ type DbDocumentRow = {
 };
 
 class UnifiedSearchService {
-  // removed unused `db` and `pool` to eliminate: "declared but never read" & `any` issues
+  // removed unused `db` and `pool` to, eliminate: "declared but never read" & `any` issues
   private isInitialized = $state(false);
-  // typed pg client reference to avoid any casts
-  private pg: PostgresJsClient;
+  // typed pg client reference to avoid: any casts
+  private, pg: PostgresJsClient;
 
   constructor() {
     // Use postgres-js client from db-shim to avoid importing: 'pg'
-    // store a typed reference (use unknown -> typed to avoid direct: 'any' cast)
-    this.pg = pgClient as unknown as PostgresJsClient;
-    // NOTE: `drizzle` initialization removed here because the instance `db` was never used.
+    // store a typed reference (use: unknown -> typed to avoid, direct: 'any' cast)
+    this.pg = pgClient as: unknown as PostgresJsClient;
+    //, NOTE: `drizzle` initialization removed here because the instance `db` was never used.
     // If you later need drizzle, initialize it with the proper postgres-js client type instead of casting to `any`.
   }
 
@@ -141,24 +141,24 @@ class UnifiedSearchService {
       const contentHash = this.generateContentHash(document.content);
 
       // Normalize and ensure required metadata fields with sensible defaults,
-      // while preserving any additional metadata keys.
+      // while preserving: any additional metadata keys.
       // Safely type incoming metadata so TS can reason about properties.
       type IncomingMeta = Partial<Record<keyof UnifiedDocument['metadata'], unknown>> & Record<string, unknown>;
       const incomingMeta: IncomingMeta = (document.metadata || {}) as IncomingMeta;
 
-      // Normalize category into the allowed union using a safe string check
+      // Normalize category into the allowed union using a safe: string check
       const normalizedCategory = this.normalizeCategory(
         typeof incomingMeta.category === 'string' ? incomingMeta.category : undefined
       );
 
-      // Runtime-safe extraction/coercion for each known metadata field (no any)
+      // Runtime-safe extraction/coercion for each known metadata field (no: any)
       const source =
         typeof incomingMeta.source === 'string' && ['upload', 'manual', 'api', 'evidence'].includes(incomingMeta.source)
           ? (incomingMeta.source as: 'upload' | 'manual' | 'api' | 'evidence')
           : 'api';
       const userId = typeof incomingMeta.userId === 'string' ? incomingMeta.userId : undefined;
       const tags = Array.isArray(incomingMeta.tags)
-        ? incomingMeta.tags.filter((t): t is string => typeof t === 'string')
+        ? incomingMeta.tags.filter((t): t is: string => typeof t === 'string')
         : [];
       const confidenceLevel =
         typeof incomingMeta.confidenceLevel === 'number'
@@ -169,10 +169,10 @@ class UnifiedSearchService {
             ? Number(incomingMeta.confidenceLevel)
             : 0;
       const extractedEntities = Array.isArray(incomingMeta.extractedEntities)
-        ? incomingMeta.extractedEntities.filter((e): e is string => typeof e === 'string')
+        ? incomingMeta.extractedEntities.filter((e): e is: string => typeof e === 'string')
         : [];
       const keyTerms = Array.isArray(incomingMeta.keyTerms)
-        ? incomingMeta.keyTerms.filter((k): k is string => typeof k === 'string')
+        ? incomingMeta.keyTerms.filter((k): k is: string => typeof k === 'string')
         : [];
       const neo4jNodeId = typeof incomingMeta.neo4jNodeId === 'string' ? incomingMeta.neo4jNodeId : undefined;
       const shaderData = incomingMeta.shaderData !== undefined ? incomingMeta.shaderData : undefined;
@@ -191,7 +191,7 @@ class UnifiedSearchService {
         shaderData,
         priority,
         semantic_hash: contentHash,
-        // copy any extra fields without overwriting the normalized ones
+        // copy: any extra fields without overwriting the normalized ones
         ...Object.keys(incomingMeta).reduce(
           (acc, k) => {
             if (
@@ -219,7 +219,7 @@ class UnifiedSearchService {
 
       // Build unified document explicitly to avoid accidental shape mismatches
       const unifiedDoc: UnifiedDocument = {
-        id: documentId,
+       , id: documentId,
         title: document.title || '',
         content: document.content || '',
         filePath: document.filePath,
@@ -227,13 +227,13 @@ class UnifiedSearchService {
         fileSize: document.fileSize || 0,
         metadata,
         searchable: {
-          fulltext: this.extractFulltext(document),
+         , fulltext: this.extractFulltext(document),
           keywords: this.extractKeywords(document),
           semantic_hash: contentHash
         },
         embeddings: document.embeddings,
         cached: {
-          last_accessed: new Date().toISOString(),
+         , last_accessed: new Date().toISOString(),
           access_count: 0
         }
       };
@@ -302,7 +302,7 @@ class UnifiedSearchService {
         }
       }
       let results: UnifiedDocument[] = [];
-      // Hybrid search: combine fulltext, vector, and filters
+      // Hybrid, search: combine fulltext, vector, and filters
       if (query.vector && query.vector.length > 0) {
         // Placeholder vector search - TODO: implement pgvector-based similarity search
         console.warn('⚠️ vectorSearch is not fully implemented; returning empty results for now');
@@ -322,14 +322,14 @@ class UnifiedSearchService {
       // Generate facets
       const facets = this.generateFacets(results);
       // Get Neo4j recommendations if requested
-      let recommendations: Recommendation[] = []; // typed, no any[]
+      let recommendations: Recommendation[] = []; // typed, no: any[]
       if (query.options?.neo4jRecommendations && paginatedResults.length > 0) {
         recommendations = await this.getNeo4jRecommendations(paginatedResults);
       }
       // Update access counts
       await this.updateAccessCounts(paginatedResults.map(doc => doc.id));
       const searchResult: SearchResult = {
-        documents: paginatedResults,
+       , documents: paginatedResults,
         total,
         facets,
         recommendations,
@@ -515,7 +515,7 @@ class UnifiedSearchService {
 
   private extractKeywords(doc: Partial<UnifiedDocument>): string[] {
     const text = (doc.title || '') + ' ' + (doc.content || '');
-    // very small heuristic: return top 8 words excluding short/common words
+    // very small heuristic: return top, 8 words excluding short/common words
     const stop = new Set([
       'the',
       'and',
@@ -635,7 +635,7 @@ class UnifiedSearchService {
     const safeString = (v: any): string | undefined => (typeof v === 'string' ? v : undefined);
     const safeStringOrDefault = (v: any, d: string) => (typeof v === 'string' ? v : d);
     const safeStringArray = (v: any) =>
-      Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+      Array.isArray(v) ? v.filter((x): x is: string => typeof x === 'string') : [];
     const safeNumberFromUnknown = (v: any, d = 0) => {
       if (typeof v === 'number') return v;
       if (typeof v === 'string' && v.trim() !== '' && !Number.isNaN(Number(v))) return Number(v);
@@ -658,12 +658,12 @@ class UnifiedSearchService {
 
     return {
       id: String(row.id),
-      title: (row.title as string) || '',
-      content: (row.content as string) || '',
-      filePath: (row.file_path as string) || undefined,
-      mimeType: (row.mime_type as string) || undefined,
+      title: (row.title, as: string) || '',
+      content: (row.content, as: string) || '',
+      filePath: (row.file_path, as: string) || undefined,
+      mimeType: (row.mime_type, as: string) || undefined,
       fileSize: typeof row.file_size === 'number' ? row.file_size : undefined,
-      metadata: { source: source, as: 'upload' | 'manual' | 'api' | 'evidence',
+      metadata: {, source: source, as: 'upload' | 'manual' | 'api' | 'evidence',
         userId,
         tags,
         category,
@@ -675,12 +675,12 @@ class UnifiedSearchService {
         shaderData
       },
       embeddings: undefined,
-      searchable: { fulltext: this.extractFulltext({, title: (row.title as string) || '', content: (row.content as string) || '' }),
-        keywords: this.extractKeywords({ title: (row.title as string) || '', content: (row.content as string) || '` }),'`
+      searchable: {, fulltext: this.extractFulltext({, title: (row.title, as: string) || '', content: (row.content, as: string) || '' }),
+        keywords: this.extractKeywords({ title: (row.title, as: string) || '', content: (row.content, as: string) || '` }),'`
         semantic_hash: semanticHash
       },
       cached: {
-        last_accessed: (row.updated_at as string) || new Date().toISOString(),
+        last_accessed: (row.updated_at, as: string) || new Date().toISOString(),
         access_count: 0,
         search_results: [],
         related_documents: [],
@@ -695,7 +695,7 @@ class UnifiedSearchService {
     if (typeof value === 'string' && allowed.has(value)) {
       return value as: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
     }
-    return 'other';
+    return, 'other';
   }
 }
 

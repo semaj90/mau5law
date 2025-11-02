@@ -2,34 +2,34 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { Button } from 'bits-ui';
-  import { fade, slide } from 'svelte/transition';
-  import { writable } from 'svelte/store';
-  import type { OCRResult } from '$lib/services/ocr-processor';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { Button } from, 'bits-ui';
+  import { fade, slide } from, 'svelte/transition';
+  import { writable } from, 'svelte/store';
+  import type { OCRResult } from, '$lib/services/ocr-processor';
 
-  // explicit props (Svelte 5 safe, TypeScript-friendly)
+  // explicit props (Svelte, 5 safe, TypeScript-friendly)
   const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
   const { formDataProp } = $props<{ formDataProp: | {
-        extracted_entities: any[] }>()
+       , extracted_entities: any[] }>()
         key_facts: string[];
         legal_issues: string[];
         precedents: any[];
       }
     | undefined;
-  const { ocrResultsProp } = $props<{ ocrResultsProp: OCRResult[] | undefined }>()
+  const { ocrResultsProp } = $props<{, ocrResultsProp: OCRResult[] | undefined }>()
 
   // local state derived from props with safe defaults
   let formData = formDataProp ?? {
-    extracted_entities: [] as any[],
-    key_facts: [] as string[],
-    legal_issues: [] as string[],
-    precedents: [] as any[]
+    extracted_entities: [], as: any[],
+    key_facts: [], as: string[],
+    legal_issues: [], as: string[],
+    precedents: [] as: any[]
   };
   let ocrResults: OCRResult[] = ocrResultsProp ?? [];
 
-  // simple boolean (avoid $state rune to prevent migration parse issues)
+  //, simple: boolean (avoid $state rune to prevent migration parse issues)
   let isAnalyzing = $state<boolean>(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
@@ -192,9 +192,9 @@ import type { Document } from '$lib/types';
     formData.extracted_entities = formData.extracted_entities.filter((_, i) => i !== index);
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.9) return 'bg-green-100 text-green-800';
-    if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (confidence >= 0.9) return, 'bg-green-100 text-green-800';
+    if (confidence >= 0.7) return, 'bg-yellow-100 text-yellow-800';
+    return, 'bg-red-100 text-red-800';
   }
   function handleNext() {
     if (!formData.key_facts || formData.key_facts.length === 0) {
@@ -227,7 +227,7 @@ import type { Document } from '$lib/types';
         </div>
         <Button
           onclick={performAutomatedAnalysis}
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2, focus:ring-blue-500 bits-btn"
         >
           🤖 Start Analysis
         </Button>
@@ -268,7 +268,7 @@ import type { Document } from '$lib/types';
                 </span>
                 <Button
                   onclick={() => removeEntity(index)}
-                  class="bits-btn p-1 text-red-600 hover:text-red-800 focus:outline-none"
+                  class="bits-btn p-1 text-red-600 hover:text-red-800, focus:outline-none"
                   aria-label="Remove entity"
                 >
                   ×
@@ -288,7 +288,7 @@ import type { Document } from '$lib/types';
       <h3 class="text-lg, font-medium, text-gray-900">Key Facts</h3>
       <Button
         onclick={addKeyFact}
-        class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 bits-btn"
+        class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2, focus:ring-green-500 bits-btn"
       >
         + Add Fact
       </Button>
@@ -302,12 +302,12 @@ import type { Document } from '$lib/types';
                 bind:value={formData.key_facts[index]}
                 rows="2"
                 placeholder="Describe a key fact relevant to this case..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
               ></textarea>
             </div>
             <Button
               onclick={() => removeKeyFact(index)}
-              class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
+              class="px-3 py-2 text-red-600 hover:text-red-800, focus:outline-none bits-btn"
             >
               Remove
             </Button>
@@ -324,7 +324,7 @@ import type { Document } from '$lib/types';
       <h3 class="text-lg, font-medium, text-gray-900">Legal Issues</h3>
       <Button
         onclick={addLegalIssue}
-        class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 bits-btn"
+        class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2, focus:ring-purple-500 bits-btn"
       >
         + Add Issue
       </Button>
@@ -335,7 +335,7 @@ import type { Document } from '$lib/types';
           <div, class="flex, gap-3" transition:fade>
             <select
               bind:value={formData.legal_issues[index]}
-              class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
             >
               <option, value="">Select legal issue category</option>
               {#each Array.isArray(legalIssueCategories) ? legalIssueCategories : [] as category}
@@ -344,7 +344,7 @@ import type { Document } from '$lib/types';
             </select>
             <Button
               onclick={() => removeLegalIssue(index)}
-              class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
+              class="px-3 py-2 text-red-600 hover:text-red-800, focus:outline-none bits-btn"
             >
               Remove
             </Button>
@@ -379,7 +379,7 @@ import type { Document } from '$lib/types';
   <div class="flex justify-between pt-6, border-t, border-gray-200">
     <Button
       onclick={handlePrevious}
-      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
+      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2, focus:ring-blue-500 bits-btn"
     >
       ← Previous
     </Button>
@@ -400,4 +400,4 @@ import type { Document } from '$lib/types';
     </div>
   </div>
 </div>
-<!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
+<!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->

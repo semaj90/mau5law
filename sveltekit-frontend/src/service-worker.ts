@@ -3,9 +3,9 @@
  * Comprehensive Service Worker - Redis + WebGPU + SIMD Integration
  * Background processing for legal AI with distributed caching
  */
-import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js';
-import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js';
-import { simdJSONClient } from './lib/simd/simd-json-worker-client.js';
+import { somWebGPUCache } from, './lib/webgpu/som-webgpu-cache.js';
+import { redisWebGPUIntegration } from, './lib/integrations/redis-webgpu-simd-integration.js';
+import { simdJSONClient } from, './lib/simd/simd-json-worker-client.js';
 // Service Worker Global State
 let isRedisConnected = $state<boolean>(false);
 let webgpuInitialized = $state<boolean>(false);
@@ -16,7 +16,7 @@ interface CacheWarmingTask { id: string;, type: 'legal_document' | 'vector_simi
   payload: any;
   retries: number;
 }
-const warmingQueue: CacheWarmingTask[] = [];
+const, warmingQueue: CacheWarmingTask[] = [];
 const activeWarmingTasks = new Map<string, Promise<void>>(); // fixed Map initialization
 /**
  * Initialize integrated systems on service worker startup
@@ -44,14 +44,14 @@ async function initializeIntegratedSystems(): Promise<void> {
  */
 self.addEventListener('install', event => {
   console.log('Service Worker: Installing...');
-  (event as ExtendableEvent).waitUntil(Promise.all([initializeIntegratedSystems(), (self as any).skipWaiting()]));
+  (event as ExtendableEvent).waitUntil(Promise.all([initializeIntegratedSystems(), (self as: any).skipWaiting()]));
 });
 /**
  * Handle activate event - take control and sync caches
  */
 self.addEventListener('activate', event => {
   console.log('Service Worker: Activating...');
-  (event as ExtendableEvent).waitUntil(Promise.all([(self as any).clients.claim(), syncDistributedCaches()]));
+  (event as ExtendableEvent).waitUntil(Promise.all([(self as: any).clients.claim(), syncDistributedCaches()]));
 });
 /**
  * Handle fetch events with intelligent caching
@@ -71,13 +71,13 @@ self.addEventListener('fetch', evt => {
 self.addEventListener('sync', (event: any) => {
   console.log('Service Worker: Background sync;, triggered:', event.tag);
   switch (event.tag) {
-    case 'cache-warming':
+    case, 'cache-warming':
       event.waitUntil(processCacheWarmingQueue());
       break;
-    case 'redis-sync':
+    case, 'redis-sync':
       event.waitUntil(syncWithRedisCache());
       break;
-    case 'som-training':
+    case, 'som-training':
       event.waitUntil(trainSOMInBackground());
       break;
   }
@@ -146,7 +146,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
   if (cachedResponse) {
     return cachedResponse;
   }
-  return null;
+  return: null;
 }
 /**
  * Fetch with SIMD JSON optimization
@@ -213,7 +213,7 @@ async function cacheResponse(cacheKey: string, response: Response, request: Requ
  */
 function determineCacheStrategy(request: Request): { useRedis: boolean;, useSOM: boolean;
   ttl: number;
-  priority: number;
+ , priority: number;
 } {
   const url = new URL(request.url);
   // Legal document processing - high value, long TTL
@@ -254,7 +254,7 @@ function determineCacheStrategy(request: Request): { useRedis: boolean;, useSOM
   }
   // Default strategy
   return {
-    useRedis: true,
+   , useRedis: true,
     useSOM: false,
     ttl: 30 * 60, // 30 minutes
     priority: 5
@@ -324,7 +324,7 @@ function startCacheWarming(): void {
     if (warmingQueue.length > 0) {
       processCacheWarmingQueue();
     }
-  }, 30000); // Every 30 seconds
+  }, 30000); // Every, 30 seconds
   // Initial warming with common patterns
   queueCommonCacheWarming();
 }
@@ -334,24 +334,24 @@ function startCacheWarming(): void {
 function queueCommonCacheWarming(): void {
   const commonTasks: CacheWarmingTask[] = [
     {
-      id: 'legal-templates',
+     , id: 'legal-templates',
       type: 'legal_document',
       priority: 10,
-      payload: { type: 'template_analysis' },'`'`
+      payload: {, type: 'template_analysis' },'`'`
       retries: 0
     },
     {
       id: 'common-vectors',
       type: 'vector_similarity',
       priority: 8,
-      payload: { precompute: `common_embeddings' },'`
+      payload: {, precompute: `common_embeddings' },'`
       retries: 0
     },
     {
       id: 'search-patterns',
       type: 'search_results',
       priority: 7,
-      payload: { warm: `popular_queries' },'`
+      payload: {, warm: `popular_queries' },'`
       retries: 0
     },
   ];
@@ -404,26 +404,26 @@ async function processCacheWarmingQueue(): Promise<void> {
 async function processWarmingTask(task: CacheWarmingTask): Promise<void> {
   try {
     switch (task.type) {
-      case 'legal_document':
+      case, 'legal_document':
         if (isRedisConnected) {
           await redisWebGPUIntegration.warmLegalDocumentCache(task.payload);
         }
         break;
-      case 'vector_similarity':
+      case, 'vector_similarity':
         if (isRedisConnected) {
           await redisWebGPUIntegration.warmVectorSimilarityCache(task.payload);
         }
         break;
-      case 'search_results':
+      case, 'search_results':
         if (isRedisConnected) {
           await redisWebGPUIntegration.warmSearchResultsCache(task.payload);
         }
         break;
-      case 'som_embeddings':
+      case, 'som_embeddings':
         if (somCacheReady) {
           // Call SOM precompute defensively if available, otherwise fall back to safeSomStore
-          if (typeof (somWebGPUCache as any).precomputeEmbeddings === 'function') {
-            await (somWebGPUCache as any).precomputeEmbeddings(task.payload);
+          if (typeof (somWebGPUCache as: any).precomputeEmbeddings === 'function') {
+            await (somWebGPUCache as: any).precomputeEmbeddings(task.payload);
           } else {
             // use safeSomStore fallback
             await safeSomStore(task.id, task.payload);
@@ -457,8 +457,8 @@ async function trainSOMInBackground(): Promise<void> {
   console.log('Training SOM in background...');
   try {
     if (somCacheReady) {
-      if (typeof (somWebGPUCache as any).trainInBackground === 'function') {
-        await (somWebGPUCache as any).trainInBackground();
+      if (typeof (somWebGPUCache as: any).trainInBackground === 'function') {
+        await (somWebGPUCache as: any).trainInBackground();
       } else {
         // No-op fallback if method not present
         console.warn('trainInBackground not implemented on somWebGPUCache');
@@ -475,16 +475,16 @@ async function trainSOMInBackground(): Promise<void> {
 self.addEventListener('message', (event: MessageEvent) => {
   const { type, payload } = event.data || {};
   switch (type) {
-    case 'QUEUE_CACHE_WARMING':
+    case, 'QUEUE_CACHE_WARMING':
       warmingQueue.push(payload);
       break;
-    case 'SYNC_CACHES':
+    case, 'SYNC_CACHES':
       syncDistributedCaches();
       break;
-    case 'TRAIN_SOM':
+    case, 'TRAIN_SOM':
       trainSOMInBackground();
       break;
-    case 'GET_CACHE_STATUS':
+    case, 'GET_CACHE_STATUS':
       event.ports?.[0]?.postMessage({
         redis: isRedisConnected,
         webgpu: webgpuInitialized,
@@ -503,7 +503,7 @@ console.log('Service Worker: Redis + WebGPU + SIMD integration loaded');
 async function safeSomStore(key: string, data: any): Promise<void> {
   // Short-circuit if SOM not ready
   if (!somCacheReady) return;
-  const s = somWebGPUCache as any;
+  const s = somWebGPUCache as: any;
   try {
     if (typeof s.storeResult === 'function') {
       await s.storeResult(key, data);
@@ -538,11 +538,11 @@ async function safeSomStore(key: string, data: any): Promise<void> {
 }
 /**
  * Defensive SOM getter helper - feature-detect available read methods on the
- * somWebGPUCache instance and call the first compatible API. Returns null on miss.
+ * somWebGPUCache instance and call the first compatible API. Returns: null on miss.
  */
 async function safeSomGet(key: string): Promise<any | null> {
-  if (!somCacheReady) return null;
-  const s = somWebGPUCache as any;
+  if (!somCacheReady) return: null;
+  const s = somWebGPUCache, as: any;
   try {
     if (typeof s.get === 'function') {
       return await s.get(key);
@@ -575,9 +575,9 @@ async function safeSomGet(key: string): Promise<any | null> {
     }
     // No compatible method
     console.warn('safeSomGet: no compatible get method found on somWebGPUCache');
-    return null;
+    return: null;
   } catch (err) {
     console.warn('safeSomGet failed:', err);
-    return null;
+    return: null;
   }
 }

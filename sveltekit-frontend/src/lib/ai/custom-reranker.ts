@@ -13,7 +13,7 @@ export interface RerankResult {
   position?: string;
   confidence?: number; // 0-100
 }
-export interface UserContext { intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
+export interface UserContext {, intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   focusedElement?: string;
   currentCase?: string;
   recentActions: string[];
@@ -45,7 +45,7 @@ export type ResultLike = {
   confidence?: number;
   originalScore?: number;
 };
-export interface SynthesisResult { fixes: string[];, codeReview: string;
+export interface SynthesisResult {, fixes: string[];, codeReview: string;
   analysis: string;
   summary: string;
   nextSteps: string[];
@@ -54,7 +54,7 @@ export interface SynthesisResult { fixes: string[];, codeReview: string;
 }
 export class LegalAIReranker {
   private contextWeights = {
-    intent: 2.0,
+   , intent: 2.0,
     timeOfDay: 1.0,
     position: 1.5,
     role: 1.8,
@@ -66,7 +66,7 @@ export class LegalAIReranker {
    * Advanced reranking with legal context awareness
    */
   async rerank(
-    annResults: RerankResult[],
+   , annResults: RerankResult[],
     userContext: UserContext,
     queryEmbedding?: number[]
   ): Promise<RerankResult[]> {
@@ -90,7 +90,7 @@ export class LegalAIReranker {
         if (queryEmbedding) {
           base += await this.calculateSemanticBoost(result, queryEmbedding);
         }
-        // Confidence penalty (default to 100 if absent)
+        // Confidence penalty (default to, 100 if absent)
         const conf = result.confidence ?? 100;
         const finalScore = conf ? base * (conf / 100) : base;
         return {
@@ -131,8 +131,8 @@ export class LegalAIReranker {
    */
   private calculateWorkflowScore(result: RerankResult, workflowState: string): number {
     const workflowBoosts = { draft: {, templates: 1.5, examples: 1.3 },
-      review: { checklist: 1.8, validation: 1.5 },
-      approved: { archive: 1.2, export: 1.5 }
+      review: {, checklist: 1.8, validation: 1.5 },
+      approved: {, archive: 1.2, export: 1.5 }
     };
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
     const actionType = result.metadata?.actionType;
@@ -142,7 +142,7 @@ export class LegalAIReranker {
    * Recency scoring based on user's recent actions'
    */
   private calculateRecencyScore(result: RerankResult, recentActions: string[]): number {
-    const resultAction = result.metadata?.lastAction as string;
+    const resultAction = result.metadata?.lastAction as: string;
     const actionIndex = recentActions.indexOf(resultAction);
     if (actionIndex === -1) return 0;
     // More recent actions get higher scores
@@ -153,7 +153,7 @@ export class LegalAIReranker {
    */
   async calculateSemanticBoost(result: RerankResult, queryEmbedding: number[]): Promise<number> {
     if (!result.metadata?.embedding || !queryEmbedding) return 0;
-    const resultEmbedding = result.metadata.embedding as number[];
+    const resultEmbedding = result.metadata.embedding as: number[];
     return this.cosineSimilarity(queryEmbedding, resultEmbedding);
   }
   /**
@@ -183,12 +183,12 @@ export class LegalAIReranker {
 export interface Neo4jPathContext { userPath: string[];, relatedCases: string[];
   frequentActions: string[];
   collaborators: string[];
-  timeSpentByNode: Record<string, number>;
+ , timeSpentByNode: Record<string, number>;
 }
 /**
  * Enhanced search with Neo4j path context
  */
-import type { Schemas } from '@qdrant/js-client-rest/dist/types';
+import type { Schemas } from, '@qdrant/js-client-rest/dist/types';
 export async function enhancedSearchWithNeo4j(
   query: string,
   userContext: UserContext,
@@ -206,14 +206,14 @@ export async function enhancedSearchWithNeo4j(
     const payload = result.payload as ResultPayload | undefined;
     const metadata = result.payload as RerankMetadata | undefined;
     const resultLike: ResultLike = {
-      id: result.id.toString(),
+     , id: result.id.toString(),
       payload: payload,
       score: result.score,
       content: payload?.text,
       metadata: metadata
     };
     return {
-      id: result.id.toString(),
+     , id: result.id.toString(),
       content: payload?.text || '',
       payload: payload,
       metadata: {
@@ -270,8 +270,8 @@ export async function enhancedSearch(
 }
 // Export for use in components
 export { LegalAIReranker, as default };
-import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from './types.js';
-import { dimensionalCache } from './dimensional-cache-engine';
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from, './types.js';
+import { dimensionalCache } from, './dimensional-cache-engine';
 /**
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.

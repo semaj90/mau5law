@@ -1,18 +1,18 @@
 // Legal AI Orchestrator Health Check API
 // Nintendo-Style Service Health Monitoring
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 interface ServiceHealth { service: string, status: 'healthy' | 'degraded' | 'down'
   response_time_ms?: number
   details?: string
 }
 interface HealthResponse {
-  overall_status: 'healthy' | 'degraded' | 'critical',
-  services: ServiceHealth[]; nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: number; total_mb: number; utilization: number }
-    L2_SYSTEM_RAM: { used_mb: number; total_mb: number; utilization: number }
+ , overall_status: 'healthy' | 'degraded' | 'critical',
+  services: ServiceHealth[]; nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: number; total_mb: number; utilization: number };
+    L2_SYSTEM_RAM: { used_mb: number; total_mb: number; utilization: number };
     L3_REDIS_CACHE: { used_mb: number; total_mb: number; utilization: number }
   }
-  timestamp: string
+ , timestamp: string
 }
 async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
   const startTime = Date.now()
@@ -52,7 +52,7 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
     }
   } catch {
     return {
-      service: 'Redis Cache (L3)',
+     , service: 'Redis Cache (L3)',
       status: 'down',
       details: 'Redis service not available'
     }
@@ -61,22 +61,22 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
 async function getMemoryBankStatus(): Promise<any> {
   // Simulate memory bank readings - in production, you'd get actual metrics'
   return { L1_GPU_VRAM: {, used_mb: Math.floor(Math.random() * 6000 + 2000), // 2-8GB used
-      total_mb: 8192, // 8GB RTX 3060
+      total_mb: 8192, // 8GB RTX, 3060
       utilization: 0
     },
     L2_SYSTEM_RAM: {
-      used_mb: Math.floor(Math.random() * 4000 + 8000), // 8-12GB used
+     , used_mb: Math.floor(Math.random() * 4000 + 8000), // 8-12GB used
       total_mb: 32768, // 32GB system RAM
       utilization: 0
     },
     L3_REDIS_CACHE: {
-      used_mb: Math.floor(Math.random() * 500 + 200), // 200-700MB used
+     , used_mb: Math.floor(Math.random() * 500 + 200), // 200-700MB used
       total_mb: 1024, // 1GB Nintendo budget
       utilization: 0
     }
   }
 }
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const services = [
       {,
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
       overallStatus = 'critical'
     }
     const healthResponse: HealthResponse = {
-      overall_status: overallStatus,
+     , overall_status: overallStatus,
       services: serviceChecks,
       nintendo_memory_banks: memoryBanks,
       timestamp: new Date().toISOString()

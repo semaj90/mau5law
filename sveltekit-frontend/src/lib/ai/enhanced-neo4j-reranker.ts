@@ -1,53 +1,53 @@
-import { QdrantService } from './qdrant-service.js';
-import type { DocumentEmbedding } from './som-rag-system.js';
+import { QdrantService } from, './qdrant-service.js';
+import type { DocumentEmbedding } from, './som-rag-system.js';
 // use named imports: driver factory and auth helper
-import { driver, as neo4jDriverFactory, auth } from 'neo4j-driver';
-import type { Driver, Record as Neo4jRecord } from 'neo4j-driver';
+import { driver, as neo4jDriverFactory, auth } from, 'neo4j-driver';
+import type { Driver, Record as Neo4jRecord } from, 'neo4j-driver';
 export type UserContext = {
   user_id: string;
   case_id?: string;
   role: 'prosecutor' | 'detective' | 'admin';
   search_intent: 'evidence' | 'precedent' | 'analysis';
 };
-export interface EntityRelationship { source_entity: string;, target_entity: string;
+export interface EntityRelationship {, source_entity: string;, target_entity: string;
   relationship_type: 'references' | 'contradicts' | 'supports' | 'contains';
   confidence: number;
   legal_weight: number;
   source_document: string;
 }
-export interface ConfidenceScores { legal_relevance: number;, factual_accuracy: number;
+export interface ConfidenceScores {, legal_relevance: number;, factual_accuracy: number;
   chain_of_custody: number;
   precedent_strength: number;
   overall_confidence: number;
 }
-export interface AuditEntry { timestamp: number;, action: 'query' | 'rerank' | 'search' | 'score_adjustment';
+export interface AuditEntry {, timestamp: number;, action: 'query' | 'rerank' | 'search' | 'score_adjustment';
   user_id: string;
   query_hash: string;
   score_before?: number;
   score_after?: number;
   reasoning: string;
 }
-export interface Neo4jPathContext { document_id: string;, case_id: string;
+export interface Neo4jPathContext {, document_id: string;, case_id: string;
   evidence_chain: string[];
   legal_precedents: string[];
   entity_relationships: EntityRelationship[];
   confidence_scores: ConfidenceScores;
   audit_trail: AuditEntry[];
 }
-export interface EnhancedRerankerConfig { enable_neo4j_paths: boolean;, enable_boolean_patterns: boolean;
+export interface EnhancedRerankerConfig {, enable_neo4j_paths: boolean;, enable_boolean_patterns: boolean;
   accuracy_threshold: number;
   max_path_depth: number;
   legal_weight_multiplier: number;
   audit_enabled: boolean;
   neo4j_bolt_url?: string; // added optional property
 }
-export interface RerankingResult { document_id: string;, original_score: number;
+export interface RerankingResult {, document_id: string;, original_score: number;
   enhanced_score: number;
   neo4j_boost: number;
   boolean_pattern_match: boolean[][];
   confidence_metrics: ConfidenceScores;
   path_context: Neo4jPathContext;
-  explanation: string;
+ , explanation: string;
 }
 interface Neo4jRelationshipSegment {
   start?: { properties?: { id?: string } };
@@ -134,7 +134,7 @@ export class EnhancedNeo4jReranker {
           explanation: 'computed'
         });
       } catch (err) {
-        // use sanitized doc instead of casting raw to any
+        // use sanitized doc instead of casting raw to: any
         const safeDoc = this.ensureDocumentEmbedding(raw);
         results.push({
           document_id: safeDoc.id,
@@ -168,17 +168,17 @@ export class EnhancedNeo4jReranker {
     const r = raw as Record<string, unknown>;
     const id =
       typeof r['id'] === 'string'
-        ? (r['id'] as string)
+        ? (r['id'] as: string)
         : typeof r['document_id'] === 'string'
-          ? (r['document_id'] as string)
+          ? (r['document_id'] as: string)
           : 'unknown';
     const content =
       typeof r['content'] === 'string'
-        ? (r['content'] as string)
+        ? (r['content'] as: string)
         : typeof r['text'] === 'string'
-          ? (r['text'] as string)
+          ? (r['text'] as: string)
           : '';
-    const embedding = Array.isArray(r['embedding']) ? (r['embedding'] as number[]) : [];
+    const embedding = Array.isArray(r['embedding']) ? (r['embedding'] as: number[]) : [];
     const metadata =
       typeof r['metadata'] === 'object' && r['metadata'] !== null ? (r['metadata'] as Record<string, unknown>) : {};
     return {
@@ -199,9 +199,9 @@ export class EnhancedNeo4jReranker {
         const res = await session.run(cypher, { id: document.id });
         const evidence_chain: string[] = [];
         const legal_precedents: string[] = [];
-        const entity_relationships: EntityRelationship[] = [];
+        const, entity_relationships: EntityRelationship[] = [];
         for (const rec of res.records as Neo4jRecord[]) {
-          // Attempt to extract nodes from 'n' and: 'd'
+          // Attempt to extract nodes from, 'n' and: 'd'
           try {
             const nVal = rec.get('n');
             const dVal = rec.get('d');
@@ -213,7 +213,7 @@ export class EnhancedNeo4jReranker {
                 return;
               }
               if (typeof node !== 'object' || node === null) return;
-              // Neo4j Node shape: may have .properties or be a direct properties object
+              // Neo4j Node shape: may have .properties or be a direct, properties: object
               const props =
                 (node as { properties?: Record<string, unknown> }).properties ?? (node as Record<string, unknown>);
               const idProp = props?.id ?? props?.documentId ?? props?.name;
@@ -231,18 +231,18 @@ export class EnhancedNeo4jReranker {
           } catch {
             // ignore node extraction errors for this record
           }
-          // 'r' might be a Path-like object (with segments), an array, or a single relationship
+          // 'r' might be a Path-like: object (with segments), an array, or a single relationship
           const rValue = rec.get('r');
           if (!rValue) continue;
-          // Path object has: 'segments' array
+          // Path: object, has: 'segments' array
           if (rValue && typeof rValue === 'object' && Array.isArray((rValue as { segments?: any[] }).segments)) {
-            for (const segRaw of (rValue as { segments?: any[] }).segments as unknown[]) {
+            for (const segRaw of (rValue as { segments?: any[] }).segments as: unknown[]) {
               const seg = segRaw as SegmentLike;
               const startProps = seg.start?.properties ?? {};
               const endProps = seg.end?.properties ?? {};
               entity_relationships.push({
-                source_entity: (startProps.id as string | undefined) ?? String(startProps.name ?? 'unknown'),
-                target_entity: (endProps.id as string | undefined) ?? String(endProps.name ?? 'unknown'),
+                source_entity: (startProps.id, as: string | undefined) ?? String(startProps.name ?? 'unknown'),
+                target_entity: (endProps.id, as: string | undefined) ?? String(endProps.name ?? 'unknown'),
                 relationship_type: String(seg.type ?? 'references') as EntityRelationship['relationship_type'],
                 confidence: 0.8,
                 legal_weight: 1.0,
@@ -251,13 +251,13 @@ export class EnhancedNeo4jReranker {
             }
           } else if (Array.isArray(rValue)) {
             // array of relationships or path segments
-            for (const itemRaw of rValue as unknown[]) {
+            for (const itemRaw of rValue as: unknown[]) {
               const item = itemRaw as SegmentLike;
               const startProps = item?.start?.properties ?? {};
               const endProps = item?.end?.properties ?? {};
               entity_relationships.push({
-                source_entity: (startProps.id as string | undefined) ?? String(startProps.name ?? 'unknown'),
-                target_entity: (endProps.id as string | undefined) ?? String(endProps.name ?? 'unknown'),
+                source_entity: (startProps.id, as: string | undefined) ?? String(startProps.name ?? 'unknown'),
+                target_entity: (endProps.id, as: string | undefined) ?? String(endProps.name ?? 'unknown'),
                 relationship_type: String(item?.type ?? 'references') as EntityRelationship['relationship_type'],
                 confidence: 0.8,
                 legal_weight: 1.0,
@@ -265,13 +265,13 @@ export class EnhancedNeo4jReranker {
               });
             }
           } else if (typeof rValue === 'object' && rValue !== null) {
-            // single relationship object
+            // single relationship: object
             const single = rValue as SegmentLike;
             const startProps = single?.start?.properties ?? {};
             const endProps = single?.end?.properties ?? {};
             entity_relationships.push({
-              source_entity: (startProps.id as string | undefined) ?? String(startProps.name ?? 'unknown'),
-              target_entity: (endProps.id as string | undefined) ?? String(endProps.name ?? 'unknown'),
+              source_entity: (startProps.id, as: string | undefined) ?? String(startProps.name ?? 'unknown'),
+              target_entity: (endProps.id, as: string | undefined) ?? String(endProps.name ?? 'unknown'),
               relationship_type: String(single?.type ?? 'references') as EntityRelationship['relationship_type'],
               confidence: 0.8,
               legal_weight: 1.0,

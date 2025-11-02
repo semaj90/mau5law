@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  import SelfPromptingDemo from '$lib/components/dev/SelfPromptingDemo.svelte';
+import type { Case } from, '$lib/types';
+  import SelfPromptingDemo from, '$lib/components/dev/SelfPromptingDemo.svelte';
 </script>
 
 <svelte:head>
@@ -46,7 +46,7 @@ import type { Case } from '$lib/types';
           <div>
             <h3 class="font-semibold, text-gray-900, mb-3">Architecture Overview</h3>
             <ul class="text-sm, text-gray-600, space-y-1">
-              <li>• SvelteKit 2 + Svelte 5 runes</li>
+              <li>• SvelteKit, 2 + Svelte, 5 runes</li>
               <li>• TypeScript for type safety</li>
               <li>• UnoCSS for styling optimization</li>
               <li>• Drizzle ORM with PostgreSQL</li>
@@ -89,7 +89,7 @@ import type { Case } from '$lib/types';
   /* Ensure full-width layout */
   :global(body) {
     margin: 0;
-    padding: 0;
+   , padding: 0;
   }
 </style>
 

@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Mock legal database - in production this would connect to a real legal database
 const mockLegalDatabase = [
   {,
     id: 'ca-pen-187',
-    title: 'California Penal Code Section 187 - Murder',
+    title: 'California Penal Code Section, 187 - Murder',
     description: 'Defines murder as the unlawful killing of a human being, or a fetus, with malice aforethought.',
     jurisdiction: 'california',
     category: 'criminal',
@@ -17,7 +17,7 @@ const mockLegalDatabase = [
   },
   {
     id: 'ca-pen-211',
-    title: 'California Penal Code Section 211 - Robbery',
+    title: 'California Penal Code Section, 211 - Robbery',
     description:
       'Defines robbery as the felonious taking of personal property in the possession of another, from his person or immediate presence.',
     jurisdiction: 'california',
@@ -31,21 +31,21 @@ const mockLegalDatabase = [
   },
   {
     id: 'ca-civ-1550',
-    title: 'California Civil Code Section 1550 - Contract Essentials',
+    title: 'California Civil Code Section, 1550 - Contract Essentials',
     description: 'Lists the essential elements required for a valid contract under California law.',
     jurisdiction: 'california',
     category: 'civil',
     code: 'CIV § 1550',
     lastUpdated: '2023-01-01',
     fullText:
-      'It is essential to the existence of a contract that there should; be: 1. Parties capable of contracting...',
+      'It is essential to the existence of a contract that there should;, be: 1. Parties capable of contracting...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1550&lawCode=CIV',
     keywords: ['contract', 'agreement', 'parties', 'consideration', 'lawful', 'consent'],
     relatedSections: ['CIV § 1551', 'CIV § 1552', 'CIV § 1565']
   },
   {
     id: 'ca-evid-352',
-    title: 'California Evidence Code Section 352 - Discretion to Exclude Evidence',
+    title: 'California Evidence Code Section, 352 - Discretion to Exclude Evidence',
     description:
       'Grants courts discretion to exclude evidence if its probative value is substantially outweighed by prejudicial effect.',
     jurisdiction: 'california',
@@ -72,13 +72,13 @@ const mockLegalDatabase = [
   },
   {
     id: 'ca-corp-204',
-    title: 'California Corporations Code Section 204 - Articles of Incorporation',
+    title: 'California Corporations Code Section, 204 - Articles of Incorporation',
     description: 'Specifies the required contents of articles of incorporation for California corporations.',
     jurisdiction: 'california',
     category: 'corporate',
     code: 'CORP § 204',
     lastUpdated: '2023-01-01',
-    fullText: 'The articles of incorporation shall set; forth: (a) The name of the corporation...',
+    fullText: 'The articles of incorporation shall set;, forth: (a) The name of the corporation...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=204&lawCode=CORP',
     keywords: ['corporation', 'articles', 'incorporation', 'business', 'entity', 'filing'],
     relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202']
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Search; failed: ' + message,
+        error: 'Search;, failed: ' + message,
         laws: [],
         count: 0
       },
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // add: typed shape for legal entries / search results
 type Law = {
-  id: string;
+ , id: string;
   title?: string;
   description?: string;
   jurisdiction?: string;

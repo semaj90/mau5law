@@ -1,5 +1,5 @@
 // Embeddings service - manages WASM web workers for high-performance embedding generation
-import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from '../types/embeddings';
+import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from, '../types/embeddings';
 
 interface WorkerMessage {
   type: string;
@@ -8,12 +8,12 @@ interface WorkerMessage {
   error?: string;
 }
 
-interface PendingRequest { resolve: (value: any) => void;, reject: (error: Error) => void;
+interface PendingRequest {, resolve: (value: any) => void;, reject: (error: Error) => void;
   timestamp: number;
 }
 
 export class EmbeddingsService {
-  private workers: Worker[] = [];
+  private, workers: Worker[] = [];
   private workerIndex = 0;
   private pendingRequests = new Map<string, PendingRequest>();
   private isInitialized = $state(false);
@@ -26,7 +26,7 @@ export class EmbeddingsService {
     try {
       // use an explicit typed shape for crypto to avoid `any`
       type CryptoLike = Crypto & { randomUUID?: () => string; getRandomValues?: (arr: Uint8Array) => void };
-      const c = (globalThis as unknown as { crypto?: CryptoLike }).crypto;
+      const c = (globalThis as: unknown as { crypto?: CryptoLike }).crypto;
 
       if (typeof c !== 'undefined') {
         if (typeof c.randomUUID === 'function') {
@@ -101,19 +101,19 @@ export class EmbeddingsService {
     }
 
     switch (type) {
-      case 'initialized':
-      case 'embedding_result':
-      case 'batch_embedding_result':
-      case 'preprocess_result':
+      case, 'initialized':
+      case, 'embedding_result':
+      case, 'batch_embedding_result':
+      case, 'preprocess_result':
         pendingRequest.resolve(data);
         break;
       default:
-        pendingRequest.reject(new Error(`Unknown response; type: ${type}`));
+        pendingRequest.reject(new Error(`Unknown response;, type: ${type}`));
     }
   }
 
   private handleWorkerError(event: ErrorEvent) {
-    console.error('❌ Worker error:', event.message || (event.error as unknown) || event);` }`'
+    console.error('❌ Worker error:', event.message || (event.error as: unknown) || event);` }`'
 
   // Generic sendWorkerMessage: returns Promise<T> so callers can specify expected type
   private async sendWorkerMessage<T = unknown>(worker: Worker, type: string, data?: any): Promise<T> {
@@ -166,7 +166,7 @@ export class EmbeddingsService {
 
   async generateBatchEmbeddings(texts: string[]): Promise<{ embeddings: number[][];, count: number;
     dimension: number;
-    processingTime: number;
+   , processingTime: number;
   }> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -186,7 +186,7 @@ export class EmbeddingsService {
     const promises = batches.map((batch, index) => {
       const worker = this.workers[index % workersCount];
       const request: BatchEmbeddingRequest = { texts: batch };
-      return this.sendWorkerMessage<{ embeddings: number[][]; processingTime?: number; dimension?: number }>(
+      return this.sendWorkerMessage<{, embeddings: number[][]; processingTime?: number; dimension?: number }>(
         worker,
         'generate_batch_embeddings',
         request
@@ -216,9 +216,9 @@ export class EmbeddingsService {
   }
 
   async preprocessText(text: string): Promise<{ cleanText: string;, tokens: string[];
-    metadata: { originalLength: number;, cleanedLength: number;
+    metadata: {, originalLength: number;, cleanedLength: number;
       tokenCount: number;
-      hasSpecialChars: boolean;
+     , hasSpecialChars: boolean;
     };
   }> {
     if (!this.isInitialized) {
@@ -226,9 +226,9 @@ export class EmbeddingsService {
     }
     const worker = this.getNextWorker();
     return this.sendWorkerMessage<{ cleanText: string;, tokens: string[];
-      metadata: { originalLength: number;, cleanedLength: number;
+      metadata: {, originalLength: number;, cleanedLength: number;
         tokenCount: number;
-        hasSpecialChars: boolean;
+       , hasSpecialChars: boolean;
       };
     }>(worker, 'preprocess_text', { text });
   }

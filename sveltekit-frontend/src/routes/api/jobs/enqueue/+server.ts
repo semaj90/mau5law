@@ -4,9 +4,9 @@
  * Allows enqueueing embedding and other processing jobs
  * Integrates with enhanced embedding worker system
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { enhancedEmbeddingWorker } from, '$lib/workers/embedding-worker-enhanced.js'
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     switch (jobType) {
-      case 'embedding': {
+      case, 'embedding': {
         const { text, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
         if (!text) {
           return json(
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedDuration: Math.ceil(text.length * 0.1) + 1000, // rough estimate
         });
       }
-      case 'batch-embedding': {
+      case, 'batch-embedding': {
         const { texts, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
         if (!Array.isArray(texts) || texts.length === 0) {
           return json(
@@ -87,8 +87,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json(
           {
-            success: false,
-            error: `Unknown job; type: ${jobType}` },``
+           , success: false,
+            error: `Unknown job;, type: ${jobType}` },``
           { status: 400 }
         );
     }

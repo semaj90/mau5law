@@ -2,10 +2,10 @@
 // CANONICAL CACHE API ENDPOINT - SvelteKit Integration
 // Provides HTTP/REST interface for the canonical result cache system
 // ======================================================================
-import { json, error } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import type { RequestHandler } from './$types.js';
-import { canonicalResultCache, type CanonicalResult, type RankingSet } from '$lib/services/canonical-result-cache.js';
+import { json, error } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import type { RequestHandler } from, './$types.js';
+import { canonicalResultCache, type CanonicalResult, type RankingSet } from, '$lib/services/canonical-result-cache.js';
 // Add a precise type for incoming results to avoid `any`
 type RawCanonicalResult = { docId: string | number;, score: number;
   flags?: number;
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const rankingSet = await canonicalResultCache.retrieveRankingSet(slotKey);
     const latency = performance.now() - startTime;
     if (!rankingSet) {
-      // Cache miss - return 404 with metrics
+      // Cache miss - return, 404 with metrics
       throw error(
         404,
         makeHttpErrorPayload({
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
       // Construct CanonicalResult with safe defaults and clamped score
-      const score = Math.max(0, Math.min(1, r.score as number));
+      const score = Math.max(0, Math.min(1, r.score as: number));
       return {
         docId: String(r.docId),
         score,
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       slotKey,
       metadata: {
-        resultCount: results.length,
+       , resultCount: results.length,
         latencyMs: latency,
         cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
         expiresAt: Date.now() + 30 * 1000, // 30 seconds TTL

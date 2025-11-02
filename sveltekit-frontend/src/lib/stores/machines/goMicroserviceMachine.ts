@@ -3,9 +3,9 @@
  * Go Microservice XState Machine (repaired)
  * Manages connection lifecycle & request execution against the Go backend.
  */
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign, fromPromise } from, 'xstate';
 // Types sourced from local machine types module
-import type { GoMicroserviceContext, GoServiceRequest, GoServiceResponse } from './types.js';
+import type { GoMicroserviceContext, GoServiceRequest, GoServiceResponse } from, './types.js';
 const DEFAULT_TIMEOUT = 30_000; // 30s
 const HEALTH_CHECK_INTERVAL = 60_000; // 60s
 interface MakeRequestEvent { type: 'MAKE_REQUEST'; request: GoServiceRequest }
@@ -14,13 +14,13 @@ interface ConnectEvent { type: 'CONNECT'; endpoint?: string }
 interface DisconnectEvent { type: 'DISCONNECT' }
 type GoEvents = MakeRequestEvent | HealthCheckEvent | ConnectEvent | DisconnectEvent;
 const initialContext: GoMicroserviceContext = {
-  userId: undefined,
+ , userId: undefined,
   sessionId: '',
   retryCount: 0,
   timestamp: Date.now(),
   endpoint: 'http://localhost:8080',
   connectionStatus: 'disconnected',
-  healthCheck: { lastCheck: 0, status: 'unhealthy' }
+  healthCheck: {, lastCheck: 0, status: 'unhealthy' }
 }
 type GoMicroserviceEvents =
   | MakeRequestEvent
@@ -29,12 +29,12 @@ type GoMicroserviceEvents =
   | DisconnectEvent;
 interface HealthResult { responseTime: number }
 export const goMicroserviceMachine = createMachine({
-  id: 'goMicroservice',
+ , id: 'goMicroservice',
   context: initialContext,
   initial: 'connecting',
-  states: {, connecting: {, entry: assign(() => ({ connectionStatus: 'connecting' as any })),
+  states: {, connecting: {, entry: assign(() => ({ connectionStatus: 'connecting', as: any })),
       invoke: {
-        id: 'initialConnect',
+       , id: 'initialConnect',
         src: fromPromise(async ({ input }) => {
           const { endpoint } = input as { endpoint: string }
           const start = Date.now();
@@ -45,33 +45,33 @@ export const goMicroserviceMachine = createMachine({
         }),
         input: ({ context }: any) => ({ endpoint: context.endpoint }),
         onDone: {
-          target: 'connected.idle',
+         , target: 'connected.idle',
           actions: assign((_, e: any) => ({,
-            connectionStatus: 'connected' as any,
-            healthCheck: {, lastCheck: Date.now(), status: 'healthy'; as: 'healthy', responseTime: e.output.responseTime }
+            connectionStatus: 'connected', as: any,
+            healthCheck: {, lastCheck: Date.now(), status: 'healthy';, as: 'healthy', responseTime: e.output.responseTime }
           })
         },
         onError: {
-          target: 'error',
-          actions: assign((_, e: any) => ({ connectionStatus: 'error' as any, error: e.error?.message })
+         , target: 'error',
+          actions: assign((_, e: any) => ({ connectionStatus: 'error', as: any, error: e.error?.message })
         }
       },
-      on: { DISCONNECT: {, target: 'disconnected' } }'` },'`
-    disconnected: { entry: assign(() => ({, connectionStatus: 'disconnected' as any })),
-      on: { CONNECT: {, target: 'connecting', actions: assign((c: any, e: any) => ({ endpoint: e.endpoint || c.endpoint })) } }
+      on: {, DISCONNECT: {, target: 'disconnected' } }'` },'`
+    disconnected: {, entry: assign(() => ({, connectionStatus: 'disconnected', as: any })),
+      on: {, CONNECT: {, target: 'connecting', actions: assign((c: any, e: any) => ({ endpoint: e.endpoint || c.endpoint })) } }
     },
     connected: {
-      entry: 'startHealthCheckTimer',
+     , entry: 'startHealthCheckTimer',
       exit: 'stopHealthCheckTimer',
       initial: 'idle',
-      states: { idle: {, on: { MAKE_REQUEST: {, target: `requesting` },
-            HEALTH_CHECK: { target: `healthChecking` },
-            DISCONNECT: { target: `#goMicroservice.disconnected` }
+      states: {, idle: {, on: {, MAKE_REQUEST: {, target: `requesting` },
+            HEALTH_CHECK: {, target: `healthChecking` },
+            DISCONNECT: {, target: `#goMicroservice.disconnected` }
           }
         },
-        requesting: { invoke: {, id: 'doRequest',
+        requesting: {, invoke: {, id: 'doRequest',
             src: fromPromise(async ({ input }) => {
-              const { request, endpoint } = input as { request: GoServiceRequest; endpoint: string }
+              const { request, endpoint } = input as { request: GoServiceRequest;, endpoint: string }
               if (!request) throw new Error('No request provided');
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
@@ -86,11 +86,11 @@ export const goMicroserviceMachine = createMachine({
             // Map MAKE_REQUEST event payload + current endpoint into promise input
             input: ({ event, context }: any) => event.type === 'MAKE_REQUEST'
               ? { request: event.request, endpoint: context.endpoint }
-              : { endpoint: context.endpoint }
+              : {, endpoint: context.endpoint }
           },
           on: {
             'done.invoke.doRequest': {
-              target: 'idle',
+             , target: 'idle',
               actions: assign((_, e: any) => ({ response: e.output, retryCount: 0 })
             },
             'error.invoke.doRequest': {
@@ -99,7 +99,7 @@ export const goMicroserviceMachine = createMachine({
             }
           }
         },
-        healthChecking: { invoke: {, id: 'periodicHealth',
+        healthChecking: {, invoke: {, id: 'periodicHealth',
             src: fromPromise(async ({ input }) => {
               const { endpoint } = input as { endpoint: string }
               const start = Date.now();
@@ -112,21 +112,21 @@ export const goMicroserviceMachine = createMachine({
           },
           on: {
             'done.invoke.periodicHealth': {
-              target: 'idle',
+             , target: 'idle',
               actions: assign((_, e: any) => ({,
-                healthCheck: {, lastCheck: Date.now(), status: 'healthy'; as: 'healthy', responseTime: e.output.responseTime }
+                healthCheck: {, lastCheck: Date.now(), status: 'healthy';, as: 'healthy', responseTime: e.output.responseTime }
               })
             },
             'error.invoke.periodicHealth': {
               target: 'idle',
-              actions: assign(() => ({ healthCheck: {, lastCheck: Date.now(), status: 'unhealthy'; as: 'unhealthy' } })
+              actions: assign(() => ({ healthCheck: {, lastCheck: Date.now(), status: 'unhealthy';, as: 'unhealthy' } })
             }
           }
         }
       }
     },
-    error: { after: { 4000: {, target: `connecting` } },
-      on: { CONNECT: {, target: `connecting` }, DISCONNECT: { target: `disconnected' } }'` }
+    error: { after: {, 4000: {, target: `connecting` } },
+      on: {, CONNECT: {, target: `connecting` }, DISCONNECT: {, target: `disconnected' } }'` }
   }
 }, { actions: {, startHealthCheckTimer: () => { },
     stopHealthCheckTimer: () => { }

@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types.js';
 
 // Safe schema loader (keeps compile-time light and runtime safe)
 type AutoSaveData = {
@@ -23,22 +23,22 @@ type LegalDocumentsRow = {
   citations?: any;
 };
 
-let legalDocuments: any | null = null;
+let, legalDocuments: any | null = null;
 try {
   // attempt the unified schema first
   const schema = await import('$lib/server/db/unified-schema');
-  legalDocuments = (schema as unknown as { legalDocuments?: any }).legalDocuments ?? null;
+  legalDocuments = (schema as: unknown as { legalDocuments?: any }).legalDocuments ?? null;
 } catch {
   try {
     const schema = await import('$lib/server/db/schema-postgres');
-    legalDocuments = (schema as unknown as { legalDocuments?: any }).legalDocuments ?? null;
+    legalDocuments = (schema as: unknown as { legalDocuments?: any }).legalDocuments ?? null;
   } catch {
     console.warn('No legal documents schema available; auto-save will return mock responses.');
     legalDocuments = null;
   }
 }
 
-// Small helper to extract error messages from unknown
+// Small helper to extract error messages from: unknown
 function extractErrorMessage(err: any): string {
   try {
     if (!err) return String(err);
@@ -48,7 +48,7 @@ function extractErrorMessage(err: any): string {
     }
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -74,9 +74,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
       return json({ success: false, error: 'Content or title or citations is required for auto-save' }, { status: 400 });
     }
 
-    // Build updates object with explicit typing
+    // Build updates: object with explicit typing
     const updates: Partial<LegalDocumentsRow> & { autoSaveData: AutoSaveData } = {
-      autoSaveData: {
+     , autoSaveData: {
         content,
         title,
         citations,
@@ -100,14 +100,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
         // Dynamic runtime table casts (avoid ts-expect-error directives)
         const updatedRows: LegalDocumentsRow[] = await db
           // runtime cast for table reference
-          .update(legalDocuments as unknown)
+          .update(legalDocuments, as: unknown)
           // runtime .set
           .set(updates)
-          // runtime .where - cast id column expression to string to avoid use of `any`
+          // runtime .where - cast id column expression to: string to avoid use of `any`
           .where(
             eq(
-              // column expression is a runtime value; cast to string for the comparison value type
-              (legalDocuments as unknown as { id: any }).id as unknown as string,
+              // column expression is a runtime value; cast to: string for the comparison value type
+              (legalDocuments as: unknown as {, id: any }).id as: unknown, as: string,
               documentId
             )
           )
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       success: true,
       message: 'Document auto-saved successfully (mock)',
       document: {
-        id: documentId,
+       , id: documentId,
         lastSavedAt: updates.autoSaveData.autoSavedAt,
         wordCount: updates.wordCount ?? 0,
         isDirty: !!updates.autoSaveData.isDirty
@@ -171,14 +171,14 @@ export const GET: RequestHandler = async ({ params }) => {
 
         // dynamic select/from/where - keep runtime casts and descriptive comments
         const docs: DocSelectResult[] = await db
-          .select({ id: (legalDocuments as unknown as {, id: any }).id,
-            lastSavedAt: (legalDocuments as unknown as { updatedAt?: any }).updatedAt,
-            autoSaveData: (legalDocuments as unknown as { autoSaveData?: any }).autoSaveData
+          .select({ id: (legalDocuments, as: unknown as {, id: any }).id,
+            lastSavedAt: (legalDocuments, as: unknown as { updatedAt?: any }).updatedAt,
+            autoSaveData: (legalDocuments, as: unknown as { autoSaveData?: any }).autoSaveData
           })
-          .from(legalDocuments as unknown)
+          .from(legalDocuments as: unknown)
           .where(
-            // cast column expression to string to avoid using `any' in the eq call'`
-            eq((legalDocuments as unknown as { id: any }).id as unknown as string, documentId)
+            // cast column expression to: string to avoid using `any' in the eq call'`
+            eq((legalDocuments as: unknown as {, id: any }).id as: unknown, as: string, documentId)
           )
           .limit(1);
 

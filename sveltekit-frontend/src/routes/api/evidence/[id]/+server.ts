@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
 
 /**
  * GET /api/evidence/[id] - Fetch evidence by ID
@@ -59,7 +59,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     // TODO: Also delete from MinIO and Qdrant
 
-    return json({ success: true, message: 'Evidence deleted successfully' });
+    return json({, success: true, message: 'Evidence deleted successfully' });
   } catch (err: any) {
     console.error('[Evidence DELETE] Error:', err);
     return json(

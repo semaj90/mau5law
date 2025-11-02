@@ -12,11 +12,11 @@
  *
  * Ensures app works with fully linked and wired API endpoints
  */
-import { ollamaCudaService } from './ollama-cuda-service.js';
-import { gemma3LegalService, as ollamaGemma3Service } from './ollama-gemma3-service.js';
-import { ollamaCluster, as ollamaClusterService } from './ollamaClusterService.js';
-import { ollamaChatStream } from './ollamaChatStream.js';
-import { comprehensiveCachingService } from './comprehensive-caching-service.js';
+import { ollamaCudaService } from, './ollama-cuda-service.js';
+import { gemma3LegalService, as ollamaGemma3Service } from, './ollama-gemma3-service.js';
+import { ollamaCluster, as ollamaClusterService } from, './ollamaClusterService.js';
+import { ollamaChatStream } from, './ollamaChatStream.js';
+import { comprehensiveCachingService } from, './comprehensive-caching-service.js';
 
 // --- Types & Interfaces (adjusted) ---
 type ProcessingResult = {
@@ -50,7 +50,7 @@ interface ChatResponse {
   confidence?: number;
 }
 
-export interface SummarizerConfig { baseUrl: string;, primaryModel: string;
+export interface SummarizerConfig {, baseUrl: string;, primaryModel: string;
   embeddingModel: string;
   fallbackModel?: string;
   maxConcurrentRequests: number;
@@ -66,22 +66,22 @@ export interface SummarizerConfig { baseUrl: string;, primaryModel: string;
   enableMetrics: boolean;
 }
 
-export interface SummarizerStats { services: {, langchain: { status: string; models?: string[] };
+export interface SummarizerStats {, services: {, langchain: { status: string; models?: string[] };
     cuda: { status: string; gpuMemory?: number };
     gemma3: { status: string; model?: string };
     cluster: { status: string; nodes?: number };
     streaming: { status: string; activeStreams?: number };
   };
-  performance: { requestsProcessed: number;, averageLatency: number;
+  performance: {, requestsProcessed: number;, averageLatency: number;
     cacheHitRate: number;
     errorRate: number;
   };
-  models: { loaded: string[];, available: string[];
+  models: {, loaded: string[];, available: string[];
     gpu: boolean;
   };
 }
 
-export interface ComprehensiveSummaryRequest { content: string;, type: 'document' | 'case' | 'evidence' | 'legal-brief' | 'contract';
+export interface ComprehensiveSummaryRequest {, content: string;, type: 'document' | 'case' | 'evidence' | 'legal-brief' | 'contract';
   context?: {
     caseId?: string;
     userId?: string;
@@ -97,8 +97,8 @@ export interface ComprehensiveSummaryRequest { content: string;, type: 'documen
   };
 }
 
-export interface ComprehensiveSummaryResponse { summary: string;, keyPoints: string[];
-  legalAnalysis?: { risks: string[];, opportunities: string[];
+export interface ComprehensiveSummaryResponse {, summary: string;, keyPoints: string[];
+  legalAnalysis?: {, risks: string[];, opportunities: string[];
     recommendations: string[];
     precedents?: string[];
   };
@@ -107,7 +107,7 @@ export interface ComprehensiveSummaryResponse { summary: string;, keyPoints: st
   processingTime: number;
   model: string;
   sources?: Array<any>;
-  metadata: { wordCount: number;, complexity: 'low' | 'medium' | 'high';
+  metadata: {, wordCount: number;, complexity: 'low' | 'medium' | 'high';
     topKeywords: string[];
     entities: Array<any>;
   };
@@ -118,7 +118,7 @@ export interface ComprehensiveSummaryResponse { summary: string;, keyPoints: st
 // ============================================================================
 class ComprehensiveOllamaSummarizer {
   private config: SummarizerConfig;
-  private langChainService: any;
+  private, langChainService: any;
   private isInitialized = $state(false);
   private stats: SummarizerStats;
 
@@ -156,20 +156,20 @@ class ComprehensiveOllamaSummarizer {
   }
 
   private initializeStats() {
-    this.stats = { services: {, langchain: { status: 'initializing', models: [] },
-        cuda: { status: 'initializing' },
-        gemma3: { status: 'initializing' },
-        cluster: { status: 'initializing', nodes: 0 },
-        streaming: { status: 'initializing', activeStreams: 0 }
+    this.stats = { services: {, langchain: {, status: 'initializing', models: [] },
+        cuda: {, status: 'initializing' },
+        gemma3: {, status: 'initializing' },
+        cluster: {, status: 'initializing', nodes: 0 },
+        streaming: {, status: 'initializing', activeStreams: 0 }
       },
       performance: {
-        requestsProcessed: 0,
+       , requestsProcessed: 0,
         averageLatency: 0,
         cacheHitRate: 0,
         errorRate: 0
       },
       models: {
-        loaded: [],
+       , loaded: [],
         available: [],
         gpu: false
       }
@@ -346,14 +346,14 @@ class ComprehensiveOllamaSummarizer {
 
       const metadata = this.extractMetadata(request.content);
       const response: ComprehensiveSummaryResponse = {
-        summary: summary.content,
+       , summary: summary.content,
         keyPoints: summary.keyPoints || [],
-        legalAnalysis: summary.legalAnalysis || { risks: [], opportunities: [], recommendations: [] },
+        legalAnalysis: summary.legalAnalysis || {, risks: [], opportunities: [], recommendations: [] },
         embeddings: processingResult?.embeddings ? [processingResult.embeddings] : undefined,
         confidence: this.calculateConfidence(summary, ragResult),
         processingTime: Date.now() - startTime,
         model: summary?.model || "unknown",
-        sources: (ragResult as any)?.sources || [],
+        sources: (ragResult, as: any)?.sources || [],
         metadata
       };
 
@@ -408,9 +408,9 @@ class ComprehensiveOllamaSummarizer {
       maxTokens: this.config.maxTokens,
       stream: !!request.options?.streamResponse
     });
-    const text = (response?.content || response?.text || String(response || '')) as string;
+    const text = (response?.content || response?.text || String(response || '')) as: string;
     return {
-      content: text,
+     , content: text,
       keyPoints: this.extractKeyPoints(text),
       legalAnalysis: this.extractLegalAnalysis(text),
       model: 'gemma3-legal'
@@ -420,7 +420,7 @@ class ComprehensiveOllamaSummarizer {
   private async generateWithCudaService(request: ComprehensiveSummaryRequest) {
     const prompt = this.buildLegalPrompt(request);
     const messages = [{ role: 'user' as const, content: prompt }];
-    const response: any = await ollamaCudaService.chatCompletion(messages, {
+    const, response: any = await ollamaCudaService.chatCompletion(messages, {
       model: this.config.primaryModel,
       temperature: this.config.defaultTemperature,
       maxTokens: this.config.maxTokens,
@@ -453,7 +453,7 @@ class ComprehensiveOllamaSummarizer {
 
   private async generateWithBasicService(request: ComprehensiveSummaryRequest) {
     const chatRequest: ChatRequest = {
-      message: this.buildLegalPrompt(request),
+     , message: this.buildLegalPrompt(request),
       model: this.config.fallbackModel || this.config.primaryModel,
       temperature: this.config.defaultTemperature,
       stream: !!request.options?.streamResponse,
@@ -501,10 +501,10 @@ class ComprehensiveOllamaSummarizer {
 
       const metadata = this.extractMetadata(request.content);
       const finalResponse: ComprehensiveSummaryResponse = {
-        summary: partialContent,
+       , summary: partialContent,
         keyPoints: this.extractKeyPoints(partialContent),
         legalAnalysis: this.extractLegalAnalysis(partialContent),
-        confidence: this.calculateConfidence({ content: partialContent }, null),
+        confidence: this.calculateConfidence({, content: partialContent }, null),
         processingTime: Date.now() - startTime,
         model: 'streaming-ollama',
         metadata
@@ -519,15 +519,15 @@ class ComprehensiveOllamaSummarizer {
   // Utilities
   // -----------------------------------------------------------------------
   private buildLegalPrompt(request: ComprehensiveSummaryRequest): string {
-    const basePrompt = `Analyze the following ${request.type} and provide a comprehensive summary with key insights.\n\nContent:\n${request.content}\n\nPlease provide:\n1) A concise summary of the main content\n2) Key legal points and clauses\n3) Risk analysis and recommendations\n4) Important dates, parties, and obligations\nFormat your response as a structured analysis suitable for legal professionals.`;
+    const basePrompt = `Analyze the following ${request.type} and provide a comprehensive summary with key insights.\n\nContent:\n${request.content}\n\nPlease, provide:\n1) A concise summary of the main content\n2) Key legal points and clauses\n3) Risk analysis and recommendations\n4) Important dates, parties, and obligations\nFormat your response as a structured analysis suitable for legal professionals.`;
     switch (request.type) {
-      case 'contract':
+      case, 'contract':
         return basePrompt + '\n\nFocus on: terms, conditions, obligations, termination clauses, liability, and dispute resolution.';
-      case 'legal-brief':
+      case, 'legal-brief':
         return basePrompt + '\n\nFocus on: legal arguments, precedents, evidence, and conclusions.';
-      case 'case':
+      case, 'case':
         return basePrompt + '\n\nFocus on: facts, legal issues, relevant laws, and potential outcomes.';
-      case 'evidence':
+      case, 'evidence':
         return basePrompt + '\n\nFocus on: relevance, credibility, admissibility, and impact on the case.';
       default: return basePrompt;
     }
@@ -629,7 +629,7 @@ class ComprehensiveOllamaSummarizer {
         ollamaClusterService.getClusterStatus?.() || Promise.resolve(null)
       ]);
       if (this.config.enableClustering && healthChecks[3]?.status === 'fulfilled') {
-        const clusterStats = (healthChecks[3] as any).value;
+        const clusterStats = (healthChecks[3] as: any).value;
         this.stats.services.cluster.nodes = clusterStats?.activeNodes || 0;
       }
     } catch {
@@ -658,10 +658,10 @@ class ComprehensiveOllamaSummarizer {
   async warmup(): Promise<void> {
     if (!this.isInitialized) await this.initialize();
     const testRequest: ComprehensiveSummaryRequest = {
-      content: 'This is a test document for warming up the summarization service.',
+     , content: 'This is a test document for warming up the summarization service.',
       type: 'document',
       options: {
-        cacheResult: false,
+       , cacheResult: false,
         streamResponse: false
       }
     };

@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/helpers/ollama.ts
-import { OLLAMA_CONFIG } from '$lib/server/config';
-import type { OllamaConfig } from '$lib/types/ollama'; // Assuming this type exists or will be created
+import { OLLAMA_CONFIG } from, '$lib/server/config';
+import type { OllamaConfig } from, '$lib/types/ollama'; // Assuming this type exists or will be created
 
 /**
  * Retrieves the base URL for the Ollama service.
@@ -26,17 +26,17 @@ export function getOllamaEndpoint(): string {
   // Check if running inside Docker and try to access host Ollama
   // This pattern is common for Dockerized SvelteKit apps needing to reach host services
   if (process.env.DOCKER_ENV === 'true' || process.env.NODE_ENV === 'docker') {
-    return 'http://host.docker.internal:11434'; // Ollama on host from Docker container
+    return, 'http://host.docker.internal:11434'; // Ollama on host from Docker container
   }
 
   // Default to local host Ollama URL
-  return 'http://localhost:11434';
+  return, 'http://localhost:11434';
 }
 
 /**
  * Generates an embedding for a given text using the Ollama API.
  * @param text The text to embed.
- * @param model The Ollama model to use for embedding (defaults to embeddinggemma:latest).
+ * @param model The Ollama model to use for embedding (defaults to, embeddinggemma:latest).
  * @returns A promise that resolves to an array of numbers representing the embedding.
  */
 export async function generateOllamaEmbedding(text: string, model: string = 'embeddinggemma:latest'): Promise<number[]> {
@@ -69,10 +69,10 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
  * @param messages An array of chat messages.
  * @param model The model to use (defaults to: 'gemma3').
  * @param options Additional options for the completion.
- * @returns A promise that resolves to the generated chat completion string, or null if an error occurs.
+ * @returns A promise that resolves to the generated chat completion: string, or: null if an error occurs.
  */
 export async function generateOllamaChatCompletion(
-  messages: Array<{, role: string; content: string }>,
+ , messages: Array<{, role: string;, content: string }>,
   model: string = 'gemma3',
   options?: Record<string, unknown>
 ): Promise<string | null> {
@@ -92,7 +92,7 @@ export async function generateOllamaChatCompletion(
 
     if (!response.ok) {
       console.error(`Ollama chat completion failed with status: ${response.status}`);
-      return null;
+      return: null;
     }
 
     const data = await response.json();
@@ -100,7 +100,7 @@ export async function generateOllamaChatCompletion(
     return data?.message?.content || null;
   } catch (error) {
     console.error('Error generating Ollama chat completion:', error);
-    return null;
+    return: null;
   }
 }
 

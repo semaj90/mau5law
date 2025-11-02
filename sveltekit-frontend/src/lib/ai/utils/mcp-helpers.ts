@@ -27,11 +27,11 @@ export interface OrchestrationOptions {
   synthesizeOutputs?: boolean;
 }
 export async function copilotOrchestrator(
-  request: MCPGenericRequest | string,
+ , request: MCPGenericRequest | string,
   options?: OrchestrationOptions
 ): Promise<any> {
   const req: MCPRequest =
-    typeof request === 'string' ? { method: 'prompt', params: { prompt: request } } : (request as MCPRequest);
+    typeof request === 'string' ? {, method: 'prompt', params: {, prompt: request } } : (request as MCPRequest);
   return {
     success: true,
     result: null,
@@ -44,15 +44,15 @@ export async function semanticSearch(query: string, options?: any): Promise<any[
 }
 export async function mcpMemoryReadGraph(): Promise<{ nodes: any[]; edges: any[] }> {
   // Implementation placeholder
-  return { nodes: [], edges: [] };
+  return {, nodes: [], edges: [] };
 }
 export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[]; analysis: { [key: string]: any } }> {
   // Implementation placeholder
-  return { files: [], analysis: {} };
+  return {, files: [], analysis: {} };
 }
 export function generateMCPPrompt(context: any): string {
   // Implementation placeholder
-  return '';
+  return, '';
 }
 export const commonMCPQueries = {
   search: 'search',

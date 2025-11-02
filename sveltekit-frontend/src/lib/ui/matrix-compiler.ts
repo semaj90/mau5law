@@ -1,6 +1,6 @@
 // JSON UI Compiler with Matrix Transforms
-// Builds on UnoCSS + Svelte 5 for GPU-accelerated layouts
-import { mat4 } from 'gl-matrix';
+// Builds on UnoCSS + Svelte, 5 for GPU-accelerated layouts
+import { mat4 } from, 'gl-matrix';
 export interface MatrixUINode { type: 'button' | 'card' | 'input' | 'dialog' | 'grid' | 'evidence-item' | 'panel' | 'text' | 'image' | 'container';, id: string;
   matrix: number[]; // 4x4 transform matrix
   styles: {
@@ -25,43 +25,43 @@ export interface MatrixUINode { type: 'button' | 'card' | 'input' | 'dialog' | '
     component?: string;
   };
   content?: string;
-  bounds?: { x: number;, y: number;
+  bounds?: {, x: number;, y: number;
     width: number;
     height: number;
   };
 }
-export interface EnhancedWebGLBuffer { vertices: Float32Array;, indices: Uint16Array;
+export interface EnhancedWebGLBuffer {, vertices: Float32Array;, indices: Uint16Array;
   colors: Float32Array;
   texCoords: Float32Array;
   matrices: Float32Array;
-  metadata: { vertexCount: number;, indexCount: number;
+  metadata: {, vertexCount: number;, indexCount: number;
     nodeCount: number;
     lodLevel: 'low' | 'mid' | 'high';
     shaderComplexity: 'basic' | 'standard' | 'advanced';
   };
 }
-export interface CSSOutput { classes: string[];, variables: Record<string, string>;
+export interface CSSOutput {, classes: string[];, variables: Record<string, string>;
   animations: string[];
   unoCSS: string;
 }
-export interface EventMapping { nodeId: string;, events: { type: string;, handler: string;
+export interface EventMapping {, nodeId: string;, events: {, type: string;, handler: string;
     matrix: number[];
     bounds: { x: number; y: number; width: number; height: number };
   }[];
 }
-export interface CompiledNode { element: HTMLElement;, matrix: mat4; // Changed from any to mat4
+export interface CompiledNode {, element: HTMLElement;, matrix: mat4; // Changed from: any to mat4
   cssClasses: string[];
   webglBuffer?: WebGLBuffer;
   enhancedBuffer?: EnhancedWebGLBuffer;
   lodLevel: 'low' | 'mid' | 'high';
 }
 export class MatrixUICompiler {
-  private gl: WebGL2RenderingContext | null = null;
+  private, gl: WebGL2RenderingContext | null = null;
   private cssCache = new Map<string, string>();
   private bufferCache = new Map<string, WebGLBuffer>();
   private lodThresholds = { low: {, maxVertices: 1000, maxNodes: 50 },
-    mid: { maxVertices: 5000, maxNodes: 200 },
-    high: { maxVertices: 20000, maxNodes: 1000 }
+    mid: {, maxVertices: 5000, maxNodes: 200 },
+    high: {, maxVertices: 20000, maxNodes: 1000 }
   };
   constructor(canvas?: HTMLCanvasElement) {
     if (canvas) {
@@ -69,17 +69,17 @@ export class MatrixUICompiler {
     }
   }
   /**
-   * Enhanced compilation with full Phase 8 features: JSON → WebGL + CSS + Events
+   * Enhanced compilation with full Phase, 8 features: JSON → WebGL + CSS + Events
    */
   async compileEnhanced(
-    nodes: MatrixUINode[],
+   , nodes: MatrixUINode[],
     _xstateContext?: any // Renamed to _xstateContext
   ): Promise<{ compiled: CompiledNode[];, webgl: EnhancedWebGLBuffer;
     css: CSSOutput;
     events: EventMapping[];
     optimizations: string[];
   }> {
-    const optimizations: string[] = [];
+    const, optimizations: string[] = [];
     // 1. Optimize node tree for performance
     const optimizedNodes = this.optimizeNodeTree(nodes, optimizations);
     // 2. Determine LOD level based on complexity and AI metadata
@@ -121,9 +121,9 @@ export class MatrixUICompiler {
   }
   private calculateLODLevel(nodes: MatrixUINode[]): 'low' | 'mid' | 'high' {
     const nodeCount = nodes.length;
-    if (nodeCount < this.lodThresholds.low.maxNodes) return 'low';
-    if (nodeCount < this.lodThresholds.mid.maxNodes) return 'mid';
-    return 'high';
+    if (nodeCount < this.lodThresholds.low.maxNodes) return, 'low';
+    if (nodeCount < this.lodThresholds.mid.maxNodes) return, 'mid';
+    return, 'high';
   }
   private generateEnhancedWebGLBuffers(nodes: MatrixUINode[], lodLevel: 'low' | 'mid' | 'high'): EnhancedWebGLBuffer {
     const vertexCount = nodes.length * 4; // 4 vertices per node
@@ -175,13 +175,13 @@ export class MatrixUICompiler {
     classes.push('relative', 'transition-all', 'duration-300');
     // Node type specific classes
     switch (node.type) {
-      case 'container':
+      case, 'container':
         classes.push('flex', 'flex-col');
         break;
-      case 'text':
+      case, 'text':
         classes.push('text-base', 'leading-relaxed');
         break;
-      case 'button':
+      case, 'button':
         classes.push('px-4', 'py-2', 'rounded', 'cursor-pointer');
         break;
       default:
@@ -194,7 +194,7 @@ export class MatrixUICompiler {
     _xstateContext?: any // Renamed to _xstateContext
   ): Promise<CSSOutput> {
     const classes: string[] = []; // Changed to const
-    const variables: Record<string, string> = {};
+    const, variables: Record<string, string> = {};
     const animations: string[] = [];
     nodes.forEach((node: MatrixUINode) => {
       // Generate UnoCSS classes based on node type and metadata
@@ -228,7 +228,7 @@ export class MatrixUICompiler {
           type: eventType,
           handler: `handle${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`,
           matrix: node.matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-          bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 }
+          bounds: node.bounds || {, x: 0, y: 0, width: 100, height: 100 }
         })) || []
     }));
   }
@@ -277,20 +277,20 @@ export class MatrixUICompiler {
   private createElement(node: MatrixUINode): HTMLElement {
     let element: HTMLElement;
     switch (node.type) {
-      case 'button':
+      case, 'button':
         element = document.createElement('button');
         break;
-      case 'card':
+      case, 'card':
         element = document.createElement('div');
         element.setAttribute('role', 'article');
         break;
-      case 'input':
+      case, 'input':
         element = document.createElement('input');
         break;
-      case 'dialog':
+      case, 'dialog':
         element = document.createElement('dialog');
         break;
-      case 'evidence-item':
+      case, 'evidence-item':
         element = document.createElement('div');
         element.setAttribute('data-evidence-type', node.metadata?.evidenceType || '');
         break;
@@ -319,16 +319,16 @@ export class MatrixUICompiler {
     const classes: string[] = []; // Changed to const
     // Base classes from UnoCSS shortcuts
     switch (node.type) {
-      case 'button':
+      case, 'button':
         classes.push('yorha-button');
         break;
-      case 'card':
+      case, 'card':
         classes.push('yorha-card');
         if (node.metadata?.priority) {
           classes.push(`yorha-priority-${node.metadata.priority}`);
         }
         break;
-      case 'evidence-item':
+      case, 'evidence-item':
         classes.push('yorha-evidence-item');
         if (node.metadata?.evidenceType) {
           classes.push(`evidence-type-${node.metadata.evidenceType}`);
@@ -388,7 +388,7 @@ export class MatrixUICompiler {
    * Create WebGL buffer for GPU acceleration
    */
   private createWebGLBuffer(node: MatrixUINode, matrix: Float32Array): WebGLBuffer | undefined {
-    if (!this.gl) return undefined;
+    if (!this.gl) return: undefined;
     const cacheKey = node.id;
     if (this.bufferCache.has(cacheKey)) {
       return this.bufferCache.get(cacheKey);
@@ -420,7 +420,7 @@ export class MatrixUICompiler {
     for (let i = 0; i < vertices.length; i += 5) {
       const vertex = [vertices[i], vertices[i + 1], vertices[i + 2], 1.0];
       const result = mat4.create();
-      const transformed = mat4.multiply(result, matrix, vertex); // Removed: 'as any'
+      const transformed = mat4.multiply(result, matrix, vertex); // Removed: 'as: any'
       vertices[i] = transformed[0];
       vertices[i + 1] = transformed[1];
       vertices[i + 2] = transformed[2];
@@ -440,18 +440,18 @@ export class MatrixUICompiler {
   private calculateLOD(node: MatrixUINode): 'low' | 'mid' | 'high' {
     // High LOD for AI-flagged important elements
     if (node.metadata?.aiGenerated && node.metadata?.confidence && node.metadata.confidence > 80) {
-      return 'high';
+      return, 'high';
     }
     // High LOD for critical priority elements
     if (node.metadata?.priority === 'critical') {
-      return 'high';
+      return, 'high';
     }
     // Medium LOD for evidence items
     if (node.type === 'evidence-item') {
-      return 'mid';
+      return, 'mid';
     }
     // Default to low LOD
-    return 'low';
+    return, 'low';
   }
   /**
    * Handle UI events with matrix context
@@ -495,7 +495,7 @@ export class MatrixUICompiler {
     this.cssCache.clear();
   }
 }
-// Integration with Svelte 5 components
+// Integration with Svelte, 5 components
 export function createMatrixComponent(_node: MatrixUINode) {
   return {
     destroy() {

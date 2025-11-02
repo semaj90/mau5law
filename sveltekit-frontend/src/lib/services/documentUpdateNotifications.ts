@@ -1,13 +1,13 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 
 // Real-time Document Update Notifications
 // WebSocket-based notifications for document re-embedding and re-ranking progress
-import { writable } from "svelte/store";
+import { writable } from, "svelte/store";
 // TODO: Fix import - // Orphaned; content: import {  // ============================================================================
 // TYPES
 // ============================================================================
 }
-export interface UpdateNotification { id: string;, type: 'document_changed' | 'reembedding_started' | 'reembedding_complete' | 'reranking_complete' | 'error';
+export interface UpdateNotification {, id: string;, type: 'document_changed' | 'reembedding_started' | 'reembedding_complete' | 'reranking_complete' | 'error';
   documentId: string;
   timestamp: string;
   data: {
@@ -21,14 +21,14 @@ export interface UpdateNotification { id: string;, type: 'document_changed' | '
   priority?: 'low' | 'medium' | 'high' | 'critical';
   }
 }
-export interface NotificationState { connected: boolean;, notifications: UpdateNotification[];
-  activeUpdates: Map<string, UpdateNotification>;
+export interface NotificationState {, connected: boolean;, notifications: UpdateNotification[];
+ , activeUpdates: Map<string, UpdateNotification>;
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
 }
 // ============================================================================
 // NOTIFICATION STORE
 // ============================================================================
-const initialState: NotificationState = { connected: false;, notifications: [],
+const initialState: NotificationState = {, connected: false;, notifications: [],
   activeUpdates: new Map(),
   connectionStatus: 'disconnected'
 }
@@ -41,7 +41,7 @@ class DocumentUpdateNotificationManager {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-  private pingInterval: NodeJS.Timeout | null = null;
+  private, pingInterval: NodeJS.Timeout | null = null;
   constructor() {
     if (browser) {
       this.connect();
@@ -51,7 +51,7 @@ class DocumentUpdateNotificationManager {
     if (!browser) return;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/api/ws/document-updates`
-    console.log('🔗 Connecting to document update notifications:', wsUrl);
+    console.log('🔗 Connecting to document update, notifications:', wsUrl);
     documentUpdateNotifications.update((state: any) => ({
       ...state,
       connectionStatus: 'connecting'
@@ -110,7 +110,7 @@ class DocumentUpdateNotificationManager {
   private handleNotification(notification: UpdateNotification) {
     console.log('📬 Document update notification:', notification);
     documentUpdateNotifications.update((state: any) => {
-      const newNotifications = [...state.notifications, notification].slice(-50); // Keep last 50
+      const newNotifications = [...state.notifications, notification].slice(-50); // Keep last, 50
       const newActiveUpdates = new Map(state.activeUpdates);
       // Update active updates tracking
       if ((notification as { type?: any; documentId?: any; data?: any }).type === 'reembedding_started') {
@@ -133,23 +133,23 @@ class DocumentUpdateNotificationManager {
     let body = '';
     let icon = '/favicon.svg';
     switch ((notification as { type?: any; documentId?: any; data?: any }).type) {
-      case 'document_changed':
+      case, 'document_changed':
         title = 'Document Changed';
         body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" has been modified and is being re-processed`;'`
         break;
-      case 'reembedding_started':
+      case, 'reembedding_started':
         title = 'Re-embedding Started';
-        body = `Processing "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }" for improved search accuracy`;'`
+        body = `Processing, "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }" for improved search accuracy`;'`
         break;
-      case 'reembedding_complete':
+      case, 'reembedding_complete':
         title = 'Re-embedding Complete';
         body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" updated with ${(notification as { type?: any; documentId?: any; data?: any }).data.chunksProcessed} chunks`;'`
         break;
-      case 'reranking_complete':
+      case, 'reranking_complete':
         title = 'Search Results Updated';
         body = `${(notification as { type?: any; documentId?: any; data?: any }).data.queriesReranked} search queries re-ranked for improved accuracy`;
         break;
-      case 'error':
+      case, 'error':
         title = 'Update Error';
         body = `Failed to update: "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }": ${(notification as { type?: any; documentId?: any; data?: any }).data.error}`;'`
         icon = '/error-icon.svg';
@@ -160,7 +160,7 @@ class DocumentUpdateNotificationManager {
       icon,
       tag: `document-update-${(notification as { type?: any; documentId?: any); data?: any }).documentId}`, // Replace previous notifications for same document
       requireInteraction: (notification as { type?: any; documentId?: any; data?: any }).type === 'error` });'`
-    // Auto-close success notifications after 5 seconds
+    // Auto-close success notifications after, 5 seconds
     if ((notification as { type?: any; documentId?: any; data?: any }).type !== 'error') {
       setTimeout(() => browserNotification.close(), 5000);
     }
@@ -226,7 +226,7 @@ export function formatNotificationTime(timestamp: string): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   if (diff < 60000) { // Less than, 1, minute>
-    return 'Just now';
+    return, 'Just now';
   } else if (diff < 3600000) { // Less than, 1, hour>
     const minutes = Math.floor(diff / 60000);
     return `${minutes} minute${minutes > 1 ? 's' : `` } ago`;
@@ -239,20 +239,20 @@ export function formatNotificationTime(timestamp: string): string {
 }
 export function getNotificationIcon(type: UpdateNotification['type']): string {
   switch (type) {
-    case 'document_changed': return '📝';
-    case 'reembedding_started': return '🔄';
-    case 'reembedding_complete': return '✅';
-    case 'reranking_complete': return '🏆';
-    case 'error': return '❌';
-    default: return '📬';
+    case, 'document_changed': return, '📝';
+    case, 'reembedding_started': return, '🔄';
+    case, 'reembedding_complete': return, '✅';
+    case, 'reranking_complete': return, '🏆';
+    case, 'error': return, '❌';
+    default: return, '📬';
   }
 }
 export function getPriorityColor(priority?: string): string {
   switch (priority) {
-    case 'critical': return 'text-red-600 bg-red-50';
-    case 'high': return 'text-orange-600 bg-orange-50';
-    case 'medium': return 'text-yellow-600 bg-yellow-50';
-    case 'low': return 'text-blue-600 bg-blue-50';
-    default: return 'text-gray-600 bg-gray-50';
+    case, 'critical': return, 'text-red-600 bg-red-50';
+    case, 'high': return, 'text-orange-600 bg-orange-50';
+    case, 'medium': return, 'text-yellow-600 bg-yellow-50';
+    case, 'low': return, 'text-blue-600 bg-blue-50';
+    default: return, 'text-gray-600 bg-gray-50';
   }
 }

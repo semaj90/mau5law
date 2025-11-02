@@ -9,12 +9,12 @@
  * - Content type detection and validation
  * - Dynamic service discovery support
  */
-import { S3Client, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
-import { Readable } from "stream";
-import { getServiceDiscovery, COMMON_SERVICES } from '$lib/server/helpers/service-discovery';
+import { S3Client, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from, "@aws-sdk/client-s3";
+import { Readable } from, "stream";
+import { getServiceDiscovery, COMMON_SERVICES } from, '$lib/server/helpers/service-discovery';
 // Define a type for the S3 client configuration specific to MinIO
 interface MinioS3ClientConfig { endpoint: string;, region: string;
-  credentials: { accessKeyId: string;, secretAccessKey: string;
+  credentials: {, accessKeyId: string;, secretAccessKey: string;
   };
   forcePathStyle: boolean;
 }
@@ -22,7 +22,7 @@ interface MinioS3ClientConfig { endpoint: string;, region: string;
 let cachedMinioEndpoint: string | null = null;
 /**
  * Get MinIO endpoint with dynamic discovery support
- * Priority:
+ *, Priority:
  * 1. Environment variable (MINIO_ENDPOINT)
  * 2. Docker service discovery (if enabled)
  * 3. Hardcoded default (http://localhost:9000)
@@ -43,7 +43,7 @@ async function getMinioEndpoint(): Promise<string> {
     // Fallback to env var or default
     const endpoint = process.env.MINIO_ENDPOINT || "http://localhost:9000";
     cachedMinioEndpoint = endpoint;
-    console.debug(`[Minio] Using fallback endpoint: ${endpoint}`);
+    console.debug(`[Minio] Using fallback, endpoint: ${endpoint}`);
     return endpoint;
   }
 }
@@ -89,7 +89,7 @@ export async function streamToBuffer(stream: Readable): Promise<Buffer> {
 /**
  * Parse MinIO URL format: minio://bucket/key
  */
-export function parseMinioUrl(url: string): { bucket: string; key: string } {
+export function parseMinioUrl(url: string): { bucket: string;, key: string } {
   const match = url.match(/^minio:\/\/([^\/]+)\/(.+)$/);
   if (!match) {
     throw new Error(`Invalid MinIO URL: ${url}`);
@@ -98,7 +98,7 @@ export function parseMinioUrl(url: string): { bucket: string; key: string } {
   return { bucket, key };
 }
 /**
- * Fetch object from MinIO using minio:// URL
+ * Fetch: object from MinIO using, minio:// URL
  */
 export async function fetchMinioObject(url: string): Promise<Response> {
   const { bucket, key } = parseMinioUrl(url);

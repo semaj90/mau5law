@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Interface and property augmentations to fix common missing property errors
 // Augment common interfaces with missing properties
 declare global {
@@ -14,7 +14,7 @@ declare global {
   }
 }
 // Redis client augmentations
-declare module 'ioredis' {
+declare module, 'ioredis' {
   interface Redis {
     ping?(): Promise<string>;
     setex?(_key: string, seconds: number, value: any): Promise<any>;
@@ -69,17 +69,17 @@ declare global {
     data?: any;
   }
   // Enrichment job interface
-  interface EnrichmentJob { id: string;, type: string;
+  interface EnrichmentJob {, id: string;, type: string;
     entityId: string;
     entityType: string;
     status: string;
     createdAt: Date;
     priority: number;
-    data: Record<string, unknown>;
+   , data: Record<string, unknown>;
   }
 }
 // QdrantClient augmentations
-declare module '@qdrant/qdrant-js' {
+declare module, '@qdrant/qdrant-js' {
   interface QdrantClient {
     baseUrl?: string;
     createPayloadIndex?(collection: string, field: string): Promise<any>;

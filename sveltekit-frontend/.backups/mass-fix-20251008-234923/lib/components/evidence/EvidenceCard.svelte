@@ -89,7 +89,7 @@ https: //svelte.dev/e/block_unexpected_character -->
     { compact ? 'text-sm' : '' }
     { draggable ? 'cursor-grab active:cursor-grabbing' : '' }
     { isHovered ? 'scale-105 z-10 shadow-2xl' : '' }"
-  transition:scale={{ duration: 200, easing: quintOut }}
+  use:scale={{ duration: 200, easing: quintOut }}
   onmouseenter={ handleMouseEnter }
   onmouseleave={ handleMouseLeave }
   role="article"

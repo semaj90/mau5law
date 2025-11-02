@@ -1,11 +1,11 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { minioService } from '$lib/server/storage/minio-service';
-import { upsertToQdrant } from '$lib/server/vector/qdrant';
-import { enhancedRAGPipeline } from '$lib/server/ai/rag-pipeline-enhanced';
-import { eq } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { minioService } from, '$lib/server/storage/minio-service';
+import { upsertToQdrant } from, '$lib/server/vector/qdrant';
+import { enhancedRAGPipeline } from, '$lib/server/ai/rag-pipeline-enhanced';
+import { eq } from, 'drizzle-orm';
 
 /**
  * Evidence Upload Endpoint - Full Stack Integration
@@ -20,18 +20,18 @@ import { eq } from 'drizzle-orm';
  * Stack: SvelteKit + Drizzle ORM + PostgreSQL + pgvector + Qdrant + RAG
  */
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     // 1. Parse multipart form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const evidenceType = (formData.get('evidenceType') as string) || 'document';
-    const caseId = formData.get('caseId') as string;
-    const tags = formData.get('tags') as string;
+    const title = formData.get('title') as: string;
+    const description = formData.get('description') as: string;
+    const evidenceType = (formData.get('evidenceType') as: string) || 'document';
+    const caseId = formData.get('caseId') as: string;
+    const tags = formData.get('tags') as: string;
     const isAdmissible = formData.get('isAdmissible') === 'true';
-    const admissibilityNotes = formData.get('admissibilityNotes') as string;
+    const admissibilityNotes = formData.get('admissibilityNotes') as: string;
 
     // Validation
     if (!file) {
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (!title || !caseId) {
       return json(
-        { success: false, error: 'Missing required; fields: title, caseId' },
+        { success: false, error: 'Missing required;, fields: title, caseId' },
         { status: 400 }
       );
     }
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // TEMPORARY: Allow anonymous uploads for testing
     const userId = locals.user?.id || 'test-user-anonymous';
 
-    // TODO: Re-enable auth in production
+    //, TODO: Re-enable auth in production
     // if (!userId) {
     //   return json({ success: false, error: 'Unauthorized' }, { status: 401 });
     // }
@@ -123,8 +123,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              model: 'gemma3-legal:latest',
-              prompt: `Summarize this legal document in 2-3; sentences:\n\n${textContent.slice(0, 4000)}`,
+             , model: 'gemma3-legal:latest',
+              prompt: `Summarize this legal document in 2-3;, sentences:\n\n${textContent.slice(0, 4000)}`,
               stream: false
             })
           });
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId,
         title,
         description,
-        evidenceType: evidenceType as any, // Cast to enum type
+        evidenceType: evidenceType, as: any, // Cast to enum type
         fileUrl: uploadResult.url,
         fileName: file.name,
         fileSize: file.size,
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               uploadedBy: userId,
               createdAt: evidenceRecord.uploadedAt
             }
-          } as any,
+          }, as: any,
           { url: process.env.QDRANT_URL || 'http://localhost:6333' }
         );
 

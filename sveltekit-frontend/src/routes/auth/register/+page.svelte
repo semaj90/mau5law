@@ -1,10 +1,10 @@
 <!--
-  Simple Register Page - Svelte 5 Compatible
+  Simple Register Page - Svelte, 5 Compatible
   Basic registration without complex UI dependencies
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { enhance } from '$app/forms';
+  // Svelte, 5 runes are auto-imported
+  import { enhance } from, '$app/forms';
   interface Props {
     data?: any;
     form?: any;
@@ -54,7 +54,7 @@
               id="firstName"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="John"
             />
           </div>
@@ -66,7 +66,7 @@
               id="lastName"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="Smith"
             />
           </div>
@@ -80,7 +80,7 @@
             id="email"
             required
             disabled={isLoading}
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
             placeholder="john.smith@prosecutor.gov"
           />
         </div>
@@ -93,7 +93,7 @@
               id="role"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
             >
               <option, value="prosecutor">Prosecutor</option>
               <option, value="investigator">Investigator</option>
@@ -108,7 +108,7 @@
               name="badgeNumber"
               id="badgeNumber"
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="12345"
             />
           </div>
@@ -123,7 +123,7 @@
               id="department"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="District Attorney's Office"'
             />
           </div>
@@ -135,7 +135,7 @@
               id="jurisdiction"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="Los Angeles County"
             />
           </div>
@@ -150,7 +150,7 @@
               id="password"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="Enter secure password"
             />
           </div>
@@ -162,7 +162,7 @@
               id="confirmPassword"
               required
               disabled={isLoading}
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
               placeholder="Confirm your password"
             />
           </div>
@@ -194,7 +194,7 @@
         <button
           type="submit"
           disabled={isLoading}
-          class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition-colors disabled:opacity-50"
+          class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition-colors, disabled:opacity-50"
         >
           {#if isLoading}
             Creating Account...

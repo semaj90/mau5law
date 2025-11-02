@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Intelligent Web Analyzer - Complete AI-Aware Pipeline
  * Full-page semantic understanding with minimal CPU/GPU usage
@@ -6,48 +6,48 @@ import type { User } from '$lib/types';
  *
  * Flow: DOM Analysis → Text Extraction → Tensor Processing → User Context → Cache
  */
-import { extractTextFromImage, type OCRResult } from '$lib/ocr/ocr-client.js';
-import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
-import { browser } from '$app/environment';
+import { extractTextFromImage, type OCRResult } from, '$lib/ocr/ocr-client.js';
+import { getCachedEmbedding, cacheEmbedding } from, '$lib/server/cache/redis.js';
+import { browser } from, '$app/environment';
 export interface WebElement { id: string;, tagName: string;
   textContent: string;
   innerHTML: string;
   boundingBox: DOMRect;
-  attributes: Record<string, string>;
-  metadata: { importance: 'high' | 'medium' | 'low';, elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
+ , attributes: Record<string, string>;
+  metadata: {, importance: 'high' | 'medium' | 'low';, elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
     interactionCount: number;
     lastInteraction?: number; // optional: can be populated for richer analytics
   };
 }
-export interface PageChunk { id: string;, content: string;
+export interface PageChunk {, id: string;, content: string;
   elements: WebElement[];
   position: { start: number; end: number };
   embeddings?: Float32Array;
   semantic_meaning?: string;
   confidence: number;
 }
-export interface ClickPoint { x: number;, y: number;
+export interface ClickPoint {, x: number;, y: number;
   count: number;
   timestamp?: number; // optional: can be populated for richer analytics
 }
-export interface UserAnalytics { userId: string;, sessionId: string;
-  typingPatterns: { avgSpeed: number; // WPM, commonWords: string[];
-    specialization: string[]; // legal, technical, etc.
+export interface UserAnalytics {, userId: string;, sessionId: string;
+  typingPatterns: {, avgSpeed: number; // WPM, commonWords: string[];
+   , specialization: string[]; // legal, technical, etc.
   };
-  interactionPatterns: { clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number; speed: number };
+  interactionPatterns: {, clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number; speed: number };
     focusAreas: string[]; // element selectors
   };
-  caseContext: { activeCases: string[];, currentTask: string;
+  caseContext: {, activeCases: string[];, currentTask: string;
     relevantDocuments: string[];
   };
 }
-export type TrainingChunk = { input_text: string;, embeddings: number[]; // serialized embeddings for transport/storage
+export type TrainingChunk = {, input_text: string;, embeddings: number[]; // serialized embeddings for transport/storage
   context: UserAnalytics;
   importance_weight: number;
   created_at: number;
 };
-export interface QLoRATrainingData { user_id: string;, chunks: TrainingChunk[]; // typed training chunk array
-  metadata: { page_url: string;, session_data: UserAnalytics;
+export interface QLoRATrainingData {, user_id: string;, chunks: TrainingChunk[]; // typed training chunk array
+  metadata: {, page_url: string;, session_data: UserAnalytics;
     distilled_size: number;
     training_ready: boolean;
   };
@@ -55,7 +55,7 @@ export interface QLoRATrainingData { user_id: string;, chunks: TrainingChunk[];
 export class IntelligentWebAnalyzer {
   private worker?: ServiceWorker;
   private mutationObserver?: MutationObserver;
-  private userAnalytics: UserAnalytics;
+  private, userAnalytics: UserAnalytics;
   private pageElements = new Map<string, WebElement>();
   private processingQueue: PageChunk[] = [];
   private isProcessing = $state(false);
@@ -64,19 +64,19 @@ export class IntelligentWebAnalyzer {
       userId: initialAnalytics.userId || 'anonymous',
       sessionId: initialAnalytics.sessionId || crypto.randomUUID(),
       typingPatterns: {
-        avgSpeed: 0,
+       , avgSpeed: 0,
         commonWords: [],
         specialization: [],
         ...initialAnalytics.typingPatterns
       },
       interactionPatterns: {
-        clickHeatmap: [],
-        scrollBehavior: { depth: 0, speed: 0 },
+       , clickHeatmap: [],
+        scrollBehavior: {, depth: 0, speed: 0 },
         focusAreas: [],
         ...initialAnalytics.interactionPatterns
       },
       caseContext: {
-        activeCases: [],
+       , activeCases: [],
         currentTask: '',
         relevantDocuments: [],
         ...initialAnalytics.caseContext
@@ -236,14 +236,14 @@ export class IntelligentWebAnalyzer {
       // Skip elements with no meaningful content
       if (textContent.length < 3 && el.tagName !== 'IMG') return;
       const webElement: WebElement = {
-        id: elementId,
+       , id: elementId,
         tagName: el.tagName.toLowerCase(),
         textContent,
         innerHTML: el.innerHTML.slice(0, 1000), // Limit size
         boundingBox: rect,
         attributes: this.getElementAttributes(el),
         metadata: {
-          importance: this.calculateImportance(el, textContent),
+         , importance: this.calculateImportance(el, textContent),
           elementType: this.getElementType(el),
           interactionCount: 0
         }
@@ -268,7 +268,7 @@ export class IntelligentWebAnalyzer {
           return;
         }
         // Extract text using OCR
-        const ocrResult: OCRResult = await extractTextFromImage(imgEl);
+        const, ocrResult: OCRResult = await extractTextFromImage(imgEl);
         if (ocrResult.text && ocrResult.text.length > 5) {
           element.textContent = `[Image: ${ocrResult.text}]`;
           // Cache OCR result
@@ -300,7 +300,7 @@ export class IntelligentWebAnalyzer {
       // Find markers inside chunk to determine which elements are present
       const markerRegex = /\[\[elem_(\d+)\]\]/g;
       const matchedIndices: number[] = [];
-      let m: RegExpExecArray | null;
+      let, m: RegExpExecArray | null;
       while ((m = markerRegex.exec(txt)) !== null) {
         const idx = Number(m[1]);
         if (!Number.isNaN(idx)) matchedIndices.push(idx);
@@ -325,7 +325,7 @@ export class IntelligentWebAnalyzer {
   /**
    * Stream chunks for processing with minimal CPU/GPU usage
    */ private async streamChunksForProcessing(chunks: PageChunk[]): Promise<PageChunk[]> {
-    const BATCH_SIZE = 3; // Process 3 chunks at a time to avoid overwhelming
+    const BATCH_SIZE = 3; // Process, 3 chunks at a time to avoid overwhelming
     const processedChunks: PageChunk[] = [];
     for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
       const batch = chunks.slice(i, i + BATCH_SIZE);
@@ -385,7 +385,7 @@ export class IntelligentWebAnalyzer {
       user_id: this.userAnalytics.userId,
       chunks: trainingChunks,
       metadata: {
-        page_url: window.location.href,
+       , page_url: window.location.href,
         session_data: this.userAnalytics,
         distilled_size: trainingChunks.length,
         training_ready: true
@@ -396,7 +396,7 @@ export class IntelligentWebAnalyzer {
    * Cache analysis results for future use
    */ private async cacheAnalysisResults(qloraData: QLoRATrainingData): Promise<void> {
     try {
-      // Store in cache with 1 hour TTL
+      // Store in cache with, 1 hour TTL
       const cacheKey = `web_analysis:${this.userAnalytics.userId}:${window.location.pathname}`;
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
@@ -414,7 +414,7 @@ export class IntelligentWebAnalyzer {
             };
           }),
           metadata: {
-            processed_at: Date.now(),
+           , processed_at: Date.now(),
             batch_size: qloraData.chunks.length,
             source: 'web_analysis',
             user_id: this.userAnalytics.userId,
@@ -439,8 +439,7 @@ export class IntelligentWebAnalyzer {
     return (...args: Parameters<T>): void => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        // allow both sync and async functions; ignore return value
-        void func(...args);
+        // allow both sync and async functions; ignore return value: void func(...args);
       }, wait);
     };
   }
@@ -476,21 +475,21 @@ export class IntelligentWebAnalyzer {
   private calculateImportance(element: Element, textContent: string): 'high' | 'medium' | 'low' {
     const tagName = element.tagName.toLowerCase();
     // High importance elements
-    if (['h1', 'h2', 'title', 'button'].includes(tagName)) return 'high';
-    if (textContent.length > 100) return 'high';
+    if (['h1', 'h2', 'title', 'button'].includes(tagName)) return, 'high';
+    if (textContent.length > 100) return, 'high';
     // Medium importance
-    if (['h3', 'h4', 'a', 'input', 'label'].includes(tagName)) return 'medium';
-    if (textContent.length > 20) return 'medium';
-    return 'low';
+    if (['h3', 'h4', 'a', 'input', 'label'].includes(tagName)) return, 'medium';
+    if (textContent.length > 20) return, 'medium';
+    return, 'low';
   }
   private getElementType(element: Element): WebElement['metadata']['elementType'] {
     const tagName = element.tagName.toLowerCase();
-    if (['img', 'video', 'canvas'].includes(tagName)) return 'image';
-    if (['input', 'textarea', 'select'].includes(tagName)) return 'input';
-    if (['button', 'a'].includes(tagName)) return 'button';
-    if (tagName === 'a') return 'link';
-    if (['div', 'section', 'article'].includes(tagName)) return 'container';
-    return 'text';
+    if (['img', 'video', 'canvas'].includes(tagName)) return, 'image';
+    if (['input', 'textarea', 'select'].includes(tagName)) return, 'input';
+    if (['button', 'a'].includes(tagName)) return, 'button';
+    if (tagName === 'a') return, 'link';
+    if (['div', 'section', 'article'].includes(tagName)) return, 'container';
+    return, 'text';
   }
   private calculateChunkConfidence(elements: WebElement[]): number {
     if (!elements || elements.length === 0) return 0.5;
@@ -508,12 +507,12 @@ export class IntelligentWebAnalyzer {
   private extractSemanticMeaning(chunk: PageChunk): string {
     const content = chunk.content.toLowerCase();
     // Simple semantic analysis - replace with more sophisticated NLP
-    if (content.includes('contract') || content.includes('agreement')) return 'legal_document';
-    if (content.includes('case') || content.includes('court')) return 'legal_case';
-    if (content.includes('evidence') || content.includes('exhibit')) return 'evidence';
-    if (content.includes('form') || content.includes('input')) return 'data_entry';
-    if (content.includes('button') || content.includes('click')) return 'user_action';
-    return 'general_content';
+    if (content.includes('contract') || content.includes('agreement')) return, 'legal_document';
+    if (content.includes('case') || content.includes('court')) return, 'legal_case';
+    if (content.includes('evidence') || content.includes('exhibit')) return, 'evidence';
+    if (content.includes('form') || content.includes('input')) return, 'data_entry';
+    if (content.includes('button') || content.includes('click')) return, 'user_action';
+    return, 'general_content';
   }
   private analyzeTypingPatterns(text: string): void {
     const words = text
@@ -548,7 +547,7 @@ export class IntelligentWebAnalyzer {
     isProcessing: boolean;
   } {
     return {
-      elementsCount: this.pageElements.size,
+     , elementsCount: this.pageElements.size,
       chunksInQueue: this.processingQueue.length,
       userAnalytics: this.userAnalytics,
       isProcessing: this.isProcessing

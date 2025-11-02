@@ -1,5 +1,5 @@
-import { Buffer } from 'node:buffer';
-import { createHash } from 'node:crypto';
+import { Buffer } from, 'node:buffer';
+import { createHash } from, 'node:crypto';
 export type SOMBitmapPalette = 'viridis' | 'magma' | 'blueprint' | 'legal' | 'grayscale';
 export interface SOMBitmapOptions {
   width?: number;
@@ -10,7 +10,7 @@ export interface SOMBitmapOptions {
   includeSvg?: boolean;
   cellPadding?: number;
 }
-export interface SOMBitmapResult { width: number;, height: number;
+export interface SOMBitmapResult {, width: number;, height: number;
   heatmap: Float32Array;
   rgba?: Uint8ClampedArray;
   palette?: SOMBitmapPalette;
@@ -26,13 +26,13 @@ export interface SOMBitmapResult { width: number;, height: number;
     [key: string]: any;
   };
 }
-const paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = { grayscale: Array.from({, length: 256 }, (_, i) => [i, i, i]),
-  blueprint: Array.from({ length: 256 }, (_, i) => [
+const, paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = { grayscale: Array.from({, length: 256 }, (_, i) => [i, i, i]),
+  blueprint: Array.from({, length: 256 }, (_, i) => [
     Math.round(i * 0.4),
     Math.round(i * 0.7),
     255 - Math.round(i * 0.05)
   ]),
-  legal: Array.from({ length: 256 }, (_, i) => [
+  legal: Array.from({, length: 256 }, (_, i) => [
     Math.round(i * 0.8),
     Math.round(i * 0.6 + 60),
     Math.round(i * 0.3 + 25)

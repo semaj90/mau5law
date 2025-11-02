@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import cluster from 'node:cluster';
+import type { RequestHandler } from, './$types.js';
+import cluster from, 'node:cluster';
 /*
  * Cluster Events API Endpoint (Server-Sent Events)
  * Provides real-time cluster health and worker metrics via SSE
  */
 export interface WorkerMetrics { connections: number;, requestsHandled: number;
-  memoryUsage: NodeJS.MemoryUsage | Record<string, number>;
+ , memoryUsage: NodeJS.MemoryUsage | Record<string, number>;
   cpuUsage: NodeJS.CpuUsage | Record<string, number>;
   lastHealthCheck: number;
   errors: number;
@@ -13,10 +13,10 @@ export interface WorkerMetrics { connections: number;, requestsHandled: number;
   pid?: number;
   status?: string;
 }
-export interface Worker { id: string;, status: string;
+export interface Worker {, id: string;, status: string;
   metrics: WorkerMetrics;
 }
-export const GET: RequestHandler = async ({ request }) => {
+export const, GET: RequestHandler = async ({ request }) => {
   // Check if client accepts text/event-stream
   const acceptHeader = request.headers.get('accept');
   if (!acceptHeader?.includes('text/event-stream')) {
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ request }) => {
           error: 'Cluster manager not available',
           fallback: true
         });
-        // Send fallback single-process data every 5 seconds
+        // Send fallback single-process data every, 5 seconds
         const fallbackInterval = setInterval(() => {
           try {
             sendSSEEvent(controller, 'health', {
@@ -61,15 +61,15 @@ export const GET: RequestHandler = async ({ request }) => {
               totalRequests: 0,
               averageResponseTime: Math.random() * 50 + 25,
               memoryUsage: {
-                total: process.memoryUsage().heapUsed,
+               , total: process.memoryUsage().heapUsed,
                 average: process.memoryUsage().heapUsed,
                 peak: process.memoryUsage().heapTotal
               },
               cpuUsage: {
-                total: 0,
+               , total: 0,
                 average: 0
               },
-              errors: { total: 0, rate: 0 }
+              errors: {, total: 0, rate: 0 }
             });
             sendSSEEvent(controller, 'workers', [
               {,
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async ({ request }) => {
             timestamp: Date.now()
           });
         }
-      }, 5000); // Update every 5 seconds
+      }, 5000); // Update every, 5 seconds
       // Setup cluster event listeners
       const clusterEventHandlers = setupClusterEventListeners(controller);
       // Store cleanup tasks
@@ -214,7 +214,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
   };
   // Register all handlers
   Object.entries(handlers).forEach(([event, handler]) => {
-    cluster.on(event as string, handler);
+    cluster.on(event as: string, handler);
   });
   // Setup process monitoring
   const processMonitor = setInterval(() => {
@@ -235,7 +235,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       uptime: process.uptime(),
       timestamp: Date.now()
     });
-  }, 10000); // Every 10 seconds
+  }, 10000); // Every, 10 seconds
   // Custom cluster events (if cluster manager supports them)
   type ClusterManagerLike = {
     on?: (event: string;, handler: (...args: any[]) => void) => void;
@@ -270,7 +270,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
     cleanup: () => {
       // Remove cluster event listeners
       Object.entries(handlers).forEach(([event, handler]) => {
-        cluster.removeListener(event as string, handler);
+        cluster.removeListener(event as: string, handler);
       });
       // Clear process monitor
       clearInterval(processMonitor);

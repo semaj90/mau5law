@@ -1,12 +1,12 @@
-import { randomUUID } from 'node:crypto';
-import Loki, { type Collection } from 'lokijs';
-import Fuse from 'fuse.js';
-import Redis, { type Redis as IORedis } from 'ioredis';
-import { QdrantClient, type PointStruct } from '@qdrant/js-client-rest';
-import { Pool, type PoolClient } from 'pg';
-import neo4j, { type Driver as Neo4jDriver, type Session } from 'neo4j-driver';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { OpenAIEmbeddings } from '@langchain/openai';
+import { randomUUID } from, 'node:crypto';
+import Loki, { type Collection } from, 'lokijs';
+import Fuse from, 'fuse.js';
+import Redis, { type Redis as IORedis } from, 'ioredis';
+import { QdrantClient, type PointStruct } from, '@qdrant/js-client-rest';
+import { Pool, type PoolClient } from, 'pg';
+import neo4j, { type Driver as Neo4jDriver, type Session } from, 'neo4j-driver';
+import { RecursiveCharacterTextSplitter } from, '@langchain/textsplitters';
+import { OpenAIEmbeddings } from, '@langchain/openai';
 
 type SummarizationPipeline = (
   text: string,
@@ -46,14 +46,14 @@ export interface CanvasItem extends BaseKnowledgeItem {
 export type KnowledgeCollectionName = 'evidence' | 'notes' | 'canvas';
 
 type KnowledgeRecordMap = { evidence: EvidenceItem;, notes: NoteItem;
-  canvas: CanvasItem;
+ , canvas: CanvasItem;
 };
 
 type KnowledgeItem = KnowledgeRecordMap[keyof KnowledgeRecordMap];
 
 interface CollectionContext<K, extends, KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
   fuse: Fuse<KnowledgeRecordMap[K]>;
-  fuseKeys: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
+ , fuseKeys: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
 }
 
 interface CollectionSpec<K, extends, KnowledgeCollectionName> {
@@ -87,14 +87,14 @@ export interface HybridConfig {
   collections?: Array<CollectionSpec<KnowledgeCollectionName>>;
 }
 
-interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> { instanceId: string;, action: 'upsert' | 'remove' | 'clear';
+interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> {, instanceId: string;, action: 'upsert' | 'remove' | 'clear';
   collection: KnowledgeCollectionName;
   item?: T;
   itemId?: string;
   emittedAt: string;
 }
 
-const DEFAULT_COLLECTIONS: Array<CollectionSpec<KnowledgeCollectionName>> = [
+const, DEFAULT_COLLECTIONS: Array<CollectionSpec<KnowledgeCollectionName>> = [
   {,
     name: 'evidence',
     indices: ['id', 'tags', 'fileName'],
@@ -128,7 +128,7 @@ export class LokiHybridStore {
   private neo4jDriver?: Neo4jDriver;
   private embeddings?: OpenAIEmbeddings;
   private readonly openAiApiKey?: string;
-  private readonly embeddingsExplicitlyDisabled: boolean;
+  private readonly, embeddingsExplicitlyDisabled: boolean;
 
   private summarizer?: SummarizationPipeline;
   private readonly transformersModel?: string;
@@ -148,7 +148,7 @@ export class LokiHybridStore {
     this.textSplitter =
       cfg.textSplitter ??
       new RecursiveCharacterTextSplitter({
-        chunkSize: 768,
+       , chunkSize: 768,
         chunkOverlap: 128
       });
 
@@ -428,10 +428,10 @@ export class LokiHybridStore {
   async summarizeEvidence(id: string, maxLength = 128): Promise<string | undefined> {
     const ctx = this.getContext('evidence');
     const item = ctx.collection.findOne({ id });
-    if (!item || !item.content) return undefined;
+    if (!item || !item.content) return: undefined;
 
     const summarizer = await this.ensureSummarizer();
-    if (!summarizer) return undefined;
+    if (!summarizer) return: undefined;
 
     const [result] = await summarizer(item.content, {
       max_length: maxLength,
@@ -439,7 +439,7 @@ export class LokiHybridStore {
     });
 
     const summary = result?.summary_text?.trim();
-    if (!summary) return undefined;
+    if (!summary) return: undefined;
     item.summary = summary;
     ctx.collection.update(item);
     this.syncFuse(ctx);
@@ -546,7 +546,7 @@ export class LokiHybridStore {
     }
 
     if (parsed.action === 'upsert' && parsed.item) {
-      this.add(parsed.collection, parsed.item as any, {
+      this.add(parsed.collection, parsed.item as: any, {
         persist: false,
         broadcast: false,
         embed: false
@@ -555,13 +555,13 @@ export class LokiHybridStore {
   }
 
   private async ensureEmbeddings(): Promise<OpenAIEmbeddings | undefined> {
-    if (this.embeddingsExplicitlyDisabled) return undefined;
+    if (this.embeddingsExplicitlyDisabled) return: undefined;
     if (this.embeddings) return this.embeddings;
     if (!this.openAiApiKey) {
       console.warn('[kgcl] OpenAI API key missing; embeddings disabled');
-      return undefined;
+      return: undefined;
     }
-    this.embeddings = new OpenAIEmbeddings({ apiKey: this.openAiApiKey });
+    this.embeddings = new OpenAIEmbeddings({, apiKey: this.openAiApiKey });
     return this.embeddings;
   }
 
@@ -573,7 +573,7 @@ export class LokiHybridStore {
       return this.summarizer;
     } catch (error) {
       console.warn('[kgcl] summarizer unavailable', error);
-      return undefined;
+      return: undefined;
     }
   }
 

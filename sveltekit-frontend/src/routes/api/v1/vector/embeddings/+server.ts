@@ -2,11 +2,11 @@
  * Vector Embeddings API - RAG Chunking with CUDA Parallel Processing
  * Handles text embedding, batch processing, and document chunking for legal AI
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from '$lib/server/minio-service';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from, '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } from, '$lib/server/minio-service';
+import { generateEmbeddings } from, '$lib/server/services/embedding-service';
 interface EmbeddingRequest {
   texts: string[];
   model?: string;
@@ -24,7 +24,7 @@ interface ChunkingRequest {
   preserveParagraphs?: boolean;
   extractMetadata?: boolean;
 }
-export const POST: RequestHandler = async ({ request, url }) => {
+export const, POST: RequestHandler = async ({ request, url }) => {
   const startTime = performance.now();
   const requestId = `emb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   try {
@@ -58,7 +58,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
   }
   let processedTexts = texts;
   let chunks: string[] = [];
-  let metadata: Record<string, unknown> = {};
+  let, metadata: Record<string, unknown> = {};
   // Handle MinIO document processing
   if (minioUrl) {
     const documentResult = await MinIOService.getTextContent(minioUrl);
@@ -108,7 +108,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     parallelWorkers = 1;
   } else {
     // Ask centralized service to use default Ollama backend
-    const resp = await generateEmbeddings({ texts: processedTexts, model });
+    const resp = await generateEmbeddings({, texts: processedTexts, model });
     embeddings = resp.embeddings;
   }
   const totalTime = Date.now() - startTime;
@@ -140,14 +140,14 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
             ? 'client_webgl2_simple'
             : 'client_wasm_fallback',
       memoryOptimizations: {
-        chrRomRegion: shouldUseCUDA,
+       , chrRomRegion: shouldUseCUDA,
         textAlignment: true,
         tokenCacheOptimized: true,
         embeddingQuantization: embeddings.length > 100,
         batchCoalescing: processedTexts.length > 1
       },
       gemmaSpecific: {
-        modelOptimizations: shouldUseCUDA,
+       , modelOptimizations: shouldUseCUDA,
         legalVocabularyCache: true,
         contextWindowOptimization: true,
         attentionPatternCaching: processedTexts.some(t => t.length > 512)
@@ -176,7 +176,7 @@ async function processCUDAEmbeddings(params: {, texts: string[];, model: string
  , normalize: boolean;
  , batchSize: number;
  , requestId: string;
-}): Promise<{ embeddings: number[][]; gpuTime: number; parallelWorkers: number }> {
+}): Promise<{ embeddings: number[][]; gpuTime: number;, parallelWorkers: number }> {
   const { texts, model, normalize, batchSize, requestId } = params;
   const cudaUrl = getCudaServiceUrl('submit');
   // CHR-ROM optimized embedding payload
@@ -195,7 +195,7 @@ async function processCUDAEmbeddings(params: {, texts: string[];, model: string
       legal_text_specialized: true
     },
     gpu_config: {
-      model: PGVECTOR_CONFIG.cuda.gpu.model,
+     , model: PGVECTOR_CONFIG.cuda.gpu.model,
       cuda_cores: PGVECTOR_CONFIG.cuda.gpu.cudaCores,
       tensor_cores: PGVECTOR_CONFIG.cuda.gpu.tensorCores,
       memory_gb: PGVECTOR_CONFIG.cuda.gpu.memoryGB,
@@ -203,7 +203,7 @@ async function processCUDAEmbeddings(params: {, texts: string[];, model: string
       memory_bandwidth_optimization: true,
       mixed_precision: `fp16_fp32_adaptive` },
     performance_hints: {
-      text_type: 'legal_documents',
+     , text_type: 'legal_documents',
       expected_token_density: 'high',
       semantic_complexity: 'legal_terminology',
       batch_coherence: 'document_sections',
@@ -249,7 +249,7 @@ async function processOllamaEmbeddings(params: {, texts: string[];, model: stri
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
       }
       const result = await response.json();
-      return result.embedding as number[];
+      return result.embedding as: number[];
     });
     const batchEmbeddings = await Promise.all(batchPromises);
     embeddings.push(...batchEmbeddings);
@@ -268,7 +268,7 @@ async function chunkText(
 }> {
   const { chunkSize, chunkOverlap, preserveParagraphs = true, extractMetadata = false } = options;
   let chunks: string[] = [];
-  let metadata: Record<string, unknown> = {};
+  let, metadata: Record<string, unknown> = {};
   if (preserveParagraphs) {
     // Split by paragraphs first, then chunk if needed
     const paragraphs = text.split(/\n\s*\n/).filter(item => item.length > 0);
@@ -366,7 +366,7 @@ function generateEmbeddingClientHints(texts: string[], complexity: number) {
     batch_processing: texts.length > 1,
     memory_pattern: 'text_sequential',
     tokenizer_hints: {
-      expected_tokens: texts.reduce((acc, text) => acc + estimateTokens(text), 0),
+     , expected_tokens: texts.reduce((acc, text) => acc + estimateTokens(text), 0),
       vocabulary_size: 'legal_specialized',
       subword_optimization: true
     },

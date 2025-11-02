@@ -3,8 +3,8 @@
  * These utilities expose a stable and well-typed interface that mirrors the intent of the
  * original (but syntactically corrupted) implementation.
  */
-import { onDestroy, onMount } from 'svelte';
-import { get } from 'svelte/store';
+import { onDestroy, onMount } from, 'svelte';
+import { get } from, 'svelte/store';
 import {
   redisOrchestratorClient,
   redisStats,
@@ -12,7 +12,7 @@ import {
   queuedTasks,
   type RedisOptimizationResult,
   type QueuedTask
-} from '$lib/stores/unified';
+} from, '$lib/stores/unified';
 type QueryContext = {
   endpoint?: string;
   caseId?: string;
@@ -25,7 +25,7 @@ type ComponentCacheConfig = {
 export function useRedisAI() {
   let isProcessing = $state<boolean>(false);
   let lastResult: RedisOptimizationResult | null = null;
-  let error: string | null = null;
+  let, error: string | null = null;
   async function query(queryText: string, context: QueryContext = {}): Promise<RedisOptimizationResult> {
     isProcessing = true;
     error = null;
@@ -121,7 +121,7 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
   let tasks: Map<string, QueuedTask> = new Map();
   let isPolling = $state<boolean>(false);
   let pollHandle: ReturnType<typeof setInterval> | null = null;
-  let unsubscribe: (() => void) | undefined;
+  let, unsubscribe: (() => void) | undefined;
   function subscribeToTasks() {
     unsubscribe = queuedTasks.subscribe((value) => {
       tasks = value;
@@ -248,7 +248,7 @@ export function useRedisForm() {
   let submitError: string | null = null;
   let lastSubmission: any = null;
   async function submitForm(
-    formData: Record<string, unknown>,
+   , formData: Record<string, unknown>,
     endpoint: string,
     options: { useCache?: boolean; priority?: number; queueIfComplex?: boolean } = {},
   ): Promise<any> {

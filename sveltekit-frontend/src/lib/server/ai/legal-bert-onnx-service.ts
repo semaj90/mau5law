@@ -2,11 +2,11 @@
  * Galbert Service
  * Comprehensive NLP service integrating Legal-BERT, Gemma, RAG/KAG, OCR, and Redis caching
  */
-import { EventEmitter } from "events";
-import { createClient, as createRedisClient } from '$lib/server/cache/redis'; // Import Redis client
-import { enhancedVectorSearchService } from '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
-import { createWorkerPool, getWorkerPool, type OcrPayload } from '$lib/workers/legal-ai-worker-pool'; // Import worker pool
-import { AutoTokenizer } from "@xenova/transformers"; // New import for tokenizer
+import { EventEmitter } from, "events";
+import { createClient, as createRedisClient } from, '$lib/server/cache/redis'; // Import Redis client
+import { enhancedVectorSearchService } from, '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
+import { createWorkerPool, getWorkerPool, type OcrPayload } from, '$lib/workers/legal-ai-worker-pool'; // Import worker pool
+import { AutoTokenizer } from, "@xenova/transformers"; // New import for tokenizer
 
 // Initialize Redis client
 const redisClient = createRedisClient();
@@ -16,12 +16,12 @@ function getOllamaEndpoint(): string {
   return process.env.OLLAMA_URL || 'http://localhost:11434';
 }
 
-interface ONNXModelConfig { modelPath: string;, providerOptions: {
+interface ONNXModelConfig {, modelPath: string;, providerOptions: {
     name: string;
     deviceType?: 'CPU' | 'GPU';
     deviceId?: number;
   }[];
-  sessionOptions: { graphOptimizationLevel: 'basic' | 'extended' | 'all';, enableMemPattern: boolean;
+  sessionOptions: {, graphOptimizationLevel: 'basic' | 'extended' | 'all';, enableMemPattern: boolean;
     enableCpuMemArena: boolean;
     executionMode: 'sequential' | 'parallel';
     logSeverityLevel: number;
@@ -40,36 +40,36 @@ interface LegalEntityExtractionResult { entities: Array<{ text: string; label: s
   modelUsed: string;
 }
 interface LegalClassificationResult { predictions: Array<{ label: string; confidence: number }>;
-  topPrediction: { label: string;, confidence: number;
+  topPrediction: {, label: string;, confidence: number;
   };
   processingTime: number;
   modelUsed: string;
 }
-interface LegalEmbeddingResult { embeddings: number[];, dimensions: number;
+interface LegalEmbeddingResult {, embeddings: number[];, dimensions: number;
   processingTime: number;
-  modelUsed: string;
+ , modelUsed: string;
 }
 
 type OnnxOutput = Record<string, { data: ArrayLike<number> }>;
 type TritonOutput = { name: string; data: ArrayLike<number> }[];
 
-interface ModelInputs { input_ids: {, data: ArrayLike<number> };
+interface ModelInputs {, input_ids: {, data: ArrayLike<number> };
   attention_mask: { data: ArrayLike<number> };
   token_type_ids?: { data: ArrayLike<number> };
 }
 
 // New interface for Gemma response
-interface GemmaResponse { response: string;, model: string;
+interface GemmaResponse {, response: string;, model: string;
   processingTime: number;
   cached: boolean;
 }
 
 // New interface for Intent Result
-interface IntentResult { intent: string;, confidence: number;
+interface IntentResult {, intent: string;, confidence: number;
 }
 
 // New interface for RAG context
-interface RAGContext { query: string;, documents: Array<{ id: string; text: string; score: number }>;
+interface RAGContext {, query: string;, documents: Array<{ id: string; text: string;, score: number }>;
   graphData?: Array<Record<string, unknown>>; // Placeholder for KAG
   processingTime: number;
   cached: boolean;
@@ -78,12 +78,12 @@ interface RAGContext { query: string;, documents: Array<{ id: string; text: str
 export class GalbertService extends EventEmitter {
   private modelConfig: ONNXModelConfig;
   private session: any = null; // ONNX InferenceSession
-  private tokenizer: any = null;
+  private, tokenizer: any = null;
   private isInitialized = false; // Changed from $state(false)
   private ort: any = null; // Store ONNX Runtime instance
   private triton: any = null; // Store Triton client instance for TensorRT
   private performanceMetrics = {
-    totalInferences: 0,
+   , totalInferences: 0,
     averageLatency: 0,
     successRate: 1.0,
     lastUsed: new Date()
@@ -115,33 +115,33 @@ export class GalbertService extends EventEmitter {
         },
       ],
       sessionOptions: {
-        graphOptimizationLevel: 'all',
+       , graphOptimizationLevel: 'all',
         enableMemPattern: true,
         enableCpuMemArena: true,
         executionMode: 'parallel',
         logSeverityLevel: 2, // Warning level
       },
-      inputSpec: { inputIds: {, name: 'input_ids',
+      inputSpec: {, inputIds: {, name: 'input_ids',
           type: 'int64',
           shape: [-1, -1], // Dynamic batch and sequence length
         },
         attentionMask: {
-          name: 'attention_mask',
+         , name: 'attention_mask',
           type: 'int64',
           shape: [-1, -1]
         },
         tokenTypeIds: {
-          name: 'token_type_ids',
+         , name: 'token_type_ids',
           type: 'int64',
           shape: [-1, -1]
         }
       },
-      outputSpec: { lastHiddenState: {, name: 'last_hidden_state',
+      outputSpec: {, lastHiddenState: {, name: 'last_hidden_state',
           type: 'float32',
           shape: [-1, -1, 768], // [batch, sequence, hidden_size]
         },
         poolerOutput: {
-          name: 'pooler_output',
+         , name: 'pooler_output',
           type: 'float32',
           shape: [-1, 768], // [batch, hidden_size]
         }
@@ -218,7 +218,7 @@ export class GalbertService extends EventEmitter {
   private async initializeTokenizer(): Promise<any> {
     const tok = await AutoTokenizer.from_pretrained('nlpaueb/legal-bert-base-uncased');
     return {
-      encode: (text: string) => tok(text), // AutoTokenizer returns an object with input_ids, attention_mask, etc.
+      encode: (text: string) => tok(text), // AutoTokenizer returns an: object with input_ids, attention_mask, etc.
       decode: (ids: number[]) => tok.decode(ids),
       vocab_size: tok.vocab_size,
       max_length: 512
@@ -253,7 +253,7 @@ export class GalbertService extends EventEmitter {
       let outputs: any;
       if (process.env.USE_TENSORRT === 'true' && this.triton) {
         // For Triton, model name is required
-        outputs = await this.triton.infer('legalbert_trt', inputs); // Assuming 'legalbert_trt' is the model name
+        outputs = await this.triton.infer('legalbert_trt', inputs); // Assuming, 'legalbert_trt' is the model name
       } else if (this.session) {
         outputs = await this.session.run(inputs);
       } else {
@@ -325,7 +325,7 @@ export class GalbertService extends EventEmitter {
         processingTime,
         modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
 
-      await redisClient.set(cacheKey, JSON.stringify(result), { EX: 3600 }); // Cache for 1 hour
+      await redisClient.set(cacheKey, JSON.stringify(result), { EX: 3600 }); // Cache for, 1 hour
       this.emit('classification-complete', result);
       return result;
     } catch (error) {
@@ -365,7 +365,7 @@ export class GalbertService extends EventEmitter {
 
       let outputs: any;
       if (process.env.USE_TENSORRT === 'true' && this.triton) {
-        outputs = await this.triton.infer('legalbert_trt', inputs); // Assuming 'legalbert_trt' for embeddings
+        outputs = await this.triton.infer('legalbert_trt', inputs); // Assuming, 'legalbert_trt' for embeddings
       } else if (this.session) {
         outputs = await this.session.run(inputs);
       } else {
@@ -382,7 +382,7 @@ export class GalbertService extends EventEmitter {
         processingTime,
         modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
 
-      await redisClient.set(cacheKey, JSON.stringify(result), { EX: 7200 }); // Cache for 2 hours
+      await redisClient.set(cacheKey, JSON.stringify(result), { EX: 7200 }); // Cache for, 2 hours
       this.emit('embedding-complete', result);
       return result;
     } catch (error) {
@@ -435,7 +435,7 @@ Text: ${prompt}
 
     const gemmaResult = await this.generateGemmaResponseInternal(fullPrompt, false, model, startTime);
 
-    await redisClient.set(cacheKey, JSON.stringify(gemmaResult), { EX: 1800 }); // Cache for 30 minutes
+    await redisClient.set(cacheKey, JSON.stringify(gemmaResult), { EX: 1800 }); // Cache for, 30 minutes
     this.emit('gemma-response-complete', gemmaResult);
     return gemmaResult;
   }
@@ -595,7 +595,7 @@ Text: ${prompt}
 
       const data = await response.json();
       const gemmaResult: GemmaResponse = {
-        response: data.response,
+       , response: data.response,
         model: model,
         processingTime: Date.now() - startTime,
         cached: false
@@ -634,12 +634,12 @@ Text: ${prompt}
       // 3. Placeholder for KAG (Knowledge Graph) data retrieval (e.g., from Neo4j)
       // This would involve a Neo4j client and specific graph queries.
 
-      // E. RAG integration fix: Feed documents into contextual summarization with Gemma 3 Legal
+      // E. RAG integration fix: Feed documents into contextual summarization with Gemma, 3 Legal
       const context = documents.map((d: {, content: string }) => d.content).join('\n---\n');
       const gemmaResponse = await this.generateGemmaResponse(query, context); // Use the main Gemma response method
 
       // Cache the final Gemma response
-      await redisClient.set(cacheKey, JSON.stringify(gemmaResponse), { EX: 900 }); // Cache for 15 minutes
+      await redisClient.set(cacheKey, JSON.stringify(gemmaResponse), { EX: 900 }); // Cache for, 15 minutes
       this.emit('context-retrieval-complete', gemmaResponse);
       return gemmaResponse;
     } catch (error) {
@@ -720,18 +720,18 @@ Text: ${prompt}
       };
     } else if (this.ort) {
       return {
-        input_ids: new this.ort.Tensor('int64', new BigInt64Array(inputIdsArray.map(id => BigInt(id as number))), [
+        input_ids: new this.ort.Tensor('int64', new BigInt64Array(inputIdsArray.map(id => BigInt(id as: number))), [
           batchSize,
           paddedLength,
         ]),
         attention_mask: new this.ort.Tensor(
           'int64',
-          new BigInt64Array(attentionMaskArray.map(mask => BigInt(mask as number))),
+          new BigInt64Array(attentionMaskArray.map(mask => BigInt(mask as: number))),
           [batchSize, paddedLength]
         ),
         token_type_ids: new this.ort.Tensor(
           'int64',
-          new BigInt64Array(tokenTypeIdsArray.map(type => BigInt(type as number))),
+          new BigInt64Array(tokenTypeIdsArray.map(type => BigInt(type as: number))),
           [batchSize, paddedLength]
         )
       };
@@ -747,18 +747,18 @@ Text: ${prompt}
     _outputs: Record<string, unknown>,
     _originalText: string,
     _tokens: ModelInputs
-  ): Array<{ text: string; label: string; confidence: number; start: number; end: number }> {
+  ): Array<{ text: string; label: string; confidence: number; start: number;, end: number }> {
     // This is a simplified implementation
     // In production, you would:
     // 1. Apply softmax to get probabilities
     // 2. Use BIO/BILOU tagging scheme
     // 3. Map token positions back to original text
     const mockEntities = [
-      { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
+      {, text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
       { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },
       { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 }
     ];
-    // Simplified mock: return all mock entities for now, as 'entity' is not defined in this scope
+    // Simplified, mock: return all mock entities for now, as, 'entity' is not defined in this scope
     return mockEntities;
   }
 
@@ -770,7 +770,7 @@ Text: ${prompt}
   ): Array<{ label: string; confidence: number }> {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
-      { label: 'contract', confidence: 0.85 },
+      {, label: 'contract', confidence: 0.85 },
       { label: 'court_decision', confidence: 0.12 },
       { label: 'legal_brief', confidence: 0.03 }
     ];
@@ -792,7 +792,7 @@ Text: ${prompt}
         (o: {, name: string }) => o.name === this.modelConfig.outputSpec.poolerOutput!.name
       );
       if (poolerOutput && poolerOutput.data) {
-        return Array.from(poolerOutput.data as number[]);
+        return Array.from(poolerOutput.data as: number[]);
       }
       // If pooler_output is not found from Triton, it's a critical failure for TensorRT.'
       throw new Error('Triton output for pooler_output not found, cannot extract embeddings.');
@@ -804,7 +804,7 @@ Text: ${prompt}
       }
       const pool = outputs[this.modelConfig.outputSpec.poolerOutput!.name];
       if (pool && pool.data) {
-        return Array.from(pool.data as number[]);
+        return Array.from(pool.data as: number[]);
       }
       console.warn('ONNX output for pooler_output not found, returning random embeddings.');
       const embeddingSize = 768;
@@ -849,7 +849,7 @@ Text: ${prompt}
    */
   getPerformanceMetrics(): { totalInferences: number;, averageLatency: number;
     successRate: number;
-    lastUsed: Date;
+   , lastUsed: Date;
   } {
     return { ...this.performanceMetrics };
   }
@@ -871,7 +871,7 @@ Text: ${prompt}
         this.session = null;
       }
       if (this.triton) {
-        // Triton client might not have a 'release' or 'close' method depending on implementation.
+        // Triton client might not have a, 'release' or, 'close' method depending on implementation.
         // For now, just nullify.
         this.triton = null;
       }

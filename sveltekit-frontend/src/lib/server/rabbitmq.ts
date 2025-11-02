@@ -1,13 +1,13 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 // src/lib/server/rabbitmq.ts
-import * as amqp from 'amqplib';
-import type { Channel } from 'amqplib';
+import * as amqp from, 'amqplib';
+import type { Channel } from, 'amqplib';
 let connection: any | null = null;
-let channel: Channel | null = null;
+let, channel: Channel | null = null;
 export async function getConnection(): Promise<any> {
   if (connection) return connection;
   const rabbitmqUrl = import.meta.env.RABBITMQ_URL || 'amqp://localhost:5672'
-  console.log('🐰 Connecting to RabbitMQ:', rabbitmqUrl);
+  console.log('🐰 Connecting to, RabbitMQ:', rabbitmqUrl);
   connection = await amqp.connect(rabbitmqUrl);
   connection.on('error', (err) => {
     console.error('❌ RabbitMQ connection error:', err);'
@@ -24,7 +24,7 @@ export async function getConnection(): Promise<any> {
 export async function getChannel(): Promise<Channel> {
   if (channel) return channel;
   const conn = await getConnection();
-  channel = await (conn as any).createChannel();
+  channel = await (conn as: any).createChannel();
   // Set prefetch for better load balancing
   await channel.prefetch(1);
   channel.on('error', (err) => {
@@ -130,7 +130,7 @@ export async function closeRabbitMQ(): Promise<void> {
       channel = null;
     }
     if (connection) {
-      await (connection as any).close();
+      await (connection as: any).close();
       connection = null;
     }
     console.log('✅ RabbitMQ connections closed gracefully');
@@ -154,11 +154,11 @@ export const QUEUES = { evidence: {, process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
     response: `evidence.response.queue` },'`'`
   ai: {
-    analysis: 'ai.analysis.queue',
+   , analysis: 'ai.analysis.queue',
     embedding: 'ai.embedding.queue',
     response: `ai.response.queue` },
   notification: {
-    email: '(notification as { email?: any; webhook?: any }).email.queue',
+   , email: '(notification as { email?: any; webhook?: any }).email.queue',
     webhook: `(notification as { email?: any; webhook?: any }).webhook.queue` }
 }
 // Service wrapper for consistency with other services

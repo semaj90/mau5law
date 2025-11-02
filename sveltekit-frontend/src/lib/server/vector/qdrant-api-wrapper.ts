@@ -2,8 +2,8 @@
  * Qdrant API Wrapper - Handles version compatibility and method mapping
  * Compatible with @qdrant/js-client-rest ^1.15.1
  */
-import { QdrantClient } from "@qdrant/js-client-rest";
-import { productionLogger, as logger } from '../production-logger.js';
+import { QdrantClient } from, "@qdrant/js-client-rest";
+import { productionLogger, as logger } from, '../production-logger.js';
 export class QdrantApiWrapper {
   private client: InstanceType<typeof, QdrantClient>;
   constructor(config: {, url: string; apiKey?: string }) {
@@ -79,11 +79,11 @@ export class QdrantApiWrapper {
     try {
       // Try different method signatures based on actual API
       let response;
-      if (typeof (this.client as any).deleteCollection === 'function') {
-        response = await (this.client as any).deleteCollection(collectionName);
-      } else if (typeof (this.client as any).delete === 'function') {
+      if (typeof (this.client as: any).deleteCollection === 'function') {
+        response = await (this.client as: any).deleteCollection(collectionName);
+      } else if (typeof (this.client as: any).delete === 'function') {
         // Alternative approach using generic delete method
-        response = await (this.client as any).delete(`/collections/${collectionName}`);
+        response = await (this.client as: any).delete(`/collections/${collectionName}`);
       } else {
         throw new Error('Delete collection method not available in current Qdrant client version');
       }
@@ -184,15 +184,15 @@ export class QdrantApiWrapper {
   ) {
     try {
       let response;
-      if (typeof (this.client as any).retrieve === 'function') {
-        response = await (this.client as any).retrieve(collectionName, {
+      if (typeof (this.client as: any).retrieve === 'function') {
+        response = await (this.client as: any).retrieve(collectionName, {
           ids: options.ids,
           with_payload: options.with_payload,
           with_vector: options.with_vector
         });
-      } else if (typeof (this.client as any).getPoints === 'function') {
+      } else if (typeof (this.client as: any).getPoints === 'function') {
         // Alternative method name in some versions
-        response = await (this.client as any).getPoints(collectionName, {
+        response = await (this.client as: any).getPoints(collectionName, {
           ids: options.ids,
           with_payload: options.with_payload,
           with_vector: options.with_vector
@@ -303,7 +303,7 @@ export class QdrantApiWrapper {
 }
 // Factory function for creating wrapper instances
 export function createQdrantWrapper(
-  config: { url?: string; apiKey?: string } = {}
+ , config: { url?: string; apiKey?: string } = {}
 ): QdrantApiWrapper {
   const url = config.url || import.meta.env.QDRANT_URL || 'http://localhost:6333'
   const apiKey = config.apiKey || import.meta.env.QDRANT_API_KEY;

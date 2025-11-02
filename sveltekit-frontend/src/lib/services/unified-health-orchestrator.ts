@@ -1,17 +1,17 @@
 // Unified Health Monitoring and Job Orchestration Service
 // Coordinates CUDA, WebGPU, WASM LLM, Redis Streams, and PostgreSQL components
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
-import { fromPromise } from 'xstate/actors'; // Corrected import for fromPromise
-import type { VectorServiceMetrics, VectorHealthStatus, VectorProcessingError } from '$lib/types/vector-jobs';
-import webgpuPolyfillInstance from '$lib/webgpu/webgpu-polyfill'; // Changed to default import
-import { wasmLLMService } from '$lib/wasm/wasm-llm-service';
+import { createMachine, assign, type ActorRefFrom } from, 'xstate';
+import { fromPromise } from, 'xstate/actors'; // Corrected import for fromPromise
+import type { VectorServiceMetrics, VectorHealthStatus, VectorProcessingError } from, '$lib/types/vector-jobs';
+import webgpuPolyfillInstance from, '$lib/webgpu/webgpu-polyfill'; // Changed to default import
+import { wasmLLMService } from, '$lib/wasm/wasm-llm-service';
 
 // New interface for alert thresholds
 export interface AlertThresholds { errorRate: number;, latency: number;
   queueDepth: number;
 }
 
-export interface HealthOrchestratorContext { services: {, redis: 'connected' | 'disconnected' | 'error';
+export interface HealthOrchestratorContext {, services: {, redis: 'connected' | 'disconnected' | 'error';
     postgres: 'connected' | 'disconnected' | 'error';
     rabbitmq: 'connected' | 'disconnected' | 'error';
     cuda: 'available' | 'unavailable' | 'error';
@@ -21,17 +21,17 @@ export interface HealthOrchestratorContext { services: {, redis: 'connected' | 
   };
   metrics: VectorServiceMetrics | null;
   healthStatus: VectorHealthStatus | null;
-  jobQueue: { pending: number;, processing: number;
+  jobQueue: {, pending: number;, processing: number;
     completed: number;
     failed: number;
   };
-  performance: { totalThroughput: number;, averageLatency: number;
+  performance: {, totalThroughput: number;, averageLatency: number;
     errorRate: number;
     uptime: number;
   };
   errors: VectorProcessingError[];
   lastHealthCheck: Date | null;
-  healthCheckInterval: number; // milliseconds,
+ , healthCheckInterval: number; // milliseconds,
   autoRecovery: boolean;
   alertThresholds: AlertThresholds; // Use the new interface
 }
@@ -47,11 +47,11 @@ export type HealthOrchestratorEvent =
   | { type: 'ALERT_THRESHOLD_EXCEEDED'; threshold: string; value: number }
   | { type: 'RESET_ERRORS' }
   | { type: 'UPDATE_THRESHOLDS'; thresholds: AlertThresholds }; // Use specific type
-export interface CollectedMetricsOutput { metrics: VectorServiceMetrics;, jobQueue: HealthOrchestratorContext['jobQueue'];
+export interface CollectedMetricsOutput {, metrics: VectorServiceMetrics;, jobQueue: HealthOrchestratorContext['jobQueue'];
 }
 
 // Intermediate type for raw resource metrics fetched from fetchResourceMetrics
-interface RawResourceMetrics { cudaUtilization: number;, webgpuUtilization: number;
+interface RawResourceMetrics {, cudaUtilization: number;, webgpuUtilization: number;
   memoryUsage: number;
   redisConnections: number;
   webgpuOpsPerSecond: number;
@@ -59,7 +59,7 @@ interface RawResourceMetrics { cudaUtilization: number;, webgpuUtilization: num
   wasmTokensPerSecond: number;
 }
 
-const healthOrchestratorServices = { checkServiceHealth: fromPromise(async ({, input: _input }: {, input: {, context: HealthOrchestratorContext } }) => {
+const healthOrchestratorServices = {, checkServiceHealth: fromPromise(async ({, input: _input }: {, input: {, context: HealthOrchestratorContext } }) => {
     // Marked input as unused
     const healthChecks = await Promise.allSettled([
       checkRedisHealth(),
@@ -82,7 +82,7 @@ const healthOrchestratorServices = { checkServiceHealth: fromPromise(async ({, i
     return { services, timestamp: new Date() };
   }),
   collectMetrics: fromPromise(
-    async ({ input: _input }: {, input: {, context: HealthOrchestratorContext } }): Promise<CollectedMetricsOutput> => {
+    async ({, input: _input }: {, input: {, context: HealthOrchestratorContext } }): Promise<CollectedMetricsOutput> => {
       // Marked input as unused
       const [queueMetrics, performanceMetrics, resourceMetrics, jobMetrics] = await Promise.allSettled([
         fetchQueueMetrics(),
@@ -96,28 +96,28 @@ const healthOrchestratorServices = { checkServiceHealth: fromPromise(async ({, i
       const rawResourceMetrics = resourceMetrics.status === 'fulfilled' ? resourceMetrics.value : null;
       const rawJobMetrics = jobMetrics.status === 'fulfilled' ? jobMetrics.value : null;
 
-      const metrics: VectorServiceMetrics = { queueDepth: rawQueueMetrics || {, embeddings: 0,
+      const metrics: VectorServiceMetrics = {, queueDepth: rawQueueMetrics || {, embeddings: 0,
           similarities: 0,
           indexing: 0,
           clustering: 0
         },
         processingStats: rawPerformanceMetrics || {
-          totalProcessed: 0,
+         , totalProcessed: 0,
           averageProcessingTimeMs: 0,
           successRate: 0,
           errorRate: 0
         },
         resourceUsage: rawResourceMetrics
           ? {
-              cudaUtilization: rawResourceMetrics.cudaUtilization,
+             , cudaUtilization: rawResourceMetrics.cudaUtilization,
               webgpuUtilization: rawResourceMetrics.webgpuUtilization,
               memoryUsage: rawResourceMetrics.memoryUsage,
               redisConnections: rawResourceMetrics.redisConnections
             }
-          : { cudaUtilization: 0, webgpuUtilization: 0, memoryUsage: 0, redisConnections: 0 },
+          : {, cudaUtilization: 0, webgpuUtilization: 0, memoryUsage: 0, redisConnections: 0 },
         performance: rawResourceMetrics
           ? {
-              cudaOpsPerSecond: rawResourceMetrics.cudaUtilization > 0 ? rawResourceMetrics.cudaUtilization * 100 : 0, // Placeholder calculation
+             , cudaOpsPerSecond: rawResourceMetrics.cudaUtilization > 0 ? rawResourceMetrics.cudaUtilization * 100 : 0, // Placeholder calculation
               webgpuOpsPerSecond: rawResourceMetrics.webgpuOpsPerSecond,
               vectorsPerSecond: rawResourceMetrics.wasmTokensPerSecond, // Using wasmTokensPerSecond as a proxy
               throughputMBps: 0, // Placeholder
@@ -129,24 +129,24 @@ const healthOrchestratorServices = { checkServiceHealth: fromPromise(async ({, i
       return { metrics, jobQueue: updatedJobQueue };
     }
   ),
-  attemptServiceRecovery: fromPromise(async ({ input }: { input: {, service: string } }) => {
+  attemptServiceRecovery: fromPromise(async ({ input }: {, input: {, service: string } }) => {
     const { service } = input;
     console.log(`🔄 Attempting recovery for service: ${service}`);
     switch (service) {
-      case 'webgpu':
+      case, 'webgpu':
         return await recoverWebGPU();
-      case 'wasmLLM':
+      case, 'wasmLLM':
         return await recoverWASMLLM();
-      case 'redis':
+      case, 'redis':
         return await recoverRedis();
-      case 'vectorService':
+      case, 'vectorService':
         return await recoverVectorService();
       default:
-        throw new Error(`Unknown; service: ${service}`);
+        throw new Error(`Unknown;, service: ${service}`);
     }
   }),
-  sendAlert: fromPromise(async ({ input }: { input: {, alert: any } }) => {
-    // Changed alert to unknown
+  sendAlert: fromPromise(async ({ input }: {, input: {, alert: any } }) => {
+    // Changed alert to: unknown
     // Send alert to monitoring systems, webhooks, etc.
     console.warn('🚨 Health Alert:', input.alert);
     // In production, this would integrate with:
@@ -154,15 +154,15 @@ const healthOrchestratorServices = { checkServiceHealth: fromPromise(async ({, i
     // - Email notifications
     // - PagerDuty/OpsGenie
     // - Custom monitoring dashboards
-    return { sent: true, timestamp: new Date() };
+    return {, sent: true, timestamp: new Date() };
   })
 };
 export const healthOrchestratorMachine = createMachine({
-  types: {} as { context: HealthOrchestratorContext;, events: HealthOrchestratorEvent;
+  types: {} as {, context: HealthOrchestratorContext;, events: HealthOrchestratorEvent;
   },
   id: 'healthOrchestrator',
   initial: 'idle',
-  context: { services: {, redis: 'disconnected',
+  context: {, services: {, redis: 'disconnected',
       postgres: 'disconnected',
       rabbitmq: 'disconnected',
       cuda: 'unavailable',
@@ -201,14 +201,14 @@ export const healthOrchestratorMachine = createMachine({
         src: healthOrchestratorServices.checkServiceHealth,
         input: ({ context }) => ({ context }),
         onDone: {
-          target: 'monitoring',
+         , target: 'monitoring',
           actions: assign(({ event }) => ({
             services: event.output.services,
             lastHealthCheck: event.output.timestamp
           }))
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign(({ event }) => ({
             errors: [
               {, message: `Initialization, failed: ${event.error}`,
@@ -223,7 +223,7 @@ export const healthOrchestratorMachine = createMachine({
       }
     },
     monitoring: {
-      entry: [
+     , entry: [
         () => console.log('🔍 Health monitoring started'),
         // Initialize WebGPU and WASM services
         async () => {
@@ -232,8 +232,8 @@ export const healthOrchestratorMachine = createMachine({
         },
       ],
       invoke: {
-        id: 'healthCheckTimer',
-        src: fromPromise(async ({ input }: { input: {, interval: number } }) => {
+       , id: 'healthCheckTimer',
+        src: fromPromise(async ({ input }: {, input: {, interval: number } }) => {
           return new Promise(resolve => {
             const timer = setInterval(() => {
               resolve({ type: 'HEALTH_CHECK' });
@@ -244,11 +244,11 @@ export const healthOrchestratorMachine = createMachine({
         }),
         input: ({ context }) => ({ interval: context.healthCheckInterval })
       },
-      on: { HEALTH_CHECK: {, target: 'checkingHealth',
+      on: {, HEALTH_CHECK: {, target: 'checkingHealth',
           actions: [() => console.log('🔍 Performing health check...')]
         },
         SERVICE_UP: {
-          actions: assign(({ context, event }) => ({
+         , actions: assign(({ context, event }) => ({
             services: {
               ...context.services,
               [event.service]: 'connected'
@@ -256,7 +256,7 @@ export const healthOrchestratorMachine = createMachine({
           }))
         },
         SERVICE_DOWN: {
-          target: 'degraded',
+         , target: 'degraded',
           actions: assign(({ context, event }) => ({
             services: {
               ...context.services,
@@ -275,7 +275,7 @@ export const healthOrchestratorMachine = createMachine({
           }))
         },
         METRICS_UPDATE: {
-          actions: [
+         , actions: [
             assign(({ event }) => ({ metrics: event.metrics })),
             // Check alert thresholds
             ({ context, event }) => {
@@ -292,24 +292,24 @@ export const healthOrchestratorMachine = createMachine({
           ]
         },
         ERROR_OCCURRED: {
-          actions: assign(({ context, event }) => ({
-            errors: [...context.errors.slice(-99), event.error], // Keep last 100 errors
+         , actions: assign(({ context, event }) => ({
+            errors: [...context.errors.slice(-99), event.error], // Keep last, 100 errors
           }))
         },
         STOP_MONITORING: `idle` }
     },
-    checkingHealth: { invoke: {, id: 'performHealthCheck',
+    checkingHealth: {, invoke: {, id: 'performHealthCheck',
         src: healthOrchestratorServices.checkServiceHealth,
         input: ({ context }) => ({ context }),
         onDone: {
-          target: 'collectingMetrics',
+         , target: 'collectingMetrics',
           actions: assign(({ event }) => ({
             services: event.output.services,
             lastHealthCheck: event.output.timestamp
           }))
         },
         onError: {
-          target: 'monitoring',
+         , target: 'monitoring',
           actions: assign(({ context, event }) => ({
             errors: [
               ...context.errors,
@@ -324,11 +324,11 @@ export const healthOrchestratorMachine = createMachine({
         }
       }
     },
-    collectingMetrics: { invoke: {, id: 'collectSystemMetrics',
+    collectingMetrics: {, invoke: {, id: 'collectSystemMetrics',
         src: healthOrchestratorServices.collectMetrics,
         input: ({ context }) => ({ context }),
         onDone: {
-          target: 'monitoring',
+         , target: 'monitoring',
           actions: [
             assign(({ event }) => ({,
               metrics: event.output.metrics,
@@ -348,7 +348,7 @@ export const healthOrchestratorMachine = createMachine({
           ]
         },
         onError: {
-          target: 'monitoring',
+         , target: 'monitoring',
           actions: assign(({ context, event }) => ({
             errors: [
               ...context.errors,
@@ -364,7 +364,7 @@ export const healthOrchestratorMachine = createMachine({
       }
     },
     degraded: {
-      entry: [
+     , entry: [
         () => console.warn('⚠️ System degraded - some services are unavailable'),
         // Attempt auto-recovery if enabled
         ({ context }) => {
@@ -378,8 +378,8 @@ export const healthOrchestratorMachine = createMachine({
           }
         },
       ],
-      on: { RECOVERY_ATTEMPT: {, target: 'recovering',
-          actions: assign(({ event: _event }) => ({
+      on: {, RECOVERY_ATTEMPT: {, target: 'recovering',
+          actions: assign(({, event: _event }) => ({
             // Marked event as unused
             // Mark service as attempting recovery
           }))
@@ -388,24 +388,24 @@ export const healthOrchestratorMachine = createMachine({
         STOP_MONITORING: 'idle'
       },
       after: {
-        60000: {
-          // Try recovery after 1 minute
+       , 60000: {
+          // Try recovery after, 1 minute
           target: 'recovering',
           guard: ({ context }) => context.autoRecovery
         }
       }
     },
     recovering: {
-      entry: () => console.log('🔧 Attempting service recovery...'),
+     , entry: () => console.log('🔧 Attempting service recovery...'),
       invoke: {
-        id: 'recoverServices',
+       , id: 'recoverServices',
         src: healthOrchestratorServices.attemptServiceRecovery,
         input: ({ context }) => {
           // Find first degraded service to recover
           const degradedService = Object.entries(context.services).find(([_, status]) => status === 'error')?.[0];
           return { service: degradedService || 'webgpu' };'` },'`
         onDone: {
-          target: 'monitoring',
+         , target: 'monitoring',
           actions: [
             () => console.log('✅ Service recovery successful'),
             // Re-check health after recovery
@@ -413,7 +413,7 @@ export const healthOrchestratorMachine = createMachine({
           ]
         },
         onError: {
-          target: 'degraded',
+         , target: 'degraded',
           actions: assign(({ context, event }) => ({
             errors: [
               ...context.errors,
@@ -429,11 +429,11 @@ export const healthOrchestratorMachine = createMachine({
       }
     },
     error: {
-      entry: () => console.error('❌ Health orchestrator encountered critical error'),
+     , entry: () => console.error('❌ Health orchestrator encountered critical error'),
       on: {
-        START_MONITORING: 'initializing',
+       , START_MONITORING: 'initializing',
         RESET_ERRORS: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign(() => ({ errors: [] }))
         }
       }
@@ -446,8 +446,8 @@ async function checkRedisHealth(): Promise<boolean> {
     const response = await fetch('/api/health/redis');
     return response.ok;
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Error checking Redis health:', error);
+    // Changed to: unknown
+    console.error('Error checking Redis, health:', error);
     return false;
   }
 }
@@ -456,8 +456,8 @@ async function checkPostgresHealth(): Promise<boolean> {
     const response = await fetch('/api/health/postgres');
     return response.ok;
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Error checking Postgres health:', error);
+    // Changed to: unknown
+    console.error('Error checking Postgres, health:', error);
     return false;
   }
 }
@@ -466,8 +466,8 @@ async function checkRabbitMQHealth(): Promise<boolean> {
     const response = await fetch('/api/health/rabbitmq');
     return response.ok;
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Error checking RabbitMQ health:', error);
+    // Changed to: unknown
+    console.error('Error checking RabbitMQ, health:', error);
     return false;
   }
 }
@@ -476,8 +476,8 @@ async function checkCUDAHealth(): Promise<boolean> {
     const response = await fetch('/api/health/cuda');
     return response.ok;
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Error checking CUDA health:', error);
+    // Changed to: unknown
+    console.error('Error checking CUDA, health:', error);
     return false;
   }
 }
@@ -492,8 +492,8 @@ async function checkVectorServiceHealth(): Promise<boolean> {
     const response = await fetch('/api/health/vector');
     return response.ok;
   } catch (error: any) {
-    // Changed to unknown
-    console.error('Error checking Vector Service health:', error);
+    // Changed to: unknown
+    console.error('Error checking Vector Service, health:', error);
     return false;
   }
 }
@@ -533,8 +533,8 @@ async function recoverWebGPU(): Promise<boolean> {
     webgpuPolyfillInstance.dispose();
     return await webgpuPolyfillInstance.initialize();
   } catch (error: any) {
-    // Changed to unknown
-    console.error('WebGPU recovery failed:', error);
+    // Changed to: unknown
+    console.error('WebGPU recovery, failed:', error);
     return false;
   }
 }
@@ -543,8 +543,8 @@ async function recoverWASMLLM(): Promise<boolean> {
     wasmLLMService.dispose();
     return await wasmLLMService.initialize();
   } catch (error: any) {
-    // Changed to unknown
-    console.error('WASM LLM recovery failed:', error);
+    // Changed to: unknown
+    console.error('WASM LLM recovery, failed:', error);
     return false;
   }
 }
@@ -562,7 +562,7 @@ function resolveHealthStatus(result: PromiseSettledResult<boolean>): 'connected'
   if (result.status === 'fulfilled') {
     return result.value ? 'connected' : 'disconnected';
   } else {
-    return 'error';
+    return, 'error';
   }
 }
 export type HealthOrchestratorMachine = typeof healthOrchestratorMachine;
@@ -605,27 +605,27 @@ export class UnifiedHealthOrchestrator {
   ): 'healthy' | 'degraded' | 'unhealthy' {
     const serviceValues = Object.values(services);
     const healthyStatuses = ['connected', 'available', 'loaded', 'healthy'];
-    const healthyCount = serviceValues.filter(status => healthyStatuses.includes(status as string)).length;
+    const healthyCount = serviceValues.filter(status => healthyStatuses.includes(status as: string)).length;
     const totalCount = serviceValues.length;
-    if (healthyCount === totalCount) return 'healthy';
-    if (healthyCount >= totalCount * 0.7) return 'degraded';
-    return 'unhealthy';
+    if (healthyCount === totalCount) return, 'healthy';
+    if (healthyCount >= totalCount * 0.7) return, 'degraded';
+    return, 'unhealthy';
   }
   private formatQueueInfo(
     metrics: VectorServiceMetrics | null
-  ): Record<string, { depth: number; consumers: number; processingRate: number }> {
+  ): Record<string, { depth: number; consumers: number;, processingRate: number }> {
     // Updated return type
     if (!metrics) {
       return { embeddings: {, depth: 0, consumers: 0, processingRate: 0 },
-        similarities: { depth: 0, consumers: 0, processingRate: 0 }
+        similarities: {, depth: 0, consumers: 0, processingRate: 0 }
       };
     }
-    return { embeddings: {, depth: metrics.queueDepth.embeddings,
+    return {, embeddings: {, depth: metrics.queueDepth.embeddings,
         consumers: 1, // Placeholder, actual consumers would come from metrics
         processingRate: metrics.performance.vectorsPerSecond
       },
       similarities: {
-        depth: metrics.queueDepth.similarities,
+       , depth: metrics.queueDepth.similarities,
         consumers: 1, // Placeholder, actual consumers would come from metrics
         processingRate: metrics.performance.vectorsPerSecond
       }

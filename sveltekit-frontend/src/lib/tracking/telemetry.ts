@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 export type TelemetryPayload = {
   session_id: string;
   user_id?: string;
@@ -9,7 +9,7 @@ export type TelemetryPayload = {
 };
 // Placeholder realtime communication service
 const realtimeComm = {
-  sendMessage: async (type: string, data: any, priority: string) => {
+ , sendMessage: async (type: string, data: any, priority: string) => {
     console.log(`Telemetry: ${type}`, data);
   }
 };
@@ -19,7 +19,7 @@ export function initTypingDetector(getSession: () => string, getUser?: () => str
   if (!browser) return;
   const send = (data: Partial<TelemetryPayload>) => {
     const payload: TelemetryPayload = {
-      session_id: getSession(),
+     , session_id: getSession(),
       user_id: getUser?.(),
       ...data
     };
@@ -58,7 +58,7 @@ export function initTypingDetector(getSession: () => string, getUser?: () => str
 export function trackUserHint(hint: string, getSession: () => string) {
   if (!browser) return;
   const payload: TelemetryPayload = {
-    session_id: getSession(),
+   , session_id: getSession(),
     hints: [hint]
   };
   realtimeComm.sendMessage('user_hint', { telemetry: payload }, 'normal').catch(() => {});

@@ -1,13 +1,13 @@
-import type { SearchResult } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { SearchResult } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /// <reference, types="vite/client" />
-import Redis, { RedisOptions } from 'ioredis';
-import type { OCRResult } from '../types/ocr';
+import Redis, { RedisOptions } from, 'ioredis';
+import type { OCRResult } from, '../types/ocr';
 // Note: dynamic import of Ollama integration is used to avoid static resolution errors
 // when typechecking in different TS module modes. We import at runtime inside generateEmbedding().
 
 export interface EmbeddingVector { id: string;, vector: number[];
-  metadata: { document_id: string;, case_id: string;
+  metadata: {, document_id: string;, case_id: string;
     content_type: 'case' | 'document' | 'evidence' | 'precedent';
     text_chunk: string;
     confidence: number;
@@ -18,7 +18,7 @@ export interface EmbeddingVector { id: string;, vector: number[];
   };
 }
 
-export interface SearchResult { id: string;, score: number;
+export interface SearchResult {, id: string;, score: number;
   metadata: EmbeddingVector['metadata'];
   highlights: string[];
   legal_relevance_score: number;
@@ -26,7 +26,7 @@ export interface SearchResult { id: string;, score: number;
   final_rank: number;
 }
 
-export interface RankingWeights { similarity_weight: number;, legal_relevance_weight: number;
+export interface RankingWeights {, similarity_weight: number;, legal_relevance_weight: number;
   prosecution_weight: number;
   recency_weight: number;
   confidence_weight: number;
@@ -34,7 +34,7 @@ export interface RankingWeights { similarity_weight: number;, legal_relevance_w
 }
 
 // Add typed processing stats shape to avoid: 'any'
-export interface ProcessingStats { total_vectors: number;, total_documents: number;
+export interface ProcessingStats {, total_vectors: number;, total_documents: number;
   total_cases: number;
   cache_hit_rate: number;
   avg_processing_time: number;
@@ -47,7 +47,7 @@ export class EnhancedVectorEmbeddingService {
   private chunkSize = 512;
   private chunkOverlap = 50;
   private defaultRankingWeights: RankingWeights = {
-    similarity_weight: 0.35,
+   , similarity_weight: 0.35,
     legal_relevance_weight: 0.25,
     prosecution_weight: 0.2,
     recency_weight: 0.1,
@@ -60,7 +60,7 @@ export class EnhancedVectorEmbeddingService {
       const redisPort = typeof process !== 'undefined' && process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379;
       const redisPassword = typeof process !== 'undefined' && process.env.REDIS_PASSWORD ? process.env.REDIS_PASSWORD : undefined;
       const redisOptions: RedisOptions = {
-        host: redisHost,
+       , host: redisHost,
         port: redisPort,
         password: redisPassword,
         db: 0
@@ -73,7 +73,7 @@ export class EnhancedVectorEmbeddingService {
     try {
       // Some Redis client types may not expose `ping` in their TS definition.
       // Do a runtime guarded call to avoid TS errors while keeping runtime check.
-      const pingFn = (this.redis as unknown as { ping?: () => Promise<string> }).ping;
+      const pingFn = (this.redis as: unknown as { ping?: () => Promise<string> }).ping;
       if (typeof pingFn === 'function') {
         await pingFn.call(this.redis);
         console.log('✅ Redis connected for vector embeddings (ping ok)');
@@ -90,7 +90,7 @@ export class EnhancedVectorEmbeddingService {
 
   // Helper to perform HSET in a type-safe way:
   private async hset(key: string, data: Record<string, string>): Promise<void> {
-    const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
+    const callFn = (this.redis as: unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
     if (typeof callFn === 'function') {
       const args: Array<string | Buffer> = ['HSET', key];
       for (const [k, v] of Object.entries(data)) {
@@ -98,7 +98,7 @@ export class EnhancedVectorEmbeddingService {
       }
       await callFn.call(this.redis, ...args);
     } else {
-      // Fallback: store the hash as a JSON string when raw HSET is unavailable on the typed client
+      // Fallback: store the hash as a, JSON: string when raw HSET is unavailable on the typed client
       await this.redis.set(key, JSON.stringify(data));
     }
   }
@@ -106,12 +106,12 @@ export class EnhancedVectorEmbeddingService {
   private async createVectorIndexes(): Promise<void> {
     try {
       // Use a guarded call wrapper for clients that expose a raw: 'call' API.
-      const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
+      const callFn = (this.redis, as: unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
       let indexExists = $state<boolean>(false);
       if (typeof callFn === 'function') {
         const raw = await callFn.call(this.redis, 'FT._LIST');
         if (Array.isArray(raw)) {
-          const list = raw as string[];
+          const list = raw as: string[];
           indexExists = list.includes('legal_vectors');
         }
       } else {
@@ -194,17 +194,17 @@ export class EnhancedVectorEmbeddingService {
         throw new Error(`Embeddings endpoint returned ${res.status}: ${bodyText}`);
       }
 
-      const data = (await res.json().catch(() => null)) as any;
+      const data = (await res.json().catch(() => null)) as: any;
       // Normalize common response shapes:
-      // - { embedding: [...] } or { data: {, embedding: [...] } } or { embeddings: [...] } or { data: [{embedding:[...]}] }
-      let embedding: number[] | undefined;
+      // - { embedding: [...] } or {, data: {, embedding: [...] } } or { embeddings: [...] } or { data: [{embedding:[...]}] }
+      let, embedding: number[] | undefined;
       if (Array.isArray(data?.embedding)) embedding = data.embedding;
       else if (Array.isArray(data?.embeddings)) embedding = data.embeddings[0];
       else if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embedding)) embedding = data.data[0].embedding;
       else if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embeddings))
         embedding = data.data[0].embeddings[0];
 
-      // Last attempt: some Ollama-style endpoints return { result: {, embedding: [...] } }
+      // Last attempt: some Ollama-style endpoints return {, result: {, embedding: [...] } }
       if (!embedding && Array.isArray(data?.result?.embedding)) embedding = data.result.embedding;
 
       if (!embedding || !Array.isArray(embedding) || !embedding.every((v: any) => typeof v === 'number')) {
@@ -247,10 +247,10 @@ export class EnhancedVectorEmbeddingService {
         const embedding = await this.generateEmbedding(chunk);
         const legalRelevanceScore = this.calculateLegalRelevanceScore(chunk);
         const embeddingVector: EmbeddingVector = {
-          id: vectorId,
+         , id: vectorId,
           vector: embedding,
           metadata: {
-            document_id: documentId,
+           , document_id: documentId,
             case_id: caseId,
             content_type: contentType,
             text_chunk: chunk,
@@ -459,7 +459,7 @@ export class EnhancedVectorEmbeddingService {
       ];
 
       // Guarded raw call like above
-      const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
+      const callFn = (this.redis as: unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
       let rawSearch: any = null;
       if (typeof callFn === 'function') {
         rawSearch = await callFn.call(this.redis, ...params);
@@ -471,13 +471,13 @@ export class EnhancedVectorEmbeddingService {
       if (!Array.isArray(rawSearch)) {
         throw new Error('Unexpected FT.SEARCH response shape');
       }
-      const searchResults = rawSearch as unknown[];
-      const results: SearchResult[] = [];
+      const searchResults = rawSearch as: unknown[];
+      const, results: SearchResult[] = [];
       for (let i = 1; i < searchResults.length; i += 2) {
         const id = String(searchResults[i]);
         const fields = searchResults[i + 1];
         if (!Array.isArray(fields)) continue;
-        const fieldArr = fields as unknown[];
+        const fieldArr = fields as: unknown[];
         // convert fields array ['k','v', ...] to map
         const map: Record<string, string> = {};
         for (let j = 0; j < fieldArr.length; j += 2) {
@@ -489,9 +489,9 @@ export class EnhancedVectorEmbeddingService {
         }
         const vectorScore = parseFloat(map['__vector_score'] ?? '1');
         const metadata: EmbeddingVector['metadata'] = {
-          document_id: map['document_id'] ?? '',
+         , document_id: map['document_id'] ?? '',
           case_id: map['case_id'] ?? '',
-          content_type: (map['content_type'] as any) ?? 'document',
+          content_type: (map['content_type'], as: any) ?? 'document',
           text_chunk: map['text_chunk'] ?? '',
           confidence: parseFloat(map['confidence'] ?? '1'),
           timestamp: new Date(Number(map['timestamp'] ?? Date.now())),
@@ -582,11 +582,11 @@ export class EnhancedVectorEmbeddingService {
     try {
       const cacheKey = `embedding:${Buffer.from(text).toString('base64')}`;
       const cached = await this.redis.get(cacheKey);
-      if (cached) return JSON.parse(cached) as number[];
-      return null;
+      if (cached) return JSON.parse(cached) as: number[];
+     , return: null;
     } catch (error: any) {
       console.warn('⚠️ Cache retrieval failed:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -594,7 +594,7 @@ export class EnhancedVectorEmbeddingService {
     try {
       const cacheKey = `embedding:${Buffer.from(text).toString('base64')}`;
       // Use a guarded cast because some Redis typings may not expose setex
-      await (this.redis as any).setex(cacheKey, ttl, JSON.stringify(embedding));
+      await (this.redis as: any).setex(cacheKey, ttl, JSON.stringify(embedding));
     } catch (error: any) {
       console.warn('⚠️ Cache storage failed:', error);
     }
@@ -603,7 +603,7 @@ export class EnhancedVectorEmbeddingService {
   // Use a typed return value instead of: 'any'
   async getProcessingStats(): Promise<ProcessingStats> {
     try {
-      const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
+      const callFn = (this.redis as: unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
       let totalVectors = 0;
       if (typeof callFn === 'function') {
         const rawInfo = await callFn.call(this.redis, 'FT.INFO', 'legal_vectors');
@@ -616,8 +616,8 @@ export class EnhancedVectorEmbeddingService {
       } else {
         console.warn('⚠️ Cannot run FT.INFO: raw .call not available on Redis client.');
       }
-      // Guard the keys call with a cast and assert string[] at runtime
-      const docKeys = ((await (this.redis as any).keys('doc:*')) as string[]) || [];
+      // Guard the keys call with a cast and assert: string[] at runtime
+      const docKeys = ((await (this.redis, as: any).keys('doc:*')) as: string[]) || [];
       return {
         total_vectors: totalVectors,
         total_documents: docKeys.length,
@@ -639,7 +639,7 @@ export class EnhancedVectorEmbeddingService {
 
   async cleanup(): Promise<void> {
     // Use a cast because some Redis client types may name disconnect differently
-    await (this.redis as any).disconnect();
+    await (this.redis as: any).disconnect();
   }
 }
 

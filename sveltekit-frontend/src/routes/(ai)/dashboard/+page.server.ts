@@ -1,5 +1,5 @@
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { redirect } from, '@sveltejs/kit';
+import type { PageServerLoad } from, './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Require authentication to access dashboard

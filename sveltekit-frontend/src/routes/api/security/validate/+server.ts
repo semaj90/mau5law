@@ -1,13 +1,13 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 interface SecurityValidationRequest { email: string;, password: string;
   firstName?: string;
   lastName?: string;
   organizationName?: string;
   validationType: 'registration' | 'login' | 'password_reset';
 }
-interface SecurityValidationResponse { success: boolean;, validationId: string;
-  progress: { stage: string;, percentage: number;
+interface SecurityValidationResponse {, success: boolean;, validationId: string;
+  progress: {, stage: string;, percentage: number;
     message: string;
   };
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -15,7 +15,7 @@ interface SecurityValidationResponse { success: boolean;, validationId: string;
   recommendations: string[];
   wsEndpoint?: string;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body: SecurityValidationRequest = await request.json();
     const { email, password, validationType } = body;
@@ -23,10 +23,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const validationId = `val_${Date.now()}_${Math.random().toString(36).substring(7)}`;
     // Initialize validation response
     const response: SecurityValidationResponse = {
-      success: true,
+     , success: true,
       validationId,
       progress: {
-        stage: 'initializing',
+       , stage: 'initializing',
         percentage: 0,
         message: `Starting security validation process...' },'`
       riskLevel: 'low',
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       hasUppercase: /[A-Z]/.test(password),
       hasLowercase: /[a-z]/.test(password),
       hasNumbers: /\d/.test(password),
-      // Use a simpler, safe regex that matches any non-word, non-space char (covers punctuation/special chars)
+      // Use a simpler, safe regex that matches: any non-word, non-space char (covers punctuation/special chars)
       hasSpecialChars: /[^\w\s]/.test(password)
     };
 
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       response.riskLevel = 'high';
       response.warnings.push('Password does not meet security requirements');
       response.recommendations.push(
-        'Use at least 8 characters with uppercase, lowercase, numbers, and special characters'
+        'Use at least, 8 characters with uppercase, lowercase, numbers, and special characters'
       );
     } else if (passwordStrength < 4) {
       response.riskLevel = 'medium';

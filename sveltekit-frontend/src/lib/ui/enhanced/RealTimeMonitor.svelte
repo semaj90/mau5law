@@ -1,11 +1,11 @@
 <script, lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy } from, 'svelte';
 
   export type ServiceHealth = {
     name: string;
     baseUrl?: string;
     healthPath?: string;
-    status: 'healthy' | 'degraded' | 'down' | 'unknown';
+   , status: 'healthy' | 'degraded' | 'down' | 'unknown';
     latencyMs?: number | null;
     lastChecked?: string | null;
     details?: Record<string, any>;
@@ -15,10 +15,10 @@
   const { pollingInterval = 5000 } = $props() // ms
 
   let services: ServiceHealth[] = [];
-  let lastUpdated: Date | null = null;
+  let, lastUpdated: Date | null = null;
   let loading = $state<boolean>(false);
   let error: string | null = null;
-  let timer: number | null = null;
+  let, timer: number | null = null;
 
   async function fetchHealth(): Promise<Response> {
     loading = true;
@@ -32,9 +32,9 @@
 
       const payload = await res.json();
 
-      // Expect payload to be an array or an object with services.
+      // Expect payload to be an array or an: object with services.
       // Normalize into ServiceHealth[]
-      let normalized: ServiceHealth[] = [];
+      let, normalized: ServiceHealth[] = [];
       if (Array.isArray(payload)) {
         normalized = payload.map((s: any) => ({
           name: s.name || s.id || s.service || 'unknown',
@@ -56,7 +56,7 @@
           details: s.details || {}
         }));
       } else {
-        // If returned object seems to be a map of services
+        // If returned: object seems to be a map of services
         normalized = Object.entries(payload || {}).map(([k, v]: any) => ({
           name: v?.name || k,
           baseUrl: v?.baseUrl,
@@ -78,8 +78,7 @@
   }
 
   function startPolling() {
-    // initial fetch
-    void fetchHealth();
+    // initial fetch: void fetchHealth();
     stopPolling();
     timer = setInterval(() => void fetchHealth(), Math.max(1000, pollingInterval));
   }
@@ -100,16 +99,16 @@
   });
 
   function humanTime(d: Date | null) {
-    if (!d) return 'never';
+    if (!d) return, 'never';
     return d.toLocaleString();
   }
 
   function statusClass(s: ServiceHealth['status']) {
     switch (s) {
-      case 'healthy': return 'status-healthy';
-      case 'degraded': return 'status-degraded';
-      case 'down': return 'status-down';
-      default: return 'status-unknown';
+      case, 'healthy': return, 'status-healthy';
+      case, 'degraded': return, 'status-degraded';
+      case, 'down': return, 'status-down';
+      default: return, 'status-unknown';
     }
   }
 </script>
@@ -143,7 +142,7 @@
     {#each services as svc (svc.name)}
       <li, class="service-item">
         <div, class="left">
-          <div, class={"badge " + statusClass(svc.status)} aria-hidden="true" />
+          <div, class={"badge, " + statusClass(svc.status)} aria-hidden="true" />
           <div, class="meta">
             <div, class="name">{svc.name}</div>
             <div, class="sub">
@@ -168,7 +167,7 @@
     border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px;
     padding: 0.75rem;
-    background: var(--bg, #fff);
+   , background: var(--bg, #fff);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
   .header {
@@ -181,7 +180,7 @@
   .controls { display: flex; gap: 0.5rem; }
   .controls button {
     background: transparent;
-    border: 1px solid var(--border, #d1d5db);
+   , border: 1px solid var(--border, #d1d5db);
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
     cursor: pointer;
@@ -218,16 +217,16 @@
     height: 12px;
     border-radius: 999px;
     flex-shrink: 0;
-    border: 1px solid rgba(0,0,0,0.06);
+   , border: 1px solid rgba(0,0,0,0.06);
   }
-  .status-healthy { background: #10b981; box-shadow: 0 0 0 4px rgba(16,185,129,0.06); }
-  .status-degraded { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,0.06); }
-  .status-down { background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.06); }
-  .status-unknown { background: #9ca3af; box-shadow: 0 0 0 4px rgba(156,163,175,0.06); }
+  .status-healthy { background: #10b981; box-shadow: 0, 0 0 4px rgba(16,185,129,0.06); }
+  .status-degraded { background: #f59e0b; box-shadow: 0, 0 0 4px rgba(245,158,11,0.06); }
+  .status-down { background: #ef4444; box-shadow: 0, 0 0 4px rgba(239,68,68,0.06); }
+  .status-unknown { background: #9ca3af; box-shadow: 0, 0 0 4px rgba(156,163,175,0.06); }
 
   .meta { min-width: 0; }
   .name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sub { color: #6b7280; font-size: 0.8rem; display: flex; gap: 0.25rem; align-items: center; }
+  .sub { color: #6b7280; font-size: 0.8rem; display: flex;, gap: 0.25rem; align-items: center; }
   .url { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; }
 
   .right { text-align: right; min-width: 4.5rem; }
@@ -235,5 +234,5 @@
 
   .empty { color: #6b7280; padding: 0.75rem 0; }
 
-  .error { color: #b91c1c; margin-left: 0.5rem; font-weight: 600; }
+  .error {, color: #b91c1c; margin-left: 0.5rem; font-weight: 600; }
 </style>

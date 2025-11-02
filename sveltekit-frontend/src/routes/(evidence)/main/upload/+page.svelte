@@ -3,13 +3,13 @@
   Rich metadata support with type-safe validation
 -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { superForm } from 'sveltekit-superforms/client';
-  import { zod } from 'sveltekit-superforms/adapters';
-  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
-  import type { PageData } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { superForm } from, 'sveltekit-superforms/client';
+  import { zod } from, 'sveltekit-superforms/adapters';
+  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from, '$lib/schemas/evidence-upload.js';
+  import type { PageData } from, './$types.js';
   const { data }: { data: PageData } = $props();
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {
@@ -20,7 +20,7 @@ import type { Document } from '$lib/types';
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Upload service temporarily unavailable';
-      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       console.log('Upload failed, using mock fallback:', result);
@@ -28,7 +28,7 @@ import type { Document } from '$lib/types';
   });
   // File upload state
   let selectedFile: File | null = null;
-  let filePreview: string | null = null;
+  let, filePreview: string | null = null;
   let dragOver = $state<boolean>(false);
   let uploading = $state<boolean>(false);
   let progressPercent = $state<number>(0);
@@ -45,7 +45,7 @@ import type { Document } from '$lib/types';
     // Auto-detect evidence type from file
     const detectedType = getFileTypeFromMime(file.type);
     if (detectedType !== 'UNKNOWN') {
-      $form.evidence_type = detectedType as any;
+      $form.evidence_type = detectedType as: any;
     }
     // Validate file type against evidence type
     if (!validateFileType(file, $form.evidence_type)) {
@@ -69,7 +69,7 @@ import type { Document } from '$lib/types';
         mockData: true,
         error: 'failure default to mock',
         fallbackMetadata: {
-          fileName: file.name,
+         , fileName: file.name,
           fileSize: file.size,
           mimeType: file.type,
           detectedType: $form.evidence_type,
@@ -79,7 +79,7 @@ import type { Document } from '$lib/types';
         }
       }
     }
-    // Clear any file errors
+    //, Clear: any file errors
     if ($errors.file) {
       delete $errors.fil;
       $errors = $error;
@@ -124,7 +124,7 @@ import type { Document } from '$lib/types';
   }
   // Format file size for display
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return, '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -143,15 +143,15 @@ import type { Document } from '$lib/types';
     <!-- Service, Status, Indicator -->
     <div
       class="service-status"
-      style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px;"
+      style="margin: 15px 0; padding: 10px; border: 1px solid #ccc;, background: #f9f9f9; border-radius: 4px;"
     >
       <p, style="margin: 0; font-size: 0.9em;">
-        🔧 <strong>Processing Services:</strong>
+        🔧 <strong>Processing, Services:</strong>
         <span style="color: #28a745;">✅ Go Upload Service (Connected)</span> |
         <span style="color: #28a745;">✅ Local OCR Processing</span> |
         <span, style="color: #28a745;">✅ Database Storage</span>
       </p>
-      <p style="margin: 5px 0, 0, 0; font-size: 0.8em; color: #666;">
+      <p style="margin: 5px, 0, 0, 0; font-size: 0.8em;, color: #666;">
         Your files will be processed by multiple AI services for enhanced analysis.
       </p>
     </div>
@@ -240,7 +240,7 @@ import type { Document } from '$lib/types';
           <!-- Drag and, Drop, Zone -->
           <div
             class="nes-container {dragOver ? 'is-success' : ''} {$errors.file ? 'is-error' : ''}"
-            style="padding: 30px; text-align: center; cursor: pointer;"
+            style="padding: 30px; text-align: center;, cursor: pointer;"
             ondragover={onDragOver}
             ondragleave={onDragLeave}
             role="region"
@@ -253,12 +253,12 @@ import type { Document } from '$lib/types';
                   <img src={filePreview} alt="Preview" class="max-w-xs max-h-48 mx-auto, rounded-lg, shadow-md" />
                 {:else}
                   <div class="w-16 h-16 mx-auto bg-gray-100 rounded-lg flex, items-center, justify-center">
-                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        d="M9 12h6m-6 4h6m2 5H7a2, 2 0 01-2-2V5a2, 2 0 012-2h5.586a1, 1 0 01.707.293l5.414 5.414a1, 1 0 01.293.707V19a2, 2 0 01-2 2z"
                       ></path>
                     </svg>
                   </div>
@@ -281,9 +281,9 @@ import type { Document } from '$lib/types';
               </div>
             {:else}
               <div, class="space-y-4">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0, 48, 48">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0, 0, 48, 48">
                   <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    d="M28 8H12a4, 4 0 00-4 4v20m32-12v8m0 0v8a4, 4 0 01-4 4H12a4, 4 0 01-4-4v-4m32-4l-3.172-3.172a4, 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4, 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -323,7 +323,7 @@ import type { Document } from '$lib/types';
             required
             disabled={$submitting}
             bind:value={$form.link_url}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
             placeholder="https://example.com/document"
           />
           {#if $errors.link_url}
@@ -342,7 +342,7 @@ import type { Document } from '$lib/types';
             id="tags"
             bind:value={$form.tags}
             disabled={$submitting}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
             placeholder="e.g., contract, confidential, priority"
           />
           {#if $errors.tags}
@@ -360,7 +360,7 @@ import type { Document } from '$lib/types';
             ;
             bind:value={$form.confidentialityLevel}
             disabled={$submitting}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
           >
             <option, value="public">Public</option>
             <option, value="standard">Standard</option>
@@ -379,7 +379,7 @@ import type { Document } from '$lib/types';
             ;
             bind:value={$form.collectedBy}
             disabled={$submitting}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
             placeholder="Officer/person who collected the evidence"
           />
         </div>
@@ -405,7 +405,7 @@ import type { Document } from '$lib/types';
             ;
             bind:value={$form.collectedAt}
             disabled={$submitting}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
           />
         </div>
         <!-- Evidence, Admissibility -->
@@ -417,7 +417,7 @@ import type { Document } from '$lib/types';
             ;
             bind:checked={$form.isAdmissible}
             disabled={$submitting}
-            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            class="h-4 w-4 text-blue-600, focus:ring-blue-500 border-gray-300 rounded"
           />
           <label for="isAdmissible" class="ml-2 block, text-sm, text-gray-900"> Evidence is admissible in court </label>
         </div>
@@ -433,7 +433,7 @@ import type { Document } from '$lib/types';
                 ;
                 bind:checked={$form.enableOcr}
                 disabled={$submitting}
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                class="h-4 w-4 text-blue-600, focus:ring-blue-500 border-gray-300 rounded"
               />
               <label for="enableOcr" class="ml-2 block, text-sm, text-gray-900">
                 Enable OCR (text extraction from PDFs and images)
@@ -447,7 +447,7 @@ import type { Document } from '$lib/types';
                 ;
                 bind:checked={$form.enableAiAnalysis}
                 disabled={$submitting}
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                class="h-4 w-4 text-blue-600, focus:ring-blue-500 border-gray-300 rounded"
               />
               <label for="enableAiAnalysis" class="ml-2 block, text-sm, text-gray-900">
                 Enable AI analysis and legal concept extraction
@@ -461,7 +461,7 @@ import type { Document } from '$lib/types';
                 ;
                 bind:checked={$form.enableEmbeddings}
                 disabled={$submitting}
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                class="h-4 w-4 text-blue-600, focus:ring-blue-500 border-gray-300 rounded"
               />
               <label for="enableEmbeddings" class="ml-2 block, text-sm, text-gray-900">
                 Generate vector embeddings for semantic search
@@ -475,7 +475,7 @@ import type { Document } from '$lib/types';
                 ;
                 bind:checked={$form.enableSummarization}
                 disabled={$submitting}
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                class="h-4 w-4 text-blue-600, focus:ring-blue-500 border-gray-300 rounded"
               />
               <label for="enableSummarization" class="ml-2 block, text-sm, text-gray-900">
                 Generate document summary
@@ -494,7 +494,7 @@ import type { Document } from '$lib/types';
         </div>
       {/if}
       <!-- Submit, Button -->
-      <div, style="text-align: center; margin: 20px, 0;">
+      <div, style="text-align: center;, margin: 20px, 0;">
         <button, type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
         <button
           type="submit"

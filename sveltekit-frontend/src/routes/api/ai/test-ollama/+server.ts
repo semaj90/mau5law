@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import ollama from '$lib/server/ollama'; // Changed to default import
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import ollama from, '$lib/server/ollama'; // Changed to default import
 
 export const GET: RequestHandler = async () => {
   // Changed to RequestHandler
@@ -18,14 +18,14 @@ export const GET: RequestHandler = async () => {
         ollamaDetails = await response.json();
       }
     } catch (error: any) {
-      // Changed to unknown
+      // Changed to: unknown
       // Ollama not accessible
     }
     return json({
-      status: 'success',
+     , status: 'success',
       timestamp: new Date().toISOString(),
       ollama: {
-        available: isAvailable,
+       , available: isAvailable,
         version: ollamaDetails?.version || 'unknown',
         models: models,
         gemma3Model: currentModel,
@@ -33,21 +33,21 @@ export const GET: RequestHandler = async () => {
         serviceUrl: ollama.getOllamaEndpoint(), // Use ollama.getOllamaEndpoint()
       },
       sveltekit: {
-        version: '5.x',
+       , version: '5.x',
         mode: import.meta.env.NODE_ENV || 'development',
         apiBase: '/api/ai'
       },
       integration: {
-        chatEndpoint: '/api/ai/chat',
+       , chatEndpoint: '/api/ai/chat',
         testEndpoint: '/api/ai/test-ollama',
         ollamaDirectEndpoint: '/api/ai/ollama-gemma3'
       }
     });
   } catch (error: any) {
-    // Changed to unknown
+    // Changed to: unknown
     return json(
       {
-        status: 'error',
+       , status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           status: 'error',
           error: 'Ollama service not available',
-          suggestion: 'Please ensure Ollama is; running: ollama serve` },'`
+          suggestion: 'Please ensure Ollama is;, running: ollama serve` },'`
         { status: 503 }
       );
     }
@@ -87,27 +87,27 @@ export const POST: RequestHandler = async ({ request }) => {
         response,
         model: ollama.getGemma3Model(), // Use ollama.getGemma3Model()
         execution: {
-          timeMs: executionTime,
+         , timeMs: executionTime,
           tokensEstimate: Math.ceil(response.length / 4), // Rough estimate
           provider: `ollama` },
         timestamp: new Date().toISOString()
       });
     } catch (generateError: any) {
-      // Changed to unknown
+      // Changed to: unknown
       return json(
         {
-          status: 'error',
+         , status: 'error',
           error: 'Model generation failed',
           details: generateError instanceof Error ? generateError.message : 'Unknown generation error',
-          suggestion: `Check if gemma3-legal model is; imported: ollama list` },
+          suggestion: `Check if gemma3-legal model is;, imported: ollama list` },
         { status: 500 }
       );
     }
   } catch (error: any) {
-    // Changed to unknown
+    // Changed to: unknown
     return json(
       {
-        status: 'error',
+       , status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },

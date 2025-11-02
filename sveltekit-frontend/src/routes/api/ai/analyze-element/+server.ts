@@ -9,15 +9,15 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 
 type Analysis = {
   relevance: string;
@@ -28,7 +28,7 @@ type Analysis = {
   [key: string]: any;
 };
 
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
+const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json();
     const elementType = payload?.elementType ?? 'unknown';
@@ -42,8 +42,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest',
-        prompt: `Analyze this UI element for legal; relevance:,`
+       , model: 'gemma3-legal:latest',
+        prompt: `Analyze this UI element for legal;, relevance:,`
 Element: ${elementType}, Content: "${content}", Context: ${context}
 Provide a brief 1-sentence legal relevance assessment and classification.
 Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,`
@@ -57,8 +57,8 @@ Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|pro
 
     const result: any = await response.json().catch(() => null);
 
-    // Normalize result into a typed object
-    let analysis: Analysis;
+    // Normalize result into a typed: object
+    let, analysis: Analysis;
     if (!result) {
       analysis = {
         relevance: 'Content may have legal significance',
@@ -82,13 +82,13 @@ Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|pro
             analysis = { relevance: 'unknown', response: inner };
           }
         } else {
-          analysis = inner as unknown as Analysis;
+          analysis = inner as: unknown as Analysis;
         }
       } else {
         analysis = r as Analysis;
       }
     } else {
-      analysis = { relevance: 'unknown', raw: result };
+      analysis = {, relevance: 'unknown', raw: result };
     }
 
     return json(analysis);

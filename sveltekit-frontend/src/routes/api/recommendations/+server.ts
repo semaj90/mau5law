@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import { userRecommendationService } from '$lib/server/services/user-recommendation-service';
-import type { RequestHandler } from './$types.js';
-import { getLegalRecommendations } from '$lib/server/ai/quic-recommendation-service';
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { enhancedSearchWithNeo4j } from, '$lib/ai/custom-reranker';
+import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
+import { userRecommendationService } from, '$lib/server/services/user-recommendation-service';
+import type { RequestHandler } from, './$types.js';
+import { getLegalRecommendations } from, '$lib/server/ai/quic-recommendation-service';
 
 // Memory access helper for MCP integration
 async function accessMemoryMCP(query: string, userContext: any): Promise<any> {
@@ -18,23 +18,23 @@ async function accessMemoryMCP(query: string, userContext: any): Promise<any> {
 // Safe wrappers to avoid TS errors when service methods may not exist
 async function safeAnalyzeUserPatterns(userId: string): Promise<any> {
   // @ts-ignore - runtime-safe call
-  const svc: any = userRecommendationService as any;
+  const svc: any = userRecommendationService, as: any;
   if (svc && typeof svc.analyzeUserPatterns === 'function') {
     return await svc.analyzeUserPatterns(userId);
   }
-  // fallback minimal pattern object
+  // fallback minimal pattern: object
   return {
-    preferredTopics: ['general-legal'],
+   , preferredTopics: ['general-legal'],
     frequentCases: [],
     queryComplexity: 'medium',
     usageFrequency: 1,
-    timePatterns: { mostActiveHours: ['09:00-17:00'] }
+    timePatterns: {, mostActiveHours: ['09:00-17:00'] }
   };
 }
 
 async function safeGenerateRecommendations(userId: string, limit = 3): Promise<any> {
   // @ts-ignore - runtime-safe call
-  const svc: any = userRecommendationService as any;
+  const svc: any = userRecommendationService, as: any;
   if (svc && typeof svc.generateRecommendations === 'function') {
     return await svc.generateRecommendations(userId, limit);
   }
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'suggest';
     const body = await request.json();
     switch (action) {
-      case 'suggest': {
+      case, 'suggest': {
         const { query, userContext, neo4jContext, limit = 5 } = body;
         // Run enhanced search with Neo4j context
         const reranked = await enhancedSearchWithNeo4j(query, userContext, neo4jContext, limit * 2);
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Final scoring pass
         const recommendations = reranked
           .map(result => {
-            const r: any = result as any;
+            const r: any = result, as: any;
             let score = Number(r.rerankScore ?? 0);
             if (memory.some(m => m.relatedId === r.id)) score += 1;
             if (docs && docs.includes(r.intent)) score += 1;
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           .slice(0, limit);
         return json({ recommendations });
       }
-      case 'resume': {
+      case, 'resume': {
         const { userId } = body;
         if (!userId) {
           return json(
@@ -92,13 +92,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           context: patterns.preferredTopics[0] || 'general-legal',
           lastActivity: new Date().toISOString(),
           userPattern: {
-            complexity: patterns.queryComplexity,
+           , complexity: patterns.queryComplexity,
             frequency: patterns.usageFrequency,
             activeHours: patterns.timePatterns.mostActiveHours
           }
         });
       }
-      case 'trending': {
+      case, 'trending': {
         // Mock trending searches - would query actual data in production
         return json({
           trending: [
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'feedback': {
+      case, 'feedback': {
         const { userId, recommendationId, rating, feedback } = body;
         if (!userId || !recommendationId || rating === undefined) {
           return json(
@@ -133,8 +133,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default: return json(
           {
-            success: false,
-            error: 'Unknown; action: ${action}' },
+           , success: false,
+            error: 'Unknown;, action: ${action}' },
           { status: 400 }
         );
     }
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
         lastActivity: new Date().toISOString(),
         recommendations: suggestions,
         userInsights: {
-          complexity: patterns.queryComplexity,
+         , complexity: patterns.queryComplexity,
           frequency: patterns.usageFrequency,
           topTopics: patterns.preferredTopics.slice(0, 3),
           activeHours: patterns.timePatterns.mostActiveHours
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'User behavior analytics',
       ],
       features: {
-        selfPrompting: true,
+       , selfPrompting: true,
         userPatterns: true,
         contextAware: true,
         graphEnhanced: true,

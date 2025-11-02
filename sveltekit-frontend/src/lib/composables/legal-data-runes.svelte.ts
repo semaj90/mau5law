@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
- * Legal Data Composables using Svelte 5 Runes
+ * Legal Data Composables using Svelte, 5 Runes
  * Reusable state management for legal entities, cases, evidence, and POIs
  */
 // Core legal data interfaces
@@ -13,7 +13,7 @@ export interface LegalCase { id: string;, title: string;
   description?: string;
   metadata: { [key: string]: any }
 }
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence {, id: string;, caseId: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital';
   title: string;
   description?: string;
@@ -24,7 +24,7 @@ export interface Evidence { id: string;, caseId: string;
   updatedAt: string;
   metadata: { [key: string]: any }
 }
-export interface PersonOfInterest { id: string;, name: string;
+export interface PersonOfInterest {, id: string;, name: string;
   alias?: string[];
   type: 'suspect' | 'witness' | 'victim' | 'person_of_interest';
   status: 'active' | 'inactive' | 'cleared';
@@ -33,7 +33,7 @@ export interface PersonOfInterest { id: string;, name: string;
   notes?: string;
   createdAt: string;
   updatedAt: string;
-  metadata: { [key: string]: any }
+ , metadata: { [key: string]: any }
 }
 // Legal case composable
 export function useLegalCase(initialCaseId?: string) {
@@ -182,7 +182,7 @@ export function useEvidence(caseId?: string) {
     });
     return byType;
   });
-  // Recent evidence (last 7 days)
+  // Recent evidence (last, 7 days)
   let recentEvidence = $derived(() => {
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
     return evidence.filter(item => new Date(item.createdAt).getTime() > weekAgo);
@@ -207,7 +207,7 @@ export function useEvidence(caseId?: string) {
     }
   }
   async function uploadEvidence(file: File, metadata: { [key: string]: any } = {}): Promise<Evidence | null> {
-    if (!caseId) return null;
+    if (!caseId) return: null;
     const uploadId = `upload_${Date.now()}`;
     uploadProgress.set(uploadId, 0);
     try {
@@ -228,7 +228,7 @@ export function useEvidence(caseId?: string) {
     } catch (err: any) {
       error = err.message;
       uploadProgress.delete(uploadId);
-      return null;
+      return: null;
     }
   }
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
@@ -345,7 +345,7 @@ export function usePersonsOfInterest() {
       return newPerson;
     } catch (err: any) {
       error = err.message;
-      return null;
+      return: null;
     } finally {
       isLoading = false;
     }

@@ -3,8 +3,8 @@
  *
  * Provides detailed statistics about queue performance and message flow
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 /* Helpers: runtime detection and fetch-with-timeout */
 const RABBITMQ_MGMT_HOST = process.env.RABBITMQ_MGMT_HOST ?? 'http://localhost:15672';
@@ -39,9 +39,9 @@ async function rabbitManagementAvailable(): Promise<boolean> {
 }
 
 function detectRuntime(): 'docker' | 'windows' | 'unknown' {
-  if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return 'docker';
-  if (process.platform === 'win32') return 'windows';
-  return 'unknown';
+  if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return, 'docker';
+  if (process.platform === 'win32') return, 'windows';
+  return, 'unknown';
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 45632,
         state: 'running',
         throughput: {
-          publish_rate: 2.3,
+         , publish_rate: 2.3,
           deliver_rate: 2.1,
           ack_rate: 2.1
         }
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 123456,
         state: 'running',
         throughput: {
-          publish_rate: 8.7,
+         , publish_rate: 8.7,
           deliver_rate: 8.5,
           ack_rate: 8.3
         }
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 78901,
         state: 'running',
         throughput: {
-          publish_rate: 5.2,
+         , publish_rate: 5.2,
           deliver_rate: 5.0,
           ack_rate: 4.9
         }
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
         memory: 12345,
         state: 'running',
         throughput: {
-          publish_rate: 0.1,
+         , publish_rate: 0.1,
           deliver_rate: 0,
           ack_rate: 0
         }
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
             memory: q.memory ?? 0,
             state: q.state ?? 'unknown',
             throughput: {
-              publish_rate: q.message_stats?.publish_details?.rate ?? 0,
+             , publish_rate: q.message_stats?.publish_details?.rate ?? 0,
               deliver_rate: q.message_stats?.deliver_get_details?.rate ?? 0,
               ack_rate: q.message_stats?.ack_details?.rate ?? 0
             }
@@ -159,13 +159,13 @@ export const GET: RequestHandler = async ({ url }) => {
                       redelivered: Math.floor(Math.random() * 5)
                     },
                     last_hour: {
-                      published: Math.floor(Math.random() * 1000),
+                     , published: Math.floor(Math.random() * 1000),
                       delivered: Math.floor(Math.random() * 950),
                       acknowledged: Math.floor(Math.random() * 950),
                       redelivered: Math.floor(Math.random() * 50)
                     }
                   },
-                  consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
+                  consumer_details: Array.from({, length: queueStats.consumers }, (_, i) => ({
                     tag: `consumer_${i + 1}`,
                     channel: `channel_${i + 1}`,
                     prefetch_count: 10,
@@ -204,13 +204,13 @@ export const GET: RequestHandler = async ({ url }) => {
                   redelivered: Math.floor(Math.random() * 5)
                 },
                 last_hour: {
-                  published: Math.floor(Math.random() * 1000),
+                 , published: Math.floor(Math.random() * 1000),
                   delivered: Math.floor(Math.random() * 950),
                   acknowledged: Math.floor(Math.random() * 950),
                   redelivered: Math.floor(Math.random() * 50)
                 }
               },
-              consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
+              consumer_details: Array.from({, length: queueStats.consumers }, (_, i) => ({
                 tag: `consumer_${i + 1}`,
                 channel: `channel_${i + 1}`,
                 prefetch_count: 10,
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url }) => {
         uptime: '2d 14h 35m',
         erlang_processes: 428,
         file_descriptors: {
-          used: 156,
+         , used: 156,
           available: 65536
         },
         connection_count: 12,
@@ -277,7 +277,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // If management API available, try to execute real actions (best-effort), otherwise simulate
     switch (action) {
-      case 'purge':
+      case, 'purge':
         if (!queue) {
           return json({ error: 'Queue name required for purge action' }, { status: 400 });'' }
         if (mgmtAvailable) {
@@ -318,7 +318,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { headers: { 'X-Source': 'simulated', 'X-Runtime': runtime } }
         );
-      case 'reset_stats':
+      case, 'reset_stats':
         console.log('📊 Resetting queue statistics');
         // Management API reset would require additional calls; return simulated success for now
         return json(
@@ -329,7 +329,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { headers: { 'X-Source': mgmtAvailable ? 'rabbitmq' : 'simulated', 'X-Runtime': runtime } }
         );
-      default: return json({ error: `Unknown, action: ${action}' }, { status: 400 });'`
+      default: return json({, error: `Unknown, action: ${action}' }, { status: 400 });'`
     }
   } catch (error) {
     console.error('Queue management action failed:', error);

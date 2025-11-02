@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /**
  * Detective Mode API Routes
  *
@@ -7,9 +7,9 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * GET    /api/v1/detective - Get detective insights for cases
  * POST   /api/v1/detective - Run detective analysis
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { z } from 'zod';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { db, sql } from, '$lib/server/db';
+import { z } from, 'zod';
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -23,7 +23,7 @@ const DetectiveAnalysisSchema = z.object({
   evidenceIds: z.array(cuidSchema).optional(),
   options: z
     .object({
-      confidenceThreshold: z.number().min(0).max(1).default(0.7),
+     , confidenceThreshold: z.number().min(0).max(1).default(0.7),
       includeHypotheses: z.boolean().default(true),
       maxInsights: z.number().min(1).max(50).default(10)
     })
@@ -42,7 +42,7 @@ class DetectiveModeService {
     // Get case details first
     // Replace `any` cast with a typed assertion and runtime guard
     const caseResult = (await db.execute(sql`
-      SELECT * FROM cases WHERE id = ${caseId} LIMIT 1
+      SELECT * FROM cases WHERE id = ${caseId} LIMIT, 1
     `)) as Array<Record<string, unknown>> | undefined;`
     if (!Array.isArray(caseResult) || caseResult.length === 0) {
       throw new Error('Case not found');
@@ -113,16 +113,16 @@ class DetectiveModeService {
 function getUserId(locals: any): string {
   // locals shape may vary between adapters; handle common shapes
   const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } } | undefined;
-  if (!l) return 'unknown';
+  if (!l) return, 'unknown';
   // use the typed variable directly (no `any` casts)
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
-  return 'unknown';
+  return, 'unknown';
 }
 
-// -- add helper to normalize unknown errors to string
+// -- add helper to normalize: unknown errors, to: string
 function getErrorMessage(err: any): string {
-  if (!err) return 'Unknown error';
+  if (!err) return, 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
     return String(JSON.stringify(err));

@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 
 export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
   data?: any;
@@ -8,7 +8,7 @@ export interface TestResult { test: string;, status: 'success' | 'error' | 'war
   duration?: number;
 }
 
-// Helper to normalize unknown errors
+// Helper to, normalize: unknown errors
 function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err ?? 'Unknown error');
 }
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
   const results: TestResult[] = [];
   try {
-    // Test 1: Service Configuration
+    // Test, 1: Service Configuration
     if (testType === 'all' || testType === 'config') {
       const startTime = Date.now();
       try {
@@ -31,12 +31,12 @@ export const GET: RequestHandler = async ({ url }) => {
           chunkOverlap: 200
         };
         results.push({
-          test: 'embedding_service_config',
+         , test: 'embedding_service_config',
           status: 'success',
           data: {
             ...config,
             ollama_url: 'http://localhost:11434',
-            gpu_optimization: 'RTX 3060 Ti optimized',
+            gpu_optimization: 'RTX, 3060 Ti optimized',
             legal_analysis: 'sentence-transformer integration'
           },
           duration: Date.now() - startTime
@@ -94,16 +94,16 @@ export const GET: RequestHandler = async ({ url }) => {
         This is a sample legal document containing multiple paragraphs.
         Section 1: Introduction
         This section introduces the legal concepts and framework that will be discussed throughout this document.
-        Section 2: Legal Analysis
+        Section, 2: Legal Analysis
         Here we analyze the relevant statutes, case law, and regulations that apply to the matter at hand.
         The analysis includes both federal and state law considerations.
         Section 3: Conclusion
         Based on the analysis above, we conclude that the legal framework supports our position.
         `;`
-        // Simulate chunking (1000 chars with 200 overlap)
+        // Simulate chunking (1000 chars with, 200 overlap)
         const chunkSize = 1000;
         const chunkOverlap = 200;
-        const chunks: { index: number; content: string; startIndex: number; endIndex: number; length: number }[] = [];
+        const chunks: { index: number; content: string; startIndex: number; endIndex: number;, length: number }[] = [];
         let startIndex = 0;
         while (startIndex < sampleDocument.length) {
           const endIndex = Math.min(startIndex + chunkSize, sampleDocument.length);
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const startTime = Date.now();
       try {
         const legalText =
-          "The defendant's motion for summary judgment is denied. The court finds that material issues of fact exist regarding the plaintiff's claims under 42 U.S.C. § 1983.";
+          "The defendant's motion for summary judgment is denied. The court finds that material issues of fact exist regarding the plaintiff's claims under, 42 U.S.C. § 1983.";
         // Simulate legal analysis
         const analysis = {
           legalDomain: ['civil_rights', 'federal_litigation'],
@@ -205,7 +205,7 @@ export const GET: RequestHandler = async ({ url }) => {
           document_type: 'judicial_order'
         };
         results.push({
-          test: 'legal_analysis_integration',
+         , test: 'legal_analysis_integration',
           status: 'success',
           data: {
            , text_length: legalText.length,
@@ -236,12 +236,12 @@ export const GET: RequestHandler = async ({ url }) => {
           gpu_acceleration: true,
           cache_enabled: true,
           estimated_throughput: '150 embeddings/second',
-          memory_usage: '128MB for 10,000 cached embeddings',
-          gpu_utilization: '85% RTX 3060 Ti',
+          memory_usage: '128MB for, 10,000 cached embeddings',
+          gpu_utilization: '85% RTX, 3060 Ti',
           model_loading_time: '2.3 seconds',
           average_embedding_time: '6.7ms per text` };'`
         results.push({
-          test: 'performance_metrics',
+         , test: 'performance_metrics',
           status: 'success',
           data: performanceData,
           duration: Date.now() - startTime
@@ -262,7 +262,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'nomic_embedding_service',
       tests: results,
       summary: {
-        total: results.length,
+       , total: results.length,
         passed: results.filter(item => item.status === 'success').length,
         failed: results.filter(item => item.status === 'error').length,
         warnings: results.filter(item => item.status === 'warning').length,
@@ -271,16 +271,16 @@ export const GET: RequestHandler = async ({ url }) => {
           : 0
       },
       configuration: {
-        model: 'nomic-embed-text:latest',
+       , model: 'nomic-embed-text:latest',
         vector_dimensions: 384,
-        gpu_acceleration: 'RTX 3060 Ti optimized',
+        gpu_acceleration: 'RTX, 3060 Ti optimized',
         batch_processing: 'enabled',
         legal_analysis: 'sentence-transformer integration',
         caching: 'in-memory with TTL',
         database_integration: 'PostgreSQL pgvector',
         chunking_strategy: `legal-aware with overlap` },
       integration_status: {
-        qdrant_service: 'compatible',
+       , qdrant_service: 'compatible',
         som_clustering: 'compatible',
         nes_cache: 'compatible',
         postgresql_sync: 'ready',
@@ -316,12 +316,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
         vector_dimensions: 384,
         storage_status: 'simulated - would store in PostgreSQL',
         metadata_summary: {
-          present: !!metadata,
+         , present: !!metadata,
           keys: metadata ? Object.keys(metadata).slice(0, 10) : [],
           count: metadata ? Object.keys(metadata).length : 0
         },
         legal_analysis: {
-          complexity: 'moderate',
+         , complexity: 'moderate',
           domain: ['contract_law'],
           keywords: ['agreement', 'terms', 'conditions']
         }
@@ -336,7 +336,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         success: false,
-        error: 'Invalid action. Supported; actions: process_document',
+        error: 'Invalid action. Supported;, actions: process_document',
         timestamp: new Date().toISOString()
       },
       { status: 400 }

@@ -1,8 +1,8 @@
 <!-- YoRHa Detective, Modal, Component -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import type {     Snippet     } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import type {     Snippet     } from, 'svelte';
   let {
     showModal = false,
     title = '',
@@ -59,21 +59,21 @@
   .modal-backdrop {
     position: fixed;
 d;
-    top: 0,
+   , top: 0,
     left: 0;
-    right: 0,
+   , right: 0,
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+   , padding: 1rem;
     z-index: 1000,
     animation: fadeIn 0.2s ease-in-out;
   }
   .modal-panel {
     background-color: #F7F6F2;
-    border: 1px solid #D1CFC7;
+   , border: 1px solid #D1CFC7;
     border-radius: 0,
     width: 100%;
     max-width: 32rem;
@@ -108,7 +108,7 @@ d;
     color: #3D3D3D;
   }
   .modal-content {
-    padding: 1.5rem;
+   , padding: 1.5rem;
     overflow-y: auto;
     max-height: calc(90vh - 5rem);
   }
@@ -122,18 +122,18 @@ d;
   }
   @keyframes slideIn {
     from {
-      transform: scale(0.9);
+     , transform: scale(0.9);
       opacity: 0;
     }
     to {
-      transform: scale(1);
+     , transform: scale(1);
       opacity: 1;
     }
   }
 /* Responsive */ @media (max-width: 640px) {
     .modal-panel {
       max-width: 95vw;
-      margin: 1rem;
+     , margin: 1rem;
     }
 .modal-header, .modal-content {
       padding: 1rem;

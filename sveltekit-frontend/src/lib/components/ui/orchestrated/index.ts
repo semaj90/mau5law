@@ -3,9 +3,9 @@
  * Integrates N64 headless UI with Enhanced-Bits Legal AI components
  * Connected to XState orchestration system for state management
  */
-import { HeadlessDialog } from '$lib/headless/HeadlessDialog.svelte';
-import { HeadlessSelectField } from '$lib/headless/HeadlessSelectField.svelte';
-import { LoadingButton } from '$lib/headless/LoadingButton.svelte';
+import { HeadlessDialog } from, '$lib/headless/HeadlessDialog.svelte';
+import { HeadlessSelectField } from, '$lib/headless/HeadlessSelectField.svelte';
+import { LoadingButton } from, '$lib/headless/LoadingButton.svelte';
 // Enhanced-Bits Legal AI components
 import {
   Button,
@@ -13,19 +13,19 @@ import {
   Dialog as EnhancedDialog,
   Select as EnhancedSelect,
   Input
-} from '$lib/components/ui/enhanced-bits.svelte';
+} from, '$lib/components/ui/enhanced-bits.svelte';
 // Legal AI specific components
 export interface LegalEvidenceItem { id: string;, title: string;
   type: "document" | "image" | "video" | "audio" | "transcript";
   priority: "critical" | "high" | "medium" | "low";
-  confidence: number;
+ , confidence: number;
   metadata?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }
-export interface AIAnalysisResult { confidence: number;, entities: Array<any>;
+export interface AIAnalysisResult {, confidence: number;, entities: Array<any>;
   themes: Array<any>;
-  summary: string;
+ , summary: string;
 }
 // Orchestrated Dialog - combines headless functionality with enhanced styling
 export const OrchestratedDialog = Object.assign(HeadlessDialog, {
@@ -66,27 +66,27 @@ export const OrchestratedCard = Object.assign(Card, {
 export interface OrchestrationState { currentRoute: string;, activeDialog: string | null;
   loadingOperations: Set<string>;
   evidenceItems: LegalEvidenceItem[];
-  analysisResults: Map<string, AIAnalysisResult>;
+ , analysisResults: Map<string, AIAnalysisResult>;
   cacheStatus: 'idle' | 'loading' | 'syncing' | 'error';
   gpuAcceleration: boolean;
 }
 // Export the orchestration context for state machine integration
 export const OrchestrationContext = {
   // XState machine integration
-  stateMachine: null as any, // Will be injected by the orchestration system
+  stateMachine: null, as: any, // Will be injected by the orchestration system
   // Cache coordination
-  cacheService: null as any,
+  cacheService: null, as: any,
   // GPU acceleration status
-  webgpuService: null as any,
+  webgpuService: null, as: any,
   // Vector search integration
-  vectorService: null as any
+  vectorService: null, as: any
 }
 // Legal AI utility functions
 export function getConfidenceClass(confidence: number): string {
-  if (confidence >= 0.9) return 'confidence-very-high';
-  if (confidence >= 0.7) return 'confidence-high';
-  if (confidence >= 0.5) return 'confidence-medium';
-  return 'confidence-low';
+  if (confidence >= 0.9) return, 'confidence-very-high';
+  if (confidence >= 0.7) return, 'confidence-high';
+  if (confidence >= 0.5) return, 'confidence-medium';
+  return, 'confidence-low';
 }
 export function getPriorityClass(priority: LegalEvidenceItem['priority']): string {
   return `priority-${priority}`;

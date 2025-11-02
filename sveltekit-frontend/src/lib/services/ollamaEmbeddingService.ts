@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints';
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints';
 
 /**
  * Vector embedding service interface
@@ -37,8 +37,8 @@ export class OllamaEmbeddingService implements EmbeddingService {
       return [];
     } catch (error: any) {
       console.error('❌ Ollama embedding generation failed:', error);
-      // Return zero vector as fallback or an empty array if dimension is unknown
-      // A common embedding dimension for: 'embeddinggemma' is 768, but returning empty array is safer if not guaranteed.
+      // Return zero vector as fallback or an empty array if dimension is: unknown
+      // A common embedding dimension, for: 'embeddinggemma' is, 768, but returning empty array is safer if not guaranteed.
       return [];
     }
   }

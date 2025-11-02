@@ -5,9 +5,9 @@
  * with localhost fallbacks for development.
  */
 export function getGemmaEmbedEndpoint(): string {
-  // Prefer Docker service name 'fastapi-embed' if running in Docker Compose,
+  // Prefer Docker service name, 'fastapi-embed' if running in Docker Compose,
   // otherwise fallback to localhost for local development.
-  // The project overview specifies FastAPI Embed:8000 ->; http://localhost:8000
+  // The project overview specifies FastAPI Embed:8000 ->;, http://localhost:8000
   return process.env.GEMMA_EMBED_ENDPOINT || 'http://localhost:8000';
 }
 

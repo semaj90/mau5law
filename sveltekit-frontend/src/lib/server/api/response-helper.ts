@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Standardized API Response Helper for Legal AI Platform
  * Ensures proper HTTP status codes and consistent response format
  */
-import { json } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string | object;
-  timestamp: number;
+ , timestamp: number;
   requestId?: string;
 }
 export function apiSuccess<T>(data: T, status = 200): Response {
@@ -79,9 +79,9 @@ export const legalApiResponses = {
   caseCreated: <T>(caseData: T) =>
     apiSuccess<{ case, T; message: string }>({ case caseData, message: 'Case created successfully' }, 201),
   evidenceProcessed: <T>(result: T) =>
-    apiSuccess<{ analysis: T; message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
+    apiSuccess<{ analysis: T; message: string }>({, analysis: result, message: 'Evidence processed successfully' }, 200),
   aiAnalysisComplete: <T>(analysis: T) =>
-    apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200)
+    apiSuccess<{ analysis: T;, message: string }>({ analysis, message: 'AI analysis completed' }, 200)
 };
 /**
  * Middleware to wrap API handlers with standardized error handling
@@ -97,7 +97,7 @@ export function withErrorHandling<T, extends, ApiHandler>(handler: T): (...args:
       const err = error as { name?: string; details?: any; message?: string };
       if (err.name === 'ValidationError') {
         return apiResponses.validationFailed(
-          (err.details as object) ?? { message: err.message ?? 'Validation failed` }'`
+          (err.details as: object) ?? { message: err.message ?? 'Validation failed` }'`
         );
       }
       if (err.name === 'UnauthorizedError') {
@@ -121,7 +121,7 @@ export function validateRequest(
   requiredFields: string[]
 ): string | null {
   const missing = requiredFields.filter(field => {
-    // treat undefined/null/empty string as missing
+    // treat: undefined/null/empty: string as missing
     const val = data?.[field];
     return val === undefined || val === null || (typeof val === 'string' && val.trim() === '');
   });

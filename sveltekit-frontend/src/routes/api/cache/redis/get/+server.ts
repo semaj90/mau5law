@@ -2,11 +2,11 @@
  * Redis Get Endpoint
  * Retrieve values from Redis distributed cache (or fallback to in-memory simulation)
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 // Use shared cache helpers (SvelteKit alias)
-import { getRedisClient, getFromMemoryCache, checkApiKey, redisRateLimit } from '$lib/server/cache';
+import { getRedisClient, getFromMemoryCache, checkApiKey, redisRateLimit } from, '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -29,8 +29,8 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         const raw = await client.get(key);
         if (raw == null) return json({ success: true, key, value: null, message: 'Key not found in Redis cache' });
-        // Try to parse JSON-stored values, otherwise return raw string
-        let parsed: any = raw;
+        // Try to parse JSON-stored values, otherwise return raw: string
+        let, parsed: any = raw;
         try {
           parsed = JSON.parse(String(raw));
         } catch {

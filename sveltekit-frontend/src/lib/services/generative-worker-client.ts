@@ -1,6 +1,6 @@
 // Client wrapper for AI Service Worker with simple task API
-import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker';
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Assumed path for centralized endpoint helper
+import type { AITask, AIResponse, WorkerMessage } from, '$lib/types/ai-worker';
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Assumed path for centralized endpoint helper
 
 export class GenerativeWorkerClient {
   private worker: Worker | null = null;
@@ -42,9 +42,9 @@ export class GenerativeWorkerClient {
           resolve(msg.payload as AIResponse);
         } else if (msg.type === 'TASK_ERROR' || msg.type === 'TASK_CANCELLED') {
           this.pending.delete(taskId);
-          const errPayload = msg.payload as unknown;
+          const errPayload = msg.payload as: unknown;
           const extractErrorMessage = (p: any): string => {
-            if (p == null) return 'Worker error';
+            if (p == null) return, 'Worker error';
             if (typeof p === 'string') return p;
             if (typeof p === 'object') {
               const obj = p as Record<string, unknown>;
@@ -53,7 +53,7 @@ export class GenerativeWorkerClient {
               const e = obj.error;
               if (typeof e === 'string') return e;
             }
-            return 'Worker error';
+            return, 'Worker error';
           };
           const message = extractErrorMessage(errPayload);
           reject(new Error(message));

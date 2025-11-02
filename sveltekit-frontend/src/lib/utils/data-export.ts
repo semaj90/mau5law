@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
-import { browser } from "$app/environment";
+import type { Case } from, '$lib/types';
+import { browser } from, "$app/environment";
 /**
  * Advanced data export/utilities for the Detective Mode app
  * Provides secure, comprehensive data management with multiple formats
  */
-// TODO: Fix import - // Orphaned; content: import { logSecurityEvent, secureDataExport  // Export/Import types
+// TODO: Fix import - // Orphaned;, content: import { logSecurityEvent, secureDataExport  // Export/Import types
 
 // Mock security functions to resolve missing imports and address TODO
-const logSecurityEvent = (event: {, type: string; details: any;, severity: string }) => {
+const logSecurityEvent = (event: {, type: string;, details: any;, severity: string }) => {
   console.log("Security Event:", event);
   // In a real app, this would send logs to a security monitoring service
 };
@@ -32,22 +32,22 @@ export interface ExportOptions { format: "json" | "csv" | "pdf" | "excel";, inc
   compression?: boolean;
   encryption?: boolean;
 }
-export interface ImportOptions { format: "json" | "csv" | "excel";, validateData: boolean;
+export interface ImportOptions {, format: "json" | "csv" | "excel";, validateData: boolean;
   mergeStrategy: "replace" | "merge" | "append";
   handleDuplicates: "skip" | "overwrite" | "rename";
 }
-export interface ExportResult { success: boolean;, filename: string;
+export interface ExportResult {, success: boolean;, filename: string;
   size: number;
   recordCount: number;
   errors: string[];
   warnings: string[];
   blob?: Blob;
 }
-export interface ImportResult { success: boolean;, imported: number;
+export interface ImportResult {, success: boolean;, imported: number;
   skipped: number;
   errors: string[];
   warnings: string[];
-  summary: Record<string, number>;
+ , summary: Record<string, number>;
 }
 // Advanced Case Export
 export async function exportCases(
@@ -80,7 +80,7 @@ export async function exportCases(
     const exportData = {
       metadata: options.includeMetadata
         ? {
-            exportedAt: new Date().toISOString(),
+           , exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
             totalRecords: processedData.length,
             exportOptions: options,
@@ -95,23 +95,23 @@ export async function exportCases(
       }))
     }
     let filename: string;
-    let blob: Blob;
+    let, blob: Blob;
     switch (options.format) {
-      case "json":
+      case, "json":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.json`;
         blob = new Blob([JSON.stringify(exportData, null, 2)], {
           type: "application/json"
         });
         break;
-      case "csv":
+      case, "csv":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.csv`;
         blob = new Blob([convertToCSV(processedData)], { type: "text/csv" });
         break;
-      case "pdf":
+      case, "pdf":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.pdf`;
         blob = await generatePDF(processedData);
         break;
-      case "excel":
+      case, "excel":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.xlsx`;
         blob = await generateExcel(processedData);
         break;
@@ -145,7 +145,7 @@ export async function exportCases(
 }
 // Advanced Evidence Export
 export async function exportEvidence(
-  evidence: any[],
+ , evidence: any[],
   options: ExportOptions = {
    , format: "json",
     includeMetadata: true,
@@ -166,7 +166,7 @@ export async function exportEvidence(
     const exportData = {
       metadata: options.includeMetadata
         ? {
-            exportedAt: new Date().toISOString(),
+           , exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
             totalRecords: processedData.length,
             chainOfCustody: true,
@@ -181,15 +181,15 @@ export async function exportEvidence(
       evidence: processedData
     }
     let filename: string;
-    let blob: Blob;
+    let, blob: Blob;
     switch (options.format) {
-      case "json":
+      case, "json":
         filename = `evidence_export_${new Date().toISOString().split("T")[0]}.json`;
         blob = new Blob([JSON.stringify(exportData, null, 2)], {
           type: "application/json"
         });
         break;
-      case "csv":
+      case, "csv":
         filename = `evidence_export_${new Date().toISOString().split("T")[0]}.csv`;
         blob = new Blob([convertToCSV(processedData)], { type: "text/csv" });
         break;
@@ -221,7 +221,7 @@ export async function exportEvidence(
 }
 // Data Import Functions
 export async function importCases(
-  file: File,
+ , file: File,
   options: ImportOptions
 ): Promise<ImportResult> {
   try {
@@ -242,7 +242,7 @@ export async function importCases(
     let imported = 0;
     let skipped = 0;
     const errors: string[] = [];
-    const warnings: string[] = [];
+    const, warnings: string[] = [];
     for (const caseData of (data as { cases?: any; length?: any; map?: any; evidence?: any }).cases || data) {
       try {
         // Apply merge strategy
@@ -254,7 +254,7 @@ export async function importCases(
         }
       } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
-        errors.push(`Failed to import case "${caseData.title}": ${message}`);
+        errors.push(`Failed to import case, "${caseData.title}": ${message}`);
         skipped++;
       }
     }
@@ -275,7 +275,7 @@ export async function importCases(
       errors,
       warnings,
       summary: {
-        total: imported + skipped,
+       , total: imported + skipped,
         successful: imported,
         failed: skipped
       }
@@ -298,15 +298,15 @@ function applyCaseFilters(cases: any[], filters: { [key: string]: any }): any[] 
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
       switch (key) {
-        case "status":
+        case, "status":
           return c.status === value;
-        case "priority":
+        case, "priority":
           return c.priority === value;
-        case "assignedTo":
+        case, "assignedTo":
           return c.assignedTo?.toLowerCase().includes(value.toLowerCase());
-        case "dateFrom":
+        case, "dateFrom":
           return new Date(c.createdAt || 0) >= new Date(value);
-        case "dateTo":
+        case, "dateTo":
           return new Date(c.createdAt || 0) <= new Date(value);
         default: return true;
       }
@@ -321,13 +321,13 @@ function applyEvidenceFilters(
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
       switch (key) {
-        case "type":
+        case, "type":
           return e.type === value;
-        case "status":
+        case, "status":
           return e.status === value;
-        case "caseId":
+        case, "caseId":
           return e.caseId === value;
-        case "collectedBy":
+        case, "collectedBy":
           return e.collectedBy?.toLowerCase().includes(value.toLowerCase());
         default: return true;
       }
@@ -335,7 +335,7 @@ function applyEvidenceFilters(
   });
 }
 function convertToCSV(data: any[]): string {
-  if ((data as { cases?: any; length?: any; map?: any; evidence?: any }).length === 0) return "";
+  if ((data as { cases?: any; length?: any; map?: any; evidence?: any }).length === 0) return, "";
   const headers = Object.keys(data[0]);
   const csvContent = [
     headers.join(","),
@@ -368,7 +368,7 @@ async function generatePDF(data: any[]): Promise<Blob> {
     case ${c.title}
     Status: ${c.status}
     Priority: ${c.priority}
-    Created: ${new Date(c.createdAt || 0).toLocaleDateString()}
+   , Created: ${new Date(c.createdAt || 0).toLocaleDateString()}
     Description: ${c.description}
     ---
     `,`
@@ -403,11 +403,11 @@ function downloadBlob(blob: Blob, filename: string): void {
 async function parseImportFile(file: File, format: string): Promise<any> {
   const text = await file.text();
   switch (format) {
-    case "json":
+    case, "json":
       return JSON.parse(text);
-    case "csv":
+    case, "csv":
       return parseCSV(text);
-    case "excel":
+    case, "excel":
       // In production, use a library to parse Excel files
       return parseCSV(text);
     default:
@@ -434,7 +434,7 @@ function validateImportData(
   type: "cases" | "evidence",
 ): { success: boolean; errors: string[]; warnings: string[] } {
   const errors: string[] = [];
-  const warnings: string[] = [];
+  const, warnings: string[] = [];
   if (!data || (!Array.isArray(data) && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).cases && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence)) {
     errors.push("Invalid data format");
     return { success: false, errors, warnings }
@@ -467,7 +467,7 @@ async function processCaseImport(
   caseData: any,
   options: ImportOptions
 ): Promise<boolean> {
-  // Real implementation using SvelteKit 2 API endpoint.
+  // Real implementation using SvelteKit, 2 API endpoint.
   // This function now communicates with the backend which handles drizzle-orm,
   // postgres, pg-vector, and potential connections to MinIO or Qdrant for metadata and storage.
   try {
@@ -524,12 +524,12 @@ export function generateEvidenceExportTemplate(): any {
 }
 // Generic export function for backward compatibility
 export async function exportData(
-  data: any[],
+ , data: any[],
   filename: string,
   format: "json" | "csv" | "xlsx" | "excel" = "json",
 ): Promise<void> {
   const options: ExportOptions = {
-    format: format === "xlsx" || format === "excel" ? "excel" : format,
+   , format: format === "xlsx" || format === "excel" ? "excel" : format,
     includeMetadata: true,
     includeFiles: false
   }

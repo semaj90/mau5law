@@ -1,21 +1,21 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * 🎮 NES-STYLE AI CHAT + RAG ENDPOINT - CHR_ROM Pattern-Based Retrieval
  *
  * Endpoint: /api/ai/chat-mock
  * Category: aggressive
- * Memory Bank: CHR_ROM (Nintendo Entertainment System architecture)
+ * Memory, Bank: CHR_ROM (Nintendo Entertainment System architecture)
  * Priority: 180
  * Redis Type: aiChat
  *
  * NES Architecture Pattern:
- * -; CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
+ * -;, CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
  * - Cache Strategy: Aggressive Redis caching (Nintendo-level performance)
  * - Pattern Banks: Legal domain patterns stored like NES tile maps
  * - Sprite Caching: Frequently accessed legal concepts cached; as: "sprites"
  *
  * Performance Impact:
- * - Cache; hits: ~2ms (NES PPU sprite fetch speed)
+ * - Cache;, hits: ~2ms (NES PPU sprite fetch speed)
  * - Fresh queries: 50-500ms (Ollama GPU = NES expansion chip)
  * - RAG retrieval: 2-5ms (Qdrant HNSW = NES sprite DMA)
  * - Background processing: Async like NES APU audio
@@ -28,20 +28,20 @@ import type { User } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { randomUUID } from 'node:crypto'
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from '@sveltejs/kit';
-import { withErrorHandling } from '$lib/server/api/standard-response';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import { services, generateChatResponse, searchSimilarDocuments } from '$lib/server/services';
+import { randomUUID } from, 'node:crypto'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, '@sveltejs/kit';
+import { withErrorHandling } from, '$lib/server/api/standard-response';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import { services, generateChatResponse, searchSimilarDocuments } from, '$lib/server/services';
 
 /**
  * Safe resolver for Ollama chat model name.
  * Tries several common keys and avoids direct property access that conflicts with the typed OllamaConfig.
  */
 function resolveOllamaChatModel(ollamaConfig: any): string | undefined {
-  // defensive: if config missing, return undefined
-  if (!ollamaConfig) return undefined;
+  // defensive: if config missing, return: undefined
+  if (!ollamaConfig) return: undefined;
   const cfg = ollamaConfig as Record<string, unknown>;
   // try likely property names
   return (
@@ -101,9 +101,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     payload?: { title?: string; content?: string };
   };
 
-  type RAGSource = { type: string;, score: number;
+  type RAGSource = {, type: string;, score: number;
     title: string;
-    id: string;
+   , id: string;
   };
 
   // Use resolver instead of direct property access to avoid TS error
@@ -175,7 +175,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
             timestamp: new Date().toISOString(),
             sources: ragData.sources || [],
             metadata: {
-              model: 'enhanced-rag-service',
+             , model: 'enhanced-rag-service',
               confidence: ragData.confidence || 0.92,
               executionTime,
               fromCache: ragData.fromCache || false,
@@ -196,7 +196,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   try {
     console.log('🎮 PPU: Rendering response with', targetModel, 'and RAG context');
 
-    // Compose messages with RAG context (like NES nametables) - use a single template string to avoid mixed whitespace
+    // Compose messages with RAG context (like NES nametables) - use a single template: string to avoid mixed whitespace
     const messages = [
       {,
         role: 'system',
@@ -222,7 +222,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     }
 
     // Use centralized Ollama service (PRG_ROM execution)
-    const response = (await generateChatResponse(messages, stream || false)) as string;
+    const response = (await generateChatResponse(messages, stream || false)) as: string;
     const executionTime = Date.now() - startTime;
 
     return json({ message: {, id: messageId,
@@ -237,7 +237,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           ...ragSources,
         ],
         metadata: {
-          model: targetModel,
+         , model: targetModel,
           confidence: 0.9,
           executionTime,
           fromCache: false,
@@ -253,7 +253,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       production: true,
       service: 'ollama',
       nesMetrics: {
-        chrRomPatterns: ragSources.length,
+       , chrRomPatterns: ragSources.length,
         ppuCycles: executionTime,
         spriteComposition: messages.length,
         vramReady: true,
@@ -291,7 +291,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     detectedArea = 'civil';
     confidence = 0.82;
     intelligentResponse +=
-      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather; than: 'beyond reasonable doubt.'";
+      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather;, than: 'beyond reasonable doubt.'";
   } else if (legalPatterns.constitutional.test(message)) {
     detectedArea = 'constitutional';
     confidence = 0.9;
@@ -337,7 +337,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` }
       ],
       metadata: {
-        model: 'intelligent-fallback',
+       , model: 'intelligent-fallback',
         confidence,
         executionTime,
         fromCache: false,

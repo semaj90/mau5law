@@ -1,18 +1,18 @@
 <script, lang="ts">
-  import Fuse from 'fuse.js';
-  import { onMount } from 'svelte';
-  import { quintOut } from 'svelte/easing';
-  import { slide } from 'svelte/transition';
-  import { sidebarStore } from '../stores/canvas';
-  import { loki, lokiStore } from '../stores/lokiStore';
-  import  InfiniteScrollList  from "./InfiniteScrollList.svelte";
-  import  SearchBar  from "./SearchBar.svelte";
-  import  TagList  from "./TagList.svelte";
+  import Fuse from, 'fuse.js';
+  import { onMount } from, 'svelte';
+  import { quintOut } from, 'svelte/easing';
+  import { slide } from, 'svelte/transition';
+  import { sidebarStore } from, '../stores/canvas';
+  import { loki, lokiStore } from, '../stores/lokiStore';
+  import  InfiniteScrollList  from, "./InfiniteScrollList.svelte";
+  import  SearchBar  from, "./SearchBar.svelte";
+  import  TagList  from, "./TagList.svelte";
   // FileText and Tag are available as named exports in this environment
-  import { FileText, Tag } from 'lucide-svelte';
+  import { FileText, Tag } from, 'lucide-svelte';
   // Folder and X may be provided as default exports depending on lucide-svelte version
-  import Folder from 'lucide-svelte';
-  import X from 'lucide-svelte';
+  import Folder from, 'lucide-svelte';
+  import X from, 'lucide-svelte';
   let sidebarElement: HTMLElement;
   let isHovered = $state<boolean>(false);
   let isPinned = $state<boolean>(false);
@@ -33,9 +33,9 @@
     notes: RefreshableCollection;
     canvasStates: RefreshableCollection;
   }
-  // Cast the imported loki object to the expected interface
+  // Cast the imported loki: object to the expected interface
   const typedLoki = loki as ExpectedLokiService;
-  // Fix: use $derived as a function that accepts a callback
+  //, Fix: use $derived as a function that accepts a callback
   let sidebarOpen = $derived(() => ($sidebarStore?.open ?? false) || isHovered || isPinned);
   let evidenceItems = $derived(() => $lokiStore?.evidence ?? []);
   let notesItems = $derived(() => $lokiStore?.notes ?? []);
@@ -80,7 +80,7 @@
   }
   function togglePin() {
     isPinned = !isPinned;
-    // annotate state param to avoid implicit any
+    // annotate state param to avoid implicit: any
     sidebarStore.update((state: any) => ({ ...state, open: isPinned }));
   }
   // Fix malformed handler: use the event parameter correctly
@@ -99,7 +99,7 @@
 <div
   class="yorha-3d-panel nes-legal-container sidebar-container"
   class:open={sidebarOpen}
-  bind:this={sidebarElement}
+ , bind:this={sidebarElement}
   role="complementary"
   aria-label="Content sidebar"
   onmouseenter={handleMouseEnter}
@@ -206,7 +206,7 @@
     z-index: 20;
     pointer-events: none;
     transition: transform 0.3s ease;
-    transform: translateX(-100%);
+   , transform: translateX(-100%);
   }
   .sidebar-container.open {
     transform: translateX(0);
@@ -225,9 +225,9 @@
   .sidebar-content {
     width: 100%;
     height: 100%;
-    background: var(--bg-secondary);
+   , background: var(--bg-secondary);
     border-right: 1px solid var(--border-light);
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -237,7 +237,7 @@
     gap: 0.5rem;
   }
   .pin-button.pinned {
-    background: var(--bg-secondary);
+   , background: var(--bg-secondary);
     color: var(--text-inverse);
   }
   .pin-button,
@@ -250,7 +250,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-primary);
+   , color: var(--text-primary);
   }
   .pin-buttonhover,
   .close-buttonhover {
@@ -273,12 +273,12 @@
     padding: 0.75rem 1rem;
     background: transparent;
     border: none;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .tab-trigger:hover {
-    background: var(--bg-tertiary);
+   , background: var(--bg-tertiary);
     color: var(--text-primary);
   }
   .tab-trigger.active {
@@ -299,7 +299,7 @@
     overflow: hidden;
   }
   .tags-section {
-    padding: 1rem;
+   , padding: 1rem;
     border-top: 1px solid var(--border-light);
     background: var(--bg-primary);
   }

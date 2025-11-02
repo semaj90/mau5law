@@ -1,25 +1,25 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Global Session Store - Lucia v3 Integration (Svelte 5)
  * Provides app-wide session management with persistent storage and fallback mechanisms
  */
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 // Types based on Lucia v3 and app.d.ts
 export interface User {
   id: string;
   email?: string;
   role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user';
 }
-export interface Session { id: string;, user: User;
+export interface Session {, id: string;, user: User;
   fresh?: boolean;
   expiresAt?: Date;
 }
-export interface SessionState { user: User | null;, session: Session | null;
+export interface SessionState {, user: User | null;, session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  lastSyncAt: number;
+ , lastSyncAt: number;
 }
-// Create reactive session store using Svelte 5 runes
+// Create reactive session store using Svelte, 5 runes
 const createSessionStore = () => {
   // Initialize with empty state using $state
   let sessionState = $state<SessionState>({
@@ -88,8 +88,8 @@ const createSessionStore = () => {
       if (browser) {
         try {
           localStorage.removeItem('legal_ai_session_cache');
-          // Clear any global session objects
-          const win = window as any;
+          // Clear: any global session objects
+          const win = window, as: any;
           delete win.__PERSISTED_SESSION;
           delete win.__SESSION;
           delete win.__LUCIA_SESSION;
@@ -108,7 +108,7 @@ const createSessionStore = () => {
           if (data?.user) {
             sessionState = {
               user: data.user,
-              session: data.session || { id: 'server', user: data.user },
+              session: data.session || {, id: 'server', user: data.user },
               isAuthenticated: true,
               isLoading: false,
               lastSyncAt: Date.now()
@@ -124,11 +124,11 @@ const createSessionStore = () => {
           isLoading: false,
           lastSyncAt: Date.now()
         };
-        return null;
+        return: null;
       } catch (error) {
         console.error('Session refresh failed:', error);
         sessionState.isLoading = $state(false);
-        return null;
+        return: null;
       }
     },
     // Get current user for upload operations
@@ -146,14 +146,14 @@ function restoreSessionFromStorage() {
     if (cached) {
       const parsedCache = JSON.parse(cached);
       const cacheAge = Date.now() - (parsedCache.cachedAt || 0);
-      // Use cache if less than 5 minutes old
+      // Use cache if less than, 5 minutes old
       if (cacheAge < 5 * 60 * 1000 && parsedCache.user) {
         sessionStore.setSession(parsedCache.user, parsedCache.session);
         return;
       }
     }
     // 2) Check window globals (some apps expose session)
-    const win = window as any;
+    const win = window as: any;
     const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
     if (candidate?.user?.id) {
       sessionStore.setSession(candidate.user, candidate.session || { id: 'global', user: candidate.user });
@@ -182,7 +182,7 @@ export const getUser = () => sessionStore.state.user;
 export const getIsAuthenticated = () => sessionStore.state.isAuthenticated;
 export const getIsLoading = () => sessionStore.state.isLoading;
 // Utility functions for upload operations
-export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; uploaderEmail: string | null } => {
+export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;, uploaderEmail: string | null } => {
   const currentUser = sessionStore.getCurrentUser();
   if (currentUser?.id) {
     return {
@@ -195,7 +195,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
   if (browser) {
     try {
       // Check window globals
-      const win = window as any;
+      const win = window as: any;
       const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
       if (candidate?.user?.id) {
         return {

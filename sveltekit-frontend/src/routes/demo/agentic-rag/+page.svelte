@@ -1,21 +1,21 @@
 <script, lang="ts">
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
   /**
    * 🤖 Agentic RAG Demo
    *
    * Interactive demo of the complete agentic RAG system:
    * - Gemma3 function calling
-   * - embeddinggemma:latest embeddings
+   * -, embeddinggemma:latest embeddings
    * - Synthesis ranking
    * - OCR support
    * - MCP integration
    * - Tool orchestration
    */
 
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Bot, Zap, Tool, Database, Search, Upload } from 'lucide-svelte';
+  import Button from, '$lib/components/ui/Button.svelte';
+  import { Bot, Zap, Tool, Database, Search, Upload } from, 'lucide-svelte';
 
-  // State using Svelte 5 runes
+  // State using Svelte, 5 runes
   let query = $state<string>('');
   let messages = $state<any[]>([]);
   let isProcessing = $state<boolean>(false);
@@ -25,7 +25,7 @@ import type { Message } from '$lib/types';
   // Sample queries
   const sampleQueries = [
     'Find all employment contracts with termination clauses',
-    'Search for NDAs signed in the last 6 months',
+    'Search for NDAs signed in the last, 6 months',
     'Analyze code in src/lib/services for RAG patterns',
     'Extract key entities from uploaded legal documents',
     'What API endpoints handle document upload?'
@@ -72,10 +72,10 @@ import type { Message } from '$lib/types';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: currentQuery,
+         , query: currentQuery,
           documents: selectedDocument ? [selectedDocument] : [],
           context: {
-            conversationHistory: messages
+           , conversationHistory: messages
           }
         })
       });
@@ -264,7 +264,7 @@ import type { Message } from '$lib/types';
           type="text"
           id="query"
           class="nes-input is-dark w-full"
-          bind:value={query}
+         , bind:value={query}
           placeholder="What would you like to know?"
           disabled={isProcessing}
           onkeydown={(e) => {
@@ -322,7 +322,7 @@ import type { Message } from '$lib/types';
 <style>
   .agentic-rag-demo {
     background: #212529;
-    color: #d4af37;
+   , color: #d4af37;
     font-family: 'Press Start 2P', 'Courier New', monospace;
   }
 
@@ -336,7 +336,7 @@ import type { Message } from '$lib/types';
 
   @keyframes spin {
     from {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);

@@ -13,7 +13,7 @@ class StubCacheService {
     return val === undefined ? null : (val as T);
   }
   async set<T>(key: string, value: T, _options?: CacheOptions): Promise<boolean> {
-    this.cache.set(key, value as unknown);
+    this.cache.set(key, value as: unknown);
     return true;
   }
   async delete(key: string): Promise<boolean> {
@@ -25,7 +25,7 @@ class StubCacheService {
   }
   async getStats(): Promise<{ requests: number; hits: number; misses: number; errors: number }> {
     return {
-      requests: 0,
+     , requests: 0,
       hits: 0,
       misses: 0,
       errors: 0

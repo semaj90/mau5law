@@ -4,7 +4,7 @@
  * This endpoint is maintained for backward compatibility only.
  * New implementations should use the unified Evidence API v2.
  *
- * Migration Guide:
+ * Migration, Guide:
  * - GET  /api/evidence → GET  /api/v2/evidence?action=list
  * - POST /api/evidence → POST /api/v2/evidence
  * - PUT  /api/evidence → PUT  /api/v2/evidence?id=xxx
@@ -16,10 +16,10 @@
  * - Upload files via POST with multipart/form-data for AI processing
  * - Connect WebSocket to ws://localhost:8000/ws for real-time streaming
  *
- * TODO: Remove this route after frontend migration is complete
+ *, TODO: Remove this route after frontend migration is complete
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from, '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   return json({

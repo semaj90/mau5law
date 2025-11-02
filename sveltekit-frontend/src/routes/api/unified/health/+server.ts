@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legalAI } from '$lib/server/unified/legal-ai-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { legalAI } from, '$lib/server/unified/legal-ai-service';
 export const GET: RequestHandler = async _event => {
   try {
     const health = await legalAI.healthCheck();
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async _event => {
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
         services: {
-          postgresql: false,
+         , postgresql: false,
           redis: false,
           minio: false,
           qdrant: false,

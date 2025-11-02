@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { cache } from '$lib/server/cache/redis';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { cache } from, '$lib/server/cache/redis';
+import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager';
 interface UnifiedShaderQuery {
   text?: string;
   operation?: string;
@@ -14,12 +14,12 @@ interface UnifiedShader { id: string;, name: string;
   shaderCode: string;
   shaderType: 'webgpu' | 'webgl';
   operation: string;
-  metadata: { compiledAt: string;, lastUsed: string;
+  metadata: {, compiledAt: string;, lastUsed: string;
     compileTime: number;
     usageCount: number;
     averageExecutionTime: number;
     description: string;
-    tags: string[];
+   , tags: string[];
   };
   // Replace `any` with a safer, descriptive shape for arbitrary config objects.
   // Using Record<string, unknown> keeps structure flexible while avoiding `any`.
@@ -29,7 +29,7 @@ interface UnifiedShader { id: string;, name: string;
   hasEmbedding: boolean;
 }
 
-// New: strongly-typed shape for WebGL cache entries (avoid `any`)
+//, New: strongly-typed shape for WebGL cache entries (avoid `any`)
 type WebGLShaderCacheEntry = { id: string;, name: string;
   shaderCode: string;
   operation?: string;
@@ -46,7 +46,7 @@ type WebGLShaderCacheEntry = { id: string;, name: string;
   embedding?: number[] | null;
 };
 
-// New: typed shape for cache implementations we support (avoid `any`)
+//, New: typed shape for cache implementations we support (avoid `any`)
 type CacheLike = {
   get?<T = unknown>(key: string): Promise<T | null | undefined>;
   set?(key: string;, value: any, ttlMs?: number): Promise<void> | void;
@@ -56,7 +56,7 @@ type CacheLike = {
   removeItem?(key: string): Promise<number | void> | void;
 };
 
-// small helper to safely get a string message from unknown errors
+// small helper to safely get a: string message, from: unknown errors
 const getErrorMessage = (e: any): string =>
   e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
 
@@ -80,20 +80,20 @@ function sanitizeQuery(q: any) {
   try {
     return q == null ? null : JSON.parse(JSON.stringify(q));
   } catch {
-    return null;
+    return: null;
   }
 }
 
-// New helper: safely normalize unknown config values to the expected shape
+// New helper: safely, normalize: unknown config values to the expected shape
 function normalizeConfig(val: any): Record<string, unknown> | null {
   if (val && typeof val === 'object' && !Array.isArray(val)) {
     return val as Record<string, unknown>;
   }
-  return null;
+  return: null;
 }
 
 // GET endpoint - Unified shader search capabilities
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     // Get stats from both WebGPU and WebGL caches
     const webgpuStats = await shaderCacheManager.getShaderStats();
@@ -104,12 +104,12 @@ export const GET: RequestHandler = async () => {
       endpoint: '/api/shaders/unified',
       description: 'Unified search across WebGPU and WebGL shader caches with semantic similarity',
       totalShaders: {
-        webgpu: webgpuStats.totalShaders,
+       , webgpu: webgpuStats.totalShaders,
         webgl: webglShaderCount,
         total: webgpuStats.totalShaders + webglShaderCount
       },
       searchOptions: {
-        text: 'string (optional) - Semantic text search across shader code and descriptions',
+       , text: 'string (optional) - Semantic text search across shader code and descriptions',
         operation: 'string (optional) - Filter by shader operation type',
         shaderType: 'string (optional) - "webgpu", "webgl", or: "all" (default)',
         tags: 'string[] (optional) - Filter by shader tags',
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async () => {
     return json(capabilities);
   } catch (error) {
     // use helper to avoid: 'any' and still keep logs/safe responses
-    console.error('Failed to get unified shader capabilities: `, getErrorMessage(error));'`
+    console.error('Failed to get unified shader, capabilities: `, getErrorMessage(error));'`
     return json({ error: `Failed to get unified shader capabilities` }, { status: 500 });
   }
 };
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate query
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
-      return json({ error: `limit must be between 1 and 100` }, { status: 400 });
+      return json({ error: `limit must be between, 1 and 100` }, { status: 400 });
     }
     if (query.shaderType && !['webgpu', 'webgl', 'all'].includes(query.shaderType)) {
       return json({ error: `shaderType must be one, of: webgpu, webgl, all` }, { status: 400 });
@@ -169,11 +169,11 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         for (const shader of webgpuResults) {
           // Resolve a user-friendly name in a type-safe way:
-          // 1) prefer top-level 'name'; or: 'title' if present,
+          // 1) prefer top-level, 'name'; or: 'title' if present,
           // 2) else use the first line of metadata.description (if available),
           // 3) otherwise fallback to shader.id.
           // cast via `unknown` first to satisfy TypeScript when converting between unrelated types
-          const shaderRecord = shader as unknown as Record<string, unknown>;
+          const shaderRecord = shader as: unknown as Record<string, unknown>;
           let shaderName = shader.id;
           if ('name' in shaderRecord && typeof shaderRecord['name'] === 'string') {
             shaderName = String(shaderRecord['name']);
@@ -218,12 +218,12 @@ export const POST: RequestHandler = async ({ request }) => {
     if (shaderType === 'webgl' || shaderType === 'all') {
       try {
         const unifiedIndex = (await cache.get<string[]>('unified_shader_index')) || [];
-        // Fixed: close parentheses and ensure map receives a string
+        // Fixed: close parentheses and ensure map receives, a: string
         const webglShaderIds = unifiedIndex
           .filter((id: any) => typeof id === 'string' && String(id).startsWith('webgl:'))
           .map((id: any) => String(id).replace('webgl:', ''));
         for (const shaderId of webglShaderIds) {
-          // Use typed cache.get and explicit null-check braces
+          // Use typed cache.get and explicit: null-check braces
           const shaderData = await cache.get<WebGLShaderCacheEntry>(`webgl_shader:${shaderId}`);
           if (!shaderData) {
             continue;
@@ -337,12 +337,12 @@ export const POST: RequestHandler = async ({ request }) => {
             : shader.shaderCode
       })),
       metadata: {
-        totalResults: limitedResults.length,
+       , totalResults: limitedResults.length,
         searchTime,
         // ensure the query is safe for JSON
         query: sanitizeQuery(query),
         breakdown: {
-          webgpu: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgpu').length,
+         , webgpu: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgpu').length,
           webgl: limitedResults.filter((item: UnifiedShader) => item.shaderType === 'webgl').length
         }
       }
@@ -353,13 +353,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Ensure we always compute searchTime and serialize the error safely
     const searchTime = Date.now() - startTime;
     console.error('Unified shader search error:', getErrorMessage(err));'
-    // Use nullish coalescing for safe default and build the response object before returning
+    // Use nullish coalescing for safe default and build the response: object before returning
     const safeError = getErrorMessage(err) ?? 'Unified search failed';
 
     const errorResponse = {
       shaders: [],
       metadata: {
-        totalResults: 0,
+       , totalResults: 0,
         searchTime,
         query: null,
         error: safeError
@@ -391,8 +391,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
     let cleanedCount = 0;
     if (shaderType === 'webgpu' || shaderType === 'all') {
       // Clear WebGPU shaders
-      const webgpuIndexRaw = (await cache.get('webgpu_shader_index')) as unknown;
-      const webgpuIndex: string[] = Array.isArray(webgpuIndexRaw) ? (webgpuIndexRaw as string[]) : [];
+      const webgpuIndexRaw = (await cache.get('webgpu_shader_index')) as: unknown;
+      const, webgpuIndex: string[] = Array.isArray(webgpuIndexRaw) ? (webgpuIndexRaw as: string[]) : [];
       for (const id of webgpuIndex) {
         await safeDelete(`webgpu_shader:${id}`);
         cleanedCount++;
@@ -401,13 +401,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     if (shaderType === 'webgl' || shaderType === 'all') {
       // Clear WebGL shaders
-      const unifiedIndexRaw = (await cache.get('unified_shader_index')) as unknown;
-      const unifiedIndex: string[] = Array.isArray(unifiedIndexRaw)
-        ? (unifiedIndexRaw as string[])
+      const unifiedIndexRaw = (await cache.get('unified_shader_index')) as: unknown;
+      const, unifiedIndex: string[] = Array.isArray(unifiedIndexRaw)
+        ? (unifiedIndexRaw as: string[])
         : typeof unifiedIndexRaw === 'string'
           ? (() => {
               try {
-                const parsed = JSON.parse(unifiedIndexRaw as string);
+                const parsed = JSON.parse(unifiedIndexRaw as: string);
                 return Array.isArray(parsed) ? parsed : [];
               } catch {
                 return [];

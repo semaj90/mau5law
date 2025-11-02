@@ -3,16 +3,16 @@
  * WebGPU Tensor Acceleration System
  * Client-side GPU acceleration for legal AI operations
  */
-import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
+import { simdGPUTilingEngine } from, '$lib/evidence/simd-gpu-tiling-engine.js';
 export interface WebGPUTensorConfig { deviceType: 'discrete' | 'integrated' | 'auto';, powerPreference: 'high-performance' | 'low-power';
 	enableDebug: boolean;
 	maxBufferSize: number;
 	shaderCacheEnabled: boolean;
 }
-export interface TensorOperation { id: string;, type: 'vectorSimilarity' | 'embedding' | 'reduction' | 'transform';
+export interface TensorOperation {, id: string;, type: 'vectorSimilarity' | 'embedding' | 'reduction' | 'transform';
 	inputShapes: number[][];
 	outputShape: number[];
-	parameters: Record<string, unknown>;
+, parameters: Record<string, unknown>;
 }
 export interface GPUMetrics { memoryUsage: number;, computeUtilization: number;
 	operationsPerSecond: number;
@@ -25,11 +25,11 @@ export class WebGPUTensorAccelerator {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
   private queue: GPUQueue | null = null;
-  private config: WebGPUTensorConfig;
+  private, config: WebGPUTensorConfig;
   private shaderCache = new Map<string, GPUShaderModule>();
   private bufferPool: GPUBuffer[] = [];
   private metrics: GPUMetrics = {
-    memoryUsage: 0,
+   , memoryUsage: 0,
     computeUtilization: 0,
     operationsPerSecond: 0,
     averageLatency: 0,
@@ -55,18 +55,18 @@ export class WebGPUTensorAccelerator {
       if (typeof navigator === 'undefined' || !('gpu' in navigator)) {
         throw new Error('WebGPU not supported in this environment');
       }
-      // Request GPU adapter - avoid `as any` by narrowing navigator
-      const webgpuNav = navigator as unknown as { gpu?: GPU };
+      // Request GPU adapter - avoid `as: any` by narrowing navigator
+      const webgpuNav = navigator as: unknown as { gpu?: GPU };
       this.adapter =
         (await webgpuNav.gpu?.requestAdapter({
-          powerPreference: this.config.powerPreference,
+         , powerPreference: this.config.powerPreference,
           forceFallbackAdapter: false
         })) ?? null;
       if (!this.adapter) {
         throw new Error('Failed to get WebGPU adapter');
       }
-      // Best-effort adapter info - treat adapter as unknown and read optional props
-      const adapterMeta = this.adapter as unknown as Record<string, unknown>;
+      // Best-effort adapter info - treat adapter as: unknown and read optional props
+      const adapterMeta = this.adapter, as: unknown as Record<string, unknown>;
       console.log('📊 WebGPU Adapter Info:', {
         info: adapterMeta.info ?? null,
         limits: adapterMeta.limits ?? null
@@ -89,7 +89,7 @@ export class WebGPUTensorAccelerator {
       // Set up error handling with typed event
       this.device.addEventListener('uncapturederror', (event: GPUUncapturedErrorEvent) => {
         this.metrics.errorCount++;
-        const maybeErr = (event as unknown as { error?: any }).error;
+        const maybeErr = (event as: unknown as { error?: any }).error;
         const message = maybeErr instanceof Error ? maybeErr.message : String(event);
         this.metrics.lastError = message;
         console.error('WebGPU Error:', event);
@@ -135,7 +135,7 @@ export class WebGPUTensorAccelerator {
         @group(0) @binding(2) var<storage, read> normB: array<f32>;
         @group(0) @binding(3) var<storage, read_write> result: array<f32>;
         @group(0) @binding(4) var<uniform> params: vec4<f32>;
-        var<workgroup> temp: array<f32, 256>;
+        var<workgroup>, temp: array<f32, 256>;
         @compute @workgroup_size(256)
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>,
                 @builtin(local_invocation_id) local_id: vec3<u32>,
@@ -196,7 +196,7 @@ export class WebGPUTensorAccelerator {
         @group(0) @binding(1) var<storage, read> matrixB: array<f32>;
         @group(0) @binding(2) var<storage, read_write> result: array<f32>;
         @group(0) @binding(3) var<uniform> params: vec4<f32>;
-        var<workgroup> tileA: array<array<f32, 16>, 16>;
+        var<workgroup>, tileA: array<array<f32, 16>, 16>;
         var<workgroup> tileB: array<array<f32, 16>, 16>;
         @compute @workgroup_size(16, 16)
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>,
@@ -272,10 +272,10 @@ export class WebGPUTensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: bufferA } },
-          { binding: 1, resource: { buffer: bufferB } },
-          { binding: 2, resource: { buffer: resultBuffer } },
-          { binding: 3, resource: { buffer: paramsBuffer } }
+          {, binding: 0, resource: {, buffer: bufferA } },
+          { binding: 1, resource: {, buffer: bufferB } },
+          { binding: 2, resource: {, buffer: resultBuffer } },
+          { binding: 3, resource: {, buffer: paramsBuffer } }
         ]
       });
       const commandEncoder = this.device.createCommandEncoder();
@@ -326,7 +326,7 @@ export class WebGPUTensorAccelerator {
    * This method demonstrates the gpuTile: true option in the hot path
    */
   async calculateVectorSimilarityWithSIMDTiling(
-    vectorA: Float32Array,
+   , vectorA: Float32Array,
     vectorB: Float32Array,
     options: {
       enableTiling?: boolean;
@@ -365,24 +365,24 @@ export class WebGPUTensorAccelerator {
           );
           simdTime = performance.now() - simdStart;
           // Safely read chunks (unknown shape) and compute aggregates with type guards
-          const chunks = Array.isArray((tilingResults as unknown as Record<string, unknown>)['chunks'])
-            ? ((tilingResults as unknown as Record<string, unknown>)['chunks'] as unknown[])
+          const chunks = Array.isArray((tilingResults as: unknown as Record<string, unknown>)['chunks'])
+            ? ((tilingResults as: unknown as Record<string, unknown>)['chunks'] as: unknown[])
             : [];
           const tilesGenerated = chunks.length;
           const avgConfidence =
             chunks.reduce((sum, ch) => {
-              const metadata = (ch as Record<string, unknown>)['metadata'] as unknown;
+              const metadata = (ch as Record<string, unknown>)['metadata'] as: unknown;
               const confidence =
                 typeof metadata === 'object' &&
                 metadata !== null &&
                 'confidence' in (metadata as Record<string, unknown>) &&
                 typeof (metadata as Record<string, unknown>)['confidence'] === 'number'
-                  ? ((metadata as Record<string, unknown>)['confidence'] as number)
+                  ? ((metadata as Record<string, unknown>)['confidence'] as: number)
                   : 0;
               return sum + confidence;
             }, 0) / Math.max(1, tilesGenerated);
           const compressionRatio =
-            (tilingResults as unknown as Record<string, unknown>)['tensorCompressionRatio'] ?? null;
+            (tilingResults as: unknown as Record<string, unknown>)['tensorCompressionRatio'] ?? null;
           const memoryRegions = chunks.reduce(
             (acc, ch) => {
               const region = (ch as Record<string, unknown>)['memoryRegion'];
@@ -392,7 +392,7 @@ export class WebGPUTensorAccelerator {
             },
             {} as Record<string, number>
           );
-          const simdMetrics = (tilingResults as unknown as Record<string, unknown>)['simdMetrics'] ?? null;
+          const simdMetrics = (tilingResults as: unknown as Record<string, unknown>)['simdMetrics'] ?? null;
           tilingMeta = {
             tilesGenerated,
             avgConfidence,
@@ -407,12 +407,12 @@ export class WebGPUTensorAccelerator {
           );
           const totalTime = performance.now() - start;
           // Adapter/device friendly name resolution (no `any`)
-          const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : {};
+          const adapterMeta = this.adapter ? (this.adapter as: unknown as Record<string, unknown>) : {};
           const adapterName =
             typeof adapterMeta['name'] === 'string'
-              ? (adapterMeta['name'] as string)
+              ? (adapterMeta['name'] as: string)
               : typeof (adapterMeta['info'] as Record<string, unknown>)?.['device'] === 'string'
-                ? ((adapterMeta['info'] as Record<string, unknown>)['device'] as string)
+                ? ((adapterMeta['info'] as Record<string, unknown>)['device'] as: string)
                 : 'Unknown GPU';
           return {
             similarity: enhancedSimilarity,
@@ -437,12 +437,12 @@ export class WebGPUTensorAccelerator {
         }
       }
       const totalTime = performance.now() - start;
-      const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : {};
+      const adapterMeta = this.adapter ? (this.adapter as: unknown as Record<string, unknown>) : {};
       const adapterName =
         typeof adapterMeta['name'] === 'string'
-          ? (adapterMeta['name'] as string)
+          ? (adapterMeta['name'] as: string)
           : typeof (adapterMeta['info'] as Record<string, unknown>)?.['device'] === 'string'
-            ? ((adapterMeta['info'] as Record<string, unknown>)['device'] as string)
+            ? ((adapterMeta['info'] as Record<string, unknown>)['device'] as: string)
             : 'Unknown GPU';
       return {
         similarity: standardSimilarity,
@@ -525,10 +525,10 @@ export class WebGPUTensorAccelerator {
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: tokensBuffer } },
-        { binding: 1, resource: { buffer: weightsBuffer } },
-        { binding: 2, resource: { buffer: outputBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } }
+        {, binding: 0, resource: {, buffer: tokensBuffer } },
+        { binding: 1, resource: {, buffer: weightsBuffer } },
+        { binding: 2, resource: {, buffer: outputBuffer } },
+        { binding: 3, resource: {, buffer: paramsBuffer } }
       ]
     });
     const commandEncoder = this.device.createCommandEncoder();
@@ -582,7 +582,7 @@ export class WebGPUTensorAccelerator {
   }
   private startMetricsCollection(): void {
     setInterval(() => {
-      const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : null;
+      const adapterMeta = this.adapter ? (this.adapter as: unknown as Record<string, unknown>) : null;
       if (adapterMeta && 'memoryUsage' in adapterMeta) {
         const m = adapterMeta['memoryUsage'];
         this.metrics.memoryUsage = typeof m === 'number' ? m : 0;
@@ -593,9 +593,9 @@ export class WebGPUTensorAccelerator {
     return { ...this.metrics };
   }
   getCapabilities(): Record<string, unknown> {
-    const adapterMeta = this.adapter ? (this.adapter as unknown as Record<string, unknown>) : null;
+    const adapterMeta = this.adapter ? (this.adapter as: unknown as Record<string, unknown>) : null;
     return {
-      isSupported: typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: GPU }).gpu,
+      isSupported: typeof navigator !== 'undefined' && !!(navigator, as: unknown as { gpu?: GPU }).gpu,
       isInitialized: this.isInitialized,
       adapterInfo: adapterMeta?.info ?? null,
       limits: adapterMeta?.limits ?? null,
@@ -604,9 +604,9 @@ export class WebGPUTensorAccelerator {
     };
   }
   async cleanup(): Promise<void> {
-    if (this.device && typeof (this.device as unknown as Record<string, unknown>)?.['destroy'] === 'function') {
+    if (this.device && typeof (this.device as: unknown as Record<string, unknown>)?.['destroy'] === 'function') {
       // call destroy if available
-      (this.device as unknown as { destroy?: () => void }).destroy?.();
+      (this.device as: unknown as { destroy?: () => void }).destroy?.();
       this.device = null;
     }
     this.bufferPool.forEach(buffer => buffer.destroy());

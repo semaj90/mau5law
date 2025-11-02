@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 const GO_MICROSERVICE_URL = 'http://localhost:8080';
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const documentRequest = await request.json();
     const response = await fetch(`${GO_MICROSERVICE_URL}/api/process`, {
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        message: `Processing; failed: ${error.message}`,
+        message: `Processing;, failed: ${error.message}`,
         error: error.message
       },
       { status: 500 }

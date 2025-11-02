@@ -1,6 +1,6 @@
-import type { Actions, PageServerLoad } from './$types'; // removed .js extension
-import { redirect } from '@sveltejs/kit';
-import { invalidateSession, deleteSessionTokenCookie } from '$lib/server/session';
+import type { Actions, PageServerLoad } from, './$types'; // removed .js extension
+import { redirect } from, '@sveltejs/kit';
+import { invalidateSession, deleteSessionTokenCookie } from, '$lib/server/session';
 export const load: PageServerLoad = async ({ cookies, locals }) => {
   if (!locals.user) throw redirect(302, '/login');
 

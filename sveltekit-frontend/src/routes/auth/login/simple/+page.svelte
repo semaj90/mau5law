@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte code: Unexpected, token --> <script, lang="ts"> // Svelte 5 runes are auto-imported import { page } from '$app/stores'; let { data, form }: { data, form: any } = $props(); let isAutoLoggingIn = $state<boolean>(false); // Check for registration success message let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true'); // Auto-fill demo user credentials function autoLoginDemo() { console.log('🔧 Auto-fill demo credentials clicked'); const emailInput = document.getElementById('email') as HTMLInputElement; const passwordInput = document.getElementById('password') as HTMLInputElement; if (!emailInput || !passwordInput) { console.error('❌ Could not find email or password inputs'); return; }
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script, lang="ts"> // Svelte, 5 runes are auto-imported import { page } from, '$app/stores'; let { data, form }: { data, form: any } = $props(); let isAutoLoggingIn = $state<boolean>(false); // Check for registration success message let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true'); // Auto-fill demo user credentials function autoLoginDemo() { console.log('🔧 Auto-fill demo credentials clicked'); const emailInput = document.getElementById('email') as HTMLInputElement; const passwordInput = document.getElementById('password') as HTMLInputElement; if (!emailInput || !passwordInput) { console.error('❌ Could not find email or password inputs'); return; }
     emailInput.value = 'demo@legalai.gov'; passwordInput.value = 'demo123456'; // Trigger input events to ensure Svelte recognizes the changes emailInput.dispatchEvent(new Event('input', { bubbles: true })); passwordInput.dispatchEvent(new Event('input', { bubbles: true })); console.log('✅ Demo credentials filled'); }
   // Event handlers for buttons function handleQuickLogin() { console.log('🔧 Quick login handler called'); quickDemoLogin(); }
   function handleAutoFill() { console.log('🔧 Auto-fill handler called'); autoLoginDemo(); }
@@ -17,24 +17,24 @@
         > Invalid email or password </div> {/if} <form, method="POST" action="?/login" class="space-y-6"> <div> <label for="email" class="block text-sm font-medium, text-gray-300, mb-2"> Email </label> <input, type="email"
             name="email"
             id="email"
-            required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+            required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
             placeholder="Enter your email"
           /> </div> <div> <label for="password" class="block text-sm font-medium, text-gray-300, mb-2"> Password </label> <input, type="password"
             name="password"
             id="password"
-            required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400"
+            required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none, focus:border-yellow-400"
             placeholder="Enter your password"
           /> </div> <button, type="submit"
           class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition-colors"
         > Sign In </button> </form> <!-- Quick, Demo, Login --> <div, class="mt-4, space-y-2"> <button, type="button"
-          onclick={ handleQuickLogin } disabled={ isAutoLoggingIn } class="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center"
+          onclick={ handleQuickLogin } disabled={ isAutoLoggingIn } class="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-800, disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center"
         > {#if isAutoLoggingIn} <svg class="animate-spin -ml-1 mr-3 h-5 w-5, text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              viewBox="0 0 24 24"
+              viewBox="0, 0 24 24"
             > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path, class="opacity-75"
                 fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                d="M4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3 7.938l3-2.647z"
               ></path> </svg> Logging in... {:else} ⚡ Quick Demo Login {/if} </button> <button, type="button"
           onclick={ handleAutoFill } class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors"
         > 📝 Auto-fill Demo Credentials </button> </div> <div, class="mt-4, text-center"> <p, class="text-gray-400, text-sm">Demo Account: demo@legalai.gov / demo123456</p> <div class="text-gray-500 text-xs, mt-2, space-y-1"> <p>⚡ Quick Login: Instant access (one-click)</p> <p>📝 Auto-fill: Fill form then click Sign In</p> </div> </div> <div, class="mt-6, text-center"> <a href="/auth/login" class="text-yellow-400, hover:text-yellow-300, text-sm"> ← Back to Full Login Page </a> </div> </div> </div> </div> <style> /* Inline CSS to avoid dependency on global styles */ .min-h-screen { min-height: 100vh; }
@@ -62,7 +62,7 @@
   .text-yellow-400 { color: #fbbf24; }
   .text-white { color: #ffffff; }
   .text-black { color: #000000; }
-  .text-gray-300 { color: #d1d5db; }
+  .text-gray-300 {, color: #d1d5db; }
   .mb-8 { margin-bottom: 2rem; }
   .mb-2 { margin-bottom: 0.5rem; }
   .mt-4 { margin-top: 1rem; }
@@ -75,7 +75,7 @@
   .hover\:bg-green-700:hover { background-color: #15803d; }
   .hover\:bg-blue-700:hover { background-color: #1d4ed8; }
   .transition-colors { transition-property: color, background-color, border-color; transition-duration 150m; }
-  .focus\:outline-none:focus { outline: none; }
+  .focus\:outline-none:focus {, outline: none; }
   .focus\:border-yellow-400:focus { border-color: #fbbf24; }
 </style>
 

@@ -1,11 +1,11 @@
 // PostgreSQL Vector Service - Stub Implementation
 // Provides fallback functionality when vector database is not available
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: { [key: string]: any };
 }
-export interface VectorDocument { id: string;, content: string;
+export interface VectorDocument {, id: string;, content: string;
   embedding?: number[];
   metadata?: { [key: string]: any };
 }
@@ -117,7 +117,7 @@ export class PostgreSQLVectorService {
       textChunks?: string[];
       embeddings?: number[][];
       ocrText?: string;
-      analysisResults?: LegalAnalysisResult; // Changed from any
+      analysisResults?: LegalAnalysisResult; // Changed, from: any
     }
   ): Promise<boolean> {
     // Update or create document mapping
@@ -142,7 +142,7 @@ export class PostgreSQLVectorService {
         content: mapping.textChunks?.join(' ') || '',
         embedding: mapping.embeddings?.[0] || new Array(384).fill(0),
         metadata: {
-          ocrText: mapping.ocrText,
+         , ocrText: mapping.ocrText,
           analysisResults: mapping.analysisResults,
           created: new Date().toISOString()
         }
@@ -163,7 +163,7 @@ export class PostgreSQLVectorService {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'nomic-embed-text', // Using: 'nomic-embed-text' as per instructions; prompt: text
+         , model: 'nomic-embed-text', // Using: 'nomic-embed-text' as per instructions;, prompt: text
         })
       });
 
@@ -180,7 +180,7 @@ export class PostgreSQLVectorService {
     } catch (error) {
       console.error('Error generating embedding with Ollama:', error);
       // Return a zero-filled vector as a fallback in case of error
-      // Assuming a common embedding dimension like 384, adjust if your model differs.
+      // Assuming a common embedding dimension like, 384, adjust if your model differs.
       return new Float32Array(384).fill(0);
     }
   }

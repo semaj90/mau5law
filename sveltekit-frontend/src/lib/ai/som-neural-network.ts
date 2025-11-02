@@ -2,10 +2,10 @@
  * Self-Organizing Map (SOM) Neural Network for Graph Decomposition
  * Integrates with TensorFlow.js and GPU acceleration for legal graph analysis
  */
-import * as tf from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-backend-webgl';
-import '@tensorflow/tfjs-backend-webgpu';
-import { MultiLayerCache } from '../services/multiLayerCache.js';
+import * as tf from, '@tensorflow/tfjs';
+import, '@tensorflow/tfjs-backend-webgl';
+import, '@tensorflow/tfjs-backend-webgpu';
+import { MultiLayerCache } from, '../services/multiLayerCache.js';
 export interface SOMConfig { gridSize: { width: number; height: number };
   learningRate: number;
   neighborhoodRadius: number;
@@ -17,29 +17,29 @@ export interface SOMConfig { gridSize: { width: number; height: number };
 export interface SOMNode { position: { x: number; y: number };
   weights: Float32Array;
   activationLevel: number;
-  legalContext: { conceptType: 'case' | 'statute' | 'regulation' | 'precedent' | 'mixed';, importance: number;
+  legalContext: {, conceptType: 'case' | 'statute' | 'regulation' | 'precedent' | 'mixed';, importance: number;
     jurisdiction: string;
     practiceArea: string[];
   };
 }
-export interface SOMDecomposition { clusters: SOMCluster[];, topologyMap: Float32Array;
+export interface SOMDecomposition {, clusters: SOMCluster[];, topologyMap: Float32Array;
   legalConcepts: LegalConceptMapping[];
   decompositionQuality: number;
   processingTime: number;
   convergenceHistory: number[];
 }
-export interface SOMCluster { id: string;, centroid: Float32Array;
+export interface SOMCluster {, id: string;, centroid: Float32Array;
   nodes: string[];
   legalSignificance: number;
   conceptSimilarity: number;
   boundingBox: { x: number; y: number; width: number; height: number };
 }
-export interface LegalConceptMapping { conceptId: string;, somPosition: { x: number; y: number };
+export interface LegalConceptMapping {, conceptId: string;, somPosition: { x: number; y: number };
   legalTerms: string[];
   citationNetwork: string[];
   importance: number;
 }
-export interface SOMTrainingMetrics { epoch: number;, quantizationError: number;
+export interface SOMTrainingMetrics {, epoch: number;, quantizationError: number;
   topographicError: number;
   neighborhoodSize: number;
   learningRate: number;
@@ -50,10 +50,10 @@ export class SOMNeuralNetwork {
   private somGrid: SOMNode[][];
   private inputTensor: tf.Tensor | null = null;
   private weightTensor: tf.Tensor | null = null;
-  private trainingHistory: SOMTrainingMetrics[] = [];
+  private, trainingHistory: SOMTrainingMetrics[] = [];
   private isInitialized = $state(false);
   private gpuBackend: 'webgl' | 'webgpu' | 'cpu' = 'cpu';
-  private cache: MultiLayerCache | null = null;
+  private, cache: MultiLayerCache | null = null;
   constructor(config: SOMConfig) {
     this.config = { gridSize: config.gridSize || {, width: 10, height: 10 },
       learningRate: config.learningRate || 0.1,
@@ -124,7 +124,7 @@ export class SOMNeuralNetwork {
           weights,
           activationLevel: 0,
           legalContext: {
-            conceptType: 'mixed',
+           , conceptType: 'mixed',
             importance: 0,
             jurisdiction: 'unknown',
             practiceArea: []
@@ -248,7 +248,7 @@ export class SOMNeuralNetwork {
     distances.dispose();
     return { x, y };
   }
-  private findBMUCPU(inputSample: number[]): { x: number; y: number } {
+  private findBMUCPU(inputSample: number[]): { x: number;, y: number } {
     let minDistance = Infinity;
     let bmuX = 0,
       bmuY = 0;
@@ -273,7 +273,7 @@ export class SOMNeuralNetwork {
     return Math.sqrt(sum);
   }
   private async updateNeighborhood(
-    bmu: {, x: number; y: number },
+    bmu: {, x: number;, y: number },
     inputSample: number[],
     learningRate: number,
     neighborhoodRadius: number
@@ -348,7 +348,7 @@ export class SOMNeuralNetwork {
     return bmuDistance > minNeighborDistance ? 1 : 0;
   }
   private getNeighbors(x: number, y: number, radius: number): { x: number; y: number }[] {
-    const neighbors: { x: number; y: number }[] = [];
+    const neighbors: { x: number;, y: number }[] = [];
     const { width, height } = this.config.gridSize;
     for (let dx = -radius; dx <= radius; dx++) {
       for (let dy = -radius; dy <= radius; dy++) {
@@ -401,8 +401,8 @@ export class SOMNeuralNetwork {
     visited: boolean[][],
     clusterId: string
   ): Promise<SOMCluster> {
-    const queue: { x: number; y: number }[] = [{ x: startX, y: startY }];
-    const clusterNodes: string[] = [];
+    const queue: { x: number; y: number }[] = [{, x: startX, y: startY }];
+    const, clusterNodes: string[] = [];
     let minX = startX,
       minY = startY,
       maxX = startX,
@@ -449,7 +449,7 @@ export class SOMNeuralNetwork {
       legalSignificance: totalImportance / clusterNodes.length,
       conceptSimilarity: this.calculateClusterSimilarity(clusterNodes),
       boundingBox: {
-        x: minX,
+       , x: minX,
         y: minY,
         width: maxX - minX + 1,
         height: maxY - minY + 1
@@ -508,16 +508,16 @@ export class SOMNeuralNetwork {
     const terms: string[] = [];
     // Infer terms based on legal context and weights (simplified)
     switch (node.legalContext.conceptType) {
-      case 'case':
+      case, 'case':
         terms.push('case law', 'judicial decision', 'legal precedent');
         break;
-      case 'statute':
+      case, 'statute':
         terms.push('statutory law', 'legislation', 'code section');
         break;
-      case 'regulation':
+      case, 'regulation':
         terms.push('administrative law', 'regulatory provision', 'agency rule');
         break;
-      case 'precedent':
+      case, 'precedent':
         terms.push('binding precedent', 'stare decisis', 'authoritative ruling');
         break;
       default:
@@ -547,7 +547,7 @@ export class SOMNeuralNetwork {
   }
   async getDecomposition(): Promise<SOMDecomposition | null> {
     if (!this.isInitialized || this.trainingHistory.length === 0) {
-      return null;
+      return: null;
     }
     const decomposition = await this.generateDecomposition([]);
     return {

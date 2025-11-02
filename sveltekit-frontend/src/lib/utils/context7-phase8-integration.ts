@@ -1,5 +1,5 @@
 /**
- * Context7 + Phase 8 Unified Recommendation System
+ * Context7 + Phase, 8 Unified Recommendation System
  * Integrates MCP tools with AI-aware matrix UI and XState machines
  * Optimized for legal AI workflow enhancement and performance
  */
@@ -22,7 +22,7 @@ export interface LegalFormContext {
   confidence: number;
   [key: string]: any;
 }
-export interface Context7Phase8Query { component: string;, context: 'legal-ai' | 'performance' | 'ui-ux';
+export interface Context7Phase8Query {, component: string;, context: 'legal-ai' | 'performance' | 'ui-ux';
   area?: 'performance' | 'ui-ux' | 'ai-enhancement';
   feature?: string;
   requirements?: string;
@@ -30,7 +30,7 @@ export interface Context7Phase8Query { component: string;, context: 'legal-ai' 
   currentState?: StateValue;
   matrixNodes?: MatrixUINode[];
 }
-export interface Phase8Recommendation { id: string;, type: 'ui-optimization' | 'workflow-improvement' | 'performance-boost' | 'ai-enhancement';
+export interface Phase8Recommendation {, id: string;, type: 'ui-optimization' | 'workflow-improvement' | 'performance-boost' | 'ai-enhancement';
   priority: 'critical' | 'high' | 'medium' | 'low';
   title: string;
   description: string;
@@ -46,8 +46,8 @@ export interface Phase8Recommendation { id: string;, type: 'ui-optimization' | 
   risks: string[];
   relatedStates?: string[];
 }
-export interface RerankResult { id: string;, content: string;
-  metadata: { type: string;, priority: string;
+export interface RerankResult {, id: string;, content: string;
+  metadata: {, type: string;, priority: string;
     confidence: number;
     component: string;
   };
@@ -55,14 +55,14 @@ export interface RerankResult { id: string;, content: string;
   rerankScore: number;
   confidence: number;
 }
-export interface UserContext { intent: string;, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
+export interface UserContext {, intent: string;, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   focusedElement: string;
   currentCase: string;
   recentActions: string[];
   userRole: string;
   workflowState: string;
 }
-// New: typed shapes for external API responses to avoid `any`
+//, New: typed shapes for external API responses to avoid `any`
 type Priority = 'critical' | 'high' | 'medium' | 'low';
 interface MCPRecommendation {
   priority?: Priority;
@@ -90,7 +90,7 @@ export class Context7Phase8Integrator {
   private mcpEndpoint = 'http://localhost:8000/api';
   private ragEndpoint = 'http://localhost:8000/api/rag';
   /**
-   * Generate unified recommendations using Context7 MCP + Phase 8 AI
+   * Generate unified recommendations using Context7 MCP + Phase, 8 AI
    */
   async generateUnifiedRecommendations(query: Context7Phase8Query): Promise<Phase8Recommendation[]> {
     const recommendations: Phase8Recommendation[] = [];
@@ -109,7 +109,7 @@ export class Context7Phase8Integrator {
       return this.rerankRecommendations(recommendations, query);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Context7 Phase 8 integration error:', msg);'
+      console.error('Context7 Phase, 8 integration error:', msg);'
       return this.getFallbackRecommendations(query);
     }
   }
@@ -166,12 +166,12 @@ export class Context7Phase8Integrator {
       (insights.results?.map((result: RAGResult) => ({
         type: 'ai-enhancement' as const,
         priority: this.calculatePriorityFromScore(result?.score ?? 0),
-        title: 'Legal AI; Enhancement: ${result?.title ?? 'Suggestion` }`,
+        title: 'Legal AI;, Enhancement: ${result?.title ?? 'Suggestion` }`,
         description: result?.content ?? '',
         context7Source: 'rag-legal',
         aiConfidence: Math.round((result?.score ?? 0) * 100),
         implementation: {
-          component: query.component,
+         , component: query.component,
           timeEstimate: `2-4 hours` },
         benefits: this.extractBenefits(result?.content ?? ''),
         risks: []
@@ -317,7 +317,7 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
     }));
 
     const userContext: UserContext = {
-      intent: 'review',
+     , intent: 'review',
       timeOfDay: this.getTimeOfDay(),
       focusedElement: query.component,
       currentCase: 'PHASE8_OPTIMIZATION',
@@ -372,10 +372,10 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
     return ragQuery;
   }
   private calculatePriorityFromScore(score: number): 'critical' | 'high' | 'medium' | 'low' {
-    if (score > 0.9) return 'critical';
-    if (score > 0.7) return 'high';
-    if (score > 0.5) return 'medium';
-    return 'low';
+    if (score > 0.9) return, 'critical';
+    if (score > 0.7) return, 'high';
+    if (score > 0.5) return, 'medium';
+    return, 'low';
   }
   private extractBenefits(content: string): string[] {
     // Simple keyword extraction for benefits
@@ -386,14 +386,14 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
         benefits.push(`May ${keyword} system performance`);
       }
     });
-    return benefits.slice(0, 3); // Limit to top 3
+    return benefits.slice(0, 3); // Limit to top, 3
   }
   private getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
-    if (hour < 12) return 'morning';
-    if (hour < 17) return 'afternoon';
-    if (hour < 21) return 'evening';
-    return 'night';
+    if (hour < 12) return, 'morning';
+    if (hour < 17) return, 'afternoon';
+    if (hour < 21) return, 'evening';
+    return, 'night';
   }
   private getFallbackRecommendations(query: Context7Phase8Query): Phase8Recommendation[] {
     return [
@@ -406,7 +406,7 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
         context7Source: 'fallback',
         aiConfidence: 60,
         implementation: {
-          component: query.component,
+         , component: query.component,
           timeEstimate: `1-2 hours` },
         benefits: ['Improved performance'],
         risks: [],
@@ -415,10 +415,10 @@ const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
     ];
   }
 }
-// Convenience functions for common Context7 + Phase 8 queries
+// Convenience functions for common Context7 + Phase, 8 queries
 export const commonContext7Phase8Queries = {
   /**
-   * Analyze Phase 8 component with legal AI context
+   * Analyze Phase, 8 component with legal AI context
    */
   analyzePhase8Component: (component: string, xstateContext?: LegalFormContext, currentState?: StateValue) => ({
     component,

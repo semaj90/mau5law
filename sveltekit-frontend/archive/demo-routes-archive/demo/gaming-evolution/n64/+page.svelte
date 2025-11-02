@@ -251,7 +251,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
               <div class="control-group">
                 <label>Texture Filtering:</label>
-                <Select.Root bind:value={textureFiltering}>
+                <Select bind:value={textureFiltering}>
                   <Select.Trigger class="n64-select-trigger">
                     <Select.Value />
                   </Select.Trigger>
@@ -262,7 +262,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                       </Select.Item>
                     {/each}
                   </Select.Content>
-                </Select.Root>
+                </Select>
               </div>
 
               <div class="control-group">
@@ -412,7 +412,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <div.Content class="interface-3d nes-container">
 
           <!-- 3D Tabs -->
-          <Tabs.Root bind:value={activeTab} class="n64-tabs">
+          <Tabs bind:value={activeTab} class="n64-tabs">
             <Tabs.List class="n64-tabs-list">
               <Tabs.Trigger class="n64-tab-3d" value="graphics">Graphics</Tabs.Trigger>
               <Tabs.Trigger class="n64-tab-3d" value="audio">Audio</Tabs.Trigger>
@@ -513,7 +513,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 <!-- Legal Domain Selection -->
                 <div class="legal-domain-section">
                   <label for="legal-domain">Legal Domain:</label>
-                  <Select.Root bind:value={selectedLegalDomain}>
+                  <Select bind:value={selectedLegalDomain}>
                     <Select.Trigger class="n64-select-trigger" id="legal-domain">
                       <Select.Value />
                     </Select.Trigger>
@@ -524,7 +524,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                         </Select.Item>
                       {/each}
                     </Select.Content>
-                  </Select.Root>
+                  </Select>
                 </div>
 
                 <!-- Legal Query Input -->
@@ -621,7 +621,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
               </div>
             </Tabs.Content>
-          </Tabs.Root>
+          </Tabs>
 
           <!-- 3D Dialog Demo -->
           <div class="dialog-section-3d">
@@ -632,7 +632,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               🌟 Show N64 Dialog
             </Button>
 
-            <Dialog.Root bind:open={dialogOpen}>
+            <Dialog bind:open={dialogOpen}>
               <Dialog.Portal>
                 <Dialog.Overlay class="n64-dialog-overlay" />
                 <Dialog.Content class="n64-dialog-3d">
@@ -656,7 +656,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                   </div>
                 </Dialog.Content>
               </Dialog.Portal>
-            </Dialog.Root>
+            </Dialog>
           </div>
 
         </div.Content>
@@ -687,7 +687,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 </Toast.Root>
 
 <!-- Evidence Canvas Dialog -->
-<Dialog.Root bind:open={evidenceCanvasOpen}>
+<Dialog bind:open={evidenceCanvasOpen}>
   <Dialog.Portal>
     <Dialog.Content>
       <div class="evidence-canvas-dialog">
@@ -761,7 +761,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 
 <style global>
   /* N64 3D Color Palette & Variables */

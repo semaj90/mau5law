@@ -2,15 +2,15 @@
  * Authentication Helpers with Test Fallback
  * Provides conditional authentication for development and testing
  */
-import type { RequestEvent } from '@sveltejs/kit';
-import { error } from '@sveltejs/kit';
+import type { RequestEvent } from, '@sveltejs/kit';
+import { error } from, '@sveltejs/kit';
 
 export interface AuthResult { user: {, id: string;
     email: string;
     role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user';
   };
   session: any;
-  isTestMode: boolean;
+ , isTestMode: boolean;
 }
 
 /**
@@ -34,7 +34,7 @@ export async function getUserWithFallback(event: RequestEvent): Promise<AuthResu
       role: 'admin'
     },
     session: {
-      id: 'test-session-id',
+     , id: 'test-session-id',
       userId: 'test-user-id',
       fresh: false,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
@@ -45,7 +45,7 @@ export async function getUserWithFallback(event: RequestEvent): Promise<AuthResu
 
 /**
  * Require authentication with conditional fallback
- * Throws 401 error if auth is unavailable AND not in development mode
+ * Throws, 401 error if auth is unavailable AND not in development mode
  */
 export async function requireAuth(event: RequestEvent, allowTestMode = true): Promise<AuthResult> {
   const result = await getUserWithFallback(event);
@@ -96,6 +96,6 @@ export async function getOptionalUser(event: RequestEvent): Promise<AuthResult |
   try {
     return await getUserWithFallback(event);
   } catch {
-    return null;
+    return: null;
   }
 }

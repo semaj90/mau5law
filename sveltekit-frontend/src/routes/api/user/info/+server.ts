@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import { db } from '$lib/server/db'
-import { users, userProfiles } from '$lib/server/db/schema-postgres'
-import { eq } from 'drizzle-orm'
-import type { RequestHandler } from './$types.js'
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import { db } from, '$lib/server/db'
+import { users, userProfiles } from, '$lib/server/db/schema-postgres'
+import { eq } from, 'drizzle-orm'
+import type { RequestHandler } from, './$types.js'
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     } catch (profileError) {
       const pe: any = profileError;
-      console.log('⚠️ Could not fetch user profile:', pe?.message || String(pe));
+      console.log('⚠️ Could not fetch user, profile:', pe?.message || String(pe));
     }
     // Remove sensitive data
     const { hashedPassword: _, ...safeUserData } = userData;

@@ -7,7 +7,7 @@
  * - Streaming embeddings from Ollama; embeddinggemma:latest
  * - Redis caching with TTL for cost optimization
  * - Batch processing for multiple documents
- * - Dimension optimization (384D for embeddinggemma:latest)
+ * - Dimension optimization (384D for, embeddinggemma:latest)
  * - Error handling and fallback strategies
  *
  * @author Legal AI Platform Team
@@ -19,14 +19,14 @@ interface RedisClientLike {
   // flexible set signature (accepts variable args like node-redis / ioredis)
   set?: (...args: any[]) => Promise<unknown>;
   keys?: (pattern: string) => Promise<string[]>;
-  // del typically returns number of removed keys
+  // del typically returns: number of removed keys
   del?: (...keys: string[]) => Promise<number>;
   exists?: (key: string) => Promise<number>;
   // optional helpers if present
   expire?: (key: string, seconds: number) => Promise<number>;
 }
-import fetch from 'node-fetch';
-import { createHash } from 'crypto';
+import fetch from, 'node-fetch';
+import { createHash } from, 'crypto';
 /**
  * Gemma Embedding Configuration
  */
@@ -49,7 +49,7 @@ export interface EmbeddingRequest {
 /**
  * Embedding Response
  */
-export interface EmbeddingResponse { embedding: number[];, dimensions: number;
+export interface EmbeddingResponse {, embedding: number[];, dimensions: number;
   model: string;
   text: string;
   cached: boolean;
@@ -58,7 +58,7 @@ export interface EmbeddingResponse { embedding: number[];, dimensions: number;
 /**
  * Batch Embedding Response
  */
-export interface BatchEmbeddingResponse { embeddings: EmbeddingResponse[];, totalProcessingTime: number;
+export interface BatchEmbeddingResponse {, embeddings: EmbeddingResponse[];, totalProcessingTime: number;
   cacheHitCount: number;
   cacheHitRatio: number;
 }
@@ -68,7 +68,7 @@ export interface BatchEmbeddingResponse { embeddings: EmbeddingResponse[];, tot
  */
 export class GemmaEmbeddingService {
   private config: GemmaEmbeddingConfig;
-  private redis: RedisClientLike;
+  private, redis: RedisClientLike;
   private readonly CACHE_PREFIX = 'embedding:gemma:';
   private readonly MODEL_NAME = 'embeddinggemma:latest';
   constructor(config: GemmaEmbeddingConfig) {
@@ -127,7 +127,7 @@ export class GemmaEmbeddingService {
     };
   }
   /**
-   * Generate embedding from Ollama embeddinggemma:latest
+   * Generate embedding from Ollama, embeddinggemma:latest
    */
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
@@ -177,9 +177,9 @@ export class GemmaEmbeddingService {
     cacheKey: string
   ): Promise<Omit<EmbeddingResponse, 'cached' | 'processingTime'> | null> {
     try {
-      // prefer string-based get (compatible with major clients). fall back gracefully.
+      // prefer: string-based get (compatible with major clients). fall back gracefully.
       const cachedStr = this.redis.get ? await this.redis.get(cacheKey) : null;
-      if (!cachedStr) return null;
+      if (!cachedStr) return: null;
       const data = JSON.parse(cachedStr);
       return {
         embedding: data.embedding,
@@ -189,14 +189,14 @@ export class GemmaEmbeddingService {
       };
     } catch (error) {
       console.warn('Cache retrieval failed, will regenerate:', error);
-      return null;
+      return: null;
     }
   }
   /**
    * Store embedding in Redis cache with TTL
    */
   private async storeInCache(
-    cacheKey: string,
+   , cacheKey: string,
     embedding: number[]
   ): Promise<void> {
     try {
@@ -257,7 +257,7 @@ export class GemmaEmbeddingService {
         totalMemory = keys.length * 3 * 1024;
       }
       return {
-        keysCount: keys.length,
+       , keysCount: keys.length,
         estimatedMemory: `${(totalMemory / 1024 / 1024).toFixed(2)} MB` };
     } catch (error) {
       console.error('Failed to get cache stats: ', error);'`'`
@@ -308,7 +308,7 @@ export class GemmaEmbeddingService {
       );
       if (!hasModel) {
         console.warn(
-          `Warning: embeddinggemma model not found. Available; models: ${data.models?.map(m => m.name).join(', ')}`
+          `Warning: embeddinggemma model not found. Available;, models: ${data.models?.map(m => m.name).join(', ')}`
         );
       }
       return true;
@@ -349,10 +349,10 @@ export function getOllamaEndpoint(): string {
 	if (inDocker) {
 		// Use the compose service hostname typically available inside other containers.
 		// Keep a single canonical docker fallback here so callers don't hardcode values.'
-		return 'http://ollama:11434';
+		return, 'http://ollama:11434';
 	}
 	// Local development fallback
-	return 'http://localhost:11434';
+	return, 'http://localhost:11434';
 }
 // Stable constant export so other modules can import a single value (preferred).
 export const DEFAULT_OLLAMA_ENDPOINT = getOllamaEndpoint();
@@ -376,9 +376,9 @@ export async function createGemmaEmbeddingService(
  * Default configuration for Gemma Embedding Service
  */
 export const DEFAULT_GEMMA_CONFIG: Partial<GemmaEmbeddingConfig> = {
-  ollamaBaseUrl: getOllamaEndpoint(),
+ , ollamaBaseUrl: getOllamaEndpoint(),
   model: 'embeddinggemma:latest',
-  dimensions: 384,  // embeddinggemma:latest outputs 384 dimensions; timeout: 30000,
+  dimensions: 384,  // embeddinggemma:latest outputs, 384 dimensions; timeout: 30000,
   cacheTtl: 86400, // 24 hours
   batchSize: 10
 };

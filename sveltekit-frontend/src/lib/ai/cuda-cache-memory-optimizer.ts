@@ -4,8 +4,8 @@
  * Features Autoencoder compression and Self-Organizing Map clustering
  * for advanced user intent recognition and model optimization.
  */
-import { browser } from '$app/environment';
-import { euclideanDistance, feedForward, normalize, generateRandomWeights } from './helpers/vector-math';
+import { browser } from, '$app/environment';
+import { euclideanDistance, feedForward, normalize, generateRandomWeights } from, './helpers/vector-math';
 export type IntentCategory = 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
 export type Urgency = 'low' | 'medium' | 'high' | 'critical';
 export type UserBehaviorPattern = 'explorer' | 'focused' | 'repetitive' | 'learning';
@@ -18,7 +18,7 @@ export interface UserIntent { queryText: string;, intentCategory: IntentCategor
   userBehaviorPattern: UserBehaviorPattern;
   timestamp?: number;
 }
-export interface ModelPerformanceProfile { modelId: string;, architecture: string;
+export interface ModelPerformanceProfile {, modelId: string;, architecture: string;
   avgResponseTime: number; // ms
   accuracyScore: number; // 0-1
   userSatisfactionScore: number; // 0-1
@@ -28,37 +28,37 @@ export interface ModelPerformanceProfile { modelId: string;, architecture: stri
   usageFrequency: number;
   switchCost?: number; // ms
 }
-export interface CacheOptimizationStrategy { strategy: 'aggressive' | 'balanced' | 'conservative';, evictionPolicy: 'lru' | 'lfu' | 'ttl' | 'hybrid';
+export interface CacheOptimizationStrategy {, strategy: 'aggressive' | 'balanced' | 'conservative';, evictionPolicy: 'lru' | 'lfu' | 'ttl' | 'hybrid';
   maxMemoryUsageMB: number;
   preloadThreshold: number; // 0-1
   compressionLevel: number;
 }
-export interface CUDAMemoryState { totalMemoryMB: number;, usedMemoryMB: number;
+export interface CUDAMemoryState {, totalMemoryMB: number;, usedMemoryMB: number;
   availableMemoryMB: number;
   temperatureC: number;
   utilizationPercent: number;
   lastUpdated: number;
 }
-export interface SOMNeuron { id: string;, weights: Float32Array;
+export interface SOMNeuron {, id: string;, weights: Float32Array;
   activationCount: number;
   lastActivation: number;
   associatedModel?: string;
 }
-export interface CUDAMemoryBlock { id: string;, size: number; // bytes
+export interface CUDAMemoryBlock {, id: string;, size: number; // bytes
   lastAccessed: number;
   compressed?: boolean;
 }
-export interface AutoEncoderWeights { encoder: {, w1: Float32Array; // input -> hidden
+export interface AutoEncoderWeights {, encoder: {, w1: Float32Array; // input -> hidden
     b1: Float32Array; // hidden bias
     w2: Float32Array; // hidden -> latent
     b2: Float32Array; // latent bias
   };
-  decoder: { w3: Float32Array; // latent -> hidden, b3: Float32Array; // hidden bias
+  decoder: {, w3: Float32Array; // latent -> hidden, b3: Float32Array; // hidden bias
     w4: Float32Array; // hidden -> output
     b4: Float32Array; // output bias
   };
 }
-export interface OptimizerStats { memoryUsageRatio: number;, modelCount: number;
+export interface OptimizerStats {, memoryUsageRatio: number;, modelCount: number;
   intentHistory: number;
   somActivations: number;
   avgConfidence: number;
@@ -66,7 +66,7 @@ export interface OptimizerStats { memoryUsageRatio: number;, modelCount: number
   recentIntentCategories: IntentCategory[];
 }
 export class CudaCacheMemoryOptimizer {
-  private modelProfiles: Map<string, ModelPerformanceProfile> = new Map();
+  private, modelProfiles: Map<string, ModelPerformanceProfile> = new Map();
   private currentStrategy: CacheOptimizationStrategy;
   private memoryState: CUDAMemoryState;
   private userIntentHistory: UserIntent[] = [];
@@ -78,7 +78,7 @@ export class CudaCacheMemoryOptimizer {
   private latentSize = 32;
   private autoEncoderWeights: AutoEncoderWeights | null = null;
   private maxGPUMemoryMB = 4096;
-  private memoryBlocks: Map<string, CUDAMemoryBlock> = new Map();
+  private, memoryBlocks: Map<string, CUDAMemoryBlock> = new Map();
   private memoryPressureThreshold = 0.8;
   private compressionThreshold = 0.6;
   constructor() {
@@ -90,7 +90,7 @@ export class CudaCacheMemoryOptimizer {
       compressionLevel: 2
     };
     this.memoryState = {
-      totalMemoryMB: this.maxGPUMemoryMB,
+     , totalMemoryMB: this.maxGPUMemoryMB,
       usedMemoryMB: 0,
       availableMemoryMB: this.maxGPUMemoryMB,
       temperatureC: 50,
@@ -110,7 +110,7 @@ export class CudaCacheMemoryOptimizer {
     const isQuestion =
       q.includes('?') || ['what', 'how', 'why', 'when', 'where', 'who'].some(w => q.startsWith(w + ' '));
     const intent: UserIntent = {
-      queryText: query,
+     , queryText: query,
       intentCategory: isLegal ? 'legal_analysis' : isQuestion ? 'research' : 'chat',
       confidence: isLegal ? 0.85 : isQuestion ? 0.7 : 0.6,
       urgency: isUrgent ? 'high' : 'medium',
@@ -143,9 +143,9 @@ export class CudaCacheMemoryOptimizer {
     bmu.neuron.lastActivation = Date.now();
     // 4. Determine intent based on the BMU's learned association'
     const intentCategory = this.getIntentCategoryForNeuron(bmu.neuron);
-    // Build the intent object with neural network-derived insights
+    // Build the intent: object with neural network-derived insights
     const intent: UserIntent = {
-      queryText: query,
+     , queryText: query,
       intentCategory: intentCategory,
       confidence: Math.max(0.1, 1 - bmu.distance), // Confidence inversely related to BMU distance
       urgency: this.getUrgencyFromContext(query, userContext),
@@ -184,7 +184,7 @@ export class CudaCacheMemoryOptimizer {
    * Finds the most similar neuron (BMU) on the SOM for a given vector.
    */
   private findBestMatchingUnit(vector: Float32Array): { neuron: SOMNeuron; distance: number } {
-    let bestNeuron: SOMNeuron = this.somNeurons[0][0];
+    let, bestNeuron: SOMNeuron = this.somNeurons[0][0];
     let minDistance = Infinity;
     for (const row of this.somNeurons) {
       for (const neuron of row) {
@@ -224,12 +224,12 @@ export class CudaCacheMemoryOptimizer {
   private getIntentCategoryForNeuron(neuron: SOMNeuron): IntentCategory {
     const [, x, y] = neuron.id.split('_').map(Number);
     // Map different regions to different intent categories
-    if (x < 3 && y < 3) return 'legal_analysis';
-    if (x > 6 && y > 6) return 'chat';
-    if (x < 5 && y > 5) return 'document_review';
-    if (x > 5 && y < 5) return 'research';
-    if (x >= 3 && x <= 6 && y >= 3 && y <= 6) return 'search';
-    return 'unknown';
+    if (x < 3 && y < 3) return, 'legal_analysis';
+    if (x > 6 && y > 6) return, 'chat';
+    if (x < 5 && y > 5) return, 'document_review';
+    if (x > 5 && y < 5) return, 'research';
+    if (x >= 3 && x <= 6 && y >= 3 && y <= 6) return, 'search';
+    return, 'unknown';
   }
   /**
    * Determines domain specificity from a neuron's learned associations.'
@@ -238,14 +238,14 @@ export class CudaCacheMemoryOptimizer {
     const category = this.getIntentCategoryForNeuron(neuron);
     const activationFrequency = neuron.activationCount / Math.max(1, this.userIntentHistory.length);
     switch (category) {
-      case 'legal_analysis':
-      case 'document_review':
+      case, 'legal_analysis':
+      case, 'document_review':
         return Math.min(0.95, 0.8 + activationFrequency);
-      case 'research':
+      case, 'research':
         return Math.min(0.8, 0.6 + activationFrequency);
-      case 'search':
+      case, 'search':
         return Math.min(0.7, 0.4 + activationFrequency);
-      case 'chat':
+      case, 'chat':
         return Math.min(0.4, 0.2 + activationFrequency);
       default: return 0.1;
     }
@@ -257,19 +257,19 @@ export class CudaCacheMemoryOptimizer {
     const q = query.toLowerCase();
     // Check for urgent keywords
     if (['urgent', 'asap', 'immediate', 'critical', 'emergency'].some(k => q.includes(k))) {
-      return 'critical';
+      return, 'critical';
     }
     if (['quickly', 'soon', 'priority', 'important'].some(k => q.includes(k))) {
-      return 'high';
+      return, 'high';
     }
     // Check user context for urgency indicators
     if (userContext.deadline && typeof userContext.deadline === 'number') {
       const hoursUntilDeadline = (userContext.deadline - Date.now()) / (1000 * 60 * 60);
-      if (hoursUntilDeadline < 2) return 'critical';
-      if (hoursUntilDeadline < 24) return 'high';
-      if (hoursUntilDeadline < 72) return 'medium';
+      if (hoursUntilDeadline < 2) return, 'critical';
+      if (hoursUntilDeadline < 24) return, 'high';
+      if (hoursUntilDeadline < 72) return, 'medium';
     }
-    return 'medium';
+    return, 'medium';
   }
   /**
    * Trains a SOM neuron by adjusting its weights toward the input vector.
@@ -321,12 +321,12 @@ export class CudaCacheMemoryOptimizer {
     return sum / recent.length;
   }
   private identifyUserBehaviorPattern(): UserBehaviorPattern {
-    if (this.userIntentHistory.length < 5) return 'explorer';
+    if (this.userIntentHistory.length < 5) return, 'explorer';
     const recent = this.userIntentHistory.slice(-10);
     const unique = new Set(recent.map(r => r.intentCategory)).size;
-    if (unique === 1) return 'focused';
-    if (unique > 3) return 'explorer';
-    return 'learning';
+    if (unique === 1) return, 'focused';
+    if (unique > 3) return, 'explorer';
+    return, 'learning';
   }
   private calculateQuerySimilarity(a: string, b: string): number {
     const wa = new Set(a.toLowerCase().split(/\s+/));
@@ -360,7 +360,7 @@ export class CudaCacheMemoryOptimizer {
         b2: new Float32Array(this.latentSize).fill(0)
       },
       decoder: {
-        w3: generateRandomWeights(this.latentSize * this.hiddenSize, scaleFactor),
+       , w3: generateRandomWeights(this.latentSize * this.hiddenSize, scaleFactor),
         b3: new Float32Array(this.hiddenSize).fill(0),
         w4: generateRandomWeights(this.hiddenSize * this.inputFeatureSize, scaleFactor),
         b4: new Float32Array(this.inputFeatureSize).fill(0)
@@ -382,7 +382,7 @@ export class CudaCacheMemoryOptimizer {
   public async initializeModelProfiles(): Promise<void> {
     const profiles: ModelPerformanceProfile[] = [
       {
-        modelId: 'gemma270m',
+       , modelId: 'gemma270m',
         architecture: 'llama',
         avgResponseTime: 150,
         accuracyScore: 0.85,

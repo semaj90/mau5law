@@ -1,20 +1,20 @@
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string -->
+<!-- @migration-task Error while migrating Svelte, code: Event attribute must be a JavaScript expression, not, a, string -->
 <script, lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
-  import  Accessibility  from "lucide-svelte/icons/accessibility.svelte";
-  import  Keyboard  from "lucide-svelte/icons/keyboard.svelte";
-  import  Maximize2  from "lucide-svelte/icons/maximize-2.svelte";
-  import  Minimize2  from "lucide-svelte/icons/minimize-2.svelte";
-  import  AccessibilityPanel  from "./AccessibilityPanel.svelte";
-  // local state (simple, compatible with Svelte 5 migration)
+  import { onMount, onDestroy } from, 'svelte';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Tooltip  from, "$lib/components/ui/Tooltip.svelte";
+  import  Accessibility  from, "lucide-svelte/icons/accessibility.svelte";
+  import  Keyboard  from, "lucide-svelte/icons/keyboard.svelte";
+  import  Maximize2  from, "lucide-svelte/icons/maximize-2.svelte";
+  import  Minimize2  from, "lucide-svelte/icons/minimize-2.svelte";
+  import  AccessibilityPanel  from, "./AccessibilityPanel.svelte";
+  // local state (simple, compatible with Svelte, 5 migration)
   let showShortcuts = $state<boolean>(false);
   let showAccessibilityPanel = $state<boolean>(false);
   let isFullscreen = $state<boolean>(false);
-  // keyboard shortcuts map (fixed object syntax)
+  // keyboard shortcuts map (fixed: object syntax)
   const shortcuts = [
     { key: 'Ctrl+K', description: 'Quick search', action: 'search' },
     { key: 'Ctrl+N', description: 'New evidence', action: 'new' },
@@ -165,7 +165,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   :global(.floating-actions) {
     transition: all 0.3s ease;
     display: flex;
-    gap: 0.5rem;
+   , gap: 0.5rem;
     align-items: center;
   }
   /* scope styling to the in-component shortcut kbd elements */
@@ -175,7 +175,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       0 1px 2px rgba(0, 0, 0, 0.24);
     padding: 0.08rem 0.4rem;
     border-radius: 0.25rem;
-    background: rgba(255,255,255,0.03);
+   , background: rgba(255,255,255,0.03);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
   }
 </style>

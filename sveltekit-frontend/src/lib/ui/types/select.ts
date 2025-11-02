@@ -1,4 +1,4 @@
-import type { HTMLAttributes, HTMLButtonAttributes } from 'svelte/elements';
+import type { HTMLAttributes, HTMLButtonAttributes } from, 'svelte/elements';
 
 // Base props for the main Select component
 export interface SelectProps<T = string> {
@@ -66,17 +66,17 @@ export interface SelectContentProps extends HTMLAttributes<HTMLDivElement> {
   class?: string;
   /**
    * The preferred side of the trigger to open the content.
-   * @default 'bottom'
+   * @default, 'bottom'
    */
   side?: 'top' | 'right' | 'bottom' | 'left';
   /**
    * The distance in pixels from the trigger.
-   * @default 8
+   * @default, 8
    */
   sideOffset?: number;
   /**
    * The preferred alignment of the content.
-   * @default 'center'
+   * @default, 'center'
    */
   align?: 'start' | 'center' | 'end';
   /**

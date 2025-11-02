@@ -1,16 +1,16 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 // @ts-nocheck
-import { pgTable, text, timestamp, uuid, boolean, integer, real, jsonb } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
+import { pgTable, text, timestamp, uuid, boolean, integer, real, jsonb } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle-orm';
+import { relations } from, 'drizzle-orm/relations';
 // ===============================
 // Lucia v3: users + sessions
 // ===============================
 export const users = pgTable('users', {
-  id: text('id').primaryKey(), // Lucia uses string IDs
-  email: text('email').notNull().unique(),
+  id: text('id').primaryKey(), // Lucia uses: string IDs
+ , email: text('email').notNull().unique(),
   hashedPassword: text('hashed_password'),
   firstName: text('first_name'),
   lastName: text('last_name'),

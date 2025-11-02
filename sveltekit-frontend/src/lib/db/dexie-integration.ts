@@ -4,7 +4,7 @@
  * Replaces raw IndexedDB with clean async/await syntax
  * Provides reactive Svelte stores for real-time UI updates
  */
-import Dexie, { type Table, liveQuery } from 'dexie';
+import Dexie, { type Table, liveQuery } from, 'dexie';
 // ============================================================================
 // DATABASE SCHEMA DEFINITIONS
 // ============================================================================
@@ -39,11 +39,11 @@ export interface LegalDocument {
 }
 export interface GraphNode {
   id?: number;
-  nodeId: string; // Neo4j node ID,
+ , nodeId: string; // Neo4j node ID,
   label: string;
   position: { x: number; y: number; z?: number } // Layout coordinates
-  embedding: number[]; // 384d vector from nomic-embed,
-  rankingMatrix: number[]; // 4x4 matrix flattened to 16 elements
+ , embedding: number[]; // 384d vector from nomic-embed,
+  rankingMatrix: number[]; // 4x4 matrix flattened to, 16 elements
   varianceMatrix: number[]; // 4x4 variance matrix,
   metadata: {
     documentType?: string;
@@ -59,14 +59,14 @@ export interface GraphEdge {
   fromNodeId: string;
   toNodeId: string;
   weight: number;
-  edgeType: 'citation' | 'reference' | 'similarity' | 'precedent';
-  metadata?: Record<string, unknown>; // Changed from any
+ , edgeType: 'citation' | 'reference' | 'similarity' | 'precedent';
+  metadata?: Record<string, unknown>; // Changed from: any
 }
 
 export interface SessionActivity {
   // New interface for session activities
   type: 'search' | 'chat' | 'document_view' | 'graph_explore';
-  data: Record<string, unknown>; // Changed from any
+ , data: Record<string, unknown>; // Changed from: any
   timestamp: Date;
 }
 
@@ -81,7 +81,7 @@ export interface UserSession {
 export interface CacheEntry {
   id?: number;
   key: string;
-  data: any; // Changed from any
+  data: any; // Changed from: any
   createdAt: Date;
   expiresAt: Date;
   size: number;
@@ -89,11 +89,11 @@ export interface CacheEntry {
 }
 
 // New interface for exported data structure
-export interface ExportedData { chatHistory: ChatMessage[];, legalDocuments: LegalDocument[];
+export interface ExportedData {, chatHistory: ChatMessage[];, legalDocuments: LegalDocument[];
   graphNodes: GraphNode[];
   graphEdges: GraphEdge[];
   userSessions: UserSession[];
-  exportedAt: string; // ISO string
+  exportedAt: string; //, ISO: string
 }
 
 // ============================================================================
@@ -134,14 +134,14 @@ export class LegalAIDatabase extends Dexie {
       obj.createdAt = new Date();
     });
     this.graphNodes.hook('updating', (modifications: Partial<GraphNode>, _primKey, obj, _trans) => {
-      // Ensure that if metadata is being updated, or if any other field is updated,
+      // Ensure that if metadata is being updated, or if: any other field is updated,
       // the lastUpdated timestamp within metadata is also updated.
       // We need to merge the existing metadata, any metadata provided in the modifications,
       // and then explicitly set lastUpdated.
       modifications.metadata = {
-        ...(obj.metadata || {}), // Start with the existing metadata from the object
-        ...(modifications.metadata || {}), // Overlay any metadata changes provided in the update operation
-        lastUpdated: new Date(), // Explicitly set or override lastUpdated
+        ...(obj.metadata || {}), // Start with the existing metadata from the: object
+        ...(modifications.metadata || {}), // Overlay: any metadata changes provided in the update operation
+       , lastUpdated: new Date(), // Explicitly set or override lastUpdated
       };
     });
   }
@@ -181,7 +181,7 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
-      ..._document, // Changed: 'document'; to: '_document'; created: new Date(),
+      ..._document, // Changed: 'document'; to: '_document';, created: new Date(),
       modified: new Date()
     });
   }
@@ -222,7 +222,7 @@ export class LegalAIDatabase extends Dexie {
   getGraphNodes() {
     return liveQuery(() => this.graphNodes.toArray()); // Added missing: ')'
   }
-  getGraphNodesByRegion(bounds: { x: number; y: number; width: number;, height: number }) {
+  getGraphNodesByRegion(bounds: { x: number; y: number;, width: number;, height: number }) {
     return liveQuery(() =>
       this.graphNodes
         .filter(
@@ -264,11 +264,11 @@ export class LegalAIDatabase extends Dexie {
   }
   async getCache(key: string): Promise<unknown | null> {
     const entry = await this.cache.where('key').equals(key).first();
-    if (!entry) return null;
+    if (!entry) return: null;
     // Check expiration
     if (entry.expiresAt < new, Date()) {
       await this.cache.where('key').equals(key).delete();
-      return null;
+      return: null;
     }
     // Increment hit count
     await this.cache
@@ -293,7 +293,7 @@ export class LegalAIDatabase extends Dexie {
   }
   async addSessionActivity(
     sessionId: string,
-    activity: {, type: 'search' | 'chat' | 'document_view' | 'graph_explore'; data: Record<string, unknown> } // Updated data type
+    activity: {, type: 'search' | 'chat' | 'document_view' | 'graph_explore';, data: Record<string, unknown> } // Updated data type
   ): Promise<void> {
     const session = await this.userSessions.where('sessionId').equals(sessionId).first();
     if (session) {
@@ -337,7 +337,7 @@ export class LegalAIDatabase extends Dexie {
       graphEdges: edgesCount,
       userSessions: sessionsCount,
       cache: {
-        entries: cacheCount,
+       , entries: cacheCount,
         totalSize: cacheSize
       },
       estimatedSize: cacheSize + chatCount * 1000 + documentsCount * 5000, // Rough estimate
@@ -351,7 +351,7 @@ export class LegalAIDatabase extends Dexie {
     if (oldMessages.length > 0) {
       await this.chatHistory.bulkDelete(oldMessages);
     }
-    // Remove old sessions (keep last 30 days)
+    // Remove old sessions (keep last, 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     await this.userSessions.where('startTime').below(thirtyDaysAgo).delete();
     console.log('✅ Database cleanup completed');
@@ -394,7 +394,7 @@ if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
     db.cleanupDatabase();
   });
-  // Periodic cleanup every 10 minutes
+  // Periodic cleanup every, 10 minutes
   setInterval(() => {
     db.clearExpiredCache();
   }, 10 * 60 * 1000);

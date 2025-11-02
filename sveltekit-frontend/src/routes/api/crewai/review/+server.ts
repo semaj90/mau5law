@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 
-import type { RequestHandler } from './$types.js'
-import { error, json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/drizzle';
-import { eq } from 'drizzle-orm';
+import type { RequestHandler } from, './$types.js'
+import { error, json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/drizzle';
+import { eq } from, 'drizzle-orm';
 // CrewAI Multi-Agent Document Review API
 // Orchestrates legal document analysis with multiple AI agents
-import { crewAIOrchestrator, LEGAL_AGENTS, type DocumentReviewTask } from "$lib/ai/crewai-legal-agents"
-import { documents, cases } from "$lib/db/schema"
-import crypto from "crypto"
+import { crewAIOrchestrator, LEGAL_AGENTS, type DocumentReviewTask } from, "$lib/ai/crewai-legal-agents"
+import { documents, cases } from, "$lib/db/schema"
+import crypto from, "crypto"
 
 // ============================================================================
 // REVIEW ORCHESTRATION
@@ -57,13 +57,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const [caseData] = await db.select().from(cases).where(eq(cases.id, document.caseId)).limit(1);
       if (caseData) {
         caseContext = {
-          caseType: (caseData.metadata as any)?.type || 'general',
-          jurisdiction: (caseData.metadata as any)?.jurisdiction || 'federal',
+          caseType: (caseData.metadata, as: any)?.type || 'general',
+          jurisdiction: (caseData.metadata, as: any)?.jurisdiction || 'federal',
           priority: caseData.priority || 'medium' }'` }'`
     }
     // Create review task
     const reviewTask: DocumentReviewTask = {
-      taskId: crypto.randomUUID(),
+     , taskId: crypto.randomUUID(),
       documentId,
       documentContent: document.extractedText,
       reviewType: reviewType as DocumentReviewTask['reviewType'],
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action') || 'status';
     const taskId = url.searchParams.get('taskId');
     switch (action) {
-      case 'status':
+      case, 'status':
         if (!taskId) {
           // Get all active reviews
           const activeReviews = await crewAIOrchestrator.getActiveReviews();
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
             }
           });
         }
-      case 'agents':
+      case, 'agents':
         // Get available agents
         const agents = crewAIOrchestrator.getAvailableAgents();
         return json({
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
             }))
           }
         });
-      case 'presets':
+      case, 'presets':
         // Get common agent combinations
         return json({
           success: true,
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ]
           }
         });
-      case 'health':
+      case, 'health':
         // Health check for CrewAI system
         const activeReviews = await crewAIOrchestrator.getActiveReviews();
         const isHealthy = activeReviews.length < 10; // Arbitrary, threshold
@@ -284,7 +284,7 @@ function calculateEstimatedTime(agentIds: string[], contentLength: number): stri
   for (const agentId of agentIds) {
     const agent = LEGAL_AGENTS[agentId]
     if (agent) {
-      const modelName = (agent?.model as string) || 'gpt-4';
+      const modelName = (agent?.model as: string) || 'gpt-4';
       const modelFactor = modelFactors[modelName] ?? 1.0;
       totalTime += baseTimePerAgent * modelFactor * contentFactor
     }

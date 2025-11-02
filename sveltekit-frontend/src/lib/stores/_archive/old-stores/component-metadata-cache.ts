@@ -2,9 +2,9 @@
  * Enhanced-Bits Component Metadata Caching System
  * Caches component metadata, dependencies, and performance stats
  */
-import { redisComponentStore } from './redis-component-store.js';
+import { redisComponentStore } from, './redis-component-store.js';
 export interface ComponentMetadata { name: string;, category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
-  size: number; // Bundle size in bytes,
+ , size: number; // Bundle size in bytes,
   dependencies: string[];
   props: { [key: string]: any };
   lastModified: number;
@@ -14,11 +14,11 @@ export interface ComponentMetadata { name: string;, category: 'core' | 'legal' 
   cacheable: boolean;
   priority: 'critical' | 'high' | 'normal' | 'low';
 }
-export interface ComponentPerformanceMetrics { loadTime: number;, renderTime: number;
+export interface ComponentPerformanceMetrics {, loadTime: number;, renderTime: number;
   memoryUsage: number;
   errorCount: number;
   successCount: number;
-  lastAccess: number;
+ , lastAccess: number;
 }
 class ComponentMetadataCache {
   private metadata = new Map<string, ComponentMetadata>();
@@ -28,21 +28,21 @@ class ComponentMetadataCache {
   private readonly COMPONENT_DEFINITIONS: Record<string, Partial<ComponentMetadata>> = {
     // Core Components
     Button: {
-      category: 'core',
+     , category: 'core',
       size: 2048,
       dependencies: [],
       priority: 'critical',
       cacheable: true
     },
     Input: {
-      category: 'core',
+     , category: 'core',
       size: 3072,
       dependencies: ['Label'],
       priority: 'critical',
       cacheable: true
     },
     Card: {
-      category: 'core',
+     , category: 'core',
       size: 4096,
       dependencies: ['CardHeader', 'CardContent'],
       priority: 'high',
@@ -50,21 +50,21 @@ class ComponentMetadataCache {
     },
     // Legal AI Components
     EvidenceBoard: {
-      category: 'legal',
+     , category: 'legal',
       size: 15360, // ~15KB
       dependencies: ['Card', 'Button', 'Input', 'Dialog'],
       priority: 'high',
       cacheable: true
     },
     EvidenceCard: {
-      category: 'legal',
+     , category: 'legal',
       size: 8192,
       dependencies: ['Card', 'Button'],
       priority: 'normal',
       cacheable: true
     },
     CaseManager: {
-      category: 'legal',
+     , category: 'legal',
       size: 20480, // ~20KB
       dependencies: ['EvidenceCard', 'Dialog', 'Input', 'Select'],
       priority: 'normal',
@@ -72,14 +72,14 @@ class ComponentMetadataCache {
     },
     // AI Components
     EmbeddingGemmaChat: {
-      category: 'ai',
+     , category: 'ai',
       size: 25600, // ~25KB
       dependencies: ['Card', 'Input', 'Button', 'ChatMessage'],
       priority: 'high',
       cacheable: true
     },
     EnhancedRAGStudio: {
-      category: 'ai',
+     , category: 'ai',
       size: 18432, // ~18KB
       dependencies: ['EmbeddingGemmaChat', 'EvidenceBoard'],
       priority: 'normal',
@@ -87,14 +87,14 @@ class ComponentMetadataCache {
     },
     // Gaming Components
     NESButton: {
-      category: 'gaming',
+     , category: 'gaming',
       size: 6144,
       dependencies: ['Button'],
       priority: 'low',
       cacheable: true
     },
     NESContainer: {
-      category: 'gaming',
+     , category: 'gaming',
       size: 8192,
       dependencies: ['Card'],
       priority: 'low',
@@ -102,14 +102,14 @@ class ComponentMetadataCache {
     },
     // Advanced Components
     Board: {
-      category: 'advanced',
+     , category: 'advanced',
       size: 12288,
       dependencies: ['Card', 'DragDropZone'],
       priority: 'normal',
       cacheable: true
     },
     Dialog: {
-      category: 'advanced',
+     , category: 'advanced',
       size: 10240,
       dependencies: ['Button'],
       priority: 'high',
@@ -280,9 +280,9 @@ class ComponentMetadataCache {
   }
   private generateMetadata(componentName: string): ComponentMetadata | null {
     const definition = this.COMPONENT_DEFINITIONS[componentName];
-    if (!definition) return null;
+    if (!definition) return: null;
     return {
-      name: componentName,
+     , name: componentName,
       category: definition.category || 'advanced',
       size: definition.size || 4096,
       dependencies: definition.dependencies || [],

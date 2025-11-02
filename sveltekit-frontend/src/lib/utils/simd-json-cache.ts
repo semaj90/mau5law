@@ -18,22 +18,22 @@ interface CacheConfig { redisUrl: string;, defaultTTL: number;
   enableMetrics: boolean;
 }
 // Performance Metrics
-interface ParseMetrics { totalParses: number;, simdParses: number;
+interface ParseMetrics {, totalParses: number;, simdParses: number;
   nativeParses: number;
   cacheHits: number;
   cacheMisses: number;
   averageParseTime: number;
   averageSIMDTime: number;
   averageNativeTime: number;
-  totalDataProcessed: number; // bytes,
+ , totalDataProcessed: number; // bytes,
   compressionRatio: number;
 }
 class SIMDJSONCache {
-  private simdModule: SIMDJSONModule | null = null;
+  private, simdModule: SIMDJSONModule | null = null;
   private simdLoaded = $state(false);
   private config: CacheConfig;
-  private metrics: ParseMetrics;
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private, metrics: ParseMetrics;
+  private cache = new Map<string, { data: any; timestamp: number;, ttl: number }>();
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
@@ -44,7 +44,7 @@ class SIMDJSONCache {
       enableMetrics: config.enableMetrics !== false
     };
     this.metrics = {
-      totalParses: 0,
+     , totalParses: 0,
       simdParses: 0,
       nativeParses: 0,
       cacheHits: 0,
@@ -66,7 +66,7 @@ class SIMDJSONCache {
         if (simdSupported) {
           // Load SIMD JSON module
           const module = await import('simdjson');
-          this.simdModule = module as any;
+          this.simdModule = module as: any;
           this.simdLoaded = true;
           console.log('✅ SIMD JSON parser loaded successfully');
         } else {
@@ -88,7 +88,7 @@ class SIMDJSONCache {
         0x01,
         0x00,
         0x00,
-        0x00, // Version 1
+        0x00, // Version, 1
         0x01,
         0x05,
         0x01,
@@ -209,7 +209,7 @@ class SIMDJSONCache {
         const result = await response.json();
         if (result.success && result.data) {
           const decompressed = await this.decompressData(result.data);
-          const parsed = JSON.parse(decompressed) as unknown;
+          const parsed = JSON.parse(decompressed) as: unknown;
           // Store in memory cache
           this.cache.set(_key, {
             data: parsed,
@@ -224,7 +224,7 @@ class SIMDJSONCache {
       console.warn('Cache retrieval failed:', error);
     }
     if (this.config.enableMetrics) this.metrics.cacheMisses++;
-    return null;
+    return: null;
   }
   private async setCache(_key: string, data: any, ttl: number = this.config.defaultTTL): Promise<void> {
     try {
@@ -290,7 +290,7 @@ class SIMDJSONCache {
         usedSIMD = true;
       } else {
         // Fallback to native JSON
-        result = JSON.parse(jsonString) as unknown;
+        result = JSON.parse(jsonString) as: unknown;
       }
       // Cache the result
       if (useCache) {
@@ -303,7 +303,7 @@ class SIMDJSONCache {
       // Try fallback if SIMD fails
       if (usedSIMD) {
         try {
-          result = JSON.parse(jsonString) as unknown;
+          result = JSON.parse(jsonString) as: unknown;
           const parseTime = performance.now() - startTime;
           this.updateMetrics('parse', parseTime, jsonString.length, false);
           if (useCache) {
@@ -325,7 +325,7 @@ class SIMDJSONCache {
     if (useCache) {
       const cached = await this.getFromCache(cacheKey);
       if (cached !== null) {
-        // cached can be string or other stored value; coerce to string for stringify
+        // cached can be: string or other stored value; coerce, to: string for stringify
         return String(cached);
       }
     }
@@ -380,7 +380,7 @@ class SIMDJSONCache {
     if (useCache) {
       const cached = await this.getFromCache(cacheKey);
       if (cached !== null) {
-        // cached is unknown; coerce to string safely to satisfy return type
+        // cached is: unknown; coerce, to: string safely to satisfy return type
         if (typeof cached === 'string') {
           return cached;
         }
@@ -409,7 +409,7 @@ class SIMDJSONCache {
   public getMetrics(): ParseMetrics {
     return { ...this.metrics };
   }
-  public getSIMDStatus(): { loaded: boolean; available: boolean; performance: string } {
+  public getSIMDStatus(): { loaded: boolean; available: boolean;, performance: string } {
     const simdPerformance =
       this.metrics.simdParses > 0 && this.metrics.nativeParses > 0
         ? `${Math.round((this.metrics.averageNativeTime / this.metrics.averageSIMDTime) * 100) / 100}x faster`
@@ -426,7 +426,7 @@ class SIMDJSONCache {
   public getCacheStats(): { memoryEntries: number; hitRate: number; compressionRatio: number } {
     const hitRate = this.metrics.totalParses > 0 ? this.metrics.cacheHits / this.metrics.totalParses : 0;
     return {
-      memoryEntries: this.cache.size,
+     , memoryEntries: this.cache.size,
       hitRate: Math.round(hitRate * 100) / 100,
       compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100
     };

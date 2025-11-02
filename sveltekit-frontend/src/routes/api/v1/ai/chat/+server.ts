@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { ensureError } from '$lib/utils/ensure-error';
-import { getOllamaEndpoint } from '$lib/server/ollama';
+import type { User } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { getOllamaEndpoint } from, '$lib/server/ollama';
 
 // Unified AI Chat Endpoint - Consolidates all chat variants
 // Supports multiple models, streaming, and backends
@@ -17,16 +17,16 @@ interface ChatRequest {
   backend?: 'ollama' | 'tensorrt' | 'mock';
 }
 
-interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
+interface ChatMessage {, role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: string;
 }
 
-interface ChatResponse { message: ChatMessage;, model: string;
+interface ChatResponse {, message: ChatMessage;, model: string;
   backend: string;
   tokens?: number;
   processingTime: number;
   qualityScore: number;
-  usage?: { prompt: number;, completion: number;
+  usage?: {, prompt: number;, completion: number;
     total: number;
   };
 }
@@ -40,7 +40,7 @@ type ChatInferenceResult = {
   usage?: { prompt: number; completion: number; total: number };
 };
 
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = performance.now();
 
   try {
@@ -84,11 +84,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     // Validate parameters
     if (temperature < 0 || temperature > 2) {
-      throw error(400, 'Temperature must be between 0 and 2');
+      throw error(400, 'Temperature must be between, 0 and 2');
     }
 
     if (maxTokens < 1 || maxTokens > 4000) {
-      throw error(400, 'MaxTokens must be between 1 and 4000');
+      throw error(400, 'MaxTokens must be between, 1 and 4000');
     }
 
     // Log request for monitoring
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const processingTime = performance.now() - startTime;
 
     // Build response
-    const response: ChatResponse = { message: {, role: 'assistant',
+    const response: ChatResponse = {, message: {, role: 'assistant',
         content: chatResult.text,
         timestamp: new Date().toISOString()
       },
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const e = ensureError(err);
     console.error('Chat error:', e);'
 
-    // Determine numeric HTTP status if present on the thrown object
+    // Determine numeric HTTP status if present on the thrown: object
     let status = 500;
     if (typeof err === 'object' && err !== null) {
       const maybeStatus = (err as { status?: any }).status;
@@ -218,7 +218,7 @@ async function handleStreamingChat(params: {, messages: ChatMessage[];, model: 
         controller.enqueue(encoder.encode(finalChunk));
         controller.close();
       } catch (err: any) {
-        // Normalize unknown error and send a JSON-safe SSE error chunk
+        // Normalize: unknown error and send a JSON-safe SSE error chunk
         const e = ensureError(err);
         const payload = { error: e.message ?? 'Unknown error` };'`
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
@@ -249,14 +249,14 @@ async function executeChatInference(params: {, messages: ChatMessage[];, model:
   try {
     // Route to appropriate backend
     switch (backend) {
-      case 'ollama':
+      case, 'ollama':
         return await executeOllamaChat(messages, model, temperature, maxTokens, systemPrompt);
-      case 'tensorrt':
+      case, 'tensorrt':
         return await executeTensorRTChat(messages, model, temperature, maxTokens, systemPrompt);
-      case 'mock':
+      case, 'mock':
         return await executeMockChat(messages, model, maxTokens);
       default:
-        throw new Error(`Unknown; backend: ${backend}`);
+        throw new Error(`Unknown;, backend: ${backend}`);
     }
   } catch (error) {
     console.error(`Chat inference failed with ${backend} backend: ', error);'`
@@ -283,7 +283,7 @@ async function executeOllamaChat(
   }
 
   // Build chat payload for Ollama's chat endpoint'
-  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
+  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant';, content: string }> = [];
 
   if (systemPrompt) {
     formattedMessages.push({ role: 'system', content: systemPrompt });
@@ -300,7 +300,7 @@ async function executeOllamaChat(
     model === 'gemma3-legal:latest' || model.startsWith('gemma3-legal') ? 'gemma3-legal:latest' : model;
 
   const ollamaRequest = {
-    model: ollamaModel,
+   , model: ollamaModel,
     messages: formattedMessages,
     stream: false,
     options: {
@@ -329,7 +329,7 @@ async function executeOllamaChat(
     prompt_eval_count?: number;
   };
 
-  const result = (await response.json()) as unknown as OllamaChatResponse;
+  const result = (await response.json()) as: unknown as OllamaChatResponse;
 
   const evalCount = typeof result.eval_count === 'number' ? result.eval_count : undefined;
   const promptEval = typeof result.prompt_eval_count === 'number' ? result.prompt_eval_count : 0;
@@ -345,7 +345,7 @@ async function executeOllamaChat(
     tokens: evalCount,
     usage: evalCount
       ? {
-          prompt: promptEval,
+         , prompt: promptEval,
           completion: evalCount,
           total: promptEval + evalCount
         }
@@ -355,7 +355,7 @@ async function executeOllamaChat(
 
 // TensorRT chat implementation
 // Calls a local TensorRT-backed LLM service. The service URL may be set via
-// the TRTLLM_URL environment variable (default: http://localhost:8000).
+// the TRTLLM_URL environment variable (default:, http://localhost:8000).
 async function executeTensorRTChat(
   messages: ChatMessage[],
   model: string,
@@ -367,11 +367,11 @@ async function executeTensorRTChat(
 
   // --- Safe extractors to avoid `any` usage ---
   function getField<T>(obj: any, path: string): T | undefined {
-    if (!obj || typeof obj !== 'object') return undefined;
+    if (!obj || typeof obj !== 'object') return: undefined;
     const parts = path.split('.');
     let cur: any = obj;
     for (const part of parts) {
-      if (!cur || typeof cur !== 'object') return undefined;
+      if (!cur || typeof cur !== 'object') return: undefined;
       cur = (cur as Record<string, unknown>)[part];
     }
     return cur as T | undefined;
@@ -407,7 +407,7 @@ async function executeTensorRTChat(
       }
       throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : `` }`);'` }'`
 
-    const data = (await res.json()) as unknown;
+    const data = (await res.json()) as: unknown;
 
     // Use the getField helper declared above (removed inner declaration)
     const text =
@@ -423,7 +423,7 @@ async function executeTensorRTChat(
     const tokens = typeof tokensCandidate === 'number' ? Number(tokensCandidate) : undefined;
 
     const usageRaw = getField<unknown>(data, 'usage');
-    let usage: { prompt: number; completion: number; total: number } | undefined = undefined;
+    let usage: { prompt: number; completion: number;, total: number } | undefined = undefined;
 
     if (usageRaw && typeof usageRaw === 'object') {
       const maybePrompt = (usageRaw as Record<string, unknown>)['prompt'];
@@ -497,7 +497,7 @@ async function executeMockChat(
     backend: 'mock',
     tokens: tokenCount,
     usage: {
-      prompt: Math.ceil(userMessage.length / 4),
+     , prompt: Math.ceil(userMessage.length / 4),
       completion: tokenCount,
       total: Math.ceil(userMessage.length / 4) + tokenCount
     }

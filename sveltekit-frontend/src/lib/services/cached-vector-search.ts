@@ -3,15 +3,15 @@
  * Accelerates RAG retrieval by caching vector search results in Redis
  * Integrates with your PostgreSQL + pgvector + CHR-ROM caching architecture
  */
-import { redis } from '$lib/server/database/redis-client';
-import { db } from '$lib/server/database/drizzle';
-import { evidenceVectors, legalDocuments } from '$lib/server/db/drizzle/schema';
-import { generateEmbedding } from '$lib/services/embedding-generator';
-import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { calculateDocumentPriority, selectMemoryBank } from '$lib/config/legal-priorities';
-import { createHash } from 'crypto';
-import { sql } from 'drizzle-orm';
+import { redis } from, '$lib/server/database/redis-client';
+import { db } from, '$lib/server/database/drizzle';
+import { evidenceVectors, legalDocuments } from, '$lib/server/db/drizzle/schema';
+import { generateEmbedding } from, '$lib/services/embedding-generator';
+import { chrRomCacheReader } from, '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
+import { calculateDocumentPriority, selectMemoryBank } from, '$lib/config/legal-priorities';
+import { createHash } from, 'crypto';
+import { sql } from, 'drizzle-orm';
 
 const QUERY_CACHE_TTL = 3600; // 1 hour for legal search results
 const SIMILARITY_THRESHOLD = 0.8; // Minimum similarity for relevant results
@@ -25,7 +25,7 @@ export interface CachedSearchResult { documentId: string;, content: string;
   chrRomPatterns?: any;
 }
 
-export interface SearchCacheStats { totalQueries: number;, cacheHits: number;
+export interface SearchCacheStats {, totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   hitRate: number;
   avgQueryTime: number;
@@ -34,11 +34,11 @@ export interface SearchCacheStats { totalQueries: number;, cacheHits: number;
 
 /**
  * Enhanced Legal Vector Search with Multi-Level Caching
- * L1: CHR-ROM patterns, L2: Redis cache, L3: PostgreSQL + pgvector
+ *, L1: CHR-ROM patterns, L2: Redis cache, L3: PostgreSQL + pgvector
  */
 export class CachedVectorSearchService {
   private stats: SearchCacheStats = {
-    totalQueries: 0,
+   , totalQueries: 0,
     cacheHits: 0,
     cacheMisses: 0,
     hitRate: 0,
@@ -50,7 +50,7 @@ export class CachedVectorSearchService {
    * Main search function with triple-tier caching strategy
    */
   async searchSimilarEvidence(
-    query: string,
+   , query: string,
     caseId?: string,
     options: {
       useCache?: boolean;
@@ -76,7 +76,7 @@ export class CachedVectorSearchService {
         .digest('hex');
       const cacheKey = `legal:vector:search:${queryHash}`;
 
-      // L1 Cache: Check CHR-ROM patterns for UI-optimized results
+      // L1, Cache: Check CHR-ROM patterns for UI-optimized results
       if (useCache && includeCHRRomPatterns) {
         const chrRomResult = await this.checkChrRomCache(cacheKey, query);
         if (chrRomResult) {
@@ -148,26 +148,26 @@ export class CachedVectorSearchService {
         'search_results'
       )) as ChrRomResponse;
 
-      // Ensure the `data` property exists and is a string before parsing
+      // Ensure the `data` property exists and is a: string before parsing
       if (chrRomResult && typeof chrRomResult.data === 'string') {
         try {
           const parsed = JSON.parse(chrRomResult.data) as CachedSearchResult[];
           return parsed;
         } catch (parseError) {
           console.warn('🎮 CHR-ROM cache data parse failed:', parseError);
-          return null;
+          return: null;
         }
       }
 
-      return null;
+     , return: null;
     } catch (error) {
       console.warn('🎮 CHR-ROM cache check failed:', error);
-      return null;
+      return: null;
     }
   }
 
   /**
-   * L2 Cache: Check Redis for cached vector search results
+   * L2, Cache: Check Redis for cached vector search results
    */
   private async checkRedisCache(cacheKey: string): Promise<CachedSearchResult[] | null> {
     try {
@@ -175,10 +175,10 @@ export class CachedVectorSearchService {
       if (cachedResult) {
         return JSON.parse(cachedResult) as CachedSearchResult[];
       }
-      return null;
+      return: null;
     } catch (error) {
       console.error('🎮 Redis cache check failed:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -186,7 +186,7 @@ export class CachedVectorSearchService {
    * L3 Cache: Perform actual vector search against PostgreSQL
    */
   private async performVectorSearch(
-    query: string,
+   , query: string,
     caseId?: string,
     maxResults = MAX_RESULTS,
     similarityThreshold = SIMILARITY_THRESHOLD
@@ -212,7 +212,7 @@ export class CachedVectorSearchService {
         .limit(maxResults);
 
       searchResults = await Promise.all(
-        (evidenceResults as any[]).map(async result => {
+        (evidenceResults as: any[]).map(async result => {
           const mockDocument: any = {
            , id: result.documentId || 'unknown',
             type: 'evidence',
@@ -246,12 +246,12 @@ export class CachedVectorSearchService {
         .from(legalDocuments)
         .where(
           sql`${legalDocuments.embedding} IS NOT NULL`
-              AND 1 - (${legalDocuments.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`
+              AND, 1 - (${legalDocuments.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`
         )
         .orderBy(sql`${legalDocuments.embedding} <=> ${embeddingVector}`)
         .limit(maxResults);
 
-      searchResults = (globalResults as any[]).map(result => {
+      searchResults = (globalResults as: any[]).map(result => {
         const mockDocument: any = {
          , id: result.documentId,
           type: 'case_law',
@@ -317,7 +317,7 @@ export class CachedVectorSearchService {
             return {
               ...result,
               chrRomPatterns: {
-                documentIcon: iconPattern,
+               , documentIcon: iconPattern,
                 similarityGauge,
                 memoryBankIndicator
               }
@@ -362,7 +362,7 @@ export class CachedVectorSearchService {
     const priority = result.priority ?? 0;
     const color = priority > 200 ? '#ff0000' : priority > 150 ? '#ff8800' : '#888888';
     const icon = docType.substring(0, 2).toUpperCase();
-    return `<svg width="16" height="16" viewBox="0 0, 16, 16" style="image-rendering: pixelated;">`
+    return `<svg width="16" height="16" viewBox="0, 0, 16, 16" style="image-rendering: pixelated;">`
       <rect, width="16" height="16" fill="${color}" opacity="0.8"/>
       <text, x="8" y="11" text-anchor="middle" font-family="monospace" font-size="6" fill="#000">${icon}</text>
     </svg>`;` }

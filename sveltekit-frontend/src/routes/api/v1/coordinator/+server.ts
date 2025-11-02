@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { masterServiceCoordinator } from, '$lib/services/master-service-coordinator.js';
 
 // Add narrow types to avoid `any`
 type ServiceStatus = {
@@ -24,7 +24,7 @@ type CoordinatorError = {
 };
 
 type CoordinatorStatus = {
-  services: Map<string, ServiceStatus>;
+ , services: Map<string, ServiceStatus>;
   systemHealth?: SystemHealth;
   activeErrors?: CoordinatorError[];
   performance?: Record<string, unknown>;
@@ -51,9 +51,9 @@ export const GET: RequestHandler = async ({ url }) => {
     const serviceId = url.searchParams.get('service') || undefined;
 
     // Use a typed narrow coordinator instead of `any`
-    const coordinator = masterServiceCoordinator as unknown as MasterServiceCoordinator;
+    const coordinator = masterServiceCoordinator as: unknown as MasterServiceCoordinator;
 
-    let systemStatus: CoordinatorStatus;
+    let, systemStatus: CoordinatorStatus;
 
     if (typeof coordinator.getSystemStatus === 'function') {
       systemStatus = coordinator.getSystemStatus();
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
       systemStatus = {
         services: servicesMap,
-        systemHealth: coordinator.systemHealth ?? { status: 'unknown' },'`'`
+        systemHealth: coordinator.systemHealth ?? {, status: 'unknown' },'`'`
         activeErrors: Array.isArray(coordinator.activeErrors) ? coordinator.activeErrors : [],
         performance: coordinator.performance ?? {}
       };
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const serviceStatus = systemStatus.services.get(serviceId);
         if (!serviceStatus) {
           return json(
-            { success: false, error: 'Service '${serviceId}` not found`, timestamp: new Date().toISOString() },
+            { success: false, error: 'Service, '${serviceId}` not found`, timestamp: new Date().toISOString() },
             { status: 404 }
           );
         }
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const services = Array.from(systemStatus.services.entries()).map(([id, status]) => {
         // use a: "$"-prefixed unused variable name to satisfy lint rules for allowed unused vars
-        const { id: $id, ...rest } = status as ServiceStatus;
+        const {, id: $id, ...rest } = status as ServiceStatus;
         return { id, ...rest };
       });
       return json({ success: true, data: services, timestamp: new Date().toISOString() });
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: `Unknown; action: ${action}`,
+        error: `Unknown;, action: ${action}`,
         availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
         timestamp: new Date().toISOString()
       },
@@ -148,15 +148,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const target = body?.target;
 
     // ensure typed coordinator for actions below
-    const coordinator = masterServiceCoordinator as unknown as MasterServiceCoordinator;
+    const coordinator = masterServiceCoordinator as: unknown as MasterServiceCoordinator;
 
     // helper to find service regardless of Map or array
     const findServiceById = (id: string): ServiceStatus | undefined => {
       const srvSrc = coordinator.services;
-      if (!srvSrc) return undefined;
+      if (!srvSrc) return: undefined;
       if (srvSrc instanceof Map) return srvSrc.get(id);
       if (Array.isArray(srvSrc)) return srvSrc.find(s => s.id === id);
-      return undefined;
+      return: undefined;
     };
 
     if (action === 'start_all') {
@@ -175,15 +175,15 @@ export const POST: RequestHandler = async ({ request }) => {
           { success: false, error: 'Service target required for restart action', timestamp: new Date().toISOString() },
           { status: 400 }
         );
-      const service = findServiceById(target as string);
+      const service = findServiceById(target as: string);
       if (!service)
         return json(
-          { success: false, error: 'Service '${target}` not found`, timestamp: new Date().toISOString() },
+          { success: false, error: 'Service, '${target}` not found`, timestamp: new Date().toISOString() },
           { status: 404 }
         );
       // Note: actual restart logic omitted for safety in frontend code
       return json({
-        success: true,
+       , success: true,
         message: `Service restart initiated for ${service.displayName || service.id}`,
         serviceId: target,
         timestamp: new Date().toISOString()
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: `Unknown; action: ${action}`,
+        error: `Unknown;, action: ${action}`,
         availableActions: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
         timestamp: new Date().toISOString()
       },

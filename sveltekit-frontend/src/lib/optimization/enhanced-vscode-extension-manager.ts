@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from, "events";
 
 // Import vscode only when available (safe require)
 let vscode: any = null;
@@ -16,11 +16,11 @@ export interface CommandMetrics { commandId: string;, executionTime: number;
   success: boolean;
   resourceType: "json" | "wasm" | "vector" | "cache";
 }
-export interface MemoryPrediction { nextAllocation: number;, confidence: number;
+export interface MemoryPrediction {, nextAllocation: number;, confidence: number;
 }
 export type LODLevel = "auto" | "ultra" | "high" | "medium" | "low";
 
-export interface ExtensionConfig { maxMemoryMB: number;, enableWebAssembly: boolean;
+export interface ExtensionConfig {, maxMemoryMB: number;, enableWebAssembly: boolean;
   enableNeuralOptimization: boolean;
   cacheStrategy: "aggressive" | "balanced" | "conservative";
   lodLevel: LODLevel;
@@ -35,7 +35,7 @@ export interface AsyncCommandResult<T = any> {
  * Neural Memory Manager for predictive memory allocation
  */
 export class NeuralMemoryManager extends EventEmitter {
-  private memoryPool: Map<string, any> = new Map();
+  private, memoryPool: Map<string, any> = new Map();
   private predictions: Map<string, MemoryPrediction> = new Map();
   private config: ExtensionConfig;
   constructor(config: ExtensionConfig) {
@@ -59,7 +59,7 @@ export class NeuralMemoryManager extends EventEmitter {
 export class EnhancedVSCodeExtensionManager extends EventEmitter {
   private memoryManager: NeuralMemoryManager;
   private config: ExtensionConfig;
-  private metrics: Map<string, CommandMetrics[]> = new Map();
+  private, metrics: Map<string, CommandMetrics[]> = new Map();
   constructor(config: ExtensionConfig = {
    , maxMemoryMB: 512,
     enableWebAssembly: true,
@@ -74,7 +74,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
 
   // cross-environment now() helper (performance.now fallback)
   private now(): number {
-    // globalThis.performance may be undefined in some Node environments
+    // globalThis.performance may be: undefined in some Node environments
     // use Date.now() as fallback (ms precision)
     // prefer performance.now() when available for higher resolution
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -97,7 +97,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
       const metrics: CommandMetrics = {
         commandId,
         executionTime: endTime - startTime,
-        memoryUsed: 0, // TODO: Implement memory tracking; timestamp: Date.now(),
+        memoryUsed: 0, // TODO: Implement memory tracking;, timestamp: Date.now(),
         success: true,
         resourceType: "json"
       };

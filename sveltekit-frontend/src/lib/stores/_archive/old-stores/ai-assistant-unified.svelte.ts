@@ -1,5 +1,5 @@
 /**
- * Unified AI Assistant Global Store - Svelte 5 Runes
+ * Unified AI Assistant Global Store - Svelte, 5 Runes
  * Compatible with GlobalAIAssistantButton.svelte
  */
 
@@ -17,7 +17,7 @@ export interface AssistantState {
 
 class AIAssistantUnified {
   private state = $state<AssistantState>({
-    currentCaseId: undefined,
+   , currentCaseId: undefined,
     messages: [],
     isProcessing: false,
     error: undefined
@@ -49,7 +49,7 @@ class AIAssistantUnified {
 
     // Add user message
     const userMessage: AIMessage = {
-      id: crypto.randomUUID(),
+     , id: crypto.randomUUID(),
       role: 'user',
       content,
       timestamp: Date.now()
@@ -77,7 +77,7 @@ class AIAssistantUnified {
 
       // Add assistant message
       const assistantMessage: AIMessage = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         role: 'assistant',
         content: aiResponse,
         timestamp: Date.now()

@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { dlqMonitor, JobPriorityManager } from '$lib/services/rabbitmq-dlq-monitor';
-import { rabbitMQService } from '$lib/services/rabbitmq-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { dlqMonitor, JobPriorityManager } from, '$lib/services/rabbitmq-dlq-monitor';
+import { rabbitMQService } from, '$lib/services/rabbitmq-service';
 
 /**
  * GET /api/admin/dlq-monitor
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action } = await request.json();
 
     switch (action) {
-      case 'start':
+      case, 'start':
         await dlqMonitor.startMonitoring();
         return json({
           success: true,
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           stats: dlqMonitor.getStats()
         });
 
-      case 'stop':
+      case, 'stop':
         dlqMonitor.stopMonitoring();
         return json({
           success: true,
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
           stats: dlqMonitor.getStats()
         });
 
-      case 'reset':
+      case, 'reset':
         dlqMonitor.resetStats();
         return json({
           success: true,
@@ -62,14 +62,14 @@ export const POST: RequestHandler = async ({ request }) => {
           stats: dlqMonitor.getStats()
         });
 
-      case 'purge':
+      case, 'purge':
         const purgeSuccess = await rabbitMQService.purgeQueue('deadLetter');
         return json({
           success: purgeSuccess,
           message: purgeSuccess ? 'Dead letter queue purged' : 'Failed to purge queue'
         });
 
-      default: return json({ error: 'Invalid action., Use: start, stop, reset, purge' }, { status: 400 });
+      default: return json({, error: 'Invalid action., Use: start, stop, reset, purge' }, { status: 400 });
     }
   } catch (error) {
     console.error('DLQ monitor action failed:', error);

@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Simplified Enhanced Legal Case Machine
  * This replacement is intentionally compact and syntactically correct to restore buildability.
  * It provides lightweight service stubs that can be expanded later with DB logic.
  */
-import { createMachine, assign } from 'xstate';
-import { fromPromise } from 'xstate/actors'; // Correct import for fromPromise in XState v5
+import { createMachine, assign } from, 'xstate';
+import { fromPromise } from, 'xstate/actors'; // Correct import for fromPromise in XState v5
 export type CaseForm = {
   caseNumber?: string;
   title: string;
@@ -15,17 +15,17 @@ export type CaseForm = {
 export interface LegalCase extends CaseForm {
   id: string;
 }
-export interface Evidence { id: string;, title: string;
-  description: string;
+export interface Evidence {, id: string;, title: string;
+ , description: string;
 }
 export type EvidenceInput = Omit<Evidence, 'id'>;
 export interface AIAnalysisResult {
   summary: string;
 }
-export interface EnhancedLegalCaseContext { currentCase: LegalCase | null;, evidenceList: Evidence[];
+export interface EnhancedLegalCaseContext {, currentCase: LegalCase | null;, evidenceList: Evidence[];
   aiAnalysis: { status: 'idle' | 'processing' | 'completed' | 'failed'; results?: AIAnalysisResult };
   formData: Partial<CaseForm>;
-  validationErrors: Record<string, string[]>;
+ , validationErrors: Record<string, string[]>;
   loading: boolean;
   error: string | null;
 }
@@ -36,9 +36,9 @@ export type EnhancedLegalCaseEvent =
   | { type: 'START_AI_ANALYSIS'; caseId: string }
   | { type: 'RESET' };
 const initialContext: EnhancedLegalCaseContext = {
-  currentCase: null,
+ , currentCase: null,
   evidenceList: [],
-  aiAnalysis: { status: 'idle' },
+  aiAnalysis: {, status: 'idle' },
   formData: {},
   validationErrors: {},
   loading: false,
@@ -46,34 +46,34 @@ const initialContext: EnhancedLegalCaseContext = {
 };
 export const enhancedLegalCaseMachine = createMachine(
   {
-    id: 'enhancedLegalCase',
+   , id: 'enhancedLegalCase',
     initial: 'initializing',
     types: {} as {, context: EnhancedLegalCaseContext;, events: EnhancedLegalCaseEvent;
     },
     context: initialContext,
     states: {, initializing: {, entry: assign({, loading: () => true }),
         invoke: {
-          src: 'initializeSystem',
-          onDone: { target: 'idle', actions: assign({ loading: () => false }) },
+         , src: 'initializeSystem',
+          onDone: {, target: 'idle', actions: assign({, loading: () => false }) },
           onError: {
-            target: 'systemError',
-            actions: assign({ loading: () => false, error: () => 'Initialization failed' })
+           , target: 'systemError',
+            actions: assign({, loading: () => false, error: () => 'Initialization failed' })
           }
         }
       },
-      idle: { on: {, LOAD_CASE: 'loadingCase',
+      idle: {, on: {, LOAD_CASE: 'loadingCase',
           CREATE_CASE: 'creatingCase',
           ADD_EVIDENCE: 'addingEvidence',
           START_AI_ANALYSIS: 'startingAnalysis'
         }
       },
-      loadingCase: { entry: assign({, loading: () => true }),
+      loadingCase: {, entry: assign({, loading: () => true }),
         invoke: {
-          src: 'loadCase',
+         , src: 'loadCase',
           onDone: {
-            target: 'caseLoaded',
+           , target: 'caseLoaded',
             actions: assign({
-              loading: () => false,
+             , loading: () => false,
               currentCase: (
                 _context,
                 event // Corrected type for event.output
@@ -84,49 +84,49 @@ export const enhancedLegalCaseMachine = createMachine(
               ) => event.output.evidence || []
             })
           },
-          onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to load case' }) }
+          onError: {, target: 'idle', actions: assign({, loading: () => false, error: () => 'Failed to load case' }) }
         }
       },
-      caseLoaded: { on: {, RESET: 'idle' }
+      caseLoaded: {, on: {, RESET: 'idle' }
       },
-      creatingCase: { entry: assign({, loading: () => true }),
+      creatingCase: {, entry: assign({, loading: () => true }),
         invoke: {
-          src: 'createCase',
+         , src: 'createCase',
           onDone: {
-            target: 'caseLoaded',
+           , target: 'caseLoaded',
             actions: assign({
-              loading: () => false,
+             , loading: () => false,
               currentCase: (_context, event) => event.output, // event.output is LegalCase
             })
           },
-          onError: { target: 'idle', actions: assign({ loading: () => false, error: () => 'Failed to create case' }) }
+          onError: {, target: 'idle', actions: assign({, loading: () => false, error: () => 'Failed to create case' }) }
         }
       },
-      addingEvidence: { entry: assign({, loading: () => true }),
+      addingEvidence: {, entry: assign({, loading: () => true }),
         invoke: {
-          src: 'addEvidence',
+         , src: 'addEvidence',
           onDone: {
-            target: 'caseLoaded',
+           , target: 'caseLoaded',
             actions: assign({
-              loading: () => false,
+             , loading: () => false,
               evidenceList: (context, event) => [...context.evidenceList, event.output], // event.output is Evidence
             })
           },
           onError: {
-            target: 'caseLoaded',
-            actions: assign({ loading: () => false, error: () => 'Failed to add evidence' })
+           , target: 'caseLoaded',
+            actions: assign({, loading: () => false, error: () => 'Failed to add evidence' })
           }
         }
       },
-      startingAnalysis: { entry: assign({, loading: () => true,
+      startingAnalysis: {, entry: assign({, loading: () => true,
           aiAnalysis: context => ({ ...context.aiAnalysis, status: 'processing' as const })
         }),
         invoke: {
-          src: 'startAIAnalysis',
+         , src: 'startAIAnalysis',
           onDone: {
-            target: 'caseLoaded',
+           , target: 'caseLoaded',
             actions: assign({
-              loading: () => false,
+             , loading: () => false,
               aiAnalysis: (_context, event) => ({
                 // event.output is AIAnalysisResult
                 status: 'completed' as const,
@@ -135,31 +135,31 @@ export const enhancedLegalCaseMachine = createMachine(
             })
           },
           onError: {
-            target: 'caseLoaded',
+           , target: 'caseLoaded',
             actions: assign({
-              loading: () => false,
+             , loading: () => false,
               aiAnalysis: context => ({ ...context.aiAnalysis, status: 'failed' as const }),
               error: () => 'AI analysis failed'
             })
           }
         }
       },
-      systemError: { on: {, RESET: 'initializing' }
+      systemError: {, on: {, RESET: 'initializing' }
       }
     }
   },
   { actors: {, initializeSystem: fromPromise(async () => ({ status: 'ok' })),
-      loadCase: fromPromise(async ({ input }: { input: {, caseId: string } }) => {
-        // Corrected return object syntax
-        return { case: {, id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
+      loadCase: fromPromise(async ({ input }: {, input: {, caseId: string } }) => {
+        // Corrected return: object syntax
+        return {, case: {, id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
       }),
-      createCase: fromPromise(async ({ input }: { input: {, data: CaseForm } }) => {
+      createCase: fromPromise(async ({ input }: {, input: {, data: CaseForm } }) => {
         return { id: 'new_case', title: '', ...input.data };
       }),
       addEvidence: fromPromise(async ({ input }: {, input: {, caseId: string;, evidence: EvidenceInput } }) => {
         return { id: 'evidence_' + Math.random().toString(36).slice(2), ...input.evidence };
       }),
-      startAIAnalysis: fromPromise(async ({ input }: { input: {, caseId: string } }) => {
+      startAIAnalysis: fromPromise(async ({ input }: {, input: {, caseId: string } }) => {
         return { summary: 'analysis, for: ' + input.caseId };
       })
     }

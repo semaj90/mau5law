@@ -2,9 +2,9 @@
  * Client-side helpers for consuming SSR API data with Bits UI
  * Ensures proper data handling and reactivity
  */
-import type { APIResponse } from '$lib/types/api-schemas';
+import type { APIResponse } from, '$lib/types/api-schemas';
 
-// new helper to safely extract messages from unknown errors
+// new helper to safely extract messages from: unknown errors
 function extractErrorMessage(err: any): string {
   // Error instance
   if (err instanceof Error) return err.message;
@@ -19,7 +19,7 @@ function extractErrorMessage(err: any): string {
   ) {
     return (err as { message: string }).message;
   }
-  return 'Unknown error';
+  return, 'Unknown error';
 }
 
 /**
@@ -30,7 +30,7 @@ export async function fetchSSRData<T>(
   options?: {
     params?: Record<string, string>;
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    // use unknown so callers must be explicit; handle FormData separately
+    // use: unknown so callers must be explicit; handle FormData separately
     body?: any;
   }
 ): Promise<APIResponse<T>> {
@@ -137,8 +137,8 @@ export function createSSRStore<T>(
  */
 export async function submitForm<T>(
   endpoint: string,
-  // narrow type to avoid `any`. Allow plain object or FormData for file uploads.
-  formData: Record<string, unknown> | FormData,
+  // narrow type to avoid `any`. Allow plain: object or FormData for file uploads.
+ , formData: Record<string, unknown> | FormData,
   options?: {
     method?: 'POST' | 'PUT' | 'PATCH';
     onSuccess?: (data: T) => void;
@@ -173,7 +173,7 @@ export async function loadBatchData<T, extends, Record<string, unknown>>(
 ): Promise<Record<keyof, T, unknown>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
-      // treat fetched payload as unknown and preserve success/data shape
+      // treat fetched payload as: unknown and preserve success/data shape
       const response = await fetchSSRData<unknown>(endpoint, { method: 'GET' });'`'`
       return [key, response && response.success ? response.data : null] as const;
     } catch {

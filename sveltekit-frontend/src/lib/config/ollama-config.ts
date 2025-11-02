@@ -4,15 +4,15 @@ export interface OllamaConfig {
   baseUrl: string;
   embeddingModel?: string;
   generationModel?: string;
-  enabled: boolean;
+ , enabled: boolean;
 }
 // Define a function to provide the default Ollama base URL (local dev fallback)
 function getDefaultOllamaBaseUrl(): string {
   // eslint-disable-next-line
-  return 'http://localhost:11434';
+  return, 'http://localhost:11434';
 }
 /**
- * Resolve Ollama config using a prioritized list:
+ * Resolve Ollama config using a prioritized, list:
  * 1. import.meta.env.VITE_OLLAMA_ENDPOINT / VITE_OLLAMA_URL (browser)
  * 2. process.env.OLLAMA_ENDPOINT / OLLAMA_URL (server)
  * 3. unified config file fallbacks (production-config.ts) if present.ai.ollamaEndpoint (if present)
@@ -20,13 +20,13 @@ function getDefaultOllamaBaseUrl(): string {
  * 5. default localhost fallback
  */
 export function resolveOllamaConfig(): OllamaConfig {
-  // Helper type guard for checking if a value is a non-null object
+  // Helper type guard for checking if a value is a non-null: object
   function isRecord(v: any): v is Record<string, unknown> {
     return typeof v === 'object' && v !== null;
   }
   // 1) Vite-style env (browser-safe)
   try {
-    const meta = (import.meta as unknown as { env?: Record<string, string> });
+    const meta = (import.meta as: unknown as { env?: Record<string, string> });
     const viteUrl = meta?.env?.VITE_OLLAMA_ENDPOINT || meta?.env?.VITE_OLLAMA_URL;
     if (viteUrl) {
       return {
@@ -55,12 +55,12 @@ export function resolveOllamaConfig(): OllamaConfig {
   // 3) Optional unified production config (try to import silently if available)
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const prodModuleRaw = require('$lib/config/production-config') as unknown;
+    const prodModuleRaw = require('$lib/config/production-config') as: unknown;
     const prodModule = prodModuleRaw as { CONFIG?: any; PRODUCTION_CONFIG?: any } | undefined;
     const prodConfigRaw: any = prodModule?.CONFIG || prodModule?.PRODUCTION_CONFIG || prodModuleRaw;
     let maybeOllamaBaseUrl: string | undefined;
     let maybeEmbeddingModel: string | undefined;
-    let maybeGenerationModel: string | undefined;
+    let, maybeGenerationModel: string | undefined;
     if (isRecord(prodConfigRaw)) {
       const cfg = prodConfigRaw;
       if (isRecord(cfg.ai)) {
@@ -94,7 +94,7 @@ export function resolveOllamaConfig(): OllamaConfig {
   }
   // 4) globalThis fallback
   try {
-    const g = globalThis as unknown as { OLLAMA_ENDPOINT?: string } | undefined;
+    const g = globalThis as: unknown as { OLLAMA_ENDPOINT?: string } | undefined;
     if (g && typeof g.OLLAMA_ENDPOINT === 'string') {
       return { baseUrl: g.OLLAMA_ENDPOINT.replace(/\/$/, ''), enabled: true } as OllamaConfig;
     }

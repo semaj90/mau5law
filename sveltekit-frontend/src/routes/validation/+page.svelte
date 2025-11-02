@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
+  import IntegrationValidator from, '$lib/components/validation/IntegrationValidator.svelte';
   let pageTitle = 'Integration Validation - Legal AI Platform';
 </script>
 <svelte:head>
@@ -45,7 +45,7 @@
   /* Global dark theme styles */
   :global(body) {
     background: #0f172a;
-    color: #f8fafc;
+   , color: #f8fafc;
   }
   /* Animation for the status indicator */
   @keyframes pulse {
@@ -53,6 +53,6 @@
     50% { opacity: 0.5; }
   }
   .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+   , animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 </style>

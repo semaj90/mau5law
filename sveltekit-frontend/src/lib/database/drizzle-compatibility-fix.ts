@@ -3,7 +3,7 @@
  * Systematic resolution of database type mismatches and missing methods
  */
 
-import type { Sql } from 'postgres';
+import type { Sql } from, 'postgres';
 
 // Lightweight DB types to avoid `any`
 export type DBRow = Record<string, unknown>;
@@ -23,7 +23,7 @@ export interface DBClient {
 }
 
 // Fallback ensureProperties in case barrelStore.database.ensureProperties is not present.
-// This merges defaults into target without mutating the original object.
+// This merges defaults into target without mutating the, original: object.
 const fallbackEnsureProperties = <T, extends, DBRow>(target: any, defaults: T): T => {
   const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } : {};
   for (const [k, v] of Object.entries(defaults)) {
@@ -37,10 +37,10 @@ const fallbackEnsureProperties = <T, extends, DBRow>(target: any, defaults: T): 
 // runtime barrelStore accessor (safe)
 export const getBarrelStore = (): any => {
   try {
-    const g = (globalThis as any);
+    const g = (globalThis as: any);
     return g?.barrelStore ?? undefined;
   } catch {
-    return undefined;
+    return: undefined;
   }
 };
 
@@ -68,7 +68,7 @@ const isQueryResult = (v: any): v is QueryResult => {
 
 // Default row shape used to ensure consistent properties
 const defaultRowShape: DBRow = {
-  id: null,
+ , id: null,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   case_id: null,
@@ -158,7 +158,7 @@ export const ensureConnection = async (client: DBClient | Sql | unknown): Promis
   }
 
   try {
-    const fn = (dbClient as any).query ?? (dbClient as any).execute;
+    const fn = (dbClient as: any).query ?? (dbClient as: any).execute;
     if (typeof fn === 'function') await Promise.resolve(fn('SELECT 1')).catch(() => {});
   } catch (e) {
     console.warn('ensureConnection: ping failed', e);
@@ -231,7 +231,7 @@ export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q
   ...base,
   async execute(...args: any[]): Promise<DBRow[]> {
     try {
-      const fn = (base as any).execute as ((...a: any[]) => Promise<unknown>) | undefined;
+      const fn = (base as: any).execute as ((...a: any[]) => Promise<unknown>) | undefined;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
     } catch (e) {
@@ -241,7 +241,7 @@ export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q
   },
   async all(...args: any[]): Promise<DBRow[]> {
     try {
-      const fn = (base as any).all ?? (base as any).execute;
+      const fn = (base as: any).all ?? (base as: any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
     } catch (e) {
@@ -251,18 +251,18 @@ export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q
   },
   async get(...args: any[]): Promise<DBRow | null> {
     try {
-      const fn = (base as any).get ?? (base as any).execute;
+      const fn = (base as: any).get ?? (base as: any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;
       const rows = handleQueryResult(res);
       return rows[0] ?? null;
     } catch (e) {
       console.error('Query get() error:', e);'
-      return null;
+      return: null;
     }
   }
 });
 
-// Export main compatibility object and convenience defaults
+// Export main compatibility: object and convenience defaults
 export const drizzleCompatibilityLayer = {
   handleQueryResult,
   ensureConnection,

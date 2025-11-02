@@ -10,8 +10,8 @@
  * - XState workflows
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { unifiedVectorOrchestrator, type UnifiedVectorRequest } from '$lib/services/unified-vector-orchestrator';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { unifiedVectorOrchestrator, type UnifiedVectorRequest } from, '$lib/services/unified-vector-orchestrator';
 
 /**
  * POST /api/unified/vector
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid; request: type and payload are required'
+          error: 'Invalid;, request: type and payload are required'
         },
         { status: 400 }
       );
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case 'status': {
+      case, 'status': {
         const health = await unifiedVectorOrchestrator.healthCheck();
         return json({
           success: true,
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      case 'stats': {
+      case, 'stats': {
         const stats = await unifiedVectorOrchestrator.getStatistics();
         return json({
           success: true,
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      case 'performance': {
+      case, 'performance': {
         const performance = unifiedVectorOrchestrator.getPerformanceAnalytics();
         return json({
           success: true,
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
       default: return json(
           {
-            success: false,
+           , success: false,
             error: 'Unknown action'
           },
           { status: 400 }

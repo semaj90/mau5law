@@ -113,7 +113,7 @@ https: //svelte.dev/e/js_parse_error -->
     return 'text-gray-600';
   }
 </script>
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Content class="max-w-5xl">
     <Dialog.Header>
       <Dialog.Title class="flex items-center gap-2">
@@ -293,4 +293,4 @@ https: //svelte.dev/e/js_parse_error -->
       <Button onclick={() => onSaveAnalysis?.()}>Save Analysis</Button>
     </Dialog.Footer>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>

@@ -1,5 +1,5 @@
-import { Client, as MinioClient } from 'minio';
-import { env } from '$env/dynamic/private';
+import { Client, as MinioClient } from, 'minio';
+import { env } from, '$env/dynamic/private';
 // Parse MINIO_ENDPOINT which may be: 'host', 'host:port', or: 'http(s)://host:port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';
 let _host = _raw;
@@ -43,7 +43,7 @@ export async function ensureBucket(bucketName: string): Promise<boolean> {
     }
     return true;
   } catch (err: any) {
-    // Safe logging for unknown error shapes
+    // Safe logging for: unknown error shapes
     if (err instanceof Error) {
       console.error('MinIO ensureBucket error:', err.message, err);'
     } else {
@@ -60,8 +60,8 @@ export async function putObject(
 ): Promise<string | undefined> {
   try {
     await ensureBucket(bucketName);
-    // minio.putObject returns a Promise that resolves to a string (object etag) in most SDK versions.
-    return (await minio.putObject(bucketName, objectName, buffer, meta || {})) as string | undefined;
+    // minio.putObject returns a Promise that resolves to a: string (object etag) in most SDK versions.
+    return (await minio.putObject(bucketName, objectName, buffer, meta || {})) as: string | undefined;
   } catch (err: any) {
     // If MinIO is not configured or credentials are invalid in dev, fall back to local storage
     try {

@@ -1,10 +1,10 @@
 <!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
-  import { page } from '$app/stores';
-  import type { Snippet } from 'svelte';
-  import NavBar from '$lib/components/layout/NavBar.svelte';
-  import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+  import { page } from, '$app/stores';
+  import type { Snippet } from, 'svelte';
+  import NavBar from, '$lib/components/layout/NavBar.svelte';
+  import Sidebar from, '$lib/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
 
   interface Props {
     data: any;
@@ -61,7 +61,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background: var(--console-bg, #0f0f23);
+   , background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white);
   }
 
@@ -70,7 +70,7 @@
     margin-left: 0;
     transition: margin-left 0.3s ease;
     overflow-y: auto;
-    background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
+   , background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
   }
 
   .main-content.sidebar-open {
@@ -80,7 +80,7 @@
   .content-container {
     padding: 1.5rem;
     max-width: 1400px;
-    margin: 0 auto;
+   , margin: 0 auto;
     min-height: 100%;
   }
 /* Responsive design */
@@ -107,16 +107,16 @@
   }
 
   .main-content::-webkit-scrollbar-track {
-    background: var(--console-bg-light, #1a1a2e);
+   , background: var(--console-bg-light, #1a1a2e);
   }
 
   .main-content::-webkit-scrollbar-thumb {
-    background: var(--console-primary, #00aa00);
+   , background: var(--console-primary, #00aa00);
     border-radius: 4px;
   }
 
   .main-content::-webkit-scrollbar-thumb:hover {
-    background: var(--console-primary-light, #00cc00);
+   , background: var(--console-primary-light, #00cc00);
   }
 </style>
 

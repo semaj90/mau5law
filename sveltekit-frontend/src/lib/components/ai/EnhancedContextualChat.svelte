@@ -1,29 +1,29 @@
 <!--
   Enhanced Contextual Chat with Bits-UI + Superforms
   Features:
-  - SvelteKit 2 Superforms validation
+  - SvelteKit, 2 Superforms validation
   - bits-ui components (Accordion, Dialog, Tooltip)
   - PostgreSQL + Qdrant + embeddinggemma integration
   - Real-time HMM state tracking
   - Entity extraction visualization
 -->
 <script, lang="ts">
-  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import { superForm } from 'sveltekit-superforms';
-  import { zodClient } from 'sveltekit-superforms/adapters';
-  import { chatMessageSchema } from '$lib/forms/contextual-chat-schema';
-  import * as Dialog from 'bits-ui/Dialog'; // Corrected import
-  import * as Accordion from 'bits-ui/accordion'; // Corrected import
-  import * as Tooltip from 'bits-ui/tooltip'; // Corrected import
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from, '$lib/components/ui/dialog';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import { superForm } from, 'sveltekit-superforms';
+  import { zodClient } from, 'sveltekit-superforms/adapters';
+  import { chatMessageSchema } from, '$lib/forms/contextual-chat-schema';
+  import * as Dialog from, 'bits-ui/Dialog'; // Corrected import
+  import * as Accordion from, 'bits-ui/accordion'; // Corrected import
+  import * as Tooltip from, 'bits-ui/tooltip'; // Corrected import
   import type {
     ContextualState,
     NextStepPrediction,
     LegalEntity,
     ConversationTurn
-  } from '$lib/types/sharedTypes';
-  import { onMount } from 'svelte';
+  } from, '$lib/types/sharedTypes';
+  import { onMount } from, 'svelte';
   // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
   // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
   // Drizzle-ORM, and Docker environment variables for production readiness
@@ -94,14 +94,14 @@ import type { Document } from '$lib/types';
     6: 'Follow-up',
     7: 'Conclusion'
   };
-  // explicit derived values (Svelte 5 runes) — use $derived.by to evaluate at runtime
+  // explicit derived values (Svelte, 5 runes) — use $derived.by to evaluate at runtime
   const currentStateName = $derived.by(() => {
-    if (!contextualState) return 'Unknown';
+    if (!contextualState) return, 'Unknown';
     const idx = contextualState.hmmState?.currentState;
     return stateNames[idx as keyof typeof stateNames] ?? 'Unknown';
   });
   const confidencePercentage = $derived.by(() => {
-    if (!contextualState) return '0.0';
+    if (!contextualState) return, '0.0';
     return ((contextualState.confidence ?? 0) * 100).toFixed(1);
   });
   const canSubmit = $derived.by(() => {
@@ -257,7 +257,7 @@ import type { Document } from '$lib/types';
             name="message"
             bind:value={$form.message}
             class="nes-textarea"
-            class:is-error={$errors.message}
+           , class:is-error={$errors.message}
             placeholder="Ask about legal cases, documents, or risk assessment..."
             rows="3"
             disabled={$submitting}
@@ -286,7 +286,7 @@ import type { Document } from '$lib/types';
         </div>
       </form>
     </div>
-    <!-- Right: State & Predictions -->
+    <!--, Right: State & Predictions -->
     <div, class="info-panel">
       <Accordion.Root, multiple>
         <!-- Predictions -->
@@ -373,7 +373,7 @@ import type { Document } from '$lib/types';
             </Accordion.Content>
           </Accordion.Item>
         {/if}
-      </Accordion.Root>
+      </Accordion>
     </div>
   </div>
 </div>
@@ -412,14 +412,14 @@ import type { Document } from '$lib/types';
       <Dialog.Close, class="nes-btn, is-primary">Close</Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
   .enhanced-contextual-chat {
     display: flex;
     flex-direction: column;
     height: 100vh;
     max-height: 900px;
-    background: #212529;
+   , background: #212529;
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 12px;
   }
@@ -471,7 +471,7 @@ import type { Document } from '$lib/types';
   .messages-container {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+   , padding: 1rem;
   }
   .message-group {
     margin-bottom: 1.5rem;
@@ -527,7 +527,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 0.5rem;
   }
   .accordion-content {
-    padding: 1rem;
+   , padding: 1rem;
   }
   .predictions-list,
   .entities-list,
@@ -565,7 +565,7 @@ import type { Document } from '$lib/types';
   }
   .confidence-fill {
     height: 100%;
-    background: linear-gradient(90deg, #d4af37, #4ade80);
+   , background: linear-gradient(90deg, #d4af37, #4ade80);
     transition: width: 0.3s ease;
   }
   .entity-item {
@@ -589,14 +589,14 @@ import type { Document } from '$lib/types';
   .dialog-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     z-index: 50;
   }
   .dialog-content {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+   , transform: translate(-50%, -50%);
     width: 90%;
     max-width: 500px;
     max-height: 85vh;
@@ -625,7 +625,7 @@ import type { Document } from '$lib/types';
     font-weight: bold;
   }
   .tooltip-content {
-    padding: 0.5rem 1rem !important;
+   , padding: 0.5rem 1rem !important;
     font-size: 10px;
     z-index: 100;
   }

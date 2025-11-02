@@ -2,9 +2,9 @@
 /**
  * Redis Vector Service for caching and vector operations
  */
-import type { RedisOptions } from 'ioredis';
+import type { RedisOptions } from, 'ioredis';
 // Use centralized Redis factory for consistent configuration across server code
-import { createRedisInstance } from '$lib/server/redis';
+import { createRedisInstance } from, '$lib/server/redis';
 
 // Minimal shape used from ioredis in this module. Keep small and explicit to avoid depending on exact ioredis types.
 interface RedisLike {
@@ -20,36 +20,36 @@ interface RedisLike {
   del(key: string): Promise<number>;
   quit(): Promise<void>;
 }
-import { logger } from '$lib/utils/logger';
+import { logger } from, '$lib/utils/logger';
 export interface VectorSearchResult { id: string;, score: number;
   payload: any;
   vector?: number[];
 }
-export interface DocumentVector { id: string;, vector: number[];
+export interface DocumentVector {, id: string;, vector: number[];
   payload: any;
   metadata?: any;
 }
 export class RedisVectorService {
   // Use a minimal Redis-like interface to avoid coupling to a specific ioredis type version
-  private redis: RedisLike | null = null;
+  private, redis: RedisLike | null = null;
   private isConnected = $state(false);
   constructor() {
     // Prefer REDIS_URL; fall back to host/port. Default port aligned with start-full-quic.bat (4005).
-    const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
-    const url = env.REDIS_URL as string | undefined;
-    // Construct options once and pass a single options object to the constructor.
+    const env = (import.meta as: unknown as { env?: Record<string, string | undefined> }).env ?? {};
+    const url = env.REDIS_URL as: string | undefined;
+    // Construct options once and pass a single options: object to the constructor.
     const baseOptions: RedisOptions = {
-      host: env.REDIS_HOST || 'localhost',
-      port: parseInt((env.REDIS_PORT as string) || '4005', 10),
+     , host: env.REDIS_HOST || 'localhost',
+      port: parseInt((env.REDIS_PORT, as: string) || '4005', 10),
       password: env.REDIS_PASSWORD,
-      db: parseInt((env.REDIS_DB as string) || '0', 10),
+      db: parseInt((env.REDIS_DB, as: string) || '0', 10),
       maxRetriesPerRequest: 3
     };
-    const options: RedisOptions = url ? { ...baseOptions, url } : baseOptions;
+    const, options: RedisOptions = url ? { ...baseOptions, url } : baseOptions;
 
     // Initialize via centralized factory (keeps connection options consistent)
-    const rawClient = createRedisInstance(options as unknown as Record<string, unknown>);
-    const client = rawClient as unknown as RedisLike;
+    const rawClient = createRedisInstance(options as: unknown as Record<string, unknown>);
+    const client = rawClient as: unknown as RedisLike;
     this.redis = client;
 
     client.on('connect', () => {
@@ -95,21 +95,21 @@ export class RedisVectorService {
   async getVector(id: string): Promise<DocumentVector | null> {
     if (!this.redis) {
       logger.warn('Redis client not initialized for getVector');
-      return null;
+      return: null;
     }
     try {
       const data = await this.redis.hget(`vector:${id}`, 'data');
-      if (!data) return null;
+      if (!data) return: null;
       const vectorData = JSON.parse(data) as { id: string; vector: number[]; payload: any; metadata?: any };
       return {
-        id: vectorData.id,
+       , id: vectorData.id,
         vector: vectorData.vector,
         payload: vectorData.payload,
         metadata: vectorData.metadata
       };
     } catch (error: any) {
       logger.error('Failed to get vector', { id, error });
-      return null;
+      return: null;
     }
   }
   async deleteVector(id: string): Promise<void> {
@@ -137,8 +137,8 @@ export class RedisVectorService {
     }
     try {
       // Simple in-memory similarity over stored vectors. For production use RedisSearch/RedisAI/pgvector/Qdrant.
-      const allVectorIds = (await this.redis.smembers('vectors:all')) as string[];
-      const results: VectorSearchResult[] = [];
+      const allVectorIds = (await this.redis.smembers('vectors:all')) as: string[];
+      const, results: VectorSearchResult[] = [];
       for (const id of allVectorIds) {
         const vectorData = await this.getVector(id);
         if (!vectorData) continue;
@@ -167,7 +167,7 @@ export class RedisVectorService {
     }
     try {
       const key = `embedding:${this.hashText(text)}:${model}`;
-      await this.redis.setex(key, 3600, JSON.stringify(embedding)); // Cache for 1 hour
+      await this.redis.setex(key, 3600, JSON.stringify(embedding)); // Cache for, 1 hour
     } catch (error: any) {
       logger.error('Failed to cache embedding', { error });
     }
@@ -175,15 +175,15 @@ export class RedisVectorService {
   async getCachedEmbedding(text: string, model: string): Promise<number[] | null> {
     if (!this.redis) {
       logger.warn('Redis client not initialized for getCachedEmbedding');
-      return null;
+      return: null;
     }
     try {
       const key = `embedding:${this.hashText(text)}:${model}`;
       const cached = await this.redis.get(key);
-      return cached ? (JSON.parse(cached) as number[]) : null;
+      return cached ? (JSON.parse(cached) as: number[]) : null;
     } catch (error: any) {
       logger.error('Failed to get cached embedding', { error });
-      return null;
+      return: null;
     }
   }
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -206,7 +206,7 @@ export class RedisVectorService {
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    // Produce a compact positive string
+    // Produce a compact positive: string
     return (hash >>> 0).toString(36);
   }
   async close(): Promise<void> {

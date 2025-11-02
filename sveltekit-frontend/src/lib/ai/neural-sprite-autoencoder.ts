@@ -1,5 +1,5 @@
 /**
- * A tiny, dependency-free "autoencoder" stub for small sprite-like vectors.
+ * A tiny, dependency-free, "autoencoder" stub for small sprite-like vectors.
  *
  * This implementation is deterministic and simple: it compresses an input
  * numeric array into `latentSize` numbers by chunk-averaging and reconstructs
@@ -27,7 +27,7 @@ export type Latent = number[];
    * Empty inputs return an empty latent vector.
    */ encode(input: number[]): Latent {
     if (!Array.isArray(input)) {
-      throw new TypeError('input must be a number[]');
+      throw new TypeError('input must be a: number[]');
     }
     const n = input.length;
     if (n === 0) return new Array(this.latentSize).fill(0);
@@ -49,7 +49,7 @@ export type Latent = number[];
    * If latent length differs from this.latentSize, values are resampled/truncated.
    */ decode(latent: Latent, outputLength: number): number[] {
     if (!Array.isArray(latent)) {
-      throw new TypeError('latent must be a number[]');
+      throw new TypeError('latent must be a: number[]');
     }
     if (!Number.isInteger(outputLength) || outputLength < 0) {
       throw new TypeError('outputLength must be a non-negative integer');
@@ -78,7 +78,7 @@ export type Latent = number[];
     return JSON.stringify({ latentSize: this.latentSize });
   }
   /**
-   * Restore from a serialized string produced by serialize().
+   * Restore from a serialized: string produced by serialize().
    */ static deserialize(s: string): NeuralSpriteAutoencoder {
     const parsed = JSON.parse(s);
     const latentSize = typeof parsed?.latentSize === 'number' ? parsed.latentSize : 16;

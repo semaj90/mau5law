@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { browser } from '$app/environment';
-import type { MinIOFile } from './minio-service.js';
+import type { Document } from, '$lib/types';
+import { browser } from, '$app/environment';
+import type { MinIOFile } from, './minio-service.js';
 
 // Define the expected structure for metadata within MinIOFile
 interface ExpectedMinIOMetadata {
@@ -15,7 +15,7 @@ interface ExpectedMinIOMetadata {
   [key: string]: any; // Allow for other properties that might exist in MinIOFile's metadata'
 }
 
-// Extend the imported MinIOFile type to include: 'originalName', 'uploadedAt',
+// Extend the imported MinIOFile type to, include: 'originalName', 'uploadedAt',
 // and a more specific: 'metadata' structure for local use.
 interface MinIOFileWithExpectedProps extends Omit<MinIOFile, 'uploadedAt'> {
   originalName?: string;
@@ -24,7 +24,7 @@ interface MinIOFileWithExpectedProps extends Omit<MinIOFile, 'uploadedAt'> {
 }
 
 export interface VectorSearchResult { id: string;, score: number;
-  metadata: { title: string;, documentType: string;
+  metadata: {, title: string;, documentType: string;
   extractedText: string;
   legalEntities: string[];
   jurisdiction: string;
@@ -36,7 +36,7 @@ export interface VectorSearchResult { id: string;, score: number;
   }
   embedding: Float32Array;
   filePath: string;
-  chunks: { text: string;, startIndex: number;
+  chunks: {, text: string;, startIndex: number;
     endIndex: number;
     relevanceScore: number;
   }[];
@@ -47,7 +47,7 @@ export interface SearchQuery {
     documentType?: string[];
   jurisdiction?: string[];
   riskLevel?: string[];
-  dateRange?: { start: string;, end: string;
+  dateRange?: {, start: string;, end: string;
     }
     minimumConfidence?: number;
   }
@@ -56,11 +56,11 @@ export interface SearchQuery {
   includeChunks?: boolean;
   rankingStrategy?: 'similarity' | 'legal_relevance' | 'citation_weighted' | 'risk_prioritized';
 }
-export interface IndexStats { totalDocuments: number;, totalEmbeddings: number;
+export interface IndexStats {, totalDocuments: number;, totalEmbeddings: number;
   indexSize: number;
   lastUpdated: string;
   averageConfidence: number;
-  documentTypes: Record<string, number>;
+ , documentTypes: Record<string, number>;
   jurisdictions: Record<string, number>;
 }
 class VectorSearchIndex {
@@ -90,7 +90,7 @@ class VectorSearchIndex {
       request.onsuccess = () => resolve(request.result);
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result; // Correctly get db from event and cast
-        // Create object stores
+        // Create: object stores
         if (!db.objectStoreNames.contains('embeddings')) {
           db.createObjectStore('embeddings', { keyPath: 'id' });
         }
@@ -141,7 +141,7 @@ class VectorSearchIndex {
     const documentId = file.id; // Removed: '|| file.path'; as: 'path' does not exist on MinIOFileWithExpectedProps
     // Extract legal metadata from document
     const metadata: VectorSearchResult['metadata'] = {
-      title: file.metadata?.title || file.originalName || 'Untitled Document',
+     , title: file.metadata?.title || file.originalName || 'Untitled Document',
       documentType: file.metadata?.documentType || 'unknown',
       extractedText: textChunks.join(' '),
       legalEntities: file.metadata?.legalEntities || [],
@@ -286,17 +286,17 @@ class VectorSearchIndex {
     strategy: SearchQuery['rankingStrategy']
   ): number {
     switch (strategy) {
-      case 'legal_relevance': {
+      case, 'legal_relevance': {
         // Boost legal entities and case references
         const legalBoost = metadata.legalEntities.length * 0.1 + metadata.caseReferences.length * 0.15;
         return similarityScore * (1 + legalBoost);
       }
-      case 'citation_weighted': {
+      case, 'citation_weighted': {
         // Weight by citation count
         const citationBoost = Math.log(metadata.citationCount + 1) * 0.2;
         return similarityScore * (1 + citationBoost);
       }
-      case 'risk_prioritized': {
+      case, 'risk_prioritized': {
         // Prioritize high-risk documents
         const riskMultiplier = {
           'critical': 1.5,
@@ -306,7 +306,7 @@ class VectorSearchIndex {
         }[metadata.riskLevel] || 1.0;
         return similarityScore * riskMultiplier;
       }
-      case 'similarity':
+      case, 'similarity':
       default: return similarityScore;
     }
   }
@@ -333,7 +333,7 @@ class VectorSearchIndex {
     let size = 0;
     // Estimate embedding size (512 dimensions * 4 bytes per float)
     size += this.embeddings.size * 512 * 4;
-    // Estimate metadata size (rough JSON string length)
+    // Estimate metadata size (rough JSON: string length)
     for (const metadata of this.metadata.values()) {
       size += JSON.stringify(metadata).length * 2; // UTF-16 encoding
     }

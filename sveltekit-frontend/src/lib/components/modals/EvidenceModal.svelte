@@ -1,14 +1,14 @@
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
 https://svelte.dev/e/attribute_invalid_name -->
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
+<!-- @migration-task Error while migrating Svelte, code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import  Dialog  from "bits-ui/Dialog.svelte";
-  import  Button  from "bits-ui/Button.svelte";
-  import { onMount } from 'svelte';
-  import { superValidate } from 'sveltekit-superforms/client';
-  import { evidenceSchema } from '$lib/schemas/client';
-  import { createMachine } from 'xstate';
+  // Svelte, 5 runes are auto-imported
+  import  Dialog  from, "bits-ui/Dialog.svelte";
+  import  Button  from, "bits-ui/Button.svelte";
+  import { onMount } from, 'svelte';
+  import { superValidate } from, 'sveltekit-superforms/client';
+  import { evidenceSchema } from, '$lib/schemas/client';
+  import { createMachine } from, 'xstate';
   // Props
   let { item,
     open = $bindable(false)
@@ -16,7 +16,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     item: {
       jsonData: {
         title: string;
-        description string;
+       , description: string;
         tags?: string[];
         tagsString?: string;
         type?: string;
@@ -35,14 +35,14 @@ https://svelte.dev/e/attribute_invalid_name -->
     initial: 'view',
     context: { item },
     states: {
-      view: { on { EDIT: 'edit' } },
-      edit: { on { SAVE: 'view', CANCEL: 'view' } }
+      view: { on {, EDIT: 'edit' } },
+      edit: { on {, SAVE: 'view', CANCEL: 'view' } }
     }
   });
   // Use initialState property for xstate v5+ or .initialState for v4
   let state = evidenceMachine.initialStat;
   // Use zod adapter for superValidate
-  import { zod } from 'sveltekit-superforms/adapters';
+  import { zod } from, 'sveltekit-superforms/adapters';
   $effect(() => {
     (async () => {
 form = await superValidate(zod(evidenceSchema), { initialValues: item
@@ -110,7 +110,7 @@ Cancel
 (open = false)} variant="ghost">Close
     </div>
   </div>
-</Dialog.Root>
+</Dialog>
 <style>
   /* @unocss-include */
   .uno-shadow {
@@ -119,7 +119,7 @@ Cancel
   .input.input-bordered {
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
+   , padding: 0.5rem 0.75rem;
     font-size: 1rem;
   }
 </style>

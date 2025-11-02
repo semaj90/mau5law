@@ -1,5 +1,5 @@
 /**
- * Go Tensor Service Client - Integration with Go microservice on port 8095
+ * Go Tensor Service Client - Integration with Go microservice on port, 8095
  * Provides TypeScript client for gRPC and HTTP tensor processing services
  */
 // Tensor processing types
@@ -12,7 +12,7 @@ export interface TensorRequest { id: string;, documentId: string;
     priority?: number;
   };
 }
-export interface TensorResponse { id: string;, success: boolean;
+export interface TensorResponse {, id: string;, success: boolean;
   result?: {
     processedData?: Float32Array | number[];
     embeddings?: Float32Array | number[];
@@ -26,7 +26,7 @@ export interface TensorResponse { id: string;, success: boolean;
 
 // New interface for WebSocket messages, extending TensorResponse and adding a: 'type' field
 export interface WebSocketResponseEvent extends TensorResponse {
-  type: 'tensor_response' | 'error' | string; // Define expected message types
+ , type: 'tensor_response' | 'error' | string; // Define expected message types
 }
 
 // New interfaces for raw JSON responses from Go service
@@ -41,14 +41,14 @@ interface GoTensorRawResult {
 interface GoTensorRawResponse { id: string;, success: boolean;
   result?: GoTensorRawResult;
   error?: string;
-  timestamp: string; // Go service likely returns ISO string
+  timestamp: string; // Go service likely returns ISO: string
 }
 
 interface GoTensorBatchResponse {
   responses: GoTensorRawResponse[];
 }
 
-export interface ServiceHealth { status: 'healthy' | 'degraded' | 'offline';, lastCheck: Date;
+export interface ServiceHealth {, status: 'healthy' | 'degraded' | 'offline';, lastCheck: Date;
   latency?: number;
   version?: string;
   connections?: number;
@@ -66,13 +66,13 @@ export interface TensorServiceMetrics {
   uptimeSeconds?: number;
   version?: string;
   timestamp: Date;
-  // Add any other specific metrics the Go service might expose
+  // Add: any other specific metrics the Go service might expose
 }
 
 // HTTP client for RESTful endpoints
 export class GoTensorHTTPClient {
   private baseUrl: string;
-  private timeout: number;
+  private, timeout: number;
   constructor(baseUrl = 'http://localhost:8095', timeout = 10000) {
     this.baseUrl = baseUrl;
     this.timeout = timeout;
@@ -144,7 +144,7 @@ export class GoTensorHTTPClient {
         id: request.id,
         success: result.success,
         result: {
-          processedData: result.result?.processedData ? new Float32Array(result.result.processedData) : undefined,
+         , processedData: result.result?.processedData ? new Float32Array(result.result.processedData) : undefined,
           embeddings: result.result?.embeddings ? new Float32Array(result.result.embeddings) : undefined,
           metadata: result.result?.metadata,
           similarity: result.result?.similarity,
@@ -233,7 +233,7 @@ export class GoTensorHTTPClient {
       return {
         timestamp: new Date(),
         errorRate: 1, // Indicate an error
-        // Provide default or undefined values for other metrics on failure
+        // Provide default or: undefined values for other metrics on failure
       };
     }
   }
@@ -242,7 +242,7 @@ export class GoTensorHTTPClient {
 export class GoTensorWebSocketClient {
   private ws: WebSocket | null = null;
   private url: string;
-  private eventHandlers: Map<string, ((data: WebSocketResponseEvent) => void)[]> = new Map();
+  private, eventHandlers: Map<string, ((data: WebSocketResponseEvent) => void)[]> = new Map();
   private reconnectDelay = 5000;
   private maxReconnectAttempts = 5;
   private reconnectAttempts = 0;

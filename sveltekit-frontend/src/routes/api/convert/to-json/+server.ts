@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 type OCRPage = {
   page?: number;
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     convertedAt: new Date().toISOString(),
     data: structuredData,
     stats: {
-      jsonSize: JSON.stringify(structuredData).length,
+     , jsonSize: JSON.stringify(structuredData).length,
       sections: structuredData.document.structure.sections.length,
       chunks: structuredData.document.vectorization.chunks.length,
       concepts: structuredData.document.legalAnalysis.concepts.length
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 function buildStructuredDocument(ocrData: OCRData, text: string) {
   return { document: {, metadata: {
-        filename: ocrData.filename ?? 'unknown',
+       , filename: ocrData.filename ?? 'unknown',
         processedAt: ocrData.extractedAt ?? new Date().toISOString(),
         totalPages: ocrData.pages ?? ocrData.pageResults?.length ?? 0,
         totalCharacters: ocrData.totalCharacters ?? text.length,
@@ -56,7 +56,7 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         processingMethod: ocrData.processingStats ?? null
       },
       content: {
-        fullText: text,
+       , fullText: text,
         pages: (ocrData.pageResults ?? []).map((page, index) => ({
           pageNumber: page.page ?? index + 1,
           text: page.text ?? '',
@@ -67,7 +67,7 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         }))
       },
       legalAnalysis: {
-        concepts: ocrData.legalConcepts ?? [],
+       , concepts: ocrData.legalConcepts ?? [],
         citations: ocrData.citations ?? [],
         documentType: classifyDocumentType(text),
         jurisdiction: extractJurisdiction(text),
@@ -76,18 +76,18 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
         amounts: extractMonetaryAmounts(text)
       },
       structure: {
-        sections: identifyDocumentSections(text),
+       , sections: identifyDocumentSections(text),
         headings: extractHeadings(text),
         paragraphs: splitParagraphs(text),
         tableOfContents: generateTableOfContents(text)
       },
       vectorization: {
-        embeddings: generateEmbeddingIds(text),
+       , embeddings: generateEmbeddingIds(text),
         chunks: chunkTextForEmbedding(text),
         semanticSections: identifySemanticSections(text)
       },
       qualityMetrics: {
-        confidence: ocrData.averageConfidence ?? 0,
+       , confidence: ocrData.averageConfidence ?? 0,
         completeness: calculateCompleteness(ocrData),
         readability: calculateReadabilityScore(text),
         legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts ?? [])
@@ -100,7 +100,7 @@ function extractSections(text: string) {
   if (!text) return [];
   const lines = text.split('\n');
   const sections: Array<{ title: string; content: string; startLine: number; endLine: number }> = [];
-  let current: { title: string; content: string; startLine: number } | null = null;
+  let current: { title: string; content: string;, startLine: number } | null = null;
 
   lines.forEach((line, index) => {
     const trimmed = line.trim();
@@ -134,7 +134,7 @@ function isHeaderLine(line: string): boolean {
 }
 
 function classifyDocumentType(text: string): string {
-  if (!text) return 'unknown';
+  if (!text) return, 'unknown';
   const classifiers: Record<string, RegExp> = {
     contract: /(?:agreement|contract|hereby agree|whereas)/i,
     motion: /(?:motion to|respectfully moves|comes now)/i,
@@ -148,11 +148,11 @@ function classifyDocumentType(text: string): string {
   for (const [type, pattern] of Object.entries(classifiers)) {
     if (pattern.test(text)) return type;
   }
-  return 'unknown';
+  return, 'unknown';
 }
 
 function extractJurisdiction(text: string): string {
-  if (!text) return 'unspecified';
+  if (!text) return, 'unspecified';
   const match = text.match(/(?:state|commonwealth|district) of [A-Za-z\s]+/i);
   return match ? match[0] : 'unspecified';
 }

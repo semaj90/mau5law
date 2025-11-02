@@ -1,21 +1,21 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { LegalAIApiClient } from '$lib/services/api-client';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { LegalAIApiClient } from, '$lib/services/api-client';
 interface PipelineTestResult { step: string;, status: 'success' | 'error' | 'skipped';
   message: string;
   data?: any;
   responseTime?: number;
   timestamp: string;
 }
-interface DocumentPipelineTestResponse { testId: string;, status: 'completed' | 'partial' | 'failed';
+interface DocumentPipelineTestResponse {, testId: string;, status: 'completed' | 'partial' | 'failed';
   timestamp: string;
-  summary: { totalSteps: number;, successfulSteps: number;
+  summary: {, totalSteps: number;, successfulSteps: number;
     failedSteps: number;
     skippedSteps: number;
   };
   steps: PipelineTestResult[];
-  overallMessage: string;
+ , overallMessage: string;
 }
 async function testStep(stepName: string, testFn: () => Promise<unknown>): Promise<PipelineTestResult> {
   const startTime = Date.now();
@@ -40,7 +40,7 @@ async function testStep(stepName: string, testFn: () => Promise<unknown>): Promi
     return {
       step: stepName,
       status: 'error',
-      message: `${stepName} failed: ${errMsg}`,
+      message: `${stepName}, failed: ${errMsg}`,
       responseTime,
       timestamp
     };
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async event => {
         return { status: 'OCR service operational', data: ocrHealthData };
       } else {
         return {
-          status: 'OCR service not operational but health endpoint working',
+         , status: 'OCR service not operational but health endpoint working',
           data: ocrHealthData,
           note: 'This is expected if OCR service is not running' };'` }'`
     })
@@ -205,7 +205,7 @@ export const GET: RequestHandler = async event => {
   const failedSteps = testResults.filter(r => r.status === 'error').length;
   const skippedSteps = testResults.filter(r => r.status === 'skipped').length;
   let overallStatus: DocumentPipelineTestResponse['status'];
-  let overallMessage: string;
+  let, overallMessage: string;
   if (failedSteps === 0) {
     overallStatus = 'completed';
     overallMessage = `All integration tests passed successfully! (${successfulSteps} successful, ${skippedSteps} skipped)`;
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async event => {
     status: overallStatus,
     timestamp: new Date().toISOString(),
     summary: {
-      totalSteps: testResults.length,
+     , totalSteps: testResults.length,
       successfulSteps,
       failedSteps,
       skippedSteps

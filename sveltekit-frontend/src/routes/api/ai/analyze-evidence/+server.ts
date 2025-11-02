@@ -1,5 +1,5 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { redis } from '$lib/server/redis-client';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { redis } from, '$lib/server/redis-client';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,20 +11,20 @@ import { redis } from '$lib/server/redis-client';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from '$lib/server/services/ai-service.js';
-import { evidence } from '$lib/server/db/schema.js';
-import { z } from 'zod';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { eq } from 'drizzle-orm';
+import { aiService } from, '$lib/server/services/ai-service.js';
+import { evidence } from, '$lib/server/db/schema.js';
+import { z } from, 'zod';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import { eq } from, 'drizzle-orm';
 
 const analysisSchema = z.object({
   evidenceId: cuidSchema,
@@ -84,11 +84,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     };
 
     const performEvidenceAnalysis = async (
-      evidenceId: string,
+     , evidenceId: string,
       content: string,
       evidenceType: string
     ): Promise<AnalysisResult> => {
-      const svc = aiService as unknown as Record<string, unknown>;
+      const svc = aiService as: unknown as Record<string, unknown>;
 
       // If the concrete service implements analyzeEvidence, call it directly
       if (svc && typeof svc['analyzeEvidence'] === 'function') {
@@ -102,7 +102,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       // Fallback: use generateResponse() with a JSON prompt instructing the model to return structured JSON
       if (svc && typeof svc['generateResponse'] === 'function') {
         const prompt = [
-          'You are a legal analysis assistant. Return a JSON object with keys: summary, tags (array), confidence (number), entities (array), keywords (array), recommendations (array).',
+          'You are a legal analysis assistant. Return a JSON: object with, keys: summary, tags (array), confidence (number), entities (array), keywords (array), recommendations (array).',
           `evidenceId: ${evidenceId}`,
           `evidenceType: ${evidenceType}`,
           'content:',
@@ -137,7 +137,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 
       // Final fallback when no AI service available
       return {
-        summary: 'AI service not available',
+       , summary: 'AI service not available',
         tags: [],
         confidence: 0,
         entities: [],

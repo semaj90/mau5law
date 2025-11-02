@@ -2,8 +2,7 @@
 // Note: Keep this file minimal and browser-safe; no Node APIs.
 let wasmModule: WebAssembly.WebAssemblyInstantiatedSource | null = null;
 let modelData: ArrayBuffer | null = null;
-// Prevent unused variable warnings in dev placeholder
-void wasmModule;
+// Prevent unused variable warnings in dev, placeholder: void wasmModule;
 void modelData;
 self.onmessage = async (e: MessageEvent) => {
   const payload = (e.data || {}) as { type: string; data?: Record<string, unknown> };
@@ -11,38 +10,38 @@ self.onmessage = async (e: MessageEvent) => {
   const data = payload.data || {};
   try {
     switch (type) {
-      case 'init': {
+      case, 'init': {
         try {
           const res = await fetch(String((data as Record<string, unknown>).wasmUrl || ''));
           const bytes = await res.arrayBuffer();
           wasmModule = await WebAssembly.instantiate(bytes, {});
-          (self as unknown as Worker).postMessage({ type: 'init_complete', success: true });
+          (self as: unknown as Worker).postMessage({ type: 'init_complete', success: true });
         } catch (err) {
           const msg = (err && (err as Error).message) || String(err);
-          (self as unknown as Worker).postMessage({ type: 'init_complete', success: false, error: msg });
+          (self as: unknown as Worker).postMessage({ type: 'init_complete', success: false, error: msg });
         }
         break;
       }
-      case 'load_model': {
+      case, 'load_model': {
         try {
           const res = await fetch(String((data as Record<string, unknown>).modelUrl || ''));
           modelData = await res.arrayBuffer();
-          (self as unknown as Worker).postMessage({ type: 'model_loaded', success: true });
+          (self as: unknown as Worker).postMessage({ type: 'model_loaded', success: true });
         } catch (err) {
           const msg = (err && (err as Error).message) || String(err);
-          (self as unknown as Worker).postMessage({ type: 'model_loaded', success: false, error: msg });
+          (self as: unknown as Worker).postMessage({ type: 'model_loaded', success: false, error: msg });
         }
         break;
       }
-      case 'generate': {
+      case, 'generate': {
         try {
           // Placeholder inference; real implementation should call into WASM exports
           const prompt = String((data as Record<string, unknown>).prompt || '');
           const result = await performInference(prompt);
-          (self as unknown as Worker).postMessage({ type: 'generation_complete', result });
+          (self as: unknown as Worker).postMessage({ type: 'generation_complete', result });
         } catch (err) {
           const msg = (err && (err as Error).message) || String(err);
-          (self as unknown as Worker).postMessage({ type: 'generation_error', error: msg });
+          (self as: unknown as Worker).postMessage({ type: 'generation_error', error: msg });
         }
         break;
       }
@@ -53,7 +52,7 @@ self.onmessage = async (e: MessageEvent) => {
     }
   } catch (err) {
     const msg = (err && (err as Error).message) || String(err);
-    (self as unknown as Worker).postMessage({ type: 'worker_error', error: msg });
+    (self as: unknown as Worker).postMessage({ type: 'worker_error', error: msg });
   }
 };
 async function performInference(prompt: string): Promise<any> {

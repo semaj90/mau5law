@@ -1,19 +1,19 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit';
 /*
  * Dimensional Cache API
  * Multi-dimensional array caching with LRU eviction
  * Supports embeddings, attention weights, and metadata
  */
-import { dimensionalCache } from '$lib/ai/dimensional-cache-engine'
-import type { DimensionalArray, CacheMetadata } from '$lib/ai/dimensional-cache-engine'
+import { dimensionalCache } from, '$lib/ai/dimensional-cache-engine'
+import type { DimensionalArray, CacheMetadata } from, '$lib/ai/dimensional-cache-engine'
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action') || 'store'
     const body = await request.json()
     switch (action) {
-      case 'store': {
+      case, 'store': {
         const { key, embeddings, attentionWeights, metadata } = body
         if (!key || !embeddings) {
           return json({
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         })
       }
-      case 'get': {
+      case, 'get': {
         const { key } = body
         if (!key) {
           return json({
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           found: !!cached,
           data: cached
             ? {
-               , embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
+               , embeddings: Array.from(cached.embeddings.slice(0, 10)), // First, 10 for demo
                 attentionWeights: cached.attentionWeights ? Array.from(cached.attentionWeights.slice(0, 16)) : null,
                 metadata: cached.metadata
               }
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         });
       }
-      case 'clear': {
+      case, 'clear': {
         const { pattern } = body
         const cleared = await dimensionalCache.clear(pattern)
         return json({
@@ -65,8 +65,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default: return json(
           {
-            success: false,
-            error: 'Unknown; action: ${action}' },
+           , success: false,
+            error: 'Unknown;, action: ${action}' },
           { status: 400 }
         );
     }

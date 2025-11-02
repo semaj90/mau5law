@@ -1,37 +1,37 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // Enhanced Ingestion Pipeline for Legal AI System
 // Processes legal documents, creates embeddings, and stores in vector database
 // Production Stack: PostgreSQL + pgvector, LangChain, Qdrant, GraphQL, Neo4j, Redis, RabbitMQ
-import { QdrantVectorStore } from '@langchain/community/vectorstores/qdrant';
-import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import type { Schemas } from '@qdrant/js-client-rest/dist/types';
-import { cache, cacheSearchResults } from '$lib/server/cache/redis';
-import neo4j, { type Driver } from 'neo4j-driver';
-// import { errorHandler } from "$lib/utils/errorHandler"
+import { QdrantVectorStore } from, '@langchain/community/vectorstores/qdrant';
+import { PGVectorStore } from, '@langchain/community/vectorstores/pgvector';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import type { Schemas } from, '@qdrant/js-client-rest/dist/types';
+import { cache, cacheSearchResults } from, '$lib/server/cache/redis';
+import neo4j, { type Driver } from, 'neo4j-driver';
+// import { errorHandler } from, "$lib/utils/errorHandler"
 // Fallback error handler for when the module is not available
 const errorHandler = {
   system: (message: string, data?: any) => console.error(`[SYSTEM] ${message}`, data),
   analysis: (message: string, data?: any) => console.error(`[ANALYSIS] ${message}`, data)
 };
-import { resolveLibraryId, getLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-// import { copilotOrchestrator } from "$lib/utils/mcp-helpers"
+import { resolveLibraryId, getLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
+// import { copilotOrchestrator } from, "$lib/utils/mcp-helpers"
 // Mock copilot orchestrator function
 const copilotOrchestrator = async (
   _prompt: string,
   _options: Record<string, unknown>
 ): Promise<{ selfPrompt: string }> => ({
-  selfPrompt: 'Mock copilot analysis completed'
+ , selfPrompt: 'Mock copilot analysis completed'
 });
-import type { DocumentEmbedding } from './som-rag-system.js';
-import { SelfOrganizingMapRAG } from './som-rag-system.js';
-import { qdrantService, QdrantService, type SearchResult } from '$lib/server/services/qdrant-service';
-import pgClient, { poolShim } from '$lib/server/db-shim';
-import { defaultQuantizer, quantizedToBase64 } from '$lib/server/optimize/vector-quantization';
+import type { DocumentEmbedding } from, './som-rag-system.js';
+import { SelfOrganizingMapRAG } from, './som-rag-system.js';
+import { qdrantService, QdrantService, type SearchResult } from, '$lib/server/services/qdrant-service';
+import pgClient, { poolShim } from, '$lib/server/db-shim';
+import { defaultQuantizer, quantizedToBase64 } from, '$lib/server/optimize/vector-quantization';
 // Multimodal Evidence Processing
 export interface MultimodalEvidence { id: string;, type: 'image' | 'video' | 'audio' | 'document' | 'forensic';
   file_path: string;
-  metadata: { filename: string;, size: number;
+  metadata: {, filename: string;, size: number;
     mime_type: string;
     case_id: string;
     upload_timestamp: string;
@@ -53,8 +53,8 @@ export interface MultimodalEvidence { id: string;, type: 'image' | 'video' | 'a
     legal_analysis?: string;
   };
 }
-export interface AnchorPoint { id: string;, type: 'object' | 'text' | 'audio_segment' | 'timeline_event' | 'custom';
-  coordinates: { x: number; // Normalized 0-1, y: number; // Normalized 0-1
+export interface AnchorPoint {, id: string;, type: 'object' | 'text' | 'audio_segment' | 'timeline_event' | 'custom';
+  coordinates: {, x: number; // Normalized 0-1, y: number; // Normalized 0-1
     width?: number;
     height?: number;
   };
@@ -65,18 +65,18 @@ export interface AnchorPoint { id: string;, type: 'object' | 'text' | 'audio_se
   user_verified?: boolean;
   notes?: string;
 }
-export interface TimelineSegment { start_time: number;, end_time: number;
+export interface TimelineSegment {, start_time: number;, end_time: number;
   event_type: string;
   description: string;
   confidence: number;
   legal_significance: string;
 }
-export interface DetectedObject { class: string;, confidence: number;
-  bounding_box: { x: number;, y: number;
+export interface DetectedObject {, class: string;, confidence: number;
+  bounding_box: {, x: number;, y: number;
     width: number;
     height: number;
   };
-  legal_relevance: 'high' | 'medium' | 'low';
+ , legal_relevance: 'high' | 'medium' | 'low';
 }
 // Embedding for a document or evidence item
 // (Removed: use canonical DocumentEmbedding from som-rag-system)
@@ -86,7 +86,7 @@ export interface CopilotArchitectureContext { architecture_summary: string;, le
   copilot_patterns: string;
   enhancement_priority: boolean;
 }
-export interface IngestionDocument { id: string;, content: string;
+export interface IngestionDocument {, id: string;, content: string;
   metadata: {
     filename: string;
     case_id?: string;
@@ -99,35 +99,35 @@ export interface IngestionDocument { id: string;, content: string;
     confidence_score?: number;
   };
 }
-export interface ProcessingResult { document_id: string;, embedding: number[];
+export interface ProcessingResult {, document_id: string;, embedding: number[];
   cluster_id: number;
   processing_time: number;
-  extraction_metadata: { entities: string[];, keywords: string[];
+  extraction_metadata: {, entities: string[];, keywords: string[];
     confidence: number;
     language: string;
   };
   vector_store_id?: string;
 }
-export interface IngestionStats { total_processed: number;, successful: number;
+export interface IngestionStats {, total_processed: number;, successful: number;
   failed: number;
   avg_processing_time: number;
-  cluster_distribution: Record<number, number>;
+ , cluster_distribution: Record<number, number>;
   evidence_type_distribution: Record<string, number>;
 }
 interface MultimodalProcessor { process: (evidence: MultimodalEvidence) => Promise<DocumentEmbedding>;, supportedFormats: string[];
 }
 export class EnhancedIngestionPipeline {
-  private qdrantClient: InstanceType<typeof, QdrantClient>;
+  private, qdrantClient: InstanceType<typeof, QdrantClient>;
   private pgPool: Pool;
   private rabbitConnection: any;
-  private neo4jDriver: Driver;
+  private, neo4jDriver: Driver;
   private vectorStore?: QdrantVectorStore;
   private pgVectorStore?: PGVectorStore;
   private isInitialized = $state(false);
   private processingQueue: IngestionDocument[] = [];
   private isProcessing = $state(false);
   private stats: IngestionStats = {
-    total_processed: 0,
+   , total_processed: 0,
     successful: 0,
     failed: 0,
     avg_processing_time: 0,
@@ -135,13 +135,13 @@ export class EnhancedIngestionPipeline {
     evidence_type_distribution: {}
   };
   private copilotContext: CopilotArchitectureContext | null = null;
-  private multimodalProcessors: Map<string, MultimodalProcessor> = new Map();
+  private, multimodalProcessors: Map<string, MultimodalProcessor> = new Map();
   private anchorPointCache: Map<string, AnchorPoint[]> = new Map();
   // Add missing required properties
   private somRAG: SelfOrganizingMapRAG;
   private qdrantService: QdrantService;
   constructor(
-    config: {
+   , config: {
       qdrantUrl?: string;
       pgConnectionString?: string;
       redisUrl?: string;
@@ -251,11 +251,11 @@ export class EnhancedIngestionPipeline {
     const extractedText = evidence.extracted_content.text || '';
     const embedding = await this.generateEmbedding(extractedText);
     const docEmbedding: DocumentEmbedding = {
-      id: evidence.id,
+     , id: evidence.id,
       content: extractedText,
       embedding,
       metadata: {
-        case_id: evidence.metadata.case_id,
+       , case_id: evidence.metadata.case_id,
         evidence_type: 'image',
         legal_category: this.determineLegalCategory(evidence),
         confidence: evidence.metadata.confidence_scores?.ocr || 0.8,
@@ -272,11 +272,11 @@ export class EnhancedIngestionPipeline {
     const sceneSummary = evidence.extracted_content.scene_summary || '';
     const embedding = await this.generateEmbedding(sceneSummary);
     const docEmbedding: DocumentEmbedding = {
-      id: evidence.id,
+     , id: evidence.id,
       content: sceneSummary,
       embedding,
       metadata: {
-        case_id: evidence.metadata.case_id,
+       , case_id: evidence.metadata.case_id,
         evidence_type: 'video',
         legal_category: this.determineLegalCategory(evidence),
         confidence: evidence.metadata.confidence_scores?.scene_analysis || 0.8,
@@ -293,11 +293,11 @@ export class EnhancedIngestionPipeline {
     const transcription = evidence.extracted_content.transcription || '';
     const embedding = await this.generateEmbedding(transcription);
     const docEmbedding: DocumentEmbedding = {
-      id: evidence.id,
+     , id: evidence.id,
       content: transcription,
       embedding,
       metadata: {
-        case_id: evidence.metadata.case_id,
+       , case_id: evidence.metadata.case_id,
         evidence_type: 'audio',
         legal_category: this.determineLegalCategory(evidence),
         confidence: 0.8,
@@ -314,11 +314,11 @@ export class EnhancedIngestionPipeline {
     const text = evidence.extracted_content.text || '';
     const embedding = await this.generateEmbedding(text);
     const docEmbedding: DocumentEmbedding = {
-      id: evidence.id,
+     , id: evidence.id,
       content: text,
       embedding,
       metadata: {
-        case_id: evidence.metadata.case_id,
+       , case_id: evidence.metadata.case_id,
         evidence_type: 'document',
         legal_category: this.determineLegalCategory(evidence),
         confidence: 0.9,
@@ -344,11 +344,11 @@ export class EnhancedIngestionPipeline {
       const embedding = await this.generateEmbedding(document.content);
       // 3. Store in Qdrant vector database
       const docEmbedding: DocumentEmbedding = {
-        id: document.id,
+       , id: document.id,
         content: document.content,
         embedding,
         metadata: {
-          case_id: document.metadata.case_id,
+         , case_id: document.metadata.case_id,
           evidence_type: document.metadata.evidence_type,
           legal_category: document.metadata.legal_category,
           confidence: document.metadata.confidence_score || 0.9,
@@ -364,14 +364,14 @@ export class EnhancedIngestionPipeline {
       // Update statistics
       this.updateStats(document.metadata.evidence_type, clusterId, processingTime, true);
       const result: ProcessingResult = {
-        document_id: document.id,
+       , document_id: document.id,
         embedding,
         cluster_id: clusterId,
         processing_time: processingTime,
         extraction_metadata: extractedData,
         vector_store_id: vectorStoreId
       };
-      console.log(`✅ Document processed successfully: ${document.id} (${processingTime}ms)`);
+      console.log(`✅ Document processed, successfully: ${document.id} (${processingTime}ms)`);
       return result;
     } catch (error: any) {
       console.error(`❌ Failed to process document ${document.id}:`, error);
@@ -389,13 +389,13 @@ export class EnhancedIngestionPipeline {
     const results: ProcessingResult[] = [];
     const batchStartTime = Date.now();
     // Process documents concurrently with rate limiting
-    const batchSize = 5; // Process 5 documents at a time
+    const batchSize = 5; // Process, 5 documents at a time
     for (let i = 0; i < documents.length; i += batchSize) {
       const batch = documents.slice(i, i + batchSize);
       const batchPromises = batch.map(doc =>
         this.processDocument(doc).catch(error => {
           console.error(`Failed to process document ${doc.id}:`, error);
-          return null;
+          return: null;
         })
       );
       const batchResults = await Promise.all(batchPromises);
@@ -427,7 +427,7 @@ export class EnhancedIngestionPipeline {
     this.isProcessing = true;
     console.log('🔄 Starting queue processing...');
     while (this.processingQueue.length > 0) {
-      // Process in batches of 10 for optimal performance
+      // Process in batches of, 10 for optimal performance
       const batchSize = Math.min(10, this.processingQueue.length);
       const batch = this.processingQueue.splice(0, batchSize);
       try {
@@ -457,7 +457,7 @@ export class EnhancedIngestionPipeline {
     const startTime = Date.now();
     try {
       // Build Qdrant filter
-      const qdrantFilter: Schemas.Filter = { must: [] };
+      const qdrantFilter: Schemas.Filter = {, must: [] };
       if (filters) {
         if (filters.evidence_type) {
           qdrantFilter.must?.push({
@@ -581,27 +581,27 @@ export class EnhancedIngestionPipeline {
     evidence: MultimodalEvidence,
     processingResult: DocumentEmbedding
   ): Promise<string> {
-    if (!this.copilotContext) return '';
+    if (!this.copilotContext) return, '';
     const evidenceContent = this.createEvidenceContent(evidence, processingResult);
     const prompt = `
       Analyze the following evidence for a legal case Case ID: ${evidence.metadata.case_id}
       Evidence Type: ${evidence.type}
-      Content: ${evidenceContent.substring(0, 2000)}
+     , Content: ${evidenceContent.substring(0, 2000)}
       Based on the legal context, provide a concise analysis and suggest the next logical step.
     `;`
     const analysisResult = await copilotOrchestrator(prompt, {});
     return analysisResult.selfPrompt;
   }
   /**
-   * Creates a content string from various parts of the evidence for analysis.
+   * Creates a content: string from various parts of the evidence for analysis.
    */
   private createEvidenceContent(evidence: MultimodalEvidence, processingResult: DocumentEmbedding): string {
     return `
       Text: ${evidence.extracted_content.text || 'N/A'}
-      Objects: ${evidence.extracted_content.objects?.map(o => o.class).join(', ') || 'N/A'}
+     , Objects: ${evidence.extracted_content.objects?.map(o => o.class).join(', ') || 'N/A'}
       Transcription: ${evidence.extracted_content.transcription || 'N/A'}
       Scene Summary: ${evidence.extracted_content.scene_summary || 'N/A` }'`
-      Processing Content: ${processingResult.content}
+      Processing, Content: ${processingResult.content}
     `;` }
   /**
    * Determine legal category based on evidence analysis
@@ -614,12 +614,12 @@ export class EnhancedIngestionPipeline {
       evidence.extracted_content.transcription ||
       '';
     if (content.includes('contract') || content.includes('agreement')) {
-      return 'Contract Law';
+      return, 'Contract Law';
     }
     if (content.includes('crime') || content.includes('police')) {
-      return 'Criminal Law';
+      return, 'Criminal Law';
     }
-    return 'General';
+    return, 'General';
   }
   private async storeInQdrant(docEmbedding: DocumentEmbedding): Promise<void> {
     // Quantize embedding for 4x memory savings
@@ -653,7 +653,7 @@ export class EnhancedIngestionPipeline {
    */
   private async extractEntitiesAndKeywords(content: string): Promise<{ entities: string[];, keywords: string[];
     confidence: number;
-    language: string;
+   , language: string;
   }> {
     // Simple keyword extraction (in production, use NLP library)
     const words = content.toLowerCase().split(/\s+/);

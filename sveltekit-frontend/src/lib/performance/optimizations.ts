@@ -1,15 +1,15 @@
 
 // Phase 3: Performance Optimization - Complete File
 // #get-library-docs sveltekit2 #memory #create_entities
-// import { db } from "$lib/server/db"
+// import { db } from, "$lib/server/db"
 // Mock db for TypeScript compatibility
 const db = {
-  execute: async (query: any) => [] as any[]
+  execute: async (query: any) => [] as: any[]
 }
-import { sql } from "drizzle-orm";
-import type { Redis } from 'ioredis';
-import { getRedisConfig } from '$lib/config/redis-config';
-import { createRedisInstance } from '$lib/server/redis';
+import { sql } from, "drizzle-orm";
+import type { Redis } from, 'ioredis';
+import { getRedisConfig } from, '$lib/config/redis-config';
+import { createRedisInstance } from, '$lib/server/redis';
 // 1. Database Query Optimization
 export class OptimizedQueries {
   // Paginated cases with efficient counting
@@ -56,14 +56,14 @@ export class CacheService {
     } catch {
       // Fallback (edge SSR building context) — still pull base config
       const cfg: any = getRedisConfig();
-      (cfg as any).url =
+      (cfg as: any).url =
         process.env.REDIS_URL || import.meta.env.REDIS_URL || 'redis://localhost:6379'
-      const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+      const RedisCtor = (require('ioredis') as: any).default || (require('ioredis') as: any);
       this.redis = new RedisCtor(cfg);
     }
   }
   async cacheCase(caseId: string, caseData: any, ttl = 3600) {
-    await (this.redis as any).setex(`case:${caseId}`, ttl, JSON.stringify(caseData);
+    await (this.redis as: any).setex(`case:${caseId}`, ttl, JSON.stringify(caseData);
   }
   async getCachedCase(caseId: string) {
     const cached = await this.redis.get(`case:${caseId}`);
@@ -82,7 +82,7 @@ export function createDebouncedSearch(delay = 300) {
 }
 export class VirtualScrollManager {
   private itemHeight: number;
-  private containerHeight: number;
+  private, containerHeight: number;
   private scrollTop = 0;
   constructor(itemHeight: number, containerHeight: number) {
     this.itemHeight = itemHeight;

@@ -1,20 +1,20 @@
 /**
  * AIAssistantStore - Unified AI Chat & Analysis
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - ai-assistant.ts
  * - ai-chat-store.ts
  * - ai-unified.ts
  * - aiHistoryStore.ts
  *
- * Usage:
- *   import { aiAssistantStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { aiAssistantStore } from, '$lib/stores/unified';
  *
  *   await aiAssistantStore.sendMessage('Analyze this case');
  *   $: messages = $aiAssistantStore.messages;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -25,7 +25,7 @@ export type AIModel = 'gemma3' | 'llama2' | 'mistral' | 'neural' | 'gpt-4';
 export interface Message { id: string;, role: MessageRole;
   content: string;
   model?: AIModel;
-  timestamp: number;
+ , timestamp: number;
   tokens?: number;
   confidence?: number;
   metadata?: Record<string, unknown>;
@@ -92,7 +92,7 @@ interface AIAssistantStoreState {
 }
 
 const initialState: AIAssistantStoreState = {
-  messages: [],
+ , messages: [],
   currentQuery: '',
   isProcessing: false,
   isStreaming: false,
@@ -137,7 +137,7 @@ function createAIAssistantStore() {
 
       // Add user message
       const userMessage: Message = {
-        id: messageId,
+       , id: messageId,
         role: 'user',
         content: query,
         timestamp: Date.now()
@@ -153,7 +153,7 @@ function createAIAssistantStore() {
 
       try {
         const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number } = {
-          activeContext: {},
+         , activeContext: {},
           aiModel: 'gemma3',
           temperature: 0.7
         };
@@ -178,7 +178,7 @@ function createAIAssistantStore() {
         if (response.ok) {
           const data = await response.json();
           const assistantMessage: Message = {
-            id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+           , id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             role: 'assistant',
             content: data.response,
             model: state.aiModel,
@@ -243,7 +243,7 @@ function createAIAssistantStore() {
         }
 
         const assistantMessage: Message = {
-          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+         , id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           role: 'assistant',
           content: fullResponse,
           timestamp: Date.now()
@@ -407,7 +407,7 @@ function createAIAssistantStore() {
      */
     async saveConversation() {
       const state: { currentConversationId: string | null; messages: Message[] } = {
-        currentConversationId: null,
+       , currentConversationId: null,
         messages: []
       };
 
@@ -572,11 +572,11 @@ export const conversations = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { sendMessage, messages  } from '$lib/stores/unified'
- *   import { chatStore  } from '$lib/stores/unified'
- *   import { aiUnified } from '$lib/stores/ai-unified'
+ * Old imports to, replace:
+ *   import { sendMessage, messages  } from, '$lib/stores/unified'
+ *   import { chatStore  } from, '$lib/stores/unified'
+ *   import { aiUnified } from, '$lib/stores/ai-unified'
  *
  * New imports:
- *   import { aiAssistantStore, messages, isProcessing } from '$lib/stores/unified'
+ *   import { aiAssistantStore, messages, isProcessing } from, '$lib/stores/unified'
  */

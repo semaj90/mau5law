@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Complete Service Router & Integration Layer
- * Routes all 33 Go microservices with error handling and fallback
+ * Routes all, 33 Go microservices with error handling and fallback
  */
 // Removed unused import of `dev` which caused lint/parse confusion in some TS setups.
-// (import { dev } from '$app/environment';)
+// (import { dev } from, '$app/environment';)
 
 export interface ServiceEndpoint { name: string;, port: number;
   protocols: string[];
@@ -15,7 +15,7 @@ export interface ServiceEndpoint { name: string;, port: number;
 
 // Replace `any` defaults and add small typed shapes used across the router
 export interface ServiceResponse<T = unknown> {
-  success: boolean;
+ , success: boolean;
   data?: T;
   error?: string;
   service?: string;
@@ -43,7 +43,7 @@ export type ClusterParams = Record<string, unknown>;
 
 export class CompleteServiceRouter {
   private services: Map<string, ServiceEndpoint> = new Map();
-  private healthCache: Map<string, { status: boolean; timestamp: number }> = new Map();
+  private healthCache: Map<string, { status: boolean;, timestamp: number }> = new Map();
   private readonly HEALTH_CACHE_TTL = 30_000; // 30 seconds
 
   constructor() {
@@ -54,7 +54,7 @@ export class CompleteServiceRouter {
     // Core Services (Priority 1)
     const coreServices: ServiceEndpoint[] = [
       {
-        name: 'enhanced-rag',
+       , name: 'enhanced-rag',
         port: 8094,
         protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'],
         category: 'core',
@@ -100,7 +100,7 @@ export class CompleteServiceRouter {
     // Performance Services (Priority 2)
     const performanceServices: ServiceEndpoint[] = [
       {
-        name: 'cuda-ai-service',
+       , name: 'cuda-ai-service',
         port: 8096,
         protocols: ['HTTP'],
         category: 'performance',
@@ -167,7 +167,7 @@ export class CompleteServiceRouter {
     // Processing Services (Priority 3)
     const processingServices: ServiceEndpoint[] = [
       {
-        name: 'gin-upload',
+       , name: 'gin-upload',
         port: 8207,
         protocols: ['HTTP'],
         category: 'processing',
@@ -210,7 +210,7 @@ export class CompleteServiceRouter {
     // Protocol Services (Priority 4)
     const protocolServices: ServiceEndpoint[] = [
       {
-        name: 'quic-ai-stream',
+       , name: 'quic-ai-stream',
         port: 8216,
         protocols: ['QUIC'],
         category: 'protocol',
@@ -253,7 +253,7 @@ export class CompleteServiceRouter {
     // Support Services (Priority 5)
     const supportServices: ServiceEndpoint[] = [
       {
-        name: 'cuda-integration-service',
+       , name: 'cuda-integration-service',
         port: 8098,
         protocols: ['HTTP'],
         category: 'support',
@@ -438,18 +438,18 @@ export class CompleteServiceRouter {
         };
       }
 
-      let data: T | undefined;
+      let, data: T | undefined;
       const contentType = response.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
         data = (await response.json()) as T;
       } else {
         // treat as text for non-json responses
         const text = await response.text();
-        data = text as unknown as T;
+        data = text as: unknown as T;
       }
 
       return {
-        success: true,
+       , success: true,
         data,
         service: serviceName,
         protocol: `HTTP` };
@@ -585,13 +585,13 @@ export class CompleteServiceRouter {
    */
   getServiceStats() {
     const services = this.getAllServices();
-    const stats: { total: number;, byCategory: Record<string, number>;
+    const stats: {, total: number;, byCategory: Record<string, number>;
       byStatus: { running: number; stopped: number; unknown: number };
-      byProtocol: Record<string, number>;
+     , byProtocol: Record<string, number>;
     } = {
       total: services.length,
       byCategory: {},
-      byStatus: { running: 0, stopped: 0, unknown: 0 },
+      byStatus: {, running: 0, stopped: 0, unknown: 0 },
       byProtocol: {}
     };
 

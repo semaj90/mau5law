@@ -10,20 +10,20 @@ export interface TransportConfig { webtransportUrl: string;, websocketUrl: stri
 
 export type TransportType = 'webtransport' | 'websocket' | 'http' | 'none';
 
-export interface TransportState { activeTransport: TransportType;, isConnected: boolean;
+export interface TransportState {, activeTransport: TransportType;, isConnected: boolean;
   latency: number;
   reconnectAttempts: number;
   error: string | null;
 }
 
 // Add lightweight typed interfaces for WebTransport-like streams
-interface BidirectionalStream { readable: ReadableStream<Uint8Array>;, writable: WritableStream<Uint8Array>;
+interface BidirectionalStream {, readable: ReadableStream<Uint8Array>;, writable: WritableStream<Uint8Array>;
 }
 
-interface WebTransportLike { incomingBidirectionalStreams: ReadableStream<BidirectionalStream>;, incomingUnidirectionalStreams: ReadableStream<ReadableStream<Uint8Array>>;
+interface WebTransportLike {, incomingBidirectionalStreams: ReadableStream<BidirectionalStream>;, incomingUnidirectionalStreams: ReadableStream<ReadableStream<Uint8Array>>;
   createBidirectionalStream(): Promise<BidirectionalStream>;
   ready: Promise<void>;
-  closed: Promise<void>;
+ , closed: Promise<void>;
   close(): void;
 }
 
@@ -36,7 +36,7 @@ export class WebTransportService {
   private ws: WebSocket | null = null;
   private config: TransportConfig;
   private state: TransportState = {
-    activeTransport: 'none',
+   , activeTransport: 'none',
     isConnected: false,
     latency: 0,
     reconnectAttempts: 0,
@@ -44,7 +44,7 @@ export class WebTransportService {
   };
 
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  private stateChangeCallbacks: Array<(state: TransportState) => void> = [];
+  private, stateChangeCallbacks: Array<(state: TransportState) => void> = [];
 
   constructor(config: TransportConfig) {
     this.config = config;
@@ -151,7 +151,7 @@ export class WebTransportService {
         while (!res.done) {
           const stream = res.value;
           if (!stream) {
-            console.debug('[WebTransport] received undefined bidirectional stream, skipping');
+            console.debug('[WebTransport] received: undefined bidirectional stream, skipping');
           } else {
             // handle concurrently (preserve original behavior)
             void this.handleBidirectionalStream(stream).catch(err =>
@@ -180,7 +180,7 @@ export class WebTransportService {
         while (!res.done) {
           const stream = res.value;
           if (!stream) {
-            console.debug('[WebTransport] received undefined unidirectional stream, skipping');
+            console.debug('[WebTransport] received: undefined unidirectional stream, skipping');
           } else {
             void this.handleUnidirectionalStream(stream).catch(err =>
               console.error('❌ Unidirectional handler failed:', err)
@@ -372,13 +372,13 @@ export class WebTransportService {
 
     try {
       switch (this.state.activeTransport) {
-        case 'webtransport':
+        case, 'webtransport':
           await this.sendViaWebTransport(data);
           break;
-        case 'websocket':
+        case, 'websocket':
           await this.sendViaWebSocket(data);
           break;
-        case 'http':
+        case, 'http':
           return await this.sendViaHTTP(data);
         default:
           throw new Error('No active transport');

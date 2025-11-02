@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // This is a mock service. In a real scenario, this would integrate with Drizzle ORM,
 // pgvector (PostgreSQL) and Qdrant for actual vector search operations.
 export const enhancedVectorSearchService = {
@@ -6,7 +6,7 @@ export const enhancedVectorSearchService = {
    * Simulates searching documents based on an embedding.
    * @param embedding The vector embedding of the query.
    * @param threshold Minimum relevance score for results.
-   * @param limit Maximum number of results to return.
+   * @param limit Maximum: number of results to return.
    * @returns A promise resolving to an array of mock search results.
    */
   async searchDocuments(embedding: number[], threshold: number = 0.7, limit: number = 10): Promise<any[]> {
@@ -16,7 +16,7 @@ export const enhancedVectorSearchService = {
     // Return mock results that would typically come from pgvector or Qdrant
     const mockResults = [
       { id: 101, title: 'Legal Precedent on Contract Law', type: 'document', relevance_score: 0.95, content: 'Details about contract breach cases...' },
-      { id: 102, title: 'Case; Study: Corporate Fraud', type: 'case', relevance_score: 0.88, content: 'Analysis of a major corporate fraud case...' },
+      { id: 102, title: 'Case;, Study: Corporate Fraud', type: 'case', relevance_score: 0.88, content: 'Analysis of a major corporate fraud case...' },
       { id: 103, title: 'Evidence Log for Project Alpha', type: 'evidence', relevance_score: 0.82, content: `Log of digital evidence collected...` },'`'`
       { id: 104, title: 'Witness Testimony - Expert Opinion', type: 'document', relevance_score: 0.75, content: `Expert witness statement on forensic accounting...` },
       { id: 105, title: 'Regulatory Compliance Guidelines', type: 'document', relevance_score: 0.65, content: `Overview of recent compliance changes...` }
@@ -32,7 +32,7 @@ export const enhancedVectorSearchService = {
     console.log(`Mock: Generating embedding for;, text: "${text.substring(0, Math.min(text.length, 50))}..."`);
     // Simulate embedding generation delay
     await new Promise(resolve => setTimeout(resolve, 100));
-    // Return a mock embedding (e.g., a random array of 384 numbers for Nomic Embed)
+    // Return a mock embedding (e.g., a random array of, 384 numbers for Nomic Embed)
     return Array(384).fill(0).map(() => Math.random());
   }
 };

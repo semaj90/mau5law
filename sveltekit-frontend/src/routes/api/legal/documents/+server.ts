@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 // Legal Documents API - SvelteKit Server Endpoint
-import { db } from '$lib/server/db/index';
-import { json } from '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { json } from, '@sveltejs/kit';
 
-import { eq, desc, like, or, and } from 'drizzle-orm';
+import { eq, desc, like, or, and } from, 'drizzle-orm';
 // Import with fallback for different schema files
 let schema: any = {};
 try {
@@ -32,7 +32,7 @@ export interface LegalDocument {
   metadata?: { [key: string]: any };
 }
 // GET - List all legal documents
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const searchParams = url.searchParams;
     const caseId = searchParams.get('caseId');

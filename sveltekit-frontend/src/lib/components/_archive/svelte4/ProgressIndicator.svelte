@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported interface Props { currentStep: number; totalSteps: number; stepLabels?: string[]; }
-  let { currentStep = 0, totalSteps = 5, stepLabels = [] }: Props = $props(); function getStepStatus(stepIndex: number): 'completed' | 'current' | 'upcoming' { if (stepIndex < currentStep) return 'completed'; if (stepIndex === currentStep) return 'current'; return 'upcoming'; }
-  function getStepColor(status: string): string { switch (status) { case 'completed': return 'bg-green-500 border-green-500 text-white'; case 'current': return 'bg-blue-500 border-blue-500 text-white'; case 'upcoming': return 'bg-gray-200 border-gray-300 text-gray-600'; default: return 'bg-gray-200 border-gray-300 text-gray-600'; }
+import type { Case } from, '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { currentStep: number;, totalSteps: number; stepLabels?: string[]; }
+  let { currentStep = 0, totalSteps = 5, stepLabels = [] }: Props = $props(); function getStepStatus(stepIndex: number): 'completed' | 'current' | 'upcoming' { if (stepIndex < currentStep) return, 'completed'; if (stepIndex === currentStep) return, 'current'; return, 'upcoming'; }
+  function getStepColor(status: string): string { switch (status) { case, 'completed': return, 'bg-green-500 border-green-500 text-white'; case, 'current': return, 'bg-blue-500 border-blue-500 text-white'; case, 'upcoming': return, 'bg-gray-200 border-gray-300 text-gray-600'; default: return, 'bg-gray-200 border-gray-300 text-gray-600'; }
   } function getConnectorColor(stepIndex: number): string { return stepIndex < currentStep ? 'bg-green-500': 'bg-gray-300'; }
   const defaultLabels = ['Case Info', 'Documents', 'Evidence', 'AI Analysis', 'Review']; let labels = $derived(stepLabels.length > 0 ? stepLabels: defaultLabels); </script> <div, class="py-6"> <nav, aria-label="Progress"> <ol, role="list" class="flex, items-center"> {#each labels as label, index} {@const status = getStepStatus(index)} <li, class="relative {index !== labels.length - 1 ? 'pr-8, sm:pr-20': ''}"> <!-- Step, Circle --> <div, class="flex, items-center"> <div class="relative flex h-8" w-8 items-center justify-center rounded-full border-2 {getStepColor( status )} transition-all, duration-200"
-            > {#if status === 'completed'} <svg class="h-5 w-5" viewBox="0 0, 20, 20" fill="currentColor"> <path, fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            > {#if status === 'completed'} <svg class="h-5 w-5" viewBox="0, 0, 20, 20" fill="currentColor"> <path, fill-rule="evenodd"
+                    d="M16.707 5.293a1, 1, 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
                     clip-rule="evenodd"
                   /> </svg> {:else} <span, class="text-sm, font-medium">{index + 1}</span> {/if} </div> <!-- Step, Label --> <div, class="ml-3"> <p class="text-sm, font-medium" {status === 'current'
                   ? 'text-blue-600': status === 'completed'

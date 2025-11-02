@@ -8,7 +8,7 @@ export async function getSystemMetrics(): Promise<SystemMetrics> {
     if (!res.ok) throw new Error(`Analytics request failed: ${res.status} ${res.statusText}`);
 
     const data = await res.json();
-    // Guard: ensure we return a plain object (not null/array/primitive)
+    // Guard: ensure we return a, plain: object (not: null/array/primitive)
     if (data === null || typeof data !== 'object' || Array.isArray(data)) {
       return {};
     }

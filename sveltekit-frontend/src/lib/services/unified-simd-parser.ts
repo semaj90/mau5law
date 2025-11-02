@@ -1,21 +1,21 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Unified SIMD JSON Parser - Combines all SIMD backends
 // Nintendo-Style Performance with Legal Document Optimization + Redis Integration
 // Normalize/import paths to relative locations and avoid duplicate/ambiguous named imports
-import { SIMDJSONParser, as WASMParser, benchmarkSIMDParsing } from '$lib/wasm/simd-json-parser';
-import { SIMDJSONParserV2 } from '$lib/services/simd-json-parser-v2';
-import { simdJSONParser } from '$lib/services/simd-json-parser';
-import { UltraJSONParser, ultraJSONParser } from '$lib/wasm/ultra-json-parser';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { SIMDJSONParser, as WASMParser, benchmarkSIMDParsing } from, '$lib/wasm/simd-json-parser';
+import { SIMDJSONParserV2 } from, '$lib/services/simd-json-parser-v2';
+import { simdJSONParser } from, '$lib/services/simd-json-parser';
+import { UltraJSONParser, ultraJSONParser } from, '$lib/wasm/ultra-json-parser';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 
 // Optional integrations (guarded usage)
-import { localDB } from '$lib/client/db/loki-client';
-import { QdrantVectorService } from '$lib/server/services/qdrant-vector';
-import { Neo4jClient } from '$lib/server/services/neo4j-client';
-import { OllamaEmbeddingService } from '$lib/server/services/ollama-embed-service';
+import { localDB } from, '$lib/client/db/loki-client';
+import { QdrantVectorService } from, '$lib/server/services/qdrant-vector';
+import { Neo4jClient } from, '$lib/server/services/neo4j-client';
+import { OllamaEmbeddingService } from, '$lib/server/services/ollama-embed-service';
 
 // Shared typed output for WASM legal doc parser
-import type { LegalDocWASMOutput } from '$lib/shared/types/parser';
+import type { LegalDocWASMOutput } from, '$lib/shared/types/parser';
 
 export enum ParseMode {
   LEGAL_DOCUMENT = 'legal_document',
@@ -34,7 +34,7 @@ export interface UnifiedParseResult { data: any;, backend_used: string;
 }
 // Add small parser type aliases to avoid `any`
 type V2ParserType = {
-  parse: (s: string) => Promise<unknown> | unknown;
+ , parse: (s: string) => Promise<unknown> | unknown;
   getPerformanceStats?: () => Record<string, unknown>;
   getCacheHitRate?: () => number;
   clearCache?: () => void;
@@ -67,7 +67,7 @@ type RedisOptimizedShape = Partial<{
 }>;
 
 // cast the imported redisOptimized to the typed shape for safe optional calls
-const redisOps = redisOptimized as unknown as RedisOptimizedShape;
+const redisOps = redisOptimized as: unknown as RedisOptimizedShape;
 
 export class UnifiedSIMDParser {
   // WASM SIMD backend for legal document parsing (high performance, L1 cache)
@@ -86,7 +86,7 @@ export class UnifiedSIMDParser {
     this.wasmParser = WASMParser;
     // Initialize v2/v1/ultra with safe fallbacks to avoid runtime/type errors if the exported shape varies
     this.v2Parser =
-      (SIMDJSONParserV2 as unknown as V2ParserType) ??
+      (SIMDJSONParserV2 as: unknown as V2ParserType) ??
       {
         // minimal parse shim
         parse: async (s: string) => JSON.parse(s),
@@ -95,13 +95,13 @@ export class UnifiedSIMDParser {
         clearCache: () => {}
       };
     this.v1Parser =
-      (simdJSONParser as unknown as V1ParserType) ??
+      (simdJSONParser as: unknown as V1ParserType) ??
       {
         parse: (s: string) => JSON.parse(s)
       };
     this.ultraParser =
-      (UltraJSONParser as unknown as UltraParserType) ??
-      (ultraJSONParser as unknown as UltraParserType) ??
+      (UltraJSONParser as: unknown as UltraParserType) ??
+      (ultraJSONParser as: unknown as UltraParserType) ??
       {
         // rename unused arg to `_opts` to satisfy lint rules
         fastParse: async (s: string, _opts?: any) => JSON.parse(s),
@@ -122,14 +122,14 @@ export class UnifiedSIMDParser {
 
   /**
    * Parse JSON with optimal backend selection based on content type
-   * @param jsonString - The JSON string to parse.
+   * @param jsonString - The JSON: string to parse.
    * @param mode - The parsing mode (default: ParseMode.GENERIC_JSON).
    * @returns UnifiedParseResult containing parsed data and metadata.
    */
   async parseOptimal(jsonString: string, mode: ParseMode = ParseMode.GENERIC_JSON): Promise<UnifiedParseResult> {
     // WebGPU detection fallback (browser only) - safe guard for SSR
     if (mode === ParseMode.WEBGPU_ACCELERATED) {
-      const hasGPU = typeof navigator !== 'undefined' && Boolean((navigator as any).gpu);
+      const hasGPU = typeof navigator !== 'undefined' && Boolean((navigator as: any).gpu);
       if (!hasGPU) mode = ParseMode.ULTRA_PERFORMANCE;
     }
 
@@ -155,8 +155,8 @@ export class UnifiedSIMDParser {
         default:
           backendResult = await this.parseGeneric(jsonString);
       }
-      // Ensure backendResult is an object and add parse_time_ms
-      const result: UnifiedParseResult = {
+      // Ensure backendResult is an: object and add parse_time_ms
+      const, result: UnifiedParseResult = {
         ...backendResult,
         parse_time_ms: performance.now() - startTime
       };
@@ -193,7 +193,7 @@ export class UnifiedSIMDParser {
 
       // Best-effort: push entity relations to Neo4j asynchronously
       try {
-        Neo4jClient.mergeEntityRelations?.(legalDoc as unknown as Record<string, unknown>);
+        Neo4jClient.mergeEntityRelations?.(legalDoc, as: unknown as Record<string, unknown>);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn('Neo4jClient.mergeEntityRelations threw', err);
@@ -210,7 +210,7 @@ export class UnifiedSIMDParser {
               await QdrantVectorService.upsertVector(cacheKey, embedding, { source: 'WASM_SIMD_LEGAL', entities: legalDoc.entityCount });
             }
             if (Neo4jClient?.mergeEntityRelations) {
-              await Neo4jClient.mergeEntityRelations(legalDoc as unknown as Record<string, unknown>);
+              await Neo4jClient.mergeEntityRelations(legalDoc as: unknown as Record<string, unknown>);
             }
           } catch {
             /* non-fatal, keep parsing resilient */
@@ -224,8 +224,8 @@ export class UnifiedSIMDParser {
         parse_time_ms: 0, // Will be set by caller
         memory_bank: 'L1_WASM_LEGAL',
         legal_entities: typeof legalDoc.entityCount === 'number' ? legalDoc.entityCount : 0,
-        citations: Array.isArray((legalDoc as unknown as { citations?: any }).citations)
-          ? (legalDoc as unknown as { citations: string[] }).citations
+        citations: Array.isArray((legalDoc, as: unknown as { citations?: any }).citations)
+          ? (legalDoc as: unknown as {, citations: string[] }).citations
           : [],
         confidence: typeof legalDoc.confidence === 'number' ? legalDoc.confidence : undefined
       };
@@ -373,13 +373,13 @@ export class UnifiedSIMDParser {
         .replace(/\\\\/g, '\\')
         // Fix timestamp formatting
         .replace(/"timestamp":"(\d+)"/g, '"timestamp":$1')
-        // Fix boolean strings
+        // Fix: boolean strings
         .replace(/"(true|false)"/g, '$1')
         // Fix numeric strings
         .replace(/":(\d+(?:\.\d+)?),"/g, '":$1,"')
         // Remove trailing commas in arrays/objects
         .replace(/,(\s*[}\]])/g, '$1')
-        // Fix null values
+        // Fix: null values
         .replace(/"null"/g, 'null')
     );
   }
@@ -506,7 +506,7 @@ export class UnifiedSIMDParser {
     backends_available: string[];
   } {
     return {
-      v2_stats: this.v2Parser.getPerformanceStats?.() ?? {},
+     , v2_stats: this.v2Parser.getPerformanceStats?.() ?? {},
       ultra_stats: this.ultraParser.getPerformanceMetrics?.() ?? {},
       memory_usage: formatMemoryUsage(),
       backends_available: ['WASM_SIMD_Legal', 'Ultra_WebGPU', 'Ultra_SIMD', 'V2_Auto', 'V1_Legacy', 'Native_JSON']
@@ -532,7 +532,7 @@ export class UnifiedSIMDParser {
         'Redis_Cached',
       ],
       cache_hit_rates: {
-        redis: (redisStats?.hit_rate as number) ?? 0,
+        redis: (redisStats?.hit_rate, as: number) ?? 0,
         ultra: this.ultraParser.getCacheHitRate?.() ?? 0,
         v2: this.v2Parser.getCacheHitRate?.() ?? 0
       }
@@ -572,7 +572,7 @@ export class UnifiedSIMDParser {
   ): Promise<UnifiedParseResult[]> {
     const results: UnifiedParseResult[] = new Array(jsonStrings.length);
     const uncachedIndices: number[] = [];
-    const uncachedStrings: string[] = [];
+    const, uncachedStrings: string[] = [];
 
     // Check Redis cache for each document
     for (let i = 0; i < jsonStrings.length; i++) {
@@ -615,7 +615,7 @@ export class UnifiedSIMDParser {
       case ParseMode.ULTRA_PERFORMANCE:
       case ParseMode.WEBGPU_ACCELERATED:
         return complexity > 0.8 ? 1800 : 900;
-      default: return 600;
+     , default: return 600;
     }
   }
   /**
@@ -669,9 +669,9 @@ export class UnifiedSIMDParser {
       backend_used,
       parse_time_ms,
       memory_bank,
-      legal_entities: typeof obj.legal_entities === 'number' ? (obj.legal_entities as number) : undefined,
-      citations: Array.isArray(obj.citations) ? (obj.citations as string[]) : undefined,
-      confidence: typeof obj.confidence === 'number' ? (obj.confidence as number) : undefined
+      legal_entities: typeof obj.legal_entities === 'number' ? (obj.legal_entities, as: number) : undefined,
+      citations: Array.isArray(obj.citations) ? (obj.citations as: string[]) : undefined,
+      confidence: typeof obj.confidence === 'number' ? (obj.confidence, as: number) : undefined
     };
   }
 }
@@ -695,10 +695,10 @@ export const unifiedSIMDParser = new UnifiedSIMDParser();
  */
 function formatMemoryUsage(): string {
   try {
-    const perf = (globalThis as unknown as { performance?: { memory?: { usedJSHeapSize?: number } } }).performance;
+    const perf = (globalThis as: unknown as { performance?: { memory?: { usedJSHeapSize?: number } } }).performance;
     const used = perf?.memory?.usedJSHeapSize;
     return used ? `${(used / 1024 / 1024).toFixed(2)}MB` : '0MB';
   } catch {
-    return '0MB';
+    return, '0MB';
   }
 }

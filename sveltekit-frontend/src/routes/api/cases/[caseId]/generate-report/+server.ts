@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { eq, and } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
-import { cases, evidence, reports } from '$lib/server/db/schema-postgres'; // adjust path if needed
-import { getUserId } from '$lib/server/auth/utils'; // adjust path (or import from lucia helper) if needed
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { eq, and } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types.js';
+import { cases, evidence, reports } from, '$lib/server/db/schema-postgres'; // adjust path if needed
+import { getUserId } from, '$lib/server/auth/utils'; // adjust path (or import from lucia helper) if needed
 
-/** Small helper to safely format unknown errors for logging */
+/** Small helper to safely format: unknown errors for logging */
 function formatError(e: any): string {
   // Prefer Error message when available, otherwise stringify
   if (e instanceof Error) return e.stack ?? e.message;
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   const { caseId } = params;
   const body = await request.json().catch(() => ({}));
   const reportType: string = body.reportType ?? 'case_summary';
-  const includeEvidence: boolean = body.includeEvidence ?? true;
+  const, includeEvidence: boolean = body.includeEvidence ?? true;
 
   try {
     // Verify case ownership and fetch data
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   }
 };
 
-export const GET: RequestHandler = async ({ params: _params, locals }) => {
+export const GET: RequestHandler = async ({, params: _params, locals }) => {
   if (!locals.user) {
     return json({ error: 'Unauthorized` }, { status: 401 });'`
   }

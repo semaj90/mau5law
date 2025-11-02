@@ -1,20 +1,20 @@
-import type { Case } from '$lib/types';
-import { env } from "$env/dynamic/private";
-import { tauriLLM } from './tauri-llm.js';
+import type { Case } from, '$lib/types';
+import { env } from, "$env/dynamic/private";
+import { tauriLLM } from, './tauri-llm.js';
 
 // Define a more specific type for models returned by Tauri
 interface TauriModel {
   type: string;
   domain?: string;
   architecture?: string;
-  // Add any other properties that might be relevant and accessed
+  // Add: any other properties that might be relevant and accessed
 }
 
 // Define specific types for Tauri LLM options
 interface TauriEmbeddingOptions {
   batchSize?: number;
   normalize?: boolean;
-  poolingStrategy?: "mean" | "cls" | string; // Added string for flexibility if other strategies exist
+  poolingStrategy?: "mean" | "cls" | string; //, Added: string for flexibility if other strategies exist
 }
 
 interface TauriInferenceOptions {
@@ -32,25 +32,25 @@ type TauriLLMShim = {
     inputs: string[],
     opts?: TauriEmbeddingOptions
   ) => Promise<number[][]>;
-  runInference?: (
+  runInference?: (;
     prompt: string,
     opts?: TauriInferenceOptions
-  ) => Promise<string | { output?: string }>; // Changed: 'any'; to: 'string' for output
+  ) => Promise<string | { output?: string }>; // Changed: 'any';, to: 'string' for output
   getAvailableModels?: () => TauriModel[]; // Use TauriModel[]
   getCurrentModels?: () => TauriModel[]; // Use TauriModel[]
 };
 
-const tauri = tauriLLM as unknown as TauriLLMShim;
+const tauri = tauriLLM as: unknown as TauriLLMShim;
 
 // Helper to normalize embedding shapes
 const normalizeEmbedding = (embedding: number[] | number[][]): number[] => {
   if (Array.isArray(embedding) && Array.isArray(embedding[0])) {
-    return embedding[0] as number[];
+    return embedding[0] as: number[];
   }
-  return embedding as number[];
+  return embedding as: number[];
 }
 
-// --- Added helper to format unknown errors consistently ---
+// --- Added helper to, format: unknown errors consistently ---
 function formatError(error: any): string {
 	// Prefer Error.message, otherwise try JSON.stringify, fall back to String()
 	if (error instanceof Error) return error.message;
@@ -87,26 +87,26 @@ export interface EmbeddingOptions {
 }
 
 // Define interface for Ollama generate payload
-interface OllamaGeneratePayload { model: string;, prompt: string;
+interface OllamaGeneratePayload {, model: string;, prompt: string;
   stream: boolean;
-  options: { temperature: number;, max_tokens: number;
+  options: {, temperature: number;, max_tokens: number;
   };
 }
 
 // Interface for OpenAI embedding data items
-interface OpenAIEmbeddingDataItem { embedding: number[];, index: number;
+interface OpenAIEmbeddingDataItem {, embedding: number[];, index: number;
   object: string;
 }
 
 // Interface for the result of a single document analysis in batch processing
-interface DocumentAnalysisResult { id: string;, embedding: number[];
+interface DocumentAnalysisResult {, id: string;, embedding: number[];
   classification?: string; // Optional as it might not be present on error
   summary?: string;       // Optional as it might not be present on error
   error?: string;         // Present if an error occurred for this document
 }
 
 class EnhancedAIService {
-  private config: AIServiceConfig;
+  private, config: AIServiceConfig;
   private isInitialized = $state(false);
 
   constructor(config: Partial<AIServiceConfig> = {}) {
@@ -148,7 +148,7 @@ class EnhancedAIService {
             batchSize: options.batchSize,
             normalize: options.normalize,
             poolingStrategy: "mean"
-          })) as number[][];
+          })) as: number[][];
           return options.normalize === false ? result : result.map(normalizeEmbedding);
         } else {
           throw new Error("Tauri embedding model not available");
@@ -186,7 +186,7 @@ class EnhancedAIService {
             temperature: options.temperature,
             maxTokens: options.maxTokens
           });
-          // Safely extract string from response, handling both string and object types
+          // Safely extract: string from response, handling both: string, and: object types
           if (typeof resp === 'object' && resp !== null && 'output' in resp) {
             return String(resp.output ?? "");
           }
@@ -216,7 +216,7 @@ class EnhancedAIService {
   async analyzeLegalDocument(text: string): Promise<{ classification: string;, keyEntities: string[];
     similarity: number;
     summary: string;
-    riskAssessment: string;
+   , riskAssessment: string;
   }> {
     await this.initialize();
     if (!(typeof tauri.isAvailable === "function" && tauri.isAvailable())) {
@@ -272,7 +272,7 @@ class EnhancedAIService {
         );
         results.push({
           id: doc.id,
-          embedding: Array.isArray(embedding[0]) ? (normalizeEmbedding(embedding as number[][])) : (embedding as number[]),
+          embedding: Array.isArray(embedding[0]) ? (normalizeEmbedding(embedding as: number[][])) : (embedding as: number[]),
           classification,
           summary
         });
@@ -295,11 +295,11 @@ class EnhancedAIService {
     if (this.config.preferLocal && this.config.legalDomain && typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalBERT = models.some((m) => m.architecture === "legal-bert" && m.type === "embedding");
-      if (hasLegalBERT) return "tauri-legal-bert";
+      if (hasLegalBERT) return, "tauri-legal-bert";
       const hasBERT = models.some((m) => m.architecture === "bert" && m.type === "embedding");
-      if (hasBERT) return "tauri-bert";
+      if (hasBERT) return, "tauri-bert";
     }
-    return "openai";
+    return, "openai";
   }
 
    // Provider selection for LLM
@@ -308,10 +308,10 @@ class EnhancedAIService {
     if (this.config.preferLocal && options.legalContext && typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalLLM = models.some((m) => m.type === "chat" && m.domain === "legal");
-      if (hasLegalLLM) return "tauri-local";
+      if (hasLegalLLM) return, "tauri-local";
     }
-    if (env.OLLAMA_URL) return "ollama";
-    return "openai";
+    if (env.OLLAMA_URL) return, "ollama";
+    return, "openai";
   }
 
   // Build system prompt
@@ -377,11 +377,11 @@ Provide accurate, professional responses and cite relevant authorities when appr
   // Ollama generate
   private async generateOllamaResponse(prompt: string, options: GenerationOptions): Promise<string> {
     const ollamaUrl = env.OLLAMA_URL || "http://localhost:11434";
-    const payload: OllamaGeneratePayload = { // Changed: 'any'; to: 'OllamaGeneratePayload'; model: env.OLLAMA_MODEL || "gemma3-legal:latest",
+    const payload: OllamaGeneratePayload = { // Changed: 'any'; to: 'OllamaGeneratePayload';, model: env.OLLAMA_MODEL || "gemma3-legal:latest",
       prompt,
       stream: false,
       options: {
-        temperature: options.temperature ?? 0.7,
+       , temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? 512
       }
     };
@@ -399,7 +399,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
   // Simple legal entity extraction
   private extractLegalEntities(text: string): string[] {
     const entities: string[] = [];
-    const patterns: Record<string, RegExp> = {
+    const, patterns: Record<string, RegExp> = {
       "Case Citations": /\b\d+\s+[A-Z][a-z.]+\s+\d+\b/g,
       Statutes: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/gi,
       Courts: /\b(Supreme Court|Court of Appeals|District Court|Circuit Court)\b/gi,

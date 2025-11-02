@@ -1,7 +1,7 @@
-import type { AIResponse } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { AIResponse } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // AI Workflow Types - Ollama Gemma3-Legal + TensorRT-LLM Triton Integration
-import type { Actor } from 'xstate';
+import type { Actor } from, 'xstate';
 
 // ============================================================================
 // Document & Content Types
@@ -22,11 +22,11 @@ export interface DocumentMetadata {
   tags: string[];
 }
 
-export interface DocumentChunk { id: string;, documentId: string;
+export interface DocumentChunk {, id: string;, documentId: string;
   content: string;
   chunkIndex: number;
   embedding?: VectorEmbedding;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 
 // ============================================================================
@@ -42,7 +42,7 @@ export interface AIModelConfig { ollamaUrl: string;, ollamaModel: string;
   timeout: number;
 }
 
-export interface AIResponse { text: string;, source: AIModelSource;
+export interface AIResponse {, text: string;, source: AIModelSource;
   model: string;
   toolInvocations?: ToolInvocation[];
   metadata: AIResponseMetadata;
@@ -61,18 +61,18 @@ export interface AIResponseMetadata {
 
 export type ToolName = 'websearch' | 'legal_analysis' | 'document_summarize' | 'vector_search' | 'case_lookup';
 
-export interface ToolInvocation { tool: ToolName;, input: Record<string, unknown>;
+export interface ToolInvocation {, tool: ToolName;, input: Record<string, unknown>;
   output: Record<string, unknown>;
   success: boolean;
   latencyMs: number;
 }
 
-export interface WebSearchResult { title: string;, url: string;
+export interface WebSearchResult {, title: string;, url: string;
   snippet: string;
   relevance: number;
 }
 
-export interface LegalAnalysisResult { summary: string;, keyPoints: string[];
+export interface LegalAnalysisResult {, summary: string;, keyPoints: string[];
   legalIssues: string[];
   citations: string[];
   confidence: number;
@@ -84,7 +84,7 @@ export interface LegalAnalysisResult { summary: string;, keyPoints: string[];
 
 export type ChatRole = 'user' | 'agent' | 'system';
 
-export interface ChatMessage { id: string;, role: ChatRole;
+export interface ChatMessage {, id: string;, role: ChatRole;
   content: string;
   timestamp: number;
   metadata?: ChatMessageMetadata;
@@ -97,7 +97,7 @@ export interface ChatMessageMetadata {
   cached?: boolean;
 }
 
-export interface ChatSession { id: string;, userId: string;
+export interface ChatSession {, id: string;, userId: string;
   messages: ChatMessage[];
   createdAt: Date;
   updatedAt: Date;
@@ -109,7 +109,7 @@ export interface ChatSession { id: string;, userId: string;
 
 export type VectorEmbedding = number[];
 
-export interface VectorSearchQuery { embedding: VectorEmbedding;, topK: number;
+export interface VectorSearchQuery {, embedding: VectorEmbedding;, topK: number;
   threshold?: number;
   filter?: Record<string, unknown>;
 }
@@ -119,13 +119,13 @@ export interface VectorSearchResult { id: string;, score: number;
   chunk?: DocumentChunk;
 }
 
-export interface PgVectorRecord { id: string;, embedding: VectorEmbedding;
-  metadata: Record<string, unknown>;
+export interface PgVectorRecord {, id: string;, embedding: VectorEmbedding;
+ , metadata: Record<string, unknown>;
   createdAt: Date;
 }
 
-export interface QdrantPoint { id: string;, vector: VectorEmbedding;
-  payload: Record<string, unknown>;
+export interface QdrantPoint {, id: string;, vector: VectorEmbedding;
+ , payload: Record<string, unknown>;
 }
 
 // ============================================================================
@@ -136,13 +136,13 @@ export interface WorkflowResult { success: boolean;, processedAt: Date;
   documentId: string;
   summary?: string;
   legalAnalysis?: LegalAnalysisResult;
-  embeddings?: { pgvector: boolean;, qdrant: boolean;
+  embeddings?: {, pgvector: boolean;, qdrant: boolean;
   };
-  cache?: { redis: boolean;, ttl: number;
+  cache?: {, redis: boolean;, ttl: number;
   };
 }
 
-export interface WorkflowContext { documentId: string;, userId: string;
+export interface WorkflowContext {, documentId: string;, userId: string;
   progress: number;
   status: WorkflowStatus;
   errors: string[];
@@ -157,7 +157,7 @@ export type WorkflowEvent =
   | { type: 'ANALYSIS_COMPLETE'; analysis: LegalAnalysisResult }
   | { type: 'COMPLETE'; result: WorkflowResult }
   | { type: 'ERROR'; error: string }
-  | { type: 'RESET' };
+  | {, type: 'RESET' };
 
 // ============================================================================
 // XState Actor Types
@@ -179,7 +179,7 @@ export type WorkflowSnapshot = {
 export interface CacheConfig { ttl: number; // seconds, prefix: string;
 }
 
-export interface CacheEntry<T = unknown> { value: T;, expiresAt: number;
+export interface CacheEntry<T = unknown> {, value: T;, expiresAt: number;
   createdAt: number;
 }
 
@@ -191,11 +191,11 @@ export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-  metadata?: { requestId: string;, latencyMs: number;
+  metadata?: {, requestId: string;, latencyMs: number;
     cached: boolean;
   };
 }
 
-export interface StreamChunk { type: 'text' | 'tool' | 'complete' | 'error';, content: string;
+export interface StreamChunk {, type: 'text' | 'tool' | 'complete' | 'error';, content: string;
   metadata?: Record<string, unknown>;
 }

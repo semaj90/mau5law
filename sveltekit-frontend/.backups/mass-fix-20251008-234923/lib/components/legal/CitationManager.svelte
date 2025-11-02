@@ -322,7 +322,7 @@
             🔧 Bulk Operations
           </Button>
           {#if selectedCitations.size > 0}
-            <div class="bulk-actions" transition:fade>
+            <div class="bulk-actions" use:fade>
               <Button onclick={() => exportCitations('bluebook')} size="sm">
                 📄 Bluebook ({selectedCitations.size})
               </Button>
@@ -337,7 +337,7 @@
     <CardContent>
       <!-- Add Citation Form -->
       {#if showAddForm}
-        <div class="add-form" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="add-form" use:fly={{ y: -20, duration: 300 }}>
           <div class="form-header">
             <h3>Add New Citation</h3>
             <Button onclick={() => showAddForm = false} size="sm">✕</Button>
@@ -354,7 +354,7 @@
       {/if}
       <!-- Bulk Operations Panel -->
       {#if bulkOperations}
-        <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="bulk-panel" use:fly={{ y: -20, duration: 300 }}>
           <div class="panel-header">
             <h3>Bulk Operations</h3>
             <Button onclick={() => bulkOperations = false} size="sm">✕</Button>
@@ -452,7 +452,7 @@
           <div
             class="citation-item";
             class:selected={selectedCitations.has(citation.id)}
-            transition:scale={citationBuilder.animations.enter}
+            use:scale={citationBuilder.animations.enter}
           >
             <div class="citation-header">
               <div class="citation-select">
@@ -604,7 +604,7 @@
           </div>
         {/each}
         {#if filteredCitations.length === 0}
-          <div class="no-citations" transition:fade>
+          <div class="no-citations" use:fade>
             <span class="no-citations-icon">📚</span>
             <h3>No Citations Found</h3>
             <p>No citations match your current search and filter criteria.</p>

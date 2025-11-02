@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Enhanced Pattern Analyzer with Production-Ready Features
  *
@@ -13,18 +13,18 @@ import type { User } from '$lib/types';
  * - Cross-modal pattern detection
  * - Advanced clustering and trend analysis
  */
-import { db } from '$lib/server/db/index.js';
-import { sql } from 'drizzle-orm';
-import { MinIOService } from '$lib/server/minio-service.js';
-import { GemmaEmbeddingService } from './gemma-embedding-service.js';
+import { db } from, '$lib/server/db/index.js';
+import { sql } from, 'drizzle-orm';
+import { MinIOService } from, '$lib/server/minio-service.js';
+import { GemmaEmbeddingService } from, './gemma-embedding-service.js';
 const gemmaEmbeddingService = new GemmaEmbeddingService();
 import {
   embedText,
   embedImageBuffer
-} from '$lib/server/index.js';
-import { createMachine, assign, fromPromise, type ActorRefFrom } from 'xstate';
-import { browser } from '$app/environment';
-import Fuse from 'fuse.js';
+} from, '$lib/server/index.js';
+import { createMachine, assign, fromPromise, type ActorRefFrom } from, 'xstate';
+import { browser } from, '$app/environment';
+import Fuse from, 'fuse.js';
 
 // RabbitMQ integration (conditionally loaded for server-side)
 let rabbitmq: any = null;
@@ -51,18 +51,18 @@ interface UserDocument { id: number;, userId: string;
   source: string | null;
   content: string;
   contentType?: string | null;
-  embedding?: string | null; // JSON string of number[]
-  metadata?: string | null; // JSON string
+  embedding?: string | null; // JSON: string of: number[]
+  metadata?: string | null; // JSON: string;
   createdAt: Date;
   needs_embedding?: boolean;
 }
-interface PatternResult { id: number;, source: string | null;
+interface PatternResult {, id: number;, source: string | null;
   content: string;
   distance: number;
   pattern_type?: 'document' | 'cluster' | 'trend' | 'cross_modal';
   confidence?: number;
 }
-interface MultimodalPatternResult { id: number;, source: string | null;
+interface MultimodalPatternResult {, id: number;, source: string | null;
   content: string;
   contentType?: string;
   distance: number;
@@ -73,7 +73,7 @@ interface MultimodalPatternResult { id: number;, source: string | null;
     ocrText?: string;
     audioLength?: number;
     frameCount?: number;
-    imageSize?: { width: number; height: number }
+    imageSize?: { width: number;, height: number }
   }
 }
 interface EnhancedPatternAnalyzerOptions {
@@ -96,12 +96,12 @@ interface EnhancedPatternAnalyzerOptions {
 
 // XState Pattern Analysis Workflow Machine
 const patternAnalysisMachine = createMachine({
-  id: 'patternAnalysis',
+ , id: 'patternAnalysis',
   context: {
-   , userId: null as string | null,
-    queryContent: null as string | Buffer | null,
+   , userId: null, as: string | null,
+    queryContent: null, as: string | Buffer | null,
     options: {} as EnhancedPatternAnalyzerOptions,
-    queryEmbedding: null as number[] | null,
+    queryEmbedding: null, as: number[] | null,
     vectorResults: [] as MultimodalPatternResult[],
     crossModalResults: [] as MultimodalPatternResult[],
     clusteredResults: [] as MultimodalPatternResult[],
@@ -116,7 +116,7 @@ const patternAnalysisMachine = createMachine({
             const recentDocs = await db.execute(sql`
               SELECT content FROM user_documents
               WHERE user_id = ${input.userId}
-              ORDER BY created_at DESC LIMIT 10
+              ORDER BY created_at DESC LIMIT, 10
             `);`
             const textSnippet = recentDocs.map((d: any) => d.content).join('\n\n');
             return await embedText(textSnippet);
@@ -127,16 +127,16 @@ const patternAnalysisMachine = createMachine({
           return await embedText(input.queryContent.toString());
         }),
         onDone: {
-          target: 'vector_search',
-          actions: assign({ queryEmbedding: ({ event }: any) => event.output })
+         , target: 'vector_search',
+          actions: assign({, queryEmbedding: ({ event }: any) => event.output })
         },
         onError: {
-          target: 'failed',
-          actions: assign({ error: ({ event }: any) => event.error })
+         , target: 'failed',
+          actions: assign({, error: ({ event }: any) => event.error })
         }
       }
     },
-    vector_search: { invoke: {, src: fromPromise(async ({ input }: any) => {
+    vector_search: {, invoke: {, src: fromPromise(async ({ input }: any) => {
           const results = await db.execute(sql`
             SELECT id, source, content, content_type, metadata,
                    (embedding <-> ${JSON.stringify(input.queryEmbedding)}::vector) AS distance
@@ -157,16 +157,16 @@ const patternAnalysisMachine = createMachine({
           }));
         }),
         onDone: {
-          target: 'cross_modal_search',
-          actions: assign({ vectorResults: ({ event }: any) => event.output })
+         , target: 'cross_modal_search',
+          actions: assign({, vectorResults: ({ event }: any) => event.output })
         },
         onError: {
-          target: 'failed',
-          actions: assign({ error: ({ event }: any) => event.error })
+         , target: 'failed',
+          actions: assign({, error: ({ event }: any) => event.error })
         }
       }
     },
-    cross_modal_search: { invoke: {, src: fromPromise(async ({ input }: any) => {
+    cross_modal_search: {, invoke: {, src: fromPromise(async ({ input }: any) => {
           if (!input.options.crossModalSearch) return [];
           return await PatternAnalyzer.performCrossModalSearch(
             input.userId,
@@ -176,12 +176,12 @@ const patternAnalysisMachine = createMachine({
           );
         }),
         onDone: {
-          target: 'clustering',
-          actions: assign({ crossModalResults: ({ event }: any) => event.output })
+         , target: 'clustering',
+          actions: assign({, crossModalResults: ({ event }: any) => event.output })
         }
       }
     },
-    clustering: { invoke: {, src: fromPromise(async ({ input }: any) => {
+    clustering: {, invoke: {, src: fromPromise(async ({ input }: any) => {
           const merged = PatternAnalyzer.mergeCrossModalResults(
             input.vectorResults,
             input.crossModalResults
@@ -190,12 +190,12 @@ const patternAnalysisMachine = createMachine({
           return await PatternAnalyzer.clusterMultimodalPatterns(merged);
         }),
         onDone: {
-          target: 'caching',
-          actions: assign({ clusteredResults: ({ event }: any) => event.output })
+         , target: 'caching',
+          actions: assign({, clusteredResults: ({ event }: any) => event.output })
         }
       }
     },
-    caching: { invoke: {, src: fromPromise(async ({ input }: any) => {
+    caching: {, invoke: {, src: fromPromise(async ({ input }: any) => {
           // Cache in IndexedDB if enabled (browser-side)
           if (browser && input.options.useIndexedDB) {
             await PatternAnalyzer.cacheInIndexedDB(input.userId, input.clusteredResults);
@@ -207,13 +207,13 @@ const patternAnalysisMachine = createMachine({
           return input.clusteredResults;
         }),
         onDone: {
-          target: 'complete',
-          actions: assign({ finalResults: ({ event }: any) => event.output })
+         , target: 'complete',
+          actions: assign({, finalResults: ({ event }: any) => event.output })
         }
       }
     },
-    complete: { type: 'final' },'`'`
-    failed: { type: 'final' }
+    complete: {, type: 'final' },'`'`
+    failed: {, type: 'final' }
   }
 });
 
@@ -227,7 +227,7 @@ let lokiDB: any = null;
 
 // Fuse.js fuzzy search configuration
 const FUSE_OPTIONS = {
-  keys: ['content', 'source'],
+ , keys: ['content', 'source'],
   threshold: 0.4,
   includeScore: true,
   ignoreLocation: true,
@@ -307,7 +307,7 @@ async function cachePatternsinIndexedDB(
 async function getCachedPatternsFromIndexedDB(
   userId: string
 ): Promise<MultimodalPatternResult[] | null> {
-  if (!browser) return null;
+  if (!browser) return: null;
 
   try {
     const db = await openIndexedDB();
@@ -328,7 +328,7 @@ async function getCachedPatternsFromIndexedDB(
     });
   } catch (error) {
     console.warn('Failed to get cached patterns from IndexedDB:', error);
-    return null;
+    return: null;
   }
 }
 
@@ -337,7 +337,7 @@ async function getCachedPatternsFromIndexedDB(
 // ============================================================================
 
 function initializeLokiDB(): any {
-  if (browser || !Loki) return null;
+  if (browser || !Loki) return: null;
   if (lokiDB) return lokiDB;
 
   lokiDB = new Loki('patterns.db', {
@@ -451,7 +451,7 @@ async function submitPatternAnalysisJob(
 }
 
 async function getRabbitMQJobResult(jobId: string): Promise<MultimodalPatternResult[] | null> {
-  if (browser || !rabbitmq) return null;
+  if (browser || !rabbitmq) return: null;
 
   // Poll Redis for job completion
   const redis = await import('$lib/server/redis-client.js').then(m => m.default || m.redis);
@@ -463,7 +463,7 @@ async function getRabbitMQJobResult(jobId: string): Promise<MultimodalPatternRes
     return JSON.parse(result);
   }
 
-  return null;
+  return: null;
 }
 
 export class PatternAnalyzer {
@@ -514,7 +514,7 @@ export class PatternAnalyzer {
         WHERE user_id = ${userId}
         ${contentTypeClause}
         ORDER BY created_at DESC
-        LIMIT 500
+        LIMIT, 500
       `);`
 
       if (!recentDocs || recentDocs.length === 0) {
@@ -526,11 +526,11 @@ export class PatternAnalyzer {
         if (Buffer.isBuffer(queryContent)) {
           // image/binary embedding
           const embedRes = await embedImageBuffer(queryContent);
-          if (embedRes && Array.isArray(embedRes)) queryEmbedding = embedRes as number[];
+          if (embedRes && Array.isArray(embedRes)) queryEmbedding = embedRes as: number[];
         } else {
           const embedRes = await embedText(queryContent.toString());
-          if (embedRes && (embedRes as any).embedding) queryEmbedding = (embedRes as any).embedding;
-          else if (Array.isArray(embedRes)) queryEmbedding = embedRes as number[];
+          if (embedRes && (embedRes as: any).embedding) queryEmbedding = (embedRes as: any).embedding;
+          else if (Array.isArray(embedRes)) queryEmbedding = embedRes as: number[];
         }
       } else {
         const textSnippet = recentDocs
@@ -539,8 +539,8 @@ export class PatternAnalyzer {
           .join('\n\n');
         if (textSnippet.trim().length > 0) {
           const embedRes = await embedText(textSnippet);
-          if (embedRes && (embedRes as any).embedding) queryEmbedding = (embedRes as any).embedding;
-          else if (Array.isArray(embedRes)) queryEmbedding = embedRes as number[];
+          if (embedRes && (embedRes as: any).embedding) queryEmbedding = (embedRes as: any).embedding;
+          else if (Array.isArray(embedRes)) queryEmbedding = embedRes as: number[];
         }
       }
 
@@ -561,7 +561,7 @@ export class PatternAnalyzer {
 
         results = (res || [])
           .filter((doc: any) => {
-            const d = parseFloat(doc.distance as any);
+            const d = parseFloat(doc.distance as: any);
             return !Number.isNaN(d) && (1 - d) >= minConfidence;
           })
           .slice(0, k)
@@ -626,11 +626,11 @@ export class PatternAnalyzer {
    * Determine modality from content type
    */
   private static getModalityFromContentType(contentType?: string | null): 'text' | 'image' | 'audio' | 'video' {
-    if (!contentType) return 'text';
-    if (contentType.startsWith('image/')) return 'image';
-    if (contentType.startsWith('audio/')) return 'audio';
-    if (contentType.startsWith('video/')) return 'video';
-    return 'text';
+    if (!contentType) return, 'text';
+    if (contentType.startsWith('image/')) return, 'image';
+    if (contentType.startsWith('audio/')) return, 'audio';
+    if (contentType.startsWith('video/')) return, 'video';
+    return, 'text';
   }
   /**
    * Perform cross-modal similarity search

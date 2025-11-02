@@ -1,10 +1,10 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /*
  * Conversation Messages API - POST new messages to conversation
  */
-import type { RequestHandler } from './$types.js';
-import { conversationService } from '$lib/server/services/conversation-service';
-import { getRequestId, apiSuccess, apiError, withErrorHandling } from '$lib/server/api/standard-response';
+import type { RequestHandler } from, './$types.js';
+import { conversationService } from, '$lib/server/services/conversation-service';
+import { getRequestId, apiSuccess, apiError, withErrorHandling } from, '$lib/server/api/standard-response';
 // POST /api/conversations/[id]/messages - Add message to conversation
 export const POST: RequestHandler = withErrorHandling(async event => {
   const requestId = getRequestId(event);
@@ -19,7 +19,7 @@ export const POST: RequestHandler = withErrorHandling(async event => {
       return apiError('Missing required fields: role, content', 400, 'INVALID_INPUT', undefined, requestId);
     }
     if (role !== 'user' && role !== 'assistant') {
-      return apiError('Role must be either "user" or "assistant"', 400, 'INVALID_INPUT', undefined, requestId);
+      return apiError('Role must be either, "user" or, "assistant"', 400, 'INVALID_INPUT', undefined, requestId);
     }
     const message = await conversationService.addMessage({
       conversationId,

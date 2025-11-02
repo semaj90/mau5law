@@ -1,8 +1,8 @@
-import { writable } from 'svelte/store';
+import { writable } from, 'svelte/store';
 
 // Define the ShortcutItem interface for consistency
 export interface ShortcutItem { key: string;, description: string;
-  action: () => void;
+ , action: () => void;
   aiScore?: number;
   aiSummary?: string;
 }

@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
- * Evidence Management Global Store - SvelteKit 2 + Svelte 5
+ * Evidence Management Global Store - SvelteKit, 2 + Svelte, 5
  * Practical SPA example with drag & drop, CRUD modals, and AI integration
  */
 export interface EvidenceNode { id: string;, title: string;
@@ -8,11 +8,11 @@ export interface EvidenceNode { id: string;, title: string;
   type: 'document' | 'photo' | 'testimony' | 'physical' | 'digital';
   tags: string[];
   position: { x: number; y: number }
-  connections: string[]; // IDs of connected nodes,
-  metadata: { dateCreated: number;, lastModified: number;
+ , connections: string[]; // IDs of connected nodes,
+  metadata: {, dateCreated: number;, lastModified: number;
     source?: string;
     relevanceScore?: number;
-    aiAnalysis?: { summary: string;, keyTerms: string[];
+    aiAnalysis?: {, summary: string;, keyTerms: string[];
       confidence: number;
       suggestedConnections: string[];
     }
@@ -20,23 +20,23 @@ export interface EvidenceNode { id: string;, title: string;
   status: 'pending' | 'reviewed' | 'verified' | 'flagged';
   assignedTo?: string;
 }
-export interface LegalCase { id: string;, title: string;
+export interface LegalCase {, id: string;, title: string;
   description: string;
   jurisdiction: string;
   practiceArea: string;
   nodes: EvidenceNode[];
-  connections: Array<{ id: string;, fromNodeId: string;
+  connections: Array<{, id: string;, fromNodeId: string;
     toNodeId: string;
     relationship: string;
     strength: number;
     aiGenerated: boolean;
   }>;
-  metadata: { dateCreated: number;, lastModified: number;
+  metadata: {, dateCreated: number;, lastModified: number;
     status: 'active' | 'archived' | 'completed';
     priority: 'low' | 'medium' | 'high' | 'urgent';
   };
 }
-export interface UIState { selectedNodeIds: string[];, draggedNodeId: string | null;
+export interface UIState {, selectedNodeIds: string[];, draggedNodeId: string | null;
   modalOpen: boolean;
   modalType: 'add' | 'edit' | 'delete' | 'connect' | null;
   editingNode: EvidenceNode | null;
@@ -47,9 +47,9 @@ export interface UIState { selectedNodeIds: string[];, draggedNodeId: string | 
     tags?: string[];
   };
   viewMode: 'grid' | 'timeline' | 'network';
-  aiProcessing: boolean;
+ , aiProcessing: boolean;
 }
-// Global Evidence Store using Svelte 5 Runes
+// Global Evidence Store using Svelte, 5 Runes
 class EvidenceGlobalStore {
   // Core data using $state
   cases = $state < Record<string, LegalCase>({});
@@ -98,7 +98,7 @@ class EvidenceGlobalStore {
       nodes: [],
       connections: [],
       metadata: {
-        dateCreated: Date.now(),
+       , dateCreated: Date.now(),
         lastModified: Date.now(),
         status: 'active',
         priority: 'medium'
@@ -142,7 +142,7 @@ class EvidenceGlobalStore {
       id: nodeId,
       connections: [],
       metadata: {
-        dateCreated: Date.now(),
+       , dateCreated: Date.now(),
         lastModified: Date.now()
       }
     };
@@ -437,7 +437,7 @@ class EvidenceGlobalStore {
     }
   }
   private startAutoSave() {
-    // Auto-save every 30 seconds
+    // Auto-save every, 30 seconds
     setInterval(() => {
       if (this.hasUnsavedChanges) {
         this.persistState();

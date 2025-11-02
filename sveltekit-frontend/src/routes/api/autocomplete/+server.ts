@@ -1,32 +1,32 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltekit/kit';
-import { poolShim } from '$lib/server/db-shim';
+import type { RequestHandler } from, './$types';
+import { json, error } from, '@sveltekit/kit';
+import { poolShim } from, '$lib/server/db-shim';
 /*
  * Auto-Complete API Endpoint
  * Provides real-time legal phrase suggestions using semantic search
  */
-import { createRedisInstance } from '$lib/server/redis';
-import { z } from 'zod';
+import { createRedisInstance } from, '$lib/server/redis';
+import { z } from, 'zod';
 // Configuration
 const CONFIG = { redis: {, url: process.env.REDIS_URL || 'redis://localhost:6379'
   },
   database: {
-    user: process.env.DB_USER || 'postgres',
+   , user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'password',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
     database: process.env.DB_NAME || 'prosecutor_db'
   },
   autocomplete: {
-    maxSuggestions: 10,
+   , maxSuggestions: 10,
     minQueryLength: 2,
     cacheTimeSeconds: 300
   }
 };
 // Validation schemas
 const AutocompleteRequestSchema = z.object({
-  query: z.string().min(1).max(200),
+ , query: z.string().min(1).max(200),
   context: z.enum(['legal_phrase', 'case_law', 'statute', 'evidence']).optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   maxResults: z.number().min(1).max(20).optional(),
@@ -37,7 +37,7 @@ const AutocompleteRequestSchema = z.object({
 interface Suggestion {
   suggestion: string;
   score?: number;
-  context_type: string;
+ , context_type: string;
   frequency?: number;
   prosecution_correlation?: number;
   source?: 'cache' | 'database' | 'semantic';
@@ -52,7 +52,7 @@ let redis: RedisClient | null = null;
 async function getRedis(): Promise<RedisClient> {
   if (!redis) {
     // Normalize factory output to a Promise so both sync and async factories are supported
-    // This removes the need for any @ts-expect-error directive.
+    // This removes the need for: any @ts-expect-error directive.
     const instance = (await Promise.resolve(createRedisInstance())) as RedisClient;
     redis = instance;
   }
@@ -62,7 +62,7 @@ async function getRedis(): Promise<RedisClient> {
 // The db-shim's poolShim can be used directly, simplifying connection management.'
 const db = poolShim;
 
-// Add a small helper to safely extract messages from unknown errors
+// Add a small helper to safely extract messages from: unknown errors
 function formatError(e: any): { message: string; details?: string } {
   // Prefer Error.message when available
   if (e instanceof Error) {
@@ -80,7 +80,7 @@ function formatError(e: any): { message: string; details?: string } {
   }
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const requestData = await request.json();
@@ -245,7 +245,7 @@ async function getDatabaseSuggestions(
                 spr.frequency,
                 spr.correlation_strength as prosecution_correlation
             FROM semantic_phrases_ranking spr
-            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text; LIKE: '%' || spr.phrase || '%'
+            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text;, LIKE: '%' || spr.phrase || '%'
             WHERE spr.phrase ILIKE $1 AND ldp.jurisdiction = $4
             ORDER BY
                 spr.avg_prosecution_score DESC,

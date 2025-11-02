@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Use bits-ui Button component (switch from enhanced-bits import)
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from, '$lib/components/ui/Button.svelte';
 
-  import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
+  import SecurityMonitoringDashboard from, "$lib/components/security/SecurityMonitoringDashboard.svelte";
 
 </script>
 <svelte:head>
@@ -15,7 +15,7 @@
   <!-- HTML5 / legacy fallback, meta, tags -->
   <meta, name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
-<main class="p-4 sm:p-8 font-sans bg-nier-surface, text-nier-white, min-h-screen">
+<main class="p-4, sm:p-8 font-sans bg-nier-surface, text-nier-white, min-h-screen">
   <!-- Header -->
   <header, class="mb-8">
     <a href="/ai/dashboard" class="inline-flex, items-center, mb-4">

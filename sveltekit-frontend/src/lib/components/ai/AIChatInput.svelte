@@ -1,9 +1,9 @@
 <!-- AI Chat, Input, Component -->
 <script, lang="ts">
-import type { Message } from '$lib/types';
-  import { debounce } from '$lib/utils/debounce';
-  import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
+import type { Message } from, '$lib/types';
+  import { debounce } from, '$lib/utils/debounce';
+  import { browser } from, '$app/environment';
+  import { onMount } from, 'svelte';
   // Props (exported for Svelte)
   let { placeholder = 'Type your message...', disabled = false, autoFocus = false, value = '', maxLength = 2000, rows = 1, maxRows = 6, ondispatch = undefined } = $props<{
     placeholder?: string;
@@ -41,7 +41,7 @@ import type { Message } from '$lib/types';
         // Shift+Enter: new line
         return;
       } else {
-        // Enter: send message
+        //, Enter: send message
         event.preventDefault();
         handleSend();
       }
@@ -99,7 +99,7 @@ import type { Message } from '$lib/types';
       class="chat-input"
       class:disabled
       class:near-limit={isNearLimit}
-      class:at-limit={isAtLimit}
+     , class:at-limit={isAtLimit}
       {rows}
       oninput={debouncedHandleInput}
       onkeydown={handleKeydown}
@@ -118,7 +118,7 @@ import type { Message } from '$lib/types';
         type="button"
         class="send-button"
         {disabled}
-        class:has-content={value.trim().length > 0}
+       , class:has-content={value.trim().length > 0}
         onclick={handleSend}
         title="Send message (Enter)"
         aria-label="Send message"
@@ -126,14 +126,14 @@ import type { Message } from '$lib/types';
         <svg
           width="20"
           height="20"
-          viewBox="0 0 24 24"
+          viewBox="0, 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           aria-hidden="true"
         >
           <line, x1="22" y1="2" x2="11" y2="13" />
-          <polygon points="22,2 15,22, 11,13, 2,9" />
+          <polygon points="22,2, 15,22, 11,13, 2,9" />
         </svg>
       </button>
     </div>
@@ -156,15 +156,15 @@ import type { Message } from '$lib/types';
     align-items: flex-end;
     gap: 8px;
     padding: 12px;
-    background: var(--bg-primary, #ffffff);
+   , background: var(--bg-primary, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 8px;
-    transition: border-color 0.2s ease,
+   , transition: border-color 0.2s ease,
       box-shadow 0.2s ease;
   }
   .input-container:focus-within {
     border-color: var(--accent-color, #3b82f6);
-    box-shadow: 0 0 0 3px var(--accent-shadow, rgba(59, 130, 246, 0.1));
+    box-shadow: 0, 0 0 3px var(--accent-shadow, rgba(59, 130, 246, 0.1));
   }
   .chat-input {
     flex: 1;
@@ -178,19 +178,19 @@ import type { Message } from '$lib/types';
     font-family: inherit;
     font-size: 0.875rem;
     line-height: 1.5;
-    color: var(--text-primary, #1e293b);
+   , color: var(--text-primary, #1e293b);
     overflow-y: auto;
     scrollbar-width: thin;
   }
   .chat-input::placeholder {
-    color: var(--text-placeholder, #94a3b8);
+   , color: var(--text-placeholder, #94a3b8);
   }
   .chat-input:disabled {
-    color: var(--text-disabled, #94a3b8);
+   , color: var(--text-disabled, #94a3b8);
     cursor: not-allowed;
   }
   .chat-input.near-limit {
-    color: var(--text-warning, #d97706);
+   , color: var(--text-warning, #d97706);
   }
   .chat-input.at-limit {
     color: var(--text-error, #dc2626);
@@ -203,11 +203,11 @@ import type { Message } from '$lib/types';
   }
   .character-count {
     font-size: 0.75rem;
-    color: var(--text-muted, #94a3b8);
+   , color: var(--text-muted, #94a3b8);
     font-variant-numeric: tabular-num;
   }
   .character-count.near-limit {
-    color: var(--text-warning, #d97706);
+   , color: var(--text-warning, #d97706);
   }
   .character-count.at-limit {
     color: var(--text-error, #dc2626);
@@ -219,12 +219,12 @@ import type { Message } from '$lib/types';
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: var(--bg-muted, #f1f5f9);
+   , background: var(--bg-muted, #f1f5f9);
     color: var(--text-muted, #64748b);
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
   }
   .send-button:hover:not(:disabled) { /* Corrected selector for hover state */
     background: var(--bg-hover, #e2e8f0);
@@ -247,16 +247,16 @@ import type { Message } from '$lib/types';
   }
   .hint-text {
     font-size: 0.75rem;
-    color: var(--text-muted, #94a3b8);
+   , color: var(--text-muted, #94a3b8);
   }
   .hint-text kbd {
     font-size: 0.6875rem;
     padding: 2px 4px;
-    background: var(--bg-secondary, #f8fafc);
+   , background: var(--bg-secondary, #f8fafc);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 3px;
     font-family: monospace;
-    color: var(--text-secondary, #64748b);
+   , color: var(--text-secondary, #64748b);
   }
   /* Scrollbar styling */
   .chat-input::-webkit-scrollbar {
@@ -266,11 +266,11 @@ import type { Message } from '$lib/types';
     background: transparent;
   }
   .chat-input::-webkit-scrollbar-thumb {
-    background: var(--border-color, #e2e8f0);
+   , background: var(--border-color, #e2e8f0);
     border-radius: 2px;
   }
   .chat-input::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted, #94a3b8);
+   , background: var(--text-muted, #94a3b8);
   }
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {
@@ -306,7 +306,7 @@ import type { Message } from '$lib/types';
     }
     .send-button svg {
       width: 16px;
-      height: 16px;
+     , height: 16px;
     }
   }
 </style>

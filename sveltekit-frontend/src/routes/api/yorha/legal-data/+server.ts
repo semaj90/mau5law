@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from '$lib/server/db';
-import crypto from 'crypto';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from, '$lib/server/db';
+import crypto from, 'crypto';
+import type { RequestHandler } from, './$types.js';
 
 // YoRHa Legal Data Management API - Production Ready
 // Enhanced CRUD operations with AI integration, vector search, and production logging
@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   try {
     const dataType = url.searchParams.get('type') || 'documents';
     const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '25'), 100); // Max 100 items
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '25'), 100); // Max, 100 items
     const search = url.searchParams.get('search') || '';
     const sort = url.searchParams.get('sort') || 'created_at';
     const order = url.searchParams.get('order') || 'desc';
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     });
     let data: any[] = [];
     let totalCount = 0;
-    let aiMetadata: any = null;
+    let, aiMetadata: any = null;
     // Enhanced AI and Vector Search capabilities
     if (useAI && search) {
       try {
@@ -39,8 +39,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'gemma3-legal',
-            prompt: `Analyze this legal search; query: "${search}". Provide insights about document types, jurisdictions, and relevance factors.`,
+           , model: 'gemma3-legal',
+            prompt: `Analyze this legal search;, query: "${search}". Provide insights about document types, jurisdictions, and relevance factors.`,
             stream: false,
             options: {, temperature: 0.1, num_ctx: 1024 }
           })
@@ -81,9 +81,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
       }
     }
     // Bind helpers locally to preserve existing call sites
-    const { eq, and, or, like, desc } = (helpers || {}) as any;
+    const { eq, and, or, like, desc } = (helpers || {}) as: any;
     switch (dataType) {
-      case 'documents':
+      case, 'documents':
         const documentsQuery = db
           .select()
           .from(legalDocuments)
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           );
         totalCount = Number(countResult[0]?.count || 0);
         break;
-      case 'cases':
+      case, 'cases':
         const casesQuery = db
           .select()
           .from(casesTable)
@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           );
         totalCount = Number(caseCountResult[0]?.count || 0);
         break;
-      case 'evidence':
+      case, 'evidence':
         const evidenceQuery = db
           .select()
           .from(evidenceTable)
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         totalCount = Number(evidenceCountResult[0]?.count || 0);
         break;
       default:
-        throw new Error(`Unknown data; type: ${dataType}`);
+        throw new Error(`Unknown data;, type: ${dataType}`);
     }
     // Format data for YoRHa interface
     const formattedData = data.map((item: any, index) => ({
@@ -192,7 +192,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }));
     return json({
       success: true,
-      results: formattedData, // Changed from 'data' to: 'results' to match frontend expectations; totalResults: totalCount,
+      results: formattedData, // Changed from, 'data' to: 'results' to match frontend expectations;, totalResults: totalCount,
       pagination: {
         page,
         limit,
@@ -213,7 +213,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         version: '4.0.0' },'`'`
       // YoRHa interface enhancements
       yorhaStatus: {
-        systemStatus: 'OPERATIONAL',
+       , systemStatus: 'OPERATIONAL',
         dataIntegrity: 'VERIFIED',
         searchAccuracy: search ? 'HIGH' : 'N/A',
         aiEnhancement: useAI ? 'ENABLED' : 'DISABLED',
@@ -238,7 +238,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let result: any;
     switch (dataType) {
-      case 'documents':
+      case, 'documents':
         result = await db
           .insert(legalDocuments)
           .values({
@@ -254,10 +254,10 @@ export const POST: RequestHandler = async ({ request }) => {
             topics: itemData.topics || [],
             createdAt: new Date(),
             updatedAt: new Date()
-          } as any)
+          } as: any)
           .returning();
         break;
-      case 'cases':
+      case, 'cases':
         result = await db
           .insert(casesTable)
           .values({
@@ -269,10 +269,10 @@ export const POST: RequestHandler = async ({ request }) => {
             assignedTo: itemData.assignedTo,
             createdAt: new Date(),
             updatedAt: new Date()
-          } as any)
+          } as: any)
           .returning();
         break;
-      case 'evidence':
+      case, 'evidence':
         result = await db
           .insert(evidenceTable)
           .values({
@@ -286,11 +286,11 @@ export const POST: RequestHandler = async ({ request }) => {
             metadata: itemData.metadata || {},
             createdAt: new Date(),
             updatedAt: new Date()
-          } as any)
+          } as: any)
           .returning();
         break;
       default:
-        throw new Error(`Unknown data; type: ${dataType}`);
+        throw new Error(`Unknown data;, type: ${dataType}`);
     }
     return json({
       success: true,
@@ -316,7 +316,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
     let result: any;
     switch (dataType) {
-      case 'documents':
+      case, 'documents':
         result = await db
           .update(legalDocuments)
           .set({
@@ -326,7 +326,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .where(eq(legalDocuments.id, id))
           .returning();
         break;
-      case 'cases':
+      case, 'cases':
         result = await db
           .update(casesTable)
           .set({
@@ -336,7 +336,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .where(eq(casesTable.id, id))
           .returning();
         break;
-      case 'evidence':
+      case, 'evidence':
         result = await db
           .update(evidenceTable)
           .set({
@@ -347,7 +347,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .returning();
         break;
       default:
-        throw new Error(`Unknown data; type: ${dataType}`);
+        throw new Error(`Unknown data;, type: ${dataType}`);
     }
     if (!(result as { length?: any }).length) {
       return json({ success: false, error: `${dataType} not found` }, { status: 404 });
@@ -376,17 +376,17 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }
     let result: any;
     switch (dataType) {
-      case 'documents':
+      case, 'documents':
         result = await db.delete(legalDocuments).where(eq(legalDocuments.id, id)).returning();
         break;
-      case 'cases':
+      case, 'cases':
         result = await db.delete(casesTable).where(eq(casesTable.id, id)).returning();
         break;
-      case 'evidence':
+      case, 'evidence':
         result = await db.delete(evidenceTable).where(eq(evidenceTable.id, id)).returning();
         break;
       default:
-        throw new Error(`Unknown data; type: ${dataType}`);
+        throw new Error(`Unknown data;, type: ${dataType}`);
     }
     if (!(result as { length?: any }).length) {
       return json({ success: false, error: `${dataType} not found` }, { status: 404 });

@@ -1,9 +1,9 @@
 /**
- * Svelte 5 Compatible Chat Store with XState-like Interface
+ * Svelte, 5 Compatible Chat Store with XState-like Interface
  * Enhanced for Gemma3 Legal AI Integration
  * Optimized for legal document analysis and precedent search
  */
-import { writable, derived, readonly, readable } from "svelte/store";
+import { writable, derived, readonly, readable } from, "svelte/store";
 // === TYPE DEFINITIONS ===
 export interface ChatMessage { id: string;, content: string;
   role: "user" | "assistant" | "system";
@@ -18,7 +18,7 @@ export interface ChatMessage { id: string;, content: string;
     executionTime?: number;
   }
 }
-export interface Conversation { id: string;, title: string;
+export interface Conversation {, id: string;, title: string;
   messages: ChatMessage[];
   created: Date;
   updated: Date;
@@ -28,7 +28,7 @@ export interface Conversation { id: string;, title: string;
     precedents?: string[];
   }
 }
-export interface ChatSettings { model: string;, temperature: number;
+export interface ChatSettings {, model: string;, temperature: number;
   maxTokens: number;
   streaming: boolean;
   contextWindow: number;
@@ -37,12 +37,12 @@ export interface ChatSettings { model: string;, temperature: number;
   legalMode?: boolean;
   citationMode?: boolean;
 }
-export interface ServiceStatus { ollama: "unknown" | "loading" | "connected" | "error";, qdrant: "unknown" | "loading" | "connected" | "error";
+export interface ServiceStatus {, ollama: "unknown" | "loading" | "connected" | "error";, qdrant: "unknown" | "loading" | "connected" | "error";
   database: "unknown" | "loading" | "connected" | "error";
   gemma3: "unknown" | "loading" | "ready" | "error";
 }
 // === CHAT STATE INTERFACE ===
-export interface ChatContext { messages: ChatMessage[];, conversations: Conversation[];
+export interface ChatContext {, messages: ChatMessage[];, conversations: Conversation[];
   currentConversation: Conversation | null;
   error: Error | null;
   settings: ChatSettings;
@@ -50,8 +50,8 @@ export interface ChatContext { messages: ChatMessage[];, conversations: Convers
   isTyping: boolean;
   isStreaming: boolean;
   modelStatus: "unknown" | "loading" | "ready" | "error";
-  contextInjection: { enabled: boolean;, documents: string[];
-    vectorResults: any[];
+  contextInjection: {, enabled: boolean;, documents: string[];
+   , vectorResults: any[];
     precedents?: string[];
     caseContext?: any;
   }
@@ -73,12 +73,12 @@ const randomId = (): string => {
 }
 // === INITIAL STATE ===
 const initialState: ChatContext = {
-  messages: [],
+ , messages: [],
   conversations: [],
   currentConversation: null,
   error: null,
   settings: {
-    model: "gemma3-legal",
+   , model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
     streaming: true,
@@ -93,7 +93,7 @@ const initialState: ChatContext = {
   isStreaming: false,
   modelStatus: "unknown",
   contextInjection: {
-    enabled: false,
+   , enabled: false,
     documents: [],
     vectorResults: [],
     precedents: [],
@@ -112,7 +112,7 @@ export const serviceStatus = writable<ServiceStatus>({
 // Compatibility stores for existing UI components
 export const showProactivePrompt = writable<boolean>(false);
 export const aiPersonality = readable<{ name: string; displayName?: string }>(
-  { name: "Assistant", displayName: "Assistant" }
+  {, name: "Assistant", displayName: "Assistant" }
 );
 // === DERIVED STORES ===
 export const messages = derived(chatStore, ($store) => $store.messages);
@@ -134,13 +134,13 @@ export const chatActions = {
   // Create new conversation
   newConversation: (title?: string, caseType?: string) => {
     const conversation: Conversation = {
-      id: randomId(),
+     , id: randomId(),
       title: title || "New Legal Consultation",
       messages: [],
       created: new Date(),
       updated: new Date(),
       metadata: {
-        caseType: caseType || "general",
+       , caseType: caseType || "general",
         jurisdiction: "federal",
         precedents: []
       }
@@ -165,7 +165,7 @@ export const chatActions = {
     });
   },
   // Add message
-  addMessage: (; content: string,
+  addMessage: (;, content: string,
     role: "user" | "assistant" | "system",
     metadata?: Partial<ChatMessage["metadata"]>
   ) => {
@@ -173,13 +173,13 @@ export const chatActions = {
       if (!state.currentConversation) {
         // Create new conversation if none exists
         const conversation: Conversation = {
-          id: randomId(),
+         , id: randomId(),
           title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
           messages: [],
           created: new Date(),
           updated: new Date(),
           metadata: {
-            caseType: "general",
+           , caseType: "general",
             jurisdiction: "federal",
             precedents: []
           }
@@ -188,7 +188,7 @@ export const chatActions = {
         state.conversations = [conversation, ...state.conversations];
       }
       const message: ChatMessage = {
-        id: randomId(),
+       , id: randomId(),
         content,
         role,
         timestamp: new Date(),
@@ -456,7 +456,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
           }
         } else {
           messages.push({
-            id: randomId(),
+           , id: randomId(),
             content: assistantMessage,
             role: "assistant",
             timestamp: new Date(),
@@ -479,13 +479,13 @@ export interface XStateCompatibleState { context: ChatContext;, matches: (state
 }
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({ context: $chatStore;, matches: (state: string) => {
     switch (state) {
-      case "loading":
+      case, "loading":
         return $chatStore.isLoading;
-      case "streaming":
+      case, "streaming":
         return $chatStore.isStreaming;
-      case "error":
+      case, "error":
         return !!$chatStore.error;
-      case "idle":
+      case, "idle":
         return !$chatStore.isLoading && !$chatStore.error;
       default: return false;
     }
@@ -525,11 +525,11 @@ export const persistenceHelpers = {
         const role = u["role"];
         const roleVal: ChatMessage["role"] = role === "user" || role === "assistant" || role === "system" ? role : "assistant";
         return {
-          id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
-          content: typeof u["content"] === "string" ? (u["content"] as string) : "",
+          id: typeof u["id"] === "string" ? (u["id"], as: string) : randomId(),
+          content: typeof u["content"] === "string" ? (u["content"], as: string) : "",
           role: roleVal,
           timestamp: asDate(u["timestamp"]),
-          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined;
+          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"], as: string) : undefined;
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as ChatMessage;
       }
@@ -543,11 +543,11 @@ export const persistenceHelpers = {
             updated: new Date()
           }
         }
-        const msgsUnknown = isRecord(u) ? (u["messages"] as unknown) : undefined;
+        const msgsUnknown = isRecord(u) ? (u["messages"] as: unknown) : undefined;
         const msgs: ChatMessage[] = Array.isArray(msgsUnknown) ? msgsUnknown.map(coerceMessage) : [];
         return {
-          id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
-          title: typeof u["title"] === "string" ? (u["title"] as string) : "Conversation",
+          id: typeof u["id"] === "string" ? (u["id"], as: string) : randomId(),
+          title: typeof u["title"] === "string" ? (u["title"], as: string) : "Conversation",
           messages: msgs,
           created: asDate(u["created"]),
           updated: asDate(u["updated"]),
@@ -557,25 +557,25 @@ export const persistenceHelpers = {
       chatStore.update((state) => {
         let conversations = state.conversations;
         if (conversationsStr) {
-          const parsed = JSON.parse(conversationsStr) as unknown;
+          const parsed = JSON.parse(conversationsStr) as: unknown;
           if (Array.isArray(parsed)) {
             conversations = parsed.map(coerceConversation);
           }
         }
         let newSettings = state.settings;
         if (settingsStr) {
-          const parsedSettings = JSON.parse(settingsStr) as unknown;
+          const parsedSettings = JSON.parse(settingsStr) as: unknown;
           if (isRecord(parsedSettings)) {
             newSettings = { ...state.settings }
-            if (typeof parsedSettings["model"] === "string") newSettings.model = parsedSettings["model"] as string;
-            if (typeof parsedSettings["temperature"] === "number") newSettings.temperature = parsedSettings["temperature"] as number;
-            if (typeof parsedSettings["maxTokens"] === "number") newSettings.maxTokens = parsedSettings["maxTokens"] as number;
-            if (typeof parsedSettings["streaming"] === "boolean") newSettings.streaming = parsedSettings["streaming"] as boolean;
-            if (typeof parsedSettings["contextWindow"] === "number") newSettings.contextWindow = parsedSettings["contextWindow"] as number;
-            if (typeof parsedSettings["proactiveMode"] === "boolean") newSettings.proactiveMode = parsedSettings["proactiveMode"] as boolean;
-            if (typeof parsedSettings["emotionalMode"] === "boolean") newSettings.emotionalMode = parsedSettings["emotionalMode"] as boolean;
-            if (typeof parsedSettings["legalMode"] === "boolean") newSettings.legalMode = parsedSettings["legalMode"] as boolean;
-            if (typeof parsedSettings["citationMode"] === "boolean") newSettings.citationMode = parsedSettings["citationMode"] as boolean;
+            if (typeof parsedSettings["model"] === "string") newSettings.model = parsedSettings["model"] as: string;
+            if (typeof parsedSettings["temperature"] === "number") newSettings.temperature = parsedSettings["temperature"] as: number;
+            if (typeof parsedSettings["maxTokens"] === "number") newSettings.maxTokens = parsedSettings["maxTokens"] as: number;
+            if (typeof parsedSettings["streaming"] === "boolean") newSettings.streaming = parsedSettings["streaming"] as: boolean;
+            if (typeof parsedSettings["contextWindow"] === "number") newSettings.contextWindow = parsedSettings["contextWindow"] as: number;
+            if (typeof parsedSettings["proactiveMode"] === "boolean") newSettings.proactiveMode = parsedSettings["proactiveMode"] as: boolean;
+            if (typeof parsedSettings["emotionalMode"] === "boolean") newSettings.emotionalMode = parsedSettings["emotionalMode"] as: boolean;
+            if (typeof parsedSettings["legalMode"] === "boolean") newSettings.legalMode = parsedSettings["legalMode"] as: boolean;
+            if (typeof parsedSettings["citationMode"] === "boolean") newSettings.citationMode = parsedSettings["citationMode"] as: boolean;
           }
         }
         return { ...state, conversations, settings: newSettings }

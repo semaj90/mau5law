@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
   type DemoFeature = {
     slug: string;
     name: string;
@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
 
   const demoCategories: DemoCategory[] = [
     {
-      name: 'AI & Processing',
+     , name: 'AI & Processing',
       icon: '🤖',
       demos: [
         {,
@@ -103,25 +103,25 @@ import type { Document } from '$lib/types';
 
   function statusLabelClass(status: DemoFeature['status']): string {
     switch (status) {
-      case 'active':
-        return 'status-active';
-      case 'beta':
-        return 'status-beta';
-      case 'coming-soon':
-        return 'status-coming-soon';
-      default: return '';
+      case, 'active':
+        return, 'status-active';
+      case, 'beta':
+        return, 'status-beta';
+      case, 'coming-soon':
+        return, 'status-coming-soon';
+      default: return, '';
     }
   }
 
   function complexityLabelClass(complexity: DemoFeature['complexity']): string {
     switch (complexity) {
-      case 'low':
-        return 'complexity-low';
-      case 'medium':
-        return 'complexity-medium';
-      case 'high':
-        return 'complexity-high';
-      default: return '';
+      case, 'low':
+        return, 'complexity-low';
+      case, 'medium':
+        return, 'complexity-medium';
+      case, 'high':
+        return, 'complexity-high';
+      default: return, '';
     }
   }
 </script>
@@ -200,7 +200,7 @@ import type { Document } from '$lib/types';
   .showcase-hero p {
     margin: 0 auto;
     max-width: 720px;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
 
   .category-section {
@@ -232,7 +232,7 @@ import type { Document } from '$lib/types';
 
   .demo-grid {
     display: grid;
-    gap: 1.5rem;
+   , gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
@@ -241,9 +241,9 @@ import type { Document } from '$lib/types';
     flex-direction: column;
     gap: 1rem;
     padding: 1.5rem;
-    border: 1px solid var(--border-muted);
+   , border: 1px solid var(--border-muted);
     border-radius: 1rem;
-    background: var(--surface-primary);
+   , background: var(--surface-primary);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 
@@ -261,7 +261,7 @@ import type { Document } from '$lib/types';
 
   .demo-description {
     margin: 0;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
     line-height: 1.5;
   }
 
@@ -277,7 +277,7 @@ import type { Document } from '$lib/types';
   .demo-features li {
     padding: 0.25rem 0.5rem;
     border-radius: 0.5rem;
-    background: var(--surface-secondary);
+   , background: var(--surface-secondary);
     border: 1px solid var(--border-muted);
     font-size: 0.85rem;
   }
@@ -286,7 +286,7 @@ import type { Document } from '$lib/types';
     display: flex;
     justify-content: space-betweennn;
     align-items: center;
-    gap: 1rem;
+   , gap: 1rem;
   }
 
   .status-label,
@@ -302,7 +302,7 @@ import type { Document } from '$lib/types';
   }
 
   .status-active {
-    background: rgba(16, 185, 129, 0.15);
+   , background: rgba(16, 185, 129, 0.15);
     color: rgb(16, 185, 129);
   }
 
@@ -334,12 +334,12 @@ import type { Document } from '$lib/types';
   .demo-launch {
     text-decoration: none;
     font-weight: 600;
-    color: var(--accent-color, rgb(59, 130, 246));
+   , color: var(--accent-color, rgb(59, 130, 246));
     transition: color 0.2s ease;
   }
 
   .demo-launch:hover {
-    color: var(--accent-emphasis, rgb(37, 99, 235));
+   , color: var(--accent-emphasis, rgb(37, 99, 235));
   }
 
   @media (max-width: 768px) {

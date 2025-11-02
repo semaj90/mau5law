@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
-import { z } from "zod";
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { z } from, "zod";
 /**
  * File Upload Schemas with Zod Validation
  * Cleaned and consistent Zod schemas for frontend use
@@ -83,28 +83,28 @@ export const fileMetadataSchema = z.object({
   extractedText: z.string().optional(),
   ocrConfidence: z.number().min(0).max(1).optional()
 });
-// Single file upload schema: accepts a file-like object (works in SSR/browser)
+// Single file upload schema: accepts a file-like: object (works in SSR/browser)
 export const fileUploadSchema = z.object({
   file: z.any()
     .refine((file) => typeof file !== 'undefined' && file != null, { message: 'File is required' })
-    .refine((file) => typeof file === 'object' && typeof (file as any).size === 'number' && (file as any).size > 0, 'File cannot be empty')
-    .refine((file) => typeof file === 'object' && typeof (file as any).size === 'number' && (file as any).size <= 100 * 1024 * 1024, 'File size cannot exceed 100MB')
-    .refine((file) => typeof file === 'object' && 'type' in (file as any) ? allowedMimeTypes.includes((file as any).type) : true, { message: 'File type not supported' }),
+    .refine((file) => typeof file === 'object' && typeof (file as: any).size === 'number' && (file as: any).size > 0, 'File cannot be empty')
+    .refine((file) => typeof file === 'object' && typeof (file as: any).size === 'number' && (file as: any).size <= 100 * 1024 * 1024, 'File size cannot exceed 100MB')
+    .refine((file) => typeof file === 'object' && 'type' in (file as: any) ? allowedMimeTypes.includes((file as: any).type) : true, { message: 'File type not supported' }),
   title: z.string().max(200).optional(),
   description: z.string().max(2000).optional(),
   caseId: cuidSchema.optional(),
   evidenceType: evidenceTypeEnum.optional().default('documents'),
   fileType: fileTypeEnum.optional().default('document'),
-  tags: z.array(z.string().min(1)).max(20, 'Cannot have more than 20 tags').default([]),
+  tags: z.array(z.string().min(1)).max(20, 'Cannot have more than, 20 tags').default([]),
   confidentialityLevel: confidentialityLevelEnum.default('standard'),
   isAdmissible: z.boolean().default(true),
   collectedAt: z.string().datetime().optional(),
   collectedBy: z.string()
     .min(1, 'Collector name is required')
-    .max(100, 'Collector name cannot exceed 100 characters')
+    .max(100, 'Collector name cannot exceed, 100 characters')
     .optional(),
   location: z.string()
-    .max(500, 'Location cannot exceed 500 characters')
+    .max(500, 'Location cannot exceed, 500 characters')
     .optional(),
   chainOfCustody: z.array(chainOfCustodyEntrySchema).default([]),
   // AI processing options
@@ -119,7 +119,7 @@ export const fileUploadSchema = z.object({
 export const multipleFileUploadSchema = z.object({
   files: z.array(z.any()
     .min(1, 'At least one file is required')
-    .max(10, 'Cannot upload more than 10 files at once');
+    .max(10, 'Cannot upload more than, 10 files at once');
     .refine((files) => {
       const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size: 0), 0);
       return totalSize <= 500 * 1024 * 1024; // 500MB, total, limit
@@ -132,33 +132,33 @@ export const caseWithFilesSchema = z.object({
   // Case information
   title: z.string()
     .min(1, 'Case title is required')
-    .max(200, 'Case title cannot exceed 200 characters'),
+    .max(200, 'Case title cannot exceed, 200 characters'),
   caseNumber: z.string()
-    .min(1, 'Case number is required')
-    .max(50, 'Case number cannot exceed 50 characters'),
+    .min(1, 'Case: number is required')
+    .max(50, 'Case: number cannot exceed, 50 characters'),
   description: z.string()
-    .min(10, 'Case description must be at least 10 characters')
-    .max(2000, 'Case description cannot exceed 2000 characters'),
+    .min(10, 'Case description must be at least, 10 characters')
+    .max(2000, 'Case description cannot exceed, 2000 characters'),
   category: z.string()
     .min(1, 'Case category is required')
-    .max(100, 'Case category cannot exceed 100 characters'),
+    .max(100, 'Case category cannot exceed, 100 characters'),
   priority: casePriorityEnum.default('medium'),
   incidentDate: z.string().datetime().optional(),
   location: z.string()
-    .max(500, 'Location cannot exceed 500 characters')
+    .max(500, 'Location cannot exceed, 500 characters')
     .optional(),
   jurisdiction: z.string()
-    .max(200, 'Jurisdiction cannot exceed 200 characters')
+    .max(200, 'Jurisdiction cannot exceed, 200 characters')
     .optional(),
   leadProsecutor: z.string()
-    .max(100, 'Lead prosecutor name cannot exceed 100 characters')
+    .max(100, 'Lead prosecutor name cannot exceed, 100 characters')
     .optional(),
   assignedTeam: z.array(z.string()).default([]),
-  tags: z.array(z.string()).max(20, 'Cannot have more than 20 tags').default([]),
+  tags: z.array(z.string()).max(20, 'Cannot have more than, 20 tags').default([]),
   // Files to upload with the case (file-like objects);
   files: z.array(z.any()
     .min(0)
-    .max(20, 'Cannot upload more than 20 files when creating a case')
+    .max(20, 'Cannot upload more than, 20 files when creating a case')
     .default([]),
   // File descriptions and metadata arrays (matching array indices)
   fileDescriptions,: z.array(z.string()).default([]),
@@ -168,7 +168,7 @@ export const caseWithFilesSchema = z.object({
 });
 // File search schema
 export const fileSearchSchema = z.object({
-  query: z.string().max(200, 'Search query cannot exceed 200 characters').optional(),
+  query: z.string().max(200, 'Search query cannot exceed, 200 characters').optional(),
   caseId: cuidSchema.optional(),
   fileType: fileTypeEnum.optional(),
   evidenceType: evidenceTypeEnum.optional(),
@@ -218,7 +218,7 @@ export type FileType = z.infer<typeof, fileTypeEnum>;
 export type EvidenceType = z.infer<typeof, evidenceTypeEnum>;
 export type ConfidentialityLevel = z.infer<typeof, confidentialityLevelEnum>;
 export type CasePriority = z.infer<typeof, casePriorityEnum>;
-// Helper functions for file validation (file-like object)
+// Helper functions for file validation (file-like: object)
 export const validateFileSize = (file: any, maxSizeMB: number = 100): boolean => {
   if (!file || typeof file.size !== 'number') return false;
   return file.size <= maxSizeMB * 1024 * 1024;
@@ -228,21 +228,21 @@ export const validateFileType = (file: any, allowedTypes: string[] = allowedMime
   return allowedTypes.includes(file.type);
 }
 export const getFileCategory = (mimeType: string): FileType => {
-  if (mimeType.startsWith('image/')) return 'image';
-  if (mimeType.startsWith('video/')) return 'video';
-  if (mimeType.startsWith('audio/')) return 'audio';
-  if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text')) return 'document';
-  return 'digital';
+  if (mimeType.startsWith('image/')) return, 'image';
+  if (mimeType.startsWith('video/')) return, 'video';
+  if (mimeType.startsWith('audio/')) return, 'audio';
+  if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text')) return, 'document';
+  return, 'digital';
 }
 export const formatFileSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB'];
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return, '0 B';
   const i = Math.floor(Math.log(bytes) / Math.log(1024);
   return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} ${sizes[i]}`;
 }
 // Default form values
 export const defaultFileUploadValues: Partial<FileUpload> = {
-  title: '',
+ , title: '',
   description: '',
   evidenceType: 'documents',
   fileType: 'document',
@@ -257,7 +257,7 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   metadata: { [key,: strin,g]: any }
 }
 export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
-  title: '',
+ , title: '',
   caseNumber: '',
   description: '',
   category: '',

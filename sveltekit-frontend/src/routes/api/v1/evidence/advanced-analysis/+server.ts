@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Advanced Evidence Analysis API Endpoint
  * Integrates with AdvancedEvidenceAnalyzer for comprehensive AI-powered analysis
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer';
-import { websocketBroadcast } from '$lib/services/websocket-manager';
-import { dbClient } from '$lib/server/db/drizzle-config';
-import { evidence, analysisResults } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { AdvancedEvidenceAnalyzer } from, '$lib/services/ai/advanced-evidence-analyzer';
+import { websocketBroadcast } from, '$lib/services/websocket-manager';
+import { dbClient } from, '$lib/server/db/drizzle-config';
+import { evidence, analysisResults } from, '$lib/server/db/schema';
+import { eq } from, 'drizzle-orm';
 const analyzer = new AdvancedEvidenceAnalyzer();
 
 // Add typed request/row shapes to avoid `any`
@@ -19,13 +19,13 @@ type GetAnalysisRequest = {
 };
 
 type AnalysisResultRow = { analysisId: string;, evidenceId: string;
-  results: string | Record<string, unknown>;
+ , results: string | Record<string, unknown>;
   createdAt: Date;
   analysisTypes: string | string[];
 };
 
 type SynthesisRequest = {
-  evidenceIds: string[];
+ , evidenceIds: string[];
   caseId?: string;
   synthesisType?: string;
   options?: Record<string, unknown>;
@@ -55,12 +55,12 @@ type ProgressUpdate = {
   task?: string;
 };
 
-type BatchResultItem = { evidenceId: string;, analysisId: string;
+type BatchResultItem = {, evidenceId: string;, analysisId: string;
   results: any;
   success: boolean;
 };
 
-type BatchErrorItem = { evidenceId: string;, error: string;
+type BatchErrorItem = {, evidenceId: string;, error: string;
 };
 
 // New: typed analyzer output to avoid `any` casts when reading fields
@@ -71,22 +71,22 @@ type AnalyzerOutput = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request, url }) => {
+export const, POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action') || 'analyze';
     const data = await request.json();
     switch (action) {
-      case 'analyze':
+      case, 'analyze':
         return await handleAnalyzeEvidence(data);
-      case 'batch_analyze':
+      case, 'batch_analyze':
         return await handleBatchAnalyze(data);
-      case 'get_analysis':
+      case, 'get_analysis':
         return await handleGetAnalysis(data);
-      case 'synthesis':
+      case, 'synthesis':
         return await handleSynthesis(data);
-      case 'real_time':
+      case, 'real_time':
         return await handleRealTimeAnalysis(data);
-      default: return json({ error: 'Invalid action' }, { status: 400 });'` }'`
+      default: return json({, error: 'Invalid action' }, { status: 400 });'` }'`
   } catch (error) {
     console.error('Advanced evidence analysis error:', error);'
     return json(
@@ -185,7 +185,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
   }
   const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';'`
   const results: BatchResultItem[] = [];
-  const errors: BatchErrorItem[] = [];
+  const, errors: BatchErrorItem[] = [];
   // Broadcast batch start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -296,7 +296,7 @@ async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
       const parsedAnalysisTypes =
         typeof result.analysisTypes === 'string'
           ? safeJsonParse(result.analysisTypes, [])
-          : (result.analysisTypes as string[]);
+          : (result.analysisTypes as: string[]);
       return {
         analysisId: result.analysisId,
         evidenceId: result.evidenceId,
@@ -327,7 +327,7 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
   }
   try {
     // Get all analysis results for the evidence (safe per-id retrieval)
-    const analysisRecords: Array<{ evidenceId: string; results: string | Record<string, unknown> }> = [];
+    const analysisRecords: Array<{ evidenceId: string;, results: string | Record<string, unknown> }> = [];
     for (const id of evidenceIds) {
       // cast DB query to a typed row array instead of `any`
       const recs = (await dbClient
@@ -472,7 +472,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'status':
+      case, 'status':
         return json({
           service: 'Advanced Evidence Analysis API',
           status: 'operational',
@@ -488,18 +488,18 @@ export const GET: RequestHandler = async ({ url }) => {
           analysisTypes: ['ocr', 'sentiment', 'entities', 'patterns', 'precedents', 'summary', 'timeline', 'all'],
           timestamp: new Date().toISOString()
         });
-      case 'models':
+      case, 'models':
         return json({
           availableModels: analyzer.getAvailableModels(),
           defaultModel: analyzer.getDefaultModel(),
           modelCapabilities: analyzer.getModelCapabilities()
         });
-      case 'health': {
+      case, 'health': {
         // scope lexical declaration to avoid: "Unexpected lexical declaration in case block"
         const healthCheck = await analyzer.healthCheck();
         return json(healthCheck);
       }
-      default: return json({ error: `Invalid action` }, { status: 400 });
+      default: return json({, error: `Invalid action` }, { status: 400 });
     }
   } catch (error) {
     console.error('Advanced evidence analysis API error:', error);'

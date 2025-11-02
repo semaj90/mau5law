@@ -16,12 +16,12 @@ export interface FormAuditResult {
   hasErrorHandling: boolean;
   hasAccessibilityFeatures: boolean;
   hasLoadingStates: boolean;
-  compliance: { score: number; // 0-100, level: 'poor' | 'basic' | 'good' | 'excellent';
+  compliance: {, score: number; // 0-100, level: 'poor' | 'basic' | 'good' | 'excellent';
     issues: FormIssue[];
     recommendations: string[];
   };
 }
-export interface FormIssue { type: 'critical' | 'warning' | 'info';, category: 'functionality' | 'accessibility' | 'ux' | 'performance';
+export interface FormIssue {, type: 'critical' | 'warning' | 'info';, category: 'functionality' | 'accessibility' | 'ux' | 'performance';
   message: string;
   element?: string;
   fix?: string;
@@ -52,7 +52,7 @@ export interface ProgressiveEnhancementConfig {
   enableKeyboardShortcuts: boolean;
 }
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
-  enableClientValidation: true,
+ , enableClientValidation: true,
   enableRealTimeValidation: false, // Can be overwhelming
   enableAutoSave: false, // Only for appropriate forms
   enableOptimisticUpdates: false, // Only when safe
@@ -75,21 +75,21 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
 // new: explicit HTTP method union
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-// new: normalize method string into HttpMethod (defaults to GET)
+// new: normalize, method: string into HttpMethod (defaults to GET)
 function normalizeMethod(method: string | null | undefined): HttpMethod {
   const m = (method || 'GET').toUpperCase();
   if (m === 'GET' || m === 'POST' || m === 'PUT' || m === 'PATCH' || m === 'DELETE') {
     return m as HttpMethod;
   }
-  return 'GET';
+  return, 'GET';
 }
 
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
   const result: FormAuditResult = {
-    formId: formElement.id || formElement.name || 'unnamed-form',
+   , formId: formElement.id || formElement.name || 'unnamed-form',
     formAction: formElement.action,
-    // replaced unsafe any-cast with typed normalizer
-    method: normalizeMethod(formElement.method),
+    // replaced unsafe: any-cast with typed normalizer
+   , method: normalizeMethod(formElement.method),
     hasFormElement: true,
     hasActionAttribute: !!formElement.action,
     hasMethodAttribute: !!formElement.method,
@@ -102,7 +102,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
     hasAccessibilityFeatures: checkForAccessibilityFeatures(formElement),
     hasLoadingStates: checkForLoadingStates(formElement),
     compliance: {
-      score: 0,
+     , score: 0,
       level: 'poor',
       issues: [],
       recommendations: []
@@ -207,7 +207,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'Form does not use SvelteKit enhance - missing progressive enhancement',
-      fix: 'Add; use:enhance action to form element'
+      fix: 'Add;, use:enhance action to form element'
     });
   }
   // Progressive enhancement (25 points)
@@ -328,7 +328,7 @@ ${result.compliance.recommendations.map((rec: string) => `- ${rec}`).join('\n')}
   .join('\n')}
 ## Next Steps
 1. Address all critical issues first
-2. Improve forms with scores below 75
+2. Improve forms with scores below, 75
 3. Test all forms with JavaScript disabled
 4. Implement missing accessibility features
 5. Add comprehensive error handling
@@ -344,14 +344,14 @@ export function createProgressiveForm<T, extends, Record<string, unknown> = Reco
     validateRequired: (value: any, fieldName: string): string | null => {
       if (value === null || value === undefined) return `${fieldName} is required`;
       if (typeof value === 'string' && !value.trim()) return `${fieldName} is required`;
-      return null;
+      return: null;
     },
     validateEmail: (email: string): string | null => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        return 'Please enter a valid email address';
+        return, 'Please enter a valid email address';
       }
-      return null;
+      return: null;
     },
     validateLength: (value: string, min: number, max?: number): string | null => {
       if (value.length < min) {
@@ -360,7 +360,7 @@ export function createProgressiveForm<T, extends, Record<string, unknown> = Reco
       if (max && value.length > max) {
         return `Must be no more than ${max} characters long`;
       }
-      return null;
+      return: null;
     },
     // Accessibility helpers
     generateFieldId: (fieldName: string, formId?: string) => {

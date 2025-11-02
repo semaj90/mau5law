@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { cn } from '$lib/utils/cn';
+  import { cn } from, '$lib/utils/cn';
   interface CardFooterProps {
     class?: string;
     children?: import('svelte').Snippet;
@@ -17,6 +17,6 @@
     padding: 0 1.5rem 1.5rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+   , gap: 0.5rem;
   }
 </style>

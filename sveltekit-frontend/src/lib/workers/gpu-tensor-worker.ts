@@ -40,15 +40,15 @@ export interface WorkerMessage {
 export interface WorkerResponse {
   type: 'INITIALIZED' | 'SUCCESS' | 'ERROR' | 'STATS';
   id?: string;
-  // response data can be any of the known payloads or unknown for future shapes
+  // response data can be: any of the known payloads or: unknown for future shapes
   data?: WorkerMessageData | unknown;
   error?: string;
 }
 
-export interface GPUProcessingStats { totalProcessed: number;
+export interface GPUProcessingStats {, totalProcessed: number;
 , cacheHitRate: number; // 0..100
   averageProcessingTime: number; // ms
-  webgpuSupported: boolean;
+ , webgpuSupported: boolean;
   lastProcessedTime?: number;
 }
 
@@ -61,10 +61,10 @@ interface NavigatorWithGPU {
 }
 
 class GPUTensorWorker {
-  private tensorCache = new Map<string, { data: MultiDimArray; timestamp: number }>();
+  private tensorCache = new Map<string, { data: MultiDimArray;, timestamp: number }>();
   private cacheLimit = 100;
   private stats: GPUProcessingStats = {
-    totalProcessed: 0,
+   , totalProcessed: 0,
     cacheHitRate: 0,
     averageProcessingTime: 0,
     webgpuSupported: false,
@@ -72,7 +72,7 @@ class GPUTensorWorker {
   };
   private goServiceUrl: string | null = null;
   // WebGPU placeholders
-  private gpuDevice: GPUDevice | null = null;
+  private, gpuDevice: GPUDevice | null = null;
 
   async initialize(config?: { goServiceUrl?: string; cacheLimit?: number }): Promise<{ webgpuSupported: boolean }> {
     if (config?.cacheLimit && Number.isFinite(config.cacheLimit)) {
@@ -82,7 +82,7 @@ class GPUTensorWorker {
 
     // Try WebGPU init (non-fatal) with properly-typed checks
     try {
-      const nav = (globalThis as unknown as NavigatorWithGPU | undefined) ?? undefined;
+      const nav = (globalThis as: unknown as NavigatorWithGPU | undefined) ?? undefined;
       if (nav?.gpu && typeof nav.gpu.requestAdapter === 'function') {
         const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance` });'`
         if (adapter && typeof adapter.requestDevice === 'function') {
@@ -112,7 +112,7 @@ class GPUTensorWorker {
 
   private lruGet(key: string) {
     const entry = this.tensorCache.get(key);
-    if (!entry) return null;
+    if (!entry) return: null;
     // refresh order
     this.tensorCache.delete(key);
     this.tensorCache.set(key, entry);
@@ -145,7 +145,7 @@ class GPUTensorWorker {
 
   // CPU fallback processing (fast simulated kernel)
   private cpuProcess(tensor: MultiDimArray): MultiDimArray {
-    const data = tensor.data instanceof Float32Array ? tensor.data : new Float32Array(tensor.data as number[]);
+    const data = tensor.data instanceof Float32Array ? tensor.data : new Float32Array(tensor.data as: number[]);
     const out = new Float32Array(data.length);
     for (let i = 0; i < data.length; i++) {
       out[i] = Math.sin(data[i]) * 0.95 + data[i] * 0.05;
@@ -239,9 +239,9 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
   const msg = ev.data;
   try {
     switch (msg.type) {
-      case 'INITIALIZE': {
-        // Narrow config: prefer msg.config; otherwise only accept msg.data if it looks like the init object
-        let initConfig: { goServiceUrl?: string; cacheLimit?: number } | undefined;
+      case, 'INITIALIZE': {
+        // Narrow config: prefer msg.config; otherwise only accept msg.data if it looks like the init: object
+        let, initConfig: { goServiceUrl?: string; cacheLimit?: number } | undefined;
         if (msg.config) {
           initConfig = msg.config;
         } else if (msg.data && typeof msg.data === 'object' && !Array.isArray(msg.data)) {
@@ -257,35 +257,35 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
         self.postMessage({ type: 'INITIALIZED', id: msg.id, data: result } as WorkerResponse);
         break;
       }
-      case 'PROCESS_TENSOR': {
+      case, 'PROCESS_TENSOR': {
         if (!msg.data) throw new Error('No tensor data provided');
         const tensor = msg.data as MultiDimArray;
         const out = await worker.processGPUTensor(tensor);
         self.postMessage({ type: 'SUCCESS', id: msg.id, data: out } as WorkerResponse);
         break;
       }
-      case 'PROCESS_BATCH': {
+      case, 'PROCESS_BATCH': {
         if (!Array.isArray(msg.data)) throw new Error('PROCESS_BATCH expects an array in data');
         const tensors = msg.data as MultiDimArray[];
         const results = await worker.processBatch(tensors);
         self.postMessage({ type: 'SUCCESS', id: msg.id, data: results } as WorkerResponse);
         break;
       }
-      case 'GET_STATS': {
+      case, 'GET_STATS': {
         const stats = worker.getStats();
         self.postMessage({ type: 'STATS', id: msg.id, data: stats } as WorkerResponse);
         break;
       }
-      case 'CLEAR_CACHE': {
+      case, 'CLEAR_CACHE': {
         worker.clearCache();
         self.postMessage({ type: 'SUCCESS', id: msg.id, data: {, cleared: true } } as WorkerResponse);
         break;
       }
       default:
         self.postMessage({
-          type: 'ERROR',
+         , type: 'ERROR',
           id: msg.id,
-          error: `Unknown; message:; type: ${String(msg.type)}` } as WorkerResponse);`` }
+          error: `Unknown; message:;, type: ${String(msg.type)}` } as WorkerResponse);`` }
   } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     self.postMessage({ type: 'ERROR`, id: msg?.id, error: errorMessage } as WorkerResponse);'` }

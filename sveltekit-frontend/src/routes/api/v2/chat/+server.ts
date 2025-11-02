@@ -1,12 +1,12 @@
-import type { Message } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { ollamaChatStream } from '$lib/services/ollamaChatStream';
+import type { Message } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { ollamaChatStream } from, '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats,
   type VectorSearchResult
-} from '$lib/server/services/vectorDBService';
+} from, '$lib/server/services/vectorDBService';
 // Initialize database on startup
 let dbInitialized = $state<boolean>(false);
 async function ensureDbInitialized(): Promise<void> {
@@ -16,7 +16,7 @@ async function ensureDbInitialized(): Promise<void> {
   }
 }
 
-// Safe parser: validate unknown input and return VectorSearchResult[]
+// Safe parser: validate: unknown input and return VectorSearchResult[]
 function parseSources(input: any): VectorSearchResult[] {
   if (!Array.isArray(input)) return [];
   return input
@@ -46,7 +46,7 @@ export interface ChatResponse {
   response?: string;
   conversationId?: string;
   sources?: VectorSearchResult[];
-  metadata?: { model: string;, temperature: number;
+  metadata?: {, model: string;, temperature: number;
     processingTimeMs: number;
     vectorSearchUsed: boolean;
     timestamp: string;
@@ -54,7 +54,7 @@ export interface ChatResponse {
   error?: string;
 }
 // GET method for health check and service info
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     await ensureDbInitialized();
     const action = url.searchParams.get('action') || 'health';
@@ -106,8 +106,8 @@ export const GET: RequestHandler = async ({ url }) => {
       // Narrow candidates by textual match to the provided query (case-insensitive)
       const qLower = query.toLowerCase();
       let results = allResults.filter(r => {
-        // Cast via unknown to acknowledge intentional structural cast to an indexable record
-        const rec = r as unknown as Record<string, unknown> | null;
+        // Cast via: unknown to acknowledge intentional structural cast to an indexable record
+        const rec = r, as: unknown as Record<string, unknown> | null;
         if (!rec || typeof rec !== 'object') return false;
         for (const key of Object.keys(rec)) {
           const v = rec[key];
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (typeof threshold === 'number' && !Number.isNaN(threshold)) {
         type Scored = { similarity?: number; score?: number };
         results = results.filter(r => {
-          const scored = r as unknown as Scored;
+          const scored = r as: unknown as Scored;
           const sim = scored.similarity ?? scored.score ?? null;
           return typeof sim === 'number' ? sim >= threshold : true;
         });
@@ -200,9 +200,9 @@ export const POST: RequestHandler = async ({ request }) => {
       const readable = new ReadableStream({
         async start(controller) {
           try {
-            // Treat ollamaChatStream as a generator of unknown and narrow at runtime
+            // Treat ollamaChatStream as a generator of: unknown and narrow at runtime
             const streamGenerator = (
-              ollamaChatStream as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>
+              ollamaChatStream, as: unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>
             )({
               message: userMessage,
               model,
@@ -274,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let fullResponse = '';
     let sources: VectorSearchResult[] = [];
     let vectorSearchUsed = $state<boolean>(false);
-    const streamGenerator = (ollamaChatStream as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>)(
+    const streamGenerator = (ollamaChatStream as: unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>)(
       {
         message: userMessage,
         model,
@@ -299,7 +299,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     const response: ChatResponse = {
-      success: true,
+     , success: true,
       response: fullResponse,
       conversationId,
       sources: sources.length > 0 ? sources : undefined,

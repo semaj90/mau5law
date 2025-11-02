@@ -1,4 +1,4 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /**
  * Legal Citations API Routes
  *
@@ -6,8 +6,8 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * GET    /api/v1/citations - Get citations for a case
  * POST   /api/v1/citations - Add citation
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 // Citation schemas
 const CitationsQuerySchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -99,7 +99,7 @@ class CitationsService {
         citationPurpose: 'support',
         jurisdiction: 'Federal',
         verified: true,
-        relevantQuote: 'Evidence having any tendency to make the existence of any fact...',
+        relevantQuote: 'Evidence having: any tendency to make the existence, of: any fact...',
         contextNotes: 'Defines relevant evidence',
         tags: ['evidence', 'relevancy'],
         createdBy: this.userId,
@@ -125,7 +125,7 @@ class CitationsService {
     return {
       data: paginatedCitations,
       pagination: {
-        page: query.page,
+       , page: query.page,
         limit: query.limit,
         total: filteredCitations.length,
         totalPages: Math.max(1, Math.ceil(filteredCitations.length / query.limit)),
@@ -217,7 +217,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         success: z.literal(true),
         data: z.array(CitationItem),
         pagination: z.object({
-          page: z.number(),
+         , page: z.number(),
           limit: z.number(),
           total: z.number(),
           totalPages: z.number(),
@@ -232,7 +232,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       data: result.data,
       pagination: result.pagination,
       meta: {
-        caseId: validatedQuery.caseId,
+       , caseId: validatedQuery.caseId,
         userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
@@ -284,7 +284,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: newCitation,
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     };

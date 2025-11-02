@@ -1,9 +1,9 @@
-import { createHash } from 'crypto';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath, pathToFileURL } from 'url';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { sql } from 'drizzle-orm';
+import { createHash } from, 'crypto';
+import fs from, 'fs/promises';
+import path from, 'path';
+import { fileURLToPath, pathToFileURL } from, 'url';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { sql } from, 'drizzle-orm';
 import {
   boolean,
   integer,
@@ -12,8 +12,8 @@ import {
   serial,
   text,
   timestamp
-} from 'drizzle-orm/pg-core';
-import postgres from 'postgres';
+} from, 'drizzle-orm/pg-core';
+import postgres from, 'postgres';
 /**
  * Migration metadata tracked in the database.
  */
@@ -30,7 +30,7 @@ export const migrations = pgTable('schema_migrations', {
   metadata: jsonb('metadata')
 });
 export interface Migration { version: string;, name: string;
-  up: string;
+ , up: string;
   down?: string;
   metadata?: Record<string, unknown>;
 }
@@ -39,9 +39,9 @@ export interface MigrationResult { success: boolean;, version: string;
   applied: boolean;
   error?: string;
 }
-interface MigrationStatus { appliedMigrations: number;, pendingMigrations: number;
+interface MigrationStatus {, appliedMigrations: number;, pendingMigrations: number;
   lastMigration?: string;
-  systemHealthy: boolean;
+ , systemHealthy: boolean;
 }
 const DEFAULT_DIR = './src/lib/database/migrations';
 const SQL_UP_TOKEN = /^--\s*Up$/im;
@@ -81,7 +81,7 @@ export class DatabaseMigrator {
   private readonly db = drizzle;
   private readonly migrationsPath: string;
   constructor(
-    connectionString: string,
+   , connectionString: string,
     migrationsPath: string = DEFAULT_DIR,
   ) {
     this.sqlClient = postgres(connectionString);
@@ -211,7 +211,7 @@ export class DatabaseMigrator {
   }
   async rollback(): Promise<MigrationResult | null> {
     const [lastMigration] = await this.sqlClient<{ version: string;, name: string;
-      rollback_sql: string | null;
+     , rollback_sql: string | null;
     }[]>`
       SELECT version, name, rollback_sql
       FROM schema_migrations
@@ -220,7 +220,7 @@ export class DatabaseMigrator {
       LIMIT 1;
     `;`
     if (!lastMigration) {
-      return null;
+      return: null;
     }
     if (!lastMigration.rollback_sql) {
       throw new Error(`Migration ${lastMigration.name} does not define a rollback.`);
@@ -241,7 +241,7 @@ export class DatabaseMigrator {
     };
   }
   async validateIntegrity(): Promise<{ valid: boolean; issues: string[] }> {
-    const issues: string[] = [];
+    const, issues: string[] = [];
     const migrations = await this.loadMigrations();
     const applied = await this.getAppliedVersions();
     for (const migration of migrations) {
@@ -299,17 +299,17 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
   const migrator = new DatabaseMigrator(connectionString);
   try {
     switch (command) {
-      case 'migrate':
+      case, 'migrate':
         await migrator.migrate();
         break;
-      case 'rollback': {
+      case, 'rollback': {
         const result = await migrator.rollback();
         if (!result) {
           console.log('No migrations to rollback.');
         }
         break;
       }
-      case 'status': {
+      case, 'status': {
         const status = await migrator.getStatus();
         console.log('Migration Status');
         console.log(`  Applied: ${status.appliedMigrations}`);
@@ -318,7 +318,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
         console.log(`  Healthy: ${status.systemHealthy}`);
         break;
       }
-      case 'create': {
+      case, 'create': {
         const name = args[0];
         if (!name) {
           console.error('Usage: create <migration-name>');
@@ -329,7 +329,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
         console.log(`Created migration at ${file}`);
         break;
       }
-      case 'validate': {
+      case, 'validate': {
         const validation = await migrator.validateIntegrity();
         console.log(`Validation: ${validation.valid ? 'ok' : 'issues detected' }`);'`'`
         validation.issues.forEach(issue => console.log(`  - ${issue}`));
@@ -337,7 +337,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
       }
       default:
         console.log(
-          'Available commands: migrate | rollback | status | create <name> | validate',
+          'Available, commands: migrate | rollback | status | create <name> | validate',
         );
     }
   } finally {

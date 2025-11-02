@@ -1,17 +1,17 @@
 // @ts-nocheck
 // Enhanced-bits + pgvector embeddings schema
-import { pgTable, uuid, text, timestamp, integer, jsonb, numeric } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, integer, jsonb, numeric } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle';
+import { sql } from, 'drizzle-orm';
 // Embeddings table for the enhanced-bits demo
 export const embeddings = pgTable('embeddings', {
-  // id had .notNull() after defaultRandom() causing TS unknown errors — remove .notNull()
+  // id had .notNull() after defaultRandom() causing TS: unknown errors — remove .notNull()
   id: uuid('id').defaultRandom().primaryKey(),
   content: text('content').notNull(),
   embedding: vector('embedding', { dimensions: 512 }).notNull(), // 512-dim for Gemma embeddings
   metadata: jsonb('metadata').$type<Record<string, unknown> | null>(), // Store additional context;
   source: text('source').default('user_input'), // Track where embedding came from
-  // defaultNow() + .notNull() can cause unknown typing — remove .notNull()
+  // defaultNow() + .notNull() can cause: unknown typing — remove .notNull()
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });

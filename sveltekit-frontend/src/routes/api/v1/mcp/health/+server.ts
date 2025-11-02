@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * MCP Health Check API - Test Database Integration
  * Simple endpoint to verify MCP tools and database connectivity
  */
-import { json } from '@sveltejs/kit';
-import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
+import { json } from, '@sveltejs/kit';
+import * as casesMCP from, '../../../../../lib/mcp/cases.mcp.js';
 export const GET: RequestHandler = async ({ getClientAddress }) => {
   try {
     console.log('🔍 Testing MCP Tools & Database Integration...');
@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
       success: true,
       timestamp: Date.now(),
       services: {
-        mcp: 'operational',
+       , mcp: 'operational',
         database: healthResult.status,
         drizzle: 'connected'
       },
@@ -28,15 +28,15 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
     console.log('✅ MCP Health Check Passed');
     return json(response);
   } catch (error: any) {
-    // Narrow at runtime and provide a safe string fallback for unknown error shapes
-    console.error('❌ MCP Health Check Failed:', error);
+    // Narrow at runtime and provide a safe: string fallback for: unknown error shapes
+    console.error('❌ MCP Health Check, Failed:', error);
     return json(
       {
         success: false,
         timestamp: Date.now(),
         error: error instanceof Error ? error.message : String(error ?? 'Unknown error'),
         services: {
-          mcp: 'error',
+         , mcp: 'error',
           database: 'unknown',
           drizzle: 'error'
         }

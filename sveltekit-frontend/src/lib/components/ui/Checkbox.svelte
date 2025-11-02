@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared -->
+<!-- @migration-task Error while migrating Svelte code:, Identifier: 'string' has already, been, declared -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   let { checked = $state(false), label = '', id = ''  }: { checked = $state(false), label = '', id = '' : any } = $props();
   // Generate a unique ID if not provided
   if (!id) {
@@ -49,14 +49,14 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #fff;
     border-top: none;
     border-right: none;
-    transform: rotate(-45deg);
+   , transform: rotate(-45deg);
   }
   .checkbox-input:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow: 0, 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
   .checkbox-label {
     margin-left: 0.5rem;
     cursor: pointer;
-    color: #333;
+   , color: #333;
   }
 </style>

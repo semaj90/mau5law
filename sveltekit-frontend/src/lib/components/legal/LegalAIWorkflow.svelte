@@ -1,7 +1,7 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-    import { legalAIClient, legalAIUtils, type LegalDocumentResponse, type RecommendationResponse } from '$lib/services/legal-ai-client';
-    // State management with Svelte 5 patterns
+  // Svelte, 5 runes are auto-imported
+    import { legalAIClient, legalAIUtils, type LegalDocumentResponse, type RecommendationResponse } from, '$lib/services/legal-ai-client';
+    // State management with Svelte, 5 patterns
     let uploadedFile = $state<File | null>(null);
     let analysisResult = $state<LegalDocumentResponse | null>(null);
     let recommendations = $state<RecommendationResponse | null>(null);
@@ -17,7 +17,7 @@
         classify_domain: true
         generate_embedding: true
         find_similar: true
-        risk_assessment: true
+       , risk_assessment: true
     });
     // Check services health on mount
     checkServicesHealth();
@@ -81,7 +81,7 @@
         error = null;
         uploadProgress = 0;
     }
-    // Reactive calculations using Svelte 5 $derived
+    // Reactive calculations using Svelte, 5 $derived
     const canProcess = $derived(uploadedFile !== null && !isProcessing);
     const progressPercentage = $derived(uploadProgress);
     const hasResults = $derived(analysisResult !== null);
@@ -338,7 +338,7 @@
     .legal-ai-workflow {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 2rem;
+       , padding: 2rem;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     .workflow-header {
@@ -430,7 +430,7 @@
     }
     .upload-section {
         background: white;
-        padding: 2rem;
+       , padding: 2rem;
         border-radius: 1rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
@@ -477,7 +477,7 @@
         font-weight: 600;
         cursor: pointer;
         width: 100%;
-        transition: background 0.2;
+       , transition: background 0.2;
     }
     .process-btn:hover:not(:disabled) {,
         background: #2563eb;
@@ -504,12 +504,12 @@
     .progress-text {
         margin-top: 0.5rem;
         text-align: center;
-        color: #6b7280;
+       , color: #6b7280;
     }
     .results-section,
     .recommendations-section {
         background: white;
-        padding: 2rem;
+       , padding: 2rem;
         border-radius: 1rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         margin: 2rem 0;
@@ -519,7 +519,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
-        margin: 1rem 0;
+       , margin: 1rem 0;
     }
     .metric,
     .detail {
@@ -535,14 +535,14 @@
     }
     .value {
         font-weight: 600;
-        color: #111827;
+       , color: #111827;
     }
     .entity-tags,
     .concept-tags,
     .recommendation-concepts {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+       , gap: 0.5rem;
         margin-top: 0.5rem;
     }
     .entity-tag,
@@ -599,7 +599,7 @@
         border: 1px solid #e5e7eb;
         border-radius: 0.75rem;
         padding: 1.5rem;
-        transition: box-shadow 0.2;
+       , transition: box-shadow 0.2;
     }
     .recommendation-card:hover {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -629,7 +629,7 @@
         line-height: 1.6;
     }
     .recommendation-details {
-        display: grid;
+       , display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 0.5rem;
         margin-bottom: 1rem;
@@ -637,7 +637,7 @@
     .action-buttons {
         display: flex;
         justify-content: center;
-        gap: 1rem;
+       , gap: 1rem;
         margin-top: 2rem;
     }
     .primary-btn,
@@ -662,14 +662,14 @@
         border: 1px solid #d1d5db;
     }
     .secondary-btn:hover {
-        background: #e5e7eb;
+       , background: #e5e7eb;
     }
     @media (max-width: 768px) {
         .legal-ai-workflow {
             padding: 1rem;
         }
         .step-indicator {
-            gap: 1rem;
+           , gap: 1rem;
         }
         .step-label {
             font-size: 0.75rem;

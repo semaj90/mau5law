@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { dbPool } from '$lib/server/database-pool-service';
-import { embeddingCache } from '$lib/server/embedding-cache-service';
-import { redisService } from '$lib/server/redis-service';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { dbPool } from, '$lib/server/database-pool-service';
+import { embeddingCache } from, '$lib/server/embedding-cache-service';
+import { redisService } from, '$lib/server/redis-service';
 export const GET: RequestHandler = async () => {
   try {
     // Get comprehensive cache and connection statistics
@@ -24,18 +24,18 @@ export const GET: RequestHandler = async () => {
     const response = {
       timestamp: new Date().toISOString(),
       status: 'healthy',
-      services: { redis: {, connected: redisConnected,
+      services: {, redis: {, connected: redisConnected,
           status: redisConnected ? 'connected' : 'disconnected'
         },
         database: {
-          pools: dbStats.totalPools,
+         , pools: dbStats.totalPools,
           drizzleInstances: dbStats.totalDrizzleInstances,
           health: dbHealthCheck,
           allHealthy: Object.values(dbHealthCheck).every(h => h)
         }
       },
       cache: {
-        embeddings: {
+       , embeddings: {
           ...cacheStats.embeddings,
           hitRate: `${embeddingHitRate}%`,
           efficiency:
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async () => {
         sessions: cacheStats.sessions
       },
       performance: {
-        embedding_cache_efficiency: embeddingHitRate,
+       , embedding_cache_efficiency: embeddingHitRate,
         query_cache_efficiency: queryHitRate,
         total_requests:
           cacheStats.embeddings.hits +

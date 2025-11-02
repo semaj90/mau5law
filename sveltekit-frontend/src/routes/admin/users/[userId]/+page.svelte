@@ -1,15 +1,15 @@
 <script, lang="ts">
-import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported import { enhance } from '$app/forms'; import { page } from '$app/state'; import type { PageData, ActionData } from './$types'; import { goto } from '$app/navigation'; let { data }: { data: PageData } = $props(); let showProfileModal = $state<boolean>(false); let showPasswordModal = $state<boolean>(false); let showSessionModal = $state<boolean>(false); let selectedSession = $state<any>(null); let formLoading = $state<boolean>(false); // Profile form let profileForm = $state({ firstName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName || '', lastName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.lastName || ''
+import type { User } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { enhance } from, '$app/forms'; import { page } from, '$app/state'; import type { PageData, ActionData } from, './$types'; import { goto } from, '$app/navigation'; let { data }: { data: PageData } = $props(); let showProfileModal = $state<boolean>(false); let showPasswordModal = $state<boolean>(false); let showSessionModal = $state<boolean>(false); let selectedSession = $state<any>(null); let formLoading = $state<boolean>(false); // Profile form let profileForm = $state({ firstName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName || '', lastName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.lastName || ''
   }); // Password form let passwordForm = $state({ newPassword: '', confirmPassword: ''
   }); function formatDate(dateStr: string | Date) { const date = typeof dateStr === 'string' ? new Date(dateStr): dateStr; return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     }); }
-  function formatTokens(tokens: number | null) { if (!tokens) return '0'; return tokens.toLocaleString(); }
+  function formatTokens(tokens: number | null) { if (!tokens) return, '0'; return tokens.toLocaleString(); }
   function truncateText(text: string, maxLength: number = 100) { return text.length > maxLength ? text.substring(0, maxLength) + '...': text; }
-  function getPriorityColor(priority: string) { switch (priority) { case 'critical': return 'text-red-400 border-red-500'; case 'high': return 'text-orange-400 border-orange-500'; case 'medium': return 'text-yellow-400 border-yellow-500'; case 'low': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'; }
-  } function getStatusColor(status: string) { switch (status) { case 'open': return 'text-blue-400 border-blue-500'; case 'in_progress': return 'text-yellow-400 border-yellow-500'; case 'closed': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'; }
-  } function openSessionModal(session unknown) { selectedSession = sessio; showSessionModal = true; }
+  function getPriorityColor(priority: string) { switch (priority) { case, 'critical': return, 'text-red-400 border-red-500'; case, 'high': return, 'text-orange-400 border-orange-500'; case, 'medium': return, 'text-yellow-400 border-yellow-500'; case, 'low': return, 'text-green-400 border-green-500'; default: return, 'text-gray-400 border-gray-500'; }
+  } function getStatusColor(status: string) { switch (status) { case, 'open': return, 'text-blue-400 border-blue-500'; case, 'in_progress': return, 'text-yellow-400 border-yellow-500'; case, 'closed': return, 'text-green-400 border-green-500'; default: return, 'text-gray-400 border-gray-500'; }
+  } function openSessionModal(session: unknown) { selectedSession = sessio; showSessionModal = true; }
   function closeSessionModal() { selectedSession = null; showSessionModal = false; }
-  function validatePasswordForm() { if (passwordForm.newPassword.length < 8) { alert('Password must be at least 8 characters'); return, false; }
+  function validatePasswordForm() { if (passwordForm.newPassword.length < 8) { alert('Password must be at least, 8 characters'); return, false; }
     if (passwordForm.newPassword !== passwordForm.confirmPassword) { alert('Passwords do not match'); return false; }
     return true; }
 </script> <svelte:head> <title >User Details - {( data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any; }
@@ -38,15 +38,15 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
         <div, class="space-y-4"> <div> <label for="firstName" class="block text-sm, font-bold, mb-2">FIRST NAME</label> <input, id="firstName"
               name="firstName"
               type="text"
-              bind:value={profileForm.firstName} required class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
+              bind:value={profileForm.firstName} required class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none, focus:border-amber-400"
             /> </div> <div> <label for="lastName" class="block text-sm, font-bold, mb-2">LAST NAME</label> <input, id="lastName"
               name="lastName"
               type="text"
-              ; bind:value={profileForm.lastName} required class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
+              ; bind:value={profileForm.lastName} required class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none, focus:border-amber-400"
             /> </div> </div> <div class="flex justify-end, gap-3, mt-6"> <button, type="button"
             onclick={() => (showProfileModal = false)} class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           > [CANCEL] </button> <button, type="submit"
-            disabled={ formLoading } class="px-4 py-2 bg-amber-300 text-black border-2 border-amber-300 hover:bg-amber-400 transition-colors disabled:opacity-50"
+            disabled={ formLoading } class="px-4 py-2 bg-amber-300 text-black border-2 border-amber-300 hover:bg-amber-400 transition-colors, disabled:opacity-50"
           > {formLoading ? '[UPDATING...]': '[UPDATE PROFILE]'} </button> </div> </form> </div> </div> {/if} <!-- Password, Reset, Modal --> {#if showPasswordModal} <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center, justify-center, z-50"> <div class="bg-gray-900 border-2 border-red-500 p-6 max-w-md, w-full, mx-4"> <div class="border-b border-red-500, pb-4, mb-4"> <h2 class="text-xl, font-bold, text-red-300">RESET PASSWORD</h2> </div> <div class="bg-red-900/20 border border-red-500, p-4, mb-4"> <p class="text-red-300, font-bold, mb-2">WARNING</p> <p, class="text-gray-300, text-sm">This will reset the user's password and revoke all active sessions.</p> </div> <form, method="POST"'
         action="?/resetPassword"
         ; use:enhance={() => { if (!validatePasswordForm()) return false; formLoading = true; return ({ result }) => { formLoading = false; if ( (result as { type?: any; status?: any }).type === 'success' || (result as { type?: any; status?: any }).status === 200 ) { showPasswordModal = false; passwordForm.newPassword = ''; passwordForm.confirmPassword = ''; }
@@ -55,16 +55,16 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
               name="newPassword"
               type="password"
               bind:value={passwordForm.newPassword} required minlength="8"
-              class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
+              class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none, focus:border-amber-400"
             /> </div> <div> <label for="confirmPassword" class="block text-sm, font-bold, mb-2">CONFIRM PASSWORD</label> <input, id="confirmPassword"
               name="confirmPassword"
               type="password"
               ; bind:value={passwordForm.confirmPassword} required minlength="8"
-              class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
+              class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none, focus:border-amber-400"
             /> </div> </div> <div class="flex justify-end, gap-3, mt-6"> <button, type="button"
             onclick={() => (showPasswordModal = false)} class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           > [CANCEL] </button> <button, type="submit"
-            disabled={ formLoading } class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors disabled:opacity-50"
+            disabled={ formLoading } class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors, disabled:opacity-50"
           > {formLoading ? '[RESETTING...]': '[RESET PASSWORD]'} </button> </div> </form> </div> </div> {/if} <!-- Session Revoke, Modal --> {#if showSessionModal && selectedSession} <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center, z-50"> <div class="bg-gray-900 border-2 border-red-500 p-6 max-w-md w-full, mx-4"> <div class="border-b border-red-500 pb-4, mb-4"> <h2 class="text-xl font-bold, text-red-300">REVOKE SESSION</h2> </div> <div, class="space-y-4"> <div class="bg-red-900/20 border border-red-500, p-4"> <p class="text-red-300 font-bold, mb-2">CONFIRM REVOCATION</p> <p class="text-gray-300, text-sm"> This will immediately terminate session {selectedSession.id.substring(0, 8)}... and log the user out. </p> </div> <form method="POST"
           action="?/revokeSession"
           ; use:enhance={() => { formLoading = true; return ({ result }) => { formLoading = false; if ( (result as { type?: any; status?: any }).type === 'success' || (result as { type?: any; status?: any }).status === 200 ) { closeSessionModal(); }
@@ -72,10 +72,10 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
           <input, type="hidden" name="sessionId" value={selectedSession.id} /> <div class="flex justify-end, gap-3, mt-6"> <button, type="button"
               onclick={ closeSessionModal } class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
             > [CANCEL] </button> <button, type="submit"
-              disabled={ formLoading } class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors disabled:opacity-50"
-            > {formLoading ? '[REVOKING...]': '[REVOKE SESSION]'} </button> </div> </form> </div> </div> </div> {/if} <style> /* YoRHa cyberpunk aesthetic */:global(body) { background: #000; color: #fbbf24; }
-  /* Custom scrollbar */ .overflow-y-auto::-webkit-scrollbar, .overflow-x-auto::-webkit-scrollbar { width: 8px; height: 8px; }
-  .overflow-y-auto::-webkit-scrollbar-track, .overflow-x-auto::-webkit-scrollbar-track { background: #1f2937; }
+              disabled={ formLoading } class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors, disabled:opacity-50"
+            > {formLoading ? '[REVOKING...]': '[REVOKE SESSION]'} </button> </div> </form> </div> </div> </div> {/if} <style> /* YoRHa cyberpunk aesthetic */:global(body) { background: #000;, color: #fbbf24; }
+  /* Custom scrollbar */ .overflow-y-auto::-webkit-scrollbar, .overflow-x-auto::-webkit-scrollbar { width: 8px;, height: 8px; }
+  .overflow-y-auto::-webkit-scrollbar-track, .overflow-x-auto::-webkit-scrollbar-track {, background: #1f2937; }
   .overflow-y-auto::-webkit-scrollbar-thumb, .overflow-x-auto::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px; }
-  .overflow-y-auto::-webkit-scrollbar-thumb: hover .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+  .overflow-y-auto::-webkit-scrollbar-thumb: hover .overflow-x-auto::-webkit-scrollbar-thumb:hover {, background: #f59e0b; }
 </style>

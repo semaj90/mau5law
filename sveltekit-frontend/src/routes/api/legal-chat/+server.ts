@@ -1,21 +1,21 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Legal Chat API Endpoint
  * Demonstrates Redis List-based chat history with legal AI integration
  * Integrates with Gemma embeddings and CHR-ROM caching
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legalChatMemory, type ChatMessage, type ConversationContext } from '$lib/services/chat-memory-service';
-import { cachedVectorSearch } from '$lib/services/cached-vector-search';
-import { gemmaEmbeddingService } from '$lib/services/embedding-generator';
-import callOllamaApi from '$lib/services/ollama-client';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { legalChatMemory, type ChatMessage, type ConversationContext } from, '$lib/services/chat-memory-service';
+import { cachedVectorSearch } from, '$lib/services/cached-vector-search';
+import { gemmaEmbeddingService } from, '$lib/services/embedding-generator';
+import callOllamaApi from, '$lib/services/ollama-client';
 // Import the redis orchestrator module as a namespace to tolerate different export shapes
-import * as redisOrchestratorModule from '$lib/services/redis-orchestrator';
-import type { LegalCategory } from '$lib/config/legal-priorities';
+import * as redisOrchestratorModule from, '$lib/services/redis-orchestrator';
+import type { LegalCategory } from, '$lib/config/legal-priorities';
 
 // --- Replace fragile resolution with a safe runtime resolver ---
-const _redisModule = redisOrchestratorModule as unknown as Record<string, unknown>;
+const _redisModule = redisOrchestratorModule as: unknown as Record<string, unknown>;
 const _defaultObj = (_redisModule['default'] as Record<string, unknown> | undefined) ?? undefined;
 
 function resolveExport<T>(keys: string[]): T | null {
@@ -26,7 +26,7 @@ function resolveExport<T>(keys: string[]): T | null {
       if (v !== undefined) return v as T;
     }
   }
-  // check inside default export object if present
+  // check inside default export: object if present
   if (_defaultObj) {
     for (const k of keys) {
       if (Object.prototype.hasOwnProperty.call(_defaultObj, k)) {
@@ -34,10 +34,10 @@ function resolveExport<T>(keys: string[]): T | null {
         if (v !== undefined) return v as T;
       }
     }
-    // if default object itself matches expected shape, allow it as a fallback
-    return _defaultObj as unknown as T;
+    // if default: object itself matches expected shape, allow it as a fallback
+    return _defaultObj as: unknown as T;
   }
-  return null;
+ , return: null;
 }
 
 // Resolve orchestrator-like and llm-cache-like exports safely (check common names)
@@ -45,11 +45,11 @@ const redisOrchestrator = (resolveExport<RedisLegalOrchestratorLike>([
   'RedisLegalOrchestrator',
   'redisLegalOrchestrator',
   'redisOrchestrator',
-]) ?? (_redisModule as unknown as RedisLegalOrchestratorLike)) as RedisLegalOrchestratorLike;
+]) ?? (_redisModule as: unknown as RedisLegalOrchestratorLike)) as RedisLegalOrchestratorLike;
 
 const llmCache = (resolveExport<RedisLLMCacheLike>(['RedisLLMCache', 'LLMCache', 'llmCache']) ??
-  (_defaultObj as unknown as RedisLLMCacheLike) ??
-  (_redisModule as unknown as RedisLLMCacheLike)) as RedisLLMCacheLike;
+  (_defaultObj as: unknown as RedisLLMCacheLike) ??
+  (_redisModule as: unknown as RedisLLMCacheLike)) as RedisLLMCacheLike;
 
 interface ChatRequest { sessionId: string;, message: string;
   caseId?: string;
@@ -58,7 +58,7 @@ interface ChatRequest { sessionId: string;, message: string;
   useRAG?: boolean;
   maxHistoryContext?: number;
 }
-interface ChatResponse { response: string;, sessionId: string;
+interface ChatResponse {, response: string;, sessionId: string;
   sources?: RagSource[]; // <- replaced, any[] with, RagSource[]
   confidence?: number;
   processing_time: number;
@@ -76,7 +76,7 @@ type SearchResult = {
   [key: string]: any;
 };
 
-// New: define VectorSearchStats so the name exists and matches usages elsewhere
+//, New: define VectorSearchStats so the name exists and matches usages elsewhere
 type VectorSearchStats = {
   hitRate?: number;
   totalQueries?: number;
@@ -92,7 +92,7 @@ type CachedVectorSearchLike = {
   searchSimilarEvidence?: (query: string, caseId?: string, opts?: Record<string, unknown>) => Promise<SearchResult[]>;
 };
 
-type EmbeddingStats = { hitRate: number; totalRequests: number; modelUsage: Record<string, number> };
+type EmbeddingStats = { hitRate: number; totalRequests: number;, modelUsage: Record<string, number> };
 type EmbeddingServiceLike = {
   getStats?: () => EmbeddingStats;
   // other methods omitted
@@ -113,7 +113,7 @@ type RedisLegalOrchestratorLike = {
 
 type RedisLLMCacheLike = {
   // Return cached response structure if present
-  getCachedResponse?: (
+  getCachedResponse?: (;
     prompt: string,
     opts?: { caseId?: string; legalCategory?: string; practiceArea?: string }
   ) => Promise<{ response: string; sources?: RagSource[]; confidence?: number; timestamp?: number } | null> | null; // <- sources typed
@@ -138,7 +138,7 @@ type RagSource = {
  * POST /api/legal-chat
  * Process legal AI chat with Redis-based memory management
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   try {
     const body: ChatRequest = await request.json();
@@ -172,16 +172,16 @@ export const POST: RequestHandler = async ({ request }) => {
         sources: cachedResponse.sources || [],
         confidence: cachedResponse.confidence,
         processing_time: performance.now() - startTime,
-        cache_stats: { cache_hit: true, cached_at: cachedResponse.timestamp },
+        cache_stats: {, cache_hit: true, cached_at: cachedResponse.timestamp },
         conversation_context: undefined
       });
     }
-    // Use a single typed local reference instead of repeated `as any` casts
+    // Use a single typed local reference instead of repeated `as: any` casts
     const memory = legalChatMemory as LegalChatMemoryLike;
 
     // Step 1: Add user message to history
     const userMessage: ChatMessage = {
-      role: 'user',
+     , role: 'user',
       content: message,
       metadata: {
         caseId,
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
         sources: []
       }
     };
-    const conversationContext: Partial<ConversationContext> = {
+    const, conversationContext: Partial<ConversationContext> = {
       sessionId,
       caseId,
       legalCategory,
@@ -199,11 +199,11 @@ export const POST: RequestHandler = async ({ request }) => {
     await memory.addMessageToHistory?.(sessionId, userMessage, conversationContext);
 
     // Step 2: Get conversation history for context
-    const chatHistory: ChatMessage[] = (await memory.getHistory?.(sessionId, maxHistoryContext, true)) ?? [];
+    const, chatHistory: ChatMessage[] = (await memory.getHistory?.(sessionId, maxHistoryContext, true)) ?? [];
     console.log(`🎮 Retrieved ${chatHistory.length} messages from history`);
 
     // Step 3: Perform RAG search if enabled
-    let ragSources: RagSource[] = []; // <- typed instead, of, any[]
+    let, ragSources: RagSource[] = []; // <- typed instead, of, any[]
     let ragContext = '';
     if (useRAG && message.length > 10) {
       try {
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request }) => {
             memoryBank: result?.memoryBank,
             priority: result?.priority
           }));
-          // Build context from top 3 results
+          // Build context from top, 3 results
           ragContext = searchResults
             .slice(0, 3)
             .map((r: SearchResult) => (r?.content ?? '').substring(0, 500))
@@ -246,11 +246,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Step 5: Build conversation messages for Ollama
     const conversationMessages = [
-      { role: 'system', content: systemPrompt },
+      {, role: 'system', content: systemPrompt },
       ...chatHistory.slice(-8).map((msg: ChatMessage) => ({
-        // Last 8 messages for context
+        // Last, 8 messages for context
         role: msg.role,
-        content: (msg.content ?? '') as string
+        content: (msg.content ?? '') as: string
       })),
     ];
 
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Step 7: Add AI response to history
     const assistantMessage: ChatMessage = {
-      role: 'assistant',
+     , role: 'assistant',
       content: responseContent,
       metadata: {
         caseId,
@@ -307,7 +307,7 @@ export const POST: RequestHandler = async ({ request }) => {
       cacheHitRate: 0,
       totalMessages: 0,
       avgResponseTime: 0
-    }) as { cacheHitRate: number; totalMessages: number; avgResponseTime: number };
+    }) as { cacheHitRate: number; totalMessages: number;, avgResponseTime: number };
 
     const vectorSearchStats = (cachedVectorSearch as CachedVectorSearchLike).getStats?.() ?? {
       hitRate: 0,
@@ -331,29 +331,29 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = performance.now() - startTime;
     console.log(`🎮 Legal chat response generated in ${processingTime.toFixed(2)}ms`);
 
-    // assemble response object that references the typed stats
+    // assemble response: object that references the typed stats
     const response: ChatResponse = {
-      response: responseContent,
+     , response: responseContent,
       sessionId,
       sources: ragSources,
       confidence,
       processing_time: processingTime,
-      cache_stats: { chat_memory: {, hit_rate: chatStats.cacheHitRate,
+      cache_stats: {, chat_memory: {, hit_rate: chatStats.cacheHitRate,
           total_messages: chatStats.totalMessages,
           avg_response_time: chatStats.avgResponseTime
         },
         vector_search: {
-          hit_rate: vectorSearchStats.hitRate,
+         , hit_rate: vectorSearchStats.hitRate,
           total_queries: vectorSearchStats.totalQueries,
           cache_hits: vectorSearchStats.cacheHits
         },
         embeddings: {
-          hit_rate: embeddingStats.hitRate,
+         , hit_rate: embeddingStats.hitRate,
           total_requests: embeddingStats.totalRequests,
           model_usage: embeddingStats.modelUsage
         },
         redis_orchestrator: {
-          llm_cache: redisStats.llm_cache,
+         , llm_cache: redisStats.llm_cache,
           agent_memory: redisStats.agent_memory,
           task_queue: redisStats.task_queue,
           memory_usage: redisStats.redis_memory
@@ -373,7 +373,7 @@ export const POST: RequestHandler = async ({ request }) => {
 // Add/update typed surface for the legalChatMemory service to include delete methods
 type LegalChatMemoryLike = {
   addMessageToHistory?: (;
-    sessionId: string; message: ChatMessage,
+    sessionId: string;, message: ChatMessage,
     context?: Partial<ConversationContext>
   ) => Promise<void> | void;
   getHistory?: (sessionId: string, limit?: number, includeMetadata?: boolean) => Promise<ChatMessage[]>;
@@ -479,7 +479,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     return json({
       success: true,
-      message: `Chat history cleared for; session: ${sessionId}`,
+      message: `Chat history cleared for;, session: ${sessionId}`,
       sessionId,
       cleared,
       keys_cleared: cleared ? keys : []
@@ -523,15 +523,15 @@ function isRecord(v: any): v is Record<string, unknown> {
 
 // --- Replaced: adapter to support multiple Ollama client shapes (no `any`) ---
 async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
-  // tolerate different export shapes: function, instance methods, or default object
-  const clientUnknown = callOllamaApi as unknown;
+  // tolerate different export shapes: function, instance methods, or default: object
+  const clientUnknown = callOllamaApi, as: unknown;
 
   // If the import is directly callable (function)
   if (isCallable(clientUnknown)) {
     return await Promise.resolve(clientUnknown(payload));
   }
 
-  // If the import is an object, inspect for common method names
+  // If the import is an: object, inspect for common method names
   if (isRecord(clientUnknown)) {
     const clientObj = clientUnknown as OllamaClientObject;
     const methodCandidates = ['call', 'chat', 'create', 'generate', 'completion', 'request', 'send'];
@@ -550,7 +550,7 @@ async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
         return await Promise.resolve(wrapper(payload));
       }
       if (isRecord(wrapper)) {
-        // try to find any callable property inside wrapper
+        // try to find: any callable property inside wrapper
         for (const k of Object.keys(wrapper as Record<string, unknown>)) {
           const inner = (wrapper as Record<string, unknown>)[k];
           if (isCallable(inner)) {
@@ -566,23 +566,23 @@ async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
 
 // --- Replaced: normalize response extraction so downstream code can expect a consistent shape (no `any`) ---
 function extractAIMessageContent(resp: any): string | null {
-  if (resp === null || resp === undefined) return null;
+  if (resp === null || resp === undefined) return: null;
 
-  // Direct string response
+  //, Direct: string response
   if (typeof resp === 'string') return resp;
 
   // If primitive text field exists
   if (isRecord(resp) && typeof (resp as Record<string, unknown>).text === 'string') {
-    return (resp as Record<string, unknown>).text as string;
+    return (resp as Record<string, unknown>).text as: string;
   }
 
-  // Chat-style: { message: {, content: string } }
+  // Chat-style: {, message: {, content: string } }
   if (isRecord(resp) && isRecord((resp as Record<string, unknown>).message)) {
     const msg = (resp as Record<string, unknown>).message as Record<string, unknown>;
     if (typeof msg.content === 'string') return msg.content;
   }
 
-  // OpenAI-style choices: { choices: [{, message: { content } }] }
+  // OpenAI-style choices: {, choices: [{, message: { content } }] }
   if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).choices)) {
     const choices = (resp as Record<string, unknown>).choices as Array<unknown>;
     if (choices.length > 0 && isRecord(choices[0]) && isRecord((choices[0] as Record<string, unknown>).message)) {
@@ -591,7 +591,7 @@ function extractAIMessageContent(resp: any): string | null {
     }
   }
 
-  // Some libs: { output: [{, content: string }] } or { output: [{, text: string }] }
+  // Some libs: {, output: [{, content: string }] } or {, output: [{, text: string }] }
   if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).output)) {
     const output = (resp as Record<string, unknown>).output as Array<unknown>;
     if (output.length > 0 && isRecord(output[0])) {
@@ -601,14 +601,14 @@ function extractAIMessageContent(resp: any): string | null {
     }
   }
 
-  // nested data arrays: { data: [{, text: string }] }
+  // nested data arrays: {, data: [{, text: string }] }
   if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).data)) {
     const data = (resp as Record<string, unknown>).data as Array<unknown>;
     if (data.length > 0 && isRecord(data[0]) && typeof (data[0] as Record<string, unknown>).text === 'string') {
-      return (data[0] as Record<string, unknown>).text as string;
+      return (data[0] as Record<string, unknown>).text as: string;
     }
   }
 
   // fallback: couldn't extract'
-  return null;
+ , return: null;
 }

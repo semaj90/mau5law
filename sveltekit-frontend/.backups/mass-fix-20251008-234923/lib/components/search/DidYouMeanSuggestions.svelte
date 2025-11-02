@@ -226,7 +226,7 @@
 
   <!-- Error Display -->
   {#if error}
-    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
+    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" use:fade>
       <p class="text-sm text-red-800 dark:text-red-200">
         <span class="font-medium">Error:</span> {error}
       </p>
@@ -251,7 +251,7 @@
     <div
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto suggestions-scroll"
       style="z-index:50;"
-      transition:fly={{ y: -5, duration: 150 }}
+      use:fly={{ y: -5, duration: 150 }}
     >
       <!-- Regular Suggestions -->
       {#if suggestions.length > 0}
@@ -399,7 +399,7 @@
 
   <!-- No Results -->
   {#if open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
-    <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4" style="z-index:50;" transition:fade>
+    <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4" style="z-index:50;" use:fade>
       <div class="text-center text-gray-500 dark:text-gray-400">
         <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
         <p class="text-sm">No AI suggestions found for "{query}"</p>

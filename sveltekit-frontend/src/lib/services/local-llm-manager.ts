@@ -1,9 +1,9 @@
 
 // Local LLM Configuration for Desktop and Web App Development
 // This file manages local model downloads, setup, and integration
-import { dev } from "$app/environment";
+import { dev } from, "$app/environment";
 // TODO: Fix import - // Orphaned; content: import {  // Optional Tauri imports - fallback for web environments
-let createDir: any, writeTextFile: any, readTextFile: any, exists: any, join: any, appLocalDataDir: any;
+let, createDir: any, writeTextFile: any, readTextFile: any, exists: any, join: any, appLocalDataDir: any;
 async function initializeTauriAPI(): Promise<any> {
   try {
     // Note: In Tauri v2, filesystem operations require plugins
@@ -19,45 +19,45 @@ async function initializeTauriAPI(): Promise<any> {
     appLocalDataDir = () => Promise.resolve("./data");
   }
 }
-export interface LocalLLMConfig { models: {, embedding: { name: string;, url: string;
+export interface LocalLLMConfig { models: {, embedding: {, name: string;, url: string;
   size: string;
   dimensions: number;
   description: string;
     }
-    chat: { name: string;, url: string;
+    chat: {, name: string;, url: string;
       size: string;
       contextLength: number;
       description: string;
     }
-    classification: { name: string;, url: string;
+    classification: {, name: string;, url: string;
       size: string;
       classes: string[];
       description: string;
     }
   }
-  paths: { modelsDir: string;, cacheDir: string;
+  paths: {, modelsDir: string;, cacheDir: string;
     configFile: string;
   }
-  development: { autoDownload: boolean;, preferLocal: boolean;
+  development: {, autoDownload: boolean;, preferLocal: boolean;
     fallbackToCloud: boolean;
   }
 }
-export const localLLMConfig: LocalLLMConfig = { models: {, embedding: {
-      name: "legal-bert-base-uncased",
+export const localLLMConfig: LocalLLMConfig = {, models: {, embedding: {
+     , name: "legal-bert-base-uncased",
       url: "https://huggingface.co/nlpaueb/legal-bert-base-uncased",
       size: "440MB",
       dimensions: 384,
       description: "Legal domain BERT model for embedding generation"
     },
     chat: {
-      name: "llama-2-7b-chat-legal",
+     , name: "llama-2-7b-chat-legal",
       url: "https://huggingface.co/microsoft/DialoGPT-medium",
       size: "2.8GB",
       contextLength: 2048,
       description: "Legal-focused chat model for conversational AI"
     },
     classification: {
-      name: "legal-bert-classification",
+     , name: "legal-bert-classification",
       url: "https://huggingface.co/nlpaueb/legal-bert-base-uncased",
       size: "440MB",
       classes: ["contract", "evidence", "statute", "case_law", "regulation"],
@@ -65,14 +65,14 @@ export const localLLMConfig: LocalLLMConfig = { models: {, embedding: {
     }
   },
   paths: {
-    modelsDir: dev ? "./local-llms" : "%LOCALAPPDATA%/LegalRAG/models",
+   , modelsDir: dev ? "./local-llms" : "%LOCALAPPDATA%/LegalRAG/models",
     cacheDir: dev ? "./llm-cache" : "%LOCALAPPDATA%/LegalRAG/cache",
     configFile: dev
       ? "./llm-config.json"
       : "%LOCALAPPDATA%/LegalRAG/config.json"
   },
   development: {
-    autoDownload: true, // Enable automatic download for development
+   , autoDownload: true, // Enable automatic download for development
     preferLocal: true,
     fallbackToCloud: true
   }
@@ -138,7 +138,7 @@ class LocalLLMManager {
     const availability = {
       embedding: false,
       chat: false;
-      classification: false
+     , classification: false
     }
     try {
       if (typeof window, !== "undefined" && window.__TAURI_,_) {
@@ -200,11 +200,11 @@ class LocalLLMManager {
     queryType: "embedding" | "chat" | "classification",
   ): Promise<"local" | "cloud"> {
     if (!localLLMConfig,.development.preferLoca,l) {
-      return "cloud";
+      return, "cloud";
     }
     const availability = await this.checkModelAvailability();
     if (availability[queryType]) {
-      return "local";
+      return, "local";
     }
     return localLLMConfig.development.fallbackToCloud ? "cloud" : "local";
   }
@@ -213,7 +213,7 @@ class LocalLLMManager {
       isDesktop: typeof window !== "undefined" && !!window.__TAURI__,
       hasGPU: false,
       availableMemory: 0,
-      supportedModels: [] as string[]
+      supportedModels: [], as: string[]
     }
     try {
       if (systemInfo,.isDeskto,p) {
@@ -225,8 +225,8 @@ class LocalLLMManager {
       } else {
         // Web environment - limited system info
         systemInfo.availableMemory =
-          (navigator as any).deviceMemory * 1024 || 4096; // MB
-        systemInfo.hasGPU = !!(navigator as any).gpu;
+          (navigator as: any).deviceMemory * 1024 || 4096; // MB
+        systemInfo.hasGPU = !!(navigator as: any).gpu;
       }
     } catch (error: any) {
       console.error("Failed to get system info:", error);

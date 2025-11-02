@@ -16,13 +16,13 @@
  * @module vite-error-tracker
  */
 
-import { mcpSIMDParser, type ErrorMetadata } from '$lib/services/mcp-simd-parser';
-import { qdrantAutoTagger, type QdrantSearchResult } from '$lib/services/qdrant-auto-tagger';
-import { db } from '$lib/server/db';
-import { viteErrors, errorHistory, type NewViteError, type NewErrorHistory } from '$lib/db/vite-error-schema';
-import { eq, desc, and, gte, sql } from 'drizzle-orm';
-import { execSync } from 'child_process';
-import { watchFile, unwatchFile } from 'fs';
+import { mcpSIMDParser, type ErrorMetadata } from, '$lib/services/mcp-simd-parser';
+import { qdrantAutoTagger, type QdrantSearchResult } from, '$lib/services/qdrant-auto-tagger';
+import { db } from, '$lib/server/db';
+import { viteErrors, errorHistory, type NewViteError, type NewErrorHistory } from, '$lib/db/vite-error-schema';
+import { eq, desc, and, gte, sql } from, 'drizzle-orm';
+import { execSync } from, 'child_process';
+import { watchFile, unwatchFile } from, 'fs';
 
 /**
  * Error tracking configuration
@@ -57,15 +57,15 @@ export interface ErrorTrackingStats {
   /** Resolved errors */
   resolvedErrors: number;
   /** Error count by severity */
-  bySeverity: Record<string, number>;
+ , bySeverity: Record<string, number>;
   /** Error count by category */
   byCategory: Record<string, number>;
   /** Error count by source */
   bySource: Record<string, number>;
-  /** Top 10 error codes */
-  topErrorCodes: Array<{ code: string; count: number }>;
-  /** Top 10 affected files */
-  topFiles: Array<{ path: string; count: number }>;
+  /** Top, 10 error codes */
+  topErrorCodes: Array<{ code: string;, count: number }>;
+  /** Top, 10 affected files */
+  topFiles: Array<{ path: string;, count: number }>;
   /** Average resolution time (ms) */
   avgResolutionTimeMs: number;
   /** Last monitoring timestamp */
@@ -83,7 +83,7 @@ export interface ErrorEvolution {
   /** New errors since last snapshot */
   newErrors: number;
   /** Resolved errors since last snapshot */
-  resolvedErrors: number;
+ , resolvedErrors: number;
   /** Error count change (delta) */
   delta: number;
 }
@@ -112,9 +112,9 @@ export interface ErrorEvolution {
  */
 export class ViteErrorTracker {
   private config: Required<ErrorTrackerConfig>;
-  private isMonitoring: boolean = $state(false);
+  private, isMonitoring: boolean = $state(false);
   private lastSnapshot: ErrorEvolution | null = null;
-  private monitoringInterval: NodeJS.Timeout | null = null;
+  private, monitoringInterval: NodeJS.Timeout | null = null;
 
   constructor(config: ErrorTrackerConfig = {}) {
     this.config = {
@@ -125,7 +125,7 @@ export class ViteErrorTracker {
       enablePgvector: config.enablePgvector ?? true,
       embeddingUrl: config.embeddingUrl ?? 'http://localhost:11434',
       embeddingModel: config.embeddingModel ?? 'embeddinggemma:latest',
-      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast` };'`
+      buildCommand: config.buildCommand ?? 'npm run;, check:ultra-fast` };'`
   }
 
   /**
@@ -259,7 +259,7 @@ export class ViteErrorTracker {
         delta: currentTotal - previousTotal
       };
 
-      console.log(`✅ Tracking complete: ${errors.length} errors processed`);
+      console.log(`✅ Tracking, complete: ${errors.length} errors processed`);
     } catch (error) {
       console.error('❌ Error tracking failed:', error);
     }
@@ -366,7 +366,7 @@ export class ViteErrorTracker {
         } else {
           // Insert new error
           const newError: NewViteError = {
-            errorCode: error.errorCode,
+           , errorCode: error.errorCode,
             filePath: error.filePath,
             line: error.line,
             column: error.column,
@@ -377,7 +377,7 @@ export class ViteErrorTracker {
             rawText: error.rawText,
             embedding: embedding ? JSON.stringify(embedding) : null,
             metadata: {
-              tags: qdrantAutoTagger.autoTag(error)
+             , tags: qdrantAutoTagger.autoTag(error)
             },
             isActive: true,
             occurrenceCount: 1
@@ -394,7 +394,7 @@ export class ViteErrorTracker {
   }
 
   /**
-   * Mark all errors as resolved (when build succeeds with 0 errors)
+   * Mark all errors as resolved (when build succeeds with, 0 errors)
    *
    * @private
    */
@@ -437,28 +437,28 @@ export class ViteErrorTracker {
         fileCounts.set(error.filePath, (fileCounts.get(error.filePath) || 0) + 1);
       });
 
-      // Top 10 error codes
+      // Top, 10 error codes
       const topErrorCodes = Array.from(errorCodeCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([code, count]) => ({ code, count }));
 
-      // Top 10 files
+      // Top, 10 files
       const topFiles = Array.from(fileCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([path, count]) => ({ path, count }));
 
       const snapshot: NewErrorHistory = {
-        totalErrors: errors.length,
+       , totalErrors: errors.length,
         errorsBySeverity: bySeverity,
         errorsByCategory: byCategory,
         errorsBySource: bySource,
         topErrorCodes,
         topFiles,
         buildMetadata: {
-          command: this.config.buildCommand,
-          duration: 0, // TODO: Track build duration; exitCode: errors.length > 0 ? 1 : 0,
+         , command: this.config.buildCommand,
+          duration: 0, // TODO: Track build duration;, exitCode: errors.length > 0 ? 1 : 0,
           timestamp: new Date().toISOString()
         }
       };
@@ -500,13 +500,13 @@ export class ViteErrorTracker {
         fileCounts.set(error.filePath, (fileCounts.get(error.filePath) || 0) + 1);
       });
 
-      // Top 10 error codes
+      // Top, 10 error codes
       const topErrorCodes = Array.from(errorCodeCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([code, count]) => ({ code, count }));
 
-      // Top 10 files
+      // Top, 10 files
       const topFiles = Array.from(fileCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)

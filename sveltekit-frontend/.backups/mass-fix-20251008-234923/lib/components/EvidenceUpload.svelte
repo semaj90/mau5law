@@ -166,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Selected File Info -->
   {#if selectedFile && !processing && !completed}
-    <div class="file-info bg-gray-50 p-4 rounded-lg mb-6" transition:fade>
+    <div class="file-info bg-gray-50 p-4 rounded-lg mb-6" use:fade>
       <div class="flex items-center justify-between">
         <div>
           <p class="font-medium text-gray-900">{selectedFile.name}</p>
@@ -221,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Completion Status -->
   {#if completed}
-    <div class="completion-status bg-green-50 p-4 rounded-lg" transition:fade>
+    <div class="completion-status bg-green-50 p-4 rounded-lg" use:fade>
       <div class="flex items-center gap-3 mb-3">
         <CheckCircle class="w-6 h-6 text-green-600" />
         <div>

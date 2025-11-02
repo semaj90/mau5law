@@ -3,9 +3,9 @@
  *
  * Endpoint for processing multiple legal documents in batches
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { unifiedLegalOrchestrationService } from, '$lib/services/unified-legal-orchestration-service.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
         jobStatuses[jobId] = {
           subscriptionEndpoint: '/api/legal/status/${jobId}' };'` }'`
       processedDocuments[docId] = {
-        jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
+       , jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
         jobStatuses,
         aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,'`
         processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics

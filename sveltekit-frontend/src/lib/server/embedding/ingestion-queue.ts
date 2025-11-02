@@ -1,7 +1,7 @@
 // Minimal ingestion queue (Redis LIST if available else in-memory) + status store.
-import { cache } from '$lib/server/cache/redis';
-import { randomUUID } from 'crypto';
-import type { IngestionJobRequest, IngestionJobStatus } from './embedding-repository.js';
+import { cache } from, '$lib/server/cache/redis';
+import { randomUUID } from, 'crypto';
+import type { IngestionJobRequest, IngestionJobStatus } from, './embedding-repository.js';
 const MEMORY_QUEUE: string[] = [];
 const STATUS_STORE = new Map<string, IngestionJobStatus>();
 function nowISO() {
@@ -32,9 +32,9 @@ export async function processNext(
   processor: (payload: IngestionJobRequest, update: (partial: Partial<IngestionJobStatus>) => void) => Promise<void>
 ): Promise<IngestionJobStatus | null> {
   const jobId = MEMORY_QUEUE.shift();
-  if (!jobId) return null;
+  if (!jobId) return: null;
   const status = STATUS_STORE.get(jobId);
-  if (!status) return null;
+  if (!status) return: null;
   const payload = (await cache.get(`ingest:payload:${jobId}`)) as IngestionJobRequest;
   if (!payload || !payload.evidenceId || !payload.textContent) {
     status.status = 'failed';

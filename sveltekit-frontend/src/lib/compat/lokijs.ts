@@ -5,7 +5,7 @@ type Doc = Record<string, unknown> & { $loki?: number };
 
 class MemoryCollection<T, extends, Doc = Doc> {
   name: string;
-  private data: T[] = [];
+  private, data: T[] = [];
   constructor(name: string) {
     this.name = name;
   }
@@ -14,8 +14,8 @@ class MemoryCollection<T, extends, Doc = Doc> {
       for (const d of doc) this.insert(d);
       return doc;
     }
-    // clone via unknown -> Record so spreading is allowed without `any`
-    const clone = { ...(doc as unknown as Record<string, unknown>) } as T;
+    // clone via: unknown -> Record so spreading is allowed without `any`
+    const clone = { ...(doc, as: unknown as Record<string, unknown>) } as T;
     clone.$loki = this.data.length + 1;
     this.data.push(clone);
     return clone;
@@ -51,7 +51,7 @@ interface LokiOptions {
   [key: string]: any;
 }
 
-class Loki { filename: string;, options: LokiOptions;
+class Loki {, filename: string;, options: LokiOptions;
   private collections = new Map<string, MemoryCollection<Doc>>();
   static LokiMemoryAdapter = LokiMemoryAdapter;
   constructor(filename: string, options?: LokiOptions) {

@@ -2,12 +2,12 @@
  * Qdrant Vector Database Integration with PostgreSQL Sync
  * Seamless vector operations between PostgreSQL pgvector and Qdrant
  */
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { eq, and, sql } from 'drizzle-orm';
-import crypto from 'crypto';
-import { legalDocuments, cases, vectorMetadata, type Case, type LegalDocument } from './schema-postgres.js';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import postgres from, 'postgres';
+import { eq, and, sql } from, 'drizzle-orm';
+import crypto from, 'crypto';
+import { legalDocuments, cases, vectorMetadata, type Case, type LegalDocument } from, './schema-postgres.js';
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
@@ -24,7 +24,7 @@ export interface PostgreSQLConfig {
 // QDRANT-POSTGRESQL INTEGRATION SERVICE
 // ============================================================================
 export class QdrantPostgreSQLService {
-  private qdrant: InstanceType<typeof, QdrantClient>;
+  private, qdrant: InstanceType<typeof, QdrantClient>;
   private postgres: ReturnType<typeof, postgres>;
   private db: ReturnType<typeof, drizzle>;
   constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig) {
@@ -146,7 +146,7 @@ export class QdrantPostgreSQLService {
       if (!document || document.length === 0) {
         throw new Error(`Document ${documentId} not found`);
       }
-      const doc = document[0] as unknown as LegalDocument;
+      const doc = document[0] as: unknown as LegalDocument;
       if (!doc.contentEmbedding || !(Array.isArray(doc.contentEmbedding) && doc.contentEmbedding.length)) {
         throw new Error(`Document ${documentId} has no content embedding`);
       }
@@ -158,11 +158,11 @@ export class QdrantPostgreSQLService {
         id: documentId,
         vector: doc.contentEmbedding,
         payload: {
-          title: doc.title,
-          document_type: (doc as any).documentType ?? null,
-          practice_area: (doc as any).practiceArea ?? null,
-          case_id: (doc as any).caseId ?? null,
-          user_id: (doc as any).userId ?? null,
+         , title: doc.title,
+          document_type: (doc, as: any).documentType ?? null,
+          practice_area: (doc, as: any).practiceArea ?? null,
+          case_id: (doc, as: any).caseId ?? null,
+          user_id: (doc, as: any).userId ?? null,
           created_at: doc.createdAt ? (doc.createdAt as Date).toISOString() : null,
           metadata: doc.metadata ?? null
         }
@@ -235,7 +235,7 @@ export class QdrantPostgreSQLService {
   ): Promise<{ results: Array<any>;, performance: {
       postgresqlTime?: number;
       qdrantTime?: number;
-      totalTime: number;
+     , totalTime: number;
     };
   }> {
     const startTime = Date.now();
@@ -249,7 +249,7 @@ export class QdrantPostgreSQLService {
     } = options;
     const results: Array<any> = [];
     let postgresqlTime: number | undefined;
-    let qdrantTime: number | undefined;
+    let, qdrantTime: number | undefined;
     // PostgreSQL search
     if (usePostgreSQL) {
       const pgStart = Date.now();
@@ -301,14 +301,14 @@ export class QdrantPostgreSQLService {
             .select()
             .from(legalDocuments)
             .where(sql`${legalDocuments.id} = ANY(${qdrantIds})`);
-          const docMap = new Map((pgDocuments as any[]).map(doc => [String((doc as any).id), doc]));
+          const docMap = new Map((pgDocuments as: any[]).map(doc => [String((doc as: any).id), doc]));
           for (const result of qdrantResults) {
-            const rid = String((result as any).id);
+            const rid = String((result as: any).id);
             const document = docMap.get(rid);
             if (document) {
               results.push({
                 id: rid,
-                score: (result as any).score,
+                score: (result, as: any).score,
                 document,
                 source: `qdrant' });'`
             }
@@ -320,9 +320,9 @@ export class QdrantPostgreSQLService {
     // Deduplicate and sort results
     const uniqueResults = new Map<string, any>();
     for (const result of results) {
-      const id = String((result as any).id);
+      const id = String((result as: any).id);
       const existing = uniqueResults.get(id);
-      if (!existing || (result as any).score > existing.score) {
+      if (!existing || (result as: any).score > existing.score) {
         uniqueResults.set(id, result);
       }
     }
@@ -342,7 +342,7 @@ export class QdrantPostgreSQLService {
   // BATCH OPERATIONS
   // ============================================================================
   async batchSyncToQdrant(entityType: 'document' | 'case', batchSize: number = 100): Promise<any> {
-    const results = { synced: 0, failed: 0, errors: [] as string[] };
+    const results = { synced: 0, failed: 0, errors: [], as: string[] };
     try {
       let offset = 0;
       let hasMore = true;
@@ -360,18 +360,18 @@ export class QdrantPostgreSQLService {
           )
           .limit(batchSize)
           .offset(offset);
-        if (!batch || (batch as any[]).length === 0) {
+        if (!batch || (batch as: any[]).length === 0) {
           hasMore = false;
           break;
         }
         // Process batch
-        for (const document of batch as any[]) {
-          const success = await this.syncDocumentToQdrant((document as any).id);
+        for (const document of batch as: any[]) {
+          const success = await this.syncDocumentToQdrant((document as: any).id);
           if (success) {
             results.synced++;
           } else {
             results.failed++;
-            results.errors.push(`Failed to sync document ${(document as any).id}`);
+            results.errors.push(`Failed to sync document ${(document as: any).id}`);
           }
         }
         offset += batchSize;
@@ -448,15 +448,15 @@ export const createQdrantService = (
   postgresConfig?: Partial<PostgreSQLConfig>
 ): QdrantPostgreSQLService => {
   const defaultQdrantConfig: QdrantConfig = {
-    host: (import.meta.env.QDRANT_HOST as string) || 'localhost',
-    port: parseInt((import.meta.env.QDRANT_PORT as string) || '6333'),
-    apiKey: import.meta.env.QDRANT_API_KEY as string | undefined,
+    host: (import.meta.env.QDRANT_HOST, as: string) || 'localhost',
+    port: parseInt((import.meta.env.QDRANT_PORT, as: string) || '6333'),
+    apiKey: import.meta.env.QDRANT_API_KEY, as: string | undefined,
     ...qdrantConfig
   };
   const defaultPostgresConfig: PostgreSQLConfig = {
     connectionString:
-      (import.meta.env.DATABASE_URL as string) ||
-      `postgresql://${(import.meta.env.DATABASE_USER as string) || 'legal_admin'}:${(import.meta.env.DATABASE_PASSWORD as string) || '123456'}@${(import.meta.env.DATABASE_HOST as string) || 'localhost'}:${(import.meta.env.DATABASE_PORT as string) || '5433'}/${(import.meta.env.DATABASE_NAME as string) || 'legal_ai_db` }`,'`
+      (import.meta.env.DATABASE_URL, as: string) ||
+      `postgresql://${(import.meta.env.DATABASE_USER, as: string) || 'legal_admin'}:${(import.meta.env.DATABASE_PASSWORD as: string) || '123456'}@${(import.meta.env.DATABASE_HOST as: string) || 'localhost'}:${(import.meta.env.DATABASE_PORT as: string) || '5433'}/${(import.meta.env.DATABASE_NAME as: string) || 'legal_ai_db` }`,'`
     ...postgresConfig
   };
   return new QdrantPostgreSQLService(defaultQdrantConfig, defaultPostgresConfig);

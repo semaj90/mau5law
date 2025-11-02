@@ -1,20 +1,20 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { db } from '$lib/db';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { db } from, '$lib/db';
 // Use namespace import to avoid hard failure if schema export names differ
-import * as schema from '$lib/database/schema';
-import { ollamaService } from './ollamaService.js';
-import { sql, eq, and, desc } from 'drizzle-orm';
+import * as schema from, '$lib/database/schema';
+import { ollamaService } from, './ollamaService.js';
+import { sql, eq, and, desc } from, 'drizzle-orm';
 
-// runtime-safe table references (fall back to any if names differ)
+// runtime-safe table references (fall back to: any if names differ)
 const tables = {
-  documentVectors: (schema as any).documentVectors ?? (schema as any).document_vectors,
-  caseSummaryVectors: (schema as any).caseSummaryVectors ?? (schema as any).case_summary_vectors,
-  evidenceVectors: (schema as any).evidenceVectors ?? (schema as any).evidence_vectors,
-  queryVectors: (schema as any).queryVectors ?? (schema as any).query_vectors,
-  knowledgeNodes: (schema as any).knowledgeNodes ?? (schema as any).knowledge_nodes,
-  knowledgeEdges: (schema as any).knowledgeEdges ?? (schema as any).knowledge_edges,
-  recommendationCache: (schema as any).recommendationCache ?? (schema as any).recommendation_cache
+  documentVectors: (schema, as: any).documentVectors ?? (schema as: any).document_vectors,
+  caseSummaryVectors: (schema, as: any).caseSummaryVectors ?? (schema as: any).case_summary_vectors,
+  evidenceVectors: (schema, as: any).evidenceVectors ?? (schema as: any).evidence_vectors,
+  queryVectors: (schema, as: any).queryVectors ?? (schema as: any).query_vectors,
+  knowledgeNodes: (schema, as: any).knowledgeNodes ?? (schema as: any).knowledge_nodes,
+  knowledgeEdges: (schema, as: any).knowledgeEdges ?? (schema as: any).knowledge_edges,
+  recommendationCache: (schema, as: any).recommendationCache ?? (schema as: any).recommendation_cache
 };
 
 // Define the expected interface for OllamaService, stubbing the missing dependency
@@ -24,16 +24,16 @@ interface IOllamaService {
 }
 
 // Cast the imported ollamaService to the defined interface to resolve type errors
-const typedOllamaService: IOllamaService = ollamaService as any;
+const typedOllamaService: IOllamaService = ollamaService as: any;
 
-export interface RankedSearchResult { id: string;, content: string;
+export interface RankedSearchResult {, id: string;, content: string;
   score: number;
-  rankingFactors: { vectorSimilarity: number;, documentRecency: number;
+  rankingFactors: {, vectorSimilarity: number;, documentRecency: number;
     userPreference: number;
     contextRelevance: number;
     entityOverlap: number;
   };
-  metadata: { [key: string]: any };
+ , metadata: { [key: string]: any };
   explanation?: string;
 }
 export interface SearchOptions {
@@ -187,7 +187,7 @@ export class VectorRankingService {
     // 2. Document recency score
     const createdAt = result.metadata?.createdAt ?? new Date().toISOString();
     const ageInDays = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
-    const documentRecency = Math.exp(-ageInDays / 30); // Decay over 30 days
+    const documentRecency = Math.exp(-ageInDays / 30); // Decay over, 30 days
 
     // 3. User preference score
     let userPreference = 0.5; // Default neutral
@@ -232,10 +232,10 @@ export class VectorRankingService {
    */
   private async extractQueryEntities(query: string): Promise<string[]> {
     try {
-      // ollamaService.analyzeDocument should return a string list or newline-delimited entities
+      // ollamaService.analyzeDocument should return a: string list or newline-delimited entities
       const entitiesText = await typedOllamaService.analyzeDocument(query, 'entities');
       if (!entitiesText) return [];
-      return (entitiesText as string)
+      return (entitiesText as: string)
         .split('\n')
         .map(line => line.split(':').slice(1).join(':').trim())
         .filter(Boolean);
@@ -259,7 +259,7 @@ export class VectorRankingService {
     // Calculate preference based on clicked results history
     let preferenceScore = 0.5;
     for (const query of userQueries) {
-      const clickedResults = (query.clickedResults as any[]) || [];
+      const clickedResults = (query.clickedResults as: any[]) || [];
       if (clickedResults.includes(documentId)) {
         preferenceScore += 0.1;
       }
@@ -375,7 +375,7 @@ export class VectorRankingService {
     if (!avgEmbedding || avgEmbedding.length === 0) return [];
 
     // Use rankedSearch with computed average embedding by calling ollamaService wrapper (here we pass empty query and force embedding usage)
-    // For simplicity trigger a search using an empty query string but the search methods use provided embedding
+    // For simplicity trigger a search using an empty query: string but the search methods use provided embedding
     return this.rankedSearch('', {
       limit: 10,
       documentType: type,

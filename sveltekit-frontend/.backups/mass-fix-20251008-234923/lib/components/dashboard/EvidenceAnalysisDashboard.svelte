@@ -228,7 +228,7 @@
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
               onclick="{() => analyzeEvidence(evidence)}"
-              transition:fly={{ x: -20, duration: 300 }}
+              use:fly={{ x: -20, duration: 300 }}
             >
               <span class="evidence-icon">{getEvidenceIcon(evidence.type)}</span>
               <div class="evidence-info">
@@ -252,13 +252,13 @@
     <!-- Analysis Results Panel -->
     <div class="analysis-panel">
       {#if $isAnalyzing}
-        <div class="loading-state" transition:fade>
+        <div class="loading-state" use:fade>
           <div class="loading-spinner"></div>
           <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Analyzing Evidence...</h2>
           <p class="text-gray-500 dark:text-gray-400">Using Gemma 3 Legal AI to process evidence</p>
         </div>
       {:else if $currentAnalysis}
-        <div class="analysis-content" transition:fade>
+        <div class="analysis-content" use:fade>
           <div class="analysis-actions">
             <Button onclick={exportAnalysis} variant="secondary">Export Analysis</Button>
             <Button onclick={() => $selectedEvidence && analyzeEvidence($selectedEvidence)} variant="primary">

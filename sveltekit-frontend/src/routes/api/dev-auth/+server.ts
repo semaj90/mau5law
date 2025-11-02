@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { dev } from '$app/environment';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { dev } from, '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming
-import { db } from '$lib/server/db/drizzle';
-import { users, sessions, cases } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { logger } from '$lib/server/logger';
+import { db } from, '$lib/server/db/drizzle';
+import { users, sessions, cases } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import { logger } from, '$lib/server/logger';
 /*
  * Development Authentication Endpoint
  * GET  -> create / ensure dev session (optional ?seed=true)
@@ -17,7 +17,7 @@ async function findOrCreateDevUser(): Promise<any> {
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, 'dev@example.com')).limit(1);
   if (existing.length) return { id: existing[0].id, created: false, passwordColumn: 'hashed_password' };
   // Fallback: any admin user
-  const anyAdmin = await db.select({ id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
+  const anyAdmin = await db.select({, id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
   if (anyAdmin.length) return { id: anyAdmin[0].id, created: false, passwordColumn: 'hashed_password' };
   // Create dev user
   const inserted = await db
@@ -33,7 +33,7 @@ async function findOrCreateDevUser(): Promise<any> {
   if (!inserted.length) throw new Error('Failed to create dev user');
   return { id: inserted[0].id, created: true, passwordColumn: 'password_hash' };
 }
-export const GET: RequestHandler = async ({ cookies, url }) => {
+export const, GET: RequestHandler = async ({ cookies, url }) => {
   if (!dev) return json({ error: 'Not available in production' }, { status: 403 });
   const seed = url.searchParams.get('seed') === 'true';
   try {

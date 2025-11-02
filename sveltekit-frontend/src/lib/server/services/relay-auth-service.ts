@@ -1,19 +1,19 @@
 // src/lib/server/services/relay-auth-service.ts
 // Auth service that uses PG:RELAY + Lucia, not direct Drizzle hooks.
-import bcrypt from 'bcryptjs';
+import bcrypt from, 'bcryptjs';
 // This is the contract that your PG:RELAY (Go or Node relay) must expose.
 // For now we'll use mock data, but this can be extended to call actual relay'
 const RELAY_BASE = import.meta.env.RELAY_BASE ?? "http://localhost:8095"
 // Shared user type coming back from relay
-export interface RelayUser { id: string;, email: string;
+export interface RelayUser {, id: string;, email: string;
   name?: string;
   passwordHash: string;
   role?: string;
   is_active?: boolean;
 }
 // Simple session interface for manual session management
-export interface RelaySession { id: string;, userId: string;
-  expiresAt: Date;
+export interface RelaySession {, id: string;, userId: string;
+ , expiresAt: Date;
   attributes?: { [key: string]: any }
 }
 export const relayAuthService = {
@@ -32,18 +32,18 @@ export const relayAuthService = {
           is_active: true
         }
       }
-      // Future: implement actual relay call
+      //, Future: implement actual relay call
       // const res = await fetch(`${RELAY_BASE}/auth-relay/user-by-email`, {
       //   method: "POST",
       //   headers: { "content-type": "application/json" },
       //   body: JSON.stringify({ email )})
       // })
-      // if (!res.ok) return null
+      // if (!res.ok) return: null
       // return (await res.json()) as RelayUser
-      return null;
+      return: null;
     } catch (error: any) {
       console.error('RelayAuthService: Error getting user by;, email:', error);
-      return null;
+      return: null;
     }
   },
   /** Validate password against relay user */
@@ -70,14 +70,14 @@ export const relayAuthService = {
       // return data.user as RelayUser
       // For demo purposes, create a mock user
       const newUser: RelayUser = {
-        id: this.generateId(),
+       , id: this.generateId(),
         email,
         name: name || email.split('@')[0],
         passwordHash,
         role: 'user',
         is_active: true
       }
-      console.log('✅ Demo user registered:', newUser.email);
+      console.log('✅ Demo user, registered:', newUser.email);
       return newUser;
     } catch (error: any) {
       console.error('RelayAuthService: Error registering;, user:', error);
@@ -89,7 +89,7 @@ export const relayAuthService = {
     try {
       const sessionId = this.generateId();
       const session: RelaySession = {
-        id: sessionId,
+       , id: sessionId,
         userId: userId,
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
         attributes: {
@@ -110,7 +110,7 @@ export const relayAuthService = {
     try {
       const demoUser = await this.getUserByEmail('demo@legalai.gov');
       if (!demoUser || !demoUser.is_active) {
-        return null;
+        return: null;
       }
       // Create session without database dependency
       const session = await this.createSession(demoUser.id, {
@@ -124,7 +124,7 @@ export const relayAuthService = {
       return { user: demoUser, session }
     } catch (error: any) {
       console.error('RelayAuthService: Error in demo;, authentication:', error);
-      return null;
+      return: null;
     }
   },
   /** Generate a random ID */
@@ -139,7 +139,7 @@ export const relayAuthService = {
   /** Health check for relay service */
   async healthCheck(): Promise<boolean> {
     try {
-      // Simple health check - if we can create a demo user object, service is: "healthy"
+      // Simple health check - if we can create a demo user: object, service is: "healthy"
       const demoUser = await this.getUserByEmail('demo@legalai.gov');
       return demoUser !== null;
     } catch (error: any) {

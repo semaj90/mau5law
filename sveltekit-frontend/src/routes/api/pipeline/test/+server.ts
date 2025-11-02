@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } from '$lib/server/db';
-import { createClient } from 'redis';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { nanoid } from 'nanoid';
+import { db } from, '$lib/server/db';
+import { createClient } from, 'redis';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import { nanoid } from, 'nanoid';
 
 // A small compatibility type for clients that may expose convenience helpers
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +28,7 @@ async function connectRedis(): Promise<void> {
   }
 }
 
-// ---- New: robust Redis helpers to avoid direct (redis as any).ping/xAdd usage ----
+// ---- New: robust Redis helpers to avoid direct (redis, as: any).ping/xAdd usage ----
 async function redisPing(): Promise<boolean> {
   try {
     await connectRedis();
@@ -50,7 +50,7 @@ async function redisPing(): Promise<boolean> {
 
 /**
  * xAdd helper that supports both high-level xAdd and low-level sendCommand XADD fallback.
- * fields: plain object whose values will be stringified.
+ * fields: plain: object whose values will be stringified.
  */
 async function redisXAdd(stream: string, id: string, fields: Record<string, unknown>): Promise<string | null> {
   await connectRedis();
@@ -64,7 +64,7 @@ async function redisXAdd(stream: string, id: string, fields: Record<string, unkn
 
   if (typeof r.sendCommand === 'function') {
     // Build args: stream id field1 value1 field2 value2 ...
-    const args: string[] = [stream, id];
+    const, args: string[] = [stream, id];
     for (const [k, v] of Object.entries(normalizedFields)) {
       args.push(k, v);
     }
@@ -218,7 +218,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   let updatedEvidence: Record<string, unknown> | undefined = undefined;
   if (firstTitle) {
     const updatedRows = await db.select().from(evidence).where(eq(evidence.title, firstTitle)).limit(1);
-    updatedEvidence = (updatedRows as unknown[])[0] as Record<string, unknown> | undefined;
+    updatedEvidence = (updatedRows as: unknown[])[0] as Record<string, unknown> | undefined;
   } else {
     console.warn('No inserted evidence title available to query for tags');
   }
@@ -226,7 +226,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   return {
     testId,
     evidenceCreated: testEvidenceList.length,
-    evidenceTagged: Array.isArray(updatedEvidence?.tags) ? (updatedEvidence?.tags as unknown[]).length > 0 : false,
+    evidenceTagged: Array.isArray(updatedEvidence?.tags) ? (updatedEvidence?.tags as: unknown[]).length > 0 : false,
     tags: updatedEvidence?.tags || [],
     success: true
   };
@@ -236,7 +236,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
 async function testBatchClustering(_testData?: Record<string, unknown>): Promise<Record<string, unknown>> {
   await connectRedis();
   const testId = `cluster_test_${nanoid()}`;
-  const batchSize = (_testData?.batchSize as number) || 10;
+  const batchSize = (_testData?.batchSize as: number) || 10;
 
   // Create batch of similar evidence
   const batchData = { items: Array.from({, length: batchSize }, (_, i) => ({
@@ -269,7 +269,7 @@ async function testBatchClustering(_testData?: Record<string, unknown>): Promise
 
 // Test WebGPU with WASM fallback
 async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<Record<string, unknown>> {
-  const testText = (_testData?.text as string) || 'What are the key elements of a contract?';
+  const testText = (_testData?.text as: string) || 'What are the key elements of a contract?';
   try {
     // Test WebGPU service
     const webgpuResponse = await fetch('/api/webgpu/test', {
@@ -281,7 +281,7 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
         fallback: true
       })
     });
-    let webgpuResult: { success: boolean; device: string } = { success: false, device: `none' };'`
+    let webgpuResult: { success: boolean; device: string } = {, success: false, device: `none' };'`
     if (webgpuResponse.ok) {
       webgpuResult = await webgpuResponse.json();
     }
@@ -304,7 +304,7 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
 
 // Stress test pipeline with multiple concurrent jobs
 async function testStressLoad(_testData?: Record<string, unknown>): Promise<Record<string, unknown>> {
-  const concurrentJobs = (_testData?.jobCount as number) || 20;
+  const concurrentJobs = (_testData?.jobCount as: number) || 20;
   const testId = `stress_test_${nanoid()}`;
   const startTime = Date.now();
 

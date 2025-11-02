@@ -19,8 +19,8 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-import Redis from 'ioredis';
-import { createHash } from 'crypto';
+import Redis from, 'ioredis';
+import { createHash } from, 'crypto';
 /**
  * LLM Provider Configuration
  */
@@ -32,13 +32,13 @@ export interface LLMProviderConfig { name: string;, type: 'tensorrt' | 'vllm' |
   enabled: boolean;
   timeout: number;
   maxRetries: number;
-  rateLimit: { requestsPerMinute: number;, tokensPerMinute: number;
+  rateLimit: {, requestsPerMinute: number;, tokensPerMinute: number;
   };
 }
 /**
  * Provider Health Status
  */
-export interface ProviderStatus { name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
+export interface ProviderStatus {, name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
   lastCheck: Date;
   responseTime: number;
   successRate: number;
@@ -63,9 +63,9 @@ export interface LLMRequest {
 /**
  * LLM Response
  */
-export interface LLMResponse { content: string;, model: string;
+export interface LLMResponse {, content: string;, model: string;
   provider: string;
-  tokensUsed: { prompt: number;, completion: number;
+  tokensUsed: {, prompt: number;, completion: number;
     total: number;
   };
   processingTime: number;
@@ -75,8 +75,8 @@ export interface LLMResponse { content: string;, model: string;
 /**
  * Function Calling Support
  */
-export interface FunctionCall { name: string;, description: string;
-  parameters: Record<string, unknown>;
+export interface FunctionCall {, name: string;, description: string;
+ , parameters: Record<string, unknown>;
 }
 /**
  * Function Calling Response
@@ -126,13 +126,13 @@ export class AIProviderRouter {
         return provider;
       }
     }
-    return null;
+    return: null;
   }
   /**
    * Get all providers sorted by priority and health
    */
   getProviders(): { provider: LLMProviderConfig; status: ProviderStatus }[] {
-    const result: { provider: LLMProviderConfig; status: ProviderStatus }[] = [];
+    const result: { provider: LLMProviderConfig;, status: ProviderStatus }[] = [];
     const sorted = Array.from(this.providers.values())
       .filter(p => p.enabled)
       .sort((a, b) => {
@@ -195,16 +195,16 @@ export class AIProviderRouter {
    */
   private async callProvider(provider: LLMProviderConfig, request: LLMRequest): Promise<LLMResponse> {
     switch (provider.type) {
-      case 'tensorrt':
+      case, 'tensorrt':
         return this.callTensorRT(provider, request);
-      case 'vllm':
+      case, 'vllm':
         return this.callVLLM(provider, request);
-      case 'ollama':
+      case, 'ollama':
         return this.callOllama(provider, request);
-      case 'openai':
+      case, 'openai':
         return this.callOpenAI(provider, request);
       default:
-        throw new Error(`Unknown provider; type: ${provider.type}`);
+        throw new Error(`Unknown provider;, type: ${provider.type}`);
     }
   }
   /**
@@ -241,7 +241,7 @@ export class AIProviderRouter {
       content,
       model: provider.model,
       provider: provider.name,
-      tokensUsed: { prompt: 0, completion: 0, total: 0 },
+      tokensUsed: {, prompt: 0, completion: 0, total: 0 },
       processingTime: 0,
       cached: false
     };
@@ -272,11 +272,11 @@ export class AIProviderRouter {
       usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
     };
     return {
-      content: data.choices[0]?.text || '',
+     , content: data.choices[0]?.text || '',
       model: provider.model,
       provider: provider.name,
       tokensUsed: {
-        prompt: data.usage?.prompt_tokens || 0,
+       , prompt: data.usage?.prompt_tokens || 0,
         completion: data.usage?.completion_tokens || 0,
         total: data.usage?.total_tokens || 0
       },
@@ -307,11 +307,11 @@ export class AIProviderRouter {
       prompt_eval_count: number;
     };
     return {
-      content: data.response || '',
+     , content: data.response || '',
       model: provider.model,
       provider: provider.name,
       tokensUsed: {
-        prompt: data.prompt_eval_count || 0,
+       , prompt: data.prompt_eval_count || 0,
         completion: data.eval_count || 0,
         total: (data.prompt_eval_count || 0) + (data.eval_count || 0)
       },
@@ -355,11 +355,11 @@ export class AIProviderRouter {
       usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
     };
     return {
-      content: data.choices[0]?.message.content || '',
+     , content: data.choices[0]?.message.content || '',
       model: provider.model,
       provider: provider.name,
       tokensUsed: {
-        prompt: data.usage?.prompt_tokens || 0,
+       , prompt: data.usage?.prompt_tokens || 0,
         completion: data.usage?.completion_tokens || 0,
         total: data.usage?.total_tokens || 0
       },
@@ -371,9 +371,9 @@ export class AIProviderRouter {
    * Call LLM with function calling support
    */
   async callWithFunctions(
-    request: LLMRequest,
+   , request: LLMRequest,
     _functions: FunctionCall[]
-  ): Promise<{ response: LLMResponse; functionCalls: FunctionCallingResponse[] }> {
+  ): Promise<{ response: LLMResponse;, functionCalls: FunctionCallingResponse[] }> {
     // Get response from LLM
     const response = await this.callLLM(request);
     // Parse function calls (implementation depends on model support)
@@ -451,7 +451,7 @@ export class AIProviderRouter {
     if (cached) {
       return JSON.parse(cached) as LLMResponse;
     }
-    return null;
+    return: null;
   }
   /**
    * Cache response

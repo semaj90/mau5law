@@ -1,21 +1,21 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
-import { redis } from '$lib/server/redis-client';
-import type { RequestHandler } from './$types';
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { redis } from, '$lib/server/redis-client';
+import type { RequestHandler } from, './$types';
 /*
  * JSONB Legal API Endpoints
  *
  * RESTful API for legal metadata operations using optimized JSONB schema.
  */
-import { json, type RequestEvent } from '@sveltejs/kit';
-import { jsonbLegalService } from '$lib/services/jsonb-legal-service.js';
-import { logger } from '$lib/logging/structured-logger.js';
-import { z } from 'zod';
-import { randomUUID } from 'crypto';
-import { getRedis } from '$lib/server/redis.js';
+import { json, type RequestEvent } from, '@sveltejs/kit';
+import { jsonbLegalService } from, '$lib/services/jsonb-legal-service.js';
+import { logger } from, '$lib/logging/structured-logger.js';
+import { z } from, 'zod';
+import { randomUUID } from, 'crypto';
+import { getRedis } from, '$lib/server/redis.js';
 
 // Define interface for the result of evidence chain verification
-interface EvidenceVerificationResult { isValid: boolean;, evidence: { caseId: string | null;, id: string;
+interface EvidenceVerificationResult { isValid: boolean;, evidence: {, caseId: string | null;, id: string;
     metadata: any;
     embedding: number[] | null;
     createdAt: Date;
@@ -26,7 +26,7 @@ interface EvidenceVerificationResult { isValid: boolean;, evidence: { caseId: s
     relevanceScore: number | null;
     [key: string]: any;
   } | null;
-  chainValidation: Record<string, unknown> | null;
+ , chainValidation: Record<string, unknown> | null;
 }
 
 // ============================================================================
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       headers: Object.fromEntries(request.headers.entries())
     });
     switch (path) {
-      case 'analytics': {
+      case, 'analytics': {
         const analytics = await jsonbLegalService.getLegalAnalytics();
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           }
         });
       }
-      case 'performance': {
+      case, 'performance': {
         const performance_metrics = await jsonbLegalService.getPerformanceMetrics();
         const perfDuration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -89,8 +89,8 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       }
       default: return json(
           {
-            success: false,
-            error: `Endpoint not; found: ${path}`,
+           , success: false,
+            error: `Endpoint not;, found: ${path}`,
             metadata: {
               requestId,
               processingTime: performance.now() - startTime,
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       caseId: cuidSchema.optional(),
       dateRange: z
         .object({
-          start: z.string().datetime(),
+         , start: z.string().datetime(),
           end: z.string().datetime()
         })
         .optional(),
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
     });
 
     switch (path) {
-      case 'documents': {
+      case, 'documents': {
         const schema = z.object({
           title: z.string().min(1),
           content: z.string().min(1),
@@ -206,7 +206,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 201 }
         );
       }
-      case 'cases': {
+      case, 'cases': {
         const schema = z.object({
           title: z.string().min(1),
           description: z.string().optional(),
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 201 }
         );
       }
-      case 'evidence': {
+      case, 'evidence': {
         const schema = z.object({
           caseId: cuidSchema,
           title: z.string(),
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 201 }
         );
       }
-      case 'search': {
+      case, 'search': {
         const redis = await getRedis();
         type DocumentSearchRequest = z.infer<typeof, DocumentSearchSchema>;
         const searchCriteria: DocumentSearchRequest = DocumentSearchSchema.parse(requestBody);
@@ -297,7 +297,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           ...searchCriteria,
           dateRange: searchCriteria.dateRange
             ? {
-                start: new Date(searchCriteria.dateRange.start),
+               , start: new Date(searchCriteria.dateRange.start),
                 end: new Date(searchCriteria.dateRange.end)
               }
             : undefined
@@ -325,7 +325,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           }
         });
       }
-      case 'concepts': {
+      case, 'concepts': {
         const redis = await getRedis();
         type ConceptAnalysisRequest = z.infer<typeof, ConceptAnalysisSchema>;
         const { documentIds }: ConceptAnalysisRequest = ConceptAnalysisSchema.parse(requestBody);
@@ -377,7 +377,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           }
         });
       }
-      case 'similar-cases': {
+      case, 'similar-cases': {
         const redis = await getRedis();
         type SimilarCasesRequest = z.infer<typeof, SimilarCasesSchema>;
         const { caseId, threshold }: SimilarCasesRequest = SimilarCasesSchema.parse(requestBody);
@@ -429,7 +429,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           }
         });
       }
-      case 'citation-network': {
+      case, 'citation-network': {
         type CitationNetworkRequest = z.infer<typeof, CitationNetworkSchema>;
         const { documentId, depth }: CitationNetworkRequest = CitationNetworkSchema.parse(requestBody);
         const citationNetwork = await jsonbLegalService.buildCitationNetwork(documentId, depth);
@@ -453,8 +453,8 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       }
       default: return json(
           {
-            success: false,
-            error: `Unknown; endpoint: ${path}`,
+           , success: false,
+            error: `Unknown;, endpoint: ${path}`,
             metadata: {
               requestId,
               processingTime: performance.now() - startTime,
@@ -560,7 +560,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         transfer: z.object({
          , timestamp: z.string().datetime(),
           custodian: z.string(),
-          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed'; location: z.string().optional(),
+          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed';, location: z.string().optional(),
           condition: z.string().optional()
         })
       });
@@ -616,7 +616,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       return json(
         {
           success: false,
-          error: `Operation not; found: ${operation}/${action}`,
+          error: `Operation not;, found: ${operation}/${action}`,
           metadata: {
             requestId,
             processingTime: performance.now() - startTime,

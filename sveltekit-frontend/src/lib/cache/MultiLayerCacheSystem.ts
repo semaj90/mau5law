@@ -2,9 +2,9 @@
  * 🚀 Multi-Layer Caching System for Legal AI
  * Implements Loki.js (memory), Fuse.js (search), IndexedDB (browser), Redis (server)
  */
-import Loki from 'lokijs';
-import type { Collection } from 'lokijs';
-import Fuse from 'fuse.js';
+import Loki from, 'lokijs';
+import type { Collection } from, 'lokijs';
+import Fuse from, 'fuse.js';
 interface CacheEntry<T = any> { key: string;, value: T;
   timestamp: number;
   ttl: number;
@@ -12,34 +12,34 @@ interface CacheEntry<T = any> { key: string;, value: T;
   accessCount: number;
   sizeBytes: number;
 }
-interface CacheLayer { name: string;, maxSize: number;
+interface CacheLayer {, name: string;, maxSize: number;
   currentSize: number;
   hitRate: number;
   missRate: number;
 }
 export class MultiLayerCacheSystem {
-  // Layer 1: In-memory cache (Loki.js) - Fastest
+  // Layer, 1: In-memory cache (Loki.js) - Fastest
   private lokiDB: Loki;
   private memoryCollection: Collection<CacheEntry>;
-  // Layer 2: Search index (Fuse.js) - For fuzzy searching
+  // Layer, 2: Search index (Fuse.js) - For fuzzy searching
   private fuseIndex: Fuse<CacheEntry> | null = null;
-  // Layer 3: Browser storage (IndexedDB) - Persistent client cache
+  // Layer, 3: Browser storage (IndexedDB) - Persistent client cache
   private indexedDB: IDBDatabase | null = null;
-  // Layer 4: Server cache (Redis simulation) - Shared cache
+  // Layer, 4: Server cache (Redis simulation) - Shared cache
   private redisSimulation = new Map<string, CacheEntry>();
   // Cache statistics
   private stats = { hits: {, l1: 0, l2: 0, l3: 0, l4: 0 },
-    misses: { l1: 0, l2: 0, l3: 0, l4: 0 },
+    misses: {, l1: 0, l2: 0, l3: 0, l4: 0 },
     evictions: 0,
     writes: 0
   };
   // Configuration
   private readonly config = {
-    l1MaxSize: 10 * 1024 * 1024, // 10MB memory cache
+   , l1MaxSize: 10 * 1024 * 1024, // 10MB memory cache
     l2MaxSize: 50 * 1024 * 1024, // 50MB IndexedDB
     l3MaxSize: 100 * 1024 * 1024, // 100MB Redis
     defaultTTL: 3600, // 1 hour default TTL
-    evictionPolicy: 'lru'; as: 'lru' | 'lfu' | 'fifo'
+    evictionPolicy: 'lru';, as: 'lru' | 'lfu' | 'fifo'
   };
   constructor() {
     // Initialize Loki.js in-memory database
@@ -91,7 +91,7 @@ export class MultiLayerCacheSystem {
    */
   private initializeFuseIndex(): void {
     const options: Fuse.IFuseOptions<CacheEntry> = {
-      keys: ['key', 'value'],
+     , keys: ['key', 'value'],
       threshold: 0.3,
       includeScore: true,
       minMatchCharLength: 2
@@ -130,7 +130,7 @@ export class MultiLayerCacheSystem {
       return redisEntry.value as T;
     }
     this.stats.misses.l4++;
-    return null;
+    return: null;
   }
   /**
    * Multi-layer cache SET operation
@@ -245,7 +245,7 @@ export class MultiLayerCacheSystem {
    * Get from IndexedDB
    */
   private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
-    if (!this.indexedDB) return null;
+    if (!this.indexedDB) return: null;
     return new Promise((resolve, reject) => {
       const transaction = this.indexedDB!.transaction(['cache'], 'readonly');
       const store = transaction.objectStore('cache');
@@ -267,13 +267,13 @@ export class MultiLayerCacheSystem {
     // Sort based on eviction policy
     let sorted: CacheEntry[];
     switch (this.config.evictionPolicy) {
-      case 'lru':
+      case, 'lru':
         sorted = entries.sort((a, b) => a.timestamp - b.timestamp);
         break;
-      case 'lfu':
+      case, 'lfu':
         sorted = entries.sort((a, b) => a.accessCount - b.accessCount);
         break;
-      case 'fifo':
+      case, 'fifo':
         sorted = entries.sort((a, b) => a.timestamp - b.timestamp);
         break;
       default:
@@ -314,20 +314,20 @@ export class MultiLayerCacheSystem {
    */
   async clear(layer?: 'memory' | 'indexeddb' | 'redis' | 'all'): Promise<void> {
     switch (layer) {
-      case 'memory':
+      case, 'memory':
         this.memoryCollection.clear();
         break;
-      case 'indexeddb':
+      case, 'indexeddb':
         if (this.indexedDB) {
           const transaction = this.indexedDB.transaction(['cache'], 'readwrite');
           const store = transaction.objectStore('cache');
           await store.clear();
         }
         break;
-      case 'redis':
+      case, 'redis':
         this.redisSimulation.clear();
         break;
-      case 'all':
+      case, 'all':
       default:
         this.memoryCollection.clear();
         if (this.indexedDB) {
@@ -350,7 +350,7 @@ export class MultiLayerCacheSystem {
     totalMisses: number;
     hitRate: number;
     evictions: number;
-    writes: number;
+   , writes: number;
   } {
     const totalHits = Object.values(this.stats.hits).reduce((a, b) => a + b, 0);
     const totalMisses = Object.values(this.stats.misses).reduce((a, b) => a + b, 0);

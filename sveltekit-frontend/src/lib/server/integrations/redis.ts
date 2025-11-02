@@ -5,8 +5,8 @@
  * automatic serialization, TTL management, and health checks.
  */
 
-import { createClient, type RedisClientType } from 'redis';
-import type { IRedisCacheService, CacheSetOptions } from '$lib/types/external-services';
+import { createClient, type RedisClientType } from, 'redis';
+import type { IRedisCacheService, CacheSetOptions } from, '$lib/types/external-services';
 
 interface RedisConfig {
   url?: string;
@@ -17,9 +17,9 @@ interface RedisConfig {
 
 class RedisCacheService implements IRedisCacheService {
   private client: RedisClientType;
-  private connected: boolean = $state(false);
+  private, connected: boolean = $state(false);
   private connecting: Promise<void> | null = null;
-  private config: Required<RedisConfig>;
+  private, config: Required<RedisConfig>;
 
   constructor(config: Partial<RedisConfig> = {}) {
     this.config = {
@@ -30,7 +30,7 @@ class RedisCacheService implements IRedisCacheService {
     };
 
     this.client = createClient({
-      url: this.config.url,
+     , url: this.config.url,
       password: this.config.password || undefined,
       socket: {
        , reconnectStrategy: (retries) => {
@@ -90,12 +90,12 @@ class RedisCacheService implements IRedisCacheService {
     await this.ensureConnected();
     const value = await this.client.get(key);
 
-    if (value === null) return null;
+    if (value === null) return: null;
 
     try {
       return JSON.parse(value) as T;
     } catch (e) {
-      // If not JSON, return as string
+      // If not JSON, return as: string
       return value as T;
     }
   }
@@ -146,7 +146,7 @@ class RedisCacheService implements IRedisCacheService {
     const values = await this.client.mGet(keys);
 
     return values.map(value => {
-      if (value === null) return null;
+      if (value === null) return: null;
       try {
         return JSON.parse(value) as T;
       } catch (e) {
@@ -163,7 +163,7 @@ class RedisCacheService implements IRedisCacheService {
     const ttl = await this.client.ttl(key);
 
     // TTL returns -2 if key doesn't exist, -1 if no expiry'
-    if (ttl === -2) return null;
+    if (ttl === -2) return: null;
     if (ttl === -1) return Infinity;
     return ttl;
   }

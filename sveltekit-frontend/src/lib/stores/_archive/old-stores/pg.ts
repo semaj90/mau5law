@@ -1,5 +1,5 @@
 /// <reference, types="vite/client" />
-import pgClient, { poolShim } from '$lib/server/db-shim';
+import pgClient, { poolShim } from, '$lib/server/db-shim';
 
 const pool = poolShim;
 
@@ -12,7 +12,7 @@ function tempToPgRadius(temp = 0.3) {
 
 export async function queryPgvector(vec: number[], limit = 200, temperature = 0.3): Promise<any> {
   const radius = tempToPgRadius(temperature);
-  const conn = await (pool as any).connect();
+  const conn = await (pool as: any).connect();
   try {
     const res = await conn.query(
       `SELECT id, text, metadata, embedding`

@@ -1,7 +1,7 @@
-import { logger } from '$lib/server/logger';
-import type { RequestHandler } from './$types.js';
-import { apiSuccess, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
-import { getOllamaUrl } from '$lib/server/env-helper';
+import { logger } from, '$lib/server/logger';
+import type { RequestHandler } from, './$types.js';
+import { apiSuccess, getRequestId, withErrorHandling } from, '$lib/server/api/standard-response';
+import { getOllamaUrl } from, '$lib/server/env-helper';
 // derive Ollama URL from centralized helper (has safe fallbacks)
 const ollamaUrl = getOllamaUrl();
 
@@ -17,17 +17,17 @@ const ollamaService = {
       return false;
     }
   },
-  // returns array of unknown shapes; resilient parsing without using `any`
+  // returns array of: unknown shapes; resilient parsing without using `any`
   async listModels(): Promise<unknown[]> {
     try {
       const res = await fetch(`${ollamaUrl}/api/models`, { signal: AbortSignal.timeout(5000) });
       if (!res.ok) return [];
-      const data = (await res.json()) as unknown;
+      const data = (await res.json()) as: unknown;
       if (Array.isArray(data)) return data;
       if (data && typeof data === 'object') {
         const obj = data as Record<string, unknown>;
-        if (Array.isArray(obj['models'])) return obj['models'] as unknown[];
-        if (Array.isArray(obj['tags'])) return obj['tags'] as unknown[];
+        if (Array.isArray(obj['models'])) return obj['models'] as: unknown[];
+        if (Array.isArray(obj['tags'])) return obj['tags'] as: unknown[];
       }
       return [];
     } catch (err: any) {
@@ -78,12 +78,12 @@ export const GET: RequestHandler = withErrorHandling(async event => {
       url: ollamaUrl
     },
     system: {
-      memory: `${memoryMB}MB`,
+     , memory: `${memoryMB}MB`,
       uptime: `${Math.round((process.uptime() / 3600) * 100) / 100}h`,
       nodeVersion: process.version
     },
     docker: {
-      containers: 0, // TODO: Add actual Docker container count
+     , containers: 0, // TODO: Add actual Docker container count
     },
     timestamp: new Date().toISOString()
   };

@@ -4,42 +4,42 @@
  * Replaces shadcn-ui for consistent gaming aesthetic
  */
 // Core Enhanced-Bits Components
-export { default, as Button } from './Button.svelte';
-export { default, as Card } from './Card.svelte';
-export { default, as CardContent } from './CardContent.svelte';
-export { default, as CardDescription } from './CardDescription.svelte';
-export { default, as CardFooter } from './CardFooter.svelte';
-export { default, as CardHeader } from './CardHeader.svelte';
-export { default, as CardTitle } from './CardTitle.svelte';
-export { default, as Dialog } from './Dialog.svelte';
-export { default, as DialogWrapper } from './DialogWrapper.svelte';
-export { default, as Input } from './Input.svelte';
-export { default, as Label } from './Label.svelte';
-export { default, as Select } from './Select.svelte';
+export { default, as Button } from, './Button.svelte';
+export { default, as Card } from, './Card.svelte';
+export { default, as CardContent } from, './CardContent.svelte';
+export { default, as CardDescription } from, './CardDescription.svelte';
+export { default, as CardFooter } from, './CardFooter.svelte';
+export { default, as CardHeader } from, './CardHeader.svelte';
+export { default, as CardTitle } from, './CardTitle.svelte';
+export { default, as Dialog } from, './Dialog.svelte';
+export { default, as DialogWrapper } from, './DialogWrapper.svelte';
+export { default, as Input } from, './Input.svelte';
+export { default, as Label } from, './Label.svelte';
+export { default, as Select } from, './Select.svelte';
 // NES.css Enhanced Components
-export { default, as NESButton } from './NESButton.svelte';
-export { default, as NESCard } from './NESCard.svelte';
-export { default, as NESModal } from './NESModal.svelte';
+export { default, as NESButton } from, './NESButton.svelte';
+export { default, as NESCard } from, './NESCard.svelte';
+export { default, as NESModal } from, './NESModal.svelte';
 // AI & Legal Components
-export { default, as AIDialog } from './AIDialog.svelte';
-export { default, as AIChatMessage } from './AIChatMessage.svelte';
-export { default, as AISearchBar } from './AISearchBar.svelte';
-export { default, as DocumentCard } from './DocumentCard.svelte';
-export { default, as EvidenceBoard } from './EvidenceBoard.svelte';
-export { default, as LegalAIDashboard } from './LegalAIDashboard.svelte';
+export { default, as AIDialog } from, './AIDialog.svelte';
+export { default, as AIChatMessage } from, './AIChatMessage.svelte';
+export { default, as AISearchBar } from, './AISearchBar.svelte';
+export { default, as DocumentCard } from, './DocumentCard.svelte';
+export { default, as EvidenceBoard } from, './EvidenceBoard.svelte';
+export { default, as LegalAIDashboard } from, './LegalAIDashboard.svelte';
 // Theme & Layout Components
-export { default, as ThemeProvider } from './ThemeProvider.svelte';
-export { default, as ThemeToggle } from './ThemeToggle.svelte';
-export { default, as Sidebar } from './Sidebar.svelte';
-export { default, as Toolbar } from './Toolbar.svelte';
+export { default, as ThemeProvider } from, './ThemeProvider.svelte';
+export { default, as ThemeToggle } from, './ThemeToggle.svelte';
+export { default, as Sidebar } from, './Sidebar.svelte';
+export { default, as Toolbar } from, './Toolbar.svelte';
 // Gaming Components
-export { default, as NESGamingShowcase } from './NESGamingShowcase.svelte';
+export { default, as NESGamingShowcase } from, './NESGamingShowcase.svelte';
 // YoRHa Harvard Gaming Components
-export { default, as YoRHaHarvardButton } from './YoRHaHarvardButton.svelte';
-export { default, as YoRHaHarvardCard } from './YoRHaHarvardCard.svelte';
+export { default, as YoRHaHarvardButton } from, './YoRHaHarvardButton.svelte';
+export { default, as YoRHaHarvardCard } from, './YoRHaHarvardCard.svelte';
 // Utility Components
-export { default, as Tooltip } from './Tooltip.svelte';
-export { default, as Tabs } from './Tabs.svelte';
+export { default, as Tooltip } from, './Tooltip.svelte';
+export { default, as Tabs } from, './Tabs.svelte';
 // Enhanced-Bits CSS Classes and Utilities
 export const EnhancedBitsClasses = {
   // Fonts
@@ -93,7 +93,7 @@ export type EnhancedBitsClassName = keyof typeof EnhancedBitsClasses;
  * Ensures consistent app-wide font loading
  */
 export const EnhancedBitsFonts = {
-  sans: 'Inter',
+ , sans: 'Inter',
   mono: 'JetBrains Mono',
   legal: 'IBM Plex Sans',
   pixel: 'Press Start 2P',
@@ -103,30 +103,30 @@ export const EnhancedBitsFonts = {
  * YoRHa Harvard Gaming Color System
  * Academic prestige meets technological aesthetic
  */
-export const EnhancedBitsColors = { background: {, primary: '#0d0d0d', // Deep space black
+export const EnhancedBitsColors = {, background: {, primary: '#0d0d0d', // Deep space black
     secondary: '#1a0f0f', // Harvard crimson shadow
     tertiary: '#2a1515', // Warm dark crimson
   },
   text: {
-    primary: '#f5f5f5', // Pristine white (academic papers)
+   , primary: '#f5f5f5', // Pristine white (academic papers)
     secondary: '#d4af8c', // Harvard gold accent
     muted: '#9d7b6b', // Muted crimson-brown
   },
   accent: {
-    primary: '#c41e3a', // Harvard Crimson
+   , primary: '#c41e3a', // Harvard Crimson
     secondary: '#ffd700', // Harvard Gold
   },
   border: {
-    default: '#4a2c2c', // Dark crimson border
+   , default: '#4a2c2c', // Dark crimson border
     hover: '#c41e3a', // Harvard crimson hover
   },
   status: {
-    success: '#2d5a27', // Dark academic green
+   , success: '#2d5a27', // Dark academic green
     warning: '#b8860b', // Dark gold warning
     danger: '#8b0000', // Deep crimson danger
   },
   gaming: {
-    matrixGreen: '#00ff41', // Classic matrix green
+   , matrixGreen: '#00ff41', // Classic matrix green
     cyberBlue: '#00d4ff', // Cyberpunk blue
     warningAmber: '#ffaa00', // Warning amber
   }

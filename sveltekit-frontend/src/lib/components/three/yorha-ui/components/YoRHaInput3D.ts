@@ -2,8 +2,8 @@
  * YoRHa 3D Input Component
  * Text input field with advanced styling and YoRHa aesthetic
  */
-import * as THREE from 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+import * as THREE from, 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
 export interface YoRHaInput3DOptions extends Omit<YoRHaStyle, 'variant'> {
   value?: string;
   placeholder?: string;
@@ -54,19 +54,19 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       borderRadius: options.borderRadius || 0.05,
       // Interactive states
       hover: {
-        borderColor: YORHA_COLORS.accent.gold,
+       , borderColor: YORHA_COLORS.accent.gold,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.2
         },
         ...options.hover
       },
       active: {
-        borderColor: YORHA_COLORS.accent.gold,
+       , borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.03,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.4
         },
@@ -239,13 +239,13 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private getIconGeometry(icon: string): THREE.BufferGeometry {
     const size = 0.15;
     switch (icon) {
-      case 'search':
+      case, 'search':
         return new THREE.CircleGeometry(size, 16);
-      case 'lock':
+      case, 'lock':
         return new THREE.BoxGeometry(size, size * 1.2, 0.02);
-      case 'email':
+      case, 'email':
         return new THREE.PlaneGeometry(size * 1.4, size);
-      case 'user':
+      case, 'user':
         return new THREE.CircleGeometry(size, 16);
       default:
         return new THREE.CircleGeometry(size, 8);
@@ -276,39 +276,39 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   ): Partial<YoRHaStyle> {
     // Size-based styles
     const sizeStyles: Record<string, Partial<YoRHaStyle>> = { small: {, fontSize: 0.12 },
-      medium: { fontSize: 0.16 },
+      medium: {, fontSize: 0.16 },
       large: { fontSize: 0.2 }
     };
     // Variant-based styles
-    const variantStyles: Record<string, Partial<YoRHaStyle>> = { default: {, backgroundColor: YORHA_COLORS.primary.white,
+    const, variantStyles: Record<string, Partial<YoRHaStyle>> = { default: {, backgroundColor: YORHA_COLORS.primary.white,
         borderColor: YORHA_COLORS.primary.grey,
         textColor: YORHA_COLORS.primary.black
       },
       outlined: {
-        backgroundColor: 0x000000,
+       , backgroundColor: 0x000000,
         opacity: 0.05,
         borderColor: YORHA_COLORS.primary.beige,
         borderWidth: 0.03,
         textColor: YORHA_COLORS.primary.beige
       },
       filled: {
-        backgroundColor: YORHA_COLORS.primary.beige,
+       , backgroundColor: YORHA_COLORS.primary.beige,
         borderColor: YORHA_COLORS.primary.grey,
         textColor: YORHA_COLORS.primary.black
       },
       ghost: {
-        backgroundColor: 0x000000,
+       , backgroundColor: 0x000000,
         opacity: 0.1,
         borderColor: 0x000000,
         borderWidth: 0.01,
         textColor: YORHA_COLORS.primary.black
       },
       terminal: {
-        backgroundColor: YORHA_COLORS.primary.black,
+       , backgroundColor: YORHA_COLORS.primary.black,
         borderColor: YORHA_COLORS.accent.gold,
         textColor: YORHA_COLORS.accent.gold,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.2
         }
@@ -335,7 +335,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   // Helper methods
   private getDisplayValue(): string {
     if (this.options.type === 'password' && !this.isPasswordVisible) {
-      return '•'.repeat(this.currentValue.length);
+      return, '•'.repeat(this.currentValue.length);
     }
     return this.currentValue;
   }
@@ -446,7 +446,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private handleKeyInput(_key: string): void {
     if (this.options.readonly || !this.isFocused) return;
     switch (_key) {
-      case 'Backspace':
+      case, 'Backspace':
         if (this.cursorPosition > 0) {
           this.currentValue =
             this.currentValue.substring(0, this.cursorPosition - 1) + this.currentValue.substring(this.cursorPosition);
@@ -455,7 +455,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
           this.emitEvent('input', { value: this.currentValue });
         }
         break;
-      case 'Delete':
+      case, 'Delete':
         if (this.cursorPosition < this.currentValue.length) {
           this.currentValue =
             this.currentValue.substring(0, this.cursorPosition) + this.currentValue.substring(this.cursorPosition + 1);
@@ -463,13 +463,13 @@ export class YoRHaInput3D extends YoRHa3DComponent {
           this.emitEvent('input', { value: this.currentValue });
         }
         break;
-      case 'ArrowLeft':
+      case, 'ArrowLeft':
         this.cursorPosition = Math.max(0, this.cursorPosition - 1);
         break;
-      case 'ArrowRight':
+      case, 'ArrowRight':
         this.cursorPosition = Math.min(this.currentValue.length, this.cursorPosition + 1);
         break;
-      case 'Enter':
+      case, 'Enter':
         this.emitEvent('submit', { value: this.currentValue });
         break;
       default:

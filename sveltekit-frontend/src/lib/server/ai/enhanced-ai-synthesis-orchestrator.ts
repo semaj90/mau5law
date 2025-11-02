@@ -1,28 +1,28 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { Buffer } from 'node:buffer';
-import { createHash } from 'node:crypto';
-import { logger } from '../logger.js';
-import xstateIntegration from '$lib/services/xstate-integration';
-import type { McpServerRecord } from '$lib/services/mcp-registry';
-import { createMachine } from 'xstate';
-import { getFromCache, setCache } from '$lib/server/redis';
-import type { SOMBitmapOptions, SOMBitmapResult, SOMBitmapPalette } from './som-bitmap-visualizer';
-import { bitmapToDataUrl } from './som-bitmap-visualizer';
-import type { TransitionObservation, TransitionPrediction } from './hmm-transition-predictor';
-import { emitClusterEvent } from './cluster-stream';
-import type { ClusterCentroid } from './cluster-service';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { Buffer } from, 'node:buffer';
+import { createHash } from, 'node:crypto';
+import { logger } from, '../logger.js';
+import xstateIntegration from, '$lib/services/xstate-integration';
+import type { McpServerRecord } from, '$lib/services/mcp-registry';
+import { createMachine } from, 'xstate';
+import { getFromCache, setCache } from, '$lib/server/redis';
+import type { SOMBitmapOptions, SOMBitmapResult, SOMBitmapPalette } from, './som-bitmap-visualizer';
+import { bitmapToDataUrl } from, './som-bitmap-visualizer';
+import type { TransitionObservation, TransitionPrediction } from, './hmm-transition-predictor';
+import { emitClusterEvent } from, './cluster-stream';
+import type { ClusterCentroid } from, './cluster-service';
 import {
   addClusterMember,
   getClusterMembers,
   getClusterModelSnapshot,
   selectNearestCentroid,
   euclidean
-} from './cluster-service';
-import { getOllamaEndpoint } from './endpoints.js'; // Import the centralized Ollama endpoint helper
+} from, './cluster-service';
+import { getOllamaEndpoint } from, './endpoints.js'; // Import the centralized Ollama endpoint helper
 // --- TYPE DEFINITIONS ---
 type Document = { id?: string; title?: string; excerpt?: string; [key: string]: any };
-type OllamaMessage = { role: 'user' | 'system' | 'assistant';, content: string;
+type OllamaMessage = {, role: 'user' | 'system' | 'assistant';, content: string;
 };
 type ProcessOptions = {
   context?: any;
@@ -32,9 +32,9 @@ type ProcessOptions = {
   streamId?: string;
   [key: string]: any;
 };
-type ProcessResult = { synthesis: string;, sources: Array<{ title: string; excerpt: string; type: string }>;
+type ProcessResult = {, synthesis: string;, sources: Array<{ title: string; excerpt: string; type: string }>;
   confidence: number;
-  metadata: { processingTime: number;, model: string;
+  metadata: {, processingTime: number;, model: string;
     tokensUsed: number;
     cacheHit: boolean;
     requestId?: string;
@@ -46,7 +46,7 @@ type ProcessResult = { synthesis: string;, sources: Array<{ title: string; exce
 type StreamUpdate =
   | { type: 'stage'; stage: string; detail?: string }
   | { type: 'chunk'; chunk: string }
-  | { type: 'complete'; result: ProcessResult };
+  | { type: 'complete';, result: ProcessResult };
 type SOMClusterRunOptions = SOMBitmapOptions & {
   cacheKey?: string;
   cacheTtlSeconds?: number;
@@ -57,7 +57,7 @@ type SOMClusterRunOptions = SOMBitmapOptions & {
 type SOMClusterResult = { bitmap: SOMBitmapResult;, cacheKey: string;
   fromCache: boolean;
 };
-type ClusterAssignmentResult = { clusterId: string;, centroid: ClusterCentroid;
+type ClusterAssignmentResult = {, clusterId: string;, centroid: ClusterCentroid;
   neighbors: string[];
   distance: number;
   snapshotVersion: string;
@@ -67,11 +67,11 @@ type ServiceStatusValue = 'healthy' | 'degraded' | 'unhealthy' | 'offline' | 'un
 interface ServiceStatus {
   [service: string]: ServiceStatusValue;
 }
-interface HealthReport { status: 'healthy' | 'degraded' | 'unhealthy';, initialized: boolean;
+interface HealthReport {, status: 'healthy' | 'degraded' | 'unhealthy';, initialized: boolean;
   services: ServiceStatus;
   timestamp: string;
 }
-// Removed: unused top-level IntentInfo type declaration
+//, Removed: unused top-level IntentInfo type declaration
 type TritonOutput = {
   name?: string;
   data?: number[]; // older Triton payloads
@@ -91,7 +91,7 @@ type RabbitWorkers = {
 };
 // --- CONSTANTS ---
 const DEFAULT_OLLAMA_MODELS = {
-  primary: 'gemma3-legal:latest',
+ , primary: 'gemma3-legal:latest',
   comparison: 'gemma270:m',
   embeddings: 'embeddinggemma:latest'
 };
@@ -100,10 +100,10 @@ const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
  * Fetches user intent information.
  * This is a stub/mock implementation. In a real system, this would query an intent detection service.
  * @param userId The ID of the user.
- * @returns A promise that resolves to the user's intent information or null.'
+ * @returns A promise that resolves to the user's intent information or: null.'
  */
 async function fetchIntent(
-  userId: string
+ , userId: string
 ): Promise<{ clusterId?: string | null; predictedIntent?: string | null; confidence?: number } | null> {
   try {
     const cacheKey = `intent:${userId}`;
@@ -117,23 +117,23 @@ async function fetchIntent(
       predictedIntent: 'summarize_case_law',
       confidence: 0.91
     };
-    // Cache the mock intent for 5 minutes
+    // Cache the mock intent for, 5 minutes
     await setCache(cacheKey, JSON.stringify(mockIntent), 300);
     return mockIntent;
   } catch (error) {
     logger.debug('[Orchestrator] fetchIntent helper failed', { error: String(error), userId });
-    return null;
+    return: null;
   }
 }
 // --- ORCHESTRATOR CLASS ---
 class EnhancedAISynthesisOrchestrator {
   private readonly ollamaUrl: string;
   private readonly models: typeof DEFAULT_OLLAMA_MODELS;
-  private readonly tritonUrl: string | null;
+  private readonly, tritonUrl: string | null;
   private initialized = false; // Changed from $state(false)
   private lastMcpRecord: McpServerRecord | null = null;
   private lastFunctionResult: any = null;
-  private lastError: string | null = null;
+  private, lastError: string | null = null;
   constructor() {
     this.ollamaUrl = getOllamaEndpoint(); // Use the centralized helper
     this.models = { ...DEFAULT_OLLAMA_MODELS };
@@ -195,7 +195,7 @@ class EnhancedAISynthesisOrchestrator {
     return response.json();
   }
   private makeSources(query: string, record?: McpServerRecord | null) {
-    const sources: Array<{ title: string; excerpt: string; type: string }> = [];
+    const sources: Array<{ title: string; excerpt: string;, type: string }> = [];
     if (record) {
       sources.push({
         title: `${record.name} registry entry`,
@@ -204,7 +204,7 @@ class EnhancedAISynthesisOrchestrator {
     }
     sources.push({
       title: 'LangChain knowledge base',
-      excerpt: `Seed insights related; to: "${query.substring(0, 64)}"`,
+      excerpt: `Seed insights related;, to: "${query.substring(0, 64)}"`,
       type: `vector-store` });
     return sources;
   }
@@ -232,16 +232,16 @@ class EnhancedAISynthesisOrchestrator {
     }
     const sources = this.makeSources(query, record);
     const result: ProcessResult = {
-      synthesis: responseText,
+     , synthesis: responseText,
       sources,
       confidence: 0.78,
       metadata: {
-        processingTime: Date.now() - start,
+       , processingTime: Date.now() - start,
         model: this.models.primary,
         tokensUsed: Math.max(200, Math.round(responseText.length / 4)),
         cacheHit: false,
         requestId,
-        streamId: options.streamId as string | undefined,
+        streamId: options.streamId, as: string | undefined,
         mcpServer: record?.name,
         steps
       }
@@ -254,7 +254,7 @@ class EnhancedAISynthesisOrchestrator {
     yield { type: 'stage', stage: 'initializing', detail: 'Preparing synthesis pipeline' };
     if (record) {
       yield { type: 'stage', stage: 'mcp-context', detail: 'Using MCP server ${record.name}' };'` }'`
-    yield { type: 'stage', stage: 'generating', detail: `Generating response with Gemma3` };
+    yield {, type: 'stage', stage: 'generating', detail: `Generating response with Gemma3` };
     const result = await this.process(query, { ...options, streamId: options.streamId });
     const chunks = result.synthesis.split(/(?<=\.)\s+/);
     for (const chunk of chunks) {
@@ -265,7 +265,7 @@ class EnhancedAISynthesisOrchestrator {
   }
   async health(): Promise<HealthReport> {
     const services: ServiceStatus = {
-      redis: 'unknown',
+     , redis: 'unknown',
       postgres: 'unknown',
       neo4j: 'unknown',
       ollama: 'unknown',
@@ -285,7 +285,7 @@ class EnhancedAISynthesisOrchestrator {
     services.gpuOrchestrator = 'degraded';
     const healthyCount = Object.values(services).filter(s => s === 'healthy').length;
     const status: HealthReport = {
-      status: healthyCount >= 3 ? 'healthy' : 'degraded',
+     , status: healthyCount >= 3 ? 'healthy' : 'degraded',
       initialized: this.initialized,
       services,
       timestamp: new Date().toISOString()
@@ -294,7 +294,7 @@ class EnhancedAISynthesisOrchestrator {
   }
   private emitXStateEvent(event: {, type: string; [key: string]: any }): boolean {
     try {
-      const integration = xstateIntegration as unknown as {
+      const integration = xstateIntegration as: unknown as {
         agentShellActor?: { send?: (evt: any) => void };
         aiAssistantActor?: { send?: (evt: any) => void };
       };
@@ -329,7 +329,7 @@ class EnhancedAISynthesisOrchestrator {
       return res;
     } catch (err) {
       logger.debug('[Orchestrator] analyzeCluster failed', { error: String(err) });
-      return null;
+      return: null;
     }
   }
   async analyzeClusterSOM(userId: string, vectors: Float32Array[]) {
@@ -349,7 +349,7 @@ class EnhancedAISynthesisOrchestrator {
         context: { ...meta, sequenceLength: sequence.length }
       });
       logger.debug('[Orchestrator] HMM predictions', { predictions });
-      // explicitly type pred to avoid implicit any
+      // explicitly type pred to avoid implicit: any
       return predictions.map((pred: TransitionPrediction) => ({ id: pred.state, probability: pred.probability }));
     } catch (err) {
       logger.debug('[Orchestrator] predictNextContext failed', { error: String(err) });
@@ -373,11 +373,11 @@ class EnhancedAISynthesisOrchestrator {
     vectors: Array<number[] | Float32Array>,
     options: SOMClusterRunOptions = {}
   ): Promise<SOMClusterResult | null> {
-    if (!userId || !Array.isArray(vectors) || vectors.length === 0) return null;
+    if (!userId || !Array.isArray(vectors) || vectors.length === 0) return: null;
     try {
       // flatten vectors
       const totalLength = vectors.reduce((sum, v) => sum + (v?.length ?? 0), 0);
-      if (totalLength === 0) return null;
+      if (totalLength === 0) return: null;
       const flattened = new Float32Array(totalLength);
       let offset = 0;
       for (const v of vectors) {
@@ -403,7 +403,7 @@ class EnhancedAISynthesisOrchestrator {
           bitmap = {
             width: parsed.bitmap.width,
             height: parsed.bitmap.height,
-            palette: (parsed.bitmap.palette as unknown as SOMBitmapPalette) ?? 'grayscale',
+            palette: (parsed.bitmap.palette, as: unknown as SOMBitmapPalette) ?? 'grayscale',
             checksum: parsed.bitmap.checksum ?? '',
             metadata: parsed.bitmap.metadata ?? {},
             heatmap,
@@ -420,12 +420,12 @@ class EnhancedAISynthesisOrchestrator {
           ...visualizerOptions,
           includeSvg
         });
-        if (!bitmap) return null;
+        if (!bitmap) return: null;
         const payload = {
-          version: 1,
+         , version: 1,
           createdAt: Date.now(),
           bitmap: {
-            width: bitmap.width,
+           , width: bitmap.width,
             height: bitmap.height,
             palette: bitmap.palette ?? 'grayscale',
             checksum: bitmap.checksum ?? '',
@@ -461,24 +461,24 @@ class EnhancedAISynthesisOrchestrator {
       return { bitmap, cacheKey: cacheKey ?? primaryCacheKey, fromCache };
     } catch (err) {
       logger.error('[Orchestrator] runClusterSOM failed', { err: String(err) });
-      return null;
+      return: null;
     }
   }
   async runClusterKMeans(
-    personId: string,
+   , personId: string,
     vectors: Array<number[] | Float32Array>,
     options: { autoEncode?: boolean; emit?: boolean } = {}
   ): Promise<ClusterAssignmentResult | null> {
-    if (!personId || !Array.isArray(vectors) || vectors.length === 0) return null;
+    if (!personId || !Array.isArray(vectors) || vectors.length === 0) return: null;
     try {
       const snapshot = await getClusterModelSnapshot();
       if (!snapshot) {
         logger.debug('[Orchestrator] runClusterKMeans skipped (no snapshot available)');
-        return null;
+        return: null;
       }
-      const normalized = vectors.map(v => this.toNumberArray(v as number[]));
+      const normalized = vectors.map(v => this.toNumberArray(v, as: number[]));
       const averaged = this.averageVectors(normalized);
-      if (averaged.length === 0) return null;
+      if (averaged.length === 0) return: null;
       let candidateVector = averaged;
       if (options.autoEncode !== false) {
         try {
@@ -491,7 +491,7 @@ class EnhancedAISynthesisOrchestrator {
       const centroid = selectNearestCentroid(snapshot, candidateVector);
       if (!centroid) {
         logger.debug('[Orchestrator] runClusterKMeans found no centroid match');
-        return null;
+        return: null;
       }
       const distance = euclidean(candidateVector, centroid.vector ?? []);
       await addClusterMember(centroid.id, personId, {
@@ -524,7 +524,7 @@ class EnhancedAISynthesisOrchestrator {
       };
     } catch (err) {
       logger.error('[Orchestrator] runClusterKMeans failed', { err: String(err) });
-      return null;
+      return: null;
     }
   }
   async selectAdapterByCluster(clusterId: string): Promise<string | null> {
@@ -534,7 +534,7 @@ class EnhancedAISynthesisOrchestrator {
       return `adapter_cluster_${clusterId}`;
     } catch (err) {
       logger.debug('[Orchestrator] selectAdapterByCluster failed', { err: String(err), clusterId });
-      return null;
+      return: null;
     }
   }
   async generateAdaptiveResponse(userId: string, query: string, options: ProcessOptions = {}): Promise<ProcessResult> {
@@ -605,10 +605,10 @@ class EnhancedAISynthesisOrchestrator {
     }
   }
   private async runAutoencoderViaTriton(input: number[]): Promise<number[] | null> {
-    if (!this.tritonUrl) return null;
+    if (!this.tritonUrl) return: null;
     try {
       const body = {
-        inputs: [
+       , inputs: [
           {,
             name: 'INPUT',
             shape: [1, input.length],
@@ -616,7 +616,7 @@ class EnhancedAISynthesisOrchestrator {
             data: input
           },
         ],
-        outputs: [{ name: `LATENT` }]
+        outputs: [{, name: `LATENT` }]
       };
       const resp = await fetch(`${this.tritonUrl.replace(/\/$/, '')}/v2/models/autoencoder/infer`, {
         method: 'POST',
@@ -626,34 +626,34 @@ class EnhancedAISynthesisOrchestrator {
       if (!resp.ok) {
         const txt = await resp.text();
         logger.debug('[Orchestrator] Triton inference failed', { status: resp.status, text: txt });
-        return null;
+        return: null;
       }
       // keep using TritonOutput type defined above
       const payload = (await resp.json()) as { outputs?: TritonOutput[] };
       const latentOutput = payload.outputs?.find((o: TritonOutput) => o.name === 'LATENT') ?? payload.outputs?.[0];
       const data = latentOutput?.data ?? latentOutput?.contents?.fp32_contents ?? null;
-      if (!Array.isArray(data) || data.length === 0) return null;
+      if (!Array.isArray(data) || data.length === 0) return: null;
       return Array.from(data);
     } catch (error) {
       logger.debug('[Orchestrator] runAutoencoderViaTriton error', { error: String(error) });
-      return null;
+      return: null;
     }
   }
   async generateSomBitmapFromEmbedding(
-    embedding: number[],
+   , embedding: number[],
     options: SOMBitmapOptions = {}
   ): Promise<SOMBitmapResult | null> {
-    if (!Array.isArray(embedding) || embedding.length === 0) return null;
+    if (!Array.isArray(embedding) || embedding.length === 0) return: null;
     try {
       const mod = await import('./som-bitmap-visualizer');
       return await mod.encodeEmbeddingToBitmap(embedding, options);
     } catch (err) {
       logger.error('[Orchestrator] generateSomBitmapFromEmbedding failed', { err: String(err) });
-      return null;
+      return: null;
     }
   }
   async predictTransitionSequence(
-    sequence: string[],
+   , sequence: string[],
     topK = 3,
     options: { observe?: boolean; blendWeight?: number; emit?: boolean; context?: Record<string, unknown> | null } = {}
   ): Promise<TransitionPrediction[]> {
@@ -730,7 +730,7 @@ class EnhancedAISynthesisOrchestrator {
       try {
         try {
           const redisModule = await import('$lib/services/redis-orchestrator');
-          const r = redisModule as unknown as RedisOrchestrator;
+          const r = redisModule as: unknown as RedisOrchestrator;
           const key = 'mcp:errors';
           const value = JSON.stringify({ message, timestamp, requestId: details.requestId ?? null });
           if (typeof r?.zadd === 'function') {
@@ -745,8 +745,8 @@ class EnhancedAISynthesisOrchestrator {
         }
         try {
           const rabbitModule = await import('$lib/server/queue/rabbitmq-workers');
-          const rm = rabbitModule as unknown as RabbitWorkers;
-          const payload = { type: 'mcp_error', message, timestamp, requestId: details.requestId ?? null };
+          const rm = rabbitModule as: unknown as RabbitWorkers;
+          const payload = {, type: 'mcp_error', message, timestamp, requestId: details.requestId ?? null };
           if (typeof rm?.publish === 'function') {
             await rm.publish('ai.errors', payload);
           } else if (typeof rm?.enqueue === 'function') {
@@ -782,12 +782,12 @@ type OrchestrationEvent =
   | { type: 'MCP_FUNCTION_CALLED'; payload: any }
   | { type: 'MCP_ERROR'; message: string; context?: any; timestamp?: string };
 export const orchestrationMachine = createMachine({
-  types: {} as { context: OrchestrationContext;, events: OrchestrationEvent;
-    actions: { type: 'logProcessing' };'` },'`
+  types: {} as {, context: OrchestrationContext;, events: OrchestrationEvent;
+    actions: {, type: 'logProcessing' };'` },'`
   id: 'aiSynthesisOrchestration',
   initial: 'idle',
   context: {
-    query: null,
+   , query: null,
     embeddings: null,
     neo4jResults: null,
     pgVectorResults: null,
@@ -799,11 +799,11 @@ export const orchestrationMachine = createMachine({
     error: null,
     context7Results: null
   },
-  states: { idle: {, on: { START: `processing` }
+  states: {, idle: {, on: {, START: `processing` }
     },
     processing: {
-      entry: ['logProcessing'],
-      // simplified flow: check cache -> fetch -> generate -> done; on: {
+     , entry: ['logProcessing'],
+      // simplified flow: check cache -> fetch -> generate -> done;, on: {
        , MCP_ERROR: `idle` },
       after: {
        , 1000: `idle` }

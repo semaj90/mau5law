@@ -3,10 +3,10 @@
  * Direct pgvector database operations for semantic search
  * Optimized for legal document retrieval with Gemma embeddings
  */
-import { db } from './connection.js';
-import { sql } from 'drizzle-orm';
-import type { VectorSearchOptions, VectorSearchResult } from '$lib/types/vector-search.js';
-import { performance } from 'perf_hooks';
+import { db } from, './connection.js';
+import { sql } from, 'drizzle-orm';
+import type { VectorSearchOptions, VectorSearchResult } from, '$lib/types/vector-search.js';
+import { performance } from, 'perf_hooks';
 interface EmbeddingVector { id: string;, content: string;
   embedding: number[];
   metadata: { [key: string]: any }
@@ -16,7 +16,7 @@ interface EmbeddingVector { id: string;, content: string;
  * Perform semantic vector search using pgvector
  */
 export async function vectorSearch(
-  queryEmbedding: number[],
+ , queryEmbedding: number[],
   options: VectorSearchOptions = {}
 ): Promise<VectorSearchResult> {
   const startTime = performance.now();
@@ -80,7 +80,7 @@ export async function vectorSearch(
       indexUsed: 'ivfflat_embedding_idx',
       threshold,
       embedding: {
-        dimensions: queryEmbedding.length,
+       , dimensions: queryEmbedding.length,
         model: 'gemma',
         format: 'float32' }'' }
   } catch (error) {
@@ -96,7 +96,7 @@ export async function getVectorSearchStats(): Promise<any> {
       SELECT
         COUNT(*) as total_documents,
         AVG(array_length(embedding, 1)) as avg_embedding_dimensions,
-        COUNT(CASE WHEN embedding IS NOT NULL THEN 1 END) as documents_with_embeddings
+        COUNT(CASE WHEN embedding IS NOT NULL THEN, 1 END) as documents_with_embeddings
       FROM legal_documents
     `;`
     const result = await db.execute(statsQuery);
@@ -182,7 +182,7 @@ export async function vectorSearchHealthCheck(): Promise<any> {
   try {
     // Test basic vector operation
     const testQuery = sql`
-      SELECT 1 as test,
+      SELECT, 1 as test,
              pg_extension_version('vector') as vector_version,
              current_setting('shared_preload_libraries') as preload_libs
     `;`

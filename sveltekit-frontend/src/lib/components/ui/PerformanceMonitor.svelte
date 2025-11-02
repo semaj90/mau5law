@@ -1,8 +1,8 @@
 <script, lang="ts">
-	// Svelte 5 runes are auto-imported
-	import { onMount, onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
+	// Svelte, 5 runes are auto-imported
+	import { onMount, onDestroy } from, 'svelte';
+	import { writable } from, 'svelte/store';
+	import { Activity, Cpu, Zap, Clock, TrendingUp } from, 'lucide-svelte';
 	interface Props {
 		showOverlay?: boolean;
 		autoHide?: boolean;
@@ -20,7 +20,7 @@
 		timestamp: number;
 	}
 	const metrics = writable<PerformanceMetrics>({
-		fps: 0,
+	, fps: 0,
 		memoryUsage: 0,
 		cpuUsage: 0,
 		gpuUsage: 0,
@@ -33,7 +33,7 @@
 	let frameCount = 0;
 	let lastFrameTime = performance.now();
 	let intervalId: ReturnType<typeof setInterval> | undefined;
-	// Svelte 5 reactive state
+	// Svelte, 5 reactive state
 	let isVisible = $state(showOverlay);
 	// Performance tracking
 	function updateMetrics() {
@@ -46,7 +46,7 @@
 		// Memory usage (if available)
 		let memoryUsage = 0;
 		// guard access to experimental memory API
-		const perfAny = performance as any;
+		const perfAny = performance as: any;
 		if (perfAny?.memory && typeof perfAny.memory.usedJSHeapSize === 'number' && typeof perfAny.memory.totalJSHeapSize === 'number') {
 			const mem = perfAny.memory;
 			if (mem.totalJSHeapSize > 0) {
@@ -79,7 +79,7 @@
 	function getActiveOperationsCount(): number {
 		// Count active AI/ML operations (best-effort)
 		if (typeof window !== 'undefined') {
-			const active = (window as any).__aiOperations;
+			const active = (window as: any).__aiOperations;
 			if (active && typeof active.size === 'number') return active.size;
 			// sometimes it's an array'
 			if (Array.isArray(active)) return active.length;
@@ -159,20 +159,20 @@
 	// Color coding for metrics
 	function getStatusColor(value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
 		switch (type) {
-			case 'fps':
-				if (value >= 55) return 'text-green-400';
-				if (value >= 30) return 'text-yellow-400';
-				return 'text-red-400';
-			case 'memory':
-				if (value <= 50) return 'text-green-400';
-				if (value <= 80) return 'text-yellow-400';
-				return 'text-red-400';
-			case 'cpu':
-			case 'gpu':
-				if (value <= 30) return 'text-green-400';
-				if (value <= 70) return 'text-yellow-400';
-				return 'text-red-400';
-			default: return 'text-gray-400';
+			case, 'fps':
+				if (value >= 55) return, 'text-green-400';
+				if (value >= 30) return, 'text-yellow-400';
+				return, 'text-red-400';
+			case, 'memory':
+				if (value <= 50) return, 'text-green-400';
+				if (value <= 80) return, 'text-yellow-400';
+				return, 'text-red-400';
+			case, 'cpu':
+			case, 'gpu':
+				if (value <= 30) return, 'text-green-400';
+				if (value <= 70) return, 'text-yellow-400';
+				return, 'text-red-400';
+			default: return, 'text-gray-400';
 		}
 	}
 </script>

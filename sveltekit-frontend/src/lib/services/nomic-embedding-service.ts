@@ -4,15 +4,15 @@
  * - Fallback: nomic-embed-text:latest
  * - Fixed TypeScript/logic issues from original file
  */
-import { OllamaEmbeddings } from '@langchain/ollama';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import type { Readable } from 'svelte/store';
-import { db } from '$lib/server/db';
-import { evidence, cases, legalDocuments } from '$lib/server/db/unified-schema';
-import { eq, sql } from 'drizzle-orm';
+import { OllamaEmbeddings } from, '@langchain/ollama';
+import { MemoryVectorStore } from, 'langchain/vectorstores/memory';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import type { Readable } from, 'svelte/store';
+import { db } from, '$lib/server/db';
+import { evidence, cases, legalDocuments } from, '$lib/server/db/unified-schema';
+import { eq, sql } from, 'drizzle-orm';
 // lightweight stub for external legalNLP module (keep import path same as original)
-import { legalNLP } from './sentence-transformer.js';
+import { legalNLP } from, './sentence-transformer.js';
 
 export interface EmbeddingConfig { model: string;, dimensions: number;
   batchSize: number;
@@ -24,8 +24,8 @@ export interface EmbeddingConfig { model: string;, dimensions: number;
   normalization: boolean;
 }
 
-export interface DocumentChunk { id: string;, content: string;
-  metadata: { source: string;, chunkIndex: number;
+export interface DocumentChunk {, id: string;, content: string;
+  metadata: {, source: string;, chunkIndex: number;
     totalChunks: number;
     startIndex: number;
     endIndex: number;
@@ -33,21 +33,21 @@ export interface DocumentChunk { id: string;, content: string;
   };
 }
 
-export interface EmbeddingResult { id: string;, embedding: number[];
+export interface EmbeddingResult {, id: string;, embedding: number[];
   content: string;
   metadata: { [key: string]: any };
   processingTime: number;
 }
 
-export interface SimilaritySearchResult { document: DocumentChunk;, similarity: number;
+export interface SimilaritySearchResult {, document: DocumentChunk;, similarity: number;
   embedding: number[];
   metadata: { [key: string]: any };
 }
 
-export interface BatchEmbeddingResult { results: EmbeddingResult[];, totalProcessed: number;
+export interface BatchEmbeddingResult {, results: EmbeddingResult[];, totalProcessed: number;
   averageTime: number;
   errors: Array<any>;
-  metrics: { tokenCount: number;, embeddingDimensions: number;
+  metrics: {, tokenCount: number;, embeddingDimensions: number;
     cacheHits: number;
     cacheMisses: number;
   };
@@ -59,7 +59,7 @@ class NomicEmbeddingService {
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: any;
   private config: EmbeddingConfig;
-  private cache: Map<string, { embedding: number[]; timestamp: number }> = new Map();
+  private, cache: Map<string, { embedding: number[];, timestamp: number }> = new Map();
   private initialized = $state(false);
   private processing = $state(false);
   private cacheHits = 0;
@@ -108,18 +108,18 @@ class NomicEmbeddingService {
             // this is best-effort; exact options depend on client lib
            , numGpu: this.config.enableGpuAcceleration ? 1 : 0,
             mainGpu: 0
-          } as any
-        } as any);
+          } as: any
+        }, as: any);
 
         // text splitter init
         this.textSplitter = new RecursiveCharacterTextSplitter({
           chunkSize: this.config.chunkSize,
           chunkOverlap: this.config.chunkOverlap,
           separators: ['\n\n', '\n', '. ', ' ', '']
-        } as any);
+        } as: any);
 
         // in-memory vector store
-        this.vectorStore = new MemoryVectorStore(this.embeddings as any);
+        this.vectorStore = new MemoryVectorStore(this.embeddings as: any);
 
         this.initialized = true;
         this.config.model = modelName;
@@ -181,7 +181,7 @@ class NomicEmbeddingService {
     const startTime = Date.now();
     this.processing = true;
     const results: EmbeddingResult[] = [];
-    const errors: any[] = [];
+    const, errors: any[] = [];
     let cacheHits = 0;
     let cacheMisses = 0;
 
@@ -192,7 +192,7 @@ class NomicEmbeddingService {
         const batch = texts.slice(i, i + this.config.batchSize);
         const batchMetadata = metadata?.slice(i, i + this.config.batchSize) || [];
 
-        const uncached: { text: string; idx: number; md: any }[] = [];
+        const uncached: { text: string; idx: number;, md: any }[] = [];
         // check cache
         batch.forEach((t, bi) => {
           const key = this.getCacheKey(t);
@@ -259,7 +259,7 @@ class NomicEmbeddingService {
         averageTime,
         errors,
         metrics: {
-          tokenCount: this.estimateTokenCount(texts),
+         , tokenCount: this.estimateTokenCount(texts),
           embeddingDimensions: this.config.dimensions,
           cacheHits,
           cacheMisses
@@ -281,7 +281,7 @@ class NomicEmbeddingService {
      , entityId: string;
       [key: string]: any;
     }
-  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[]; indexedCount: number; analysis?: any }> {
+  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[];, indexedCount: number; analysis?: any }> {
     try {
       if (!this.initialized) await this.initializeServices();
 
@@ -361,7 +361,7 @@ class NomicEmbeddingService {
       const queryEmbedding = await this.generateEmbedding(query);
 
       // Simple DB query approach: select candidate rows that have embedding column NOT NULL
-      const results: Array<any> = [];
+      const, results: Array<any> = [];
 
       if (!entityType || entityType === 'evidence') {
         const ev = await db
@@ -411,7 +411,7 @@ class NomicEmbeddingService {
       const similarities: SimilaritySearchResult[] = [];
       for (const r of results) {
         if (!r.embedding) continue;
-        const similarity = this.cosineSimilarity(queryEmbedding.embedding, r.embedding as number[]);
+        const similarity = this.cosineSimilarity(queryEmbedding.embedding, r.embedding as: number[]);
         if (similarity >= threshold) {
           similarities.push({ document: {, id: r.id,
               content: r.content,
@@ -427,7 +427,7 @@ class NomicEmbeddingService {
               }
             } as DocumentChunk,
             similarity,
-            embedding: r.embedding as number[],
+            embedding: r.embedding, as: number[],
             metadata: r
           });
         }
@@ -492,7 +492,7 @@ class NomicEmbeddingService {
       isProcessing: this.processing,
       config: this.config,
       performance: {
-        averageTime: 0,
+       , averageTime: 0,
         totalProcessed: 0
       }
     };

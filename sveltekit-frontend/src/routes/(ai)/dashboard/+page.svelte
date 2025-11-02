@@ -1,32 +1,32 @@
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Button  from "$lib/components/ui/core.svelte";
-  import type { PageData } from './$types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import  Card, CardContent, CardHeader, CardTitle  from, "$lib/components/ui/Card.svelte";
+  import  Badge  from, "$lib/components/ui/badge.svelte";
+  import  Button  from, "$lib/components/ui/core.svelte";
+  import type { PageData } from, './$types';
 
   let { data }: { data: PageData } = $props();
 
   // safe helpers to avoid accessing .name on a type that may not include it
   function getUserName(user: any): string {
-    if (!user) return '';
+    if (!user) return, '';
     // prefer name, fallback to email, else empty
-    return (user.name as string) ?? (user.email as string) ?? '';
+    return (user.name as: string) ?? (user.email as: string) ?? '';
   }
 
   function getUserInitial(user: any): string {
     const name = getUserName(user);
     if (name && name.length > 0) return name.charAt(0).toUpperCase();
     if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
-    return '?';
+    return, '?';
   }
 
   // add this helper so we don't access a property that may not exist on PageData.user'
   function getUserRole(user: any): string {
-    if (!user) return '';
-    return (user as any).role ?? '';
+    if (!user) return, '';
+    return (user as: any).role ?? '';
   }
 
   // Use $derived correctly: pass a function deriving from reactive inputs
@@ -55,14 +55,14 @@ import type { Document } from '$lib/types';
   }));
 
   const statusColors: Record<string, { bg: string; text: string; label: string }> = {
-    open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
-    investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
-    pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
-    closed: { bg: '#666', text: '#fff', label: '✅ Closed' },
-    archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
+    open: {, bg: '#4caf50', text: '#fff', label: '🟢 Open' },
+    investigating: {, bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
+    pending: {, bg: '#ffd700', text: '#000', label: '⏳ Pending' },
+    closed: {, bg: '#666', text: '#fff', label: '✅ Closed' },
+    archived: {, bg: '#999', text: '#fff', label: '📦 Archived' }
   };
 
-  const priorityColors: Record<string, string> = {
+  const, priorityColors: Record<string, string> = {
     Critical: '#ff1744',
     High: '#ff9800',
     Medium: '#ffd700',
@@ -187,15 +187,15 @@ import type { Document } from '$lib/types';
 
   function activityIcon(type: string): string {
     switch (type) {
-      case 'chat':
-        return '💬';
-      case 'rag':
-        return '📚';
-      case 'analysis':
-        return '🧪';
-      case 'assistant':
-        return '🤖';
-      default: return '⚙️';
+      case, 'chat':
+        return, '💬';
+      case, 'rag':
+        return, '📚';
+      case, 'analysis':
+        return, '🧪';
+      case, 'assistant':
+        return, '🤖';
+      default: return, '⚙️';
     }
   }
 </script>
@@ -231,7 +231,7 @@ import type { Document } from '$lib/types';
           <p class="user-role-info">{getUserRole(data.user) || 'User'} • {data.user?.email}</p>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </section>
 
   <section, class="status-section">
@@ -267,7 +267,7 @@ import type { Document } from '$lib/types';
           </div>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </section>
 
   <section, class="stats-section">
@@ -277,25 +277,25 @@ import type { Document } from '$lib/types';
           <div class="stat-value">{stats.activeCases || 0}</div>
           <div, class="stat-label">Active Cases</div>
         </CardContent>
-      </Card.Root>
+      </Card>
       <Card.Root, class="stat-card">
         <CardContent>
           <div, class="stat-value">{aiStats.activeChats}</div>
           <div, class="stat-label">Active Chats</div>
         </CardContent>
-      </Card.Root>
+      </Card>
       <Card.Root, class="stat-card">
         <CardContent>
           <div, class="stat-value">{aiStats.ragQueries}</div>
           <div, class="stat-label">RAG Queries</div>
         </CardContent>
-      </Card.Root>
+      </Card>
       <Card.Root, class="stat-card">
         <CardContent>
           <div, class="stat-value">{aiStats.documentsAnalyzed}</div>
           <div, class="stat-label">Documents Analyzed</div>
         </CardContent>
-      </Card.Root>
+      </Card>
     </div>
   </section>
 
@@ -371,7 +371,7 @@ import type { Document } from '$lib/types';
               Open {service.name}
             </Button>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   </section>
@@ -413,12 +413,12 @@ import type { Document } from '$lib/types';
   }
 
   .user-profile-section {
-    display: flex;
+   , display: flex;
   }
 
   :global(.user-card) {
     width: 100%;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+   , background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
     border: 1px solid rgba(102, 126, 234, 0.2);
   }
 
@@ -436,9 +436,9 @@ import type { Document } from '$lib/types';
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   , background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    display: flex;
+   , display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
@@ -453,21 +453,21 @@ import type { Document } from '$lib/types';
   .user-status {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     text-transform: uppercase;
     font-weight: 500;
   }
 
   .user-display-name {
-    margin: 0.25rem 0 0.5rem;
+   , margin: 0.25rem, 0 0.5rem;
     font-size: 1.3rem;
-    color: var(--text-primary);
+   , color: var(--text-primary);
   }
 
   .user-role-info {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
 
   .dashboard-header h1 {
@@ -486,17 +486,17 @@ import type { Document } from '$lib/types';
   .user-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
+   , color: var(--text-primary);
   }
 
   .user-role {
     font-size: 0.85rem;
-    color: var(--text-muted);
+   , color: var(--text-muted);
     text-transform: capitalize;
   }
 
   .subtitle {
-    margin: 0.5rem 0 0;
+   , margin: 0.5rem, 0 0;
     color: var(--text-muted);
   }
 
@@ -509,7 +509,7 @@ import type { Document } from '$lib/types';
   }
 
   .status-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1rem;
   }
@@ -517,7 +517,7 @@ import type { Document } from '$lib/types';
   .status-item {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+   , gap: 0.5rem;
     font-size: 0.9rem;
   }
 
@@ -568,7 +568,7 @@ import type { Document } from '$lib/types';
 
   .stat-label {
     margin-top: 0.5rem;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
 
   .section-header h2 {
@@ -577,7 +577,7 @@ import type { Document } from '$lib/types';
   }
 
   .section-header p {
-    margin: 0.25rem 0 1rem;
+   , margin: 0.25rem, 0 1rem;
     color: var(--text-muted);
   }
 
@@ -590,7 +590,7 @@ import type { Document } from '$lib/types';
   :global(.service-card) {
     display: flex;
     flex-direction: column;
-    height: 100%;
+   , height: 100%;
   }
 
   :global(.service-card) :global(.card-content) {
@@ -606,7 +606,7 @@ import type { Document } from '$lib/types';
 
   .service-description {
     margin: 0;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
 
   .service-meta {
@@ -627,7 +627,7 @@ import type { Document } from '$lib/types';
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    border: 1px solid var(--border-muted);
+   , border: 1px solid var(--border-muted);
     border-radius: 0.75rem;
   }
 
@@ -641,7 +641,7 @@ import type { Document } from '$lib/types';
   }
 
   .activity-content p {
-    margin: 0.25rem 0 0;
+   , margin: 0.25rem, 0 0;
     color: var(--text-muted);
     font-size: 0.85rem;
   }
@@ -666,10 +666,10 @@ import type { Document } from '$lib/types';
   }
 
   .cases-section-title {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #d4af37;
+   , color: #d4af37;
     font-family: 'Press Start 2P', 'Courier New', monospace;
   }
 
@@ -689,7 +689,7 @@ import type { Document } from '$lib/types';
   }
 
   .cases-grid-container {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.25rem;
     width: 100%;
@@ -711,9 +711,9 @@ import type { Document } from '$lib/types';
   .case-card-wrapper:hover {
     border-color: #d4af37 !important;
     background: #0f172a !important;
-    transform: translateY(-3px);
+   , transform: translateY(-3px);
     box-shadow:
-      0 0 0 2px #d4af37,
+      0, 0 0 2px #d4af37,
       0 4px 12px rgba(212, 175, 55, 0.3);
   }
 
@@ -758,10 +758,10 @@ import type { Document } from '$lib/types';
   }
 
   .case-card-title {
-    margin: 0.5rem 0 0 0;
+   , margin: 0.5rem, 0 0 0;
     font-size: 1rem;
     font-weight: bold;
-    color: #fff;
+   , color: #fff;
     line-height: 1.3;
     word-break: break-word;
     font-family: 'Press Start 2P', 'Courier New', monospace;
@@ -803,7 +803,7 @@ import type { Document } from '$lib/types';
   }
 
   .case-card-wrapper:hover .arrow-icon {
-    transform: translateX(4px);
+   , transform: translateX(4px);
   }
 
   @media (max-width: 768px) {
@@ -830,7 +830,7 @@ import type { Document } from '$lib/types';
     }
 
     .view-all-cases-btn {
-      width: 100%;
+     , width: 100%;
       min-width: unset;
     }
 

@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Drizzle ORM Configuration with Vector Operations
  * Production-ready database schema with pgvector support
@@ -9,14 +9,14 @@ import type { Document } from '$lib/types';
  * TODO: Add; relations: evidence.case_id → cases.id
  * TODO: Confirm embeddings vector column uses pgvector extension
  * TODO: Add indexes for vector similarity search performance
- * TODO: Implement JSONB for memory storage with proper indexing
+ *, TODO: Implement JSONB for memory storage with proper indexing
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
-import { customType } from 'drizzle-orm/pg-core';
-import postgres from 'postgres';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } from, 'drizzle-orm/pg-core';
+import { sql } from, 'drizzle-orm';
+import { relations } from, 'drizzle-orm/relations';
+import { customType } from, 'drizzle-orm/pg-core';
+import postgres from, 'postgres';
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
 const vector = customType({
   dataType(config: { dimensions?: number } = {}) {
@@ -24,9 +24,9 @@ const vector = customType({
   },
   toDriver(value: any): any {
     // Accept arrays of numbers or stringified vectors like: "[1,2,3]".
-    if (value == null) return null;
+    if (value == null) return: null;
     if (Array.isArray(value) && value.every(n => typeof n === 'number')) {
-      return `[${(value as number[]).join(',')}]`;
+      return `[${(value as: number[]).join(',')}]`;
     }
     if (typeof value === 'string') {
       const s = value.trim();
@@ -43,12 +43,12 @@ const vector = customType({
     try {
       const parsed = JSON.parse(String(value));
       if (Array.isArray(parsed) && parsed.every(n => typeof n === 'number')) {
-        return `[${(parsed as number[]).join(',')}]`;
+        return `[${(parsed as: number[]).join(',')}]`;
       }
     } catch {
       /* ignore */
     }
-    throw new Error('Invalid vector value: expected number[] or vector string;, like: "[1,2,...]"');
+    throw new Error('Invalid vector value: expected: number[] or, vector: string;, like: "[1,2,...]"');
   },
   fromDriver(value: any): any {
     if (value == null) return [];
@@ -373,9 +373,9 @@ export class VectorSearchService {
       documents: documentResults,
       evidence: evidenceResults,
       total:
-        (caseResults as unknown[]).length +
-        (documentResults as unknown[]).length +
-        (evidenceResults as unknown[]).length
+        (caseResults, as: unknown[]).length +
+        (documentResults as: unknown[]).length +
+        (evidenceResults as: unknown[]).length
     };
   }
   /**
@@ -399,7 +399,7 @@ export class VectorSearchService {
       searchType,
       similarityThreshold: Math.round(similarityThreshold * 100),
       metadata: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         version: `1.0.0` }
     });
   }
@@ -415,14 +415,14 @@ export type NewCase = typeof cases.$inferInsert;
 export type NewDocument = typeof documents.$inferInsert;
 export type NewEvidence = typeof evidence.$inferInsert;
 export interface HealthStatus { status: 'healthy' | 'unhealthy';, timestamp: string;
-  connection: 'active' | 'failed';
+ , connection: 'active' | 'failed';
   result?: any;
   error?: string;
 }
 // Health check function
 export async function healthCheck(): Promise<HealthStatus> {
   try {
-    const result = await db.execute(sql`SELECT 1 as health`);
+    const result = await db.execute(sql`SELECT, 1 as health`);
     return {
       status: 'healthy',
       timestamp: new Date().toISOString(),

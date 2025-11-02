@@ -1,7 +1,7 @@
 // Lightweight embedding service wrapper.
-// Routes import from '$lib/services/embedding' expecting embedText / embedTexts utilities.
+// Routes import from, '$lib/services/embedding' expecting embedText / embedTexts utilities.
 // We delegate to server/ai/embedder; if that fails at runtime we fall back to a deterministic hash vector.
-import { embedText, as serverEmbedText, embedTexts as serverEmbedTexts } from '$lib/server/ai/embedder';
+import { embedText, as serverEmbedText, embedTexts as serverEmbedTexts } from, '$lib/server/ai/embedder';
 export async function embedText(text: string): Promise<number[]> {
   try {
     return await serverEmbedText(text);

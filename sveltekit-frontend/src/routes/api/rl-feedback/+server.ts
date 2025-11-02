@@ -3,11 +3,11 @@
  * Collects thumbs up/down feedback for supervised RL training
  * Feeds into QLoRA distilled enhanced RAG model creation
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { qloraTrainer } from '$lib/services/qlora-reinforcement-learning-trainer';
-import { autoencoderContextSwitcher } from '$lib/orchestration/autoencoder-context-switcher';
-import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { qloraTrainer } from, '$lib/services/qlora-reinforcement-learning-trainer';
+import { autoencoderContextSwitcher } from, '$lib/orchestration/autoencoder-context-switcher';
+import { predictiveAssetEngine } from, '$lib/services/predictive-asset-engine';
 // Feedback data structure
 interface RLFeedbackData { sessionId: string;, userId: string;
   queryId: string;
@@ -15,12 +15,12 @@ interface RLFeedbackData { sessionId: string;, userId: string;
   response: string;
   feedback: 'thumbs_up' | 'thumbs_down';
   feedbackDetails?: {
-    accuracy: number; // 1-5 scale,
+   , accuracy: number; // 1-5 scale,
     helpfulness: number; // 1-5 scale
-    completeness: number; // 1-5 scale,
+   , completeness: number; // 1-5 scale,
     clarity: number; // 1-5 scale
   };
-  context: { documentType: string;, legalDomain: string;
+  context: {, documentType: string;, legalDomain: string;
     complexityLevel: 'basic' | 'intermediate' | 'advanced';
     modelUsed: string;
     responseTime: number;
@@ -31,13 +31,13 @@ interface RLFeedbackData { sessionId: string;, userId: string;
   preferredResponse?: string;
 }
 // Training data for QLoRA distillation
-interface QLorATrainingExample { instruction: string;, input: string;
+interface QLorATrainingExample {, instruction: string;, input: string;
   output: string;
   preference_score: number;
-  quality_metrics: { accuracy: number;, relevance: number;
+  quality_metrics: {, accuracy: number;, relevance: number;
     completeness: number;
   };
-  metadata: { domain: string;, model_used: string;
+  metadata: {, domain: string;, model_used: string;
     user_feedback: string;
     context_embedding: Float32Array;
   };
@@ -46,9 +46,9 @@ interface QLorATrainingExample { instruction: string;, input: string;
  * POST /api/rl-feedback
  * Submit thumbs up/down feedback for reinforcement learning
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   // Ensure we read auth from locals (same pattern as GET)
-  const authUser = (locals as any)?.user ?? null;
+  const authUser = (locals as: any)?.user ?? null;
 
   // Try to load DB only if authenticated
   let db: any = null;
@@ -76,17 +76,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const contextEmbedding = await generateContextEmbedding(feedbackData);
     // Create training example for QLoRA
     const trainingExample: QLorATrainingExample = {
-      instruction: generateInstruction(feedbackData.context),
+     , instruction: generateInstruction(feedbackData.context),
       input: feedbackData.query,
       output: feedbackData.preferredResponse || feedbackData.response,
       preference_score: feedbackScore,
       quality_metrics: {
-        accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
+       , accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
         relevance: estimateRelevance(feedbackData),
         completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData)
       },
       metadata: {
-        domain: feedbackData.context.legalDomain,
+       , domain: feedbackData.context.legalDomain,
         model_used: feedbackData.context.modelUsed,
         user_feedback: feedbackData.feedback,
         context_embedding: contextEmbedding
@@ -212,7 +212,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const userIdParam = url.searchParams.get('userId');
     const domain = url.searchParams.get('domain');
     // Detect auth
-    const authUser = (locals as any)?.user ?? null;
+    const authUser = (locals as: any)?.user ?? null;
 
     // Try to load DB only if authenticated
     let db: any = null;
@@ -293,7 +293,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
  */
 function convertFeedbackToScore(feedback: RLFeedbackData): number {
   if (feedback.feedback === 'thumbs_up') {
-    // Base score of 4, enhanced by detail ratings
+    // Base score of, 4, enhanced by detail ratings
     let score = 4.0;
     if (feedback.feedbackDetails) {
       const avgDetail =
@@ -306,7 +306,7 @@ function convertFeedbackToScore(feedback: RLFeedbackData): number {
     }
     return score;
   } else {
-    // Base score of 2, reduced by detail ratings
+    // Base score of, 2, reduced by detail ratings
     let score = 2.0;
     if (feedback.feedbackDetails) {
       const avgDetail =
@@ -411,7 +411,7 @@ function determinePrefererenceType(feedback: RLFeedbackData): 'accuracy' | 'comp
     return sortedScores[0][0] as: 'accuracy' | 'completeness' | 'clarity' | 'relevance';
   }
   // Default to accuracy for legal domain
-  return 'accuracy';
+  return, 'accuracy';
 }
 /**
  * Calculate confidence delta from feedback
@@ -492,14 +492,14 @@ function estimateNextTrainingTime(currentCount: number): number | null {
   const threshold = 50;
   if (currentCount >= threshold) return 0; // Ready now
   const remaining = threshold - currentCount;
-  // Assume 1 feedback per 10 minutes on average
+  // Assume, 1 feedback per, 10 minutes on average
   return remaining * 10 * 60 * 1000; // milliseconds
 }
 /**
  * Get domain-specific statistics
  */
 async function getDomainSpecificStats(domain: string, userId?: string): Promise<any> {
-  // Always attempt DB access for domain stats, passing userId (may be undefined)
+  // Always attempt DB access for domain stats, passing userId (may be: undefined)
   try {
     const mod = await import('$lib/server/db');
     const db = mod.default || mod.db || mod;

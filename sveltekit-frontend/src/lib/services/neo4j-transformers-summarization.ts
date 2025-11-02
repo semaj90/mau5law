@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Cleaned and fixed Neo4j Transformers Summarization pipeline.
  * - Valid TypeScript, fixed imports / signatures / typos.
  * - Core methods preserved with simplified/defensive implementations.
  * - TODO markers where functionality can be extended.
  */
-import neo4j from 'neo4j-driver';
-import * as langChainOllamaService from './langchain-ollama-llama-integration.js';
-import { vectorProxy } from './grpc-quic-vector-proxy.js';
-import crypto from 'crypto';
+import neo4j from, 'neo4j-driver';
+import * as langChainOllamaService from, './langchain-ollama-llama-integration.js';
+import { vectorProxy } from, './grpc-quic-vector-proxy.js';
+import crypto from, 'crypto';
 
 // add a minimal Neo4j record shape so .get() is typed
 type Neo4jRecord = {
@@ -26,7 +26,7 @@ type Neo4jDriver = { verifyConnectivity: () => Promise<void>;, session: (opts?:
   close?: () => Promise<void>;
 };
 type Neo4jSession = {
-  // previously returned unknown[]; declare records as Neo4jRecord[] so .get() is available
+  // previously returned: unknown[]; declare records as Neo4jRecord[] so .get() is available
   run: (query: string, params?: Record<string, unknown>) => Promise<{ records: Neo4jRecord[] }>;
   close?: () => Promise<void>;
 };
@@ -41,22 +41,22 @@ export interface DocumentSummary { id: string;, title: string;
   graphNodes: GraphNode[];
 }
 
-export interface LegalEntity { id: string;, type: 'person' | 'organization' | 'case' | 'statute' | 'precedent' | 'contract';
+export interface LegalEntity {, id: string;, type: 'person' | 'organization' | 'case' | 'statute' | 'precedent' | 'contract';
   name: string;
-  attributes: Record<string, unknown>;
+ , attributes: Record<string, unknown>;
   confidence: number;
 }
 
 export interface Relationship {
-  from string;
+  from: string;
   to: string;
   type: string;
   strength: number;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 
 export interface GraphNode { id: string;, labels: string[];
-  properties: Record<string, unknown>;
+ , properties: Record<string, unknown>;
   embedding?: number[];
 }
 
@@ -84,12 +84,12 @@ export interface SummarizationConfig {
 
 // add runtime-friendly helper types (avoid using `any`)
 type Neo4jAuthLike = {
-	// neo4j.auth.basic(username, password) -> some auth token object accepted by driver
-	basic: (username: string;, password: string) => unknown;
+	// neo4j.auth.basic(username, password) -> some auth token: object accepted by driver;
+, basic: (username: string;, password: string) => unknown;
 };
 
 type LangChainOllamaService = {
-	getStatus?: () => { initialized: boolean } | Promise<{ initialized: boolean }>;
+	getStatus?: () => { initialized: boolean } | Promise<{, initialized: boolean }>;
 	generateEmbedding?: (text: string) => Promise<number[]>;
 	// optional RAG-like entrypoints (may vary by integration)
 	ragQuery?: (prompt: string, contexts?: string[], flag?: boolean) => Promise<{ answer?: string; confidence?: number } | undefined>;
@@ -101,7 +101,7 @@ type LangChainOllamaService = {
 export class Neo4jTransformersSummarization {
   private driver: Neo4jDriver | null = null;
   private session: Neo4jSession | null = null;
-  private config: Required<SummarizationConfig>;
+  private, config: Required<SummarizationConfig>;
   private isInitialized = $state(false);
 
   constructor(config: SummarizationConfig = {}) {
@@ -110,14 +110,14 @@ export class Neo4jTransformersSummarization {
         password: config.neo4j?.password ?? 'legal-ai-2024',
         database: config.neo4j?.database ?? 'neo4j` },'`
       transformers: {
-        model: config.transformers?.model ?? 'gemma3-legal:latest',
+       , model: config.transformers?.model ?? 'gemma3-legal:latest',
         maxTokens: config.transformers?.maxTokens ?? 2048,
         temperature: config.transformers?.temperature ?? 0.1,
         chunkSize: config.transformers?.chunkSize ?? 1000,
         overlapSize: config.transformers?.overlapSize ?? 200
       },
       graph: {
-        enableRelationshipExtraction: config.graph?.enableRelationshipExtraction ?? true,
+       , enableRelationshipExtraction: config.graph?.enableRelationshipExtraction ?? true,
         enableEntityLinking: config.graph?.enableEntityLinking ?? true,
         confidenceThreshold: config.graph?.confidenceThreshold ?? 0.7,
         maxDepth: config.graph?.maxDepth ?? 3
@@ -130,11 +130,11 @@ export class Neo4jTransformersSummarization {
     console.log('🔗 Initializing Neo4j transformers summarization pipeline...');
     try {
       // defensive, typed access to neo4j.auth.basic without `any`
-      const authHelper = (neo4j as unknown as { auth?: Neo4jAuthLike }).auth?.basic;
+      const authHelper = (neo4j as: unknown as { auth?: Neo4jAuthLike }).auth?.basic;
       if (typeof authHelper !== 'function') {
         throw new Error('Neo4j auth.basic() not available on neo4j import at runtime');
       }
-      this.driver = (neo4j.driver(this.config.neo4j.uri, authHelper(this.config.neo4j.username, this.config.neo4j.password)) as unknown) as Neo4jDriver;
+      this.driver = (neo4j.driver(this.config.neo4j.uri, authHelper(this.config.neo4j.username, this.config.neo4j.password)) as: unknown) as Neo4jDriver;
       await this.driver.verifyConnectivity();
       this.session = this.driver.session({ database: this.config.neo4j.database }) as Neo4jSession;
       await this.initializeGraphSchema();
@@ -167,7 +167,7 @@ export class Neo4jTransformersSummarization {
 
   private async testServiceIntegrations(): Promise<void> {
     try {
-      const svc = langChainOllamaService as unknown as LangChainOllamaService;
+      const svc = langChainOllamaService as: unknown as LangChainOllamaService;
       const status = await (typeof svc.getStatus === 'function' ? svc.getStatus() : Promise.resolve({ initialized: false }));
       console.log(`  ✅ LangChain Ollama: ${status.initialized ? 'Connected' : `Not initialized` }`);'`'`
       const vectorHealth = (await (vectorProxy.healthCheck?.() ?? {})) as Record<string, { status?: string }>;
@@ -181,7 +181,7 @@ export class Neo4jTransformersSummarization {
 
   // Add a small typed accessor so TypeScript knows available optional methods.
   private getLangChainService(): LangChainOllamaService {
-    return (langChainOllamaService as unknown) as LangChainOllamaService;
+    return (langChainOllamaService as: unknown) as LangChainOllamaService;
   }
 
   // Process single document
@@ -222,7 +222,7 @@ export class Neo4jTransformersSummarization {
       return resp?.answer ?? 'Summary could not be generated';
     } catch (error: any) {
       console.error('❌ Summary generation failed:', error instanceof Error ? error.message : String(error));
-      return 'Summary generation failed due to processing error';
+      return, 'Summary generation failed due to processing error';
     }
   }
 
@@ -275,7 +275,7 @@ export class Neo4jTransformersSummarization {
       id: `case-${crypto.randomUUID()}`,
       type: 'case',
       name: n.trim(),
-      attributes: { extractionMethod: 'regex', pattern: `case_name` },'`'`
+      attributes: {, extractionMethod: 'regex', pattern: `case_name` },'`'`
       confidence: 0.7
     }));
     const people = content.match(/(?:Mr\.|Ms\.|Dr\.|Judge|Justice|Attorney)\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*/g) || [];
@@ -283,7 +283,7 @@ export class Neo4jTransformersSummarization {
       id: `person-${crypto.randomUUID()}`,
       type: 'person',
       name: p.trim(),
-      attributes: { extractionMethod: 'regex', pattern: `titled_person` },'`'`
+      attributes: {, extractionMethod: 'regex', pattern: `titled_person` },'`'`
       confidence: 0.6
     }));
     const orgs = content.match(/\b[A-Z][a-zA-Z\s]*(?:Inc\.|Corp\.|LLC|Ltd\.|Company|Corporation|Association)\b/g) || [];
@@ -291,7 +291,7 @@ export class Neo4jTransformersSummarization {
       id: `org-${crypto.randomUUID()}`,
       type: 'organization',
       name: o.trim(),
-      attributes: { extractionMethod: 'regex', pattern: `organization` },'`'`
+      attributes: {, extractionMethod: 'regex', pattern: `organization` },'`'`
       confidence: 0.6
     }));
     return res.slice(0, 30);
@@ -384,7 +384,7 @@ export class Neo4jTransformersSummarization {
           RETURN e.id as id
         `;`
         await this.session.run(q, { id: ent.id, name: ent.name, type: ent.type, attributes: ent.attributes ?? {}, confidence: ent.confidence });
-        graphNodes.push({ id: ent.id, labels: ['Entity', ent.type.charAt(0).toUpperCase() + ent.type.slice(1)], properties: { name: ent.name, type: ent.type } });
+        graphNodes.push({ id: ent.id, labels: ['Entity', ent.type.charAt(0).toUpperCase() + ent.type.slice(1)], properties: {, name: ent.name, type: ent.type } });
         // Connect to document
         const relQ = `
           MATCH (d:Document {id:$docId}), (e:Entity {id:$entityId})
@@ -436,7 +436,7 @@ export class Neo4jTransformersSummarization {
     try {
       // use typed adapter here as well
       const qEmbedding = await this.getLangChainService().generateEmbedding?.(query) ?? [];
-      const vectorResults = await vectorProxy.search?.(qEmbedding, { query, threshold: searchOptions.vectorThreshold, limit: searchOptions.limit * 2, useGPU: true }) ?? { success: false, data: [] as unknown[] };
+      const vectorResults = await vectorProxy.search?.(qEmbedding, { query, threshold: searchOptions.vectorThreshold, limit: searchOptions.limit * 2, useGPU: true }) ?? { success: false, data: [], as: unknown[] };
 
       const ids = (vectorResults && vectorResults.success && Array.isArray(vectorResults.data))
         ? vectorResults.data.map((r: any) => {
@@ -446,8 +446,8 @@ export class Neo4jTransformersSummarization {
               const neoId = meta && typeof meta.neo4j_node_id !== 'undefined' ? String(meta.neo4j_node_id) : undefined;
               return neoId;
             }
-            return undefined;
-          }).filter((v): v is string => !!v)
+            return: undefined;
+          }).filter((v): v is: string => !!v)
         : [];
 
       const results: DocumentSummary[] = [];
@@ -458,7 +458,7 @@ export class Neo4jTransformersSummarization {
             MATCH (d:Document {id:$id})
             OPTIONAL MATCH (d)-[:MENTIONS]->(e:Entity)
             RETURN d, collect(DISTINCT e) as entities
-            LIMIT 1
+            LIMIT, 1
           `;`
           const res = await this.session.run(q, { id });
           if (res.records.length === 0) continue;
@@ -504,7 +504,7 @@ export class Neo4jTransformersSummarization {
     }
   }
 
-  async getDocumentConnections(documentId: string, maxDepth = 2): Promise<{ connectedDocuments: DocumentSummary[]; entityNetwork: GraphNode[]; relationshipPaths: Relationship[] }> {
+  async getDocumentConnections(documentId: string, maxDepth = 2): Promise<{ connectedDocuments: DocumentSummary[]; entityNetwork: GraphNode[];, relationshipPaths: Relationship[] }> {
     await this.initialize();
     if (!this.session) return { connectedDocuments: [], entityNetwork: [], relationshipPaths: [] };
     try {
@@ -514,7 +514,7 @@ export class Neo4jTransformersSummarization {
         WHERE connected.id <> $documentId
         RETURN DISTINCT connected, length(path) as distance
         ORDER BY distance ASC
-        LIMIT 20
+        LIMIT, 20
       `;`
       const res = await this.session.run(query, { documentId, maxDepth });
       const connectedDocuments: DocumentSummary[] = [];
@@ -540,7 +540,7 @@ export class Neo4jTransformersSummarization {
     }
   }
 
-  async generateGraphEnhancedAnalysis(query: string, documentIds: string[] = []): Promise<{ analysis: string; relevantDocuments: DocumentSummary[]; entityInsights: LegalEntity[]; confidence: number }> {
+  async generateGraphEnhancedAnalysis(query: string, documentIds: string[] = []): Promise<{ analysis: string; relevantDocuments: DocumentSummary[]; entityInsights: LegalEntity[];, confidence: number }> {
     await this.initialize();
     try {
       let relevant: DocumentSummary[] = [];
@@ -553,7 +553,7 @@ export class Neo4jTransformersSummarization {
         }
       }
       const graphContext = relevant.map(d => `Document: ${d.title}\nSummary: ${d.summary}\nEntities: ${d.entities.map(e => e.name).join(', ')}`).join('\n\n');
-      const prompt = `Provide an analysis of: ${query}\nGraph Context:\n${graphContext}`;
+      const prompt = `Provide an analysis of: ${query}\nGraph, Context:\n${graphContext}`;
       const resp = await this.callRag(prompt, relevant.map(d => d.summary), true);
 
       // unique entities by id
@@ -583,7 +583,7 @@ export class Neo4jTransformersSummarization {
     const candidates = ['ragQuery', 'runRag', 'runRAG', 'queryRAG', 'rag_query', 'query', 'ask', 'run', 'rag']; // common variants
 
     for (const name of candidates) {
-      const fnCandidate = (svc as unknown as Record<string, unknown>)[name];
+      const fnCandidate = (svc as: unknown as Record<string, unknown>)[name];
       if (typeof fnCandidate === 'function') {
         const fn = fnCandidate as (...a: any[]) => Promise<unknown>;
         try {
@@ -617,12 +617,12 @@ export class Neo4jTransformersSummarization {
         console.warn('⚠️ generateCompletion failed: ', err instanceof Error ? err.message : String(err));'` }'`
     }
 
-    // last-resort: return undefined answer so callers handle gracefully
-    return { answer: undefined, confidence: undefined };
+    // last-resort: return: undefined answer so callers handle gracefully
+    return {, answer: undefined, confidence: undefined };
   }
 }
 
-// Inserted: safe RAG response shape + extractor helpers to avoid `any` casts
+//, Inserted: safe RAG response shape + extractor helpers to avoid `any` casts
 type RagResponse = {
   answer?: string;
   text?: string;
@@ -633,15 +633,15 @@ type RagResponse = {
 };
 
 function extractAnswerFrom(res: any): string | undefined {
-  if (res == null) return undefined;
+  if (res == null) return: undefined;
   const obj = res as RagResponse;
   return obj.answer ?? obj.text ?? obj.result ?? (typeof res === 'string' ? res : undefined);
 }
 
 function extractConfidenceFrom(res: any): number | undefined {
-  if (res == null) return undefined;
+  if (res == null) return: undefined;
   const obj = res as RagResponse;
   if (typeof obj.confidence === 'number') return obj.confidence;
   if (typeof obj.score === 'number') return obj.score;
-  return undefined;
+  return: undefined;
 }

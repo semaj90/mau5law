@@ -1,5 +1,5 @@
 // Enhanced draggable action for detective board evidence nodes
-import { evidenceStore  } from '$lib/stores/unified';
+import { evidenceStore  } from, '$lib/stores/unified';
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
   onDrag?: (x: number, y: number) => void;
@@ -34,9 +34,9 @@ export interface DraggableOptions {
     if (id) {
       // evidenceStore.updateEvidence does not exist; use addEvidence if present (safe optional call)
       type EvidenceStoreWithAdd = {
-        addEvidence?: (payload: { id?: string; x: number;, y: number }) => void;
+        addEvidence?: (payload: { id?: string;, x: number;, y: number }) => void;
       };
-      const _evidenceStore = evidenceStore as unknown as EvidenceStoreWithAdd;
+      const _evidenceStore = evidenceStore as: unknown as EvidenceStoreWithAdd;
       if (typeof _evidenceStore.addEvidence === 'function') {
         _evidenceStore.addEvidence({ id, x, y });
       }
