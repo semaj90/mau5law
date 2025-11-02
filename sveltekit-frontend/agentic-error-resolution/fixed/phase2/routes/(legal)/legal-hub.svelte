@@ -34,12 +34,7 @@
   }
 
   // Legal system statistics - Svelte 5 $state
-  const legalStats: LegalStats = {
-    activeCases: 23,
-    documentsAnalyzed: 1847,
-    citationsFound: 542,
-    complianceScore: 96.2,
-  };
+  const legalStats: LegalStats = { activeCases: 23, documentsAnalyzed: 1847, citationsFound: 542, complianceScore: 96.2 };
 
   // Legal services - corrected and well-formed
   const legalServices: LegalService[] = [

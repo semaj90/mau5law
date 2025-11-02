@@ -130,18 +130,10 @@
       console.log(`✅ ${testName} completed in ${duration.toFixed(2)}ms`);
     } catch (error) {
       console.error(`❌ ${testType} test failed:`, error);
-      const testResult = {
-        type: testType
-        name: testType.charAt.toUpperCase() + testType.slice(1),
-        query: testQuery
-        response: '',
-        duration: performance.now() - startTime,
-        timestamp: new Date().toLocaleTimeString(),
-        success: false
-        error: error instanceof Error ? error.message: String(error),
-        metrics: ,
-        acceleration: 'failed',
-      }
+      const testResult = { type: testType
+        name: testType.charAt.toUpperCase() + testType.slice(1), query: testQuery
+        response: '', duration: performance.now() - startTime, timestamp: new Date().toLocaleTimeString(), success: false
+        error: error instanceof Error ? error.message: String(error), metrics:, acceleration: 'failed' }
       testResults = [testResult, ...testResults];
     }
   }
@@ -149,12 +141,8 @@
     if (localAIStatus !== 'available') {
       throw new Error('Browser-local AI not available');
     }
-    const result = await browserLocalAI.generateText({
-      prompt: testQuery
-      maxTokens: 256,
-      temperature: 0.3,
-      systemPrompt: 'You are a legal AI assistant specialized in contract analysis.',
-    });
+    const result = await browserLocalAI.generateText({ prompt: testQuery
+      maxTokens: 256, temperature: 0.3, systemPrompt: 'You are a legal AI assistant specialized in contract analysis.' });
     const capabilities = browserLocalAI.getCapabilities();
     return {
       text: result.text,
@@ -171,19 +159,9 @@
     if (cudaServiceStatus !== 'available') {
       throw new Error('CUDA service not available');
     }
-    const result = await cudaServiceWorker.generateText({
-      model: 'gemma3-legal-latest',
-      prompt: testQuery
-      maxTokens: 512,
-      temperature: 0.2,
-      systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.',
-      priority: 'high',
-      legalContext: {
-        jurisdiction: 'general',
-        practiceArea: 'contract_law',
-        documentType: 'employment_contract',
-        confidentiality: 'attorney-client',
-      }
+    const result = await cudaServiceWorker.generateText({ model: 'gemma3-legal-latest', prompt: testQuery
+      maxTokens: 512, temperature: 0.2, systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.', priority: 'high', legalContext: {
+        jurisdiction: 'general', practiceArea: 'contract_law', documentType: 'employment_contract', confidentiality: 'attorney-client' }
     });
     const gpuMetrics = await cudaServiceWorker.getMetrics();
     return {
@@ -424,7 +402,7 @@
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {#each Object.entries(performanceMetrics) as [type, metrics]}
+          {#each Object.entries(performanceMetrics) as [type metrics]}
             <div class="p-3 bg-gray-50 rounded border">
               <h4 class="font-medium text-sm mb-2 capitalize">{type} AI</h4>
               <div class="text-xs space-y-1">

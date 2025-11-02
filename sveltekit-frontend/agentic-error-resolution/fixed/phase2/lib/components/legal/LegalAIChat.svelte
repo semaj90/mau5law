@@ -54,18 +54,8 @@
         })
       });
       const data = await response.json();
-      if (data.success) {
-        const newQuery: LegalQuery = {
-          id: data.result.query_id,
-          prompt,
-          response: data.result.response,
-          model_used: data.result.model_used,
-          tokens: data.result.tokens,
-          inference_time: data.result.inference_time,
-          total_time: data.result.total_time,
-          similar_documents_found: data.result.similar_documents_found,
-          timestamp: new Date(),
-        }
+      if (data.success) { const newQuery: LegalQuery = {
+          id: data.result.query_id, prompt, response: data.result.response, model_used: data.result.model_used, tokens: data.result.tokens, inference_time: data.result.inference_time, total_time: data.result.total_time, similar_documents_found: data.result.similar_documents_found, timestamp: new Date() }
         queries = [newQuery, ...queries];
         currentResponse = newQuery;
         // Clear form

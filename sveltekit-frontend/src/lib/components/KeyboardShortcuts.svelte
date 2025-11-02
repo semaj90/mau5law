@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte, code: Event attribute must be a JavaScript expression, not, a, string -->
-<script, lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
@@ -92,22 +92,22 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
 </script>
 {#if showShortcuts}
-  <div class="mx-auto, px-4, max-w-7xl" role="dialog" aria-modal="true">
-    <div class="mx-auto, px-4, max-w-7xl">
-      <p class="mx-auto, px-4, max-w-7xl">
+  <div class="mx-auto px-4" role="dialog" aria-modal="true">
+    <div class="mx-auto px-4">
+      <p class="mx-auto px-4">
         💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
       </p>
-      <ul, class="mt-4, space-y-2">
+      <ul class="mt-4">
         {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
-          <li class="flex items-center justify-between p-2, bg-gray-800, rounded">
+          <li class="flex items-center justify-between p-2 bg-gray-800">
             <div>
-              <div, class="font-medium, text-white">{s.description}</div>
-              <div, class="text-sm, text-gray-400">
-                <kbd, class="shortcut-key">{s.key}</kbd>
+              <div class="font-medium">{s.description}</div>
+              <div class="text-sm">
+                <kbd class="shortcut-key">{s.key}</kbd>
               </div>
             </div>
             <div>
-              <Button, size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
+              <Button size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
                 Test
               </Button>
             </div>
@@ -117,9 +117,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </div>
   {/if}
 <!-- Floating, Action, Buttons -->
-<div class="mx-auto px-4, max-w-7xl, floating-actions">
+<div class="mx-auto px-4 max-w-7xl">
   <!-- Accessibility, Panel, Toggle -->
-  <Tooltip, content="Accessibility, panel (Ctrl+Alt+A)" placement="left">
+  <Tooltip content="Accessibility, panel (Ctrl+Alt+A)" placement="left">
     <Button
       variant="ghost"
       size="sm"
@@ -131,7 +131,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </Button>
   </Tooltip>
   <!-- Keyboard, Shortcuts, Toggle -->
-  <Tooltip, content="Keyboard, shortcuts (Ctrl+H)" placement="left">
+  <Tooltip content="Keyboard, shortcuts (Ctrl+H)" placement="left">
     <Button
       variant="ghost"
       size="sm"
@@ -160,7 +160,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   </Tooltip>
 </div>
 <!-- Accessibility, Panel -->
-<AccessibilityPanel, bind:showPanel={showAccessibilityPanel} />
+<AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
 <style>
   :global(.floating-actions) {
     transition: all 0.3s ease;

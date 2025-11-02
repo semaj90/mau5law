@@ -26,14 +26,7 @@ https://svelte.dev/e/js_parse_error -->
   const isEditDialogOpen = writable(false);
 
   // Form state
-  const formData = writable<Partial<CaseData>>({
-    title: '',
-    description: '',
-    priority: 'medium',
-    status: 'open',
-    location: '',
-    incidentDate: '',
-  });
+  const formData = writable<Partial<CaseData>>({ title: '', description: '', priority: 'medium', status: 'open', location: '', incidentDate: '' });
 
   // Priority options
   const priorityOptions = [
@@ -109,16 +102,9 @@ https://svelte.dev/e/js_parse_error -->
     error.set('');
     try {
       const response: ApiResponse = await ((legalPlatformClient as any).createCase?.(data as CaseData) as any) ?? { success: false, error: 'createCase not implemented' };
-      if (response.success) {
-        isCreateDialogOpen.set(false);
+      if (response.success) { isCreateDialogOpen.set(false);
         formData.set({
-          title: '',
-          description: '',
-          priority: 'medium',
-          status: 'open',
-          location: '',
-          incidentDate: '',
-        });
+          title: '', description: '', priority: 'medium', status: 'open', location: '', incidentDate: '' });
         await loadCases();
       } else {
         error.set(response.error || 'Failed to create case');
@@ -173,16 +159,9 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Open edit dialog
-  function openEditDialog(caseData: CaseData) {
-    selectedCase.set(caseData);
+  function openEditDialog(caseData: CaseData) { selectedCase.set(caseData);
     formData.set({
-      title: caseData.title,
-      description: caseData.description || '',
-      priority: caseData.priority || 'medium',
-      status: caseData.status || 'open',
-      location: caseData.location || '',
-      incidentDate: caseData.incidentDate || '',
-    });
+      title: caseData.title, description: caseData.description || '', priority: caseData.priority || 'medium', status: caseData.status || 'open', location: caseData.location || '', incidentDate: caseData.incidentDate || '' });
     isEditDialogOpen.set(true);
   }
 

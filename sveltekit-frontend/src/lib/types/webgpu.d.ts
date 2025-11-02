@@ -11,7 +11,7 @@ export interface WebGPUComputeContext { device: WebGPUDevice; commandEncoder, GP
 export interface WebGPUPerformanceMetrics { computeTime: number; memoryTransferTime, number; totalExecutionTime: number; throughput: number; efficiency: number; }
 export interface WebGPULegalProcessor { processDocument(_document, string), Promise<WebGPUProcessingResult>; extractEntities(text, string): Promise<WebGPUEntityResult[]>; calculateSimilarity(text1, string, text2: string): Promise<number>; generateEmbeddings(text, string): Promise<Float32Array>; }
 export interface WebGPUProcessingResult { success: boolean; processedText, string; metadata: Record<string, unknown>; performanceMetrics: WebGPUPerformanceMetrics; }
-export interface WebGPUEntityResult { entity: string; type, string; confidence: number; position: [number, number]; }
+export interface WebGPUEntityResult { entity: string; type, string; confidence: number; position: [number: number]; }
 export interface WebGPUVectorEngine { computeSimilarity(vector1, Float32Array, vector2: Float32Array), Promise<number>; batchProcess(vectors, Float32Array[]): Promise<Float32Array[]>; normalize(vector, Float32Array): Promise<Float32Array>; reduce(vectors, Float32Array[], operation: 'mean' | 'sum' | 'max'): Promise<Float32Array>; }
 export interface WebGPUConfiguration { deviceType: 'high-performance' | 'low-power' | 'fallback'; memoryLimit, number; enableDebug: boolean; enableProfiling: boolean; shaderOptimization: 'none' | 'basic' | 'aggressive'; }
 export interface WebGPUCapabilities { supportsCompute: boolean; supportsTimestampQuery, boolean; maxComputeWorkgroupsPerDimension: number; maxComputeInvocationsPerWorkgroup: number; maxBufferSize: number; maxTextureSize: number; }

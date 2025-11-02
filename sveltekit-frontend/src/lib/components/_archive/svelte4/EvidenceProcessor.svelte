@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { createActor } from 'xstate';
@@ -151,27 +151,27 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 // Enhanced Evidence Processing Component
 
-<div class="evidence-processor border rounded-lg p-6, bg-white, shadow-sm">
+<div class="evidence-processor border rounded-lg p-6 bg-white">
   <!-- Header -->
-  <div class="flex items-center, justify-between, mb-4">
-    <div class="flex, items-center, space-x-3">
-      <div class="flex, items-center, space-x-2">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center">
+      <div class="flex items-center">
         {#if isConnected}
-          <div class="w-3 h-3 bg-green-500, rounded-full, animate-pulse" title="Connected"></div>
+          <div class="w-3 h-3 bg-green-500 rounded-full" title="Connected"></div>
         {:else}
-          <div class="w-3 h-3, bg-red-500, rounded-full" title="Disconnected"></div>
+          <div class="w-3 h-3 bg-red-500" title="Disconnected"></div>
         {/if}
-        <h3, class="text-lg, font-semibold">Evidence Processing</h3>
+        <h3 class="text-lg">Evidence Processing</h3>
       </div>
       {#if isProcessing}
-        <div class="flex, items-center, space-x-2">
-          <div class="animate-spin rounded-full h-4 w-4, border-b-2, border-blue-600"></div>
-          <span, class="text-sm, text-blue-600">Processing...</span>
+        <div class="flex items-center">
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2"></div>
+          <span class="text-sm">Processing...</span>
         </div>
       {/if}
     </div>
     <!-- Action, Buttons -->
-    <div class="flex, items-center, space-x-2">
+    <div class="flex items-center">
       {#if currentState === 'idle'}
         <button
           onclick={startProcessing}
@@ -191,26 +191,26 @@ https://svelte.dev/e/js_parse_error -->
       {#if hasError}
         <button
           onclick={retry}
-          class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500, focus:ring-offset-2"
+          class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
         >
           Retry
         </button>
       {/if}
       <button
         onclick={() => (showDetails = !showDetails)}
-        class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500, focus:ring-offset-2"
+        class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
       >
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
   </div>
   <!-- Progress, Overview -->
-  <div, class="mb-6">
-    <div class="flex items-center, justify-between, mb-2">
-      <span class="text-sm, font-medium, text-gray-700">Overall Progress</span>
-      <span, class="text-sm, text-gray-600">{overallProgress}%</span>
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium">Overall Progress</span>
+      <span class="text-sm">{overallProgress}%</span>
     </div>
-    <div class="w-full bg-gray-200, rounded-full, h-2">
+    <div class="w-full bg-gray-200 rounded-full">
       <div
         class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
         style="width: {overallProgress}%"
@@ -219,14 +219,14 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- Current, Step, Info -->
   {#if fileProgress.step}
-    <div class="mb-4 p-4 bg-blue-50 rounded-lg, border, border-blue-200">
-      <div class="flex, items-center, space-x-3">
-        <span, class="text-2xl">{getStepIcon(fileProgress.step)}</span>
-        <div, class="flex-1">
-          <h4 class="font-medium, text-blue-900, capitalize">{fileProgress.step}</h4>
-          <div class="flex items-center, space-x-4, mt-1">
-            <div, class="flex-1">
-              <div class="w-full bg-blue-200, rounded-full, h-1.5">
+    <div class="mb-4 p-4 bg-blue-50 rounded-lg border">
+      <div class="flex items-center">
+        <span class="text-2xl">{getStepIcon(fileProgress.step)}</span>
+        <div class="flex-1">
+          <h4 class="font-medium text-blue-900">{fileProgress.step}</h4>
+          <div class="flex items-center space-x-4">
+            <div class="flex-1">
+              <div class="w-full bg-blue-200 rounded-full">
                 <div
                   class="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
                   style="width: {fileProgress.stepProgress || 0}%"
@@ -239,9 +239,9 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Show fragment data, if, available -->
       {#if fileProgress.fragment}
-        <div class="mt-3 p-3 bg-white, rounded, border">
-          <h5 class="text-sm font-medium, text-gray-700, mb-1">Live Update:</h5>
-          <div class="text-sm, text-gray-600, font-mono">
+        <div class="mt-3 p-3 bg-white rounded">
+          <h5 class="text-sm font-medium text-gray-700">Live Update:</h5>
+          <div class="text-sm text-gray-600">
             {formatFragment(fileProgress.fragment)}
           </div>
         </div>
@@ -250,28 +250,28 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Error, Display -->
   {#if hasError}
-    <div class="mb-4 p-4 bg-red-50 rounded-lg, border, border-red-200">
-      <div class="flex, items-center, space-x-2">
-        <span, class="text-red-500">❌</span>
-        <h4, class="font-medium, text-red-900">Error</h4>
+    <div class="mb-4 p-4 bg-red-50 rounded-lg border">
+      <div class="flex items-center">
+        <span class="text-red-500">❌</span>
+        <h4 class="font-medium">Error</h4>
       </div>
-      <p, class="text-red-700, mt-1">
+      <p class="text-red-700">
         {fileProgress.error || context.lastError || 'An: unknown error occurred'}
       </p>
     </div>
   {/if}
   <!-- Success, Display -->
   {#if isComplete}
-    <div class="mb-4 p-4 bg-green-50 rounded-lg, border, border-green-200">
-      <div class="flex, items-center, space-x-2">
-        <span, class="text-green-500">✅</span>
-        <h4, class="font-medium, text-green-900">Processing Complete</h4>
+    <div class="mb-4 p-4 bg-green-50 rounded-lg border">
+      <div class="flex items-center">
+        <span class="text-green-500">✅</span>
+        <h4 class="font-medium">Processing Complete</h4>
       </div>
-      <p, class="text-green-700, mt-1">Evidence has been successfully processed through all steps.</p>
+      <p class="text-green-700">Evidence has been successfully processed through all steps.</p>
       {#if fileProgress.result}
-        <details, class="mt-3">
-          <summary class="cursor-pointer, text-green-800, font-medium">View Results</summary>
-          <pre class="mt-2 p-3 bg-white rounded border, text-sm, overflow-auto">
+        <details class="mt-3">
+          <summary class="cursor-pointer text-green-800">View Results</summary>
+          <pre class="mt-2 p-3 bg-white rounded border text-sm">
 {JSON.stringify(fileProgress.result, null, 2)}
           </pre>
         </details>
@@ -280,12 +280,12 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Detailed, Information, Panel -->
   {#if showDetails}
-    <div, class="border-t, pt-4">
-      <div, class="space-y-4">
+    <div class="border-t">
+      <div class="space-y-4">
         <!-- Processing, Steps -->
         <div>
-          <h4 class="font-medium, text-gray-900, mb-3">Processing Steps</h4>
-          <div, class="space-y-2">
+          <h4 class="font-medium text-gray-900">Processing Steps</h4>
+          <div class="space-y-2">
             {#each steps as step, index}
               {@const isCurrentStep = fileProgress.step === step}
               {@const isCompleted = steps.indexOf(fileProgress.step || '') > index}
@@ -296,8 +296,8 @@ https://svelte.dev/e/js_parse_error -->
                     ? 'bg-green-50 border border-green-200'
                     : 'bg-gray-50'}"
               >
-                <span, class="text-xl">{getStepIcon(step)}</span>
-                <div, class="flex-1">
+                <span class="text-xl">{getStepIcon(step)}</span>
+                <div class="flex-1">
                   <div
                     class="font-medium capitalize" {isCurrentStep
                       ? 'text-blue-900'
@@ -308,20 +308,20 @@ https://svelte.dev/e/js_parse_error -->
                     {step}
                   </div>
                   {#if isCurrentStep && fileProgress.stepProgress}
-                    <div, class="text-sm, text-blue-600">{fileProgress.stepProgress}% complete</div>
+                    <div class="text-sm">{fileProgress.stepProgress}% complete</div>
                   {:else if isCompleted}
-                    <div, class="text-sm, text-green-600">Completed</div>
+                    <div class="text-sm">Completed</div>
                   {:else}
-                    <div, class="text-sm, text-gray-500">Pending</div>
+                    <div class="text-sm">Pending</div>
                   {/if}
                 </div>
-                <div class="w-6 h-6 rounded-full flex, items-center, justify-center">
+                <div class="w-6 h-6 rounded-full flex items-center">
                   {#if isCompleted}
-                    <span, class="text-green-600">✓</span>
+                    <span class="text-green-600">✓</span>
                   {:else if isCurrentStep}
-                    <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent, rounded-full, animate-spin"></div>
+                    <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                   {:else}
-                    <div class="w-2 h-2, bg-gray-300, rounded-full"></div>
+                    <div class="w-2 h-2 bg-gray-300"></div>
                   {/if}
                 </div>
               </div>
@@ -330,14 +330,14 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Connection, Status -->
         <div>
-          <h4 class="font-medium, text-gray-900, mb-2">Connection Status</h4>
-          <div class="flex, items-center, space-x-2">
-            <div class="w-3, h-3, rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
-            <span, class="text-sm {isConnected ? 'text-green-700' : 'text-red-700'}">
+          <h4 class="font-medium text-gray-900">Connection Status</h4>
+          <div class="flex items-center">
+            <div class="w-3 h-3"></div>
+            <span class="text-sm {isConnected ? 'text-green-700' : 'text-red-700'}">
               {isConnected ? 'Connected to real-time updates' : 'Disconnected'}
             </span>
           </div>
-          <div class="text-sm, text-gray-600, mt-1">
+          <div class="text-sm text-gray-600">
             State: {String(currentState)}
             {#if context.sessionId}
               | Session: {context.sessionId.substring(0, 8)}...
@@ -349,17 +349,17 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Processing, Logs -->
         <div>
-          <div class="flex items-center, justify-between, mb-2">
-            <h4, class="font-medium, text-gray-900">Processing Logs</h4>
-            <button, onclick={() => (showLogs = !showLogs)} class="text-sm text-blue-600 hover:text-blue-800">
+          <div class="flex items-center justify-between">
+            <h4 class="font-medium">Processing Logs</h4>
+            <button onclick={() => (showLogs = !showLogs)} class="text-sm text-blue-600 hover:text-blue-800">
               {showLogs ? 'Hide' : 'Show'} Logs
             </button>
           </div>
           {#if showLogs}
-            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm, max-h-64, overflow-y-auto">
+            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64">
               {#each Array.isArray(processingLogs) ? processingLogs : [] as log}
-                <div class="flex items-start, space-x-2, mb-1">
-                  <span, class="text-gray-500">[{log.timestamp}]</span>
+                <div class="flex items-start space-x-2">
+                  <span class="text-gray-500">[{log.timestamp}]</span>
                   <span
                     class="flex-1" {log.type === 'error'
                       ? 'text-red-400'
@@ -372,13 +372,13 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/each}
               {#if processingLogs.length === 0}
-                <div, class="text-gray-500, italic">No logs yet...</div>
+                <div class="text-gray-500">No logs yet...</div>
               {/if}
             </div>
           {/if}
         </div>
         <!-- Reset, Button -->
-        <div, class="pt-4, border-t">
+        <div class="pt-4">
           <button
             onclick={reset}
             class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"

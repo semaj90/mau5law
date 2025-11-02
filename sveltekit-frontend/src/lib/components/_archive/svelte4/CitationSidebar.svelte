@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Replace problematic import/namespace usage with a local type alias
   import type { Citation } from '$lib/types/api';
@@ -80,34 +80,34 @@ import type { Case } from '$lib/types';
   }
 </script>
 
-<div class="container, mx-auto, px-4">
-  <div class="container, mx-auto, px-4">
-    <h2 class="container, mx-auto, px-4">Saved Citations</h2>
-    <p class="container, mx-auto, px-4">
+<div class="container mx-auto">
+  <div class="container mx-auto">
+    <h2 class="container mx-auto">Saved Citations</h2>
+    <p class="container mx-auto">
       {filteredCitations.length} of {(citations ?? []).length} citations
     </p>
   </div>
   <!-- Search, and, Filters -->
-  <div class="container, mx-auto, px-4">
-    <div class="container, mx-auto, px-4">
-      <Search class="container, mx-auto, px-4" />
-      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="container, mx-auto, px-4" />
+  <div class="container mx-auto">
+    <div class="container mx-auto">
+      <Search class="container mx-auto" />
+      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="container mx-auto" />
     </div>
-    <select bind:value={selectedCategory} class="container, mx-auto, px-4">
+    <select bind:value={selectedCategory} class="container mx-auto">
       {#each Array.isArray(categories) ? categories : [] as category}
-        <option, value={category.value}>{category.label}</option>
+        <option value={category.value}>{category.label}</option>
       {/each}
     </select>
   </div>
 
   <!-- Citations, List -->
-  <div class="container, mx-auto, px-4">
+  <div class="container mx-auto">
     {#each filteredCitations as citation (citation.id)}
-      <div class="container mx-auto px-4, nes-container, citation-card" onclick={() => selectCitation(citation)}>
-        <div class="container mx-auto, px-4, citation-content">
-          <div, class="citation-header">
-            <h3, class="citation-title">{citation.title}</h3>
-            <div, class="citation-actions" aria-hidden="true">
+      <div class="container mx-auto px-4 nes-container" onclick={() => selectCitation(citation)}>
+        <div class="container mx-auto px-4">
+          <div class="citation-header">
+            <h3 class="citation-title">{citation.title}</h3>
+            <div class="citation-actions" aria-hidden="true">
               <!-- Favorite: native button (removed, invalid, props) -->
               <button
                 class="bits-btn favorite-btn"
@@ -142,19 +142,19 @@ import type { Case } from '$lib/types';
             </div>
           </div>
 
-          <div, class="citation-body">
-            <p, class="citation-text">{citation.content}</p>
-            <p, class="citation-source">Source: {citation.source}</p>
+          <div class="citation-body">
+            <p class="citation-text">{citation.content}</p>
+            <p class="citation-source">Source: {citation.source}</p>
             {#if citation.notes}
-              <p, class="citation-notes">Notes: {citation.notes}</p>
+              <p class="citation-notes">Notes: {citation.notes}</p>
             {/if}
           </div>
 
           <!-- Tags -->
           {#if (citation.tags ?? []).length > 0}
-            <div, class="citation-tags">
+            <div class="citation-tags">
               {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
-                <span, class="category-badge">{tag}</span>
+                <span class="category-badge">{tag}</span>
               {/each}
             </div>
           {/if}
@@ -174,30 +174,30 @@ import type { Case } from '$lib/types';
             }}
             title="Drag to insert into report"
           >
-            <div, class="drag-indicator">
-              <div, class="drag-line"></div>
-              <div, class="drag-line"></div>
-              <div, class="drag-line"></div>
+            <div class="drag-indicator">
+              <div class="drag-line"></div>
+              <div class="drag-line"></div>
+              <div class="drag-line"></div>
             </div>
-            <span, class="drag-text">Drag to report</span>
+            <span class="drag-text">Drag to report</span>
           </div>
 
-          <div, class="citation-meta">
-            <span, class="saved-date">
+          <div class="citation-meta">
+            <span class="saved-date">
               {#if citation.savedAt}
                 Saved {new Date(citation.savedAt).toLocaleDateString()}
               {/if}
             </span>
-            <span class="px-2 py-1 rounded text-xs font-medium, bg-gray-200, text-gray-700">{citation.category}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{citation.category}</span>
           </div>
         </div>
       </div>
     {/each}
 
     {#if filteredCitations.length === 0}
-      <div class="container mx-auto, px-4, empty-state">
+      <div class="container mx-auto px-4">
         {#if searchQuery || selectedCategory !== 'all'}
-          <p, class="empty-message">No citations match your search criteria.</p>
+          <p class="empty-message">No citations match your search criteria.</p>
           <button
             class="bits-btn"
             size="sm"
@@ -209,8 +209,8 @@ import type { Case } from '$lib/types';
             Clear filters
           </button>
         {:else}
-          <p, class="empty-message">No saved citations yet.</p>
-          <p, class="empty-submessage">
+          <p class="empty-message">No saved citations yet.</p>
+          <p class="empty-submessage">
             Right-click on text in reports to save citations, or add them from the search results.
           </p>
         {/if}

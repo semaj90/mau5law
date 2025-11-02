@@ -8,11 +8,7 @@
     onError?: (error: Error, errorInfo?: any) => void;
   }
   // Use a single $props() destructure (runes mode disallows multiple calls)
-  let {
-    fallback,
-    onError,
-    children,
-  }: { fallback?: any; onError?: (error: Error, errorInfo?: any) => void; children?: Snippet } =
+  let { fallback, onError, children }: { fallback?: any; onError?: (error: Error, errorInfo?: any) => void; children?: Snippet } =
     $props() as any;
   // Create snippet-typed aliases for rendering
   const fallbackSnippet: Snippet | undefined = fallback as unknown as Snippet | undefined;
@@ -21,16 +17,8 @@
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
   // Error logging
-  function logError(err: Error, context?: any) {
-    const errorData = {
-      id: errorId,
-      message: err.message,
-      stack: err.stack,
-      url: globalThis.location?.pathname,
-      timestamp: new Date().toISOString(),
-      userAgent: globalThis.navigator?.userAgent,
-      context,
-    };
+  function logError(err: Error, context?: any) { const errorData = {
+      id: errorId, message: err.message, stack: err.stack, url: globalThis.location?.pathname, timestamp: new Date().toISOString(), userAgent: globalThis.navigator?.userAgent, context };
     console.error('YoRHa Error Boundary:', errorData);
     // In production, send to error tracking service
     // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorData) })

@@ -10,7 +10,7 @@ mcp<script lang="ts">
   import { onMount  } from "svelte";
   // Events now handled via props in Svelte 5
   //
-  let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string, HTMLElement>());
+  let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string HTMLElement>());
   let isVisible = $state(false);
   let maxVisible = $state(5);
   let position = $state<| "top-right"
@@ -45,8 +45,7 @@ mcp<script lang="ts">
     FocusManager.announceToScreenReader.type === "error" ? "assertive" : "polite"
     );
   }
-  function playNotificationSound(type: Notification["type"]) {
-    if (!enableSounds) return;
+  function playNotificationSound(type: Notification["type"]) { if (!enableSounds) return;
     // Create audio context for accessibility-friendly sound feedback
     try {
       const audioContext = new (window.AudioContext ||
@@ -57,11 +56,7 @@ mcp<script lang="ts">
       gainNode.connect(audioContext.destination);
       // Different frequencies for different notification types
       const frequencies = {
-        success: 800,
-        error: 400,
-        warning: 600,
-        info: 500,
-      }
+        success: 800, error: 400, warning: 600, info: 500 }
       oscillator.frequency.setValueAtTime(
         frequencies[type],
         audioContext.currentTime
@@ -387,15 +382,12 @@ dismissAll()}
     outline-offset: 2px;
 }
   /* Screen reader only content */
-  .sr-only {
-    position: absolute;
+  .sr-only { position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0,
-    margin: -1px;
+    padding: 0, margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0,
-}
+    border: 0 }
 </style>

@@ -85,13 +85,7 @@
   let userId = $state('mock-user-id');
 
   // Use the LocalSystemStatus type so `gpu` is allowed and avoid type mismatch
-  let systemStatus = $state<LocalSystemStatus>({
-    gpu: false,
-    ollama: false,
-    enhancedRAG: false,
-    postgres: false,
-    neo4j: false,
-  });
+  let systemStatus = $state<LocalSystemStatus>({ gpu: false, ollama: false, enhancedRAG: false, postgres: false, neo4j: false });
 
   // Props from SvelteKit's load function using runes
   let { data } = $props<{ data: { user?: { id: string } | null } }>();
@@ -129,12 +123,7 @@
   // User Activity Timeline State
   let userActivityTimeline = $state<UserActivity[]>([]);
   let activityLoading = $state(false);
-  let focusMetrics = $state<FocusMetrics>({
-    sessionsToday: 0,
-    totalTime: 0,
-    casesAnalyzed: 0,
-    evidenceReviewed: 0,
-  });
+  let focusMetrics = $state<FocusMetrics>({ sessionsToday: 0, totalTime: 0, casesAnalyzed: 0, evidenceReviewed: 0 });
 
   async function checkSystemStatus(): Promise<void> {
     try {
@@ -144,15 +133,8 @@
       }
       // avoid shadowing top-level `data` prop
       const healthData = await res.json();
-      systemStatus = {
-        gpu: healthData?.services?.gpu === 'accelerated',
-        ollama: healthData?.services?.ollama === 'healthy',
-        enhancedRAG: healthData?.services?.enhancedRAG === 'running',
-        postgres: healthData?.services?.postgres === 'connected',
-        neo4j: healthData?.services?.neo4j === 'active',
-      };
-    } catch (e: any) {
-      console.error('Health check error:', e);
+      systemStatus = { gpu: healthData?.services?.gpu === 'accelerated', ollama: healthData?.services?.ollama === 'healthy', enhancedRAG: healthData?.services?.enhancedRAG === 'running', postgres: healthData?.services?.postgres === 'connected', neo4j: healthData?.services?.neo4j === 'active' };
+    } catch (e: any) { console.error('Health check error:', e);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
@@ -162,58 +144,34 @@
       setTimeout(() => notice.remove(), 3000);
       // Set mock system status
       systemStatus = {
-        gpu: false,
-        ollama: false,
-        enhancedRAG: false,
-        postgres: false,
-        neo4j: false,
-      };
+        gpu: false, ollama: false, enhancedRAG: false, postgres: false, neo4j: false };
       error = 'System health check failed - using mock status';
     }
   }
 
-  async function sendMessage(): Promise<void> {
-    if (!currentMessage.trim() || isStreaming) return;
+  async function sendMessage(): Promise<void> { if (!currentMessage.trim() || isStreaming) return;
 
     const userMessage: LocalChatMessage = {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date(),
-    };
+      id: crypto.randomUUID(), role: 'user', content: currentMessage, timestamp: new Date() };
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
     currentMessage = '';
     isStreaming = true;
     error = '';
 
-    try {
-      // removed unused EventSource usage (was causing unnecessary connection)
+    try { // removed unused EventSource usage (was causing unnecessary connection)
       // Send message data via POST and stream the response body
       const initResponse = await fetch('/api/ai/chat-sse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: messageToSend,
-          model: 'gemma3-legal:latest',
-          conversationId,
-          userId,
-          useRAG: true,
-        }),
+        method: 'POST', headers: {
+          'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: messageToSend, model: 'gemma3-legal:latest', conversationId, userId, useRAG: true }),
       });
 
       if (!initResponse.ok) {
         throw new Error(`HTTP ${initResponse.status}`);
       }
 
-      const aiMessage: LocalChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: '',
-        timestamp: new Date(),
-      };
+      const aiMessage: LocalChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date() };
       messages = [...messages, aiMessage];
 
       // Handle fetch streaming response body
@@ -354,8 +312,7 @@
         throw new Error(`Evidence reports API failed: ${response.status}`);
       }
       evidenceReports = await response.json();
-    } catch (e) {
-      console.error('Failed to load evidence reports:', e);
+    } catch (e) { console.error('Failed to load evidence reports:', e);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
@@ -366,21 +323,8 @@
       // Set mock evidence reports
       evidenceReports = [
         {
-          id: 'mock-evidence-001',
-          title: 'Mock Police Report - Employment Dispute',
-          type: 'police_report',
-          date: '2024-01-15',
-          content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
-          confidence: 0.85,
-        },
-        {
-          id: 'mock-evidence-002',
-          title: 'Mock Witness Statement - Contract Violation',
-          type: 'witness_statement',
-          date: '2024-01-16',
-          content: 'Mock evidence: Witness account of contract negotiation meeting.',
-          confidence: 0.92,
-        },
+          id: 'mock-evidence-001', title: 'Mock Police Report - Employment Dispute', type: 'police_report', date: '2024-01-15', content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.', confidence: 0.85 },
+        { id: 'mock-evidence-002', title: 'Mock Witness Statement - Contract Violation', type: 'witness_statement', date: '2024-01-16', content: 'Mock evidence: Witness account of contract negotiation meeting.', confidence: 0.92 },
       ];
     }
   }
@@ -395,26 +339,14 @@
       const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidenceReports: evidenceReports,
-          analysisType: 'semantic_entity_extraction',
-          includeTimeline: true,
-        }),
+        body: JSON.stringify({ evidenceReports: evidenceReports, analysisType: 'semantic_entity_extraction', includeTimeline: true }),
       });
-      if (ragResponse.ok) {
-        ragAnalysisResults = (await ragResponse.json()) as RagAnalysisResponse;
+      if (ragResponse.ok) { ragAnalysisResults = (await ragResponse.json()) as RagAnalysisResponse;
         // Extract POI timeline data from semantic analysis
         poiTimelineData =
           ragAnalysisResults?.persons?.map(
             (person: RagPerson): POI => ({
-              id: person.id,
-              name: person.name,
-              type: person.type || 'person',
-              activities: person.timeline || [],
-              confidence: person.confidence || 0.8,
-              evidenceSources: person.sources || [],
-              relationships: person.relationships || [],
-            })
+              id: person.id, name: person.name, type: person.type || 'person', activities: person.timeline || [], confidence: person.confidence || 0.8, evidenceSources: person.sources || [], relationships: person.relationships || [] })
           ) || [];
         showTimeline = true;
       }
@@ -426,19 +358,14 @@
     }
   }
 
-  async function generateUserActivityTimeline(): Promise<void> {
-    activityLoading = true;
+  async function generateUserActivityTimeline(): Promise<void> { activityLoading = true;
     try {
       const response = await fetch('/api/v1/user/activity'); // Declared: 'response' here
       if (response.ok) {
         const data = await response.json();
         userActivityTimeline = data.timeline || [];
         focusMetrics = {
-          sessionsToday: data.metrics?.sessionsToday || 0,
-          totalTime: data.metrics?.totalTime || 0,
-          casesAnalyzed: data.metrics?.casesAnalyzed || 0,
-          evidenceReviewed: data.metrics?.evidenceReviewed || 0,
-        };
+          sessionsToday: data.metrics?.sessionsToday || 0, totalTime: data.metrics?.totalTime || 0, casesAnalyzed: data.metrics?.casesAnalyzed || 0, evidenceReviewed: data.metrics?.evidenceReviewed || 0 };
       }
     } catch (e) {
       console.error('Failed to generate user activity timeline:', e);

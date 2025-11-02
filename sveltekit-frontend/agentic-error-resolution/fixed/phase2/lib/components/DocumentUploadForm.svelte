@@ -39,8 +39,8 @@
   // Local state variables
   let dragActive = $state(false);
   let fileInput: HTMLInputElement | null = null;
-  let uploadProgress: Record<string, number> = {};
-  let processingErrors: Record<string, string> = {};
+  let uploadProgress: Record<string number> = {};
+  let processingErrors: Record<string string> = {};
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [

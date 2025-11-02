@@ -72,14 +72,8 @@ and AI-powered verification features.
       closeWebSocketConnection();
     };
   });
-  function startWorkflow() {
-    custodyActor.send({
-      type: 'START_CUSTODY_WORKFLOW',
-      evidenceId,
-      caseId,
-      userId,
-      originalHash,
-    } as EvidenceCustodyEvent);
+  function startWorkflow() { custodyActor.send({
+      type: 'START_CUSTODY_WORKFLOW', evidenceId, caseId, userId, originalHash } as EvidenceCustodyEvent);
   }
   function retryWorkflow() {
     custodyActor.send({ type: 'RETRY' } as EvidenceCustodyEvent);
@@ -98,30 +92,19 @@ and AI-powered verification features.
       custodyActor.send({ type: 'REJECT_CUSTODY', reason } as EvidenceCustodyEvent);
     }
   }
-  function startCustodyTransfer() {
-    if (transferReason.trim()) {
+  function startCustodyTransfer() { if (transferReason.trim()) {
       custodyActor.send({
-        type: 'TRANSFER_CUSTODY',
-        newCustodian: userId,
-        reason: transferReason,
-      } as EvidenceCustodyEvent);
+        type: 'TRANSFER_CUSTODY', newCustodian: userId, reason: transferReason } as EvidenceCustodyEvent);
       showTransferDialog = $state(false);
       transferReason = '';
     }
   }
-  function joinCollaboration() {
-    custodyActor.send({
-      type: 'JOIN_COLLABORATION',
-      userId,
-      role: 'investigator',
-    } as EvidenceCustodyEvent);
+  function joinCollaboration() { custodyActor.send({
+      type: 'JOIN_COLLABORATION', userId, role: 'investigator' } as EvidenceCustodyEvent);
     isCollaborationExpanded = true;
   }
-  function leaveCollaboration() {
-    custodyActor.send({
-      type: 'LEAVE_COLLABORATION',
-      userId,
-    } as EvidenceCustodyEvent);
+  function leaveCollaboration() { custodyActor.send({
+      type: 'LEAVE_COLLABORATION', userId } as EvidenceCustodyEvent);
   }
   function setupWebSocketConnection() {
     try {
@@ -388,13 +371,9 @@ showTransferDialog = true} variant="ghost">
           {userId}
           {evidenceId}
           {wsConnection}
-          onAddAnnotation={(content, position) => {
+          onAddAnnotation={ (content, position) => {
             custodyActor.send({
-              type: 'ADD_ANNOTATION',
-              userId,
-              content,
-              position,
-            });
+              type: 'ADD_ANNOTATION', userId, content, position });
           }}
         />
       {/if}

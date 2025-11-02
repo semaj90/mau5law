@@ -12,11 +12,7 @@
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
   // Props
-  let { placeholder = 'Search laws, cases, and legal documents...',
-    maxResults = 10,
-    showCategories = true,
-    compact = false,
-   }: { placeholder = 'Search laws, cases, and legal documents...',
+  let { placeholder = 'Search laws, cases, and legal documents...', maxResults = 10, showCategories = true, compact = false }: { placeholder = 'Search laws, cases, and legal documents...',
     maxResults = 10,
     showCategories = true,
     compact = false,
@@ -90,25 +86,12 @@
     }
     return highlightedText;
   }
-  function getCategoryColor(category: string): string {
-    const colors: Record<string, string> = {
-      criminal: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-      civil: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      contract: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      evidence: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      corporate: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      constitutional: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      family: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
-      administrative: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
-    }
+  function getCategoryColor(category: string): string { const colors: Record<string string> = {
+      criminal: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200', civil: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', contract: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', evidence: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200', corporate: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200', constitutional: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', family: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200', administrative: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200' }
     return colors[category] || colors.administrativ;
   }
-  function getJurisdictionColor(jurisdiction string): string {
-    const colors: Record<string, string> = {
-      california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      state: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    }
+  function getJurisdictionColor(jurisdiction string): string { const colors: Record<string string> = {
+      california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200', federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', state: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' }
     return colors[jurisdiction] || colors.stat;
   }
   function getConfidenceLabel(score?: number): string {

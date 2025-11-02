@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { Dialog } from 'bits-ui';
   // Props are defined as $props() rune, no import needed
   import type { Snippet } from 'svelte';

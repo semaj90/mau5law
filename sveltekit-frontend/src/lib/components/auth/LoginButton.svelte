@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // LoginButton component - Svelte, 5 with bits-ui Button
   import * as unified from '$lib/stores/unified';
   const authStore: any =
@@ -52,13 +52,13 @@
 </script>
 
 {#if authStore && authStore.isAuthenticated}
-  <div class="flex, items-center, gap-3 {className}">
+  <div class="flex items-center">
     {#if showUserInfo && authStore.user}
-      <div class="flex flex-col, items-end, text-sm">
-        <span class="font-medium, text-gray-700, dark:text-gray-100">
+      <div class="flex flex-col items-end">
+        <span class="font-medium text-gray-700">
           {authStore.user.name || authStore.user.email}
         </span>
-        <span class="text-xs text-gray-500, dark:text-gray-400, capitalize">
+        <span class="text-xs text-gray-500 dark:text-gray-400">
           {authStore.user.role}
         </span>
       </div>

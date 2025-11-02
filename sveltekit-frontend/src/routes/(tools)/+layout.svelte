@@ -1,5 +1,5 @@
 <!-- Tools & Utilities Layout - Legal AI Development Tools -->
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';
 
@@ -22,37 +22,37 @@
   ];
 </script>
 
-<div, class="tools-layout">
+<div class="tools-layout">
   <!-- Tools, Header -->
-  <header, class="tools-header">
-    <div, class="tools-brand">
-      <span, class="tools-icon">🛠️</span>
-      <h1, class="tools-title">Legal AI Tools</h1>
+  <header class="tools-header">
+    <div class="tools-brand">
+      <span class="tools-icon">🛠️</span>
+      <h1 class="tools-title">Legal AI Tools</h1>
       <span class="tools-badge">Utilities & Development</span>
     </div>
 
     <!-- Tools, Navigation -->
-    <nav, class="tools-nav">
+    <nav class="tools-nav">
       {#each Array.isArray(toolsRoutes) ? toolsRoutes : [] as route}
         <a
           href={route.href}
           class="tools-nav-item"
           class:active={$page.url.pathname === route.href || $page.url.pathname.startsWith(route.href + '/')}
         >
-          <span, class="tools-nav-icon">{route.icon}</span>
-          <span, class="tools-nav-text">{route.name}</span>
+          <span class="tools-nav-icon">{route.icon}</span>
+          <span class="tools-nav-text">{route.name}</span>
         </a>
       {/each}
     </nav>
   </header>
 
   <!-- Tools, Content -->
-  <main, class="tools-content">
-    <div, class="tools-container">
+  <main class="tools-content">
+    <div class="tools-container">
       {#if children}
         {@render children()}
       {:else}
-        <div, class="tools-placeholder">
+        <div class="tools-placeholder">
           <h2>🛠️ Development Tools</h2>
           <p>Select a tool from the navigation above to get started.</p>
         </div>
@@ -61,15 +61,15 @@
   </main>
 
   <!-- Tools, Footer -->
-  <footer, class="tools-footer">
-    <div, class="tools-footer-content">
-      <div, class="tools-info">
-        <span, class="tools-current">Current: <strong>{$page.url.pathname}</strong></span>
-        <span, class="tools-separator">•</span>
+  <footer class="tools-footer">
+    <div class="tools-footer-content">
+      <div class="tools-info">
+        <span class="tools-current">Current: <strong>{$page.url.pathname}</strong></span>
+        <span class="tools-separator">•</span>
         <span class="tools-tech">Development & Utility Tools</span>
       </div>
-      <div, class="tools-controls">
-        <a, href="/" class="tools-main-btn">← Main App</a>
+      <div class="tools-controls">
+        <a href="/" class="tools-main-btn">← Main App</a>
       </div>
     </div>
   </footer>

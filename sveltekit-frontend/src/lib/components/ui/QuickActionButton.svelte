@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { getOllamaGenerateEndpoint } from '$lib/utils/ollama';
   import { browser } from '$app/environment';
   interface Props {
@@ -62,7 +62,7 @@
   {/if}
 </button>
 {#if errorMessage}
-  <p class="nes-text, is-error, mt-2">{errorMessage}</p>
+  <p class="nes-text is-error">{errorMessage}</p>
 {/if}
 <style>
   /* @unocss-include */

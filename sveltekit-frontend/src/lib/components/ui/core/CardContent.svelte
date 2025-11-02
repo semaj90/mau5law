@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   interface Props {
@@ -8,7 +8,7 @@
   let { class: className = '', children }: Props = $props();
   let classes = $derived(`card-content-ssr ${className} space-y-4`.trim());
 </script>
-<div, class="card-content-ssr {classes}">
+<div class="card-content-ssr {classes}">
   {#if children}
     <slot />
   {/if}

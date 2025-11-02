@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -60,31 +60,31 @@ import type { Document } from '$lib/types';
 </svelte:head>
 
 <!-- Hero, Section -->
-<section, class="space-y-4, hero-section">
-  <div, class="space-y-4">
-    <div, class="space-y-4">
-      <h1, class="space-y-4">
-        <Typewriter, text={heroText} speed={100} />
+<section class="space-y-4">
+  <div class="space-y-4">
+    <div class="space-y-4">
+      <h1 class="space-y-4">
+        <Typewriter text={heroText} speed={100} />
       </h1>
-      <p, class="space-y-4, line-clamp-3">
+      <p class="space-y-4">
         Harness the power of AI to analyze evidence, build stronger cases, and streamline your prosecution workflow
       </p>
-      <div, class="space-y-4">
-        <a, href="/cases" class="space-y-4"> View Cases </a>
-        <a, href="/upload" class="space-y-4"> Upload Evidence </a>
+      <div class="space-y-4">
+        <a href="/cases" class="space-y-4"> View Cases </a>
+        <a href="/upload" class="space-y-4"> Upload Evidence </a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Quick, Actions, Section -->
-<section, class="space-y-4">
-  <div, class="space-y-4">
-    <h2, class="space-y-4">Quick Actions</h2>
-    <div, class="space-y-4">
+<section class="space-y-4">
+  <div class="space-y-4">
+    <h2 class="space-y-4">Quick Actions</h2>
+    <div class="space-y-4">
       <!-- AI, Search -->
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
@@ -94,21 +94,21 @@ import type { Document } from '$lib/types';
             />
           </svg>
         </div>
-        <h3, class="space-y-4">AI-Powered Search</h3>
-        <p, class="space-y-4">Search through cases and evidence using natural language queries</p>
-        <div, class="space-y-4">
+        <h3 class="space-y-4">AI-Powered Search</h3>
+        <p class="space-y-4">Search through cases and evidence using natural language queries</p>
+        <div class="space-y-4">
           <input
             id="aiSearchInput"
             type="text"
             placeholder="Search cases, evidence, or legal precedents..."
             class="space-y-4"
           />
-          <button, id="aiSearchBtn" class="space-y-4"> Search </button>
+          <button id="aiSearchBtn" class="space-y-4"> Search </button>
         </div>
       </div>
       <!-- Quick, Upload -->
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
@@ -118,13 +118,13 @@ import type { Document } from '$lib/types';
             />
           </svg>
         </div>
-        <h3, class="space-y-4">Quick Evidence Upload</h3>
-        <p, class="space-y-4">Drag and drop files for instant AI analysis</p>
-        <UploadArea, upload={handleQuickUpload} />
+        <h3 class="space-y-4">Quick Evidence Upload</h3>
+        <p class="space-y-4">Drag and drop files for instant AI analysis</p>
+        <UploadArea upload={handleQuickUpload} />
       </div>
       <!-- Case, Analytics -->
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
@@ -134,9 +134,9 @@ import type { Document } from '$lib/types';
             />
           </svg>
         </div>
-        <h3, class="space-y-4">Case Analytics</h3>
-        <p, class="space-y-4">View insights and patterns across your cases</p>
-  <a, href="/ai/dashboard" class="space-y-4"> View Dashboard </a>
+        <h3 class="space-y-4">Case Analytics</h3>
+        <p class="space-y-4">View insights and patterns across your cases</p>
+  <a href="/ai/dashboard" class="space-y-4"> View Dashboard </a>
       </div>
     </div>
   </div>
@@ -144,39 +144,39 @@ import type { Document } from '$lib/types';
 
 <!-- Recent, Cases, Section -->
 {#if recentCases && recentCases.length > 0}
-  <section, class="space-y-4">
-    <div, class="space-y-4">
-      <h2, class="space-y-4">Recent Cases</h2>
-      <div, class="space-y-4">
+  <section class="space-y-4">
+    <div class="space-y-4">
+      <h2 class="space-y-4">Recent Cases</h2>
+      <div class="space-y-4">
         {#each Array.isArray(recentCases.slice(0, 6)) ? recentCases.slice(0, 6) : [] as caseItem}
-          <div, class="space-y-4">
-            <div, class="space-y-4">
-              <h3, class="space-y-4">{caseItem.title}</h3>
+          <div class="space-y-4">
+            <div class="space-y-4">
+              <h3 class="space-y-4">{caseItem.title}</h3>
               <span class="space-y-4">{caseItem.status || 'Active'}</span>
             </div>
             <p class="space-y-4 line-clamp-3">{caseItem.description || 'No description available'}</p>
-            <div, class="space-y-4">
+            <div class="space-y-4">
               <span>Case #{caseItem.id}</span>
               <span>{new Date(caseItem.createdAt).toLocaleDateString()}</span>
             </div>
-            <a, href="/cases/{caseItem.id}" class="space-y-4"> View Details → </a>
+            <a href="/cases/{caseItem.id}" class="space-y-4"> View Details → </a>
           </div>
         {/each}
       </div>
-      <div, class="space-y-4">
-        <a, href="/cases" class="space-y-4"> View All Cases </a>
+      <div class="space-y-4">
+        <a href="/cases" class="space-y-4"> View All Cases </a>
       </div>
     </div>
   </section>
 {/if}
 
 <!-- Features, Section -->
-<section, class="space-y-4">
-  <div, class="space-y-4">
-    <h2, class="space-y-4">Powerful Features</h2>
-    <div, class="space-y-4">
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+<section class="space-y-4">
+  <div class="space-y-4">
+    <h2 class="space-y-4">Powerful Features</h2>
+    <div class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
@@ -186,11 +186,11 @@ import type { Document } from '$lib/types';
             />
           </svg>
         </div>
-        <h3, class="space-y-4">Document Analysis</h3>
-        <p, class="space-y-4">AI-powered analysis of legal documents and evidence</p>
+        <h3 class="space-y-4">Document Analysis</h3>
+        <p class="space-y-4">AI-powered analysis of legal documents and evidence</p>
       </div>
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
@@ -200,20 +200,20 @@ import type { Document } from '$lib/types';
             />
           </svg>
         </div>
-        <h3, class="space-y-4">Case Tracking</h3>
-        <p, class="space-y-4">Comprehensive case management and progress tracking</p>
+        <h3 class="space-y-4">Case Tracking</h3>
+        <p class="space-y-4">Comprehensive case management and progress tracking</p>
       </div>
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13, 10V3L4, 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <h3, class="space-y-4">Smart Insights</h3>
-        <p, class="space-y-4">Generate insights and recommendations from case data</p>
+        <h3 class="space-y-4">Smart Insights</h3>
+        <p class="space-y-4">Generate insights and recommendations from case data</p>
       </div>
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
@@ -224,7 +224,7 @@ import type { Document } from '$lib/types';
           </svg>
         </div>
         <h3 class="space-y-4">Secure & Private</h3>
-        <p, class="space-y-4">Bank-level security for sensitive legal information</p>
+        <p class="space-y-4">Bank-level security for sensitive legal information</p>
       </div>
     </div>
   </div>

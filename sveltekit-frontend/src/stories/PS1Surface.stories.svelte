@@ -1,7 +1,7 @@
-<script, lang="ts">
+<script lang="ts">
 	// updated imports & typed animation id
 	import { onMount, onDestroy } from 'svelte';
-	import, '../lib/components/yorha/ps1.css';
+	import '../lib/components/yorha/ps1.css';
 	let container;
 	let surfaceType = $state<string>('wireframe');
 	let animationSpeed = $state<number>(1);
@@ -49,7 +49,7 @@
 		lastFrameTime: 0
 	});
 	let vertices: any[] = [];
-	let, faces: any[] = [];
+	let faces: any[] = [];
 	$effect(() => {
 		generateSurfaceMesh();
 		startRenderLoop();
@@ -189,16 +189,16 @@
 		generateSurfaceMesh();
 	});
 </script>
-<div, class="ps1-surface-container" bind:this={container}>
-	<div, class="story-header, ps1-scanlines">
-		<h1, class="ps1-text-glow">PS1 Surface Rendering</h1>
-		<p, class="ps1-subtitle">Low-poly surfaces with PS1-era graphics limitations</p>
+<div class="ps1-surface-container" bind:this={container}>
+	<div class="story-header">
+		<h1 class="ps1-text-glow">PS1 Surface Rendering</h1>
+		<p class="ps1-subtitle">Low-poly surfaces with PS1-era graphics limitations</p>
 	</div>
-	<div, class="controls-panel, ps1-border">
+	<div class="controls-panel">
 		<h3>Surface Controls</h3>
-		<div, class="surface-type-selector">
+		<div class="surface-type-selector">
 			<label>Surface Type:</label>
-			<div, class="surface-buttons">
+			<div class="surface-buttons">
 				{#each Array.isArray(surfaceConfigs) ? surfaceConfigs : [] as config}
 					<button
 						class="ps1-button surface-btn {surfaceType === config.id ? 'active' : ''}"
@@ -210,8 +210,8 @@
 				{/each}
 			</div>
 		</div>
-		<div, class="control-row">
-			<label, for="polygonCount">Polygon Count:</label>
+		<div class="control-row">
+			<label for="polygonCount">Polygon Count:</label>
 			<input
 				id="polygonCount"
 				type="range"
@@ -221,10 +221,10 @@
 				step="50"
 				class="ps1-slider"
 			/>
-			<span, class="value">{polygonCount}</span>
+			<span class="value">{polygonCount}</span>
 		</div>
-		<div, class="control-row">
-			<label, for="vertexPrecision">Vertex Precision:</label>
+		<div class="control-row">
+			<label for="vertexPrecision">Vertex Precision:</label>
 			<input
 				id="vertexPrecision"
 				type="range"
@@ -234,10 +234,10 @@
 				step="1"
 				class="ps1-slider"
 			/>
-			<span, class="value">{vertexPrecision}px</span>
+			<span class="value">{vertexPrecision}px</span>
 		</div>
-		<div, class="control-row">
-			<label, for="animationSpeed">Animation Speed:</label>
+		<div class="control-row">
+			<label for="animationSpeed">Animation Speed:</label>
 			<input
 				id="animationSpeed"
 				type="range"
@@ -247,10 +247,10 @@
 				step="0.1"
 				class="ps1-slider"
 			/>
-			<span, class="value">{animationSpeed.toFixed(1)}x</span>
+			<span class="value">{animationSpeed.toFixed(1)}x</span>
 		</div>
-		<div, class="checkbox-row">
-			<label, class="checkbox-label">
+		<div class="checkbox-row">
+			<label class="checkbox-label">
 				<input
 					type="checkbox"
 					bind:checked={enableZBuffer}
@@ -259,8 +259,8 @@
 				Z-Buffer (Depth Testing)
 			</label>
 		</div>
-		<div, class="checkbox-row">
-			<label, class="checkbox-label">
+		<div class="checkbox-row">
+			<label class="checkbox-label">
 				<input
 					type="checkbox"
 					bind:checked={enableBackfaceCulling}
@@ -269,8 +269,8 @@
 				Backface Culling
 			</label>
 		</div>
-		<div, class="checkbox-row">
-			<label, class="checkbox-label">
+		<div class="checkbox-row">
+			<label class="checkbox-label">
 				<input
 					type="checkbox"
 					bind:checked={enableDithering}
@@ -279,40 +279,40 @@
 				PS1 Dithering
 			</label>
 		</div>
-		<div, class="button-row">
-			<button, class="ps1-button" onclick={resetSurface}>Regenerate</button>
-			<button, class="ps1-button" onclick={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
+		<div class="button-row">
+			<button class="ps1-button" onclick={resetSurface}>Regenerate</button>
+			<button class="ps1-button" onclick={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
 				{animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
 			</button>
 		</div>
-		<div, class="status-panel, ps1-panel">
+		<div class="status-panel">
 			<h4>=� Rendering Stats</h4>
-			<div, class="status-item">Vertices: {vertices.length}</div>
-			<div, class="status-item">Triangles: {faces.length}</div>
-			<div, class="status-item">Vertex Ops/Frame: {perfMetrics.vertexOperations}</div>
-			<div, class="status-item">Fill Rate: {perfMetrics.fillRate.toFixed(1)}K/s</div>
-			<div, class="status-item">Frame Time: {perfMetrics.frameTime.toFixed(1)}ms</div>
+			<div class="status-item">Vertices: {vertices.length}</div>
+			<div class="status-item">Triangles: {faces.length}</div>
+			<div class="status-item">Vertex Ops/Frame: {perfMetrics.vertexOperations}</div>
+			<div class="status-item">Fill Rate: {perfMetrics.fillRate.toFixed(1)}K/s</div>
+			<div class="status-item">Frame Time: {perfMetrics.frameTime.toFixed(1)}ms</div>
 		</div>
 	</div>
-	<div, class="surface-viewport, ps1-3d-scene {surfaceConfigs.find(c => c.id === surfaceType)?.className}">
-		<div, class="surface-grid {enableDithering ? 'ps1-dithered' : ''}">
+	<div class="surface-viewport">
+		<div class="surface-grid {enableDithering ? 'ps1-dithered' : ''}">
 			<!-- Background, Grid -->
-			<div, class="grid-background"></div>
+			<div class="grid-background"></div>
 			<!-- 3D, Surface, Visualization -->
-			<div, class="surface-mesh">
+			<div class="surface-mesh">
 				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
 					<div
 						class="surface-polygon {lightingModel}"
 						style={faceStyle(face, i)}
 					>
 						<!-- Triangle, visualization -->
-						<div, class="triangle-face"></div>
+						<div class="triangle-face"></div>
 					</div>
 				{/each}
 			</div>
 			<!-- PS1-style, artifacts -->
 			{#if surfaceType === 'wireframe'}
-				<div, class="wireframe-overlay">
+				<div class="wireframe-overlay">
 					{#each Array(50) as _, i}
 						<div
 							class="wire-segment"
@@ -328,7 +328,7 @@
 			{/if}
 			<!-- Vertex markers, for, debugging -->
 			{#if surfaceType === 'vertex'}
-				<div, class="vertex-markers">
+				<div class="vertex-markers">
 					{#each vertices.slice(0, Math.min(vertices.length, 200)) as vertex, i}
 						<div
 							class="vertex-point"
@@ -344,26 +344,26 @@
 			{/if}
 		</div>
 		<!-- PS1, HUD, overlay -->
-		<div, class="hud-overlay">
-			<div, class="hud-corner, top-left">
-				<div, class="hud-text">SURFACE</div>
-				<div, class="hud-value">{surfaceType.toUpperCase()}</div>
+		<div class="hud-overlay">
+			<div class="hud-corner">
+				<div class="hud-text">SURFACE</div>
+				<div class="hud-value">{surfaceType.toUpperCase()}</div>
 			</div>
-			<div, class="hud-corner, top-right">
-				<div, class="hud-text">POLYS</div>
-				<div, class="hud-value">{perfMetrics.polygonsPerFrame}</div>
+			<div class="hud-corner">
+				<div class="hud-text">POLYS</div>
+				<div class="hud-value">{perfMetrics.polygonsPerFrame}</div>
 			</div>
-			<div, class="hud-corner, bottom-left">
-				<div, class="hud-text">Z-BUF</div>
-				<div, class="hud-value, status-{enableZBuffer ? 'ok' : 'off'}">{enableZBuffer ? 'ON' : 'OFF'}</div>
+			<div class="hud-corner">
+				<div class="hud-text">Z-BUF</div>
+				<div class="hud-value">{enableZBuffer ? 'ON' : 'OFF'}</div>
 			</div>
-			<div, class="hud-corner, bottom-right">
-				<div, class="hud-text">PREC</div>
-				<div, class="hud-value">{vertexPrecision}BIT</div>
+			<div class="hud-corner">
+				<div class="hud-text">PREC</div>
+				<div class="hud-value">{vertexPrecision}BIT</div>
 			</div>
 		</div>
 	</div>
-	<div, class="info-panel, ps1-terminal">
+	<div class="info-panel">
 		<h4>PS1 Surface Rendering Features</h4>
 		<p>This demo showcases PlayStation, 1 era 3D surface rendering techniques: </p>
 		<h5>Wireframe Mode:</h5>

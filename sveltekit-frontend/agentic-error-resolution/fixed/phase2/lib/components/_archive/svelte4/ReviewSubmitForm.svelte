@@ -22,41 +22,16 @@ https://svelte.dev/e/js_parse_error -->
   let currentSubmissionStep = writable('');
   // Quality assessment criteria
   const qualityCriteria = [
-    {
-      id: 'case_info',
-      label: 'Case Information Complete',
-      description: 'Title, client, case type, and description provided',
-      weight: 20,
-    },
-    {
-      id: 'documents',
-      label: 'Documents Uploaded & Processed',
-      description: 'At least one document uploaded and OCR completed',
-      weight: 25,
-    },
-    {
-      id: 'evidence',
-      label: 'Evidence Analysis Complete',
-      description: 'Key facts and legal issues identified',
-      weight: 25,
-    },
-    {
-      id: 'ai_analysis',
-      label: 'AI Analysis Generated',
-      description: 'Case strength and recommendations provided',
-      weight: 20,
-    },
-    {
-      id: 'review',
-      label: 'Final Review Completed',
-      description: 'All sections reviewed and quality checked',
-      weight: 10,
-    }
+    { id: 'case_info', label: 'Case Information Complete', description: 'Title, client, case type and description provided', weight: 20 },
+    { id: 'documents', label: 'Documents Uploaded & Processed', description: 'At least one document uploaded and OCR completed', weight: 25 },
+    { id: 'evidence', label: 'Evidence Analysis Complete', description: 'Key facts and legal issues identified', weight: 25 },
+    { id: 'ai_analysis', label: 'AI Analysis Generated', description: 'Case strength and recommendations provided', weight: 20 },
+    { id: 'review', label: 'Final Review Completed', description: 'All sections reviewed and quality checked', weight: 10 }
   ];
-  let sectionScores = writable<Record<string, number>( );
+  let sectionScores = writable<Record<string number>( );
   function calculateQualityScore() {
     let totalScore = 0;
-    const scores: Record<string, number> = {}
+    const scores: Record<string number> = {}
     qualityCriteria.forEach(criterion => {
       let score = 0;
       switch (criterion.id) {
@@ -107,8 +82,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     isSubmitting = true;
     submissionProgress.set(0);
-    try {
-      // Step 1: Validate data
+    try { // Step 1: Validate data
       currentSubmissionStep.set('Validating case data...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       submissionProgress.set(20);
@@ -131,11 +105,9 @@ https://svelte.dev/e/js_parse_error -->
       currentSubmissionStep.set('Case submitted successfully!');
       // Emit success event
       onSubmit?.({
-        step: 'review',
-        data: formData
+        step: 'review', data: formData
         allData: allFormData;
-        success: true,
-      });
+        success: true });
     } catch (error) {
       console.error('Submission failed:', error);
       alert('Submission failed. Please try again.');

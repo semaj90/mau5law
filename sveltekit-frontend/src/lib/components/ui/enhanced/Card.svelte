@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import type { HTMLAttributes } from 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -21,7 +21,7 @@
   		className
   	].filter(Boolean).join(' '));
 </script>
-<div, class={cardClasses} {...props}>
+<div class={cardClasses} {...props}>
   <slot />
 </div>
 <style>

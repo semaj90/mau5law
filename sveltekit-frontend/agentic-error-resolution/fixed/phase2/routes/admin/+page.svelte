@@ -4,42 +4,10 @@
   import Button from '$lib/components/ui/Button.svelte';
   import  Badge  from "$lib/components/ui/badge.svelte";
   // Icons
-  import {
-    Users,
-    Activity,
-    Database,
-    Cpu,
-    HardDrive,
-    Shield,
-    BarChart3,
-    Clock,
-    CheckCircle,
-    AlertTriangle,
-    RefreshCw,
-    Zap,
-    Server,
-    Network,
-    Monitor,
-  } from 'lucide-svelte';
+  import { Users, Activity, Database, Cpu, HardDrive, Shield, BarChart3, Clock, CheckCircle, AlertTriangle, RefreshCw, Zap, Server, Network, Monitor } from 'lucide-svelte';
   // Svelte 5 runes
-  let systemStats = $state({
-    totalUsers: 0,
-    activeUsers: 0,
-    totalCases: 0,
-    activeCases: 0,
-    totalDocuments: 0,
-    processedDocuments: 0,
-    aiAnalyses: 0,
-    uptime: '0d 0h 0m',
-  });
-  let systemHealth = $state({
-    database: true,
-    redis: true,
-    aiService: true,
-    fileSystem: true,
-    gpu: false,
-    vectorSearch: true,
-  });
+  let systemStats = $state({ totalUsers: 0, activeUsers: 0, totalCases: 0, activeCases: 0, totalDocuments: 0, processedDocuments: 0, aiAnalyses: 0, uptime: '0d 0h 0m' });
+  let systemHealth = $state({ database: true, redis: true, aiService: true, fileSystem: true, gpu: false, vectorSearch: true });
   let recentActivity = $state([]);
   let isLoading = $state(true);
   let lastUpdated = $state(new Date());
@@ -59,18 +27,9 @@
       if (response.ok) {
         const data = await response.json();
         systemStats = data;
-      } else {
-        // Mock data for demo
+      } else { // Mock data for demo
         systemStats = {
-          totalUsers: 47,
-          activeUsers: 12,
-          totalCases: 156,
-          activeCases: 23,
-          totalDocuments: 1847,
-          processedDocuments: 1523,
-          aiAnalyses: 3421,
-          uptime: '2d 14h 32m',
-        };
+          totalUsers: 47, activeUsers: 12, totalCases: 156, activeCases: 23, totalDocuments: 1847, processedDocuments: 1523, aiAnalyses: 3421, uptime: '2d 14h 32m' };
       }
     } catch (error) {
       console.error('Failed to load system stats:', error);
@@ -95,33 +54,12 @@
       if (response.ok) {
         const data = await response.json();
         recentActivity = data.activities || [];
-      } else {
-        // Mock recent activity
+      } else { // Mock recent activity
         recentActivity = [
           {
-            id: 1,
-            type: 'case_created',
-            user: 'john.doe@law.com',
-            description: 'Created new case Smith v. Johnson',
-            timestamp: new Date(Date.now() - 300000).toISOString(),
-            status: 'success',
-          },
-          {
-            id: 2,
-            type: 'ai_analysis',
-            user: 'jane.smith@law.com',
-            description: 'Completed AI analysis on contract dispute',
-            timestamp: new Date(Date.now() - 900000).toISOString(),
-            status: 'success',
-          },
-          {
-            id: 3,
-            type: 'user_login',
-            user: 'admin@legal-ai.com',
-            description: 'Administrator login from 192.168.1.100',
-            timestamp: new Date(Date.now() - 1800000).toISOString(),
-            status: 'info',
-          },
+            id: 1, type: 'case_created', user: 'john.doe@law.com', description: 'Created new case Smith v. Johnson', timestamp: new Date(Date.now() - 300000).toISOString(), status: 'success' },
+          { id: 2, type: 'ai_analysis', user: 'jane.smith@law.com', description: 'Completed AI analysis on contract dispute', timestamp: new Date(Date.now() - 900000).toISOString(), status: 'success' },
+          { id: 3, type: 'user_login', user: 'admin@legal-ai.com', description: 'Administrator login from 192.168.1.100', timestamp: new Date(Date.now() - 1800000).toISOString(), status: 'info' },
         ];
       }
     } catch (error) {
@@ -135,11 +73,7 @@
   function getHealthColor(isHealthy: boolean) {
     return isHealthy ? 'text-green-600' : 'text-red-600';
   }
-  const activityIconMap: Record<string, any> = {
-    case_created: Users,
-    ai_analysis: Cpu,
-    user_login: Shield,
-  };
+  const activityIconMap: Record<string any> = { case_created: Users, ai_analysis: Cpu, user_login: Shield };
   function getActivityIcon(type: string) {
     return activityIconMap[type] || Activity;
   }

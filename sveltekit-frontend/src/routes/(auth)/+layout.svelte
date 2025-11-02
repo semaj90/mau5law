@@ -1,5 +1,5 @@
 <!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
-<script, lang="ts">
+<script lang="ts">
   import { page } from '$app/stores';
   import type { Snippet } from 'svelte';
   import NavBar from '$lib/components/layout/NavBar.svelte';
@@ -39,16 +39,16 @@
   });
 </script>
 
-<div, class="auth-layout">
+<div class="auth-layout">
   <!-- Navigation, Bar -->
   <NavBar {user} {sidebarOpen} onToggleSidebar={toggleSidebar} />
 
   <!-- Sidebar -->
-  <Sidebar, open={sidebarOpen} {user} theme={selectedTheme} />
+  <Sidebar open={sidebarOpen} {user} theme={selectedTheme} />
 
   <!-- Main, Content, Area -->
-  <main, class="main-content" class:sidebar-open={sidebarOpen}>
-    <div, class="content-container">
+  <main class="main-content" class:sidebar-open={sidebarOpen}>
+    <div class="content-container">
       {#if children}
         {@render children()}
       {/if}

@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   - Memory-efficient rendering (8KB budget)
   - Legal AI context integration
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
@@ -132,7 +132,7 @@ import type { User } from '$lib/types';
 </script>
 
 {#if open}
-  <div class="fixed, inset-0, z-50">
+  <div class="fixed inset-0">
     {#if webgpuEffects}
       <!-- canvas must not, be, self-closing -->
       <canvas
@@ -154,7 +154,7 @@ import type { User } from '$lib/types';
     ></button>
 
     <!-- Dialog, Container -->
-    <div, class={dialogClasses} aria-hidden={!open}>
+    <div class={dialogClasses} aria-hidden={!open}>
       <!-- Dialog, Content -->
       <div
         class={contentClasses}
@@ -164,7 +164,7 @@ import type { User } from '$lib/types';
       >
         <!-- Collaboration, Users -->
         {#if collaboration?.enabled}
-          <div class="absolute -top-8, right-0, flex -space-x-2">
+          <div class="absolute -top-8 right-0">
             {#each collaboration.users || [] as user (user.id)}
               <div
                 class="w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white"
@@ -179,12 +179,12 @@ import type { User } from '$lib/types';
         <!-- Legal AI, Risk, Indicator -->
         {#if legalContext?.aiAnalysis?.riskLevel === 'high'}
           <!-- do not self-close, non-void, elements -->
-          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse, border-2, border-white">{/if}
+          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2">{/if}
 
         <!-- Header -->
         {#if title}
-          <div class="px-6 py-4, border-b, border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-900 flex, items-center, gap-3">
+          <div class="px-6 py-4 border-b">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center">
               {#if typeof title === 'function'}
                 {title()}
               {:else}
@@ -207,7 +207,7 @@ import type { User } from '$lib/types';
           {/if}
 
         <!-- Content -->
-        <div class="px-6 py-4, overflow-y-auto, max-h-[60vh]">
+        <div class="px-6 py-4 overflow-y-auto">
           {#if typeof content === 'function'}
             {content()}
           {:else}
@@ -215,12 +215,12 @@ import type { User } from '$lib/types';
           {/if}
 
           {#if legalContext?.aiAnalysis?.suggestions?.length > 0}
-            <div class="mt-4 p-3 bg-blue-50 rounded-lg, border, border-blue-200">
-              <h4 class="text-sm font-medium, text-blue-900, mb-2">AI Suggestions:</h4>
-              <ul class="text-sm, text-blue-800, space-y-1">
+            <div class="mt-4 p-3 bg-blue-50 rounded-lg border">
+              <h4 class="text-sm font-medium text-blue-900">AI Suggestions:</h4>
+              <ul class="text-sm text-blue-800">
                 {#each Array.isArray(legalContext.aiAnalysis.suggestions) ? legalContext.aiAnalysis.suggestions : [] as suggestion}
-                  <li class="flex, items-start, gap-2">
-                    <span, class="text-blue-600">•</span>
+                  <li class="flex items-start">
+                    <span class="text-blue-600">•</span>
                     {suggestion}
                   </li>
                 {/each}
@@ -230,7 +230,7 @@ import type { User } from '$lib/types';
 
         <!-- Footer -->
         {#if footer}
-          <div class="px-6 py-4 border-t, border-gray-200, bg-gray-50">
+          <div class="px-6 py-4 border-t border-gray-200">
             {#if typeof footer === 'function'}
               {footer()}
             {:else}
@@ -238,7 +238,7 @@ import type { User } from '$lib/types';
             {/if}
           </div>
         {:else}
-          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex, justify-end, gap-3">
+          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
             <!-- Use native button to avoid component event, typing, issues -->
             <button
               class="px-3 py-1 text-sm rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm"

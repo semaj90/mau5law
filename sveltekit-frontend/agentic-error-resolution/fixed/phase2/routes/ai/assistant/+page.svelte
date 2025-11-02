@@ -239,8 +239,7 @@ $effect(() => {
         throw new Error(`Evidence reports API failed: ${response.status}`);
       }
       evidenceReports = await response.json();
-    } catch (e) {
-      console.error('Failed to load evidence reports:', e);
+    } catch (e) { console.error('Failed to load evidence reports:', e);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
@@ -250,21 +249,8 @@ $effect(() => {
       // Set mock evidence reports
       evidenceReports = [
         {
-          id: 'mock-evidence-001',
-          title: 'Mock Police Report - Employment Dispute',
-          type: 'police_report',
-          date: '2024-01-15',
-          content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
-          confidence: 0.85,
-        },
-        {
-          id: 'mock-evidence-002',
-          title: 'Mock Witness Statement - Contract Violation',
-          type: 'witness_statement',
-          date: '2024-01-16',
-          content: 'Mock evidence: Witness account of contract negotiation meeting.',
-          confidence: 0.92,
-        }
+          id: 'mock-evidence-001', title: 'Mock Police Report - Employment Dispute', type: 'police_report', date: '2024-01-15', content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.', confidence: 0.85 },
+        { id: 'mock-evidence-002', title: 'Mock Witness Statement - Contract Violation', type: 'witness_statement', date: '2024-01-16', content: 'Mock evidence: Witness account of contract negotiation meeting.', confidence: 0.92 }
       ];
     }
   }

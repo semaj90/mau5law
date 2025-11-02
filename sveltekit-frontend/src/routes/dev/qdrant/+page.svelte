@@ -1,9 +1,9 @@
-<script, lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   let loading = $state<boolean>(false);
   let result: any = null;
-  let, error: string | null = null;
+  let error: string | null = null;
   let limit = 6;
   let page = 1;
   let caseId = '';
@@ -15,7 +15,7 @@
   let previewSnippet = '';
   // Copy feedback
   let copiedId: string | null = null;
-  let, copyTimeout: any = null;
+  let copyTimeout: any = null;
 
   function buildQuery() {
     const params = new URLSearchParams();
@@ -163,42 +163,42 @@
   }
 </script>
 
-<div class="p-4, max-w-4xl, mx-auto">
+<div class="p-4 max-w-4xl">
   <h1 class="text-xl font-bold mb-4">Dev: Qdrant & pgvector Sanity Check</h1>
-  <div, class="mb-4">
-    <div class="flex flex-wrap, gap-2, items-center">
-      <label, class="text-sm">Limit <input, type="number" min="1" bind:value={limit} class="ml-1, w-20" /></label>
-      <label, class="text-sm">Page <input, type="number" min="1" bind:value={page} class="ml-1, w-20" /></label>
-      <label, class="text-sm">CaseId <input, type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label
+  <div class="mb-4">
+    <div class="flex flex-wrap gap-2">
+      <label class="text-sm">Limit <input type="number" min="1" bind:value={limit} class="ml-1" /></label>
+      <label class="text-sm">Page <input type="number" min="1" bind:value={page} class="ml-1" /></label>
+      <label class="text-sm">CaseId <input type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label
       >
-      <label, class="text-sm">Tag <input, type="text" bind:value={tag} placeholder="contract" class="ml-1" /></label>
-      <button, class="bits-btn" onclick={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
+      <label class="text-sm">Tag <input type="text" bind:value={tag} placeholder="contract" class="ml-1" /></label>
+      <button class="bits-btn" onclick={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
     </div>
   </div>
   {#if error}
-    <div class="bg-red-100 text-red-700, p-3, rounded">{error}</div>
+    <div class="bg-red-100 text-red-700 p-3">{error}</div>
   {:else if !result}
-    <div, class="text-muted">No result yet.</div>
+    <div class="text-muted">No result yet.</div>
   {:else}
-    <section, class="grid, gap-4">
+    <section class="grid">
       <div>
-        <h2, class="font-semibold">Qdrant Neighbors</h2>
+        <h2 class="font-semibold">Qdrant Neighbors</h2>
         {#if result.qdrant?.result?.length}
-          <ul, class="divide-y">
+          <ul class="divide-y">
             {#each Array.isArray(result.qdrant.result) ? result.qdrant.result : [] as item}
-              <li class="py-2 flex, justify-between, items-start">
-                <div, class="min-w-0">
+              <li class="py-2 flex justify-between">
+                <div class="min-w-0">
                   <div class="font-medium truncate">{extractTitle(item.payload) || 'Untitled'}</div>
-                  <div class="text-xs, text-muted, truncate">ID: {item.id}</div>
-                  <div, class="text-sm, text-muted">Score: {item.score}</div>
+                  <div class="text-xs text-muted">ID: {item.id}</div>
+                  <div class="text-sm">Score: {item.score}</div>
                   {#if extractSnippet(item.payload)}
-                    <div class="text-xs, text-muted, truncate">
+                    <div class="text-xs text-muted">
                       {extractSnippet(item.payload)}{extractSnippet(item.payload).length === 400 ? '…' : ''}
                     </div>
                   {/if}
                 </div>
-                <div class="flex flex-col, items-end, gap-2">
-                  <div, class="relative">
+                <div class="flex flex-col items-end">
+                  <div class="relative">
                     <button
                       class="bits-btn bits-ghost text-xs px-2 py-1"
                       title="Copy ID"
@@ -216,29 +216,29 @@
                     href={`/api/evidence-files?download=${item.id}`}
                     target="_blank">Download</a
                   >
-                  <a class="text-primary, hover:underline, text-xs" href={`/evidence/${item.id}`} target="_blank">Open</a>
+                  <a class="text-primary hover:underline" href={`/evidence/${item.id}`} target="_blank">Open</a>
                 </div>
               </li>
             {/each}
           </ul>
         {:else}
-          <pre class="bg-black/5 p-3, rounded, overflow-auto">{JSON.stringify(result.qdrant, null, 2)}</pre>
+          <pre class="bg-black/5 p-3 rounded">{JSON.stringify(result.qdrant, null, 2)}</pre>
         {/if}
       </div>
       <div>
-        <h2, class="font-semibold">pgvector Neighbors</h2>
+        <h2 class="font-semibold">pgvector Neighbors</h2>
         {#if result.pgvector?.rows?.length}
-          <ul, class="divide-y">
+          <ul class="divide-y">
             {#each Array.isArray(result.pgvector.rows) ? result.pgvector.rows : [] as row}
-              <li class="py-2 flex, justify-between, items-start">
-                <div, class="min-w-0">
-                  <div, class="font-medium, truncate">
+              <li class="py-2 flex justify-between">
+                <div class="min-w-0">
+                  <div class="font-medium">
                     {row.title || row.payload?.title || row.metadata?.title || 'ID: ' + row.id}
                   </div>
-                  <div class="text-xs, text-muted, truncate">ID: {row.id}</div>
-                  <div, class="text-sm, text-muted">Similarity: {row.similarity}</div>
+                  <div class="text-xs text-muted">ID: {row.id}</div>
+                  <div class="text-sm">Similarity: {row.similarity}</div>
                   {#if row.payload || row.metadata}
-                    <div class="text-xs, text-muted, truncate">
+                    <div class="text-xs text-muted">
                       {(row.payload?.snippet || row.metadata?.snippet || row.snippet || '')?.slice?.(0, 400)}{(
                         row.payload?.snippet ||
                         row.metadata?.snippet ||
@@ -250,8 +250,8 @@
                     </div>
                   {/if}
                 </div>
-                <div class="flex flex-col, items-end, gap-2">
-                  <button class="bits-btn bits-ghost text-xs px-2, py-1" title="Copy, ID" onclick={() => copyId(row.id)}
+                <div class="flex flex-col items-end">
+                  <button class="bits-btn bits-ghost text-xs px-2" title="Copy, ID" onclick={() => copyId(row.id)}
                     >{copiedId === row.id ? 'Copied' : 'Copy ID'}</button
                   >
                   <button
@@ -263,13 +263,13 @@
                         row.payload?.snippet || row.metadata?.snippet || row.snippet || ''
                       )}>Preview</button
                   >
-                  <a class="text-primary, hover:underline, text-xs" href={`/evidence/${row.id}`} target="_blank">Open</a>
+                  <a class="text-primary hover:underline" href={`/evidence/${row.id}`} target="_blank">Open</a>
                 </div>
               </li>
             {/each}
           </ul>
           {#if result.pgvector?.page}
-            <div class="mt-2 flex, items-center, gap-2">
+            <div class="mt-2 flex items-center">
               <button
                 class="bits-btn bits-ghost"
                 onclick={() => {
@@ -291,7 +291,7 @@
             </div>
           {/if}
         {:else}
-          <pre class="bg-black/5 p-3, rounded, overflow-auto">{JSON.stringify(result.pgvector, null, 2)}</pre>
+          <pre class="bg-black/5 p-3 rounded">{JSON.stringify(result.pgvector, null, 2)}</pre>
         {/if}
       </div>
       {#if previewOpen}
@@ -311,7 +311,7 @@
           }}
           aria-hidden={!previewOpen}
         >
-          <div in:fade, out:fade, class="absolute, inset-0"></div>
+          <div in:fade, out:fade, class="absolute"></div>
           <div
             role="dialog"
             aria-modal="true"
@@ -324,18 +324,18 @@
             out:scale={{ duration: 120 }}
           >
             <button
-              class="absolute top-2 right-2 text-gray-500, hover:text-black"
+              class="absolute top-2 right-2 text-gray-500"
               onclick={() => {
                 previewOpen = false;
                 restoreFocus();
               }}
               aria-label="Close">✕</button
             >
-            <div class="flex items-center, justify-between, mb-3">
+            <div class="flex items-center justify-between">
               <h3 class="text-lg font-bold">{previewTitle || 'Preview'}</h3>
-              <div class="flex, items-center, gap-2">
-                <label class="text-xs text-muted flex, items-center, gap-1"
-                  ><input, type="checkbox" bind:checked={previewRenderMarkdown} /> Render Markdown</label
+              <div class="flex items-center">
+                <label class="text-xs text-muted flex items-center"
+                  ><input type="checkbox" bind:checked={previewRenderMarkdown} /> Render Markdown</label
                 >
                 <button class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => copyId(previewTitle || '')}
                   >Copy Title</button
@@ -343,7 +343,7 @@
               </div>
             </div>
             {#if previewRenderMarkdown}
-              <div class="text-sm, whitespace-pre-wrap, text-muted">
+              <div class="text-sm whitespace-pre-wrap">
                 {@html sanitizeHtml(renderMarkdownToHtmlAsync(previewSnippet))}
               </div>
             {:else}

@@ -5,18 +5,7 @@
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
-  import {
-    Activity,
-    Cpu,
-    MemoryStick,
-    Users,
-    Zap,
-    RefreshCw,
-    TrendingUp,
-    TrendingDown,
-    AlertTriangle,
-    CheckCircle,
-  } from 'lucide-svelte';
+  import { Activity, Cpu, MemoryStick, Users, Zap, RefreshCw, TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-svelte';
   import type { ClusterHealth, WorkerMetrics } from '$lib/services/nodejs-cluster-architecture';
   // Cluster state
   let clusterHealth = $state<ClusterHealth>({
@@ -115,10 +104,8 @@
       return;
     }
     isRestarting = true;
-    try {
-      const response = await fetch('/api/admin/cluster/restart', {
-        method: 'POST',
-      });
+    try { const response = await fetch('/api/admin/cluster/restart', {
+        method: 'POST' });
       if (response.ok) {
         console.log('🔄 Rolling restart initiated');
       } else {

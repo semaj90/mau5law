@@ -1,6 +1,6 @@
-<!-- YoRHa, Terminal/Console, Component --> <script, lang="ts">
+<!-- YoRHa, Terminal/Console, Component --> <script lang="ts">
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; interface TerminalProps { title?: string; prompt?: string; history?: string[]; currentInput?: string; isActive?: boolean; onCommand?: (command: string) => void; maxLines?: number; }
-  let { title = 'YORHA LEGAL TERMINAL v4.0.0', prompt = 'YoRHa:legal>', history = [], currentInput = '', isActive = true, onCommand, maxLines = 100 } = $props<Partial<TerminalProps>>(); let terminalRef: HTMLDivElement; let, inputRef: HTMLInputElement; let terminalHistory = $state([
+  let { title = 'YORHA LEGAL TERMINAL v4.0.0', prompt = 'YoRHa:legal>', history = [], currentInput = '', isActive = true, onCommand, maxLines = 100 } = $props<Partial<TerminalProps>>(); let terminalRef: HTMLDivElement; let inputRef: HTMLInputElement; let terminalHistory = $state([
     'YoRHa Legal AI System v4.0.0',
     'Copyright (c) 2024 YoRHa Command Division',
     'Legal Analysis Module Loaded',
@@ -74,7 +74,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             '  Contract_2023_Amendment.pdf',
             '  Legal_Precedent_Smith_v_Jones.pdf',
             '  Policy_Document_v2.docx',
-            '', ]; } else { terminalHistory = [...terminalHistory, 'Usage: search <search, term>', '']; }
+            '', ]; } else { terminalHistory = [...terminalHistory, 'Usage: search <search term>', '']; }
         break; case, 'exit': terminalHistory = [ ...terminalHistory,
           'Terminal session ending...',
           'Session saved to audit log.',
@@ -85,11 +85,11 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     // Call external command handler if provided onCommand?.(cmd); // Keep terminal history within limits if (terminalHistory.length > maxLines) { terminalHistory = terminalHistory.slice(-maxLines); }
   } function scrollToBottom() { setTimeout(() => { terminalRef?.scrollTo({ top: terminalRef.scrollHeight, behavior: 'smooth'
       }); }, 10); }
-</script> <div, class="yorha-terminal" bind:this={ terminalRef }> <!-- Terminal, Header --> <div, class="terminal-header"> <div, class="header-left"> <div, class="terminal-dots"> <div, class="dot, red"></div> <div, class="dot, yellow"></div> <div, class="dot, green"></div> </div> <span, class="terminal-title">{ title }</span> </div> <div, class="header-right"> <div, class="status-indicator {isActive ? 'active': 'inactive'}"> {isActive ? 'ACTIVE': 'INACTIVE'} </div> </div> </div> <!-- Terminal, Content --> <div, class="terminal-content"> <!-- History --> {#each terminalHistory as line, index} <div, class="terminal-line" class:command={line.startsWith(prompt)}> <pre>{ line }</pre> </div> {/each} <!-- Current, Input, Line --> <div, class="terminal-line, current" class:processing={ isProcessing }> <span, class="prompt-text">{ prompt }</span> <input, bind:this={ inputRef }, bind:value={ currentCommand } class="command-input"
+</script> <div class="yorha-terminal" bind:this={ terminalRef }> <!-- Terminal, Header --> <div class="terminal-header"> <div class="header-left"> <div class="terminal-dots"> <div class="dot"></div> <div class="dot"></div> <div class="dot"></div> </div> <span class="terminal-title">{ title }</span> </div> <div class="header-right"> <div class="status-indicator {isActive ? 'active': 'inactive'}"> {isActive ? 'ACTIVE': 'INACTIVE'} </div> </div> </div> <!-- Terminal, Content --> <div class="terminal-content"> <!-- History --> {#each terminalHistory as line, index} <div class="terminal-line" class:command={line.startsWith(prompt)}> <pre>{ line }</pre> </div> {/each} <!-- Current, Input, Line --> <div class="terminal-line" class:processing={ isProcessing }> <span class="prompt-text">{ prompt }</span> <input bind:this={ inputRef }, bind:value={ currentCommand } class="command-input"
         disabled={ isProcessing } onkeydown={ handleKeyDown } placeholder=""
         spellcheck="false"
         autocomplete="off"
-      /> {#if isProcessing} <span, class="processing-indicator">Processing...</span> {:else} <span, class="cursor" class:blink={ cursor }>▋</span> {/if} </div> </div> </div> <style> .yorha-terminal {, background: var(--yorha-bg-primary, #0a0a0a); border: 3px solid var(--yorha-secondary, #ffd700); font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace); font-size: 14px; line-height: 1.4;, color: var(--yorha-text-primary, #e0e0e0); height: 600px; display: flex; flex-direction: column;, overflow: hidden; box-shadow: 0, 0 0 3px var(--yorha-bg-secondary, #1a1a1a), 0, 0 30px rgba(255, 215, 0, 0.3); }
+      /> {#if isProcessing} <span class="processing-indicator">Processing...</span> {:else} <span class="cursor" class:blink={ cursor }>▋</span> {/if} </div> </div> </div> <style> .yorha-terminal {, background: var(--yorha-bg-primary, #0a0a0a); border: 3px solid var(--yorha-secondary, #ffd700); font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace); font-size: 14px; line-height: 1.4;, color: var(--yorha-text-primary, #e0e0e0); height: 600px; display: flex; flex-direction: column;, overflow: hidden; box-shadow: 0, 0 0 3px var(--yorha-bg-secondary, #1a1a1a), 0, 0 30px rgba(255, 215, 0, 0.3); }
   .terminal-header { background: var(--yorha-bg-secondary, #1a1a1a); border-bottom: 2px solid var(--yorha-secondary, #ffd700); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; min-height: 40px; }
   .header-left { display: flex; align-items: center; gap: 12px; }
   .terminal-dots { display: flex; gap: 6px; }

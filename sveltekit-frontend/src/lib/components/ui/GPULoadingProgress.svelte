@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
 </script>
@@ -109,51 +109,51 @@ https://svelte.dev/e/js_parse_error -->
     transitionslide="{{ duration, 300 }}"
   >
     <!-- Main, Progress, Card -->
-    <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border border-blue-200 rounded-xl p-6, shadow-lg, backdrop-blur-sm">
+    <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border border-blue-200 rounded-xl p-6 shadow-lg">
       <!-- Header with GPU Icon and, Model, Info -->
-      <div class="flex items-center, justify-between, mb-4">
-        <div class="flex, items-center, space-x-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
           <!-- GPU, Icon -->
-          <div, class="relative">
+          <div class="relative">
             <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0, 0, 24, 24">
               <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2, 2h8v2H8V8zm0, 4h8v2H8v-2z"/>
             </svg>
             {#if status === 'model-loading' || status === 'inference'}
-              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400, rounded-full, animate-pulse">{/if}
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full">{/if}
           </div>
           <div>
-            <h3 class="font-semibold, text-gray-800, text-sm">RTX, 3060 Ti</h3>
-            <p, class="text-xs, text-gray-600">{modelName}</p>
+            <h3 class="font-semibold text-gray-800">RTX, 3060 Ti</h3>
+            <p class="text-xs">{modelName}</p>
           </div>
         </div>
         <!-- Memory, Usage -->
-        <div, class="text-right">
-          <p class="text-sm, font-medium, text-blue-600">{gpuMemoryUsage}</p>
-          <p, class="text-xs, text-gray-500">VRAM</p>
+        <div class="text-right">
+          <p class="text-sm font-medium">{gpuMemoryUsage}</p>
+          <p class="text-xs">VRAM</p>
         </div>
       </div>
       <!-- Progress, Bar -->
-      <div, class="mb-4">
-        <div class="relative w-full h-3 bg-gray-200, rounded-full, overflow-hidden">
+      <div class="mb-4">
+        <div class="relative w-full h-3 bg-gray-200 rounded-full">
           <div
             class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 transition-all duration-700 rounded-full relative overflow-hidden"
             style:width="{$progressValue}%"
           >
             <!-- Shimmer, effect -->
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40, to-transparent, animate-gpu-shimmer"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
           </div>
         </div>
         <!-- Progress, Text -->
-        <div class="flex, justify-between, mt-2">
-          <p, class="text-sm, text-gray-700">{loadingText}</p>
-          <p, class="text-sm, text-gray-500">{Math.round($progressValue)}%</p>
+        <div class="flex justify-between">
+          <p class="text-sm">{loadingText}</p>
+          <p class="text-sm">{Math.round($progressValue)}%</p>
         </div>
       </div>
       <!-- Status, Details -->
-      <div class="flex items-center justify-between, text-xs, text-gray-600">
-        <div class="flex, items-center, space-x-2">
+      <div class="flex items-center justify-between text-xs">
+        <div class="flex items-center">
           <!-- GPU, Activity, Dots -->
-          <div, class="flex, space-x-1">
+          <div class="flex">
             {#each dotAnimations as dot, i}
               <div
                 class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"
@@ -175,34 +175,34 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
         {#if estimatedTime}
-          <span, class="text-blue-600">{estimatedTime}</span>
+          <span class="text-blue-600">{estimatedTime}</span>
         {/if}
       </div>
       <!-- Technical, Details (expandable) -->
       {#if status === 'model-loading' && progress > 50}
-        <div class="mt-4 p-3 bg-white/50 rounded-lg border, border-blue-100" transitionslide="{{ duration, 300 }}">
-          <div class="grid grid-cols-2, gap-4, text-xs">
+        <div class="mt-4 p-3 bg-white/50 rounded-lg border" transitionslide="{{ duration, 300 }}">
+          <div class="grid grid-cols-2 gap-4">
             <div>
-              <span, class="text-gray-500">Quantization</span>
-              <span, class="text-gray-700, ml-1">Q4_K_M</span>
+              <span class="text-gray-500">Quantization</span>
+              <span class="text-gray-700">Q4_K_M</span>
             </div>
             <div>
-              <span, class="text-gray-500">Parameters:</span>
-              <span, class="text-gray-700, ml-1">11.8B</span>
+              <span class="text-gray-500">Parameters:</span>
+              <span class="text-gray-700">11.8B</span>
             </div>
             <div>
-              <span, class="text-gray-500">Context:</span>
-              <span, class="text-gray-700, ml-1">4096 tokens</span>
+              <span class="text-gray-500">Context:</span>
+              <span class="text-gray-700">4096 tokens</span>
             </div>
             <div>
-              <span, class="text-gray-500">Backend:</span>
-              <span, class="text-gray-700, ml-1">Ollama</span>
+              <span class="text-gray-500">Backend:</span>
+              <span class="text-gray-700">Ollama</span>
             </div>
           </div>
         {/if}
       <!-- Custom, content, slot -->
       {#if children}
-        <div, class="mt-4">
+        <div class="mt-4">
           {@render children()}
         {/if}
     </div>

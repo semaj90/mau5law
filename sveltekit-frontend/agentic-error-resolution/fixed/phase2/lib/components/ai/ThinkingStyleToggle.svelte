@@ -25,12 +25,9 @@
   let showTooltip = $state(false);
   let showConfig = $state(false);
   let thinkingDepth = $state('detailed');
-  let focusAreas = $state({
-    precedents: true
-    evidence: true,
-    compliance: true;
-    alternatives: false,
-  });
+  let focusAreas = $state({ precedents: true
+    evidence: true, compliance: true;
+    alternatives: false });
   let iconSize = $derived(size === 'sm' ? 16 : size === 'md' ? 20 : 24);
   let buttonClass = $derived(cn(
     'thinking-toggle',
@@ -375,9 +372,7 @@
     align-items: center;
     gap: 1rem;
   }
-  .premium-text {
-    flex: 1,
-  }
+  .premium-text { flex: 1 }
   .premium-text strong {
     display: block;
     margin-bottom: 0.25rem;

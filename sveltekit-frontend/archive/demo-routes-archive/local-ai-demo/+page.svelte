@@ -4,17 +4,7 @@
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import { aiService } from "$lib/services/ai-service";
   import { tauriLLM, type LocalModel } from "$lib/services/tauri-llm";
-  import {
-    AlertTriangle,
-    Brain,
-    CheckCircle,
-    Cloud,
-    Cpu,
-    Database,
-    Search,
-    Shield,
-    Zap,
-  } from "lucide-svelte";
+  import { AlertTriangle, Brain, CheckCircle, Cloud, Cpu, Database, Search, Shield, Zap } from "lucide-svelte";
   import { onMount } from "svelte";
 
   interface SystemStatus {
@@ -25,14 +15,7 @@
     tauriLLM: boolean;
     localModels: LocalModel[];
   }
-  let systemStatus: SystemStatus = $state({
-    database: false,
-    qdrant: false,
-    embeddings: false,
-    vectorSearch: false,
-    tauriLLM: false,
-    localModels: [],
-  });
+  let systemStatus: SystemStatus = $state({ database: false, qdrant: false, embeddings: false, vectorSearch: false, tauriLLM: false, localModels: [] });
 
   let isLoadingStatus = $state(true);
   let testQuery = $state("");
@@ -121,14 +104,8 @@
       const response = await fetch("/api/search/vector", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: testQuery,
-          options: {
-            limit: 5,
-            threshold: 0.5,
-            searchType: "hybrid",
-            provider: selectedProvider,
-          },
+        body: JSON.stringify({ query: testQuery, options: {
+            limit: 5, threshold: 0.5, searchType: "hybrid", provider: selectedProvider },
         }),
       });
 
@@ -170,11 +147,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             query: `Analyze this legal document and provide classification, key points, and risk assessment: ${legalAnalysisText}`,
-            options: {
-              provider: "auto",
-              legalContext: true,
-              maxTokens: 800,
-            },
+            options: { provider: "auto", legalContext: true, maxTokens: 800 },
           }),
         });
 

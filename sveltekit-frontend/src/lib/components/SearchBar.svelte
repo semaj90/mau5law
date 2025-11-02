@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import  SearchInput  from "./SearchInput.svelte";
   import Filter from 'lucide-svelte';
   interface Props {
@@ -69,14 +69,14 @@
     }));
   }
 </script>
-<div, class="search-bar-container">
+<div class="search-bar-container">
   <!-- Main, Search, Input -->
   <SearchInput {placeholder} {value} onsearch={handleSearch} />
   <!-- Controls -->
   {#if showFilters}
-    <div, class="search-controls">
+    <div class="search-controls">
       <!-- Sort, Dropdown -->
-      <div, class="sort-container">
+      <div class="sort-container">
         <select
           bind:value={selectedSort}
           onchange={() => handleSortChange(selectedSort)}
@@ -84,10 +84,10 @@
           aria-label="Sort by"
         >
           {#each Array.isArray(sortOptions) ? sortOptions : [] as option}
-            <option, value={option.id}>{option.label}</option>
+            <option value={option.id}>{option.label}</option>
           {/each}
         </select>
-        <!-- Inline chevron / sort icon to avoid, import, mismatch -->
+        <!-- Inline chevron / sort icon to avoid, import mismatch -->
         <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" aria-hidden="true" focusable="false">
           <path d="M6 9l6-6, 6, 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M18, 15l-6, 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -101,17 +101,17 @@
         aria-label="Toggle filters"
         title="Filters"
       >
-        <Filter, size={16} />
+        <Filter size={16} />
       </button>
     {/if}
 </div>
 <!-- Advanced, Filters -->
 {#if filtersOpen}
-  <div, class="filters-panel">
-    <div, class="filter-group">
-      <span, class="filter-label">File Type:</span>
-      <div, class="filter-options">
-        <label, class="filter-checkbox">
+  <div class="filters-panel">
+    <div class="filter-group">
+      <span class="filter-label">File Type:</span>
+      <div class="filter-options">
+        <label class="filter-checkbox">
           <input
             type="checkbox"
             value="image"
@@ -120,7 +120,7 @@
           />
           Images
         </label>
-        <label, class="filter-checkbox">
+        <label class="filter-checkbox">
           <input
             type="checkbox"
             value="document"
@@ -129,7 +129,7 @@
           />
           Documents
         </label>
-        <label, class="filter-checkbox">
+        <label class="filter-checkbox">
           <input
             type="checkbox"
             value="video"
@@ -138,7 +138,7 @@
           />
           Videos
         </label>
-        <label, class="filter-checkbox">
+        <label class="filter-checkbox">
           <input
             type="checkbox"
             value="audio"
@@ -149,9 +149,9 @@
         </label>
       </div>
     </div>
-    <div, class="filter-group">
-      <span, class="filter-label">Date Range:</span>
-      <div, class="date-range">
+    <div class="filter-group">
+      <span class="filter-label">Date Range:</span>
+      <div class="date-range">
         <input
           type="date"
           class="date-input"
@@ -169,7 +169,7 @@
         />
       </div>
     </div>
-    <div, class="filter-actions">
+    <div class="filter-actions">
       <button
         type="button"
         class="clear-filters-btn"

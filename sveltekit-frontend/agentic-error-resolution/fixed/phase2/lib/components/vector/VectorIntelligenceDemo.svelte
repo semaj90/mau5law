@@ -41,76 +41,39 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   let showAdvancedOptions = $state(false);
   // Demo data
   const demoSearchQueries = [
-    {
-      query: 'contract liability clauses in employment agreements',
-      description: 'Legal contract analysis for employment disputes',
-      category: 'Legal Research',
-    },
-    {
-      query: 'evidence tampering patterns in criminal investigations',
-      description: 'Criminal investigation methodology',
-      category: 'Investigation',
-    },
-    {
-      query: 'corporate compliance violations and penalties',
-      description: 'Corporate law and regulatory compliance',
-      category: 'Compliance',
-    },
-    {
-      query: 'witness testimony consistency analysis methods',
-      description: 'Evidence evaluation techniques',
-      category: 'Evidence Analysis',
-    }
+    { query: 'contract liability clauses in employment agreements', description: 'Legal contract analysis for employment disputes', category: 'Legal Research' },
+    { query: 'evidence tampering patterns in criminal investigations', description: 'Criminal investigation methodology', category: 'Investigation' },
+    { query: 'corporate compliance violations and penalties', description: 'Corporate law and regulatory compliance', category: 'Compliance' },
+    { query: 'witness testimony consistency analysis methods', description: 'Evidence evaluation techniques', category: 'Evidence Analysis' }
   ];
   const demoRecommendationContexts = [
-    {
-      context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.',
-      role: 'prosecutor',
-      description: 'Complex criminal case preparation',
-    },
-    {
-      context: 'Our investigation has uncovered potential digital evidence tampering. How should we proceed with forensic analysis and evidence preservation?',
-      role: 'detective',
-      description: 'Digital forensics investigation',
-    },
-    {
-      context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',
-      role: 'admin',
-      description: 'Workflow optimization analysis',
-    }
+    { context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.', role: 'prosecutor', description: 'Complex criminal case preparation' },
+    { context: 'Our investigation has uncovered potential digital evidence tampering. How should we proceed with forensic analysis and evidence preservation?', role: 'detective', description: 'Digital forensics investigation' },
+    { context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.', role: 'admin', description: 'Workflow optimization analysis' }
   ];
   const demoAnalysisContent = [
-    {
-      content: `EMPLOYMENT AGREEMENT
+    { content: `EMPLOYMENT AGREEMENT
 This Employment Agreement ("Agreement") is entered into on January 15, 2024, between TechCorp Industries, a Delaware corporation ("Company"), and John Smith ("Employee").
 1. POSITION AND DUTIES
 Employee shall serve as Senior Software Engineer and shall perform such duties as assigned by the Company. Employee agrees to devote full business time and attention to the Company's business.
 2. COMPENSATION
-Company shall pay Employee a base salary of $150,000 per year, payable in accordance with Company's standard payroll practices.
+Company shall pay Employee a base salary of $150, 000 per year, payable in accordance with Company's standard payroll practices.
 3. CONFIDENTIALITY
 Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
 4. TERMINATION
-This Agreement may be terminated by either party with thirty (30) days written notice.`,
-      description: 'Employment contract for legal analysis',
-      type: 'Contract',
-    },
-    {
-      content: `INCIDENT REPORT - Case #2024-CR-1892,
-Date: March 8, 2024
+This Agreement may be terminated by either party with thirty (30) days written notice.`, description: 'Employment contract for legal analysis', type: 'Contract' },
+    { content: `INCIDENT REPORT - Case #2024-CR-1892, Date: March 8, 2024
 Location 1425 Oak Street, Downtown District
 Reporting Officer: Detective Sarah Johnson
 SUMMARY:
-Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500.
+Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3, 500.
 EVIDENCE COLLECTED:
 - Fingerprints from window frame
 - Footprint impressions in garden
 - Security camera footage from neighboring property
 - Witness statements from two neighbors
 SUSPECTS:
-Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
-      description: 'Criminal incident report for analysis',
-      type: 'Incident Report',
-    }
+Investigation ongoing. Similar pattern matches recent break-ins in the area.`, description: 'Criminal incident report for analysis', type: 'Incident Report' }
   ];
   $effect(() => {
     (async () => {
@@ -161,12 +124,8 @@ await loadSystemHealth();
           experience: 'senior',
           specialization ['legal-analysis', 'case-management'];
         },
-        currentCase: {
-          id: 'DEMO-2024-001',
-          type: selectedCaseType;
-          priority: 'high',
-          status: 'active',
-        },
+        currentCase: { id: 'DEMO-2024-001', type: selectedCaseType;
+          priority: 'high', status: 'active' },
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],
           workflowStyle: 'systematic'

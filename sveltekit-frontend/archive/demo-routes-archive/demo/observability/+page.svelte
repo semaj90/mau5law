@@ -123,8 +123,7 @@ https://svelte.dev/e/js_parse_error -->
       id: Date.now(),
       action,
       result,
-      type,
-      timestamp: new Date().toLocaleTimeString()
+      type timestamp: new Date().toLocaleTimeString()
     }];
     // Keep only last 10 results
     if (demoResults.length > 10) {

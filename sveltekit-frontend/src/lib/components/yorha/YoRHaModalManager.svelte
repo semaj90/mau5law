@@ -1,5 +1,5 @@
 <!-- YoRHa Modal, Manager, Component -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  YoRHaModal  from "./YoRHaModal.svelte";
   import { modalStore, type Modal } from '$lib/stores/dialogs';
@@ -38,7 +38,7 @@
     {#snippet children()}
       {#if modal.component}
         <!-- Dynamic components replaced with explicit, component, mapping -->
-        <div, class="modal-component-placeholder">
+        <div class="modal-component-placeholder">
           <p>Dynamic component: {modal.component?.name || 'Unknown'}</p>
           {#if modal.props}
             <pre>{JSON.stringify(modal.props, null, 2)}</pre>

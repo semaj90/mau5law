@@ -75,27 +75,9 @@
 
   // Form data
   let formData = $state<Poi>({ // Use Poi interface
-    name: '',
-    aliases: [],
-    dateOfBirth: '',
-    address: '',
-    phone: '',
-    email: '',
-    status: 'person_of_interest',
-    priority: 'medium',
-    threatLevel: 'low',
-    physicalDescription: { // Corrected syntax
-      height: '',
-      weight: '',
-      hair: '',
-      eyes: '',
-      distinguishingMarks: '',
-    },
-    profileData: {
-      modusOperandi: '',
-      knownHabits: [],
-      associates: [],
-    },
+    name: '', aliases: [], dateOfBirth: '', address: '', phone: '', email: '', status: 'person_of_interest', priority: 'medium', threatLevel: 'low', physicalDescription: { // Corrected syntax
+      height: '', weight: '', hair: '', eyes: '', distinguishingMarks: '' },
+    profileData: { modusOperandi: '', knownHabits: [], associates: [] },
     lastKnownLocation: '', // Corrected syntax
     lastSeen: '',
     dangerLevel: 0,
@@ -193,9 +175,7 @@
     if (!confirm(`Are you sure you want to delete ${poi.name}?`)) return;
 
     try {
-      const response = await fetch(`/api/poi/${poi.id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/poi/${poi.id}`, { method: 'DELETE' });
 
       const result = await response.json();
 
@@ -212,29 +192,10 @@
   }
 
   // Reset form
-  function resetForm() {
-    formData = {
-      name: '',
-      aliases: [],
-      dateOfBirth: '',
-      address: '',
-      phone: '',
-      email: '',
-      status: 'person_of_interest',
-      priority: 'medium',
-      threatLevel: 'low',
-      physicalDescription: { // Corrected syntax
-        height: '',
-        weight: '',
-        hair: '',
-        eyes: '',
-        distinguishingMarks: '',
-      },
-      profileData: {
-        modusOperandi: '',
-        knownHabits: [],
-        associates: [],
-      },
+  function resetForm() { formData = {
+      name: '', aliases: [], dateOfBirth: '', address: '', phone: '', email: '', status: 'person_of_interest', priority: 'medium', threatLevel: 'low', physicalDescription: { // Corrected syntax
+        height: '', weight: '', hair: '', eyes: '', distinguishingMarks: '' },
+      profileData: { modusOperandi: '', knownHabits: [], associates: [] },
       lastKnownLocation: '', // Corrected syntax
       lastSeen: '',
       dangerLevel: 0,
@@ -246,27 +207,9 @@
   function editPoi(poi: Poi) { // Explicitly type poi
     selectedPoi = poi;
     formData = {
-      name: poi.name,
-      aliases: poi.aliases || [],
-      dateOfBirth: poi.dateOfBirth ? new Date(poi.dateOfBirth).toISOString().split('T')[0] : '',
-      address: poi.address || '',
-      phone: poi.phone || '',
-      email: poi.email || '',
-      status: poi.status,
-      priority: poi.priority,
-      threatLevel: poi.threatLevel,
-      physicalDescription: poi.physicalDescription || { // Corrected syntax
-        height: '',
-        weight: '',
-        hair: '',
-        eyes: '',
-        distinguishingMarks: '',
-      },
-      profileData: poi.profileData || {
-        modusOperandi: '',
-        knownHabits: [],
-        associates: [],
-      },
+      name: poi.name, aliases: poi.aliases || [], dateOfBirth: poi.dateOfBirth ? new Date(poi.dateOfBirth).toISOString().split('T')[0] : '', address: poi.address || '', phone: poi.phone || '', email: poi.email || '', status: poi.status, priority: poi.priority, threatLevel: poi.threatLevel, physicalDescription: poi.physicalDescription || { // Corrected syntax
+        height: '', weight: '', hair: '', eyes: '', distinguishingMarks: '' },
+      profileData: poi.profileData || { modusOperandi: '', knownHabits: [], associates: [] },
       lastKnownLocation: poi.lastKnownLocation || '', // Corrected syntax
       lastSeen: poi.lastSeen ? new Date(poi.lastSeen).toISOString().split('T')[0] : '',
       dangerLevel: poi.dangerLevel || 0,
@@ -310,21 +253,10 @@
   });
 
   // Priority colors
-  const priorityColors = {
-    low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-  };
+  const priorityColors = { low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300', medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300', high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300', critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' };
 
   // Status colors
-  const statusColors = {
-    person_of_interest: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-    witness: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    suspect: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-    victim: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    informant: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-  };
+  const statusColors = { person_of_interest: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', witness: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300', suspect: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300', victim: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', informant: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' };
 </script>
 
 <svelte:head>

@@ -2,7 +2,7 @@
 Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
@@ -186,14 +186,14 @@ Compact AI recommendations component for sidebar/dashboard use
   }
 </script>
 
-<div, class="bits-nier-bits-card, nes-container">
-  <div, class="yorha-panel-header, bits-nier-bits-yorha-panel-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
-    <h3 class="nes-text is-primary flex, items-center, justify-between">
-      <div class="flex, items-center, gap-2">
-        <Lightbulb class="h-4, w-4, text-yellow-600" />
-        <span, class="{compact ? 'text-sm' : 'text-base'}">AI Recommendations</span>
+<div class="bits-nier-bits-card">
+  <div class="yorha-panel-header" variant="default" legal={true}>
+    <h3 class="nes-text is-primary flex items-center">
+      <div class="flex items-center">
+        <Lightbulb class="h-4 w-4" />
+        <span class="{compact ? 'text-sm' : 'text-base'}">AI Recommendations</span>
         {#if recommendations.length > 0}
-          <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">{recommendations.length}</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{recommendations.length}</span>
         {/if}
       </div>
       <div>
@@ -204,35 +204,35 @@ Compact AI recommendations component for sidebar/dashboard use
           disabled={isLoading}
           class="h-7 w-7 p-0 bits-btn bits-btn"
         >
-          <RefreshCw, class="h-3, w-3 {isLoading ? 'animate-spin' : ''}" />
+          <RefreshCw class="h-3" />
         </Button>
       </div>
     </h3>
     {#if lastUpdated && !compact}
-      <p class="text-xs, nes-text, is-disabled">
+      <p class="text-xs nes-text">
         Updated {formatTimeAgo(lastUpdated)}
       </p>
     {/if}
   </div>
-  <div, class="yorha-panel-content, bits-nier-bits-yorha-panel-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
+  <div class="yorha-panel-content" variant="default" legal={true}>
     {#if isLoading}
-      <div, class="space-y-3">
+      <div class="space-y-3">
         {#each Array.isArray(Array(maxRecommendations)) ? Array(maxRecommendations) : [] as _}
-          <div, class="animate-pulse">
-            <div class="h-4 bg-muted rounded, w-3/4, mb-2"></div>
-            <div class="h-3 bg-muted rounded, w-full, mb-1"></div>
-            <div class="h-3 bg-muted, rounded, w-2/3"></div>
+          <div class="animate-pulse">
+            <div class="h-4 bg-muted rounded w-3/4"></div>
+            <div class="h-3 bg-muted rounded w-full"></div>
+            <div class="h-3 bg-muted rounded"></div>
           </div>
         {/each}
       </div>
     {:else if recommendations.length === 0}
-      <div, class="text-center, py-6">
-        <Lightbulb class="h-8 w-8 nes-text is-disabled, mx-auto, mb-2" />
-        <p class="text-sm, nes-text, is-disabled">No recommendations available</p>
-        <p class="text-xs nes-text, is-disabled, mt-1">Check back later for AI insights</p>
+      <div class="text-center">
+        <Lightbulb class="h-8 w-8 nes-text is-disabled mx-auto" />
+        <p class="text-sm nes-text">No recommendations available</p>
+        <p class="text-xs nes-text is-disabled">Check back later for AI insights</p>
       </div>
     {:else}
-      <div, class="space-y-3">
+      <div class="space-y-3">
         {#each Array.isArray(recommendations) ? recommendations : [] as rec}
           {@const SvelteComponent = getRecommendationIcon(rec.type)}
           <button
@@ -240,36 +240,36 @@ Compact AI recommendations component for sidebar/dashboard use
             class="w-full text-left p-3 rounded-lg border-l-4 {getRecommendationColor(rec.type)} hover:shadow-md transition-all duration-200"
             onclick={() => onRecommendationClick(rec)}
           >
-            <div class="flex items-start, justify-between, mb-2">
-              <div class="flex, items-center, gap-2">
-                <div, class="h-4, w-4">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center">
+                <div class="h-4">
   <SvelteComponent />
-                <span class="font-medium, text-sm, leading-tight">{rec.title}</span>
+                <span class="font-medium text-sm">{rec.title}</span>
               </div>
-              <ChevronRight class="h-3 w-3 nes-text is-disabled, flex-shrink-0, mt-0.5" />
+              <ChevronRight class="h-3 w-3 nes-text is-disabled flex-shrink-0" />
             </div>
-            <p class="text-xs nes-text is-disabled, mb-2, line-clamp-2">
+            <p class="text-xs nes-text is-disabled mb-2">
               {rec.description}
             </p>
-            <div class="flex, items-center, justify-between">
-              <div class="flex, items-center, gap-2">
-                <Badge, class={`text-xs ${getPriorityColor(rec.priority)}`}>
+            <div class="flex items-center">
+              <div class="flex items-center">
+                <Badge class={`text-xs ${getPriorityColor(rec.priority)}`}>
                   {@const SvelteComponent_1 = getPriorityIcon(rec.priority)}
-                  <div class="h-2, w-2, mr-1">
-  <SvelteComponent, _1  />
+                  <div class="h-2 w-2">
+  <SvelteComponent _1  />
                   {rec.priority}
                 </Badge>
-                <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">{rec.category}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{rec.category}</span>
               </div>
-              <div class="flex, items-center, gap-1">
-                <Star, class="h-3, w-3 {getConfidenceColor(rec.confidence)}" />
-                <span, class="text-xs {getConfidenceColor(rec.confidence)}">
+              <div class="flex items-center">
+                <Star class="h-3" />
+                <span class="text-xs {getConfidenceColor(rec.confidence)}">
                   {Math.round(rec.confidence * 100)}%
                 </span>
               </div>
             </div>
             {#if rec.estimatedImpact && !compact}
-              <div class="flex items-center gap-3 mt-2 text-xs, nes-text, is-disabled">
+              <div class="flex items-center gap-3 mt-2 text-xs nes-text">
                 <span>Time: {rec.estimatedImpact.timeToComplete}min</span>
                 <span>•</span>
                 <span>Success: {rec.estimatedImpact.successProbability}%</span>
@@ -278,8 +278,8 @@ Compact AI recommendations component for sidebar/dashboard use
         {/each}
       </div>
       {#if !compact}
-        <div class="mt-4 pt-3, border-t, border-border">
-          <div class="flex items-center justify-between text-xs, nes-text, is-disabled">
+        <div class="mt-4 pt-3 border-t">
+          <div class="flex items-center justify-between text-xs nes-text">
             <span>Based on your role: {userRole}</span>
             {#if autoRefresh}
               <span>Auto-refresh: {refreshInterval}min</span>

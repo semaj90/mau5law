@@ -1,5 +1,5 @@
 <!-- NES-Style Texture Streaming Component for Legal, Document, Visualization -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -59,7 +59,7 @@ import type { Document } from '$lib/types';
   });
   // LOD level description
   let lodDescription = $derived(() => {
-    const descriptions: Record<number, string> = {
+    const descriptions: Record<number string> = {
       0: 'High Detail (64x64)',
       1: 'Medium Detail (32x32)',
       2: 'Low Detail (16x16)',
@@ -251,16 +251,16 @@ import type { Document } from '$lib/types';
   }
 </script>
 <!-- Use slot binding to receive hasWebGPU, from SSRWebGPULoader -->
-<SSRWebGPULoader, requireWebGPU={false} let:hasWebGPU>
-  <div, class="nes-texture-streamer">
+<SSRWebGPULoader requireWebGPU={false} let:hasWebGPU>
+  <div class="nes-texture-streamer">
     <!-- Header, with, controls -->
-    <div, class="controls-header">
-      <div, class="document-info">
+    <div class="controls-header">
+      <div class="document-info">
         <h3>📄 {documentId}</h3>
-        <span, class="mode-badge {readingMode}">{readingMode.toUpperCase()}</span>
-        <span, class="importance-badge {documentImportance}">{documentImportance.toUpperCase()}</span>
+        <span class="mode-badge {readingMode}">{readingMode.toUpperCase()}</span>
+        <span class="importance-badge {documentImportance}">{documentImportance.toUpperCase()}</span>
       </div>
-      <div, class="lod-controls">
+      <div class="lod-controls">
         <button
           onclick={() => streamSpecificLOD(0)}
           class="lod-button {currentLOD === 0 ? 'active' : ''}"
@@ -290,47 +290,47 @@ import type { Document } from '$lib/types';
           LOD, 3
         </button>
       </div>
-        <div, class="zoom-controls">
-        <button, onclick={() => handleZoomChange(-0.1)}>🔍-</button>
+        <div class="zoom-controls">
+        <button onclick={() => handleZoomChange(-0.1)}>🔍-</button>
         <span>Zoom: {zoomLevel.toFixed(1)}x</span>
-        <button, onclick={() => handleZoomChange(0.1)}>🔍+</button>
+        <button onclick={() => handleZoomChange(0.1)}>🔍+</button>
       </div>
     </div>
     <!-- Main, viewer, area -->
-    <div, class="texture-viewer" bind:this={viewerElement} style="transform: scale({zoomLevel})">
+    <div class="texture-viewer" bind:this={viewerElement} style="transform: scale({zoomLevel})">
       {#if isStreaming}
-        <div, class="streaming-overlay" transition:fade>
-          <div, class="nes-loading">
-            <div, class="loading-bar">
-              <div, class="loading-progress" style="width: {streamingProgress}%"></div>
+        <div class="streaming-overlay" transition:fade>
+          <div class="nes-loading">
+            <div class="loading-bar">
+              <div class="loading-progress" style="width: {streamingProgress}%"></div>
             </div>
             <p>Streaming NES texture chunks... {streamingProgress.toFixed(0)}%</p>
           </div>
         {/if}
       {#if currentTexture}
-        <div, class="texture-display" transition:scale>
+        <div class="texture-display" transition:scale>
           <img src={getTextureDisplayData()} alt="Streamed, texture, LOD {currentLOD}" class="texture-image" />
-          <div, class="texture-overlay">
-            <div, class="lod-indicator">
+          <div class="texture-overlay">
+            <div class="lod-indicator">
               LOD {currentLOD}: {lodDescription}
             </div>
           </div>
         </div>
       {:else}
-        <div, class="no-texture">
-          <div, class="nes-icon">🎮</div>
+        <div class="no-texture">
+          <div class="nes-icon">🎮</div>
           <p>No texture loaded</p>
-          <button, onclick={() => startStreaming()}>Load Texture</button>
+          <button onclick={() => startStreaming()}>Load Texture</button>
         {/if}
     </div>
     {#if debugMode}
       <!-- Debug, panel -->
-      <div, class="debug-panel" transition:slide>
+      <div class="debug-panel" transition:slide>
         <h4>🔧 NES Debug Console</h4>
-        <div, class="debug-stats">
-          <div, class="stat-group">
+        <div class="debug-stats">
+          <div class="stat-group">
             <h5>CHR-ROM Memory</h5>
-            <div, class="memory-bar">
+            <div class="memory-bar">
               <div
                 class="memory-usage"
                 style="width: {(memoryStats.memoryUsage / memoryStats.maxMemory) * 100}%"
@@ -339,20 +339,20 @@ import type { Document } from '$lib/types';
             <p>{memoryStats.memoryUsage} / {memoryStats.maxMemory} bytes</p>
             <p>Bank {memoryStats.activeBankId} | {memoryStats.textureCount} textures</p>
           </div>
-          <div, class="stat-group">
+          <div class="stat-group">
             <h5>Performance</h5>
             <p>FPS: {frameRate}</p>
             <p>Load, Time: {loadTime.toFixed(1)}ms</p>
             <p>Scroll Speed: {scrollSpeed.toFixed(1)}px/ms</p>
           </div>
-          <div, class="stat-group">
+          <div class="stat-group">
             <h5>Context</h5>
             <p>Target LOD: {targetLOD()}</p>
             <p>Scroll Pos: {scrollPosition}px</p>
             <p>Zoom: {zoomLevel}x</p>
             <p>Interacting: {userInteracting ? 'Yes' : 'No'}</p>
           </div>
-          <div, class="stat-group">
+          <div class="stat-group">
             <h5>WebGPU</h5>
             <p>Available: {hasWebGPU ? 'Yes' : 'No'}</p>
             <p>Mode: {readingMode}</p>

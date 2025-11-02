@@ -65,29 +65,19 @@ https://svelte.dev/e/js_parse_error -->
   let recommendations: Recommendation[] = [];
 
   // Initialize Phase 13 system
-  onMount(async () => {
-    try {
+  onMount(async () => { try {
       console.log('🚀 Initializing Phase 13 Enhanced Features...');
 
       // 1. Initialize API Coordinator
       apiCoordinator = createStatelessAPICoordinator({
-        enableRedis: true,
-        enableNATS: true,
-        enableWebSocket: true,
-        taskTimeout: 30000,
-      });
+        enableRedis: true, enableNATS: true, enableWebSocket: true, taskTimeout: 30000 });
 
       // 2. Initialize Enhanced RAG Engine
       ragEngine = createEnhancedRAGEngine(apiCoordinator.coordinator);
 
       // 3. Initialize Context7 MCP Integration
       context7Integration = createContext7Phase13Integration(
-        {
-          enableSemanticSearch: true,
-          enableMemoryGraph: true,
-          enableAgentOrchestration: true,
-          enableBestPractices: true,
-        },
+        { enableSemanticSearch: true, enableMemoryGraph: true, enableAgentOrchestration: true, enableBestPractices: true },
         ragEngine.engine,
         apiCoordinator.coordinator
       );
@@ -177,27 +167,24 @@ https://svelte.dev/e/js_parse_error -->
         title: 'Employment Contract Template',
         content:
           'This employment contract contains liability clauses for workplace safety, intellectual property protection, and confidentiality agreements. The contractor assumes liability for damages caused by negligence.',
-        type: 'CONTRACT' as const,
-        metadata: { jurisdiction: 'Federal', caseId: 'CASE-2024-001' },
+        type: 'CONTRACT' as const metadata: { jurisdiction: 'Federal', caseId: 'CASE-2024-001' },
       },
       {
         title: 'Product Liability Case Study',
         content:
           'In this landmark case, the court established precedent for manufacturer liability in cases of defective products. The ruling clarifies burden of proof requirements for consumer protection claims.',
-        type: 'CASE_LAW' as const,
-        metadata: { jurisdiction: 'Federal', caseId: 'CASE-2024-002' },
+        type: 'CASE_LAW' as const metadata: { jurisdiction: 'Federal', caseId: 'CASE-2024-002' },
       },
       {
         title: 'Consumer Protection Statute',
         content:
           'Federal regulations governing consumer rights and business liability. Includes provisions for warranty claims, return policies, and damage compensation procedures.',
-        type: 'STATUTE' as const,
-        metadata: { jurisdiction: 'Federal' },
+        type: 'STATUTE' as const metadata: { jurisdiction: 'Federal' },
       },
     ];
 
     for (const doc of sampleDocs) {
-      const fullDoc = RAGHelpers.createDocument(doc.content, doc.title, doc.type, doc.metadata);
+      const fullDoc = RAGHelpers.createDocument(doc.content, doc.title, doc.type doc.metadata);
       ragEngine.addDocument(fullDoc);
     }
   }
@@ -241,19 +228,14 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function performEnhancedRAGSearch() {
-    if (!ragEngine) return;
+  async function performEnhancedRAGSearch() { if (!ragEngine) return;
 
     try {
       ragActive = true;
       const startTime = Date.now();
 
       const query = RAGHelpers.createLegalQuery(searchQuery, {
-        caseId: 'CASE-2024-001',
-        jurisdiction: 'Federal',
-        documentTypes: ['CONTRACT', 'CASE_LAW', 'STATUTE'],
-        maxResults: 10,
-      });
+        caseId: 'CASE-2024-001', jurisdiction: 'Federal', documentTypes: ['CONTRACT', 'CASE_LAW', 'STATUTE'], maxResults: 10 });
 
       const results = await ragEngine.queryDocuments({
         ...query,
@@ -280,11 +262,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const recs = await context7Integration.getRecommendations(
         `Legal AI system optimization for: ${searchQuery}`,
-        {
-          priority: 'HIGH',
-          includeImplementationPlan: true,
-          maxRecommendations: 5,
-        }
+        { priority: 'HIGH', includeImplementationPlan: true, maxRecommendations: 5 }
       );
 
       recommendations = recs.slice(0, 3);
@@ -294,22 +272,14 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function submitPositiveFeedback(resultIndex: number) {
-    // guard for existence and proper shape
+  async function submitPositiveFeedback(resultIndex: number) { // guard for existence and proper shape
     if (!ragEngine || !searchResults[resultIndex] || !searchResults[resultIndex].document?.id) return;
 
     try {
       await ragEngine.submitFeedback({
-        queryId: 'demo_query',
-        documentId: searchResults[resultIndex].document.id,
-        vote: 'POSITIVE',
-        relevanceScore: 0.9,
-        context:
+        queryId: 'demo_query', documentId: searchResults[resultIndex].document.id, vote: 'POSITIVE', relevanceScore: 0.9, context:
           {
-            queryText: searchQuery,
-            resultPosition: resultIndex,
-            timeSpentViewing: 5000,
-          },
+            queryText: searchQuery, resultPosition: resultIndex, timeSpentViewing: 5000 },
       });
 
       // Update PageRank

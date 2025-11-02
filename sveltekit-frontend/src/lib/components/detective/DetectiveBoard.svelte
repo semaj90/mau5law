@@ -1,5 +1,5 @@
 <!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css, integration -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 	import { onMount } from 'svelte';
@@ -7,7 +7,7 @@ import type { Case } from '$lib/types';
 	// UI libraries
 	import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
 	import  Badge  from "$lib/components/ui/Badge.svelte";
-	import, 'nes.css/css/nes.min.css';
+	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
 	import * as Tooltip from 'bits-ui';
@@ -202,7 +202,7 @@ import type { Case } from '$lib/types';
 	}
 
 	function handleAIActionTrigger(payload: any) {
-		const { type, data } = payload ?? {};
+		const { type data } = payload ?? {};
 		switch (type) {
 			case, 'suggestions':
 				console.log('AI suggestions', data);
@@ -370,23 +370,23 @@ import type { Case } from '$lib/types';
 
 <svelte:window, onkeydown={handleGlobalKeydown} />
 
-<div class="w-full h-full min-h-screen bg-background, detective-board, p-4">
+<div class="w-full h-full min-h-screen bg-background detective-board">
 	<Card.Root, class="mb-6">
 		<CardHeader>
-			<div class="flex, justify-between, items-center">
-				<div class="flex, items-center, gap-4">
-					<div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex, items-center, justify-center">
-						<span, class="text-2xl">🕵️</span>
+			<div class="flex justify-between">
+				<div class="flex items-center">
+					<div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center">
+						<span class="text-2xl">🕵️</span>
 					</div>
 					<div>
-						<CardTitle, class="text-2xl">Detective Board</CardTitle>
-						<p, class="text-muted-foreground">Case Evidence Management System</p>
+						<CardTitle class="text-2xl">Detective Board</CardTitle>
+						<p class="text-muted-foreground">Case Evidence Management System</p>
 					</div>
 				</div>
-				<div class="flex, items-center, gap-4">
-					<div, class="flex, gap-2">
+				<div class="flex items-center">
+					<div class="flex">
 						<!-- Replaced ToggleGroup with two accessible, toggle, buttons -->
-						<div role="tablist" class="inline-flex rounded-md, overflow-hidden, border">
+						<div role="tablist" class="inline-flex rounded-md overflow-hidden">
 							<Tooltip.Root>
 								<Tooltip.Trigger, asChild>
 									<button
@@ -394,7 +394,7 @@ import type { Case } from '$lib/types';
 										onclick={() => switchViewMode('columns')}
 										aria-pressed={viewMode === 'columns'}
 									>
-										<span, class="mr-2">📋</span> Columns
+										<span class="mr-2">📋</span> Columns
 									</button>
 								</Tooltip.Trigger>
 								<Tooltip.Content, side="top">Switch to columns view</Tooltip.Content>
@@ -407,7 +407,7 @@ import type { Case } from '$lib/types';
 										onclick={() => switchViewMode('canvas')}
 										aria-pressed={viewMode === 'canvas'}
 									>
-										<span, class="mr-2">🎨</span> Canvas
+										<span class="mr-2">🎨</span> Canvas
 									</button>
 								</Tooltip.Trigger>
 								<Tooltip.Content, side="top">Switch to canvas view</Tooltip.Content>
@@ -416,7 +416,7 @@ import type { Case } from '$lib/types';
 
 						<Tooltip.Root>
 							<Tooltip.Trigger, asChild>
-								<Button, variant={showAIAssistant ? 'default' : 'ghost'} onclick={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
+								<Button variant={showAIAssistant ? 'default' : 'ghost'} onclick={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
 									AI Assistant
 								</Button>
 							</Tooltip.Trigger>
@@ -425,8 +425,8 @@ import type { Case } from '$lib/types';
 
 						<Tooltip.Root>
 							<Tooltip.Trigger, asChild>
-								<Button, size="sm" variant="secondary" onclick={() => analyzeSelectedEvidence()}>
-									<span, class="mr-2">🤖</span> Analyze Selected
+								<Button size="sm" variant="secondary" onclick={() => analyzeSelectedEvidence()}>
+									<span class="mr-2">🤖</span> Analyze Selected
 								</Button>
 							</Tooltip.Trigger>
 							<Tooltip.Content, side="top">Ask the AI to analyze selected evidence</Tooltip.Content>
@@ -434,27 +434,27 @@ import type { Case } from '$lib/types';
 					</div>
 
 					{#if activeUsers.length > 0}
-						<div class="flex, items-center, gap-2">
-							<div, class="flex -space-x-2">
+						<div class="flex items-center">
+							<div class="flex -space-x-2">
 								{#each Array.isArray(activeUsers.slice(0, 3)) ? activeUsers.slice(0, 3) : [] as user}
-									<div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium, border-2, border-background">
+									<div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium border-2">
 										{user.name?.charAt(0) || user.email?.charAt(0) || '?'}
 									</div>
 								{/each}
 								{#if activeUsers.length > 3}
-									<div class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm, border-2, border-background">
+									<div class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm border-2">
 										+{activeUsers.length - 3}
 									{/if}
 							</div>
 							<!-- Badge: remove variant prop (type mismatch). Use class, for, styling -->
-							<Badge, class="nes-badge">{activeUsers.length} online</Badge>
+							<Badge class="nes-badge">{activeUsers.length} online</Badge>
 						{/if}
 
 					<!-- Replace New Case with, tooltip, wrapper -->
 					<Tooltip.Root>
 						<Tooltip.Trigger, asChild>
-							<Button, size="sm" onclick={() => { /* new case */ }}>
-								<span, class="mr-2">➕</span> New Case
+							<Button size="sm" onclick={() => { /* new case */ }}>
+								<span class="mr-2">➕</span> New Case
 							</Button>
 						</Tooltip.Trigger>
 						<Tooltip.Content, side="top">Create a new case</Tooltip.Content>
@@ -464,23 +464,23 @@ import type { Case } from '$lib/types';
 		</CardHeader>
 	</Card>
 
-	<main class="flex-1, flex, gap-6">
-		<div, class="flex-1, min-w-0">
+	<main class="flex-1 flex">
+		<div class="flex-1">
 			{#if viewMode === 'columns'}
-				<div class="grid grid-cols-1 md:grid-cols-3, gap-6, h-full">
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 					{#each columns as column (column.id)}
-						<Card class="h-fit, nes-container, is-rounded">
-							<div, class="yorha-panel-header, pb-3">
-								<div class="flex, justify-between, items-center">
-									<h3 class="nes-text is-primary text-lg flex, items-center, gap-2">
-										<div class="w-3 h-3, bg-primary, rounded-full"></div>
+						<Card class="h-fit nes-container">
+							<div class="yorha-panel-header">
+								<div class="flex justify-between">
+									<h3 class="nes-text is-primary text-lg flex items-center">
+										<div class="w-3 h-3 bg-primary"></div>
 										{column.title}
 									</h3>
-									<Badge, class="nes-badge">{column.items.length}</Badge>
+									<Badge class="nes-badge">{column.items.length}</Badge>
 								</div>
 							</div>
 
-							<div, class="yorha-panel-content, space-y-4">
+							<div class="yorha-panel-content">
 								{#if column.id === 'new'}
 									<!-- typed event handlers to satisfy TS for, custom, events -->
 									<UploadZone
@@ -498,7 +498,7 @@ import type { Case } from '$lib/types';
 								>
 									{#each column.items as item (item.id)}
 										<!-- Lightweight context menu: toggle, per-item, dropdown -->
-										<div, class="relative">
+										<div class="relative">
 											<div
 												class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
 											, class:highlighted={aiHighlightedEvidence.includes(item.id)}
@@ -528,13 +528,13 @@ import type { Case } from '$lib/types';
 											</Tooltip.Root>
 
 											{#if openContextMenuId === item.id}
-												<ul class="absolute right-2 mt-8 w-56 bg-background border border-border rounded, shadow-md, z-50">
-													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { handleViewEvidence(item); openContextMenuId = null; }} title="View details">View Details</li>
-													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { window.location.href = `/evidence/${item.id}/edit`; openContextMenuId = null; }} title="Edit">Edit</li>
-													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { saveTo('savedcitations', item); openContextMenuId = null; }} title="Save to your citations">Saved Citations</li>
-													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { saveTo('mcpcontext', item); openContextMenuId = null; }} title="Add to MCP context">MCP Context (LLM)</li>
-													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { openFindModal(item); openContextMenuId = null; }} title="Find related evidence">Find Related...</li>
-													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { analyzeSelectedEvidence(); openContextMenuId = null; }} title="Ask AI about this">🤖 Ask AI About This</li>
+												<ul class="absolute right-2 mt-8 w-56 bg-background border border-border rounded shadow-md">
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { handleViewEvidence(item); openContextMenuId = null; }} title="View details">View Details</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { window.location.href = `/evidence/${item.id}/edit`; openContextMenuId = null; }} title="Edit">Edit</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { saveTo('savedcitations', item); openContextMenuId = null; }} title="Save to your citations">Saved Citations</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { saveTo('mcpcontext', item); openContextMenuId = null; }} title="Add to MCP context">MCP Context (LLM)</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { openFindModal(item); openContextMenuId = null; }} title="Find related evidence">Find Related...</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { analyzeSelectedEvidence(); openContextMenuId = null; }} title="Ask AI about this">🤖 Ask AI About This</li>
 												</ul>
 											{/if}
 										</div>
@@ -545,20 +545,20 @@ import type { Case } from '$lib/types';
 					{/each}
 				</div>
 			{:else}
-				<Card class="h-[calc(100vh-200px)] nes-container is-rounded bits-card, p-0, uno-stack">
-					<div class="yorha-panel-content, p-0, h-full">
+				<Card class="h-[calc(100vh-200px)] nes-container is-rounded bits-card p-0">
+					<div class="yorha-panel-content p-0">
 						<div
 							bind:this={canvasContainer}
-							class="relative w-full h-full bg-slate-50, dark:bg-slate-900 overflow-auto p-4"
+							class="relative w-full h-full bg-slate-50"
 							role="region"
 							aria-label="Canvas Drop Zone"
 							ondrop={handleCanvasDrop}
 							ondragover={(e) => e.preventDefault()}
 						>
-							<div class="absolute inset-0 bg-grid-pattern, opacity-5, pointer-events-none"></div>
+							<div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
 							{#each canvasEvidence as item (item.id)}
-								<div, class="relative">
+								<div class="relative">
 									<div
 										class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move transition-shadow nes-container is-rounded bits-draggable"
 										class:highlighted={aiHighlightedEvidence.includes(item.id)}
@@ -574,31 +574,31 @@ import type { Case } from '$lib/types';
 										tabindex="0"
 									>
 										<svelte:component, this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}}>
-											<Card class="nes-container is-rounded p-2, w-full, mt-2">
-												<CardHeader class="flex, items-center, justify-between">
-													<div class="flex, items-center, gap-2">
-														<div class="w-3 h-3, bg-primary, rounded-full"></div>
+											<Card class="nes-container is-rounded p-2 w-full">
+												<CardHeader class="flex items-center">
+													<div class="flex items-center">
+														<div class="w-3 h-3 bg-primary"></div>
 														<CardTitle class="nes-text text-sm">{item.title || item.fileName || 'Evidence'}</CardTitle>
 													</div>
 													<!-- Badge: no variant prop, style, via, class -->
 													<Badge class="nes-badge">{item.evidenceType || 'doc'}</Badge>
 												</CardHeader>
-												<CardContent, class="p-2">
-													<div class="mt-2 flex, items-center, justify-between">
-														<div class="flex items-center gap-2 text-xs, text-muted-foreground, nes-text">
-															<span, class="nes-text, is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
+												<CardContent class="p-2">
+													<div class="mt-2 flex items-center">
+														<div class="flex items-center gap-2 text-xs text-muted-foreground">
+															<span class="nes-text">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
 														</div>
-														<div, class="flex, gap-2">
+														<div class="flex">
 															<Tooltip.Root>
 																<Tooltip.Trigger, asChild>
-																	<Button, size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span, class="mr-1">🔍</span> View</Button>
+																	<Button size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
 																</Tooltip.Trigger>
 																<Tooltip.Content, side="top">View evidence details</Tooltip.Content>
 															</Tooltip.Root>
 
 															<Tooltip.Root>
 																<Tooltip.Trigger, asChild>
-																	<Button, size="sm" variant="secondary" onclick={() => {}}><span, class="mr-1">⋯</span></Button>
+																	<Button size="sm" variant="secondary" onclick={() => {}}><span class="mr-1">⋯</span></Button>
 																</Tooltip.Trigger>
 																<Tooltip.Content, side="top">More actions</Tooltip.Content>
 															</Tooltip.Root>
@@ -627,17 +627,17 @@ import type { Case } from '$lib/types';
 								</div>
 							{/each}
 
-							<svg class="absolute, inset-0, pointer-events-none" style="width: 100%;, height: 100%;">
+							<svg class="absolute inset-0" style="width: 100%;, height: 100%;">
 								{#each Array.isArray(getConnections()) ? getConnections() : [] as connection}
-									<line, x1={connection.x1} y1={connection.y1} x2={connection.x2} y2={connection.y2} stroke="currentColor" stroke-width="2" stroke-dasharray="5,5" opacity="0.3" />
+									<line x1={connection.x1} y1={connection.y1} x2={connection.x2} y2={connection.y2} stroke="currentColor" stroke-width="2" stroke-dasharray="5,5" opacity="0.3" />
 								{/each}
 							</svg>
 
 							{#if canvasEvidence.length === 0}
-								<div class="absolute inset-0 flex, items-center, justify-center">
-									<div class="text-center, nes-text, is-disabled">
-										<p, class="text-lg, mb-2">No evidence on canvas</p>
-										<p, class="text-sm">Drag evidence here or switch to column view to add items</p>
+								<div class="absolute inset-0 flex items-center">
+									<div class="text-center nes-text">
+										<p class="text-lg">No evidence on canvas</p>
+										<p class="text-sm">Drag evidence here or switch to column view to add items</p>
 									</div>
 								{/if}
 						</div>
@@ -647,7 +647,7 @@ import type { Case } from '$lib/types';
 		</div>
 
 		{#if showAIAssistant}
-			<div, class="w-80, flex-shrink-0">
+			<div class="w-80">
 				<!-- typed CustomEvent handlers to avoid, TS: 'never' event, issues -->
 				<AIAssistantPanel
 					{caseId}
@@ -661,36 +661,36 @@ import type { Case } from '$lib/types';
 </div>
 
 {#if findModal.show}
-	<div class="fixed inset-0 z-50 flex, items-center, justify-center">
-		<div class="absolute, inset-0, bg-black/50" role="presentation" onclick={closeFindModal}></div>
-		<div class="relative z-10 w-full max-w-2xl bg-background border border-border rounded, p-6, shadow-lg">
-			<header, class="mb-4">
-				<h2, class="text-lg, font-semibold">Find Related Evidence</h2>
-				<p, class="text-sm, text-muted-foreground">Search for evidence related to: "{findModal.query}" using local and vector search.</p>
+	<div class="fixed inset-0 z-50 flex items-center">
+		<div class="absolute inset-0" role="presentation" onclick={closeFindModal}></div>
+		<div class="relative z-10 w-full max-w-2xl bg-background border border-border rounded p-6">
+			<header class="mb-4">
+				<h2 class="text-lg">Find Related Evidence</h2>
+				<p class="text-sm">Search for evidence related to: "{findModal.query}" using local and vector search.</p>
 			</header>
 
-			<div class="flex, flex-col, gap-4">
+			<div class="flex flex-col">
 				<Input type="text" bind:value={findModal.query} placeholder="Enter keywords, or, question..." onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') void runFindSearch(null); }} />
-				<div, class="flex, gap-2">
-					<Button, onclick={() => void runFindSearch(null)} disabled={findModal.loading}>
+				<div class="flex">
+					<Button onclick={() => void runFindSearch(null)} disabled={findModal.loading}>
 						{#if findModal.loading}
 							Searching...
 						{:else}
 							Search
 						{/if}
 					</Button>
-					<Button, variant="ghost" onclick={closeFindModal}>Close</Button>
+					<Button variant="ghost" onclick={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}
-					<div, class="text-red-500">{findModal.error}{/if}
+					<div class="text-red-500">{findModal.error}{/if}
 
 				{#if findModal.results.length > 0}
-					<div, class="border-t, pt-4">
-						<h3, class="font-semibold, mb-2">Results:</h3>
-						<ul class="space-y-2, max-h-60, overflow-y-auto">
+					<div class="border-t">
+						<h3 class="font-semibold">Results:</h3>
+						<ul class="space-y-2 max-h-60">
 							{#each Array.isArray(findModal.results) ? findModal.results : [] as result}
-								<li class="p-2 rounded hover:bg-muted cursor-pointer, border-b, border-muted-foreground/10">
+								<li class="p-2 rounded hover:bg-muted cursor-pointer border-b">
 									{result?.title ?? result?.text ?? JSON.stringify(result)}
 								</li>
 							{/each}
@@ -701,11 +701,11 @@ import type { Case } from '$lib/types';
 	{/if}
 
 {#if miniModal.show}
-	<div, class="fixed, z-40" style="left: {miniModal.x}px;, top: {miniModal.y}px;">
-		<div class="bg-background border border-border rounded-md shadow px-3, py-2, text-sm">
+	<div class="fixed" style="left: {miniModal.x}px;, top: {miniModal.y}px;">
+		<div class="bg-background border border-border rounded-md shadow px-3 py-2">
 {#if miniModal.show}
-	<div, class="fixed, z-40" style="left: {miniModal.x}px;, top: {miniModal.y}px;">
-		<div class="bg-background border border-border rounded-md shadow px-3, py-2, text-sm">
+	<div class="fixed" style="left: {miniModal.x}px;, top: {miniModal.y}px;">
+		<div class="bg-background border border-border rounded-md shadow px-3 py-2">
 			{miniModal.type}
 		</div>
 	{/if}ort url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
@@ -713,7 +713,7 @@ import type { Case } from '$lib/types';
 <style>id-pattern {
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-	.bg-grid-pattern {90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+	.bg-grid-pattern {90deg rgba(0, 0, 0, 0.1) 1px, transparent 1px);
 		background-image:50px 50px;
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);

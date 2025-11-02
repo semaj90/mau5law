@@ -27,14 +27,7 @@
     onEvidenceHighlight?: (data: { evidenceIds: string[] }) => void;
     onActionTrigger?: (data: { type: string; data: any }) => void;
   }
-  let {
-    caseId = 'case-001',
-    selectedEvidenceIds = [],
-    isVisible = true,
-    onEvidenceSelect,
-    onEvidenceHighlight,
-    onActionTrigger,
-  }: Props = $props();
+  let { caseId = 'case-001', selectedEvidenceIds = [], isVisible = true, onEvidenceSelect, onEvidenceHighlight, onActionTrigger }: Props = $props();
   // Svelte 5 state
   let userInput = $state('');
   let isLoading = $state(false);
@@ -103,29 +96,20 @@
         selectedEvidenceIds.length === 1
           ? `Please analyze evidence item ${selectedEvidenceIds[0]} and provide insights.`
           : `Please analyze the connections between evidence items: ${selectedEvidenceIds.join(', ')}`;
-      await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
-        useAcceleration useAcceleration && accelerationStatus === 'ready',
-        legalContext: 'Evidence analysis request',
-      });
+      await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, { useAcceleration useAcceleration && accelerationStatus === 'ready', legalContext: 'Evidence analysis request' });
     } catch (error) {
       console.error('Failed to analyze evidence:', error);
     } finally {
       isLoading = false;
     }
   }
-  async function suggestNextSteps() {
-    isLoading = true;
+  async function suggestNextSteps() { isLoading = true;
     try {
       const prompt = 'Based on the current evidence, what should be the next steps in this investigation?';
       const response = await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
-        useAcceleration useAcceleration && accelerationStatus === 'ready',
-        legalContext: 'Investigation planning',
-      });
+        useAcceleration useAcceleration && accelerationStatus === 'ready', legalContext: 'Investigation planning' });
       // Trigger action suggestions in parent component
-      onActionTrigger?.({
-        type: 'suggestions',
-        data: response?.metadata?.suggestions || [],
-      });
+      onActionTrigger?.({ type: 'suggestions', data: response?.metadata?.suggestions || [] });
     } catch (error) {
       console.error('Failed to get suggestions:', error);
     } finally {
@@ -292,11 +276,8 @@
           <!-- Dynamic components are supported by default in Svelte runes - use direct element and onsearch -->
           <AISearchBarComponent
             placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
-            userContext={{
-              caseId,
-              selectedEvidenceIds,
-              context: currentContext,
-            }}
+            userContext={ {
+              caseId, selectedEvidenceIds, context: currentContext }}
             analyticsLog={(event: CustomEvent) => console.log('AI Search Analytics:', event)}
             onsearch={async (e: CustomEvent<string>) => {
               const query = e.detail;

@@ -16,20 +16,7 @@
   }
   let { open = $bindable(false), user, theme = 'legal' }: Props = $props();
   import { cn } from '$lib/utils';
-  import {
-    BarChart3,
-    Bot,
-    Briefcase,
-    ChevronRight,
-    FileBarChart,
-    FileText,
-    Home,
-    Layers,
-    Plus,
-    Scale,
-    Search,
-    Settings,
-  } from 'lucide-svelte';
+  import { BarChart3, Bot, Briefcase, ChevronRight, FileBarChart, FileText, Home, Layers, Plus, Scale, Search, Settings } from 'lucide-svelte';
   import { onMount } from 'svelte';
   let mounted = $state(false);
   $effect(() => {
@@ -45,83 +32,23 @@
     badge?: string;
   };
   let navigation = $derived([
-    {
-      name: '🎮 Command Center',
-      href: '/dashboard',
-      icon: Home,
-      current: currentPath === '/' || currentPath === '/dashboard',
-      badge: 'HQ',
-    },
-    {
-      name: '⚖️ Case Management',
-      href: '/cases',
-      icon: Briefcase,
-      current: currentPath.startsWith('/cases'),
-      badge: 'ACTIVE',
-    },
-    {
-      name: '🗃️ Evidence Vault',
-      href: '/evidence',
-      icon: FileText,
-      current: currentPath.startsWith('/evidence'),
-      badge: '12 New',
-    },
-    {
-      name: '🤖 AI Counsel',
-      href: '/ai',
-      icon: Bot,
-      current: currentPath.startsWith('/ai'),
-      badge: 'AI',
-    },
-    {
-      name: '📋 Document Analysis',
-      href: '/documents',
-      icon: FileBarChart,
-      current: currentPath.startsWith('/documents'),
-    },
-    {
-      name: '🔍 Legal Research',
-      href: '/research',
-      icon: Search,
-      current: currentPath.startsWith('/research'),
-    },
-    {
-      name: '⏱️ Case Timeline',
-      href: '/timeline',
-      icon: Layers,
-      current: currentPath.startsWith('/timeline'),
-    },
+    { name: '🎮 Command Center', href: '/dashboard', icon: Home, current: currentPath === '/' || currentPath === '/dashboard', badge: 'HQ' },
+    { name: '⚖️ Case Management', href: '/cases', icon: Briefcase, current: currentPath.startsWith('/cases'), badge: 'ACTIVE' },
+    { name: '🗃️ Evidence Vault', href: '/evidence', icon: FileText, current: currentPath.startsWith('/evidence'), badge: '12 New' },
+    { name: '🤖 AI Counsel', href: '/ai', icon: Bot, current: currentPath.startsWith('/ai'), badge: 'AI' },
+    { name: '📋 Document Analysis', href: '/documents', icon: FileBarChart, current: currentPath.startsWith('/documents') },
+    { name: '🔍 Legal Research', href: '/research', icon: Search, current: currentPath.startsWith('/research') },
+    { name: '⏱️ Case Timeline', href: '/timeline', icon: Layers, current: currentPath.startsWith('/timeline') },
   ]);
   let analytics = $derived([
-    {
-      name: '📊 Analytics Hub',
-      href: '/analytics',
-      icon: BarChart3,
-      current: currentPath.startsWith('/analytics'),
-    },
-    {
-      name: '📋 Reports',
-      href: '/reports',
-      icon: FileBarChart,
-      current: currentPath.startsWith('/reports'),
-    },
+    { name: '📊 Analytics Hub', href: '/analytics', icon: BarChart3, current: currentPath.startsWith('/analytics') },
+    { name: '📋 Reports', href: '/reports', icon: FileBarChart, current: currentPath.startsWith('/reports') },
   ]);
   let adminFeatures = $derived([
-    {
-      name: '🔧 Admin Console',
-      href: '/admin',
-      icon: Settings,
-      current: currentPath.startsWith('/admin'),
-      badge: 'ADMIN',
-    },
+    { name: '🔧 Admin Console', href: '/admin', icon: Settings, current: currentPath.startsWith('/admin'), badge: 'ADMIN' },
   ]);
   let settings = $derived([
-    {
-      name: '⚙️ Settings',
-      href: '/settings',
-      icon: Settings,
-      current: currentPath.startsWith('/settings'),
-    },
+    { name: '⚙️ Settings', href: '/settings', icon: Settings, current: currentPath.startsWith('/settings') },
   ]);
   function closeSidebar() {
     open = $state(false);

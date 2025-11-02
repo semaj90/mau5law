@@ -79,38 +79,14 @@ Manages AutoGen and CrewAI multi-agent workflows
   let lastUpdate = $state<string>('');
   // Available workflows
   const workflows = [
-    {
-      id: 'case_analysis',
-      name: 'Legal Case Analysis',
-      description: 'Comprehensive case analysis with multiple legal experts',
-      icon Gavel;
-      providers: ['autogen', 'crewai'],
-      estimatedTime: '2-3 minutes',
-    },
-    {
-      id: 'evidence_review',
-      name: 'Evidence Review',
-      description: 'Forensic evidence analysis and admissibility assessment',
-      icon Shield;
-      providers: ['autogen', 'crewai'],
-      estimatedTime: '1-2 minutes',
-    },
-    {
-      id: 'legal_research',
-      name: 'Legal Research',
-      description: 'Precedent research and statute analysis',
-      icon Search;
-      providers: ['autogen'],
-      estimatedTime: '2-4 minutes',
-    },
-    {
-      id: 'contract_analysis',
-      name: 'Contract Analysis',
-      description: 'Contract review, risk assessment, and negotiation strategy',
-      icon FileText;
-      providers: ['crewai'],
-      estimatedTime: '1-2 minutes',
-    }
+    { id: 'case_analysis', name: 'Legal Case Analysis', description: 'Comprehensive case analysis with multiple legal experts', icon Gavel;
+      providers: ['autogen', 'crewai'], estimatedTime: '2-3 minutes' },
+    { id: 'evidence_review', name: 'Evidence Review', description: 'Forensic evidence analysis and admissibility assessment', icon Shield;
+      providers: ['autogen', 'crewai'], estimatedTime: '1-2 minutes' },
+    { id: 'legal_research', name: 'Legal Research', description: 'Precedent research and statute analysis', icon Search;
+      providers: ['autogen'], estimatedTime: '2-4 minutes' },
+    { id: 'contract_analysis', name: 'Contract Analysis', description: 'Contract review, risk assessment, and negotiation strategy', icon FileText;
+      providers: ['crewai'], estimatedTime: '1-2 minutes' }
   ];
   $effect(() => {
     (async () => {
@@ -163,8 +139,7 @@ if (autoStartServices) {
       executionProgress = 100;
     }
   }
-  async function executeAutoGenWorkflow() {
-    lastUpdate = 'Initializing AutoGen agents...';
+  async function executeAutoGenWorkflow() { lastUpdate = 'Initializing AutoGen agents...';
     executionProgress = 10;
     switch (selectedWorkflow) {
       case 'case_analysis':
@@ -175,29 +150,9 @@ if (autoStartServices) {
         // Simulate conversation for demo purposes
         conversationMessages = [
           {
-            id: '1',
-            sender: 'prosecutor',
-            recipient: 'legal_researcher',
-            content: 'Please research precedents for this case type.',
-            timestamp: Date.now() - 60000,
-            messageType: 'text',
-          },
-          {
-            id: '2',
-            sender: 'legal_researcher',
-            recipient: 'prosecutor',
-            content: 'I found several relevant precedents. The strongest cases support prosecution.',
-            timestamp: Date.now() - 30000,
-            messageType: 'text',
-          },
-          {
-            id: '3',
-            sender: 'coordinator',
-            recipient: 'all',
-            content: caseResult.content,
-            timestamp: Date.now(),
-            messageType: 'text',
-          }
+            id: '1', sender: 'prosecutor', recipient: 'legal_researcher', content: 'Please research precedents for this case type.', timestamp: Date.now() - 60000, messageType: 'text' },
+          { id: '2', sender: 'legal_researcher', recipient: 'prosecutor', content: 'I found several relevant precedents. The strongest cases support prosecution.', timestamp: Date.now() - 30000, messageType: 'text' },
+          { id: '3', sender: 'coordinator', recipient: 'all', content: caseResult.content, timestamp: Date.now(), messageType: 'text' }
         ];
         lastUpdate = 'Case analysis completed';
         executionProgress = 100;
@@ -207,14 +162,7 @@ if (autoStartServices) {
         executionProgress = 30;
         const evidenceResult = await reviewEvidenceWithAgents(inputText, 'digital', []);
         conversationMessages = [
-          {
-            id: '1',
-            sender: 'evidence_analyst',
-            recipient: 'prosecutor',
-            content: evidenceResult.content,
-            timestamp: Date.now(),
-            messageType: 'text',
-          }
+          { id: '1', sender: 'evidence_analyst', recipient: 'prosecutor', content: evidenceResult.content, timestamp: Date.now(), messageType: 'text' }
         ];
         lastUpdate = 'Evidence review completed';
         break;
@@ -223,21 +171,13 @@ if (autoStartServices) {
         executionProgress = 40;
         const researchResult = await researchLegalPrecedents(inputText, 'federal', 'criminal');
         conversationMessages = [
-          {
-            id: '1',
-            sender: 'legal_researcher',
-            recipient: 'coordinator',
-            content: researchResult.content,
-            timestamp: Date.now(),
-            messageType: 'text',
-          }
+          { id: '1', sender: 'legal_researcher', recipient: 'coordinator', content: researchResult.content, timestamp: Date.now(), messageType: 'text' }
         ];
         lastUpdate = 'Legal research completed';
         break;
     }
   }
-  async function executeCrewAIWorkflow() {
-    lastUpdate = 'Assembling CrewAI team...';
+  async function executeCrewAIWorkflow() { lastUpdate = 'Assembling CrewAI team...';
     executionProgress = 10;
     switch (selectedWorkflow) {
       case 'case_analysis':
@@ -248,33 +188,10 @@ if (autoStartServices) {
         // Simulate crew execution results
         executionResults = [
           {
-            taskId: 'initial-investigation',
-            agentId: 'case-investigator',
-            output: 'Initial investigation completed. Key evidence identified and timeline established.',
-            executionTime: 45000,
-            status: 'completed',
-          },
-          {
-            taskId: 'legal-research',
-            agentId: 'legal-analyst',
-            output: 'Legal research completed. Found 5 relevant precedents and applicable statutes.',
-            executionTime: 60000,
-            status: 'completed',
-          },
-          {
-            taskId: 'evidence-analysis',
-            agentId: 'evidence-specialist',
-            output: 'Evidence analysis completed. All evidence meets admissibility standards.',
-            executionTime: 30000,
-            status: 'completed',
-          },
-          {
-            taskId: 'final-report',
-            agentId: 'report-writer',
-            output: caseResult.content,
-            executionTime: 25000,
-            status: 'completed',
-          }
+            taskId: 'initial-investigation', agentId: 'case-investigator', output: 'Initial investigation completed. Key evidence identified and timeline established.', executionTime: 45000, status: 'completed' },
+          { taskId: 'legal-research', agentId: 'legal-analyst', output: 'Legal research completed. Found 5 relevant precedents and applicable statutes.', executionTime: 60000, status: 'completed' },
+          { taskId: 'evidence-analysis', agentId: 'evidence-specialist', output: 'Evidence analysis completed. All evidence meets admissibility standards.', executionTime: 30000, status: 'completed' },
+          { taskId: 'final-report', agentId: 'report-writer', output: caseResult.content, executionTime: 25000, status: 'completed' }
         ];
         lastUpdate = 'Legal investigation completed';
         executionProgress = 100;
@@ -284,27 +201,9 @@ if (autoStartServices) {
         executionProgress = 30;
         const contractResult = await analyzeContractWithCrew(inputText, 'commercial', 'general');
         executionResults = [
-          {
-            taskId: 'contract-review',
-            agentId: 'contract-reviewer',
-            output: 'Contract review completed. Identified 3 high-risk clauses and 2 missing provisions.',
-            executionTime: 40000,
-            status: 'completed',
-          },
-          {
-            taskId: 'compliance-check',
-            agentId: 'compliance-officer',
-            output: 'Compliance analysis completed. Contract meets regulatory requirements with minor updates needed.',
-            executionTime: 35000,
-            status: 'completed',
-          },
-          {
-            taskId: 'negotiation-strategy',
-            agentId: 'negotiation-advisor',
-            output: contractResult.content,
-            executionTime: 20000,
-            status: 'completed',
-          }
+          { taskId: 'contract-review', agentId: 'contract-reviewer', output: 'Contract review completed. Identified 3 high-risk clauses and 2 missing provisions.', executionTime: 40000, status: 'completed' },
+          { taskId: 'compliance-check', agentId: 'compliance-officer', output: 'Compliance analysis completed. Contract meets regulatory requirements with minor updates needed.', executionTime: 35000, status: 'completed' },
+          { taskId: 'negotiation-strategy', agentId: 'negotiation-advisor', output: contractResult.content, executionTime: 20000, status: 'completed' }
         ];
         lastUpdate = 'Contract analysis completed';
         break;
@@ -346,13 +245,11 @@ if (autoStartServices) {
     }
     return `${seconds}s`;
   }
-  function downloadResults() {
-    const results = selectedProvider === 'autogen'
+  function downloadResults() { const results = selectedProvider === 'autogen'
       ? conversationMessages
       : executionResult;
     const blob = new Blob([JSON.stringify(results, null, 2)], {
-      type: 'application/json',
-    });
+      type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

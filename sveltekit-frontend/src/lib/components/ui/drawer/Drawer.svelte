@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain, call, expressions
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte, code: `{@render ...}` tags can only contain, call, expressions -->
-<script, lang="ts">
+<script lang="ts">
   import X from 'lucide-svelte';
   import { onMount } from 'svelte';
   interface Props {
@@ -59,20 +59,20 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       onclick={e => e.stopPropagation()}
       onkeydown={handleDialogKey}
     >
-      <div, class="drawer-header">
+      <div class="drawer-header">
         <div>
           {#if title}
-            <h2, class="drawer-title">{title}</h2>
+            <h2 class="drawer-title">{title}</h2>
           {/if}
           {#if description}
-            <p, class="drawer-description">{description}</p>
+            <p class="drawer-description">{description}</p>
           {/if}
         </div>
-        <button, class="drawer-close" aria-label="Close, drawer" onclick={handleClose}>
-          <X, size="24" />
+        <button class="drawer-close" aria-label="Close, drawer" onclick={handleClose}>
+          <X size="24" />
         </button>
       </div>
-      <div, class="drawer-body">
+      <div class="drawer-body">
         <slot />
       </div>
     </div>

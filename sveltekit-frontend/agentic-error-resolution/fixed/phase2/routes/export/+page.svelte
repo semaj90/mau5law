@@ -34,30 +34,20 @@
       console.error('Failed to load cases:', error);
     }
   }
-  async function exportData() {
-    exportLoading = true;
+  async function exportData() { exportLoading = true;
     exportError = null;
     exportSuccess = $state(false);
     try {
       const exportRequest = {
-        format,
-        includeEvidence,
-        includeCases,
-        includeAnalytics,
-        dateRange:
+        format, includeEvidence, includeCases, includeAnalytics, dateRange:
           dateFrom || dateTo
             ? {
-                from dateFrom || undefined,
-                to: dateTo || undefined,
-              }
+                from dateFrom || undefined, to: dateTo || undefined }
             : undefined,
         caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined,
       };
-      const response = await fetch('/api/export', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch('/api/export', { method: 'POST', headers: {
+          'Content-Type': 'application/json' },
         body: JSON.stringify(exportRequest),
       });
       if (!response.ok) {

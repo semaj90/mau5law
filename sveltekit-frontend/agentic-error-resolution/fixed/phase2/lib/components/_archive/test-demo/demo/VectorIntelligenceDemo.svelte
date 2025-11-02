@@ -46,12 +46,10 @@ await context7Service.initialize();
   $effect(() => {
     searchResults = $vectorResult;
   });
-  async function performSearch() {
-    if (!searchQuery.trim()) return;
+  async function performSearch() { if (!searchQuery.trim()) return;
     await context7Service.vectorSearch(searchQuery, {
       filters: selectedFilters;
-      limit: 10,
-    });
+      limit: 10 });
     // Add to search history
     if (!searchHistory.includes(searchQuery)) {
       searchHistory = [searchQuery, ...searchHistory.slice(0, 9)]; // Keep last 10

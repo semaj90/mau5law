@@ -9,12 +9,7 @@
   const aiRoutes: RGRouteDefinition[] = (aiGroup?.routes as RGRouteDefinition[] ) || [];
 
   // AI system statistics (mock data)
-  const aiStats = {
-    modelsActive: 5,
-    inferencesPerHour: 1247,
-    gpuUtilization: 78,
-    averageResponseTime: 0.85,
-  };
+  const aiStats = { modelsActive: 5, inferencesPerHour: 1247, gpuUtilization: 78, averageResponseTime: 0.85 };
 
   // Recent AI activities
   const recentActivities = [

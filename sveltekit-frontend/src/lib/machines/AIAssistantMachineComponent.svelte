@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { useMachine } from '@xstate/svelte';
@@ -156,16 +156,16 @@ import type { Document } from '$lib/types';
   let currentState = $derived(state.value as: string);
   let context = $derived(state.context);
 </script>
-<div class="ai-assistant-machine-demo max-w-4xl mx-auto, p-6, space-y-6">
+<div class="ai-assistant-machine-demo max-w-4xl mx-auto p-6">
   <!-- Machine, Status, Header -->
-  <div class="bg-gray-900 text-white, p-4, rounded-lg">
-    <div class="flex items-center, justify-between, mb-4">
-      <h1 class="text-2xl font-bold flex, items-center, gap-2">
-        <Brain, class="w-6, h-6" />
+  <div class="bg-gray-900 text-white p-4">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold flex items-center">
+        <Brain class="w-6" />
         AI Assistant Machine - Enhanced
       </h1>
-      <div class="flex, items-center, gap-4">
-        <div class="flex, items-center, gap-2">
+      <div class="flex items-center">
+        <div class="flex items-center">
           <div
             class="w-3 h-3 rounded-full" {currentState === 'idle'
               ? 'bg-green-500'
@@ -173,106 +173,106 @@ import type { Document } from '$lib/types';
                 ? 'bg-yellow-500'
                 : 'bg-red-500'}"
           ></div>
-          <span class="text-sm, font-mono, uppercase">{currentState}</span>
+          <span class="text-sm font-mono">{currentState}</span>
         </div>
-        <div, class="text-sm">
-          Protocol: <span, class="font-mono, text-blue-300">{context.activeProtocol}</span>
+        <div class="text-sm">
+          Protocol: <span class="font-mono">{context.activeProtocol}</span>
         </div>
         {#if enableAIEnhancements}
-          <div class="flex items-center, gap-2, text-sm">
-            <Zap class="w-4, h-4, text-yellow-400" />
-            <span, class="text-yellow-300">AI Enhanced</span>
+          <div class="flex items-center gap-2">
+            <Zap class="w-4 h-4" />
+            <span class="text-yellow-300">AI Enhanced</span>
           {/if}
       </div>
     </div>
     <!-- AI, Enhancement, Status -->
     {#if enableAIEnhancements}
-      <div class="grid grid-cols-1 md:grid-cols-2, gap-4, mb-4">
-        <div class="bg-gray-800, p-3, rounded">
-          <div class="font-semibold mb-2 flex, items-center, gap-2">
-            <Cpu, class="w-4, h-4" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-800 p-3">
+          <div class="font-semibold mb-2 flex items-center">
+            <Cpu class="w-4" />
             Current Model
           </div>
-          <div class="flex, items-center, gap-2">
-            <span, class="text-blue-300, font-mono">{currentModel}</span>
+          <div class="flex items-center">
+            <span class="text-blue-300">{currentModel}</span>
             {#if modelSwitchReason}
-              <span, class="text-xs, text-gray-400">({modelSwitchReason})</span>
+              <span class="text-xs">({modelSwitchReason})</span>
             {/if}
           </div>
         </div>
         {#if userLearningInsights}
-          <div class="bg-gray-800, p-3, rounded">
-            <div class="font-semibold mb-2 flex, items-center, gap-2">
-              <Activity, class="w-4, h-4" />
+          <div class="bg-gray-800 p-3">
+            <div class="font-semibold mb-2 flex items-center">
+              <Activity class="w-4" />
               Learning Profile
             </div>
-            <div, class="text-sm, space-y-1">
-              <div>Phase: <span, class="text-green-300, capitalize">{userLearningInsights.learningPhase}</span></div>
+            <div class="text-sm">
+              <div>Phase: <span class="text-green-300">{userLearningInsights.learningPhase}</span></div>
               <div>
-                Confidence: <span, class="text-blue-300">{Math.round(userLearningInsights.confidenceLevel * 100)}%</span>
+                Confidence: <span class="text-blue-300">{Math.round(userLearningInsights.confidenceLevel * 100)}%</span>
               </div>
             </div>
           {/if}
       {/if}
     <!-- Service, Health, Indicators -->
-    <div class="grid grid-cols-1 md:grid-cols-3, gap-4, text-sm">
-      <div class="bg-gray-800, p-3, rounded">
-        <div, class="font-semibold, mb-2">Database</div>
-        <div class="flex, items-center, gap-2">
-          <div class="w-2, h-2, rounded-full {context.databaseConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gray-800 p-3">
+        <div class="font-semibold">Database</div>
+        <div class="flex items-center">
+          <div class="w-2 h-2"></div>
           <span>{context.databaseConnected ? 'Connected' : 'Disconnected'}</span>
         </div>
-        <div, class="text-gray-400, mt-1">
+        <div class="text-gray-400">
           Latency: {context.databasePerformance?.queryLatency || 0}ms
         </div>
       </div>
-      <div class="bg-gray-800, p-3, rounded">
-        <div, class="font-semibold, mb-2">Vector Search</div>
-        <div class="flex, items-center, gap-2">
-          <div class="w-2, h-2, rounded-full {context.vectorSearchEnabled ? 'bg-green-500' : 'bg-red-500'}"></div>
+      <div class="bg-gray-800 p-3">
+        <div class="font-semibold">Vector Search</div>
+        <div class="flex items-center">
+          <div class="w-2 h-2"></div>
           <span>{context.vectorSearchEnabled ? 'Enabled' : 'Disabled'}</span>
         </div>
-        <div, class="text-gray-400, mt-1">
+        <div class="text-gray-400">
           Vectors: {context.vectorIndexStatus?.totalVectors?.toLocaleString() || 0}
         </div>
       </div>
-      <div class="bg-gray-800, p-3, rounded">
-        <div, class="font-semibold, mb-2">NATS Messaging</div>
-        <div class="flex, items-center, gap-2">
-          <div class="w-2, h-2, rounded-full {context.natsConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
+      <div class="bg-gray-800 p-3">
+        <div class="font-semibold">NATS Messaging</div>
+        <div class="flex items-center">
+          <div class="w-2 h-2"></div>
           <span>{context.natsConnected ? 'Connected' : 'Disconnected'}</span>
         </div>
-        <div, class="text-gray-400, mt-1">
+        <div class="text-gray-400">
           Streaming: {isStreaming ? 'Active' : 'Inactive'}
         </div>
       </div>
     </div>
   </div>
   <!-- Enhanced, Query, Interface -->
-  <div class="bg-white border, rounded-lg, p-6">
-    <h2 class="text-xl font-semibold mb-4 flex, items-center, gap-2">
-      <Target, class="w-5, h-5" />
+  <div class="bg-white border rounded-lg">
+    <h2 class="text-xl font-semibold mb-4 flex items-center">
+      <Target class="w-5" />
       AI Query Interface
       {#if enableAIEnhancements}
-        <span class="text-sm text-purple-600 bg-purple-100 px-2, py-1, rounded-full">Enhanced</span>
+        <span class="text-sm text-purple-600 bg-purple-100 px-2 py-1">Enhanced</span>
       {/if}
     </h2>
-    <div, class="space-y-4">
-      <div, class="relative">
-        <div, class="flex, gap-2">
-          <div, class="flex-1, relative">
+    <div class="space-y-4">
+      <div class="relative">
+        <div class="flex">
+          <div class="flex-1">
             <input
               type="text"
               bind:value={queryInput}
               placeholder="Enter your legal AI query... (AI will suggest and learn)"
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500, focus:border-transparent"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
               disabled={isProcessing}
               onkeydown={e => e.key === 'Enter' && submitQuery()}
               oninput={() => (showSuggestions = queryInput.length >= 2)}
             />
             <!-- AI, Suggestions, Dropdown -->
             {#if showSuggestions && enableAIEnhancements && queryInput.length >= 2}
-              <div class="absolute top-full left-0 right-0, z-50, mt-1">
+              <div class="absolute top-full left-0 right-0 z-50">
                 <DidYouMeanSuggestions
                   bind:query={queryInput}
                   {userId}
@@ -290,30 +290,30 @@ import type { Document } from '$lib/types';
           <button
             onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
-            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed flex items-center gap-2"
+            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
             {#if isProcessing}
-              <div class="animate-spin rounded-full h-4 w-4 border-2, border-white, border-t-transparent"></div>
+              <div class="animate-spin rounded-full h-4 w-4 border-2 border-white"></div>
               Processing...
             {:else}
-              <Brain, class="w-4, h-4" />
+              <Brain class="w-4" />
               Submit
             {/if}
           </button>
         </div>
         {#if enableAIEnhancements && currentModel && modelSwitchReason}
-          <div class="mt-2, text-sm, text-gray-600">
-            <span class="flex, items-center, gap-1">
-              <Cpu, class="w-3, h-3" />
-              Using <span, class="font-mono, text-blue-600">{currentModel}</span> - {modelSwitchReason}
+          <div class="mt-2 text-sm">
+            <span class="flex items-center">
+              <Cpu class="w-3" />
+              Using <span class="font-mono">{currentModel}</span> - {modelSwitchReason}
             </span>
           {/if}
       </div>
-      <div, class="flex, gap-2">
-        <button onclick={toggleStreaming} class="px-4 py-2 bg-purple-600 text-white, rounded-md, hover:bg-purple-700">
+      <div class="flex">
+        <button onclick={toggleStreaming} class="px-4 py-2 bg-purple-600 text-white rounded-md">
           {isStreaming ? 'Disable' : 'Enable'} Streaming
         </button>
-        <button onclick={clearConversation} class="px-4 py-2 bg-gray-600 text-white, rounded-md, hover:bg-gray-700">
+        <button onclick={clearConversation} class="px-4 py-2 bg-gray-600 text-white rounded-md">
           Clear History
         </button>
       </div>
@@ -321,15 +321,15 @@ import type { Document } from '$lib/types';
   </div>
   <!-- Current, Processing -->
   {#if context.processingQueue && context.processingQueue.length > 0}
-    <div class="bg-yellow-50 border-l-4, border-yellow-400, p-4">
-      <h3 class="font-semibold, text-yellow-800, mb-2">Processing Queue</h3>
+    <div class="bg-yellow-50 border-l-4 border-yellow-400">
+      <h3 class="font-semibold text-yellow-800">Processing Queue</h3>
       {#each Array.isArray(context.processingQueue) ? context.processingQueue : [] as job}
-        <div class="bg-white p-3, rounded, mb-2">
-          <div class="flex items-center, justify-between, mb-2">
+        <div class="bg-white p-3 rounded">
+          <div class="flex items-center justify-between">
             <span class="font-medium">{job.type?.replace.toUpperCase() || 'Unknown Job'}</span>
             <span class="text-sm text-gray-500">{Math.round((job.progress || 0) * 100)}%</span>
           </div>
-          <div class="w-full bg-gray-200, rounded-full, h-2">
+          <div class="w-full bg-gray-200 rounded-full">
             <div
               class="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style="width: {(job.progress || 0) * 100}%"
@@ -340,9 +340,9 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- Conversation, History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
-    <div class="bg-white border, rounded-lg, p-6">
-      <h2 class="text-xl, font-semibold, mb-4">Conversation History</h2>
-      <div class="space-y-4, max-h-96, overflow-y-auto">
+    <div class="bg-white border rounded-lg">
+      <h2 class="text-xl font-semibold">Conversation History</h2>
+      <div class="space-y-4 max-h-96">
         {#each Array.isArray(context.conversationHistory) ? context.conversationHistory : [] as entry}
           <div
             class="flex gap-3 p-3 rounded-lg" {entry.type === 'user'
@@ -360,12 +360,12 @@ import type { Document } from '$lib/types';
             >
               {entry.type === 'user' ? 'U' : entry.type === 'ai' ? 'AI' : '!'}
             </div>
-            <div, class="flex-1">
-              <div class="text-sm, text-gray-500, mb-1">
+            <div class="flex-1">
+              <div class="text-sm text-gray-500">
                 {new Date(entry.timestamp).toLocaleTimeString()}
                 {entry.userId && ` • User: ${entry.userId}`}
               </div>
-              <div, class="text-gray-900">{entry.content}</div>
+              <div class="text-gray-900">{entry.content}</div>
             </div>
           </div>
         {/each}
@@ -373,29 +373,29 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- Current, Response -->
   {#if context.response}
-    <div class="bg-green-50 border, rounded-lg, p-6">
-      <h2 class="text-xl, font-semibold, mb-4">AI Response</h2>
-      <div, class="prose, max-w-none">
-        <div, class="whitespace-pre-wrap">{context.response}</div>
+    <div class="bg-green-50 border rounded-lg">
+      <h2 class="text-xl font-semibold">AI Response</h2>
+      <div class="prose">
+        <div class="whitespace-pre-wrap">{context.response}</div>
         {#if isStreaming && context.streamBuffer}
-          <div class="mt-4 p-3 bg-white rounded, border-l-4, border-green-400">
-            <div class="text-sm, text-gray-600, mb-2">Streaming...</div>
-            <div, class="whitespace-pre-wrap">{context.streamBuffer}</div>
+          <div class="mt-4 p-3 bg-white rounded border-l-4">
+            <div class="text-sm text-gray-600">Streaming...</div>
+            <div class="whitespace-pre-wrap">{context.streamBuffer}</div>
           {/if}
       </div>
     {/if}
   <!-- Document, Processing -->
   {#if context.currentDocuments && context.currentDocuments.length > 0}
-    <div class="bg-white border, rounded-lg, p-6">
-      <h2 class="text-xl, font-semibold, mb-4">Document Analysis</h2>
-      <div class="grid grid-cols-1, md:grid-cols-2, gap-4">
+    <div class="bg-white border rounded-lg">
+      <h2 class="text-xl font-semibold">Document Analysis</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2">
         {#each Array.isArray(context.currentDocuments) ? context.currentDocuments : [] as doc}
-          <div class="border, rounded-lg, p-4">
-            <div, class="font-medium, mb-2">{doc.filename}</div>
-            <div class="text-sm, text-gray-600, mb-2">
+          <div class="border rounded-lg">
+            <div class="font-medium">{doc.filename}</div>
+            <div class="text-sm text-gray-600">
               {doc.contentType} • {(doc.size / 1024).toFixed(1)} KB
             </div>
-            <div class="flex, items-center, gap-2">
+            <div class="flex items-center">
               <div
                 class="w-2 h-2 rounded-full" {doc.status === 'analyzed'
                   ? 'bg-green-500'
@@ -403,11 +403,11 @@ import type { Document } from '$lib/types';
                     ? 'bg-yellow-500'
                     : 'bg-gray-400'}"
               ></div>
-              <span, class="text-sm, capitalize">{doc.status}</span>
+              <span class="text-sm">{doc.status}</span>
             </div>
             {#if doc.aiAnalysis}
-              <div, class="mt-3, text-sm">
-                <div, class="font-medium">
+              <div class="mt-3">
+                <div class="font-medium">
                   Risk Level: <span
                     class="px-2 py-1 rounded text-xs" {doc.aiAnalysis.riskLevel === 'low'
                       ? 'bg-green-100 text-green-800'
@@ -416,13 +416,13 @@ import type { Document } from '$lib/types';
                         : 'bg-red-100 text-red-800'}">{doc.aiAnalysis.riskLevel}</span"
                   >
                 </div>
-                <div, class="mt-1">Confidence: {Math.round(doc.aiAnalysis.confidence * 100)}%</div>
+                <div class="mt-1">Confidence: {Math.round(doc.aiAnalysis.confidence * 100)}%</div>
                 {#if doc.aiAnalysis.keyTerms}
-                  <div, class="mt-2">
-                    <div, class="font-medium, mb-1">Key Terms:</div>
-                    <div class="flex, flex-wrap, gap-1">
+                  <div class="mt-2">
+                    <div class="font-medium">Key Terms:</div>
+                    <div class="flex flex-wrap">
                       {#each Array.isArray(doc.aiAnalysis.keyTerms) ? doc.aiAnalysis.keyTerms : [] as term}
-                        <span class="px-2 py-1 bg-gray-100, rounded, text-xs">{term}</span>
+                        <span class="px-2 py-1 bg-gray-100 rounded">{term}</span>
                       {/each}
                     </div>
                   {/if}
@@ -433,20 +433,20 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- Collaboration, Users -->
   {#if context.collaborationUsers && context.collaborationUsers.length > 0}
-    <div class="bg-white border, rounded-lg, p-6">
-      <h2 class="text-xl, font-semibold, mb-4">Collaboration Users</h2>
-      <div class="grid grid-cols-1, md:grid-cols-3, gap-4">
+    <div class="bg-white border rounded-lg">
+      <h2 class="text-xl font-semibold">Collaboration Users</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3">
         {#each Array.isArray(context.collaborationUsers) ? context.collaborationUsers : [] as user}
-          <div class="flex items-center gap-3 p-3, border, rounded-lg">
-            <div class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center, text-sm, font-bold">
+          <div class="flex items-center gap-3 p-3 border">
+            <div class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center text-sm">
               {user.name.split.map - join('')}
             </div>
             <div>
-              <div, class="font-medium">{user.name}</div>
-              <div, class="text-sm, text-gray-600">{user.role}</div>
-              <div class="flex items-center, gap-1, mt-1">
-                <div class="w-2, h-2, rounded-full {user.status === 'active' ? 'bg-green-500' : 'bg-gray-400'}"></div>
-                <span, class="text-xs">{user.status}</span>
+              <div class="font-medium">{user.name}</div>
+              <div class="text-sm">{user.role}</div>
+              <div class="flex items-center gap-1">
+                <div class="w-2 h-2"></div>
+                <span class="text-xs">{user.status}</span>
               </div>
             </div>
           </div>
@@ -455,12 +455,12 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- Context7, Analysis -->
   {#if context.context7Analysis}
-    <div class="bg-blue-50 border, rounded-lg, p-6">
-      <h2 class="text-xl, font-semibold, mb-4">Context7 Analysis</h2>
-      <div class="grid grid-cols-1, md:grid-cols-2, gap-6">
+    <div class="bg-blue-50 border rounded-lg">
+      <h2 class="text-xl font-semibold">Context7 Analysis</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2">
         <div>
-          <h3, class="font-medium, mb-2">Framework Details</h3>
-          <div, class="space-y-2, text-sm">
+          <h3 class="font-medium">Framework Details</h3>
+          <div class="space-y-2">
             <div><strong>Framework:</strong> {context.context7Analysis.framework}</div>
             <div><strong>Version</strong> {context.context7Analysis.version}</div>
             <div><strong>Libraries:</strong> {context.context7Analysis.libraries?.join(', ')}</div>
@@ -468,8 +468,8 @@ import type { Document } from '$lib/types';
           </div>
         </div>
         <div>
-          <h3, class="font-medium, mb-2">Recommendations</h3>
-          <ul class="list-disc list-inside, text-sm, space-y-1">
+          <h3 class="font-medium">Recommendations</h3>
+          <ul class="list-disc list-inside text-sm">
             {#each Array.isArray(context.context7Analysis.recommendations || []) ? context.context7Analysis.recommendations || [] : [] as recommendation}
               <li>{recommendation}</li>
             {/each}
@@ -478,11 +478,11 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
   <!-- Debug, Information -->
-  <details class="bg-gray-50 border, rounded-lg, p-4">
-    <summary, class="cursor-pointer, font-medium">Debug Information</summary>
-    <div class="mt-4 p-4 bg-white, rounded, border">
-      <h4, class="font-medium, mb-2">Machine State</h4>
-      <pre, class="text-xs, overflow-x-auto">{JSON.stringify(state, null, 2)}</pre>
+  <details class="bg-gray-50 border rounded-lg">
+    <summary class="cursor-pointer">Debug Information</summary>
+    <div class="mt-4 p-4 bg-white rounded">
+      <h4 class="font-medium">Machine State</h4>
+      <pre class="text-xs">{JSON.stringify(state, null, 2)}</pre>
     </div>
   </details>
 </div>

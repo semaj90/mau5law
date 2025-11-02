@@ -11,15 +11,8 @@ https://svelte.dev/e/js_parse_error -->
   import { notifications  } from '$lib/stores/unified';
   export const data = null;
   // Form validation
-  const formOptions = {
-    initialValues: {
-      title: "",
-      description: "",
-      priority: "medium",
-      assignedTo: "",
-      dueDate: "",
-      tags: "",
-    },
+  const formOptions = { initialValues: {
+      title: "", description: "", priority: "medium", assignedTo: "", dueDate: "", tags: "" },
     validators: {
       title: (_value: string) => {
         if (!value || value.trim.length < 3) {
@@ -55,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
   let isSubmitting = $state(false);
   // Store form state
   let formValues = $state<{ [key: string]: any }('') >( );
-  let formErrors = $state<Record<string, string>('') >( );
+  let formErrors = $state<Record<string string>('') >( );
   let isFormValid = $state(false);
   let isFormDirty = $state(false);
   // Handle form changes
@@ -75,13 +68,10 @@ https://svelte.dev/e/js_parse_error -->
       return;
   }
     isSubmitting = true;
-    try {
-      // You can either use the form action or API endpoint
+    try { // You can either use the form action or API endpoint
       const response = await fetch("/api/cases", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        method: "POST", headers: {
+          "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
       if (response.ok) {

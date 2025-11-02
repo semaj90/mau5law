@@ -5,7 +5,7 @@ export const prerender = $state(false); // adjust if this page should be prerend
 
 // Minimal typed wrapper for page data — extend as your load() returns more fields
 export interface PageData {
-  savedCitations?: Array<Record<string, any>>;
+  savedCitations?: Array<Record<string any>>;
   // add other loaded fields here when available
 }
 
@@ -48,16 +48,7 @@ import '$lib/styles/bits-ui.css';
   import type { Citation } from '$lib/types/api';
 
   // Define emoji icons
-  const ICON = {
-    copy: '📋',
-    edit: '✏️',
-    moreVertical: '⋮',
-    plus: '➕',
-    search: '🔍',
-    star: '⭐',
-    tag: '🏷️',
-    trash2: '🗑️',
-  };
+  const ICON = { copy: '📋', edit: '✏️', moreVertical: '⋮', plus: '➕', search: '🔍', star: '⭐', tag: '🏷️', trash2: '🗑️' };
 
   // --- Local types used in this component ---
   type CitationForm = {
@@ -76,7 +67,7 @@ import '$lib/styles/bits-ui.css';
     createdAt: Date;
     updatedAt: Date;
     tags: string[]; // normalized form used in stored collection
-    contextData?: Record<string, any>;
+    contextData?: Record<string any>;
   };
 
   // --- State (Svelte 5 runes) --------------------------------
@@ -109,14 +100,7 @@ import '$lib/styles/bits-ui.css';
   });
 
   // New citation form
-  let newCitation = $state<CitationForm>({
-    title: '',
-    content: '',
-    source: '',
-    category: 'general',
-    tags: '',
-    notes: '',
-  });
+  let newCitation = $state<CitationForm>({ title: '', content: '', source: '', category: 'general', tags: '', notes: '' });
 
   // stats: ensure categoryCounts is read in template (avoid "declared but never read")
   // Categories for filtering
@@ -161,28 +145,13 @@ import '$lib/styles/bits-ui.css';
           ? newCitation.tags
           : [];
 
-      const citation: Citation & { id: string; isFavorite: boolean; savedAt: Date; createdAt: Date; updatedAt: Date } = {
-        ...newCitation,
-        tags: tagsArray,
-        id: crypto.randomUUID(),
-        isFavorite: false,
-        savedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+      const citation: Citation & { id: string; isFavorite: boolean; savedAt: Date; createdAt: Date; updatedAt: Date } = { ...newCitation, tags: tagsArray, id: crypto.randomUUID(), isFavorite: false, savedAt: new Date(), createdAt: new Date(), updatedAt: new Date() };
 
       // Local append — replace with API call as needed
       savedCitations = [...savedCitations, citation];
 
       // Reset form
-      newCitation = {
-        title: '',
-        content: '',
-        source: '',
-        category: 'general',
-        tags: '',
-        notes: '',
-      };
+      newCitation = { title: '', content: '', source: '', category: 'general', tags: '', notes: '' };
       showAddDialog = $state(false);
     } catch (error) {
       console.error('Error saving citation', error);
@@ -247,7 +216,7 @@ import '$lib/styles/bits-ui.css';
   let totalCitations = $derived(() => savedCitations.length);
   let favoriteCitations = $derived(() => savedCitations.filter((c) => c.isFavorite).length);
   let categoryCounts = $derived(() => {
-    const acc: Record<string, number> = {};
+    const acc: Record<string number> = {};
     savedCitations.forEach((citation) => {
       acc[citation.category] = (acc[citation.category] || 0) + 1;
     });

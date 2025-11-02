@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import { createMachine, assign, interpret } from 'xstate';
   import { slide } from 'svelte/transition';
@@ -176,9 +176,9 @@ import type { Document } from '$lib/types';
     return 0;
   }
 </script>
-<div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6, max-w-3xl, mx-auto">
-  <div class="flex items-center, justify-between, mb-4">
-    <h2 class="text-2xl, font-bold, text-gray-800">Enhanced Legal Processor</h2>
+<div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 max-w-3xl">
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl font-bold">Enhanced Legal Processor</h2>
     {#if !$state.matches('idle')}
       <button
         class="text-sm text-gray-500 hover:text-gray-800"
@@ -218,13 +218,13 @@ import type { Document } from '$lib/types';
         accept=".pdf,.doc,.docx,.txt"
       />
       <p class="text-gray-500">Drag & drop a document here, or click to select a file.</p>
-      <p class="text-xs, text-gray-400, mt-2">Supported formats: PDF, DOC, DOCX, TXT</p>
+      <p class="text-xs text-gray-400">Supported formats: PDF, DOC, DOCX, TXT</p>
     {/if}
   <!-- READY TO, UPLOAD, STATE -->
   {#if $state.matches('readyToUpload')}
-    <div class="bg-gray-50 p-4, rounded-lg, text-center">
-      <p, class="font-medium, text-gray-700">File selected: {$state.context.file?.name}</p>
-      <div, class="mt-4, space-x-4">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <p class="font-medium">File selected: {$state.context.file?.name}</p>
+      <div class="mt-4">
         <button
           class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
           onclick={() => send({ type: 'UPLOAD' })}
@@ -241,24 +241,24 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- PROCESSING, STATES -->
   {#if ['uploading', 'processing', 'analyzing'].some($state.matches)}
-    <div, class="space-y-4">
-      <h3 class="text-lg font-semibold, text-center, text-gray-700">
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-center">
         Processing: {$state.context.file?.name}
       </h3>
-      <div class="w-full bg-gray-200, rounded-full, h-4">
+      <div class="w-full bg-gray-200 rounded-full">
         <div
           class="bg-blue-600 h-4 rounded-full transition-all duration-500"
           style="width: {getProgress()}%"
         ></div>
       </div>
-      <p class="text-center text-blue-700, font-medium, capitalize">
+      <p class="text-center text-blue-700 font-medium">
         {$state.value.toString()}...
       </p>
     {/if}
   <!-- ERROR, STATE -->
   {#if $state.matches('error')}
-    <div class="bg-red-50 border border-red-200 text-red-800, p-4, rounded-lg" transition:slide>
-      <h3, class="font-bold">Processing Failed</h3>
+    <div class="bg-red-50 border border-red-200 text-red-800 p-4" transition:slide>
+      <h3 class="font-bold">Processing Failed</h3>
       <p>{$state.context.errorMessage}</p>
       <button
         class="mt-4 bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
@@ -269,38 +269,38 @@ import type { Document } from '$lib/types';
     {/if}
   <!-- COMPLETE, STATE: Results -->
   {#if $state.matches('complete')}
-    <div, class="space-y-6" transition:slide>
-      <div class="bg-green-50 border border-green-200 text-green-800, p-4, rounded-lg">
-        <h3, class="font-bold, text-lg">✅ Processing Complete</h3>
+    <div class="space-y-6" transition:slide>
+      <div class="bg-green-50 border border-green-200 text-green-800 p-4">
+        <h3 class="font-bold">✅ Processing Complete</h3>
         <p>Document, '{$state.context.file?.name}' has been successfully analyzed.</p>
       </div>
-      <div class="grid grid-cols-1, md:grid-cols-2, gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2">
         <!-- Processing, Results -->
-        <div class="bg-white rounded-lg border, border-gray-200, p-4">
-          <h4 class="font-semibold, text-gray-800, mb-3">Extraction Results</h4>
-          <div, class="space-y-2, text-sm">
-            <div, class="flex, justify-between">
-              <span, class="text-gray-600">Document ID:</span>
-              <span, class="font-mono, text-xs">{$state.context.documentId}</span>
+        <div class="bg-white rounded-lg border border-gray-200">
+          <h4 class="font-semibold text-gray-800">Extraction Results</h4>
+          <div class="space-y-2">
+            <div class="flex">
+              <span class="text-gray-600">Document ID:</span>
+              <span class="font-mono">{$state.context.documentId}</span>
             </div>
-            <div, class="flex, justify-between">
-              <span, class="text-gray-600">Pages Extracted:</span>
-              <span, class="font-medium">{$state.context.processingResults?.pages}</span>
+            <div class="flex">
+              <span class="text-gray-600">Pages Extracted:</span>
+              <span class="font-medium">{$state.context.processingResults?.pages}</span>
             </div>
             <div>
-              <span, class="text-gray-600">Extracted Text (preview):</span>
-              <p class="mt-1 p-2 bg-gray-50 rounded text-gray-700 text-xs, max-h-24, overflow-y-auto">
+              <span class="text-gray-600">Extracted Text (preview):</span>
+              <p class="mt-1 p-2 bg-gray-50 rounded text-gray-700 text-xs max-h-24">
                 {$state.context.processingResults?.extractedText.substring(0, 200)}...
               </p>
             </div>
           </div>
         </div>
         <!-- AI, Analysis, Results -->
-        <div class="bg-white rounded-lg border, border-gray-200, p-4">
-          <h4 class="font-semibold, text-gray-800, mb-3">AI Analysis</h4>
-          <div, class="space-y-2, text-sm">
-            <div class="flex, justify-between, items-center">
-              <span, class="text-gray-600">Risk Score:</span>
+        <div class="bg-white rounded-lg border border-gray-200">
+          <h4 class="font-semibold text-gray-800">AI Analysis</h4>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Risk Score:</span>
               <span
                 class="font-bold text-lg"
                 class:text-green-600={$state.context.analysisResults?.riskScore < 0.5}
@@ -312,18 +312,18 @@ import type { Document } from '$lib/types';
               </span>
             </div>
             <div>
-              <span, class="text-gray-600">Key Entities:</span>
-              <div class="flex flex-wrap, gap-1, mt-1">
+              <span class="text-gray-600">Key Entities:</span>
+              <div class="flex flex-wrap gap-1">
                 {#each Array.isArray($state.context.analysisResults?.keyEntities) ? $state.context.analysisResults?.keyEntities : [] as entity}
-                  <span class="bg-blue-100 text-blue-800 px-2 py-1, rounded-full, text-xs">
+                  <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                     {entity}
                   </span>
                 {/each}
               </div>
             </div>
             <div>
-              <span, class="text-gray-600">AI Summary:</span>
-              <p class="mt-1 p-2 bg-gray-50 rounded, text-gray-700, text-xs">
+              <span class="text-gray-600">AI Summary:</span>
+              <p class="mt-1 p-2 bg-gray-50 rounded text-gray-700">
                 {$state.context.analysisResults?.summary}
               </p>
             </div>

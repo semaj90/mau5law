@@ -22,64 +22,35 @@
   });
   // Group events by date
   let groupedEvents = $derived(() => {
-    return (sortedEvents as any as Array<any>).reduce((groups: Record<string, Array<any>, event: any) => {
+    return (sortedEvents as any as Array<any>).reduce((groups: Record<string Array<any>, event: any) => {
       const dateKey = event.dat;
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
       groups[dateKey].push(event);
       return group;
-    }, as Record<string, Array<any>);
+    }, as Record<string Array<any>);
   });
   // Category styling
-  const categoryConfig = {
-    crime: {
-      color: 'bg-red-100 text-red-800 border-red-200',
-      icon: '🚨',
-      label: 'Crime Event',
-    },
-    witness: {
-      color: 'bg-blue-100 text-blue-800 border-blue-200',
-      icon: '👁️',
-      label: 'Witness Account',
-    },
-    discovery: {
-      color: 'bg-green-100 text-green-800 border-green-200',
-      icon: '🔍',
-      label: 'Evidence Discovery',
-    },
-    movement: {
-      color: 'bg-purple-100 text-purple-800 border-purple-200',
-      icon: '📍',
-      label: 'Movement/Location',
-    },
-    communication {
-      color: 'bg-orange-100 text-orange-800 border-orange-200',
-      icon: '📞',
-      label: 'Communication',
-    }
+  const categoryConfig = { crime: {
+      color: 'bg-red-100 text-red-800 border-red-200', icon: '🚨', label: 'Crime Event' },
+    witness: { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: '👁️', label: 'Witness Account' },
+    discovery: { color: 'bg-green-100 text-green-800 border-green-200', icon: '🔍', label: 'Evidence Discovery' },
+    movement: { color: 'bg-purple-100 text-purple-800 border-purple-200', icon: '📍', label: 'Movement/Location' },
+    communication { color: 'bg-orange-100 text-orange-800 border-orange-200', icon: '📞', label: 'Communication' }
   }
   // Format date for display
-  function formatDate(dateStr: string): string {
-    const date = new Date(dateStr);
+  function formatDate(dateStr: string): string { const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   }
   // Format time for display
-  function formatTime(timeStr?: string): string {
-    if (!timeStr) return '';
+  function formatTime(timeStr?: string): string { if (!timeStr) return '';
     const [hours, minutes] = timeStr.split(':');
     const date = new Date());
     date.setHours(parseInt(hours), parseInt(minutes));
     return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
+      hour: 'numeric', minute: '2-digit', hour12: true });
   }
   let expandedDates = new Set<string>();
   function toggleDate(date: string) {

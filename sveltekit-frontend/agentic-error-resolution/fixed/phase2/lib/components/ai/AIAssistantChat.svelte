@@ -5,19 +5,7 @@
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import  Switch  from "$lib/components/ui/switch/Switch.svelte";
   import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
-  import {
-    aiAssistantManager,
-    isAIActive,
-    isProcessing,
-    currentResponse,
-    conversationHistory,
-    currentModel,
-    currentTemperature,
-    aiError,
-    clusterHealth,
-    context7Analysis,
-    aiUsage,
-  } from '$lib/stores/aiAssistant.svelte.js';
+  import { aiAssistantManager, isAIActive, isProcessing, currentResponse, conversationHistory, currentModel, currentTemperature, aiError, clusterHealth, context7Analysis, aiUsage } from '$lib/stores/aiAssistant.svelte.js';
   import { unifiedAIService } from '$lib/ai/unified-ai-service.js';
   import type { UnifiedQueryOptions } from '$lib/ai/unified-ai-service.js';
   // Component props using Svelte 5 $props()
@@ -46,11 +34,7 @@
     const health = clusterHealth() || {}
     const healthyCount = Object.values(health).filter(Boolean).length;
     const total = Object.keys(health).length;
-    return {
-      healthy: total > 0 ? healthyCount === total : false,
-      count: healthyCount,
-      total,
-    }
+    return { healthy: total > 0 ? healthyCount === total : false, count: healthyCount, total }
   }
   // Component lifecycle
   $effect(() => {
@@ -86,40 +70,26 @@
     }
   });
   // Send message to AI
-  async function sendMessage() {
-    if (!canSend()) return;
+  async function sendMessage() { if (!canSend()) return;
     const message = currentMessage.trim();
     currentMessage = '';
     try {
       if (useUnifiedService) {
         // Use unified AI service
         const options: UnifiedQueryOptions = {
-          query: message,
-          mode: selectedMode === 'auto' ? undefined : selectedMode,
-          useContext7: enableContext7 && useContext7,
-          maxResults: 10,
-          threshold: 0.7,
-        }
+          query: message, mode: selectedMode === 'auto' ? undefined : selectedMode, useContext7: enableContext7 && useContext7, maxResults: 10, threshold: 0.7 }
         // removed unused response assignment
         if (response.success) {
           console.log('📝 Unified AI Response:', response);
           // Handle unified service response
-        } else {
-          console.error('Unified AI query failed:', response.error);
+        } else { console.error('Unified AI query failed:', response.error);
           // Fall back to regular AI assistant
           await aiAssistantManager.sendMessage(message, {
-            useContext7: enableContext7 && useContext7,
-            model: currentModel(),
-            temperature: currentTemperature(),
-          });
+            useContext7: enableContext7 && useContext7, model: currentModel(), temperature: currentTemperature() });
         }
-      } else {
-        // Use regular AI assistant manager
+      } else { // Use regular AI assistant manager
         await aiAssistantManager.sendMessage(message, {
-          useContext7: enableContext7 && useContext7,
-          model: currentModel(),
-          temperature: currentTemperature(),
-        });
+          useContext7: enableContext7 && useContext7, model: currentModel(), temperature: currentTemperature() });
       }
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -138,11 +108,8 @@
     }
   }
   // Format timestamp
-  function formatTime(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
+  function formatTime(date: Date): string { return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit', minute: '2-digit' }).format(date);
   }
   // Get message role color
   function getRoleColor(role: string): string {

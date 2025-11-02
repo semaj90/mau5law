@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 	// Replace broken named imports with safe namespace import + fallbacks
 	import { browser } from '$app/environment';
@@ -10,7 +10,7 @@ import type { Case } from '$lib/types';
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
 	function createFileUploader(url: string) {
 		type UploadFile = { id: string; file: File; name: string; progress: number; error?: boolean };
-		const, events: Record<string, Function[]> = {};
+		const events: Record<string Function[]> = {};
 		const files: UploadFile[] = [];
 
 		async function uploadImpl(file: File): Promise<any> {
@@ -91,7 +91,7 @@ import type { Case } from '$lib/types';
 	);
 
 	// --- Add missing reactive state used by the template / health checks ---
-	let systemStatus: Record<string, string> = {
+	let systemStatus: Record<string string> = {
 		database: 'checking',
 		redis: 'checking',
 		ollama: 'checking',
@@ -239,7 +239,7 @@ import type { Case } from '$lib/types';
 	// lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
   function escapeHtml(str: string) {
     const s = String(str ?? '');
-    const map: Record<string, string> = {
+    const map: Record<string string> = {
 			'&': '&amp;',
 			'<': '&lt;',
 			'>': '&gt;',
@@ -262,23 +262,23 @@ import type { Case } from '$lib/types';
   <meta name="description" content="Advanced legal AI platform with, GPU-accelerated, processing" />
 </svelte:head>
 
-<div, class="home-page, p-6">
+<div class="home-page">
   <!-- Hero, Section -->
-  <div class="nes-container is-dark, with-title, hero-section-custom">
-    <p, class="title">Platform Overview</p>
-    <h1, class="nes-text, is-primary">⚖️ YoRHa Legal AI Platform</h1>
-    <p class="nes-text, is-success, subtitle-custom">GPU-Accelerated Legal Intelligence System</p>
-    <p class="nes-text, is-disabled, tech-stack-custom">
+  <div class="nes-container is-dark with-title">
+    <p class="title">Platform Overview</p>
+    <h1 class="nes-text">⚖️ YoRHa Legal AI Platform</h1>
+    <p class="nes-text is-success">GPU-Accelerated Legal Intelligence System</p>
+    <p class="nes-text is-disabled">
       SvelteKit, 2 · Svelte, 5 · PostgreSQL, 17 · Redis · Gemma3 Legal · RTX GPU
     </p>
 
     <!-- Auth, Buttons -->
-    <div, class="auth-buttons-flex">
+    <div class="auth-buttons-flex">
       <div>
         <LoginButton />
       </div>
       <div>
-        <button, class="nes-btn, is-success" onclick={openRegister}>Register</button>
+        <button class="nes-btn" onclick={openRegister}>Register</button>
       </div>
 
       <!-- Svelte 5: components are dynamic by default in, runes, mode -->
@@ -293,40 +293,40 @@ import type { Case } from '$lib/types';
   </div>
 
   <!-- System, Status -->
-  <div class="nes-container is-dark, with-title, status-section-custom">
-    <p, class="title">🔧 System Status</p>
-    <div class="nes-container, is-dark, status-grid-custom">
-      <div class="nes-container is-dark, is-small, status-item-custom">
-        <span class="nes-text, is-primary, status-label-custom">Database</span>
-        <span, class="nes-text {getStatusColor(systemStatus.database)}">
+  <div class="nes-container is-dark with-title">
+    <p class="title">🔧 System Status</p>
+    <div class="nes-container is-dark">
+      <div class="nes-container is-dark is-small">
+        <span class="nes-text is-primary">Database</span>
+        <span class="nes-text {getStatusColor(systemStatus.database)}">
           {getStatusIcon(systemStatus.database)}
           {systemStatus.database}
         </span>
       </div>
-      <div class="nes-container is-dark, is-small, status-item-custom">
-        <span class="nes-text, is-primary, status-label-custom">Redis Cache</span>
-        <span, class="nes-text {getStatusColor(systemStatus.redis)}">
+      <div class="nes-container is-dark is-small">
+        <span class="nes-text is-primary">Redis Cache</span>
+        <span class="nes-text {getStatusColor(systemStatus.redis)}">
           {getStatusIcon(systemStatus.redis)}
           {systemStatus.redis}
         </span>
       </div>
-      <div class="nes-container is-dark, is-small, status-item-custom">
-        <span class="nes-text, is-primary, status-label-custom">Ollama AI</span>
-        <span, class="nes-text {getStatusColor(systemStatus.ollama)}">
+      <div class="nes-container is-dark is-small">
+        <span class="nes-text is-primary">Ollama AI</span>
+        <span class="nes-text {getStatusColor(systemStatus.ollama)}">
           {getStatusIcon(systemStatus.ollama)}
           {systemStatus.ollama}
         </span>
       </div>
-      <div class="nes-container is-dark, is-small, status-item-custom">
-        <span class="nes-text, is-primary, status-label-custom">GPU Compute</span>
-        <span, class="nes-text {getStatusColor(systemStatus.gpu)}">
+      <div class="nes-container is-dark is-small">
+        <span class="nes-text is-primary">GPU Compute</span>
+        <span class="nes-text {getStatusColor(systemStatus.gpu)}">
           {getStatusIcon(systemStatus.gpu)}
           {systemStatus.gpu}
         </span>
       </div>
-      <div class="nes-container is-dark, is-small, status-item-custom">
-        <span class="nes-text, is-primary, status-label-custom">Background Workers</span>
-        <span, class="nes-text {getStatusColor(systemStatus.workers)}">
+      <div class="nes-container is-dark is-small">
+        <span class="nes-text is-primary">Background Workers</span>
+        <span class="nes-text {getStatusColor(systemStatus.workers)}">
           {getStatusIcon(systemStatus.workers)}
           {systemStatus.workers}
         </span>
@@ -335,30 +335,30 @@ import type { Case } from '$lib/types';
 
     <!-- Worker, Details, Panel -->
     {#if systemStatus.workers !== 'checking'}
-      <div class="nes-container is-dark, with-title, worker-details-custom">
-        <p, class="title">🔧 Worker Status Details</p>
-        <div, class="workers-grid-custom">
-          <div class="nes-container, is-dark, worker-card-custom {workerDetails.ocr.healthy ? 'is-success' : 'is-error'}">
-            <div, class="worker-header-custom">
-              <span, class="worker-icon-custom">📄</span>
-              <h4, class="nes-text, is-primary">OCR Worker</h4>
+      <div class="nes-container is-dark with-title">
+        <p class="title">🔧 Worker Status Details</p>
+        <div class="workers-grid-custom">
+          <div class="nes-container is-dark">
+            <div class="worker-header-custom">
+              <span class="worker-icon-custom">📄</span>
+              <h4 class="nes-text">OCR Worker</h4>
             </div>
-            <div, class="worker-stats-custom">
-              <p, class="nes-text, is-white">
-                Status: <strong, class="nes-text {getStatusColor(workerDetails.ocr.status)}"
+            <div class="worker-stats-custom">
+              <p class="nes-text">
+                Status: <strong class="nes-text {getStatusColor(workerDetails.ocr.status)}"
                   >{workerDetails.ocr.status}</strong
                 >
               </p>
-              <p, class="nes-text, is-white">
+              <p class="nes-text">
                 Processed: <strong class="nes-text is-success">{workerDetails.ocr.processedJobs || 0}</strong>
               </p>
-              <p, class="nes-text, is-white">
+              <p class="nes-text">
                 Queue: <strong class="nes-text is-warning">{workerDetails.ocr.queueDepth || 0}</strong>
               </p>
             </div>
-            <div, class="worker-tech-custom">
-              <span, class="tech-badge">GPU Tesseract</span>
-              <span, class="tech-badge">MinIO</span>
+            <div class="worker-tech-custom">
+              <span class="tech-badge">GPU Tesseract</span>
+              <span class="tech-badge">MinIO</span>
             </div>
           </div>
 
@@ -367,50 +367,50 @@ import type { Case } from '$lib/types';
               ? 'is-success'
               : 'is-error'}"
           >
-            <div, class="worker-header-custom">
-              <span, class="worker-icon-custom">🧠</span>
-              <h4, class="nes-text, is-primary">Embedding Worker</h4>
+            <div class="worker-header-custom">
+              <span class="worker-icon-custom">🧠</span>
+              <h4 class="nes-text">Embedding Worker</h4>
             </div>
-            <div, class="worker-stats-custom">
-              <p, class="nes-text, is-white">
-                Status: <strong, class="nes-text {getStatusColor(workerDetails.embedding.status)}"
+            <div class="worker-stats-custom">
+              <p class="nes-text">
+                Status: <strong class="nes-text {getStatusColor(workerDetails.embedding.status)}"
                   >{workerDetails.embedding.status}</strong
                 >
               </p>
-              <p, class="nes-text, is-white">
+              <p class="nes-text">
                 Processed: <strong class="nes-text is-success">{workerDetails.embedding.processedJobs || 0}</strong>
               </p>
-              <p, class="nes-text, is-white">
+              <p class="nes-text">
                 Queue: <strong class="nes-text is-warning">{workerDetails.embedding.queueDepth || 0}</strong>
               </p>
             </div>
-            <div, class="worker-tech-custom">
-              <span, class="tech-badge">embeddinggemma:latest</span>
-              <span, class="tech-badge">Qdrant</span>
-              <span, class="tech-badge">pgvector</span>
+            <div class="worker-tech-custom">
+              <span class="tech-badge">embeddinggemma:latest</span>
+              <span class="tech-badge">Qdrant</span>
+              <span class="tech-badge">pgvector</span>
             </div>
           </div>
 
           <div
             class="nes-container is-dark worker-card-custom {workerDetails.autotag.healthy ? 'is-success' : 'is-error'}"
           >
-            <div, class="worker-header-custom">
-              <span, class="worker-icon-custom">🏷️</span>
-              <h4, class="nes-text, is-primary">Autotag Worker</h4>
+            <div class="worker-header-custom">
+              <span class="worker-icon-custom">🏷️</span>
+              <h4 class="nes-text">Autotag Worker</h4>
             </div>
-            <div, class="worker-stats-custom">
-              <p, class="nes-text, is-white">
-                Status: <strong, class="nes-text {getStatusColor(workerDetails.autotag.status)}"
+            <div class="worker-stats-custom">
+              <p class="nes-text">
+                Status: <strong class="nes-text {getStatusColor(workerDetails.autotag.status)}"
                   >{workerDetails.autotag.status}</strong
                 >
               </p>
-              <p, class="nes-text, is-white">
+              <p class="nes-text">
                 Processed: <strong class="nes-text is-success">{workerDetails.autotag.processedJobs || 0}</strong>
               </p>
-              <p, class="nes-text, is-white">Type: <strong, class="nes-text, is-disabled">Optional</strong></p>
+              <p class="nes-text">Type: <strong class="nes-text">Optional</strong></p>
             </div>
-            <div, class="worker-tech-custom">
-              <span, class="tech-badge">gemma3-legal:latest</span>
+            <div class="worker-tech-custom">
+              <span class="tech-badge">gemma3-legal:latest</span>
             </div>
           </div>
         </div>
@@ -419,140 +419,140 @@ import type { Case } from '$lib/types';
   </div>
 
   <!-- Quick, Stats -->
-  <div class="nes-container is-dark, with-title, stats-section-custom">
-    <p, class="title">📊 Platform Statistics</p>
-    <div, class="quick-stats-custom">
-      <div class="nes-container, is-dark, stat-card-custom">
-        <div, class="stat-icon-custom">📁</div>
-        <div, class="stat-content-custom">
-          <h3, class="nes-text, is-white">Total Cases</h3>
-          <p class="nes-text, is-success, stat-value-custom">{loading ? '...' : stats.totalCases}</p>
+  <div class="nes-container is-dark with-title">
+    <p class="title">📊 Platform Statistics</p>
+    <div class="quick-stats-custom">
+      <div class="nes-container is-dark">
+        <div class="stat-icon-custom">📁</div>
+        <div class="stat-content-custom">
+          <h3 class="nes-text">Total Cases</h3>
+          <p class="nes-text is-success">{loading ? '...' : stats.totalCases}</p>
         </div>
       </div>
-      <div class="nes-container, is-dark, stat-card-custom">
-        <div, class="stat-icon-custom">📄</div>
-        <div, class="stat-content-custom">
-          <h3, class="nes-text, is-white">Evidence Items</h3>
-          <p class="nes-text, is-success, stat-value-custom">{loading ? '...' : stats.totalEvidence}</p>
+      <div class="nes-container is-dark">
+        <div class="stat-icon-custom">📄</div>
+        <div class="stat-content-custom">
+          <h3 class="nes-text">Evidence Items</h3>
+          <p class="nes-text is-success">{loading ? '...' : stats.totalEvidence}</p>
         </div>
       </div>
-      <div class="nes-container, is-dark, stat-card-custom">
-        <div, class="stat-icon-custom">⚙️</div>
-        <div, class="stat-content-custom">
-          <h3, class="nes-text, is-white">Processing Jobs</h3>
-          <p class="nes-text, is-success, stat-value-custom">{loading ? '...' : stats.processingJobs}</p>
+      <div class="nes-container is-dark">
+        <div class="stat-icon-custom">⚙️</div>
+        <div class="stat-content-custom">
+          <h3 class="nes-text">Processing Jobs</h3>
+          <p class="nes-text is-success">{loading ? '...' : stats.processingJobs}</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Featured: YoRHa, Detective, Interface -->
-  <div, class="featured-section-custom">
-    <a href="/yorha-detective" class="nes-container is-dark, with-title, featured-card-custom">
-      <p, class="title">✨ NEW: YoRHa Detective Interface</p>
-      <div, class="featured-badge">✨ NEW</div>
-      <div, class="featured-icon-custom">🎮⚔️</div>
-      <h2, class="nes-text, is-success">YoRHa Detective Command Center</h2>
-      <p class="nes-text, is-white, featured-description-custom">
+  <div class="featured-section-custom">
+    <a href="/yorha-detective" class="nes-container is-dark with-title">
+      <p class="title">✨ NEW: YoRHa Detective Interface</p>
+      <div class="featured-badge">✨ NEW</div>
+      <div class="featured-icon-custom">🎮⚔️</div>
+      <h2 class="nes-text">YoRHa Detective Command Center</h2>
+      <p class="nes-text is-white">
         Full-featured AI detective interface with real-time Ollama chat, PostgreSQL chat history, and retro gaming
         aesthetic. Stream responses from Gemma3-Legal with, 30 GPU layers!
       </p>
-      <div, class="featured-tech-custom">
-        <span, class="tech-badge">Ollama Streaming</span>
-        <span, class="tech-badge">PostgreSQL</span>
-        <span, class="tech-badge">pgvector</span>
-        <span, class="tech-badge">GPU, 30 Layers</span>
+      <div class="featured-tech-custom">
+        <span class="tech-badge">Ollama Streaming</span>
+        <span class="tech-badge">PostgreSQL</span>
+        <span class="tech-badge">pgvector</span>
+        <span class="tech-badge">GPU, 30 Layers</span>
       </div>
-      <span class="nes-btn, is-success, featured-button-custom">Launch Detective Interface →</span>
+      <span class="nes-btn is-success">Launch Detective Interface →</span>
     </a>
   </div>
 
   <!-- Feature, Grid -->
-  <div class="nes-container is-dark, with-title, features-section-custom">
-    <p, class="title">🚀 Platform Features</p>
-    <div, class="action-grid-custom">
-      <a href="/cases" class="nes-container, is-dark, action-card-custom">
-        <div, class="card-icon-custom">⚖️</div>
-        <h3, class="nes-text, is-primary">Case Management</h3>
-        <p, class="nes-text, is-white">Organize and track legal cases with AI-powered insights</p>
-        <span class="nes-btn, is-primary, card-button-custom">Open Cases →</span>
+  <div class="nes-container is-dark with-title">
+    <p class="title">🚀 Platform Features</p>
+    <div class="action-grid-custom">
+      <a href="/cases" class="nes-container is-dark">
+        <div class="card-icon-custom">⚖️</div>
+        <h3 class="nes-text">Case Management</h3>
+        <p class="nes-text">Organize and track legal cases with AI-powered insights</p>
+        <span class="nes-btn is-primary">Open Cases →</span>
       </a>
 
-      <a href="/evidence" class="nes-container, is-dark, action-card-custom">
-        <div, class="card-icon-custom">📁</div>
-        <h3, class="nes-text, is-primary">Evidence Processing</h3>
-        <p, class="nes-text, is-white">Upload, analyze, and extract insights from legal documents</p>
-        <span class="nes-btn, is-primary, card-button-custom">Manage Evidence →</span>
+      <a href="/evidence" class="nes-container is-dark">
+        <div class="card-icon-custom">📁</div>
+        <h3 class="nes-text">Evidence Processing</h3>
+        <p class="nes-text">Upload, analyze, and extract insights from legal documents</p>
+        <span class="nes-btn is-primary">Manage Evidence →</span>
       </a>
 
-      <a href="/ai/chat" class="nes-container, is-dark, action-card-custom">
-        <div, class="card-icon-custom">💬</div>
-        <h3, class="nes-text, is-primary">AI Assistant</h3>
-        <p, class="nes-text, is-white">Interactive legal AI chat with Gemma3 Legal model</p>
-        <span class="nes-btn, is-primary, card-button-custom">Start Chat →</span>
+      <a href="/ai/chat" class="nes-container is-dark">
+        <div class="card-icon-custom">💬</div>
+        <h3 class="nes-text">AI Assistant</h3>
+        <p class="nes-text">Interactive legal AI chat with Gemma3 Legal model</p>
+        <span class="nes-btn is-primary">Start Chat →</span>
       </a>
 
-      <a href="/rag" class="nes-container, is-dark, action-card-custom">
-        <div, class="card-icon-custom">🤖</div>
-        <h3, class="nes-text, is-primary">RAG Knowledge Base</h3>
-        <p, class="nes-text, is-white">Upload documents, semantic search with embeddinggemma + MinIO + Qdrant</p>
-        <span class="nes-btn, is-primary, card-button-custom">Open RAG System →</span>
+      <a href="/rag" class="nes-container is-dark">
+        <div class="card-icon-custom">🤖</div>
+        <h3 class="nes-text">RAG Knowledge Base</h3>
+        <p class="nes-text">Upload documents, semantic search with embeddinggemma + MinIO + Qdrant</p>
+        <span class="nes-btn is-primary">Open RAG System →</span>
       </a>
 
-      <a href="/yorha" class="nes-container, is-dark, action-card-custom">
-        <div, class="card-icon-custom">🎮</div>
-        <h3, class="nes-text, is-primary">YoRHa Command</h3>
-        <p, class="nes-text, is-white">Advanced command center with real-time monitoring</p>
-        <span class="nes-btn, is-primary, card-button-custom">Open Command →</span>
+      <a href="/yorha" class="nes-container is-dark">
+        <div class="card-icon-custom">🎮</div>
+        <h3 class="nes-text">YoRHa Command</h3>
+        <p class="nes-text">Advanced command center with real-time monitoring</p>
+        <span class="nes-btn is-primary">Open Command →</span>
       </a>
 
-      <a href="/endpoints" class="nes-container, is-dark, action-card-custom">
-        <div, class="card-icon-custom">📊</div>
-        <h3, class="nes-text, is-primary">API Status</h3>
-        <p, class="nes-text, is-white">Monitor backend services and health endpoints</p>
-        <span class="nes-btn, is-primary, card-button-custom">View Status →</span>
+      <a href="/endpoints" class="nes-container is-dark">
+        <div class="card-icon-custom">📊</div>
+        <h3 class="nes-text">API Status</h3>
+        <p class="nes-text">Monitor backend services and health endpoints</p>
+        <span class="nes-btn is-primary">View Status →</span>
       </a>
     </div>
   </div>
 
   <!-- Quick, Actions -->
-  <div class="nes-container is-dark, with-title, quick-actions-custom">
-    <p, class="title">⚡ Quick Actions</p>
-    <div, class="action-buttons-custom">
-      <a href="/yorha-detective" class="nes-btn, is-success, quick-button-detective">🎮 Detective Interface</a>
-      <a href="/cases/create" class="nes-btn, is-primary, quick-button-success">+ New Case</a>
-      <a href="/evidence/upload" class="nes-btn, is-warning, quick-button-legal">📤 Upload Evidence</a>
-      <a href="/ai/chat" class="nes-btn, is-error, quick-button-neural">💬 Ask AI</a>
+  <div class="nes-container is-dark with-title">
+    <p class="title">⚡ Quick Actions</p>
+    <div class="action-buttons-custom">
+      <a href="/yorha-detective" class="nes-btn is-success">🎮 Detective Interface</a>
+      <a href="/cases/create" class="nes-btn is-primary">+ New Case</a>
+      <a href="/evidence/upload" class="nes-btn is-warning">📤 Upload Evidence</a>
+      <a href="/ai/chat" class="nes-btn is-error">💬 Ask AI</a>
     </div>
   </div>
 
   <!-- AI, Query, Section -->
-  <div class="nes-container is-dark, with-title, ai-query-section-custom">
-    <p, class="title">🧠 AI Query Interface</p>
-    <div, class="query-box">
+  <div class="nes-container is-dark with-title">
+    <p class="title">🧠 AI Query Interface</p>
+    <div class="query-box">
       <input type="text" placeholder="Enter your, legal, query..." bind:value={userQuery} onkeydown={onKey} />
-      <button, onclick={handleSubmit}>Run</button>
+      <button onclick={handleSubmit}>Run</button>
     </div>
 
     {#if $engineState === 'processing'}
-      <div, class="status">Generating recommendations... 🔄</div>
+      <div class="status">Generating recommendations... 🔄</div>
     {:else if $engineState === 'success'}
-      <div, class="status">Results ready ✅</div>
+      <div class="status">Results ready ✅</div>
     {:else if $engineState === 'failure'}
-      <div, class="status" style="color:#c53030">Failed to generate recommendations</div>
+      <div class="status" style="color:#c53030">Failed to generate recommendations</div>
     {/if}
 
     {#if $errorMessage}
-      <div, style="color:#c53030; margin-top:.6rem">{$errorMessage}</div>
+      <div style="color:#c53030; margin-top:.6rem">{$errorMessage}</div>
     {/if}
 
     {#if $displayRecommendations && $displayRecommendations.length > 0}
-      <div, class="recommendation-cards" aria-live="polite">
+      <div class="recommendation-cards" aria-live="polite">
         {#each $displayRecommendations as rec (rec.id)}
-          <div, class="card {rec.type === 'suggestion' ? 'dym' : ($engineState === 'processing' ? 'streaming' : '')}">
+          <div class="card {rec.type === 'suggestion' ? 'dym' : ($engineState === 'processing' ? 'streaming' : '')}">
             <div>
               <strong>{(rec.type || '').toUpperCase()}</strong>
-              <div, style="margin-top:.35rem;">
+              <div style="margin-top:.35rem;">
                 {#if rec.content}
                   {@html escapeHtml(rec.content)}
                 {:else if rec.suggestedQuery}
@@ -564,7 +564,7 @@ import type { Case } from '$lib/types';
                 {/if}
               </div>
             </div>
-            <div, class="meta">
+            <div class="meta">
               <span>Confidence: {Math.round((rec.confidence ?? rec.relevance ?? 0) * 100)}%</span>
               {#if rec.estimatedTime}
                 <span>ETA: {rec.estimatedTime}</span>
@@ -577,7 +577,7 @@ import type { Case } from '$lib/types';
   </div>
 
   <!-- File, Uploader, Section -->
-  <div class="p-6 bg-white, rounded-2xl, shadow">
+  <div class="p-6 bg-white rounded-2xl">
   <input
     type="file"
     multiple
@@ -587,7 +587,7 @@ import type { Case } from '$lib/types';
       }}
   />
 	{#each uploader.files as file (file.id)}
-		<p, class="text-sm, mt-2">{file.name} – {file.progress}%</p>
+		<p class="text-sm">{file.name} – {file.progress}%</p>
 	{/each}
 </div>
 </div>

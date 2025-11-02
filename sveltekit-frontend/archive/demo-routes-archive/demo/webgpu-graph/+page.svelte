@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
     demoState.update(state => ({ ...state, isGeneratingData: true });
     try {
       // Generate sample documents
-      const sampleDocs: Omit<DocumentCache, 'id'>[] = [
+      const sampleDocs: Omit<DocumentCache 'id'>[] = [
         {
           documentId: 'contract-001',
           hash: LegalDBUtils.createHash('contract-001-content'),
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Generate sample graph data
-      const graphData: Omit<GraphVisualizationData, 'id'> = {
+      const graphData: Omit<GraphVisualizationData 'id'> = {
         graphId: $demoState.selectedGraphId,
         graphType: 'legal-entities',
         nodes: [
@@ -1120,8 +1120,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.8rem;
   }
 
-  .result-type,
-  .result-lod {
+  .result-type .result-lod {
     background: #f3f4f6;
     padding: 0.25rem 0.5rem;
     border-radius: 3px;

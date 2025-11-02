@@ -2,7 +2,7 @@
   Enhanced Bits - Editor Card
   Card component optimized for editor interfaces
 -->
-<script, lang="ts">
+<script lang="ts">
   interface Props {
     title?: string;
     modified?: boolean;
@@ -10,15 +10,15 @@
   }
   let { title, modified = false, children }: Props = $props();
 </script>
-<div, class="editor-card">
+<div class="editor-card">
   {#if title}
-    <div, class="editor-card-header">
+    <div class="editor-card-header">
       <h3>{title}</h3>
       {#if modified}
-        <span, class="modified-badge">Modified</span>
+        <span class="modified-badge">Modified</span>
       {/if}
     {/if}
-  <div, class="editor-card-content">
+  <div class="editor-card-content">
     <slot />
   </div>
 </div>

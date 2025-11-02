@@ -64,13 +64,10 @@
 		scrollToBottom();
 	}
 
-	function scrollToBottom() {
-		setTimeout(() => {
+	function scrollToBottom() { setTimeout(() => {
 			if (terminalElement) {
 				terminalElement.scrollTo({
-					top: terminalElement.scrollHeight,
-					behavior: "smooth",
-				});
+					top: terminalElement.scrollHeight, behavior: "smooth" });
 			}
 		}, 50);
 	}

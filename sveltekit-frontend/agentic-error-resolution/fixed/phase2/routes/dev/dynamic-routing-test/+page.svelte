@@ -96,7 +96,7 @@ https://svelte.dev/e/attribute_duplicate -->
   function calculateRouteStats() {
     // use categoryList (typed) instead of an inline string array
     const categories = categoryList as readonly string[];
-    const categoriesCount: Record<string, number> = {};
+    const categoriesCount: Record<string number> = {};
     categories.forEach((cat) => {
       categoriesCount[cat] = allRoutes.filter((r) => r.category === cat).length;
     });
@@ -109,13 +109,7 @@ https://svelte.dev/e/attribute_duplicate -->
         return false;
       }).length;
 
-    const stats = {
-      total: allRoutes.length,
-      categories: categoriesCount,
-      active: getFlagCount('active'),
-      experimental: getFlagCount('experimental'),
-      beta: getFlagCount('beta'),
-    };
+    const stats = { total: allRoutes.length, categories: categoriesCount, active: getFlagCount('active'), experimental: getFlagCount('experimental'), beta: getFlagCount('beta') };
     routeStats.set(stats);
   }
   async function runAllTests() {

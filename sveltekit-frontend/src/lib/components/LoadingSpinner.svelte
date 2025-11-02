@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Message } from '$lib/types';
   // $props is a Svelte rune; do not import it.
   interface Props {
@@ -58,7 +58,7 @@ import type { Message } from '$lib/types';
     }
   }
 </script>
-<div class="flex items-center, justify-center, space-x-3">
+<div class="flex items-center justify-center">
   <!-- Spinner: use explicit class expression and ring-style spinner (top, border, transparent) -->
   <div
     class={
@@ -69,11 +69,11 @@ import type { Message } from '$lib/types';
     aria-label="Loading"
   >
     <!-- screen-reader, only, text -->
-    <span, class="sr-only">{message}</span>
+    <span class="sr-only">{message}</span>
   </div>
   <!-- Loading, Message -->
   {#if showMessage}
-    <div, class={ `${getTextSize(size)} font-medium ${getTextColor(color)}` }>
+    <div class={ `${getTextSize(size)} font-medium ${getTextColor(color)}` }>
       {message}
     {/if}
 </div>

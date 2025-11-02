@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   let diagram = $state(
     `graph TD`
@@ -34,7 +34,7 @@
     }
   });
 </script>
-<div, class="space-y-4" bind:this={container}>
+<div class="space-y-4" bind:this={container}>
   {@html svg}
 </div>
 <style>

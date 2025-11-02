@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Compatibility shim: forward to real Dialog implementation
   import  default, as RealDialog  from "$lib/components/ui/Dialog.svelte";
   let { open = false, onClose = undefined, ...rest } = $props<{

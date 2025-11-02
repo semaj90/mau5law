@@ -147,8 +147,7 @@
           id: `legal-batch-${i}`,
           originalDimensions: vector.length,
           encodedDimensions: 768 as VectorDimensions,
-          quantization: 'int8' as const,
-          compressionRatio: 0,
+          quantization: 'int8' as const compressionRatio: 0,
           timestamp: Date.now(),
           gpuAccelerated: true
         });

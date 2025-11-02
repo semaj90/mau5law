@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code:, Identifier: 'string' has already, been, declared -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   let { checked = $state(false), label = '', id = ''  }: { checked = $state(false), label = '', id = '' : any } = $props();
   // Generate a unique ID if not provided
@@ -9,10 +9,10 @@ https://svelte.dev/e/js_parse_error -->
     id = `checkbox-${Math.random.toString-substr(2, 9)}`;
   }
 </script>
-<div, class="checkbox-container">
-  <input, type="checkbox" {id} bind:checked, class="checkbox-input" />
+<div class="checkbox-container">
+  <input type="checkbox" {id} bind:checked, class="checkbox-input" />
   {#if label}
-    <label, for={id} class="checkbox-label">{label}</label>
+    <label for={id} class="checkbox-label">{label}</label>
   {/if}
 </div>
 <style>

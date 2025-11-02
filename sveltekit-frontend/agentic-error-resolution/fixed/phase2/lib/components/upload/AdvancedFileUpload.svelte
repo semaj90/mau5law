@@ -5,20 +5,7 @@
   import  Button  from "$lib/components/ui/Button.svelte";
   import { notifications  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
-  import {
-    AlertTriangle,
-    Camera,
-    Eye,
-    File as FileIcon,
-    FileText,
-    Image as ImageIcon,
-    Loader2,
-    Mic,
-    Paperclip,
-    Trash2,
-    Upload,
-    Video,
-  } from 'lucide-svelte';
+  import { AlertTriangle, Camera, Eye, File as FileIcon, FileText, Image as ImageIcon, Loader2, Mic, Paperclip, Trash2, Upload, Video } from 'lucide-svelte';
   import { onMount  } from "svelte";
   // Props using Svelte 5 syntax
   let {
@@ -174,15 +161,8 @@
         continu;
   }
       // Create file item
-      const fileItem: FileUploadItem = {
-        id: generateId(),
-        file: enableCompression ? await compressFile(file) : file
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        progress: 0,
-        status: "pending",
-      }
+      const fileItem: FileUploadItem = { id: generateId(), file: enableCompression ? await compressFile(file) : file
+        name: file.name, size: file.size, type: file.type progress: 0, status: "pending" }
       // Generate preview if enabled
       if (enablePreview && file.type.startsWith("image/")) {
         fileItem.preview = await generatePreview(file);
@@ -234,19 +214,15 @@
         canvas.height = height;
         ctx?.drawImage(img, 0, 0, width, height);
         canvas.toBlob(
-          (blob) => {
-            if (blob) {
+          (blob) => { if (blob) {
               const compressedFile = new File([blob], file.name, {
-                type: file.type,
-                lastModified: file.lastModified,
-              });
+                type: file.type lastModified: file.lastModified });
               resolve(compressedFile);
             } else {
               resolve(file);
   }
           },
-          file.type,
-          compressionQuality
+          file.type compressionQuality
         );
       }
       img.onerror = () => resolve(file);
@@ -344,11 +320,7 @@
     const finalizeResponse = await fetch(`${uploadUrl}/finalize`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({,
-        fileId: fileItem.id,
-        filename: fileItem.name,
-        totalChunks,
-      }),
+      body: JSON.stringify({ fileId: fileItem.id, filename: fileItem.name, totalChunks }),
     });
     if (!finalizeResponse.ok) {
       throw new Error("Failed to finalize upload");
@@ -407,27 +379,17 @@
       // Take photo logic would go here
       // For now, just stop the stream
       stream.getTracks.forEach((track) => track.stop());
-      notifications.add({
-        type: "info",
-        title: "Camera Access",
-        message: "Camera capture feature would be implemented here",
-      });
-    } catch (error) {
-      notifications.add({
-        type: "error",
-        title: "Camera Error",
-        message: "Could not access camera",
-      });
+      notifications.add({ type: "info", title: "Camera Access", message: "Camera capture feature would be implemented here" });
+    } catch (error) { notifications.add({
+        type: "error", title: "Camera Error", message: "Could not access camera" });
   }}
   async function startAudioRecording() {
     if (isRecording) {
       stopAudioRecording();
       return;
   }
-    try {
-      recordingStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
+    try { recordingStream = await navigator.mediaDevices.getUserMedia({
+        audio: true });
       mediaRecorder = new MediaRecorder(recordingStream);
       const chunks: Blob[] = [];
       mediaRecorder.ondataavailable = (event) => {
@@ -435,24 +397,14 @@
       }
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(chunks, { type: "audio/wav" });
-        const audioFile = new File([audioBlob], `recording-${Date.now()}.wav`, {
-          type: "audio/wav",
-        });
+        const audioFile = new File([audioBlob], `recording-${Date.now()}.wav`, { type: "audio/wav" });
         addFiles([audioFile]);
       }
       mediaRecorder.start();
       isRecording = true;
-      notifications.add({
-        type: "info",
-        title: "Recording Started",
-        message: "Audio recording in progress...",
-      });
-    } catch (error) {
-      notifications.add({
-        type: "error",
-        title: "Recording Error",
-        message: "Could not start audio recording",
-      });
+      notifications.add({ type: "info", title: "Recording Started", message: "Audio recording in progress..." });
+    } catch (error) { notifications.add({
+        type: "error", title: "Recording Error", message: "Could not start audio recording" });
   }}
   function stopAudioRecording() {
     if (mediaRecorder && isRecording) {
@@ -462,11 +414,7 @@
         recordingStream.getTracks.forEach((track) => track.stop());
         recordingStream = null;
   }
-      notifications.add({
-        type: "success",
-        title: "Recording Complete",
-        message: "Audio recording saved",
-      });
+      notifications.add({ type: "success", title: "Recording Complete", message: "Audio recording saved" });
   }}
   function formatFileSize(bytes: number): string {
     const units = ["B", "KB", "MB", "GB"];
@@ -808,20 +756,17 @@ removeFile(file.id)}
   .file-.uploading {
     background: #eff6ff;
 }
-  .file-preview {
-    width: 48px;
+  .file-preview { width: 48px;
     height: 48px;
     border-radius: 6px;
     overflow: hidden;
-    flex-shrink: 0,
-}
+    flex-shrink: 0 }
   .file-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-  .file-icon {
-    width: 48px;
+  .file-icon { width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
@@ -829,12 +774,9 @@ removeFile(file.id)}
     background: #f3f4f6;
     border-radius: 6px;
     color: #6b7280;
-    flex-shrink: 0,
-}
-  .file-info {
-    flex: 1;
-    min-width: 0,
-}
+    flex-shrink: 0 }
+  .file-info { flex: 1;
+    min-width: 0 }
   .file-name {
     font-weight: 500;
     color: #111827;
@@ -868,11 +810,9 @@ removeFile(file.id)}
     font-size: 0.75rem;
     min-width: 2.5rem;
 }
-  .file-actions {
-    display: flex;
+  .file-actions { display: flex;
     gap: 0.25rem;
-    flex-shrink: 0,
-}
+    flex-shrink: 0 }
   /* Responsive design */
   @media (max-width: 640px) {
     .drop-zone {

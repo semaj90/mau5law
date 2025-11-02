@@ -12,14 +12,7 @@
     storageKey?: string;
     defaultMode?: 'light' | 'dark' | 'system';
   }
-  let {
-    theme = 'default',
-    size = 'md',
-    variant = 'icon',
-    showLabel = false,
-    storageKey = 'enhanced-bits-theme',
-    defaultMode = 'system',
-  }: ThemeToggleProps = $props();
+  let { theme = 'default', size = 'md', variant = 'icon', showLabel = false, storageKey = 'enhanced-bits-theme', defaultMode = 'system' }: ThemeToggleProps = $props();
   const dispatch = createEventDispatcher();
   // Theme state management
   const createThemeStore = () => {
@@ -114,21 +107,9 @@
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
   });
-  const themeIcons = {
-    light: '☀️',
-    dark: '🌙',
-    system: '💻',
-  };
-  const themeLabels = {
-    light: 'Light',
-    dark: 'Dark',
-    system: 'System',
-  };
-  const sizeClasses = {
-    sm: 'h-6 w-6 text-xs',
-    md: 'h-8 w-8 text-sm',
-    lg: 'h-10 w-10 text-base',
-  };
+  const themeIcons = { light: '☀️', dark: '🌙', system: '💻' };
+  const themeLabels = { light: 'Light', dark: 'Dark', system: 'System' };
+  const sizeClasses = { sm: 'h-6 w-6 text-xs', md: 'h-8 w-8 text-sm', lg: 'h-10 w-10 text-base' };
   const gamingThemeClasses =
     resolvedTheme === 'dark'
       ? 'border-green-400 text-green-400 hover:bg-green-400/10 shadow-[0_0_10px_rgba(34,197,94,0.3)]'

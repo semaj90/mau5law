@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Replaced script to fix Svelte, 5 runes, imports, types and logic typos
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
@@ -292,11 +292,11 @@ import type { Case } from '$lib/types';
     }
   });
 </script>
-<div class="mx-auto, px-4, max-w-7xl">
+<div class="mx-auto px-4">
   <!-- Enhanced Header with, Thinking, Toggle -->
-  <div class="mx-auto, px-4, max-w-7xl">
-    <div class="mx-auto, px-4, max-w-7xl">
-      <div class="mx-auto, px-4, max-w-7xl">
+  <div class="mx-auto px-4">
+    <div class="mx-auto px-4">
+      <div class="mx-auto px-4">
         <ThinkingStyleToggle
           bind:enabled={thinkingStyleEnabled}
           loading={$isLoading}
@@ -315,13 +315,13 @@ import type { Case } from '$lib/types';
             🔍 Quick Analysis
           </Button>
         {/if}
-        <div class="mx-auto, px-4, max-w-7xl">
+        <div class="mx-auto px-4">
           {#if lastAnalysisResult}
-            <span class="mx-auto, px-4, max-w-7xl">
+            <span class="mx-auto px-4">
               📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
             </span>
           {/if}
-          <div class="mx-auto, px-4, max-w-7xl">
+          <div class="mx-auto px-4">
             <span>AI Active</span>
           </div>
         </div>
@@ -333,26 +333,26 @@ import type { Case } from '$lib/types';
   >
     {#if $currentConversation?.messages.length === 0}
       <!-- Enhanced, Welcome, Message -->
-      <div class="mx-auto, px-4, max-w-7xl">
-        <div class="mx-auto, px-4, max-w-7xl">
-          <Bot class="mx-auto, px-4, max-w-7xl" />
+      <div class="mx-auto px-4">
+        <div class="mx-auto px-4">
+          <Bot class="mx-auto px-4" />
         </div>
-        <h3 class="mx-auto, px-4, max-w-7xl">
+        <h3 class="mx-auto px-4">
           Hi! I'm {$aiPersonality.name}, your enhanced AI legal assistant'
         </h3>
-        <p class="mx-auto, px-4, max-w-7xl">
+        <p class="mx-auto px-4">
           I can provide both quick responses and detailed reasoning analysis.
           Toggle thinking style above to see my step-by-step reasoning process.
         </p>
         {#if thinkingStyleEnabled}
-          <div class="mx-auto, px-4, max-w-7xl">
-            <p class="mx-auto, px-4, max-w-7xl">
+          <div class="mx-auto px-4">
+            <p class="mx-auto px-4">
               🧠 <strong>Thinking Style Active:</strong> I'll show my reasoning process for deeper analysis.'
             </p>
           </div>
         {:else}
-          <div class="mx-auto, px-4, max-w-7xl">
-            <p class="mx-auto, px-4, max-w-7xl">
+          <div class="mx-auto px-4">
+            <p class="mx-auto px-4">
               ⚡ <strong>Quick Mode Active:</strong> I'll provide fast, concise responses.'
             </p>
           {/if}
@@ -365,12 +365,12 @@ import type { Case } from '$lib/types';
     {/if}
     <!-- Typing, Indicator -->
     {#if $isTyping}
-      <div class="mx-auto, px-4, max-w-7xl">
-        <div class="mx-auto, px-4, max-w-7xl">
-          <Bot class="mx-auto, px-4, max-w-7xl" />
+      <div class="mx-auto px-4">
+        <div class="mx-auto px-4">
+          <Bot class="mx-auto px-4" />
         </div>
-        <div class="mx-auto, px-4, max-w-7xl">
-          <div class="mx-auto, px-4, max-w-7xl">
+        <div class="mx-auto px-4">
+          <div class="mx-auto px-4">
             <div
               class="mx-auto px-4 max-w-7xl"
               style="animation-delay: 0.1s"
@@ -381,23 +381,23 @@ import type { Case } from '$lib/types';
             ></div>
           </div>
           {#if thinkingStyleEnabled}
-            <p class="mx-auto, px-4, max-w-7xl">Thinking step by step...</p>
+            <p class="mx-auto px-4">Thinking step by step...</p>
           {/if}
         </div>
       {/if}
   </div>
   <!-- Proactive, Prompt -->
   {#if $showProactivePrompt}
-    <div class="mx-auto, px-4, max-w-7xl">
+    <div class="mx-auto px-4">
       <ProactivePrompt
         accept={handleProactiveResponse}
         dismiss={() => showProactivePrompt.set(false)}
       />
     {/if}
   <!-- Input, Area -->
-  <div class="mx-auto, px-4, max-w-7xl">
-    <div class="mx-auto, px-4, max-w-7xl">
-      <div class="mx-auto, px-4, max-w-7xl">
+  <div class="mx-auto px-4">
+    <div class="mx-auto px-4">
+      <div class="mx-auto px-4">
         <Textarea
           bind:element={inputElement}
          , bind:value={messageInput}
@@ -418,15 +418,15 @@ import type { Case } from '$lib/types';
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}
-          <Loader2 class="mx-auto, px-4, max-w-7xl" />
+          <Loader2 class="mx-auto px-4" />
         {:else}
-          <Send class="mx-auto, px-4, max-w-7xl" />
+          <Send class="mx-auto px-4" />
         {/if}
       </Button>
     </div>
     <!-- Enhanced, Status, Text -->
-    <div class="mx-auto, px-4, max-w-7xl">
-      <div class="mx-auto, px-4, max-w-7xl">
+    <div class="mx-auto px-4">
+      <div class="mx-auto px-4">
         {#if ($currentConversation?.messages?.length || 0) > 0}
           <span>{$currentConversation?.messages?.length || 0} messages</span>
         {/if}
@@ -437,8 +437,8 @@ import type { Case } from '$lib/types';
           <span>• Analysis Mode</span>
         {/if}
       </div>
-      <div class="mx-auto, px-4, max-w-7xl">
-        <span class="mx-auto, px-4, max-w-7xl">
+      <div class="mx-auto px-4">
+        <span class="mx-auto px-4">
           {thinkingStyleEnabled ? "🧠 Thinking" : "⚡ Quick"}
         </span>
       </div>

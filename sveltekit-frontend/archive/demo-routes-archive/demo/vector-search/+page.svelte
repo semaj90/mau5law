@@ -14,21 +14,10 @@
     Input
   } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
-  import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from '$lib/components/ui/select';
+  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
   import { Slider } from '$lib/components/ui/slider';
   import { Switch } from '$lib/components/ui/switch';
-  import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from '$lib/components/ui/tooltip';
+  import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '$lib/components/ui/tooltip';
   import { Brain, Briefcase, FileText, Info, Scale, Search, Sparkles } from 'lucide-svelte';
 
   // Feedback Integration
@@ -48,11 +37,7 @@
   let vectorSearchFeedback = $state<any>(null);
 
   // Document type icons
-  const typeIcons = ({
-    document: FileText,
-    evidence: Briefcase,
-    caseItem: Scale,
-  });
+  const typeIcons = ({ document: FileText, evidence: Briefcase, caseItem: Scale });
 
   async function performSearch() {
     if (!query.trim()) return;

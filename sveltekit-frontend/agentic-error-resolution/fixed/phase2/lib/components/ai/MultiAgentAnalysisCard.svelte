@@ -30,19 +30,9 @@ https://svelte.dev/e/js_parse_error -->
   let relationships = $derived(analysisData?.personsData?.relationships ?? []);
   let synthesis = $derived(analysisData?.caseSynthesis ?? );
   // Case strength styling
-  let strengthColor = $derived({
-    strong: 'text-green-600 bg-green-50',
-    moderate: 'text-yellow-600 bg-yellow-50',
-    weak: 'text-red-600 bg-red-50',
-  }[synthesis.caseStrength] ?? 'text-gray-600 bg-gray-50');
+  let strengthColor = $derived({ strong: 'text-green-600 bg-green-50', moderate: 'text-yellow-600 bg-yellow-50', weak: 'text-red-600 bg-red-50' }[synthesis.caseStrength] ?? 'text-gray-600 bg-gray-50');
   // Role colors for persons
-  const roleColors = {
-    suspect: 'bg-red-100 text-red-800',
-    witness: 'bg-blue-100 text-blue-800',
-    victim: 'bg-purple-100 text-purple-800',
-    associate: 'bg-orange-100 text-orange-800',
-    unknown: 'bg-gray-100 text-gray-800',
-  }
+  const roleColors = { suspect: 'bg-red-100 text-red-800', witness: 'bg-blue-100 text-blue-800', victim: 'bg-purple-100 text-purple-800', associate: 'bg-orange-100 text-orange-800', unknown: 'bg-gray-100 text-gray-800' }
   let showDetails = $state(false);
 </script>
 <div class="w-full max-w-4xl nes-container">

@@ -172,7 +172,7 @@
       _event.dataTransfer.setData('text/plain', JSON.stringify({ // Fixed: use _event parameter
         id: evidence.id,
         title: evidence.title,
-        type: evidence.type, // Fixed: evidence.typ -> evidence.type, semicolon to comma
+        type: evidence.type // Fixed: evidence.typ -> evidence.type semicolon to comma
       }));
     }
   }

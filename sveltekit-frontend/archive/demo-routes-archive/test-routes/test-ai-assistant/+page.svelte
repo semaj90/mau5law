@@ -21,7 +21,7 @@
   }
 
   // Svelte 5 runes for reactive state
-  let testResults = $state<Record<string, any>>({});
+  let testResults = $state<Record<string any>>({});
   let isRunning = $state(false);
   let currentTest = $state('');
 

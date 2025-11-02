@@ -1,5 +1,5 @@
 <!-- YoRHa Dialog, Manager, Component -->
-<script, lang="ts">
+<script lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte, 5 runes are auto-imported
   import  YoRHaDialog  from "./YoRHaDialog.svelte";

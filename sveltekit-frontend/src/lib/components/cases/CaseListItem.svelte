@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
     onclick?: (event?: any) => void;
@@ -78,64 +78,64 @@ import type {Case} from '$lib/types';
   role="button"
   tabindex={0}
 >
-  <div, class="space-y-4">
-    <div, class="space-y-4">
+  <div class="space-y-4">
+    <div class="space-y-4">
       <!-- Case Title, and, Number -->
-      <div, class="space-y-4">
-        <statusIcon, class="space-y-4" />
-        <h3, class="space-y-4">
+      <div class="space-y-4">
+        <statusIcon class="space-y-4" />
+        <h3 class="space-y-4">
           {caseData.title}
         </h3>
       </div>
       <!-- Case, Number -->
-      <p, class="space-y-4">
+      <p class="space-y-4">
         Case #{caseData.caseNumber}
       </p>
       <!-- Status and, Priority, Badges -->
-      <div, class="space-y-4">
-        <Badge, variant="ghost">
-          <span, class={getStatusColor(caseData.status)}>{caseData.status.replace('_', ' ')}</span>
+      <div class="space-y-4">
+        <Badge variant="ghost">
+          <span class={getStatusColor(caseData.status)}>{caseData.status.replace('_', ' ')}</span>
         </Badge>
-        <Badge, variant="ghost">
-          <span, class={getPriorityColor(caseData.priority)}>{caseData.priority}</span>
+        <Badge variant="ghost">
+          <span class={getPriorityColor(caseData.priority)}>{caseData.priority}</span>
         </Badge>
       </div>
       <!-- Metadata -->
-      <div, class="space-y-4">
-        <div, class="space-y-4">
-          <Calendar, class="space-y-4" />
+      <div class="space-y-4">
+        <div class="space-y-4">
+          <Calendar class="space-y-4" />
           {formattedDate}
         </div>
         {#if caseData.defendantName}
-          <div, class="space-y-4">
-            <UserIcon, class="space-y-4" />
+          <div class="space-y-4">
+            <UserIcon class="space-y-4" />
             {caseData.defendantName}
           {/if}
         {#if caseData.evidenceCount > 0}
-          <div, class="space-y-4">
-            <FileText, class="space-y-4" />
+          <div class="space-y-4">
+            <FileText class="space-y-4" />
             {caseData.evidenceCount} evidence
           {/if}
       </div>
       <!-- Court Date, if, available -->
       {#if caseData.courtDate}
-        <div, class="space-y-4">
-          <Calendar, class="space-y-4" />
+        <div class="space-y-4">
+          <Calendar class="space-y-4" />
           Court: {new Date(caseData.courtDate).toLocaleDateString()}
         {/if}
     </div>
     <!-- Quick, Actions -->
-    <div, class="space-y-4">
+    <div class="space-y-4">
       <select
         class="space-y-4"
         value={caseData.status}
         onchange={handleStatusChange}
         onclick={e => e.stopPropagation()}
       >
-        <option, value="open">Open</option>
-        <option, value="in_progress">In Progress</option>
-        <option, value="closed">Closed</option>
-        <option, value="archived">Archived</option>
+        <option value="open">Open</option>
+        <option value="in_progress">In Progress</option>
+        <option value="closed">Closed</option>
+        <option value="archived">Archived</option>
       </select>
     </div>
   </div>

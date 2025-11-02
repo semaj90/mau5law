@@ -124,7 +124,7 @@ https://svelte.dev/e/expected_token -->
       'risk_assessment': 'bg-red-100 text-red-800',
       'precedent_matching': 'bg-orange-100 text-orange-800',
       'compliance_check': 'bg-yellow-100 text-yellow-800'
-    } as Record<string, string>;
+    } as Record<string string>;
     return colorMap[type] || 'bg-gray-100 text-gray-800';
   }
 

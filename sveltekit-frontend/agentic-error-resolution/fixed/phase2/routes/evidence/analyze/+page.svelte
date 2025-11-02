@@ -35,38 +35,10 @@ https://svelte.dev/e/js_parse_error -->
   let sessionId = $state('');
   // Analysis pipeline steps with enhanced metadata
   const steps = [
-    {
-      name: 'Evidence Analysis',
-      key: 'evidence_analysis',
-      status: 'pending',
-      description: 'Structuring document and extracting key facts',
-      icon: '📋',
-      duration: '30-45s',
-    },
-    {
-      name: 'Person Extraction',
-      key: 'persons_extracted',
-      status: 'pending',
-      description: 'Identifying persons of interest and roles',
-      icon: '👥',
-      duration: '20-30s',
-    },
-    {
-      name: 'Relationship Mapping',
-      key: 'neo4j_updates',
-      status: 'pending',
-      description: 'Building knowledge graph connections',
-      icon: '🔗',
-      duration: '15-25s',
-    },
-    {
-      name: 'Case Synthesis',
-      key: 'case_synthesis',
-      status: 'pending',
-      description: 'Generating prosecutorial analysis',
-      icon: '⚖️',
-      duration: '25-35s',
-    },
+    { name: 'Evidence Analysis', key: 'evidence_analysis', status: 'pending', description: 'Structuring document and extracting key facts', icon: '📋', duration: '30-45s' },
+    { name: 'Person Extraction', key: 'persons_extracted', status: 'pending', description: 'Identifying persons of interest and roles', icon: '👥', duration: '20-30s' },
+    { name: 'Relationship Mapping', key: 'neo4j_updates', status: 'pending', description: 'Building knowledge graph connections', icon: '🔗', duration: '15-25s' },
+    { name: 'Case Synthesis', key: 'case_synthesis', status: 'pending', description: 'Generating prosecutorial analysis', icon: '⚖️', duration: '25-35s' },
   ];
   // Evidence type options
   const evidenceTypes = [
@@ -81,16 +53,8 @@ https://svelte.dev/e/js_parse_error -->
   // Priority options
   const priorityOptions = [
     { value: 'low', label: 'Low Priority', color: 'bg-gray-100 text-gray-800' },
-    {
-      value: 'medium',
-      label: 'Medium Priority',
-      color: 'bg-blue-100 text-blue-800',
-    },
-    {
-      value: 'high',
-      label: 'High Priority',
-      color: 'bg-orange-100 text-orange-800',
-    },
+    { value: 'medium', label: 'Medium Priority', color: 'bg-blue-100 text-blue-800' },
+    { value: 'high', label: 'High Priority', color: 'bg-orange-100 text-orange-800' },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-100 text-red-800' },
   ];
   // Current step tracking
@@ -124,12 +88,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidenceId: crypto.randomUUID(),
-          filename: evidenceFile?.name || 'uploaded_evidence.txt',
-          content: evidenceContent,
-          type: evidenceType === 'police_report' ? 'document' : evidenceType,
-        }),
+        body: JSON.stringify({ evidenceId: crypto.randomUUID(), filename: evidenceFile?.name || 'uploaded_evidence.txt', content: evidenceContent, type: evidenceType === 'police_report' ? 'document' : evidenceType }),
       });
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
@@ -141,22 +100,8 @@ https://svelte.dev/e/js_parse_error -->
       showResults = true;
 
       // Transform API response to expected format
-      results = {
-        status: 'completed',
-        sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(),
-        analysisResults: {
-          summary: data.data?.analysis?.summary || 'Analysis completed',
-          confidence: data.data?.analysis?.confidence || 0.5,
-          keyFactsCount: data.data?.analysis?.keyFindings?.length || 0,
-          relevantLaws: data.data?.analysis?.relevantLaws || [],
-          suggestedTags: data.data?.analysis?.suggestedTags || [],
-          prosecutionScore: data.data?.analysis?.prosecutionScore || 0,
-          legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown',
-          keyFindings: data.data?.analysis?.keyFindings || [],
-          recommendations: data.data?.analysis?.recommendations || [],
-          model: data.data?.model || 'gemma3-legal',
-          processedAt: data.data?.processedAt,
-        },
+      results = { status: 'completed', sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(), analysisResults: {
+          summary: data.data?.analysis?.summary || 'Analysis completed', confidence: data.data?.analysis?.confidence || 0.5, keyFactsCount: data.data?.analysis?.keyFindings?.length || 0, relevantLaws: data.data?.analysis?.relevantLaws || [], suggestedTags: data.data?.analysis?.suggestedTags || [], prosecutionScore: data.data?.analysis?.prosecutionScore || 0, legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown', keyFindings: data.data?.analysis?.keyFindings || [], recommendations: data.data?.analysis?.recommendations || [], model: data.data?.model || 'gemma3-legal', processedAt: data.data?.processedAt },
       };
     } catch (err) {
       console.error('Evidence analysis error:', err);
@@ -190,11 +135,7 @@ https://svelte.dev/e/js_parse_error -->
           confidenceScore: 0.78,
           nextSteps: ['Review additional witness statements', 'Obtain security footage', 'Examine financial records'],
         },
-        metadata: {
-          source: 'mock-evidence-analyzer',
-          processingTime: '45 seconds',
-          model: 'Legal Evidence AI v2.0 (Simulated)',
-        },
+        metadata: { source: 'mock-evidence-analyzer', processingTime: '45 seconds', model: 'Legal Evidence AI v2.0 (Simulated)' },
       };
       error = '';
     }

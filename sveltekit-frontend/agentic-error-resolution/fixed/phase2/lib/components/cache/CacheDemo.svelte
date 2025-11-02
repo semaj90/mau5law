@@ -138,9 +138,7 @@
     }
     isLoading.set(true);
     try {
-      const response = await fetch(`/api/cache?key=${encodeURIComponent(cacheKey)}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/cache?key=${encodeURIComponent(cacheKey)}`, { method: 'DELETE' });
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
         addTestResult('success', `Deleted "${cacheKey}" successfully`);
@@ -155,13 +153,11 @@
       await refreshStats();
     }
   }
-  async function clearCache() {
-    if (!confirm('Are you sure you want to clear all cache?')) return;
+  async function clearCache() { if (!confirm('Are you sure you want to clear all cache?')) return;
     isLoading.set(true);
     try {
       const response = await fetch('/api/cache?action=clear', {
-        method: 'DELETE',
-      });
+        method: 'DELETE' });
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
         addTestResult('success', 'Cache cleared successfully');

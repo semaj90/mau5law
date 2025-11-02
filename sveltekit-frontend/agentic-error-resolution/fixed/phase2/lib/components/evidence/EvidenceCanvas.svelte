@@ -249,9 +249,7 @@ await embeddingsService.initialize();
         connectionCount: connections.length
       }
     }
-    const blob = new Blob([JSON.stringify(canvasData, null, 2)], {
-      type: 'application/json',
-    });
+    const blob = new Blob([JSON.stringify(canvasData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -346,7 +344,7 @@ await embeddingsService.initialize();
           {#each connections as connection (connection.id)}
             <path
               d={getConnectionPath(connection)}
-              stroke={getConnectionColor(connection.type, connection.strength)}
+              stroke={getConnectionColor(connection.type connection.strength)}
               stroke-width="2"
               fill="none"
               stroke-dasharray={connection.type === 'similarity' ? '5,5' : ''}

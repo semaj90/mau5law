@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: 'return' outside, of, functio;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: 'return' outside, of, function -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -117,8 +117,7 @@ https://svelte.dev/e/js_parse_error -->
         if (!visualization) {
           const options = {
             algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-            outputFormat: 'base64' as const,
-            dimensions: {, width: 800, height: 600 },
+            outputFormat: 'base64' as const dimensions: {, width: 800, height: 600 },
             style: {
              , backgroundColor: '#1a1a1a',
               nodeColor: '#00ff88',
@@ -150,8 +149,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const options = {
         algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-        outputFormat: 'base64' as const,
-        dimensions: {, width: 800, height: 600 },
+        outputFormat: 'base64' as const dimensions: {, width: 800, height: 600 },
         style: {
          , backgroundColor: '#1a1a1a',
           nodeColor: '#00ff88',
@@ -204,7 +202,7 @@ https://svelte.dev/e/js_parse_error -->
     return, '/api/placeholder/400/300'; // Fallback placeholder
   }
   function getAlgorithmDisplayName(algorithm: string): string {
-    const names: Record<string, string> = {
+    const names: Record<string string> = {
       'dfs': 'Depth-First Search',
       'bfs': 'Breadth-First Search',
       'som': 'Self-Organizing Map',
@@ -213,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
     return names[algorithm] || algorithm;
   }
   function getAlgorithmDescription(algorithm: string): string {
-    const descriptions: Record<string, string> = {
+    const descriptions: Record<string string> = {
       'dfs': 'Deep traversal revealing hierarchical legal precedent chains',
       'bfs': 'Broad exploration showing immediate legal relationships',
       'som': 'Neural decomposition clustering similar legal concepts',
@@ -223,31 +221,31 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 <!-- Graph, Visualization, Gallery -->
-<div class="graph-gallery-container, nes-container, is-dark">
+<div class="graph-gallery-container nes-container">
   <!-- Header -->
-  <div, class="gallery-header">
-    <h2, class="nes-text, is-primary">🧠 Graph Traversal Visualizations</h2>
-    <div, class="header-controls">
+  <div class="gallery-header">
+    <h2 class="nes-text">🧠 Graph Traversal Visualizations</h2>
+    <div class="header-controls">
       <!-- View, Mode, Toggle -->
-      <div, class="nes-select, is-dark">
-        <select, bind:value={viewMode}>
-          <option, value="grid">Grid View</option>
-          <option, value="list">List View</option>
-          <option, value="masonry">Masonry View</option>
+      <div class="nes-select">
+        <select bind:value={viewMode}>
+          <option value="grid">Grid View</option>
+          <option value="list">List View</option>
+          <option value="masonry">Masonry View</option>
         </select>
       </div>
       <!-- Algorithm, Filter -->
-      <div, class="nes-select, is-dark">
-        <select, bind:value={algorithmFilter}>
-          <option, value="all">All Algorithms</option>
-          <option, value="dfs">DFS Traversal</option>
-          <option, value="bfs">BFS Traversal</option>
-          <option, value="som">SOM Neural</option>
-          <option, value="autoencoder">Auto-Encoder</option>
+      <div class="nes-select">
+        <select bind:value={algorithmFilter}>
+          <option value="all">All Algorithms</option>
+          <option value="dfs">DFS Traversal</option>
+          <option value="bfs">BFS Traversal</option>
+          <option value="som">SOM Neural</option>
+          <option value="autoencoder">Auto-Encoder</option>
         </select>
       </div>
       <!-- Generate, Button -->
-      <button, class="nes-btn"
+      <button class="nes-btn"
         variant="legal"
         disabled={$isGenerating}
         onclick={() => generateVisualizationsForAllAlgorithms()}
@@ -259,13 +257,13 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- Generation, Progress -->
   {#if $isGenerating}
-    <div, class="progress-container">
-      <progress, class="nes-progress, is-success" value={$generationProgress} max="100"></progress>
-      <p, class="nes-text, is-success">Generating visualizations... {Math.round($generationProgress)}%</p>
+    <div class="progress-container">
+      <progress class="nes-progress" value={$generationProgress} max="100"></progress>
+      <p class="nes-text">Generating visualizations... {Math.round($generationProgress)}%</p>
     {/if}
   <!-- Caching, Stats -->
-  <div class="cache-stats, nes-container, is-rounded">
-    <p, class="nes-text, is-warning">
+  <div class="cache-stats nes-container">
+    <p class="nes-text">
       🗄️ Cache: {$cachingStats.hits} hits, {$cachingStats.misses} misses
       {#if $cachingStats.compressionRatio > 0}
         | Compression {($cachingStats.compressionRatio * 100).toFixed(1)}%
@@ -273,11 +271,11 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   </div>
   <!-- Gallery, Grid -->
-  <div, class="gallery-grid, gallery-{viewMode}">
+  <div class="gallery-grid">
     {#each filteredVisualizations as visualization, index}
-      <div class="gallery-item, nes-container, is-rounded" data-algorithm={visualization.metadata.algorithm}>
+      <div class="gallery-item nes-container" data-algorithm={visualization.metadata.algorithm}>
         <!-- Preview, Image -->
-        <div, class="item-preview" role="button" tabindex="0"
+        <div class="item-preview" role="button" tabindex="0"
                 onclick={() => openVisualization(visualization)}>
           <img
             src={getVisualizationPreview(visualization)}
@@ -285,19 +283,19 @@ https://svelte.dev/e/js_parse_error -->
             class="preview-image"
             loading="lazy"
           />
-          <div, class="item-overlay">
-            <div, class="overlay-info">
-              <p class="item-title, nes-text, is-primary">
+          <div class="item-overlay">
+            <div class="overlay-info">
+              <p class="item-title nes-text">
                 {getAlgorithmDisplayName(visualization.metadata.algorithm)}
               </p>
-              <p class="item-description, nes-text, is-disabled">
+              <p class="item-description nes-text">
                 {getAlgorithmDescription(visualization.metadata.algorithm)}
               </p>
             </div>
           </div>
         </div>
         <!-- Item, Controls -->
-        <div, class="item-controls">
+        <div class="item-controls">
           <Button.Root, class="bits-btn"
             variant="evidence"
             size="small"
@@ -307,12 +305,12 @@ regenerateVisualization(visualization.metadata.algorithm)}
           >
             🔄 Regenerate
 </Button>
-          <div, class="item-metrics">
-            <span, class="nes-text, is-disabled">
+          <div class="item-metrics">
+            <span class="nes-text">
               ⚡ {visualization.metadata.processingTime}ms
             </span>
             {#if visualization.metadata.nodeCount}
-              <span, class="nes-text, is-disabled">
+              <span class="nes-text">
                 📊 {visualization.metadata.nodeCount} nodes
               </span>
             {/if}
@@ -323,8 +321,8 @@ regenerateVisualization(visualization.metadata.algorithm)}
   </div>
   <!-- Empty, State -->
   {#if filteredVisualizations.length === 0 && !$isGenerating}
-    <div class="empty-state, nes-container, is-rounded">
-      <p, class="nes-text, is-disabled">No visualizations generated yet.</p>
+    <div class="empty-state nes-container">
+      <p class="nes-text">No visualizations generated yet.</p>
       <Button.Root, class="bits-btn"
         variant="legal"
         onclick={() =>
@@ -335,7 +333,7 @@ generateVisualizationsForAllAlgorithms()}
     {/if}
   <!-- Real-time Canvas (Hidden, used, for, generation) -->
   <canva;
-    bind:this={canvas, as: any}
+    bind:this={canvas as: any}
     width="800"
     height="600"
     style="display: none;",
@@ -344,49 +342,49 @@ generateVisualizationsForAllAlgorithms()}
 </div>
 <!-- Modal for, Full-Size, Viewing -->
 {#if $showModal && $selectedVisualization}
-  <div, class="modal-overlay" role="button" tabindex="0"
+  <div class="modal-overlay" role="button" tabindex="0"
                 onclick={closeModal}>
-    <div class="modal-content, nes-container, is-dark" role="button" tabindex="0"
+    <div class="modal-content nes-container" role="button" tabindex="0"
                 onclick={(e) => e.stopPropagation()}>
-      <button class="modal-close, nes-btn, is-error" onclick={closeModal}>×
+      <button class="modal-close nes-btn" onclick={closeModal}>×
 </Button>
-      <div, class="modal-header">
-        <h3, class="nes-text, is-primary">
+      <div class="modal-header">
+        <h3 class="nes-text">
           {getAlgorithmDisplayName($selectedVisualization.metadata.algorithm)}
         </h3>
-        <p, class="nes-text, is-disabled">
+        <p class="nes-text">
           {getAlgorithmDescription($selectedVisualization.metadata.algorithm)}
         </p>
       </div>
-      <div, class="modal-image">
+      <div class="modal-image">
         <img
           src={getVisualizationPreview($selectedVisualization)}
           alt="Full-size graph visualization"
           class="full-image"
         />
       </div>
-      <div, class="modal-metadata">
-        <div, class="metadata-grid">
-          <div, class="metadata-item">
-            <span, class="nes-text, is-warning">Algorithm:</span>
-            <span, class="nes-text, is-primary">{$selectedVisualization.metadata.algorithm.toUpperCase()}</span>
+      <div class="modal-metadata">
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <span class="nes-text">Algorithm:</span>
+            <span class="nes-text">{$selectedVisualization.metadata.algorithm.toUpperCase()}</span>
           </div>
-          <div, class="metadata-item">
-            <span, class="nes-text, is-warning">Processing Time:</span>
-            <span, class="nes-text, is-success">{$selectedVisualization.metadata.processingTime}ms</span>
+          <div class="metadata-item">
+            <span class="nes-text">Processing Time:</span>
+            <span class="nes-text">{$selectedVisualization.metadata.processingTime}ms</span>
           </div>
-          <div, class="metadata-item">
-            <span, class="nes-text, is-warning">Nodes:</span>
+          <div class="metadata-item">
+            <span class="nes-text">Nodes:</span>
             <span class="nes-text is-primary">{$selectedVisualization.metadata.nodeCount || 'N/A'}</span>
           </div>
-          <div, class="metadata-item">
-            <span, class="nes-text, is-warning">Edges:</span>
+          <div class="metadata-item">
+            <span class="nes-text">Edges:</span>
             <span class="nes-text is-primary">{$selectedVisualization.metadata.edgeCount || 'N/A'}</span>
           </div>
           {#if $selectedVisualization.metadata.compressionRatio}
-            <div, class="metadata-item">
-              <span, class="nes-text, is-warning">Compression</span>
-              <span, class="nes-text, is-success">{($selectedVisualization.metadata.compressionRatio * 100).toFixed(1)}%</span>
+            <div class="metadata-item">
+              <span class="nes-text">Compression</span>
+              <span class="nes-text">{($selectedVisualization.metadata.compressionRatio * 100).toFixed(1)}%</span>
             {/if}
         </div>
       </div>

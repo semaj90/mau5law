@@ -1,6 +1,6 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import, '$lib/styles/tooltip-global.css';
+  import '$lib/styles/tooltip-global.css';
   import * as TooltipPrimitive from "bits-ui/tooltip";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
@@ -79,21 +79,21 @@
     transitionConfig={{ duration, 150, start: 0.95 }}
   >
     {#if isLoadingDocs}
-      <div class="flex, items-center, gap-2">
-        <div class="animate-spin w-3 h-3 border border-amber-400, border-t-transparent, rounded-full"></div>
+      <div class="flex items-center">
+        <div class="animate-spin w-3 h-3 border border-amber-400 border-t-transparent"></div>
         Loading documentation...
       </div>
     {:else if showDocumentation && documentationContent}
-      <div, class="context7-documentation">
-        <div class="text-xs text-amber-300 mb-1, uppercase, tracking-wide">
+      <div class="context7-documentation">
+        <div class="text-xs text-amber-300 mb-1 uppercase">
           {docCategory} • {docKey}
         </div>
-        <div class="whitespace-pre-wrap, text-xs, leading-relaxed">
+        <div class="whitespace-pre-wrap text-xs">
           {@html documentationContent.slice(0, 300)}{documentationContent.length > 300 ? '...' : ''}
         </div>
         {#if docCategory && docKey}
-          <div class="mt-2 pt-2, border-t, border-amber-500/20">
-            <span, class="text-xs, text-amber-300">Press Ctrl+K for full docs</span>
+          <div class="mt-2 pt-2 border-t">
+            <span class="text-xs">Press Ctrl+K for full docs</span>
           {/if}
       </div>
     {:else}

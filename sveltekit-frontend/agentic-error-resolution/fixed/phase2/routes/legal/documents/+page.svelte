@@ -147,26 +147,10 @@ https://svelte.dev/e/js_parse_error -->
         confidence: 0.92,
         legalConcepts: ['RICO', 'Financial Fraud', 'Jurisdiction'];
       },
-      processingStatus: {
-        ocr: 'completed',
-        analysis: 'completed',
-        embeddings: 'completed',
-      }
+      processingStatus: { ocr: 'completed', analysis: 'completed', embeddings: 'completed' }
     },
-    {
-      id: '2',
-      title: 'Evidence Analysis Report',
-      type: 'report',
-      status: 'processing',
-      created: '2024-01-18',
-      size: 1024000,
-      author: 'Forensic Analyst',
-      tags: ['evidence', 'digital-forensics'],
-      processingStatus: {
-        ocr: 'completed',
-        analysis: 'processing',
-        embeddings: 'pending',
-      }
+    { id: '2', title: 'Evidence Analysis Report', type: 'report', status: 'processing', created: '2024-01-18', size: 1024000, author: 'Forensic Analyst', tags: ['evidence', 'digital-forensics'], processingStatus: {
+        ocr: 'completed', analysis: 'processing', embeddings: 'pending' }
     },
     {
       id: '3',
@@ -290,9 +274,7 @@ https://svelte.dev/e/js_parse_error -->
   async function deleteDocument(doc: Document) {
     if (!confirm('Are you sure you want to delete this document?')) return;
     try {
-      const response = await fetch(`/api/legal/documents/${doc.id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/legal/documents/${doc.id}`, { method: 'DELETE' });
       if (response.ok) {
         toast.success('Document deleted');
         await loadDocuments();

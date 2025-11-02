@@ -7,12 +7,7 @@
   let isSearching = $state(false);
   let searchResults: VectorSearchResult[] = $state([]);
   let searchStats = $state<any>(null);
-  let selectedFilters = $state({
-    documentType: [] as string[],
-    jurisdiction [] as string[],
-    riskLevel: [] as string[],
-    minimumConfidence: 0.5,
-  });
+  let selectedFilters = $state({ documentType: [] as string[], jurisdiction [] as string[], riskLevel: [] as string[], minimumConfidence: 0.5 });
   let rankingStrategy = $state<SearchQuery['rankingStrategy']>('similarity');
   let showFilters = $state(false);
   const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'regulation', 'case_law'];
@@ -72,13 +67,8 @@ try {
       selectedFilters[type] = [...current, value];
     }
   }
-  function getRiskLevelClass(riskLevel: string): string {
-    const classes = {
-      low: 'bg-green-500/20 text-green-400 border-green-500/30',
-      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      critical: 'bg-red-500/20 text-red-400 border-red-500/30',
-    }
+  function getRiskLevelClass(riskLevel: string): string { const classes = {
+      low: 'bg-green-500/20 text-green-400 border-green-500/30', medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', high: 'bg-orange-500/20 text-orange-400 border-orange-500/30', critical: 'bg-red-500/20 text-red-400 border-red-500/30' }
     return classes[riskLevel as keyof typeof classes] || classes.medium;
   }
   function formatScore(score: number): string {

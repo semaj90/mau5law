@@ -6,34 +6,14 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   // Svelte 5 runes are auto-imported
   import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // use default export for Button component
   import  Badge  from "$lib/components/ui/badge.svelte";
-  import {
-    Bot,
-    Brain,
-    Search,
-    Database, // replaced missing: 'Memory' icon with: 'Database'
-    Users,
-    Cog,
-    Zap,
-    Code,
-    Globe,
-    Settings,
-    CheckCircle,
-    Activity,
-    Workflow,
-  } from 'lucide-svelte';
+  import { Bot, Brain, Search, Database, // replaced missing: 'Memory' icon with: 'Database'
+    Users, Cog, Zap, Code, Globe, Settings, CheckCircle, Activity, Workflow } from 'lucide-svelte';
   import AutonomousEngineeringDemo_ from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
   // Workaround for Svelte 5 component type inference issues
   const AutonomousEngineeringDemo = AutonomousEngineeringDemo_ as any;
 
   // System status state
-  let systemStatus = $state({
-    copilotIntegration true,
-    semanticSearch: true,
-    memoryMCP: true,
-    multiAgent: true,
-    autonomousEngineering: true,
-    serviceWorkers: true,
-  });
+  let systemStatus = $state({ copilotIntegration true, semanticSearch: true, memoryMCP: true, multiAgent: true, autonomousEngineering: true, serviceWorkers: true });
   let showArchitecture = $state(false);
   let showIntegration = $state(false);
 
@@ -78,41 +58,16 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   // const architectureFeatures = [ ... ]  // replaced to avoid capturing initial systemStatus
   // $derived takes a single callback function. Access systemStatus directly within the callback.
   const architectureFeatures: ArchitectureFeature[] = $derived(() => [
-    {
-      name: 'Semantic Search',
-      icon Search,
-      description: 'Intelligent code and documentation search with context awareness',
-      status: systemStatus.semanticSearch, // Access directly
-      capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions'],
-    },
-    {
-      name: 'Memory MCP',
-      icon Database,
-      description: 'Persistent memory and context management across sessions',
-      status: systemStatus.memoryMCP, // Access directly
-      capabilities: ['Session memory', 'Context graphs', 'Historical insights'],
-    },
-    {
-      name: 'Multi-Agent AI',
-      icon Users,
-      description: 'AutoGen and CrewAI orchestration for complex problem-solving',
-      status: systemStatus.multiAgent, // Access directly
-      capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination'],
-    },
-    {
-      name: 'Autonomous Engineering',
-      icon Cog,
-      description: 'Self-directed problem analysis and solution generation',
-      status: systemStatus.autonomousEngineering, // Access directly
-      capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies'],
-    },
-    {
-      name: 'Service Workers',
-      icon Zap,
-      description: 'Multi-threaded AI processing for parallel execution',
-      status: systemStatus.serviceWorkers, // Access directly
-      capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring'],
-    },
+    { name: 'Semantic Search', icon Search, description: 'Intelligent code and documentation search with context awareness', status: systemStatus.semanticSearch, // Access directly
+      capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions'] },
+    { name: 'Memory MCP', icon Database, description: 'Persistent memory and context management across sessions', status: systemStatus.memoryMCP, // Access directly
+      capabilities: ['Session memory', 'Context graphs', 'Historical insights'] },
+    { name: 'Multi-Agent AI', icon Users, description: 'AutoGen and CrewAI orchestration for complex problem-solving', status: systemStatus.multiAgent, // Access directly
+      capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination'] },
+    { name: 'Autonomous Engineering', icon Cog, description: 'Self-directed problem analysis and solution generation', status: systemStatus.autonomousEngineering, // Access directly
+      capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies'] },
+    { name: 'Service Workers', icon Zap, description: 'Multi-threaded AI processing for parallel execution', status: systemStatus.serviceWorkers, // Access directly
+      capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring'] },
   ]);
   const integrationExamples = [
     {
@@ -166,30 +121,10 @@ export function activate(context: vscode.ExtensionContext) {
     },
   ];
   const useCases = [
-    {
-      title: 'Automated Bug Fixing',
-      description: 'Autonomous identification and resolution of software bugs',
-      icon Code,
-      benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis'],
-    },
-    {
-      title: 'Performance Optimization',
-      description: 'Cross-platform performance analysis and optimization',
-      icon Zap,
-      benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning'],
-    },
-    {
-      title: 'Security Auditing',
-      description: 'Multi-agent security analysis and vulnerability assessment',
-      icon Globe,
-      benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization'],
-    },
-    {
-      title: 'Architecture Review',
-      description: 'Intelligent architectural analysis and recommendations',
-      icon Settings,
-      benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance'],
-    },
+    { title: 'Automated Bug Fixing', description: 'Autonomous identification and resolution of software bugs', icon Code, benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis'] },
+    { title: 'Performance Optimization', description: 'Cross-platform performance analysis and optimization', icon Zap, benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning'] },
+    { title: 'Security Auditing', description: 'Multi-agent security analysis and vulnerability assessment', icon Globe, benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization'] },
+    { title: 'Architecture Review', description: 'Intelligent architectural analysis and recommendations', icon Settings, benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance'] },
   ];
 </script>
 

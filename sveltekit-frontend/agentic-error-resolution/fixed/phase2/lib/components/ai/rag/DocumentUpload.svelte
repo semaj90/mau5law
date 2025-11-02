@@ -12,14 +12,7 @@
     onUploadComplete?: (result: any) => void;
     onError?: (error: string) => void;
   }
-  let {
-    multiple = true,
-    maxSize = 10,
-    acceptedTypes = ['.txt', '.md', '.pdf', '.docx', '.json', '.csv'],
-    uploadEndpoint = '/api/rag/upload',
-    onUploadComplete,
-    onError,
-  }: Props = $props();
+  let { multiple = true, maxSize = 10, acceptedTypes = ['.txt', '.md', '.pdf', '.docx', '.json', '.csv'], uploadEndpoint = '/api/rag/upload', onUploadComplete, onError }: Props = $props();
   // Component state using Svelte 5 runes
   let files = $state<File[]>([]);
   let dragOver = $state(false);
@@ -97,8 +90,7 @@
     uploading = true;
     uploadResults = [];
     uploadProgress = {};
-    try {
-      for (let i = 0; i < files.length; i++) {
+    try { for (let i = 0; i < files.length; i++) {
         const file = files[i];
         uploadProgress[file.name] = 0;
         const formData = new FormData();
@@ -107,9 +99,7 @@
         formData.append('extractText', 'true');
         formData.append('generateEmbedding', 'true');
         const response = await fetch(uploadEndpoint, {
-          method: 'POST',
-          body: formData,
-        });
+          method: 'POST', body: formData });
         // Simulate progress (real implementation would use XMLHttpRequest)
         const progressInterval = setInterval(() => {
           uploadProgress[file.name] = Math.min(uploadProgress[file.name] + 10, 90);
@@ -123,23 +113,15 @@
         clearInterval(progressInterval);
         uploadProgress[file.name] = 100;
         uploadProgress = { ...uploadProgress };
-        uploadResults.push({
-          file: file.name,
-          result,
-          timestamp: new Date(),
-        });
+        uploadResults.push({ file: file.name, result, timestamp: new Date() });
         console.log(`✅ Uploaded ${file.name}:`, result);
       }
       // Success - clear files and notify parent
       const successMessage = `Successfully uploaded ${files.length} files to knowledge base`;
       files = [];
       uploadProgress = {};
-      if (onUploadComplete) {
-        onUploadComplete({
-          message: successMessage,
-          results: uploadResults,
-          totalFiles: uploadResults.length,
-        });
+      if (onUploadComplete) { onUploadComplete({
+          message: successMessage, results: uploadResults, totalFiles: uploadResults.length });
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
@@ -165,10 +147,7 @@
       const response = await fetch('/api/rag/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fileId: fileResult.id,
-          operations: ['extract_text', 'generate_embedding', 'semantic_chunk'],
-        }),
+        body: JSON.stringify({ fileId: fileResult.id, operations: ['extract_text', 'generate_embedding', 'semantic_chunk'] }),
       });
       if (response.ok) {
         const processed = await response.json();
@@ -380,9 +359,7 @@
     border: 1px solid var(--yorha-border);
     border-radius: 6px;
   }
-  .file-info {
-    flex: 1,
-  }
+  .file-info { flex: 1 }
   .file-name {
     font-weight: 600;
     color: var(--yorha-text-primary);

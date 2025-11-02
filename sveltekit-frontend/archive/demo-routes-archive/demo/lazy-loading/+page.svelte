@@ -42,8 +42,7 @@ https://svelte.dev/e/js_parse_error -->
   function generateMockContent(type: string) {
     return Array.from({ length: 20 }, (_, i) => ({
       id: i + 1,
-      type,
-      title: `${type} Item ${i + 1}`,
+      type title: `${type} Item ${i + 1}`,
       description: `This is a mock ${type} item for demonstration purposes.`,
       timestamp: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString()
     }));

@@ -2,7 +2,7 @@
   Enhanced Bits - Profile Header
   Centered header section for profile pages
 -->
-<script, lang="ts">
+<script lang="ts">
   interface Props {
     title?: string;
     subtitle?: string;
@@ -11,7 +11,7 @@
   }
   let { title, subtitle, centered = true, children }: Props = $props();
 </script>
-<div, class="profile-header" class:centered>
+<div class="profile-header" class:centered>
   {#if children}
     {@render children()}
   {:else}

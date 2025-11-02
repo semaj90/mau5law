@@ -27,39 +27,31 @@ https://svelte.dev/e/js_parse_error -->
   let mockRecommendations = $state([
     {
       id: 'demo-detective-1',
-      type: 'detective' as const,
-      title: 'Evidence Pattern Detected',
+      type: 'detective' as const title: 'Evidence Pattern Detected',
       description: 'Cross-reference analysis found 3 documents with matching timestamps. Investigation recommended.',
       confidence: 0.89,
-      priority: 'high' as const,
-      action: () => console.log('Opening pattern analysis...')
+      priority: 'high' as const action: () => console.log('Opening pattern analysis...')
     },
     {
       id: 'demo-legal-1', 
-      type: 'legal' as const,
-      title: 'Legal Precedent Found',
+      type: 'legal' as const title: 'Legal Precedent Found',
       description: 'Similar case from 2019 with 87% match. Review for applicable precedents.',
       confidence: 0.87,
-      priority: 'medium' as const,
-      action: () => console.log('Opening legal precedent...')
+      priority: 'medium' as const action: () => console.log('Opening legal precedent...')
     },
     {
       id: 'demo-evidence-1',
-      type: 'evidence' as const,
-      title: 'OCR Processing Complete',
+      type: 'evidence' as const title: 'OCR Processing Complete',
       description: 'Document.pdf processed with 94% confidence. 3 suspicious terms flagged.',
       confidence: 0.94,
-      priority: 'critical' as const,
-      action: () => console.log('Opening OCR results...')
+      priority: 'critical' as const action: () => console.log('Opening OCR results...')
     },
     {
       id: 'demo-ai-1',
-      type: 'ai' as const,
-      title: 'AI Analysis Ready',
+      type: 'ai' as const title: 'AI Analysis Ready',
       description: 'NES-RL agent suggests running relationship mapping on uploaded contacts.',
       confidence: 0.76,
-      priority: 'low' as const,
-      action: () => console.log('Starting relationship mapping...')
+      priority: 'low' as const action: () => console.log('Starting relationship mapping...')
     }
   ]);
 
@@ -81,12 +73,10 @@ https://svelte.dev/e/js_parse_error -->
     if (activity === 'idle') {
       const idleRec = {
         id: `idle-${Date.now()}`,
-        type: 'ai' as const,
-        title: 'Idle Detection',
+        type: 'ai' as const title: 'Idle Detection',
         description: 'User has been idle for 2 minutes. Should I run background analysis?',
         confidence: 0.85,
-        priority: 'medium' as const,
-        action: () => console.log('Running background analysis...')
+        priority: 'medium' as const action: () => console.log('Running background analysis...')
       };
       mockRecommendations = [...mockRecommendations, idleRec];
       // Remove after 10 seconds
@@ -103,21 +93,17 @@ https://svelte.dev/e/js_parse_error -->
       const detectiveRecs = [
         {
           id: `detective-${Date.now()}-1`,
-          type: 'detective' as const,
-          title: 'Case Analysis Ready',
+          type: 'detective' as const title: 'Case Analysis Ready',
           description: 'All evidence uploaded. Ready to generate case summary and timeline.',
           confidence: 0.95,
-          priority: 'high' as const,
-          action: () => console.log('Generating case analysis...')
+          priority: 'high' as const action: () => console.log('Generating case analysis...')
         },
         {
           id: `detective-${Date.now()}-2`,
-          type: 'evidence' as const,
-          title: 'Missing Evidence Check',
+          type: 'evidence' as const title: 'Missing Evidence Check',
           description: 'Potential evidence gap detected between 2:00-4:00 PM. Search for additional sources?',
           confidence: 0.72,
-          priority: 'medium' as const,
-          action: () => console.log('Searching for missing evidence...')
+          priority: 'medium' as const action: () => console.log('Searching for missing evidence...')
         }
       ];
       mockRecommendations = [...mockRecommendations, ...detectiveRecs];
@@ -132,12 +118,10 @@ https://svelte.dev/e/js_parse_error -->
   function addCriticalAlert() {
     const criticalRec = {
       id: `critical-${Date.now()}`,
-      type: 'ai' as const,
-      title: 'SECURITY ALERT',
+      type: 'ai' as const title: 'SECURITY ALERT',
       description: 'Suspicious login attempt detected from unknown IP address. Immediate action required.',
       confidence: 0.99,
-      priority: 'critical' as const,
-      action: () => console.log('Opening security dashboard...')
+      priority: 'critical' as const action: () => console.log('Opening security dashboard...')
     };
     mockRecommendations = [...mockRecommendations, criticalRec];
   }

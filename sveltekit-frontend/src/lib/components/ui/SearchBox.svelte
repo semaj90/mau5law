@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // onMount was unused — removed
   // Use a namespace import to safely access public env vars without TS named-export errors
@@ -84,12 +84,12 @@ import type { Document } from '$lib/types';
     return () => document.removeEventListener('click', handleClickOutside);
   });
 </script>
-<div, class={["search-container", className].filter(Boolean).join(' ')}>
-  <div, class="nes-field, search-field">
-    <label, for="search-input" class="search-label">
-      <i, class="nes-icon, trophy"></i> Legal AI Search
+<div class={["search-container", className].filter(Boolean).join(' ')}>
+  <div class="nes-field">
+    <label for="search-input" class="search-label">
+      <i class="nes-icon"></i> Legal AI Search
     </label>
-    <div, class="search-input-wrapper">
+    <div class="search-input-wrapper">
       <input
         bind:this={searchInput}
        , bind:value={query}
@@ -102,48 +102,48 @@ import type { Document } from '$lib/types';
         autocomplete="off"
       />
       {#if query}
-        <button onclick={clearSearch} class="nes-btn is-error, clear-btn" type="button" title="Clear, search"> × </button>
+        <button onclick={clearSearch} class="nes-btn is-error" type="button" title="Clear, search"> × </button>
       {/if}
       {#if isLoading}
-        <div, class="loading-indicator">
-          <i, class="nes-icon, coin"></i>
+        <div class="loading-indicator">
+          <i class="nes-icon"></i>
         {/if}
     </div>
   </div>
   {#if isExpanded && (results.length > 0 || isLoading)}
-    <div class="nes-container, is-rounded, results-container">
+    <div class="nes-container is-rounded">
       {#if isLoading}
-        <div, class="loading-message">
-          <i, class="nes-icon, coin"></i>
+        <div class="loading-message">
+          <i class="nes-icon"></i>
           <span>Searching legal documents...</span>
         </div>
       {:else if results.length > 0}
-        <div, class="results-header">
-          <i, class="nes-icon, star"></i>
+        <div class="results-header">
+          <i class="nes-icon"></i>
           <span>Found {results.length} results</span>
         </div>
-        <div, class="results-list">
+        <div class="results-list">
           {#each results as result, index}
-            <button, onclick={() => selectResult(result)} class="nes-container result-item" type="button">
-              <div, class="result-content">
-                <div, class="result-title">
+            <button onclick={() => selectResult(result)} class="nes-container result-item" type="button">
+              <div class="result-content">
+                <div class="result-title">
                   {result.title || `Document ${index + 1}`}
                 </div>
                 {#if result.content}
-                  <div, class="result-snippet">
+                  <div class="result-snippet">
                     {result.content.substring(0, 120)}...
                   {/if}
                 {#if result.metadata}
-                  <div, class="result-metadata">
+                  <div class="result-metadata">
                     {#if result.metadata.caseId}
-                      <span, class="case-tag">case {result.metadata.caseId}</span>
+                      <span class="case-tag">case {result.metadata.caseId}</span>
                     {/if}
                     {#if result.metadata.documentType}
-                      <span, class="type-tag">{result.metadata.documentType}</span>
+                      <span class="type-tag">{result.metadata.documentType}</span>
                     {/if}
                   {/if}
                 {#if result.similarity}
-                  <div, class="similarity-score">
+                  <div class="similarity-score">
                     Relevance: {Math.round(result.similarity * 100)}%
                   {/if}
               </div>
@@ -151,8 +151,8 @@ import type { Document } from '$lib/types';
           {/each}
         </div>
       {:else}
-        <div, class="no-results">
-          <i class="nes-icon, is-medium, heart"></i>
+        <div class="no-results">
+          <i class="nes-icon is-medium"></i>
           <span>No documents found for: "{query}"</span>
         {/if}
     {/if}

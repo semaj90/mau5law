@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import  VectorCard  from "./VectorCard.svelte";
   const { searchUrl } = $props<{ searchUrl: string }>()
   const { onSelect } = $props<{ onSelect: (item: any) }>()
@@ -9,12 +9,12 @@
     results = (await res.json()).results ?? [];
   }
 </script>
-<div, class="bits-search">
-  <div, class="search-bar">
+<div class="bits-search">
+  <div class="search-bar">
     <input bind:value={query} placeholder="Search, legal, documents..." />
-    <button, onclick={doSearch}>Search</button>
+    <button onclick={doSearch}>Search</button>
   </div>
-  <div, class="results">
+  <div class="results">
     {#each Array.isArray(results) ? results : [] as r}
       <VectorCard {r} onclick={() => onSelect(r)} />
     {/each}

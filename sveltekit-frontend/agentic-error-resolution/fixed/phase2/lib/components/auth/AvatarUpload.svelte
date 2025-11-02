@@ -37,16 +37,13 @@
     // Upload file
     await uploadAvatar(file);
   }
-  async function uploadAvatar(file: File) {
-    try {
+  async function uploadAvatar(file: File) { try {
       uploading = true;
       message = '';
       const formData = new FormData();
       formData.append('file', file);
       const response = await fetch('/api/auth/profile/avatar', {
-        method: 'POST',
-        body: formData,
-      });
+        method: 'POST', body: formData });
       const data = await response.json();
       if (response.ok) {
         message = 'Avatar uploaded successfully!';

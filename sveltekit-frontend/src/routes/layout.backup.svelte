@@ -1,13 +1,13 @@
-<script, lang="ts">
-  import, '../app.css';
+<script lang="ts">
+  import '../app.css';
   const { children } = $props();
 </script>
 
-<div, class="app-layout">
-  <header, class="app-header">
+<div class="app-layout">
+  <header class="app-header">
     <h1>Legal AI Platform</h1>
   </header>
-  <main, class="app-main">
+  <main class="app-main">
     <!-- named: 'snippet' slot plus a default, fallback, slot -->
     {@render children?.()}
   </main>

@@ -1,6 +1,6 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<script, lang="ts">
+<script lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 
   const { onclose } = $props<{ onclose: ((event?: any) }>()
@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
     export const Description: any;
   }
   declare module: '$lib/components/ui/button' {
-    export const, Button: any;
+    export const Button: any;
   }
   // Destructure expected stores / helpers from aiService (adjust if aiService exports differently)
   // removed unused `model`
@@ -48,20 +48,20 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 <Dialog.Root, open={isOpen} onclose={closeModal}>
   <Dialog.Content, class="max-w-5xl">
-    <div, class="dialog-header">
+    <div class="dialog-header">
       <Dialog.Title>AI Summary</Dialog.Title>
       <Dialog.Description>AI-generated summary of your content</Dialog.Description>
     </div>
-    <div, class="space-y-4">
+    <div class="space-y-4">
       {#if $isLoading}
         <!-- Loading, State -->
-        <div, class="space-y-4">
+        <div class="space-y-4">
           <span>Analyzing content...</span>
         </div>
       {:else if $error}
         <!-- Error, State -->
-        <div, class="space-y-4">
-          <div class="flex, items-center, gap-2">
+        <div class="space-y-4">
+          <div class="flex items-center">
             <AlertCircle />
             <span>AI Error</span>
           </div>
@@ -69,9 +69,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {:else if $summary}
         <!-- Summary, Content -->
-        <div, class="space-y-4">
-          <div class="flex, items-center, justify-between">
-            <div class="flex, items-center, gap-2">
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <div class="flex items-center">
               <Button
                 class="bits-btn"
                 onclick={copyToClipboard}
@@ -79,15 +79,15 @@ https://svelte.dev/e/js_parse_error -->
                 size="sm"
                 aria-label="Copy summary to clipboard"
               >
-                <Copy, class="w-4, h-4" />
+                <Copy class="w-4" />
                 <span>Copy</span>
               </Button>
               {#if copied}
-                <span class="inline-flex, items-center, gap-1"><Check, class="w-4, h-4" />Copied!</span>
+                <span class="inline-flex items-center"><Check class="w-4" />Copied!</span>
               {/if}
             </div>
           </div>
-          <div, class="prose">
+          <div class="prose">
             {@html $summary}
           </div>
           {#if $lastSummarizedContent}
@@ -99,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
       {:else}
         <div>No summary available.{/if}
     </div>
-    <div class="dialog-footer mt-4, flex, justify-end">
+    <div class="dialog-footer mt-4 flex">
       <Button class="bits-btn" onclick={closeModal} variant="secondary" aria-label="Close, summary, modal">
         <X />
         <span>Close</span>

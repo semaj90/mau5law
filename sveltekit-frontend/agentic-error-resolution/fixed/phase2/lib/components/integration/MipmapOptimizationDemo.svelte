@@ -29,33 +29,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
   });
   // Demo legal documents
   let legalDocuments = $state([
-    {
-      id: 'contract_001',
-      type: 'contract' as const,
-      title: 'Commercial Lease Agreement',
-      priority: 200,
-      riskLevel: 'high' as const,
-      textureSize: '2048x2048',
-      estimatedComplexity: 'High',
-    },
-    {
-      id: 'evidence_001',
-      type: 'evidence' as const,
-      title: 'Financial Records Evidence',
-      priority: 180,
-      riskLevel: 'critical' as const,
-      textureSize: '4096x4096',
-      estimatedComplexity: 'Very High',
-    },
-    {
-      id: 'brief_001',
-      type: 'brief' as const,
-      title: 'Legal Brief Document',
-      priority: 150,
-      riskLevel: 'medium' as const,
-      textureSize: '1024x1024',
-      estimatedComplexity: 'Medium',
-    }
+    { id: 'contract_001', type: 'contract' as const title: 'Commercial Lease Agreement', priority: 200, riskLevel: 'high' as const textureSize: '2048x2048', estimatedComplexity: 'High' },
+    { id: 'evidence_001', type: 'evidence' as const title: 'Financial Records Evidence', priority: 180, riskLevel: 'critical' as const textureSize: '4096x4096', estimatedComplexity: 'Very High' },
+    { id: 'brief_001', type: 'brief' as const title: 'Legal Brief Document', priority: 150, riskLevel: 'medium' as const textureSize: '1024x1024', estimatedComplexity: 'Medium' }
   ]);
   // Performance metrics
   let performanceMetrics = $state({

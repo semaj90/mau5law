@@ -9,7 +9,7 @@
     description?: string;
     type: string;
     createdAt: string;
-    metadata?: Record<string, unknown>;
+    metadata?: Record<string unknown>;
   }
   interface CaseData {
     id: string;
@@ -60,16 +60,7 @@
       const response = await fetch('/api/summaries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          summary: ($aiGlobalStore as AIStore).context.summary,
-          type: 'case',
-          targetId: caseId,
-          depth: 'comprehensive',
-          includeRAG: true,
-          includeUserActivity: false,
-          enableStreaming: false,
-          userId: user.id,
-        }),
+        body: JSON.stringify({ summary: ($aiGlobalStore as AIStore).context.summary, type: 'case', targetId: caseId, depth: 'comprehensive', includeRAG: true, includeUserActivity: false, enableStreaming: false, userId: user.id }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

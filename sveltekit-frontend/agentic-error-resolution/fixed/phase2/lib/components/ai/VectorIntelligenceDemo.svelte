@@ -34,17 +34,14 @@
   const showMetrics = $derived(() => metrics !== null);
   const searchButtonDisabled = $derived(() => isSearching || query.trim().length === 0);
   // Vector intelligence search function
-  async function performSemanticSearch() {
-    if (!query.trim() || isSearching) return;
+  async function performSemanticSearch() { if (!query.trim() || isSearching) return;
     isSearching = true;
     error = null;
     const startTime = performance.now();
     try {
       const response = await fetch('/api/semantic-search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: 'POST', headers: {
+          'Content-Type': 'application/json' },
         body: JSON.stringify({ query: query.trim() }),
       });
       if (!response.ok) {
@@ -67,12 +64,7 @@
         documentType: r.documentType ?? 'deed',
         metadata: r.metadata,
       }));
-      metrics = {
-        totalDocuments: (data.results || []).length,
-        searchTime: Math.round(searchTime),
-        vectorDimensions: data.vectorDimensions ?? 384,
-        similarityThreshold: data.similarityThreshold ?? 0.0,
-      };
+      metrics = { totalDocuments: (data.results || []).length, searchTime: Math.round(searchTime), vectorDimensions: data.vectorDimensions ?? 384, similarityThreshold: data.similarityThreshold ?? 0.0 };
     } catch (err) {
       error = err instanceof Error ? err.message : 'Search failed';
       results = [];
@@ -112,31 +104,13 @@
   }
   // Demo placeholder results for development
   const demoResults: SearchResult[] = [
-    {
-      id: 'demo-1',
-      title: 'Property Deed - 123 Main Street',
-      content:
-        'This warranty deed transfers ownership of the property located at 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...',
-      similarity: 0.92,
-      documentType: 'deed',
-      metadata: {
-        caseId: 'CASE-2024-001',
-        uploadDate: '2024-01-15',
-        tags: ['property', 'transfer', 'warranty'],
-      },
+    { id: 'demo-1', title: 'Property Deed - 123 Main Street', content:
+        'This warranty deed transfers ownership of the property located at 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...', similarity: 0.92, documentType: 'deed', metadata: {
+        caseId: 'CASE-2024-001', uploadDate: '2024-01-15', tags: ['property', 'transfer', 'warranty'] },
     },
-    {
-      id: 'demo-2',
-      title: 'Employment Contract - Tech Corp',
-      content:
-        'This employment agreement establishes the terms of employment between Tech Corp and the employee. The position includes responsibilities for software development...',
-      similarity: 0.87,
-      documentType: 'contract',
-      metadata: {
-        caseId: 'CASE-2024-002',
-        uploadDate: '2024-01-10',
-        tags: ['employment', 'technology', 'intellectual property'],
-      },
+    { id: 'demo-2', title: 'Employment Contract - Tech Corp', content:
+        'This employment agreement establishes the terms of employment between Tech Corp and the employee. The position includes responsibilities for software development...', similarity: 0.87, documentType: 'contract', metadata: {
+        caseId: 'CASE-2024-002', uploadDate: '2024-01-10', tags: ['employment', 'technology', 'intellectual property'] },
     },
   ];
 </script>

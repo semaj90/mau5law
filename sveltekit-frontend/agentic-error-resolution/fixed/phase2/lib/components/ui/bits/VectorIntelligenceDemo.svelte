@@ -26,36 +26,11 @@
   let analysisDepth = $state('standard');
   // Mock vector search configuration
   const searchTypes: SelectOption[] = [
-    {
-      value: 'semantic',
-      label: 'Semantic Search',
-      description: 'AI-powered contextual understanding',
-      category: 'AI-Powered',
-    },
-    {
-      value: 'vector',
-      label: 'Vector Similarity',
-      description: 'Embedding-based similarity matching',
-      category: 'AI-Powered',
-    },
-    {
-      value: 'hybrid',
-      label: 'Hybrid Search',
-      description: 'Combined semantic and keyword search',
-      category: 'AI-Powered',
-    },
-    {
-      value: 'legal',
-      label: 'Legal Precedent',
-      description: 'Case law and precedent matching',
-      category: 'Legal-Specific',
-    },
-    {
-      value: 'citation',
-      label: 'Citation Analysis',
-      description: 'Legal citation and reference tracking',
-      category: 'Legal-Specific',
-    },
+    { value: 'semantic', label: 'Semantic Search', description: 'AI-powered contextual understanding', category: 'AI-Powered' },
+    { value: 'vector', label: 'Vector Similarity', description: 'Embedding-based similarity matching', category: 'AI-Powered' },
+    { value: 'hybrid', label: 'Hybrid Search', description: 'Combined semantic and keyword search', category: 'AI-Powered' },
+    { value: 'legal', label: 'Legal Precedent', description: 'Case law and precedent matching', category: 'Legal-Specific' },
+    { value: 'citation', label: 'Citation Analysis', description: 'Legal citation and reference tracking', category: 'Legal-Specific' },
   ];
   const confidenceFilters: SelectOption[] = [
     { value: 'all', label: 'All Results', description: 'Show all confidence levels' },
@@ -70,59 +45,26 @@
   ];
   // Mock search results data
   const mockSearchResults: VectorSearchResult[] = [
-    {
-      id: '1',
-      content:
-        'Contract breach regarding non-disclosure agreement violation with evidence of corporate espionage through unauthorized access to proprietary systems.',
-      metadata: {
-        caseNumber: 'CV-2024-001',
-        court: 'Superior Court of California',
-        judge: 'Hon. Sarah Mitchell',
-        date: '2024-01-15',
-      },
+    { id: '1', content:
+        'Contract breach regarding non-disclosure agreement violation with evidence of corporate espionage through unauthorized access to proprietary systems.', metadata: {
+        caseNumber: 'CV-2024-001', court: 'Superior Court of California', judge: 'Hon. Sarah Mitchell', date: '2024-01-15' },
       score: 0.94,
       highlights: ['non-disclosure agreement', 'corporate espionage', 'unauthorized access'],
-      source: {
-        type: 'case',
-        name: 'TechCorp vs. StartupInc',
-        url: '/cases/cv-2024-001',
-      },
+      source: { type: 'case', name: 'TechCorp vs. StartupInc', url: '/cases/cv-2024-001' },
     },
-    {
-      id: '2',
-      content:
-        'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.',
-      metadata: {
-        caseNumber: 'EM-2024-042',
-        jurisdiction: 'Federal District Court',
-        statute: 'Title VII Civil Rights Act',
-        precedent: 'McDonnell Douglas test',
-      },
+    { id: '2', content:
+        'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.', metadata: {
+        caseNumber: 'EM-2024-042', jurisdiction: 'Federal District Court', statute: 'Title VII Civil Rights Act', precedent: 'McDonnell Douglas test' },
       score: 0.87,
       highlights: ['employment termination', 'discrimination', 'protected class'],
-      source: {
-        type: 'precedent',
-        name: 'EEOC Guidelines on Discrimination',
-        url: '/precedents/title-vii-enforcement',
-      },
+      source: { type: 'precedent', name: 'EEOC Guidelines on Discrimination', url: '/precedents/title-vii-enforcement' },
     },
-    {
-      id: '3',
-      content:
-        'Intellectual property infringement case analyzing patent claims and prior art references in software development litigation.',
-      metadata: {
-        patentNumber: 'US 10,123,456',
-        filingDate: '2020-03-15',
-        inventor: 'Dr. Jane Smith',
-        classification: 'G06F 16/00',
-      },
+    { id: '3', content:
+        'Intellectual property infringement case analyzing patent claims and prior art references in software development litigation.', metadata: {
+        patentNumber: 'US 10, 123, 456', filingDate: '2020-03-15', inventor: 'Dr. Jane Smith', classification: 'G06F 16/00' },
       score: 0.82,
       highlights: ['intellectual property', 'patent claims', 'prior art'],
-      source: {
-        type: 'document',
-        name: 'Patent Application Analysis',
-        url: '/documents/patent-analysis-2024',
-      },
+      source: { type: 'document', name: 'Patent Application Analysis', url: '/documents/patent-analysis-2024' },
     },
   ];
   const mockEntities: SemanticEntity[] = [
@@ -135,13 +77,9 @@
     { text: 'McDonnell Douglas test', type: 'legal_term', confidence: 0.94, start: 150, end: 172 },
   ];
   // Reactive filtering of results based on confidence
-  let filteredResults = $derived(() => {
-    if (selectedConfidence === 'all') return searchResults;
+  let filteredResults = $derived(() => { if (selectedConfidence === 'all') return searchResults;
     const thresholds = {
-      high: 0.9,
-      medium: 0.7,
-      low: 0.0,
-    };
+      high: 0.9, medium: 0.7, low: 0.0 };
     const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
     const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
     return searchResults.filter(
@@ -149,23 +87,9 @@
     );
   });
   // Entity type icons mapping
-  const entityIcons = {
-    person Users,
-    organization Scale,
-    location MapPin,
-    date: Calendar,
-    legal_term: FileText,
-    case_citation Scale,
-  };
+  const entityIcons = { person Users, organization Scale, location MapPin, date: Calendar, legal_term: FileText, case_citation Scale };
   // Entity type colors
-  const entityColors = {
-    person: 'semantic-entity-person',
-    organization: 'semantic-entity-organization',
-    location: 'semantic-entity-location',
-    date: 'semantic-entity-date',
-    legal_term: 'semantic-entity-legal',
-    case_citation: 'semantic-entity-legal',
-  };
+  const entityColors = { person: 'semantic-entity-person', organization: 'semantic-entity-organization', location: 'semantic-entity-location', date: 'semantic-entity-date', legal_term: 'semantic-entity-legal', case_citation: 'semantic-entity-legal' };
   // Helpers for safe highlight injection
   function escapeHtml(str: string) {
     return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]!);
@@ -221,7 +145,7 @@
     return `${Math.round(score * 100)}%`;
   }
   // Add: spread-safe attribute objects to avoid TS errors for custom attributes on native elements
-  const yorhaDivAttrs = { variant: 'yorha', legal: true } as Record<string, any>;
+  const yorhaDivAttrs = { variant: 'yorha', legal: true } as Record<string any>;
   const resultItemDivAttrs = { variant: 'default', evidenceCard: true, hoverable: true, clickable: true } as Record<
     string,
     any

@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte, 5 runes are auto-imported import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte'; interface Props { accept?: string; multiple?: boolean; maxSize?: number; disabled?: boolean; dragActive?: boolean; onFilesDropped?: (files: File[]) => void; onFileHover?: (hovering: boolean) => void; }
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte'; interface Props { accept?: string; multiple?: boolean; maxSize?: number; disabled?: boolean; dragActive?: boolean; onFilesDropped?: (files: File[]) => void; onFileHover?: (hovering: boolean) => void; }
   let { accept = '*/*', multiple = true, maxSize = 10 * 1024 * 1024, // 10MB default disabled = false, dragActive = $bindable(false), onFilesDropped, onFileHover }: Props = $props(); let fileInput: HTMLInputElement; let isDragOver = $state<boolean>(false); let errors = $state<string[]>([]); const allowedTypes = {
     'image/*': { icon Image, label: 'Images' },
     'application/pdf': { icon FileText, label: 'PDF Documents' },
@@ -8,7 +8,7 @@
   function handleDrop(e: DragEvent) { e.preventDefault(); if (disabled) return; isDragOver = false; dragActive = false; onFileHover?.(false); const files = Array.from(e.dataTransfer?.files || []); processFiles(files); }
   function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; const files = Array.from(target.files || []); processFiles(files); }
   function processFiles(files: File[]) { errors = []; const validFiles: File[] = []; for (const file of files) { // Check file size if (file.size > maxSize) { errors.push(`${file.name} is too large (max ${formatFileSize(maxSize)})`); continue; }
-      // Check file type if accept is specified and not wildcard if (accept !== '*/*' && !matchesAcceptType(file.type, accept)) { errors.push(`${file.name} is not an accepted file type`); continue; }
+      // Check file type if accept is specified and not wildcard if (accept !== '*/*' && !matchesAcceptType(file.type accept)) { errors.push(`${file.name} is not an accepted file type`); continue; }
       validFiles.push(file); }
     if (validFiles.length > 0) { onFilesDropped?.(validFiles); }
     // Clear input so same file can be selected again if (fileInput) { fileInput.value = ''; }
@@ -17,14 +17,14 @@
   function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
   function getAcceptedFileInfo() { const types = accept.split(',').map(s => s.trim()); return types.map(type => allowedTypes[type as keyof typeof allowedTypes] || allowedTypes['*/*']); }
   function openFileDialog() { if (!disabled && fileInput) { fileInput.click(); }
-  } </script> <div, class="drag-drop-zone"
+  } </script> <div class="drag-drop-zone"
   class:drag-over={ isDragOver }, class:disabled ondragover={ handleDragOver } ondragleave={ handleDragLeave } ondrop={ handleDrop } role="button"
   tabindex="0"
   aria-label="Drop zone or click to upload files"
   onclick={ openFileDialog } onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && openFileDialog()} >
-  <input, bind:this={ fileInput } type="file"
+  <input bind:this={ fileInput } type="file"
     { accept } { multiple } { disabled } onchange={ handleFileSelect } class="file-input-hidden"
-  /> <div, class="upload-content"> <div, class="upload-icon-container"> {#if isDragOver} <div, class="upload-icon, pulsing"> <Upload, class="w-16, h-16" /> </div> {:else} <div, class="upload-icon"> <Upload, class="w-16, h-16" /> {/if} </div> <div, class="upload-text"> <p, class="main-text"> {isDragOver ? 'Drop files here': 'Drag and drop files here'} </p> <p, class="secondary-text"> or <span, class="browse-link">browse files</span> </p> {#if accept !== '*/*'} <div, class="accepted-types"> {#each getAcceptedFileInfo() as { icon Icon, label }} <div, class="type-badge"> <Icon, class="w-4, h-4" /> { label } </div> {/each} {/if} <p, class="size-limit"> Max file size: {formatFileSize(maxSize)} </p> </div> </div> {#if errors.length > 0} <div, class="error-container"> {#each Array.isArray(errors) ? errors: [] as error} <div, class="error-item"> <AlertCircle, class="w-4, h-4" /> { error } </div> {/each} {/if} </div> <style> .file-input-hidden { display: none; }
+  /> <div class="upload-content"> <div class="upload-icon-container"> {#if isDragOver} <div class="upload-icon"> <Upload class="w-16" /> </div> {:else} <div class="upload-icon"> <Upload class="w-16" /> {/if} </div> <div class="upload-text"> <p class="main-text"> {isDragOver ? 'Drop files here': 'Drag and drop files here'} </p> <p class="secondary-text"> or <span class="browse-link">browse files</span> </p> {#if accept !== '*/*'} <div class="accepted-types"> {#each getAcceptedFileInfo() as { icon Icon, label }} <div class="type-badge"> <Icon class="w-4" /> { label } </div> {/each} {/if} <p class="size-limit"> Max file size: {formatFileSize(maxSize)} </p> </div> </div> {#if errors.length > 0} <div class="error-container"> {#each Array.isArray(errors) ? errors: [] as error} <div class="error-item"> <AlertCircle class="w-4" /> { error } </div> {/each} {/if} </div> <style> .file-input-hidden { display: none; }
   .drag-drop-zone {, border: 2px dashed var(--border-color, #cbd5e0); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease;, background: var(--bg-primary, #ffffff); }
   .drag-drop-zone:hover:not(.disabled) { border-color: var(--accent-primary, #3b82f6); background: var(--bg-secondary, #f7fafc); }
   .drag-drop-zone.drag-over { border-color: var(--accent-primary, #3b82f6); background: var(--accent-primary-10, rgba(59, 130, 246, 0.1)); transform: scale(1.02); }

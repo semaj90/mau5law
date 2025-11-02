@@ -12,7 +12,7 @@
   // Using Svelte 4 store pattern instead of conflicting $state runes
   let machineState = $vectorPipelineStat;
   // Sample job data
-  const sampleJobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> = [
+  const sampleJobs: Array<Omit<VectorPipelineJob 'jobId' | 'status' | 'progress' | 'createdAt'> = [
     { ownerType: 'evidence', ownerId: 'evidence-001', event: 'upsert' },
     { ownerType: 'document', ownerId: 'doc-legal-brief-2024', event: 'reembed' },
     { ownerType: 'case', ownerId: 'case-murder-investigation', event: 'upsert' },

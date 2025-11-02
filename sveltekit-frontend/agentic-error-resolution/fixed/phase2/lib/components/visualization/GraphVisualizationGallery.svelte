@@ -117,8 +117,7 @@ https://svelte.dev/e/js_parse_error -->
         if (!visualization) {
           const options = {
             algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-            outputFormat: 'base64' as const,
-            dimensions: { width: 800, height: 600 },
+            outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
             style: {
               backgroundColor: '#1a1a1a',
               nodeColor: '#00ff88',
@@ -150,8 +149,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const options = {
         algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-        outputFormat: 'base64' as const,
-        dimensions: { width: 800, height: 600 },
+        outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
         style: {
           backgroundColor: '#1a1a1a',
           nodeColor: '#00ff88',
@@ -204,7 +202,7 @@ https://svelte.dev/e/js_parse_error -->
     return '/api/placeholder/400/300'; // Fallback placeholder
   }
   function getAlgorithmDisplayName(algorithm: string): string {
-    const names: Record<string, string> = {
+    const names: Record<string string> = {
       'dfs': 'Depth-First Search',
       'bfs': 'Breadth-First Search',
       'som': 'Self-Organizing Map',
@@ -213,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
     return names[algorithm] || algorithm;
   }
   function getAlgorithmDescription(algorithm: string): string {
-    const descriptions: Record<string, string> = {
+    const descriptions: Record<string string> = {
       'dfs': 'Deep traversal revealing hierarchical legal precedent chains',
       'bfs': 'Broad exploration showing immediate legal relationships',
       'som': 'Neural decomposition clustering similar legal concepts',

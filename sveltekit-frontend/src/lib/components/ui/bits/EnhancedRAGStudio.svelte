@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from 'lucide-svelte';
@@ -46,16 +46,16 @@ import type { Document } from '$lib/types';
     }
   }
 </script>
-<div class="nes-container, is-rounded, p-4 {className}" {...restProps}>
-  <div class="flex items-center, justify-between, mb-4">
-    <h2, class="text-xl, font-bold">Enhanced RAG Studio</h2>
-    <div, class="flex, gap-2">
-      <button, class="nes-btn, is-small" class:is-primary={activeTab === 'search'} onclick={() => (activeTab = 'search')}>
-        <Search, class="w-4, h-4" />
+<div class="nes-container is-rounded" {...restProps}>
+  <div class="flex items-center justify-between">
+    <h2 class="text-xl">Enhanced RAG Studio</h2>
+    <div class="flex">
+      <button class="nes-btn" class:is-primary={activeTab === 'search'} onclick={() => (activeTab = 'search')}>
+        <Search class="w-4" />
         Search
       </button>
-      <button, class="nes-btn, is-small" class:is-primary={activeTab === 'upload'} onclick={() => (activeTab = 'upload')}>
-        <Database, class="w-4, h-4" />
+      <button class="nes-btn" class:is-primary={activeTab === 'upload'} onclick={() => (activeTab = 'upload')}>
+        <Database class="w-4" />
         Upload
       </button>
       <button
@@ -63,14 +63,14 @@ import type { Document } from '$lib/types';
         class:is-primary={activeTab === 'settings'}
         onclick={() => (activeTab = 'settings')}
       >
-        <Settings, class="w-4, h-4" />
+        <Settings class="w-4" />
         Settings
       </button>
     </div>
   </div>
   {#if activeTab === 'search'}
-    <div, class="space-y-4">
-      <div, class="flex, gap-2">
+    <div class="space-y-4">
+      <div class="flex">
         <input
           class="nes-input flex-1"
           type="text"
@@ -80,28 +80,28 @@ import type { Document } from '$lib/types';
         />
         <button class="nes-btn is-success" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
           {#if isLoading}
-            <RefreshCw class="w-4, h-4, animate-spin" />
+            <RefreshCw class="w-4 h-4" />
           {:else}
-            <Search, class="w-4, h-4" />
+            <Search class="w-4" />
           {/if}
           Search
         </button>
       </div>
       {#if searchResults.length > 0}
-        <div, class="space-y-3">
-          <h3, class="font-bold, text-lg">Search Results ({searchResults.length})</h3>
+        <div class="space-y-3">
+          <h3 class="font-bold">Search Results ({searchResults.length})</h3>
           {#each searchResults as result, index}
-            <div class="nes-container is-rounded, p-3, bg-white">
-              <div class="flex, items-start, justify-between">
-                <div, class="flex-1">
-                  <div class="font-bold, text-sm, mb-1">
+            <div class="nes-container is-rounded p-3">
+              <div class="flex items-start">
+                <div class="flex-1">
+                  <div class="font-bold text-sm">
                     {result.title || `Result ${index + 1}`}
                   </div>
-                  <div class="text-sm, text-gray-600, mb-2">
+                  <div class="text-sm text-gray-600">
                     {result.content || 'No content available'}
                   </div>
                   {#if result.score}
-                    <div, class="text-xs, text-gray-500">
+                    <div class="text-xs">
                       Relevance: {Math.round((result.score || 0) * 100)}%
                     {/if}
                 </div>
@@ -111,9 +111,9 @@ import type { Document } from '$lib/types';
         {/if}
     </div>
   {:else if activeTab === 'upload'}
-    <div, class="space-y-4">
+    <div class="space-y-4">
       <div>
-        <label class="block text-sm, font-bold, mb-2">Upload Document</label>
+        <label class="block text-sm font-bold">Upload Document</label>
         <input
           class="nes-input w-full"
           type="file"
@@ -122,29 +122,29 @@ import type { Document } from '$lib/types';
         />
       </div>
       {#if uploadFile}
-        <div class="nes-container is-rounded, p-3, bg-blue-50">
-          <div class="flex, items-center, gap-2">
-            <FileText, class="w-4, h-4" />
-            <span, class="text-sm">{uploadFile.name}</span>
-            <span, class="text-xs, text-gray-500">
+        <div class="nes-container is-rounded p-3">
+          <div class="flex items-center">
+            <FileText class="w-4" />
+            <span class="text-sm">{uploadFile.name}</span>
+            <span class="text-xs">
               ({Math.round(uploadFile.size / 1024)}KB)
             </span>
           </div>
         {/if}
       <button class="nes-btn is-success" onclick={handleUpload} disabled={!uploadFile || isLoading}>
         {#if isLoading}
-          <RefreshCw class="w-4, h-4, animate-spin" />
+          <RefreshCw class="w-4 h-4" />
         {:else}
-          <Upload, class="w-4, h-4" />
+          <Upload class="w-4" />
         {/if}
         Upload Document
       </button>
     </div>
   {:else if activeTab === 'settings'}
-    <div, class="space-y-4">
-      <div class="nes-container, is-rounded, p-3">
-        <h3, class="font-bold, mb-2">RAG Configuration</h3>
-        <div, class="text-sm, text-gray-600">
+    <div class="space-y-4">
+      <div class="nes-container is-rounded">
+        <h3 class="font-bold">RAG Configuration</h3>
+        <div class="text-sm">
           Enhanced RAG Studio settings and configuration options will be available here.
         </div>
       </div>

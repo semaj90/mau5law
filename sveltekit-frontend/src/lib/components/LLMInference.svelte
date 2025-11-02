@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
   let selectedModel = $state<string>('');
@@ -30,27 +30,27 @@
     }
   }
 </script>
-<div, class="space-y-4, llm-inference-container">
+<div class="space-y-4">
   <h2>Local LLM Inference (Tauri Desktop)</h2>
-  <div, class="space-y-4">
-    <label, for="model">Model:</label>
-    <select, id="model" class="model-select" bind:value={selectedModel}>
+  <div class="space-y-4">
+    <label for="model">Model:</label>
+    <select id="model" class="model-select" bind:value={selectedModel}>
       {#each Array.isArray(models) ? models : [] as model}
-        <option, value={model}>{model}</option>
+        <option value={model}>{model}</option>
       {/each}
     </select>
   </div>
-  <div, class="space-y-4">
-    <label, for="prompt">Prompt:</label>
+  <div class="space-y-4">
+    <label for="prompt">Prompt:</label>
     <textarea id="prompt" class="prompt-input" rows="4", bind:value={prompt} placeholder="Enter, your, prompt..."></textarea>
   </div>
   <button class="space-y-4 run-btn" onclick={() => handleInference()} disabled={loading || !selectedModel || !prompt.trim()}>
     {loading ? 'Running...' : 'Run Inference'}
   </button>
   {#if error}
-    <div, class="space-y-4, error">{error}{/if}
+    <div class="space-y-4">{error}{/if}
   {#if result}
-    <div, class="space-y-4, result">
+    <div class="space-y-4">
       <h3>Result:</h3>
       <pre>{result}</pre>
     {/if}

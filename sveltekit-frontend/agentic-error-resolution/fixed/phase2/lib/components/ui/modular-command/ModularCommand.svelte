@@ -44,12 +44,7 @@
   // Search state
   let query = $state('');
   let isSearching = $state(false);
-  let searchResults = $state<CommandSearchResponse['results']>({
-    cases: [],
-    evidence: [],
-    documents: [],
-    people: [],
-  });
+  let searchResults = $state<CommandSearchResponse['results']>({ cases: [], evidence: [], documents: [], people: [] });
   let totalResults = $state(0);
   // Debounced search
   let searchTimeout = $state<number | null >(null);
@@ -59,12 +54,7 @@
     documents: FileText;
     people: User;
   }
-  const labelMap = {
-    cases: 'Cases',
-    evidence: 'Evidence',
-    documents: 'Documents',
-    people: 'People',
-  }
+  const labelMap = { cases: 'Cases', evidence: 'Evidence', documents: 'Documents', people: 'People' }
   async function performSearch(searchQuery: string) {
     if (searchQuery.length < minQueryLength) {
       searchResults = { cases: [], evidence: [], documents: [], people: [] }

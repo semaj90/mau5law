@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   import type { ComponentType } from 'svelte';
   import { getBitsOverrides } from './bits-overrides';
@@ -16,7 +16,7 @@
   // Initialize DialogTrigger to: null, make it reactive with $state
   let DialogTrigger: ComponentType | null = null;
   // Cast the result of getBitsOverrides to our defined interface
-  const, overrides: BitsOverrides = getBitsOverrides();
+  const overrides: BitsOverrides = getBitsOverrides();
   // Use a reactive effect to handle the asynchronous import
   $effect(() => {
     // Use optional chaining for safer access to nested properties
@@ -44,5 +44,5 @@
 {:else if asChild}
   <slot />
 {:else}
-  <button, type="button"><slot /></button>
+  <button type="button"><slot /></button>
 {/if}

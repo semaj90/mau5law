@@ -7,15 +7,7 @@
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
   import { evidenceStore  } from '$lib/stores/unified";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
-  import {
-    Activity,
-    BarChart3,
-    Clock,
-    Database,
-    RefreshCw,
-    Wifi,
-    WifiOff,
-  } from "lucide-svelte";
+  import { Activity, BarChart3, Clock, Database, RefreshCw, Wifi, WifiOff } from "lucide-svelte";
   import { onMount } from "svelte";
   // Demo state
   let selectedCaseId: string | undefined = $state(undefined);
@@ -32,12 +24,7 @@
     failed: number;
     total: number;
     inProgress: boolean;
-  } = $state({
-    pending: 0,
-    failed: 0,
-    total: 0,
-    inProgress: false,
-  });
+  } = $state({ pending: 0, failed: 0, total: 0, inProgress: false });
   $effect(() => {
     // Update stats when evidence changes
     const unsubscribe = evidenceStore.evidence.subscribe(() => {
@@ -54,67 +41,26 @@
     if (lokiEvidenceService.isReady()) {
       stats = lokiEvidenceService.getEvidenceStats();
   }}
-  function updateSyncStatus() {
-    if (lokiEvidenceService.isReady()) {
+  function updateSyncStatus() { if (lokiEvidenceService.isReady()) {
       const status = lokiEvidenceService.getSyncStatus();
       syncStatus = {
-        pending: status.pending,
-        failed: status.failed,
-        total: status.total,
-        inProgress: status.inProgress ?? false,
-      }
+        pending: status.pending, failed: status.failed, total: status.total, inProgress: status.inProgress ?? false }
   }}
-  async function startDemoMode() {
-    demoMode = true;
+  async function startDemoMode() { demoMode = true;
     // Create some demo evidence
     const demoEvidence = [
       {
-        title: "Security Camera Footage",
-        description: "Camera footage from the main entrance showing suspect entering at 9:15 PM",
-        type: "video",
-        caseId: "case-001",
-        tags: ["surveillance", "timestamp", "entrance"],
-        classification {
-          category: "visual",
-          relevance: 0.95,
-          confidence: 0.88,
-        },
+        title: "Security Camera Footage", description: "Camera footage from the main entrance showing suspect entering at 9:15 PM", type: "video", caseId: "case-001", tags: ["surveillance", "timestamp", "entrance"], classification {
+          category: "visual", relevance: 0.95, confidence: 0.88 },
       },
-      {
-        title: "Witness Statement - John Doe",
-        description: "First-hand account of the incident from witness who was present at the scene",
-        type: "testimony",
-        caseId: "case-001",
-        tags: ["witness", "firsthand", "scene"],
-        classification {
-          category: "testimony",
-          relevance: 0.82,
-          confidence: 0.75,
-        },
+      { title: "Witness Statement - John Doe", description: "First-hand account of the incident from witness who was present at the scene", type: "testimony", caseId: "case-001", tags: ["witness", "firsthand", "scene"], classification {
+          category: "testimony", relevance: 0.82, confidence: 0.75 },
       },
-      {
-        title: "Fingerprint Analysis Report",
-        description: "Forensic analysis of fingerprints found on the door handle",
-        type: "document",
-        caseId: "case-001",
-        tags: ["forensics", "fingerprints", "physical"],
-        classification {
-          category: "forensic",
-          relevance: 0.78,
-          confidence: 0.92,
-        },
+      { title: "Fingerprint Analysis Report", description: "Forensic analysis of fingerprints found on the door handle", type: "document", caseId: "case-001", tags: ["forensics", "fingerprints", "physical"], classification {
+          category: "forensic", relevance: 0.78, confidence: 0.92 },
       },
-      {
-        title: "Phone Records",
-        description: "Call logs and text messages from suspect's phone for the relevant time period",
-        type: "digital",
-        caseId: "case-001",
-        tags: ["communications", "timeline", "digital"],
-        classification {
-          category: "digital",
-          relevance: 0.65,
-          confidence: 0.85,
-        },
+      { title: "Phone Records", description: "Call logs and text messages from suspect's phone for the relevant time period", type: "digital", caseId: "case-001", tags: ["communications", "timeline", "digital"], classification {
+          category: "digital", relevance: 0.65, confidence: 0.85 },
       },
     ];
     // Add demo evidence with delays to simulate real-time updates
@@ -145,7 +91,7 @@
   function getConnectionStatusColor(): string {
     return isConnected ? "text-green-600" : "text-red-600";
   }
-  function formatObjectAsCount(obj: Record<string, number>): string {
+  function formatObjectAsCount(obj: Record<string number>): string {
     const entries = Object.entries(obj);
     if (entries.length === 0) return "0 types";
     if (entries.length <= 3) {
@@ -267,7 +213,7 @@ clearAllEvidence()}>
       <div class="space-y-4">
         <h3 class="space-y-4">Evidence by Type</h3>
         <div class="space-y-4">
-          {#each Object.entries(stats.byType) as [type, count]}
+          {#each Object.entries(stats.byType) as [type count]}
             <div class="space-y-4">
               <div class="space-y-4">{count}</div>
               <div class="space-y-4">{type}</div>
@@ -459,7 +405,7 @@ clearAllEvidence()}>
       />
       <p class="space-y-4">
         This is a modern, accessible rich text editor powered by Tiptap.
-        Supports headings, lists, images, markdown export, and more.
+        Supports headings, lists, images, markdown export and more.
       </p>
     </div>
     <!-- System Information -->

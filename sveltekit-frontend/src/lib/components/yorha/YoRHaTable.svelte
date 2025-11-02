@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   interface TableColumn {
@@ -126,7 +126,7 @@
     return `${baseClass} ${alignClass}`.trim();
   }
   function getStatusClass(value: string) {
-    const statusClasses: Record<string, string> = {
+    const statusClasses: Record<string string> = {
       'active': 'yorha-status-active',
       'inactive': 'yorha-status-inactive',
       'pending': 'yorha-status-pending',
@@ -148,31 +148,31 @@
  , class:yorha-glitch-effect={glitchEffect}
 >
   <!-- Table Header, with, Search -->
-  <div, class="yorha-table-header">
-    <div, class="yorha-table-search">
-      <input, type="text" placeholder="SEARCH, RECORDS..." bind:value={searchQuery} class="yorha-search-input" />
-      <div, class="yorha-search-icon">⚡</div>
+  <div class="yorha-table-header">
+    <div class="yorha-table-search">
+      <input type="text" placeholder="SEARCH, RECORDS..." bind:value={searchQuery} class="yorha-search-input" />
+      <div class="yorha-search-icon">⚡</div>
     </div>
     {#if selectable && selectedRows.size > 0}
-      <div, class="yorha-table-actions">
-        <span, class="yorha-selection-count">
+      <div class="yorha-table-actions">
+        <span class="yorha-selection-count">
           {selectedRows.size} SELECTED
         </span>
-        <button, class="yorha-action-btn" onclick={() => selectedRows.clear()}> CLEAR SELECTION </button>
+        <button class="yorha-action-btn" onclick={() => selectedRows.clear()}> CLEAR SELECTION </button>
       {/if}
   </div>
   <!-- Main, Table -->
-  <div, class="yorha-table-wrapper" class:yorha-table-dense={dense}>
+  <div class="yorha-table-wrapper" class:yorha-table-dense={dense}>
     <table
       class="yorha-table"
       class:yorha-table-striped={striped}
       class:yorha-table-bordered={bordered}
      , class:yorha-table-hover={hover}
     >
-      <thead, class="yorha-table-head">
-        <tr, class="yorha-table-head-row">
+      <thead class="yorha-table-head">
+        <tr class="yorha-table-head-row">
           {#if selectable}
-            <th, class="yorha-table-cell, yorha-select-cell">
+            <th class="yorha-table-cell">
               <input
                 type="checkbox"
                 class="yorha-checkbox"
@@ -191,10 +191,10 @@
              , style:width={column.width}
               onclick={() => handleSort(column)}
             >
-              <div, class="yorha-header-content">
-                <span, class="yorha-header-text">{column.title}</span>
+              <div class="yorha-header-content">
+                <span class="yorha-header-text">{column.title}</span>
                 {#if column.sortable && sortable}
-                  <div, class="yorha-sort-indicator">
+                  <div class="yorha-sort-indicator">
                     {#if sortColumn === column.key}
                       {sortDirection === 'asc' ? '▲' : '▼'}
                     {:else}
@@ -206,21 +206,21 @@
           {/each}
         </tr>
       </thead>
-      <tbody, class="yorha-table-body">
+      <tbody class="yorha-table-body">
         {#if loading}
-          <tr, class="yorha-loading-row">
-            <td, colspan={columns.length + (selectable ? 1 : 0)} class="yorha-loading-cell">
-              <div, class="yorha-loading-spinner">
-                <div, class="yorha-spinner"></div>
+          <tr class="yorha-loading-row">
+            <td colspan={columns.length + (selectable ? 1 : 0)} class="yorha-loading-cell">
+              <div class="yorha-loading-spinner">
+                <div class="yorha-spinner"></div>
                 <span>PROCESSING DATA...</span>
               </div>
             </td>
           </tr>
         {:else if paginatedData.length === 0}
-          <tr, class="yorha-empty-row">
-            <td, colspan={columns.length + (selectable ? 1 : 0)} class="yorha-empty-cell">
-              <div, class="yorha-empty-state">
-                <div, class="yorha-empty-icon">⚠</div>
+          <tr class="yorha-empty-row">
+            <td colspan={columns.length + (selectable ? 1 : 0)} class="yorha-empty-cell">
+              <div class="yorha-empty-state">
+                <div class="yorha-empty-icon">⚠</div>
                 <span>NO DATA AVAILABLE</span>
               </div>
             </td>
@@ -234,7 +234,7 @@
              , class:yorha-row-odd={index % 2 === 1}
             >
               {#if selectable}
-                <td, class="yorha-table-cell, yorha-select-cell">
+                <td class="yorha-table-cell">
                   <input
                     type="checkbox"
                     class="yorha-checkbox"
@@ -244,23 +244,23 @@
                 </td>
               {/if}
               {#each Array.isArray(columns) ? columns : [] as column}
-                <td, class="yorha-table-cell {getCellClass(column)}">
+                <td class="yorha-table-cell {getCellClass(column)}">
                   {#if column.type === 'status'}
-                    <span, class="yorha-status {getStatusClass(row[column.key])}">
+                    <span class="yorha-status {getStatusClass(row[column.key])}">
                       {formatCellValue(row[column.key], column)}
                     </span>
                   {:else if column.type === 'action'}
-                    <div, class="yorha-action-buttons">
+                    <div class="yorha-action-buttons">
                       {#if actionsSnippet}
                         {@render actionsSnippet(row, index)}
                       {:else}
                         <!-- Default, action, buttons -->
-                        <button, class="yorha-action-btn-sm">VIEW</button>
-                        <button, class="yorha-action-btn-sm">EDIT</button>
+                        <button class="yorha-action-btn-sm">VIEW</button>
+                        <button class="yorha-action-btn-sm">EDIT</button>
                       {/if}
                     </div>
                   {:else}
-                    <span, class="yorha-cell-content">
+                    <span class="yorha-cell-content">
                       {formatCellValue(row[column.key], column)}
                     </span>
                   {/if}
@@ -274,19 +274,19 @@
   </div>
   <!-- Pagination -->
   {#if pagination && totalPages > 1}
-    <div, class="yorha-table-pagination">
-      <div, class="yorha-pagination-info">
+    <div class="yorha-table-pagination">
+      <div class="yorha-pagination-info">
         SHOWING {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, filteredData.length)} OF {filteredData.length}
       </div>
-      <div, class="yorha-pagination-controls">
-        <button, class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => (currentPage = 1)}>
+      <div class="yorha-pagination-controls">
+        <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => (currentPage = 1)}>
           ⟨⟨
         </button>
-        <button, class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => currentPage--}> ⟨ </button>
-        <span, class="yorha-page-info">
+        <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => currentPage--}> ⟨ </button>
+        <span class="yorha-page-info">
           PAGE {currentPage} OF {totalPages}
         </span>
-        <button, class="yorha-pagination-btn" disabled={currentPage === totalPages} onclick={() => currentPage++}>
+        <button class="yorha-pagination-btn" disabled={currentPage === totalPages} onclick={() => currentPage++}>
           ⟩
         </button>
         <button

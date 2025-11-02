@@ -13,10 +13,7 @@
   const mockEvidenceReport = {
     id: 'EVID-2024-001',
     title: 'Digital Forensics Analysis - Data Breach Investigation',
-    type: 'digital_forensics' as const,
-    status: 'completed' as const,
-    priority: 'critical' as const,
-    createdAt: '2024-01-15T10:00:00Z',
+    type: 'digital_forensics' as const status: 'completed' as const priority: 'critical' as const createdAt: '2024-01-15T10:00:00Z',
     updatedAt: '2024-01-20T16:30:00Z',
     analyst: {
       name: 'Dr. Sarah Chen',
@@ -81,8 +78,7 @@
     {
       id: 'DOC-001',
       title: 'Initial Incident Report',
-      type: 'report' as const,
-      content: 'On January 10, 2024, XYZ Corporation reported a suspected data breach affecting their customer database...',
+      type: 'report' as const content: 'On January 10, 2024, XYZ Corporation reported a suspected data breach affecting their customer database...',
       metadata: {
         dateCreated: '2024-01-10T09:00:00Z',
         author: 'Detective J. Rodriguez',
@@ -92,8 +88,7 @@
     {
       id: 'DOC-002',
       title: 'Witness Statement - IT Administrator',
-      type: 'witness_statement' as const,
-      content: 'I first noticed unusual network activity on January 8th when our monitoring systems detected...',
+      type: 'witness_statement' as const content: 'I first noticed unusual network activity on January 8th when our monitoring systems detected...',
       metadata: {
         dateCreated: '2024-01-12T14:00:00Z',
         author: 'Michael Thompson (Witness)',
@@ -103,8 +98,7 @@
     {
       id: 'DOC-003',
       title: 'Financial Analysis Report',
-      type: 'expert_testimony' as const,
-      content: 'Forensic accounting analysis reveals systematic extraction of funds through cryptocurrency...',
+      type: 'expert_testimony' as const content: 'Forensic accounting analysis reveals systematic extraction of funds through cryptocurrency...',
       metadata: {
         dateCreated: '2024-01-18T11:00:00Z',
         author: 'CPA Jennifer Walsh',

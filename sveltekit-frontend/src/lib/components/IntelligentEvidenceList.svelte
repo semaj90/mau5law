@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import  EvidenceCard  from "$lib/components/ui/evidence/EvidenceCard.svelte";
   import  EvidenceCanvas  from "$lib/components/canvas/EvidenceCanvas.svelte";
   import type { CaseFile } from '$lib/core/logic/case-logic';
@@ -32,8 +32,8 @@
 {#if useCanvas}
   <EvidenceCanvas {caseFiles} />
 {:else}
-  <div class="grid, grid-cols-3, gap-4">
+  <div class="grid grid-cols-3">
     {#each Array.isArray(caseFiles) ? caseFiles : [] as file}
-      <EvidenceCard, caseFile={file} />
+      <EvidenceCard caseFile={file} />
     {/each}
   {/if}

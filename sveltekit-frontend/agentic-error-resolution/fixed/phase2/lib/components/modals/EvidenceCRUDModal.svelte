@@ -42,14 +42,7 @@
     onDelete
   }: Props = $props();
   // Svelte 5 state
-  let evidence = $state<Evidence>({
-    title: '',
-    type: 'document',
-    content: '',
-    tags: [],
-    x: 100,
-    y: 100,
-  });
+  let evidence = $state<Evidence>({ title: '', type: 'document', content: '', tags: [], x: 100, y: 100 });
   let originalEvidence = $state<Evidence | null>(null);
   let isLoading = $state(false);
   let isSaving = $state(false);
@@ -57,7 +50,7 @@
   let isAnalyzing = $state(false);
   let uploadedFile = $state<File | null>(null);
   let tagInput = $state('');
-  let errors = $state<Record<string, string>( );
+  let errors = $state<Record<string string>( );
   // File upload state
   let uploadProgress = $state(0);
   let dragOver = $state(false);
@@ -91,15 +84,8 @@
       isLoading = false;
     }
   }
-  function resetForm() {
-    evidence = {
-      title: '',
-      type: 'document',
-      content: '',
-      tags: [],
-      x: 100,
-      y: 100,
-    }
+  function resetForm() { evidence = {
+      title: '', type: 'document', content: '', tags: [], x: 100, y: 100 }
     originalEvidence = null;
     uploadedFile = null;
     tagInput = '';
@@ -239,8 +225,7 @@
         // Update existing evidence
         const updateData = {
           title: evidence.title,
-          type: evidence.type,
-          content: evidence.content,
+          type: evidence.type content: evidence.content,
           tags: evidence.tags,
           metadata: evidence.metadata,
           embeddings: evidence.embeddings,
@@ -279,9 +264,7 @@
     if (!confirmed) return;
     isDeleting = true;
     try {
-      const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/evidence/${evidenceId}`, { method: 'DELETE' });
       if (!response.ok) {
         throw new Error('Failed to delete evidence');
       }
@@ -328,7 +311,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
     class:animate-fadeOut={isClosing}
-    onclick={(e) => { if (e.target === e.currentTarget) handleClose(), }}
+    onclick={ (e) => { if (e.target === e.currentTarget) handleClose() }}
     onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
@@ -472,7 +455,7 @@
                     class:border-primary={dragOver}
                     class:bg-primary/5={dragOver}
                     ondrop={handleFileDrop}
-                    ondragover={(e) => { e.preventDefault(); dragOver = true, }}
+                    ondragover={ (e) => { e.preventDefault(); dragOver = true }}
                     ondragleave={() => dragOver = false}
                     role="button"
                     tabindex="0"

@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte, code: 'onsubmit|preventDefault' is not a valid attribute name -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Dialog  from "bits-ui/Dialog.svelte";
   import  Button  from "bits-ui/Button.svelte";
@@ -77,35 +77,35 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
   }
 </script>
 <Dialog.Root, bind:open={open}>
-  <div class="uno-p-4, uno-bg-white, uno-shadow">
-    <div, class="mb-4">
-      <h2 class="text-lg, font-bold, mb-2">Evidence Details</h2>
+  <div class="uno-p-4 uno-bg-white">
+    <div class="mb-4">
+      <h2 class="text-lg font-bold">Evidence Details</h2>
     </div>
     {#if state.value === 'view'}
-      <div, class="mb-2">
-        <div, class="font-bold">{title}</div>
-        <div, class="text-sm, text-gray-600">{description}</div>
+      <div class="mb-2">
+        <div class="font-bold">{title}</div>
+        <div class="text-sm">{description}</div>
         <!-- Add other view-only fields, as, needed -->
       </div>
-      <div class="flex, gap-2, mt-2">
+      <div class="flex gap-2">
         <Button.Root, class="bits-btn" onclick={handleEdit}>
 Edit
       </div>
     {:else}
       <form class="flex flex-col gap-2" onsubmit|preventDefault={handleSave}>
-        <input, name="jsonData.title" bind:value={title} placeholder="Title" class="input, input-bordered" />
-        <input, name="jsonData.description" bind:value={description} placeholder="Description" class="input, input-bordered" />
-        <input name="jsonData.tags" bind:value={tagsString} placeholder="Tags (comma, separated)" class="input, input-bordered" />
-        <input, name="jsonData.type" bind:value={type} placeholder="Type" class="input, input-bordered" />
-        <div class="flex, gap-2, mt-2">
-          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded, bits-btn, bits-btn">
+        <input name="jsonData.title" bind:value={title} placeholder="Title" class="input" />
+        <input name="jsonData.description" bind:value={description} placeholder="Description" class="input" />
+        <input name="jsonData.tags" bind:value={tagsString} placeholder="Tags (comma, separated)" class="input" />
+        <input name="jsonData.type" bind:value={type} placeholder="Type" class="input" />
+        <div class="flex gap-2">
+          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn">
 Save
           <Button.Root, class="bits-btn" variant="ghost" onclick={handleCancel}>
 Cancel
         </div>
       </form>
     {/if}
-    <div class="mt-4, flex, justify-end">
+    <div class="mt-4 flex">
       <Button.Root, class="bits-btn" onclick={() =>
 (open = false)} variant="ghost">Close
     </div>

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   interface Props {
     data?: any;
   }
@@ -8,27 +8,27 @@
   let cacheHits = $derived(data.hits || 0);
   let cacheMisses = $derived(data.misses || 0);
   let hitRate = $derived(cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses) * 100).toFixed(2) : '0.00');
-<div, class="cache-performance-monitor">
+<div class="cache-performance-monitor">
   <h3>Cache Performance Monitor</h3>
-  <div, class="metrics">
-    <div, class="metric">
+  <div class="metrics">
+    <div class="metric">
       <label>Status:</label>
-      <span, class="status" class:operational={status === 'operational'}>{status}</span>
+      <span class="status" class:operational={status === 'operational'}>{status}</span>
     </div>
-    <div, class="metric">
+    <div class="metric">
       <label>Cache Hits:</label>
       <span>{cacheHits}</span>
     </div>
-    <div, class="metric">
+    <div class="metric">
       <label>Cache Misses:</label>
       <span>{cacheMisses}</span>
     </div>
-    <div, class="metric">
+    <div class="metric">
       <label>Hit Rate:</label>
       <span>{hitRate}%</span>
     </div>
   </div>
-  <p, class="note">Component temporarily stubbed - TODO: Implement full functionality</p>
+  <p class="note">Component temporarily stubbed - TODO: Implement full functionality</p>
 </div>
 <style>
   .cache-performance-monitor {

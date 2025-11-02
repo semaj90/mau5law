@@ -1,11 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import {
-    gpuPerformanceOptimizer,
-    type GPUPerformanceMetrics,
-    type PerformanceAlert,
-  } from '$lib/services/gpu-performance-optimizer';
+  import { gpuPerformanceOptimizer, type GPUPerformanceMetrics, type PerformanceAlert } from '$lib/services/gpu-performance-optimizer';
   // Reactive state from performance optimizer
   let metrics: GPUPerformanceMetrics = $state(undefined as any);
   let alerts = $state<PerformanceAlert[]>([]);
@@ -210,7 +206,7 @@
             <span class="text-xl">🎮</span>
             <span class="text-white font-medium">GPU Usage</span>
           </div>
-          <span class="text-2xl font-bold {getStatusColor(metrics.gpu.utilization, { warning: 75, critical: 90 })}">
+          <span class="text-2xl font-bold {getStatusColor(metrics.gpu.utilization { warning: 75">
             {Math.round(metrics.gpu.utilization)}%
           </span>
         </div>
@@ -238,10 +234,8 @@
             <span class="text-white font-medium">GPU Memory</span>
           </div>
           <span
-            class="text-2xl font-bold {getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, {
-              warning: 75,
-              critical: 90,
-            })}"
+            class="text-2xl font-bold {getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100 {
+              warning: 75 critical: 90"
           >
             {Math.round((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100)}%
           </span>
@@ -253,10 +247,8 @@
               stroke="currentColor"
               stroke-width="2"
               fill="none"
-              class={getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, {
-                warning: 75,
-                critical: 90,
-              })}
+              class={ getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, {
+                warning: 75, critical: 90 })}
             />
           </svg>
         {/if}
@@ -272,7 +264,7 @@
             <span class="text-xl">🌡️</span>
             <span class="text-white font-medium">Temperature</span>
           </div>
-          <span class="text-2xl font-bold {getStatusColor(metrics.gpu.temperature, { warning: 75, critical: 85 })}">
+          <span class="text-2xl font-bold {getStatusColor(metrics.gpu.temperature { warning: 75">
             {Math.round(metrics.gpu.temperature)}°C
           </span>
         </div>
@@ -450,10 +442,8 @@
               >
               <td class="text-right">
                 <span
-                  class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.utilization, {
-                    warning: 75,
-                    critical: 90,
-                  })}"
+                  class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.utilization {
+                    warning: 75 critical: 90"
                 >
                   {metrics.gpu.utilization < 75 ? 'optimal' : metrics.gpu.utilization < 90 ? 'high' : 'critical'}
                 </span>
@@ -475,10 +465,8 @@
               <td class="text-right text-slate-300">{Math.round(metrics.cache.hitRate)}%</td>
               <td class="text-right">
                 <span
-                  class="px-2 py-1 rounded-full text-xs {getStatusBg(100 - metrics.cache.hitRate, {
-                    warning: 25,
-                    critical: 40,
-                  })}"
+                  class="px-2 py-1 rounded-full text-xs {getStatusBg(100 - metrics.cache.hitRate {
+                    warning: 25 critical: 40"
                 >
                   {metrics.cache.hitRate > 80 ? 'excellent' : metrics.cache.hitRate > 60 ? 'good' : 'needs improvement'}
                 </span>
@@ -494,10 +482,8 @@
               >
               <td class="text-right">
                 <span
-                  class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.temperature, {
-                    warning: 75,
-                    critical: 85,
-                  })}"
+                  class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.temperature {
+                    warning: 75 critical: 85"
                 >
                   {metrics.gpu.temperature < 75 ? 'optimal' : metrics.gpu.temperature < 85 ? 'warm' : 'hot'}
                 </span>

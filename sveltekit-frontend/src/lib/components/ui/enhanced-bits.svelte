@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
   const { onclick } = $props<{ onclick: ((...args: any[]) }>()
   const { disabled } = $props<{ disabled: boolean }>()

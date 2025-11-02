@@ -1,5 +1,5 @@
 <!-- Draggable Evidence Node - Svelte, 5 + Enhanced, Drag, System -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { draggable } from '$lib/actions/draggable';
   import { evidenceStore  } from '$lib/stores/unified';
@@ -172,7 +172,7 @@
       _event.dataTransfer.setData('text/plain', JSON.stringify({ // Fixed: use _event parameter
        , id: evidence.id,
         title: evidence.title,
-        type: evidence.type, // Fixed: evidence.typ -> evidence.type, semicolon to comma
+        type: evidence.type // Fixed: evidence.typ -> evidence.type semicolon to comma
       }));
     }
   }
@@ -198,15 +198,15 @@
   role="button"
   tabindex="0"
 >
-  <Card class="w-64 shadow-lg hover:shadow-xl, transition-all, duration-200">
+  <Card class="w-64 shadow-lg hover:shadow-xl transition-all">
     <!-- Header with, drag, handle -->
-    <CardHeader, class="pb-2">
-      <div class="flex, items-center, justify-between">
-        <div class="flex items-center gap-2 drag-handle, cursor-grab, active:cursor-grabbing">
-          <iconComponent, class="w-4, h-4" />
-          <CardTitle, class="text-sm, truncate">{evidence.title}</CardTitle>
+    <CardHeader class="pb-2">
+      <div class="flex items-center">
+        <div class="flex items-center gap-2 drag-handle cursor-grab">
+          <iconComponent class="w-4" />
+          <CardTitle class="text-sm">{evidence.title}</CardTitle>
         </div>
-        <div class="flex, items-center, gap-1">
+        <div class="flex items-center">
           <!-- Confidence, indicator -->
           {#if evidence.metadata?.confidence}
             <div class={`w-2, h-2, rounded-full ${confidenceColor}`} // Fixed: confidenceColor() -> confidenceColor
@@ -221,52 +221,52 @@
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}
-              <div class="animate-spin w-3 h-3 border border-primary, border-t-transparent, rounded-full"></div>
+              <div class="animate-spin w-3 h-3 border border-primary border-t-transparent"></div>
             {:else}
-              <Bot, class="w-3, h-3" />
+              <Bot class="w-3" />
             {/if}
           </Button>
         </div>
       </div>
     </CardHeader>
-    <CardContent, class="pt-0">
+    <CardContent class="pt-0">
       <!-- Type, badge -->
-      <div class="flex items-center, justify-between, mb-2">
-        <span class="px-2 py-1 text-xs, bg-muted, rounded-full">
+      <div class="flex items-center justify-between">
+        <span class="px-2 py-1 text-xs bg-muted">
           {evidence.type}
         </span>
         {#if evidence.metadata?.fileSize}
-          <span, class="text-xs, text-muted-foreground">
+          <span class="text-xs">
             {(evidence.metadata.fileSize / 1024).toFixed(1)}KB
           </span>
         {/if}
       </div>
       <!-- Content, preview -->
       {#if evidence.content}
-        <p class="text-xs text-muted-foreground, line-clamp-2, mb-2">
+        <p class="text-xs text-muted-foreground line-clamp-2">
           {evidence.content.substring(0, 100)}...
         </p>
       {/if}
       <!-- Analysis, progress -->
       {#if isAnalyzing}
-        <div class="w-full bg-muted rounded-full, h-1, mb-2">
+        <div class="w-full bg-muted rounded-full h-1">
           <div
             class="bg-primary h-1 rounded-full transition-all duration-300"
             style="width: {analysisProgress}%"
           ></div>
         </div>
-        <p, class="text-xs, text-muted-foreground">Analyzing... {analysisProgress}%</p>
+        <p class="text-xs">Analyzing... {analysisProgress}%</p>
       {/if}
       <!-- Analysis, results -->
       {#if evidence.analysis}
-        <div class="mt-2 p-2, bg-muted/50, rounded">
+        <div class="mt-2 p-2 bg-muted/50">
           {#if evidence.analysis.summary}
-            <p, class="text-xs, mb-1">{evidence.analysis.summary}</p>
+            <p class="text-xs">{evidence.analysis.summary}</p>
           {/if}
           {#if evidence.analysis.keyTerms?.length}
-            <div class="flex, flex-wrap, gap-1">
+            <div class="flex flex-wrap">
               {#each Array.isArray(evidence.analysis.keyTerms.slice(0, 3)) ? evidence.analysis.keyTerms.slice(0, 3) : [] as term}
-                <span class="px-1 py-0.5 text-xs, bg-primary/20, rounded">
+                <span class="px-1 py-0.5 text-xs bg-primary/20">
                   {term}
                 </span>
               {/each}
@@ -274,22 +274,22 @@
         {/if}
       <!-- Connections, indicator -->
       {#if evidence.connections?.length}
-        <div class="mt-2 flex, items-center, gap-1">
-          <Zap class="w-3, h-3, text-yellow-500" />
-          <span, class="text-xs, text-muted-foreground">
+        <div class="mt-2 flex items-center">
+          <Zap class="w-3 h-3" />
+          <span class="text-xs">
             {evidence.connections.length} connections
           </span>
         {/if}
       <!-- Tags -->
       {#if evidence.tags?.length}
-        <div class="mt-2 flex, flex-wrap, gap-1">
+        <div class="mt-2 flex flex-wrap">
           {#each Array.isArray(evidence.tags.slice(0, 2)) ? evidence.tags.slice(0, 2) : [] as tag}
-            <span class="px-1 py-0.5 text-xs, bg-secondary/50, rounded">
+            <span class="px-1 py-0.5 text-xs bg-secondary/50">
               #{tag}
             </span>
           {/each}
           {#if evidence.tags.length > 2}
-            <span, class="text-xs, text-muted-foreground">
+            <span class="text-xs">
               +{evidence.tags.length - 2} more
             </span>
           {/if}

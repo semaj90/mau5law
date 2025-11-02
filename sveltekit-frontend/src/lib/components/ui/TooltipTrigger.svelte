@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     asChild?: boolean;
@@ -20,7 +20,7 @@
     {@render renderChild({ builder })}
   {/if}
 {:else}
-  <button, type="button" use:builder={builder}>
+  <button type="button" use:builder={builder}>
     {#if children}
       <!-- use a plain call expression; remove, TypeScript, casts -->
       {@render renderChild()}

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     class?: string;
@@ -6,7 +6,7 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-<div, class={`card-content-ssr ${className}`.trim()}>
+<div class={`card-content-ssr ${className}`.trim()}>
   {#if children}
     {@render children()}
   {/if}

@@ -32,32 +32,9 @@
     children?: Snippet;
     class?: string;
   }
-  let {
-    era = '16bit',
-    variant = 'primary',
-    size = 'md', // Changed from 'medium' to: 'md'
-    disabled = false,
-    loading = false,
-    pixelPerfect = false, // SNES had smoother graphics
-    enableScanlines = false,
-    enableCRTEffect = false,
-    animationStyle = 'smooth',
-    type = 'button',
-    form = undefined,
-    name = undefined,
-    value = undefined,
-    gradientDirection = 'vertical',
-    enableLayerEffects = true,
-    enableMode7 = false,
-    plasmaEffect = false,
-    enableEnhancedSound = false,
-    soundChannel = 1,
-    children,
-    class: className = '',
-    onClick = undefined,
-    onHover = undefined,
-    onFocus = undefined,
-  }: Props = $props();
+  let { era = '16bit', variant = 'primary', size = 'md', // Changed from 'medium' to: 'md'
+    disabled = false, loading = false, pixelPerfect = false, // SNES had smoother graphics
+    enableScanlines = false, enableCRTEffect = false, animationStyle = 'smooth', type = 'button', form = undefined, name = undefined, value = undefined, gradientDirection = 'vertical', enableLayerEffects = true, enableMode7 = false, plasmaEffect = false, enableEnhancedSound = false, soundChannel = 1, children, class: className = '', onClick = undefined, onHover = undefined, onFocus = undefined }: Props = $props();
   // State
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -91,11 +68,7 @@
   // Derived state using modular utilities
   const sizeStyles = $derived(getSizeStyles(size as any));
   const variantGradient = $derived(
-    generateGradient({
-      variant: variant as any,
-      direction gradientDirection,
-      colorPalette: SNES_PALETTE,
-    })
+    generateGradient({ variant: variant as any, direction gradientDirection, colorPalette: SNES_PALETTE })
   );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>

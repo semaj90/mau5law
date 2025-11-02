@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported import type { Snippet } from 'svelte'; import { cva, type VariantProps } from 'class-variance-authority'; import { cn } from '$lib/utils'; // import { Button, as ButtonPrimitive } from 'bits-ui'
   import { onMount } from 'svelte'; import { browser } from '$app/environment'; // User analytics and tracking import { userAnalyticsStore } from '$lib/stores/unified'; import { lokiButtonCache } from '$lib/services/loki-cache'; import { searchableButtonIndex } from '$lib/services/fuse-search'; // JSON SSR rendering support import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr'; const buttonVariants = cva(
     'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none nes-focus disabled:opacity-50, disabled:pointer-events-none', {
@@ -7,7 +7,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         }, size: {, default: 'h-10 px-4 py-2', sm: 'h-9 rounded-md px-3', lg: 'h-11 rounded-md px-8', icon: 'h-8 w-8', icon_sm: 'h-6 w-6', icon_lg: 'h-12 w-12', xs: 'h-8 rounded px-2 text-xs'
         } }, defaultVariants: {, variant: 'default', size: 'default'
       } }
-  ); interface Props { variant?: VariantProps<typeof, buttonVariants>['variant']; size?: VariantProps<typeof, buttonVariants>['size']; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; href?: string; target?: string; loading?: boolean; loadingText?: string; class?: string; /** React-style compatibility – mapped to class */ className?: string; children?: Snippet; onclick?: (_event: MouseEvent) => void; // Enhanced modular properties id?: string; analyticsCategory?: string; analyticsAction?: string; analyticsLabel?: string; xstateContext?: any; uiJsonConfig?: UIJsonSSRConfig; searchKeywords?: string[]; cacheKey?: string; role?: string;
+  ); interface Props { variant?: VariantProps<typeof buttonVariants>['variant']; size?: VariantProps<typeof buttonVariants>['size']; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; href?: string; target?: string; loading?: boolean; loadingText?: string; class?: string; /** React-style compatibility – mapped to class */ className?: string; children?: Snippet; onclick?: (_event: MouseEvent) => void; // Enhanced modular properties id?: string; analyticsCategory?: string; analyticsAction?: string; analyticsLabel?: string; xstateContext?: any; uiJsonConfig?: UIJsonSSRConfig; searchKeywords?: string[]; cacheKey?: string; role?: string;
     'data-testid'?: string; // Accessibility props /** ARIA label for screen readers (especially important for icon-only buttons) */
     'aria-label'?: string; /** ID of element that describes this button */
     'aria-describedby'?: string; /** Whether button controls expanded state (for dropdowns, etc.) */
@@ -25,21 +25,21 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }); </script> {#if href} <a { href } { target } class={ buttonClass } role="button"
     tabindex="0"
     aria-disabled={ isDisabled } aria-label={ ariaLabel } aria-describedby={ finalAriaDescribedby } aria-expanded={ ariaExpanded } aria-controls={ ariaControls } aria-busy={ loading } data-testid={testId || 'button'} {...restProps} >
-    {#if loading} <svg class="mr-2 h-4 w-4, animate-spin"
+    {#if loading} <svg class="mr-2 h-4 w-4"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0, 0 24 24"
         aria-hidden="true"
-      > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path, class="opacity-75"
+      > <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path class="opacity-75"
           fill="currentColor"
           d="M4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3 7.938l3-2.647z"
-        /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span, class="sr-only">{ srOnlyText }</span> {/if} </a> {:else} <button { type } disabled={ isDisabled } class={ buttonClass } aria-label={ ariaLabel } aria-describedby={ finalAriaDescribedby } aria-expanded={ ariaExpanded } aria-controls={ ariaControls } aria-busy={ loading } data-testid={testId || 'button'} onclick={ handleClick } {...restProps} >
-    {#if loading} <svg class="mr-2 h-4 w-4, animate-spin"
+        /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span class="sr-only">{ srOnlyText }</span> {/if} </a> {:else} <button { type } disabled={ isDisabled } class={ buttonClass } aria-label={ ariaLabel } aria-describedby={ finalAriaDescribedby } aria-expanded={ ariaExpanded } aria-controls={ ariaControls } aria-busy={ loading } data-testid={testId || 'button'} onclick={ handleClick } {...restProps} >
+    {#if loading} <svg class="mr-2 h-4 w-4"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0, 0 24 24"
         aria-hidden="true"
-      > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path, class="opacity-75"
+      > <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path class="opacity-75"
           fill="currentColor"
           d="M4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3 7.938l3-2.647z"
-        /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span, class="sr-only">{ srOnlyText }</span> {/if} </button> {/if} <!-- Screen reader, loading, announcement --> {#if loading} <div, id={ loadingAnnouncementId } class="sr-only" aria-live="polite"> { loadingText } {/if}
+        /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span class="sr-only">{ srOnlyText }</span> {/if} </button> {/if} <!-- Screen reader, loading, announcement --> {#if loading} <div id={ loadingAnnouncementId } class="sr-only" aria-live="polite"> { loadingText } {/if}

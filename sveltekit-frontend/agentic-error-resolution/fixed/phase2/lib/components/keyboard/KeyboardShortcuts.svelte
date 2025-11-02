@@ -12,14 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   import { FocusManager } from "$lib/utils/accessibility";
   // Keep named imports that are exported by the package, and import problematic icons
   // from their component files as default exports. Adjust subpath if your package layout differs.
-  import {
-    Command,
-    FileText,
-    Plus,
-    Search,
-    Settings,
-    Users,
-  } from "lucide-svelte";
+  import { Command, FileText, Plus, Search, Settings, Users } from "lucide-svelte";
   // These imports reference the individual Svelte icon components.
   // If your installation has icons under a different path (e.g. src/icons or dist/icons),
   // update the paths accordingly.
@@ -248,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
     if (event.ctrlKey || event.metaKey) parts.push("Ctrl");
     if (event.altKey) parts.push("Alt");
     if (event.shiftKey) parts.push("Shift");
-    const specialKeys: Record<string, string> = {
+    const specialKeys: Record<string string> = {
       " ": "Space",
       "Escape": "Escape",
       "F1": "F1",

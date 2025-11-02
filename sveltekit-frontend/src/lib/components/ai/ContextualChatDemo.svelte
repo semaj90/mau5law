@@ -7,7 +7,7 @@
   - Entity extraction
   - Redis contextual caching
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -212,42 +212,42 @@ import type { Document } from '$lib/types';
     fetchContextualState();
   });
 </script>
-<div, class="contextual-chat-demo">
-  <div, class="demo-header">
+<div class="contextual-chat-demo">
+  <div class="demo-header">
     <h2>Contextual Chat with HMM State Machine</h2>
-    <div, class="session-info">
+    <div class="session-info">
       <span>Session {sessionId.substring(0, 12)}...</span>
       <span>User: {userId}</span>
     </div>
   </div>
-  <div, class="demo-content">
+  <div class="demo-content">
     <!-- Left, Panel: Chat -->
-    <div, class="chat-panel">
-      <div, class="chat-messages">
+    <div class="chat-panel">
+      <div class="chat-messages">
         {#each conversationHistory as turn, idx (idx)}
-          <div, class="message-group">
-            <div, class="user-message">
-              <div, class="message-label">You</div>
-              <div, class="message-content">{turn.userMessage}</div>
+          <div class="message-group">
+            <div class="user-message">
+              <div class="message-label">You</div>
+              <div class="message-content">{turn.userMessage}</div>
             </div>
-            <div, class="agent-message">
-              <div, class="message-label">Legal AI Assistant</div>
-              <div, class="message-content">{turn.agentResponse}</div>
-              <div, class="message-meta">
+            <div class="agent-message">
+              <div class="message-label">Legal AI Assistant</div>
+              <div class="message-content">{turn.agentResponse}</div>
+              <div class="message-meta">
                 State: {stateNames[turn.hmmState as keyof typeof stateNames]}
               </div>
             </div>
           </div>
         {/each}
         {#if conversationHistory.length === 0}
-          <div, class="empty-state">
+          <div class="empty-state">
             <p>Start a conversation to see HMM state tracking in action.</p>
             <p>Try asking about a legal case, document analysis, or risk assessment.</p>
           {/if}
       </div>
-      <div, class="chat-input">
+      <div class="chat-input">
         {#if error}
-          <div, class="error-banner">{error}{/if}
+          <div class="error-banner">{error}{/if}
         <textarea
           bind:value={message}
           onkeydown={handleKeyDown}
@@ -255,13 +255,13 @@ import type { Document } from '$lib/types';
           rows="3"
           disabled={isLoading}
         ></textarea>
-        <div, class="input-controls">
+        <div class="input-controls">
           <label>
-            <input, type="checkbox" bind:checked={enableFunctions} />
+            <input type="checkbox" bind:checked={enableFunctions} />
             Enable Agentic Functions
           </label>
-          <div, class="button-group">
-            <button, onclick={clearConversation} disabled={isLoading}>
+          <div class="button-group">
+            <button onclick={clearConversation} disabled={isLoading}>
               Clear
             </button>
             <button onclick={sendMessage} disabled={isLoading || !message.trim()}>
@@ -272,21 +272,21 @@ import type { Document } from '$lib/types';
       </div>
     </div>
     <!-- Right Panel: HMM State & Predictions -->
-    <div, class="state-panel">
+    <div class="state-panel">
       <!-- Current, State -->
-      <div, class="state-card">
+      <div class="state-card">
         <h3>Current State</h3>
         {#if contextualState}
-          <div, class="state-display">
-            <div, class="state-name">{currentStateName}</div>
-            <div, class="state-confidence">
+          <div class="state-display">
+            <div class="state-name">{currentStateName}</div>
+            <div class="state-confidence">
               Confidence: {confidencePercentage}%
             </div>
-            <div, class="state-history">
+            <div class="state-history">
               <strong>State History:</strong>
-              <div, class="history-timeline">
+              <div class="history-timeline">
                 {#each contextualState.hmmState.stateHistory.slice(-5) as state, idx (idx)}
-                  <span, class="history-state">
+                  <span class="history-state">
                     {stateNames[state as keyof typeof stateNames]}
                   </span>
                 {/each}
@@ -294,21 +294,21 @@ import type { Document } from '$lib/types';
             </div>
           </div>
         {:else}
-          <p, class="no-data">No state data yet</p>
+          <p class="no-data">No state data yet</p>
         {/if}
       </div>
       <!-- Next-Step, Predictions -->
-      <div, class="predictions-card">
+      <div class="predictions-card">
         <h3>Next-Step Predictions</h3>
         {#if predictions.length > 0}
-          <div, class="predictions-list">
+          <div class="predictions-list">
             {#each predictions as prediction, idx (idx)}
-              <div, class="prediction-item">
-                <div, class="prediction-action">{prediction.action}</div>
-                <div, class="prediction-confidence">
+              <div class="prediction-item">
+                <div class="prediction-action">{prediction.action}</div>
+                <div class="prediction-confidence">
                   {(prediction.confidence * 100).toFixed(1)}%
                 </div>
-                <div, class="prediction-bar">
+                <div class="prediction-bar">
                   <div
                     class="prediction-fill"
                     style="width: {prediction.confidence * 100}%"
@@ -318,45 +318,45 @@ import type { Document } from '$lib/types';
             {/each}
           </div>
         {:else}
-          <p, class="no-data">No predictions yet</p>
+          <p class="no-data">No predictions yet</p>
         {/if}
       </div>
       <!-- Extracted, Entities -->
-      <div, class="entities-card">
+      <div class="entities-card">
         <h3>Extracted Entities</h3>
         {#if entities.length > 0}
-          <div, class="entities-list">
+          <div class="entities-list">
             {#each entities as entity, idx (idx)}
-              <div, class="entity-item">
-                <span, class="entity-type">{entity.type}</span>
-                <span, class="entity-value">{entity.value}</span>
+              <div class="entity-item">
+                <span class="entity-type">{entity.type}</span>
+                <span class="entity-value">{entity.value}</span>
               </div>
             {/each}
           </div>
         {:else}
-          <p, class="no-data">No entities extracted yet</p>
+          <p class="no-data">No entities extracted yet</p>
         {/if}
       </div>
       <!-- Session, Statistics -->
       {#if stats}
-        <div, class="stats-card">
+        <div class="stats-card">
           <h3>Session Statistics</h3>
-          <div, class="stats-grid">
-            <div, class="stat-item">
-              <div, class="stat-label">Total Turns</div>
-              <div, class="stat-value">{stats.totalTurns}</div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-label">Total Turns</div>
+              <div class="stat-value">{stats.totalTurns}</div>
             </div>
-            <div, class="stat-item">
-              <div, class="stat-label">Avg Confidence</div>
-              <div, class="stat-value">{(stats.avgConfidence * 100).toFixed(1)}%</div>
+            <div class="stat-item">
+              <div class="stat-label">Avg Confidence</div>
+              <div class="stat-value">{(stats.avgConfidence * 100).toFixed(1)}%</div>
             </div>
-            <div, class="stat-item">
-              <div, class="stat-label">State Transitions</div>
-              <div, class="stat-value">{stats.stateTransitions}</div>
+            <div class="stat-item">
+              <div class="stat-label">State Transitions</div>
+              <div class="stat-value">{stats.stateTransitions}</div>
             </div>
-            <div, class="stat-item">
-              <div, class="stat-label">Most Common State</div>
-              <div, class="stat-value">{stats.mostCommonState}</div>
+            <div class="stat-item">
+              <div class="stat-label">Most Common State</div>
+              <div class="stat-value">{stats.mostCommonState}</div>
             </div>
           </div>
         {/if}

@@ -102,10 +102,10 @@ https://svelte.dev/e/js_parse_error -->
 
   async function createNESButtons(): Promise<void> {
     const buttonConfigs = [
-      { text: 'Primary', variant: 'is-primary' as const, position: [-3, 2, 0] },
-      { text: 'Success', variant: 'is-success' as const, position: [-1, 2, 0] },
-      { text: 'Warning', variant: 'is-warning' as const, position: [1, 2, 0] },
-      { text: 'Error', variant: 'is-error' as const, position: [3, 2, 0] }
+      { text: 'Primary', variant: 'is-primary' as const position: [-3, 2, 0] },
+      { text: 'Success', variant: 'is-success' as const position: [-1, 2, 0] },
+      { text: 'Warning', variant: 'is-warning' as const position: [1, 2, 0] },
+      { text: 'Error', variant: 'is-error' as const position: [3, 2, 0] }
     ];
 
     for (const config of buttonConfigs) {
@@ -155,8 +155,8 @@ https://svelte.dev/e/js_parse_error -->
 
   async function createNESProgressBars(): Promise<void> {
     const progressConfigs = [
-      { value: 75, variant: 'is-success' as const, position: [-1, -2, 0] },
-      { value: 45, variant: 'is-warning' as const, position: [1, -2, 0] },
+      { value: 75, variant: 'is-success' as const position: [-1, -2, 0] },
+      { value: 45, variant: 'is-warning' as const position: [1, -2, 0] },
     ];
 
     for (const config of progressConfigs) {

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
@@ -452,7 +452,7 @@
   }
 
   function getStageIcon(stage: string): string {
-    const icons: Record<string, string> = {
+    const icons: Record<string string> = {
       idle: '⏸️',
       uploading: '📤',
       upload: '📤',
@@ -478,42 +478,42 @@
 <!-- MAIN, TEMPLATE -->
 <!-- ============================================ -->
 
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900, text-white, p-8">
-  <div, class="max-w-7xl, mx-auto">
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+  <div class="max-w-7xl">
 
     <!-- Header -->
-    <div, class="mb-8">
-      <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400, bg-clip-text, text-transparent">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
         🧠 Evidence AI Assistant
       </h1>
-      <p, class="text-slate-400">
+      <p class="text-slate-400">
         Upload documents, get AI-powered analysis with real-time streaming
       </p>
 
       <!-- Connection, Status -->
-      <div class="mt-4 flex items-center, gap-2, flex-wrap">
+      <div class="mt-4 flex items-center gap-2">
         <!-- WebSocket, Status -->
-        <div class="flex items-center gap-2 px-3 py-1 rounded-full {wsConnected ? 'bg-green-500/20, text-green-400' : 'bg-red-500/20, text-red-400'}">
-          <div class="w-2, h-2, rounded-full {wsConnected ? 'bg-green-400' : 'bg-red-400'} animate-pulse"></div>
-          <span, class="text-sm, font-medium">
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full {wsConnected ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20">
+          <div class="w-2 h-2"></div>
+          <span class="text-sm">
             {wsConnected ? 'WebSocket Connected' : wsReconnecting ? 'Reconnecting...' : 'WebSocket Offline'}
           </span>
         </div>
 
         <!-- Backend, Status -->
         {#if backendStatus.pythonAI}
-          <div class="px-3 py-1 rounded-full bg-green-500/20 text-green-400, text-sm, font-medium">
+          <div class="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm">
             🐍 Python AI: Online
           </div>
         {:else}
-          <div class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400, text-sm, font-medium">
+          <div class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-sm">
             📘 TypeScript Mode
           </div>
         {/if}
 
         <!-- AI, Source, Indicator -->
         {#if aiSource}
-          <div class="px-3 py-1 rounded-full bg-blue-500/20, text-blue-400, text-sm">
+          <div class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">
             {#if aiSource === 'ollama'}
               🚀 Ollama (Vector Search)
             {:else if aiSource === 'tensorrt'}
@@ -526,14 +526,14 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1, lg:grid-cols-3, gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3">
 
       <!-- Left Column: Upload & Controls -->
-      <div, class="lg:col-span-1, space-y-6">
+      <div class="lg:col-span-1">
 
         <!-- File, Upload, Card -->
-        <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6, border, border-slate-700">
-          <h2 class="text-xl font-semibold mb-4 flex, items-center, gap-2">
+        <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
             📁 Upload Evidence
           </h2>
 
@@ -547,10 +547,10 @@
             ondrop={handleDrop}
           >
             {#if selectedFile}
-              <div, class="space-y-2">
-                <div, class="text-4xl">📄</div>
-                <p, class="font-medium, text-slate-200">{selectedFile.name}</p>
-                <p, class="text-sm, text-slate-400">{formatFileSize(selectedFile.size)}</p>
+              <div class="space-y-2">
+                <div class="text-4xl">📄</div>
+                <p class="font-medium">{selectedFile.name}</p>
+                <p class="text-sm">{formatFileSize(selectedFile.size)}</p>
                 <button
                   class="text-xs text-red-400 hover:text-red-300 mt-2"
                   onclick={() => selectedFile = null}
@@ -559,10 +559,10 @@
                 </button>
               </div>
             {:else}
-              <div, class="space-y-2">
-                <div, class="text-4xl">📎</div>
+              <div class="space-y-2">
+                <div class="text-4xl">📎</div>
                 <p class="text-slate-300">Drag & drop file here</p>
-                <p, class="text-sm, text-slate-500">or click to browse</p>
+                <p class="text-sm">or click to browse</p>
               </div>
             {/if}
 
@@ -583,7 +583,7 @@
 
           <!-- Upload, Button -->
           <button
-            class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50, disabled:cursor-not-allowed"
+            class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50"
             onclick={uploadFile}
             disabled={!selectedFile || !wsConnected || isStreaming}
           >
@@ -593,25 +593,25 @@
 
         <!-- File, Metadata, Card -->
         {#if fileMetadata}
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6, border, border-slate-700">
-            <h3 class="text-lg, font-semibold, mb-3">📋 File Info</h3>
-            <div, class="space-y-2, text-sm">
-              <div, class="flex, justify-between">
-                <span, class="text-slate-400">Filename:</span>
-                <span, class="text-slate-200, font-medium">{fileMetadata.filename}</span>
+          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
+            <h3 class="text-lg font-semibold">📋 File Info</h3>
+            <div class="space-y-2">
+              <div class="flex">
+                <span class="text-slate-400">Filename:</span>
+                <span class="text-slate-200">{fileMetadata.filename}</span>
               </div>
-              <div, class="flex, justify-between">
-                <span, class="text-slate-400">Size:</span>
-                <span, class="text-slate-200">{formatFileSize(fileMetadata.size)}</span>
+              <div class="flex">
+                <span class="text-slate-400">Size:</span>
+                <span class="text-slate-200">{formatFileSize(fileMetadata.size)}</span>
               </div>
-              <div, class="flex, justify-between">
-                <span, class="text-slate-400">Uploaded:</span>
-                <span, class="text-slate-200">{new Date(fileMetadata.uploadTime).toLocaleTimeString()}</span>
+              <div class="flex">
+                <span class="text-slate-400">Uploaded:</span>
+                <span class="text-slate-200">{new Date(fileMetadata.uploadTime).toLocaleTimeString()}</span>
               </div>
               {#if currentFileId}
-                <div, class="flex, justify-between">
-                  <span, class="text-slate-400">ID:</span>
-                  <span class="text-slate-200, font-mono, text-xs">{currentFileId.slice(0, 12)}...</span>
+                <div class="flex">
+                  <span class="text-slate-400">ID:</span>
+                  <span class="text-slate-200 font-mono">{currentFileId.slice(0, 12)}...</span>
                 </div>
               {/if}
             </div>
@@ -620,18 +620,18 @@
 
         <!-- Workflow, Progress, Card -->
         {#if workflowStatus.stage !== 'idle'}
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6, border, border-slate-700">
-            <h3 class="text-lg font-semibold mb-3 flex, items-center, gap-2">
+          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
+            <h3 class="text-lg font-semibold mb-3 flex items-center">
               {getStageIcon(workflowStatus.stage)} Workflow Progress
             </h3>
 
             <!-- Progress, Bar -->
-            <div, class="mb-3">
-              <div class="flex justify-between, text-sm, mb-1">
-                <span, class="text-slate-400, capitalize">{workflowStatus.stage}</span>
-                <span, class="text-slate-200, font-medium">{workflowStatus.progress}%</span>
+            <div class="mb-3">
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-400">{workflowStatus.stage}</span>
+                <span class="text-slate-200">{workflowStatus.progress}%</span>
               </div>
-              <div class="w-full h-2 bg-slate-700, rounded-full, overflow-hidden">
+              <div class="w-full h-2 bg-slate-700 rounded-full">
                 <div
                   class="h-full {getProgressColor(workflowStatus.progress)} transition-all duration-500"
                   style="width: {workflowStatus.progress}%"
@@ -640,21 +640,21 @@
             </div>
 
             {#if workflowStatus.message}
-              <p class="text-sm, text-slate-400, mt-2">{workflowStatus.message}</p>
+              <p class="text-sm text-slate-400">{workflowStatus.message}</p>
             {/if}
 
             <!-- Status, Badge -->
-            <div, class="mt-3">
+            <div class="mt-3">
               {#if workflowStatus.status === 'complete'}
-                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded, text-xs, font-medium">
+                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">
                   ✅ Complete
                 </span>
               {:else if workflowStatus.status === 'error'}
-                <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded, text-xs, font-medium">
+                <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">
                   ❌ Error
                 </span>
               {:else if workflowStatus.status === 'processing'}
-                <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs, font-medium, animate-pulse">
+                <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs font-medium">
                   🔄 Processing
                 </span>
               {/if}
@@ -665,11 +665,11 @@
       </div>
 
       <!-- Right Column: AI Output & Search -->
-      <div, class="lg:col-span-2, space-y-6">
+      <div class="lg:col-span-2">
 
         <!-- Search, Bar -->
-        <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6, border, border-slate-700">
-          <div, class="flex, gap-3">
+        <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
+          <div class="flex">
             <input
               type="text"
               bind:value={searchQuery}
@@ -677,7 +677,7 @@
               class="flex-1 px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
             />
             <button
-              class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors, disabled:opacity-50"
+              class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors"
               onclick={performSearch}
               disabled={isSearching || !searchQuery.trim()}
             >
@@ -687,9 +687,9 @@
 
           <!-- AI, Suggestions -->
           {#if aiSuggestions.length > 0}
-            <div, class="mt-4, space-y-2">
-              <p, class="text-sm, text-slate-400">💡 AI Suggestions:</p>
-              <div class="flex, flex-wrap, gap-2">
+            <div class="mt-4">
+              <p class="text-sm">💡 AI Suggestions:</p>
+              <div class="flex flex-wrap">
                 {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
                   <button
                     class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-full text-sm transition-colors"
@@ -704,22 +704,22 @@
         </div>
 
         <!-- AI, Streaming, Terminal -->
-        <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg border, border-slate-700, overflow-hidden">
-          <div class="bg-slate-900/50 px-4 py-2 border-b border-slate-700 flex, items-center, justify-between">
-            <span class="text-sm, font-medium, text-slate-300">🤖 AI Analysis Stream</span>
+        <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-slate-700">
+          <div class="bg-slate-900/50 px-4 py-2 border-b border-slate-700 flex items-center">
+            <span class="text-sm font-medium">🤖 AI Analysis Stream</span>
             {#if isStreaming}
-              <span class="text-xs text-green-400 flex, items-center, gap-1">
-                <div class="w-2 h-2 bg-green-400, rounded-full, animate-pulse"></div>
+              <span class="text-xs text-green-400 flex items-center">
+                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
                 Streaming...
               </span>
             {/if}
           </div>
 
-          <div class="p-6, max-h-96, overflow-y-auto">
+          <div class="p-6 max-h-96">
             {#if streamingTokens}
-              <pre class="font-mono text-sm text-slate-200, whitespace-pre-wrap, leading-relaxed">{streamingTokens}</pre>
+              <pre class="font-mono text-sm text-slate-200 whitespace-pre-wrap">{streamingTokens}</pre>
             {:else}
-              <p class="text-slate-500, text-center, py-12">
+              <p class="text-slate-500 text-center">
                 ⏸️ Upload a file to see AI analysis streaming here...
               </p>
             {/if}
@@ -728,13 +728,13 @@
 
         <!-- Auto-Tags, Display -->
         {#if extractedTags.length > 0}
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6, border, border-slate-700">
-            <h3 class="text-lg font-semibold mb-3 flex, items-center, gap-2">
+          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
+            <h3 class="text-lg font-semibold mb-3 flex items-center">
               🏷️ Auto-Extracted Tags
             </h3>
-            <div class="flex, flex-wrap, gap-2">
+            <div class="flex flex-wrap">
               {#each Array.isArray(extractedTags) ? extractedTags : [] as tag}
-                <span class="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-300 rounded-full, text-sm, font-medium">
+                <span class="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-300 rounded-full text-sm">
                   #{tag}
                 </span>
               {/each}
@@ -744,26 +744,26 @@
 
         <!-- Search, Results -->
         {#if searchResults.length > 0}
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6, border, border-slate-700">
-            <h3 class="text-lg, font-semibold, mb-4">📊 Search Results ({searchResults.length})</h3>
-            <div, class="space-y-3">
+          <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
+            <h3 class="text-lg font-semibold">📊 Search Results ({searchResults.length})</h3>
+            <div class="space-y-3">
               {#each Array.isArray(searchResults) ? searchResults : [] as result}
-                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700, hover:border-slate-600, transition-colors">
-                  <div class="flex items-start, justify-between, mb-2">
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700 hover:border-slate-600">
+                  <div class="flex items-start justify-between">
                     <h4 class="font-medium text-slate-200">{result.filename || result.file_id}</h4>
                     {#if result.vector_score}
-                      <span class="text-xs px-2 py-1 bg-green-500/20, text-green-400, rounded">
+                      <span class="text-xs px-2 py-1 bg-green-500/20 text-green-400">
                         {(result.vector_score * 100).toFixed(1)}% match
                       </span>
                     {/if}
                   </div>
                   {#if result.snippet}
-                    <p class="text-sm, text-slate-400, mb-2">{result.snippet}</p>
+                    <p class="text-sm text-slate-400">{result.snippet}</p>
                   {/if}
                   {#if result.tags}
-                    <div class="flex, flex-wrap, gap-1">
+                    <div class="flex flex-wrap">
                       {#each Array.isArray(result.tags) ? result.tags : [] as tag}
-                        <span class="text-xs px-2 py-0.5 bg-blue-500/20, text-blue-400, rounded">
+                        <span class="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400">
                           #{tag}
                         </span>
                       {/each}

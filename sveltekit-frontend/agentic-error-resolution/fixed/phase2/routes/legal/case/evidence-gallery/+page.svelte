@@ -10,12 +10,7 @@
   let selectedItem: EvidenceCard | null = $state(null);
   let canvasItems = $state<EvidenceCard[]>([]);
   let connections = $state<Array<{ from string; to: string; type: string }>>([]);
-  let caseData = $state({
-    id: 'CORPORATE ESPIONAGE INV',
-    title: 'Corporate Espionage Investigation',
-    status: 'active',
-    items: [],
-  });
+  let caseData = $state({ id: 'CORPORATE ESPIONAGE INV', title: 'Corporate Espionage Investigation', status: 'active', items: [] });
   let isDemoMode = $state(false);
   let isConnected = $state(true);
   // Case sidebar data
@@ -51,11 +46,7 @@
         description: 'CCTV footage from the main entrance',
         position: { x: 200, y: 300 },
         connections: ['doc-001'],
-        metadata: {
-          timestamp: '2024-03-15 14:32',
-          location: 'Main Entrance',
-          source: 'Security System',
-        },
+        metadata: { timestamp: '2024-03-15 14:32', location: 'Main Entrance', source: 'Security System' },
       },
       {
         id: 'doc-001',
@@ -64,10 +55,7 @@
         description: 'Detailed written statement from key witness',
         position: { x: 500, y: 400 },
         connections: ['video-001'],
-        metadata: {
-          timestamp: '2024-03-16 09:15',
-          source: 'Detective Interview',
-        },
+        metadata: { timestamp: '2024-03-16 09:15', source: 'Detective Interview' },
       },
     ];
     connections = [{ from 'video-001', to: 'doc-001', type: 'correlation' }];
@@ -111,14 +99,10 @@
     if (!isConnecting) {
       isConnecting = true;
       selectedItem = item;
-    } else if (selectedItem && selectedItem.id !== item.id) {
-      const currentSelectedItem = selectedItem; // Introduce a local constant to help TypeScript
+    } else if (selectedItem && selectedItem.id !== item.id) { const currentSelectedItem = selectedItem; // Introduce a local constant to help TypeScript
       // Create connection
       const newConnection = {
-        from currentSelectedItem.id,
-        to: item.id,
-        type: 'correlation',
-      };
+        from currentSelectedItem.id, to: item.id, type: 'correlation' };
       connections = [...connections, newConnection];
       // Update item connections
       canvasItems = canvasItems.map(i => {
@@ -141,13 +125,10 @@
   // Drag and drop functionality
   let draggedItem: EvidenceCard | null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
-  function handleMouseDown(event: MouseEvent, item: EvidenceCard) {
-    draggedItem = item;
+  function handleMouseDown(event: MouseEvent, item: EvidenceCard) { draggedItem = item;
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     dragOffset = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
+      x: event.clientX - rect.left, y: event.clientY - rect.top };
   }
   function handleMouseMove(event: MouseEvent) {
     if (draggedItem) {

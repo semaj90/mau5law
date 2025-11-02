@@ -19,25 +19,10 @@
   }
   // Gaming-style state
   let messages: ChatMessage[] = $state([
-    {
-      id: '1',
-      sender: 'assistant',
-      content: 'YoRHa AI Assistant Online - Detective Support System Active',
-      timestamp: '19:02:52',
-    },
-    {
-      id: '2',
-      sender: 'assistant',
-      content:
-        'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
-      timestamp: '19:02:52',
-    },
-    {
-      id: '3',
-      sender: 'assistant',
-      content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',
-      timestamp: '19:02:57',
-    },
+    { id: '1', sender: 'assistant', content: 'YoRHa AI Assistant Online - Detective Support System Active', timestamp: '19:02:52' },
+    { id: '2', sender: 'assistant', content:
+        'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?', timestamp: '19:02:52' },
+    { id: '3', sender: 'assistant', content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can', timestamp: '19:02:57' },
   ]);
   let currentInput = $state('');
   let isTyping = $state(false);
@@ -75,36 +60,22 @@
       }, 100);
     }
   });
-  async function sendMessage() {
-    if (!currentInput.trim() || isTyping) return;
+  async function sendMessage() { if (!currentInput.trim() || isTyping) return;
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      sender: 'detective',
-      content: currentInput,
-      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0'),
-    };
+      id: crypto.randomUUID(), sender: 'detective', content: currentInput, timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0') };
     messages = [...messages, userMessage];
     const messageContent = currentInput;
     currentInput = '';
     // Start typing indicator
     isTyping = true;
-    const typingMessage: ChatMessage = {
-      id: 'typing',
-      sender: 'assistant',
-      content: '9S is ANALYZING...',
-      timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'),
-      isTyping: true,
-    };
+    const typingMessage: ChatMessage = { id: 'typing', sender: 'assistant', content: '9S is ANALYZING...', timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'), isTyping: true };
     messages = [...messages, typingMessage];
     try {
       // Call real API endpoint
       const response = await fetch('/api/yorha/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: messageContent,
-          sessionId,
-        }),
+        body: JSON.stringify({ message: messageContent, sessionId }),
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -112,12 +83,7 @@
       // Remove typing indicator
       messages = messages.filter(m => m.id !== 'typing');
       // Create AI response message
-      const aiMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        sender: 'assistant',
-        content: '',
-        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0'),
-      };
+      const aiMessage: ChatMessage = { id: crypto.randomUUID(), sender: 'assistant', content: '', timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0') };
       messages = [...messages, aiMessage];
       // Handle SSE stream
       if (response.body) {
@@ -194,30 +160,17 @@
       isTyping = $state(false);
     }
   }
-  function clearChat() {
-    messages = [
+  function clearChat() { messages = [
       {
-        id: '1',
-        sender: 'assistant',
-        content: 'YoRHa AI Assistant Online - Detective Support System Active',
-        timestamp: currentTime + ':52',
-      },
-      {
-        id: '2',
-        sender: 'assistant',
-        content:
-          'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
-        timestamp: currentTime + ':52',
-      },
+        id: '1', sender: 'assistant', content: 'YoRHa AI Assistant Online - Detective Support System Active', timestamp: currentTime + ':52' },
+      { id: '2', sender: 'assistant', content:
+          'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?', timestamp: currentTime + ':52' },
     ];
     sessionId = null;
     isTestMode = $state(false);
   }
-  function selectSidebarItem(index: number) {
-    sidebarItems = sidebarItems.map((item, i) => ({
-      ...item,
-      active: i === index,
-    }));
+  function selectSidebarItem(index: number) { sidebarItems = sidebarItems.map((item, i) => ({
+      ...item, active: i === index }));
   }
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter') {

@@ -42,9 +42,7 @@ if (open && personId && !foafData) {
         // removed unused response assignment
         if (!response.ok) throw new Error('Failed to load recommendations');
         foafData = await response.json();
-      } catch (err) {
-        error = err instanceof Error ? err.message: 'Unknown error',
-      } finally {
+      } catch (err) { error = err instanceof Error ? err.message: 'Unknown error' } finally {
         loading = false;
       }
     }
@@ -162,8 +160,7 @@ if (open && personId && !foafData) {
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-  @keyframes spin {
-    from { transform: rotate(0deg), }
-    to { transform: rotate(360deg), }
+  @keyframes spin { from { transform: rotate(0deg) }
+    to { transform: rotate(360deg) }
   }
 </style>

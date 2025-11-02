@@ -20,42 +20,9 @@
   const Shield = resolveIcon('Shield');
   // Persons of Interest data
   let persons = $state([
-    {
-      id: 'POI-001',
-      name: 'Marcus Chen',
-      alias: 'The Ghost',
-      threat_level: 'high',
-      status: 'wanted',
-      last_seen: '2024-01-15',
-      location: 'Downtown District',
-      description: 'Former cybersecurity expert turned corporate spy',
-      cases: ['CASE-2024-087', 'CASE-2024-089'],
-      photo: null,
-    },
-    {
-      id: 'POI-002',
-      name: 'Sarah Williams',
-      alias: 'Red Phoenix',
-      threat_level: 'medium',
-      status: 'surveillance',
-      last_seen: '2024-01-20',
-      location: 'Tech Quarter',
-      description: 'Data analyst with suspicious financial transactions',
-      cases: ['CASE-2024-088'],
-      photo: null,
-    },
-    {
-      id: 'POI-003',
-      name: 'Unknown Subject',
-      alias: 'Digital Phantom',
-      threat_level: 'critical',
-      status: 'active',
-      last_seen: '2024-01-22',
-      location: 'Multiple Networks',
-      description: 'Advanced persistent threat actor, identity unknown',
-      cases: ['CASE-2024-087', 'CASE-2024-090'],
-      photo: null,
-    },
+    { id: 'POI-001', name: 'Marcus Chen', alias: 'The Ghost', threat_level: 'high', status: 'wanted', last_seen: '2024-01-15', location: 'Downtown District', description: 'Former cybersecurity expert turned corporate spy', cases: ['CASE-2024-087', 'CASE-2024-089'], photo: null },
+    { id: 'POI-002', name: 'Sarah Williams', alias: 'Red Phoenix', threat_level: 'medium', status: 'surveillance', last_seen: '2024-01-20', location: 'Tech Quarter', description: 'Data analyst with suspicious financial transactions', cases: ['CASE-2024-088'], photo: null },
+    { id: 'POI-003', name: 'Unknown Subject', alias: 'Digital Phantom', threat_level: 'critical', status: 'active', last_seen: '2024-01-22', location: 'Multiple Networks', description: 'Advanced persistent threat actor, identity unknown', cases: ['CASE-2024-087', 'CASE-2024-090'], photo: null },
   ]);
   let searchQuery = $state('');
   let selectedThreatLevel = $state('all');

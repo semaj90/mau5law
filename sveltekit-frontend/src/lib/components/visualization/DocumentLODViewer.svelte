@@ -11,7 +11,7 @@
   - Text readability preservation at each LOD level
   - Cached Palace integration for instant page access
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -28,7 +28,7 @@ import type { Document } from '$lib/types';
     pageNumber: number;
     textContent: string;
     annotations: Annotation[];
-   , lodTextures: Map<number, GPUTexture>;
+   , lodTextures: Map<number GPUTexture>;
     currentLOD: number;
   }
   interface Annotation {
@@ -68,7 +68,7 @@ import type { Document } from '$lib/types';
   let rotation = $state<number>(0);
   let currentLOD = $state<number>(1);
   let isLoading = $state<boolean>(false);
-  let documentPages = $state<Map<number, DocumentPage>(0)>(new Map());
+  let documentPages = $state<Map<number DocumentPage>(0)>(new Map());
   let viewportBounds = $state({ x: 0, y: 0, width: 800, height: 600 });
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
   // LOD configuration based on N64 constraints
@@ -376,11 +376,11 @@ if (!browser || !enableWebGPU) return;
     updateLODBasedOnZoom();
   }
 </script>
-<div class="document-lod-viewer, nes-container, with-title">
-  <p, class="title">📄 Document Viewer (LOD)</p>
+<div class="document-lod-viewer nes-container">
+  <p class="title">📄 Document Viewer (LOD)</p>
   <!-- Document, Controls -->
-  <div, class="document-controls">
-    <div, class="navigation-controls">
+  <div class="document-controls">
+    <div class="navigation-controls">
       <LoadingButton
         loading={isLoading}
         onclick={() => changePage(currentPage - 1)}
@@ -390,8 +390,8 @@ if (!browser || !enableWebGPU) return;
       >
         {#snippet children()}← Prev{/snippet}
       </LoadingButton>
-      <span, class="page-info, nes-badge">
-        <span, class="is-primary">Page {currentPage} / {totalPages}</span>
+      <span class="page-info">
+        <span class="is-primary">Page {currentPage} / {totalPages}</span>
       </span>
       <LoadingButton
         loading={isLoading}
@@ -403,21 +403,21 @@ if (!browser || !enableWebGPU) return;
         {#snippet children()}Next →{/snippet}
       </LoadingButton>
     </div>
-    <div, class="view-controls">
-      <LoadingButton, onclick={handleZoomIn} variant="ghost" size="sm">
-        {#snippet children()}<ZoomIn, class="w-4, h-4" />{/snippet}
+    <div class="view-controls">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
+        {#snippet children()}<ZoomIn class="w-4" />{/snippet}
       </LoadingButton>
-      <span, class="zoom-info">
+      <span class="zoom-info">
         {Math.round(zoomLevel * 100)}%
       </span>
-      <LoadingButton, onclick={handleZoomOut} variant="ghost" size="sm">
-        {#snippet children()}<ZoomOut, class="w-4, h-4" />{/snippet}
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
+        {#snippet children()}<ZoomOut class="w-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton, onclick={handleRotate} variant="ghost" size="sm">
-        {#snippet children()}<RotateCw, class="w-4, h-4" />{/snippet}
+      <LoadingButton onclick={handleRotate} variant="ghost" size="sm">
+        {#snippet children()}<RotateCw class="w-4" />{/snippet}
       </LoadingButton>
     </div>
-    <div, class="lod-controls">
+    <div class="lod-controls">
       <select
         class="nes-select"
         bind:value={currentLOD}
@@ -427,19 +427,19 @@ if (!browser || !enableWebGPU) return;
         }}
       >
         {#each Object.entries(lodConfig) as [level, config]}
-          <option, value={parseInt(level)}>
+          <option value={parseInt(level)}>
             LOD {level}: {config.description}
           </option>
         {/each}
       </select>
-      <Badge, variant="ghost" class="lod-badge">
-        <Layers class="w-3, h-3, mr-1" />
+      <Badge variant="ghost" class="lod-badge">
+        <Layers class="w-3 h-3" />
         Auto: LOD {recommendedLOD}
       </Badge>
     </div>
   </div>
   <!-- Document, Canvas -->
-  <div, class="document-canvas-container">
+  <div class="document-canvas-container">
     <canvas
       bind:this={canvasElement}
       width={viewportBounds.width}
@@ -453,40 +453,40 @@ if (!browser || !enableWebGPU) return;
     ></canvas>
     <!-- Loading, overlay -->
     {#if isLoading}
-      <div, class="loading-overlay">
-        <div, class="nes-progress">
-          <div, class="nes-progress-bar, indeterminate"></div>
+      <div class="loading-overlay">
+        <div class="nes-progress">
+          <div class="nes-progress-bar"></div>
         </div>
         <p>Loading document...</p>
       {/if}
   </div>
   <!-- LOD, Statistics, Panel -->
-  <div, class="lod-stats, nes-container">
+  <div class="lod-stats">
     <h4>📊 LOD Statistics</h4>
-    <div, class="stats-grid">
-      <div, class="stat-item">
-        <span, class="label">Current LOD:</span>
-        <span, class="value">Level {lodStats.currentLevel}</span>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="label">Current LOD:</span>
+        <span class="value">Level {lodStats.currentLevel}</span>
       </div>
-      <div, class="stat-item">
-        <span, class="label">Texture Size:</span>
-        <span, class="value">{lodStats.textureSize}x{lodStats.textureSize}</span>
+      <div class="stat-item">
+        <span class="label">Texture Size:</span>
+        <span class="value">{lodStats.textureSize}x{lodStats.textureSize}</span>
       </div>
-      <div, class="stat-item">
-        <span, class="label">Quality:</span>
-        <span, class="value">{Math.round(lodStats.quality * 100)}%</span>
+      <div class="stat-item">
+        <span class="label">Quality:</span>
+        <span class="value">{Math.round(lodStats.quality * 100)}%</span>
       </div>
-      <div, class="stat-item">
-        <span, class="label">Memory:</span>
-        <span, class="value">{lodStats.memoryUsage.toFixed(1)}MB</span>
+      <div class="stat-item">
+        <span class="label">Memory:</span>
+        <span class="value">{lodStats.memoryUsage.toFixed(1)}MB</span>
       </div>
-      <div, class="stat-item">
-        <span, class="label">Render Time:</span>
-        <span, class="value">{lodStats.renderTime.toFixed(1)}ms</span>
+      <div class="stat-item">
+        <span class="label">Render Time:</span>
+        <span class="value">{lodStats.renderTime.toFixed(1)}ms</span>
       </div>
-      <div, class="stat-item">
-        <span, class="label">WebGPU:</span>
-        <span, class="value {isWebGPUReady ? 'success' : 'warning'}">
+      <div class="stat-item">
+        <span class="label">WebGPU:</span>
+        <span class="value {isWebGPUReady ? 'success' : 'warning'}">
           {isWebGPUReady ? 'Ready' : 'Fallback'}
         </span>
       </div>

@@ -1,5 +1,5 @@
 <!-- Dynamic Demo Page - Showcase, Individual, Demos -->
-<script, lang="ts">
+<script lang="ts">
   import { onMount } from, 'svelte';
   import { page } from, '$app/stores';
   import type { SvelteComponent } from, 'svelte';
@@ -13,10 +13,10 @@
   // Define a type for a Svelte component constructor
   type SvelteComponentConstructor = new (...args: any[]) => SvelteComponent;
 
-  // Refine DemoLoader to expect a module that *might* have a default export, or *is* the component itself
+  // Refine DemoLoader to expect a module that *might* have a default export or *is* the component itself
   type DemoLoader = () => Promise<SvelteComponentConstructor | { default: SvelteComponentConstructor }>;
 
-  const, demoComponents: Record<string, DemoLoader> = {
+  const demoComponents: Record<string DemoLoader> = {
     webgpu: () => import('$lib/components/ai/webgpu/CacheOptimizerDemo.svelte'),
     'cuda-streaming': () => import('$lib/components/ai/OCRTensorDemo.svelte'),
     'ai-assistant': () => import('$lib/components/ai/EnhancedRAGDemo.svelte'),
@@ -150,58 +150,58 @@
 
 <svelte:head>
   <title>{metadata.title} - Legal AI Demo</title>
-  <meta, name="description" content={metadata.description} />
+  <meta name="description" content={metadata.description} />
 </svelte:head>
 
-<div, class="demo-page">
-  <header, class="demo-page-header">
-    <div, class="demo-breadcrumb">
-      <a, href="/demo/showcase" class="breadcrumb-link">← Demos</a>
-      <span, class="breadcrumb-separator">›</span>
-      <span, class="breadcrumb-current">{demoSlug}</span>
+<div class="demo-page">
+  <header class="demo-page-header">
+    <div class="demo-breadcrumb">
+      <a href="/demo/showcase" class="breadcrumb-link">← Demos</a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">{demoSlug}</span>
     </div>
 
-    <div, class="demo-meta">
-      <h1, class="demo-title">{metadata.title}</h1>
-      <p, class="demo-description">{metadata.description}</p>
+    <div class="demo-meta">
+      <h1 class="demo-title">{metadata.title}</h1>
+      <p class="demo-description">{metadata.description}</p>
 
       {#if metadata.tags.length > 0}
-        <div, class="demo-tags">
+        <div class="demo-tags">
           {#each Array.isArray(metadata.tags) ? metadata.tags : [] as tag}
-            <span, class="demo-tag">{tag}</span>
+            <span class="demo-tag">{tag}</span>
           {/each}
         </div>
       {/if}
     </div>
   </header>
 
-  <main, class="demo-content">
+  <main class="demo-content">
     {#if loading}
-      <div, class="demo-loading">
-        <div, class="loading-spinner"></div>
+      <div class="demo-loading">
+        <div class="loading-spinner"></div>
         <p>Loading {metadata.title}...</p>
       </div>
     {:else if error}
-      <div, class="demo-error">
-        <div, class="error-icon">⚠️</div>
+      <div class="demo-error">
+        <div class="error-icon">⚠️</div>
         <h2>Demo Load Failed</h2>
         <p>{error}</p>
-        <div, class="error-actions">
+        <div class="error-actions">
           <!-- use standard onclick attribute in, runes, mode -->
-          <button, type="button" onclick={() => loadDemoComponent(demoSlug)}>Retry</button>
-          <a, href="/demo/showcase">Back to Demos</a>
+          <button type="button" onclick={() => loadDemoComponent(demoSlug)}>Retry</button>
+          <a href="/demo/showcase">Back to Demos</a>
         </div>
       </div>
     {:else if currentComponent}
-      <div, class="demo-wrapper">
+      <div class="demo-wrapper">
         <!-- render dynamic component in Svelte, 5, runes-compatible, way -->
         <svelte:component, this={currentComponent} {data} />
       </div>
     {:else}
-      <div, class="demo-placeholder">
+      <div class="demo-placeholder">
         <h2>Demo Under Construction</h2>
         <p>The, "{demoSlug}" demo is being prepared.</p>
-        <a, href="/demo/showcase">Browse Other Demos</a>
+        <a href="/demo/showcase">Browse Other Demos</a>
       </div>
     {/if}
   </main>

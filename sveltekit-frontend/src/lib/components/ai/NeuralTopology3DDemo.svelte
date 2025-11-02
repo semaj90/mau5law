@@ -1,13 +1,13 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
   // import entire modules to be robust against named vs default exports
   import * as nesGPUBridgeModule from '$lib/gpu/nes-gpu-memory-bridge';
   import * as chrRomModule from '$lib/services/chr-rom-precomputation-service';
-  // Normalize exports: prefer named export, then default, then the module itself.
+  // Normalize exports: prefer named export then default, then the module itself.
   // This preserves existing usage in the file: nesGPUBridge.storeCHRROMPattern(...), nesGPUBridge.getCHRROMPattern(...)
   const nesGPUBridge: any =
     (nesGPUBridgeModule, as: any).nesGPUBridge ??
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   let webgpuSupported: boolean = $state(typeof navigator !== 'undefined' && 'gpu' in navigator);
   let initError: string | null = $state(null, as: string | null);
   // use: undefined to match requestDevice possibly returning: undefined
-  let, device: GPUDevice | undefined = undefined;
+  let device: GPUDevice | undefined = undefined;
   $effect(() => {
     (async () => {
       console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
@@ -340,99 +340,99 @@ https://svelte.dev/e/js_parse_error -->
     device = undefined;
   });
 </script>
-<div, class="neural-topology-demo">
-  <div, class="demo-header">
+<div class="neural-topology-demo">
+  <div class="demo-header">
     <h2>🧠 Neural Topology 3D Prediction System</h2>
-    <p, class="demo-subtitle">
+    <p class="demo-subtitle">
       Complete integration of Transformer + Autoencoder + CNN + RNN topologies<br>
       with predictive 3D asset search, animation: pre-rendering, and CHR-ROM caching
     </p>
   </div>
   <!-- Neural Topology, Status, Grid -->
-  <div, class="topology-status-grid">
-    <div, class="{`topology-nier-bits-card, transformer ${neuralTopologyStatus.transformer}`}">
+  <div class="topology-status-grid">
+    <div class="{`topology-nier-bits-card">
       <h3>🔤 Transformer</h3>
       <p>Language Processing</p>
-      <div, class="status">Ollama gemma3-legal</div>
+      <div class="status">Ollama gemma3-legal</div>
     </div>
-    <div, class="{`topology-nier-bits-card, autoencoder ${neuralTopologyStatus.autoencoder}`}">
+    <div class="{`topology-nier-bits-card">
       <h3>🗜️ Autoencoder</h3>
       <p>Pattern Compression</p>
-      <div, class="status">CHR-ROM Active</div>
+      <div class="status">CHR-ROM Active</div>
     </div>
-    <div, class="{`topology-nier-bits-card, cnn ${neuralTopologyStatus.cnn}`}">
+    <div class="{`topology-nier-bits-card">
       <h3>👁️ CNN</h3>
       <p>Visual Recognition</p>
-      <div, class="status">WebGPU/RTX, 3060 Ti</div>
+      <div class="status">WebGPU/RTX, 3060 Ti</div>
     </div>
-    <div, class="{`topology-nier-bits-card, rnn ${neuralTopologyStatus.rnn}`}">
+    <div class="{`topology-nier-bits-card">
       <h3>🔄 RNN</h3>
       <p>Sequence Prediction</p>
-      <div, class="status">RL Cache Active</div>
+      <div class="status">RL Cache Active</div>
     </div>
   </div>
   <!-- Demo, Controls -->
-  <div, class="demo-controls">
+  <div class="demo-controls">
     {#if demoStage === 'ready'}
-      <button, class="demo-btn, primary" onclick={runNeuralTopologyDemo}>
+      <button class="demo-btn" onclick={runNeuralTopologyDemo}>
         🎬 Start Neural Topology Demo
       </button>
     {:else if demoStage === 'running'}
-      <div, class="demo-progress">
+      <div class="demo-progress">
         <h3>Running Demo - Step {currentActionIndex + 1} of {userActions.length}</h3>
         <p>Current Action <code>{userActions[currentActionIndex]}</code></p>
-        <div, class="progress-bar">
-          <div, class="progress-fill" style="width: {((currentActionIndex + 1) / userActions.length) * 100}%"></div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {((currentActionIndex + 1) / userActions.length) * 100}%"></div>
         </div>
       </div>
     {:else if demoStage === 'completed'}
-      <div, class="demo-completed">
+      <div class="demo-completed">
         <h3>✅ Demo Completed!</h3>
-        <button, class="demo-btn, secondary" onclick={resetDemo}>
+        <button class="demo-btn" onclick={resetDemo}>
           🔄 Run Again
         </button>
       </div>
     {:else}
-      <div, class="demo-initializing">
+      <div class="demo-initializing">
         <p>⚡ Initializing neural topologies...</p>
       {/if}
   </div>
   <!-- Real-time, Metrics, Dashboard -->
-  <div, class="metrics-dashboard">
-    <div, class="metric-nier-bits-card">
+  <div class="metrics-dashboard">
+    <div class="metric-nier-bits-card">
       <h4>3D Component Predictions</h4>
-      <div, class="metric-value">{asset3DMetrics.predictedComponents}</div>
-      <div, class="metric-label">RNN Topology</div>
+      <div class="metric-value">{asset3DMetrics.predictedComponents}</div>
+      <div class="metric-label">RNN Topology</div>
     </div>
-    <div, class="metric-nier-bits-card">
+    <div class="metric-nier-bits-card">
       <h4>Pre-rendered Animations</h4>
-      <div, class="metric-value">{asset3DMetrics.prerenderedAnimations}</div>
-      <div, class="metric-label">Autoencoder Topology</div>
+      <div class="metric-value">{asset3DMetrics.prerenderedAnimations}</div>
+      <div class="metric-label">Autoencoder Topology</div>
     </div>
-    <div, class="metric-nier-bits-card">
+    <div class="metric-nier-bits-card">
       <h4>CHR-ROM Patterns</h4>
-      <div, class="metric-value">{asset3DMetrics.chrRomPatterns}</div>
-      <div, class="metric-label">0ms Cache Hits</div>
+      <div class="metric-value">{asset3DMetrics.chrRomPatterns}</div>
+      <div class="metric-label">0ms Cache Hits</div>
     </div>
-    <div, class="metric-nier-bits-card">
+    <div class="metric-nier-bits-card">
       <h4>Cache Hit Ratio</h4>
-      <div, class="metric-value">{asset3DMetrics.cacheHitRatio}%</div>
-      <div, class="metric-label">Learning Efficiency</div>
+      <div class="metric-value">{asset3DMetrics.cacheHitRatio}%</div>
+      <div class="metric-label">Learning Efficiency</div>
     </div>
   </div>
   <!-- Results, Display -->
   {#if predictions.length > 0 || animations.length > 0 || searchResults.length > 0}
-    <div, class="results-section">
+    <div class="results-section">
       <h3>🎯 Neural Topology Results</h3>
       <!-- 3D, Component, Predictions -->
       {#if predictions.length > 0}
-        <div, class="result-group">
+        <div class="result-group">
           <h4>🔄 RNN Predictions ({predictions.length})</h4>
-          <div, class="prediction-list">
+          <div class="prediction-list">
             {#each Array.isArray(predictions) ? predictions : [] as prediction}
-              <div, class="prediction-item">
+              <div class="prediction-item">
                 <strong>Step {prediction.step}:</strong> {prediction.action} →
-                <span, class="prediction-details">
+                <span class="prediction-details">
                   {prediction.prediction.geometryComplexity} {prediction.prediction.animationType}
                   ({Math.round(prediction.confidence * 100)}% confidence)
                 </span>
@@ -442,25 +442,25 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       <!-- Pre-rendered, Animations -->
       {#if animations.length > 0}
-        <div, class="result-group">
+        <div class="result-group">
           <h4>🎬 Autoencoder Pre-rendered Animations ({animations.length})</h4>
-          <div, class="animation-list">
+          <div class="animation-list">
             {#each Array.isArray(animations) ? animations : [] as animation}
-              <div, class="animation-item">
+              <div class="animation-item">
                 <strong>Step {animation.step}:</strong> {animation.componentId}
-                <span, class="animation-type">({animation.animationType})</span>
-                {#if animation.compressed}<span, class="compressed">✅ Compressed</span>{/if}
+                <span class="animation-type">({animation.animationType})</span>
+                {#if animation.compressed}<span class="compressed">✅ Compressed</span>{/if}
               </div>
             {/each}
           </div>
         {/if}
       <!-- Asset, Search, Results -->
       {#if searchResults.length > 0}
-        <div, class="result-group">
+        <div class="result-group">
           <h4>🔍 Transformer Asset Search Results</h4>
-          <div, class="search-list">
+          <div class="search-list">
             {#each Array.isArray(searchResults) ? searchResults : [] as search}
-              <div, class="search-item">
+              <div class="search-item">
                 <strong>Step {search.step}:</strong> "{search.query}" → {search.count} assets found
               </div>
             {/each}
@@ -469,25 +469,25 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   <!-- Performance, Summary -->
   {#if performanceMetrics.summary}
-    <div, class="performance-summary">
+    <div class="performance-summary">
       <h3>📊 Performance Summary</h3>
-      <div, class="summary-grid">
-        <div, class="summary-item">
+      <div class="summary-grid">
+        <div class="summary-item">
           <strong>Neural Topologies Active:</strong> {performanceMetrics.summary.neuralTopologiesActive}/4
         </div>
-        <div, class="summary-item">
+        <div class="summary-item">
           <strong>Total Predictions:</strong> {performanceMetrics.summary.totalPredictions}
         </div>
-        <div, class="summary-item">
+        <div class="summary-item">
           <strong>Pre-rendered Animations:</strong> {performanceMetrics.summary.totalAnimations}
         </div>
-        <div, class="summary-item">
+        <div class="summary-item">
           <strong>3D Assets Found:</strong> {performanceMetrics.summary.totalSearches}
         </div>
-        <div, class="summary-item">
+        <div class="summary-item">
           <strong>Avg Processing Time:</strong> {Math.round(performanceMetrics.summary.avgProcessingTime)}ms
         </div>
-        <div, class="summary-item">
+        <div class="summary-item">
           <strong>Cache Hit Ratio:</strong> {performanceMetrics.summary.averageCacheHitRatio}%
         </div>
       </div>
@@ -709,19 +709,19 @@ https://svelte.dev/e/js_parse_error -->
   .error {, color: #b91c1c; font-size: 0.9rem; margin-top: 8px; }
   }
 </style>
-<div, class="neural-demo">
+<div class="neural-demo">
   {#if webgpuSupported}
     <canvas bind:this={canvas} width={width} height={height} class="neural-canvas" aria-label="Neural Topology 3D, demo, canvas" />
   {:else}
-    <div, class="fallback">
+    <div class="fallback">
       <p>WebGPU not available in this environment. Showing lightweight fallback preview.</p>
       {#if initError}
-        <p, class="error">Init error: {initError}</p>
+        <p class="error">Init error: {initError}</p>
       {/if}
-      <div, class="placeholder" style="width:{Math.min(width,600)}px;height:{Math.min(height,300)}px">
+      <div class="placeholder" style="width:{Math.min(width,600)}px;height:{Math.min(height,300)}px">
         <svg width="100%" height="100%" viewBox="0, 0, 400, 200" preserveAspectRatio="xMidYMid, meet">
-          <rect, width="100%" height="100%" rx="8" fill="#eef2ff" />
-          <text, x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#4b5563" font-size="14">
+          <rect width="100%" height="100%" rx="8" fill="#eef2ff" />
+          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#4b5563" font-size="14">
             NeuralTopology3DDemo placeholder
           </text>
         </svg>

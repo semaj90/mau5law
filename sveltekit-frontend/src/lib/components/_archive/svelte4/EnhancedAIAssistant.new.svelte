@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu; https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- Enhanced AI, Assistant - Simplified, Version --> <script, lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu; https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- Enhanced AI, Assistant - Simplified, Version --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { Brain, Loader2, Quote, Search, Settings, Trash2 } from "lucide-svelte"; let { caseId = $bindable() }: { caseId = $bindable(): any } = $props(); // string | undefined = undefined export const evidenceIds: string[] = []; // External reference for evidence context let { placeholder = $bindable() }: { placeholder = $bindable(): any } = $props(); // "Ask AI about this case..."
   let { maxHeight = $bindable() }: { maxHeight = $bindable(): any } = $props(); // "400px"
   let { showReferences = $bindable() }: { showReferences = $bindable(): any } = $props(); // true // State let query = $state<string>(""); let isLoading = $state<boolean>(false); let messages = $state<any[] >([]); let showSettings = $state<boolean>(false); let showCitationDialog = $state<boolean>(false); let selectedCitation = $state<string>(""); // Settings let selectedModel = $state<string>("gpt-4"); let temperature = $state(0.7); let searchThreshold = $state(0.7); let maxResults = $state<number>(5); async function handleSubmit(): Promise<any> { if (!query.trim() || isLoading) return; isLoading = true; const userMessage = { role: "user", content: query } messages = [...messages, userMessage]; query = ""; // Mock AI response setTimeout(() => { const aiResponse = { role: "assistant", content: `Based on your query, about: "${userMessage.content}", here's my analysis: This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include: 1. Jurisdictional requirements 2. Applicable legal precedents 3. Statutory framework 4. Regulatory compliance I can provide more specific guidance if you share additional details about your case context.`, references: [ {, title: "Relevant Case Law", citation: "Example v. Case, 123 F.3d, 456 (2023)", relevance: 0.9 }, {'
@@ -7,38 +7,38 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   function handleReferenceClick(reference: any) { selectedCitation = `${reference.title} - ${reference.citation}`; showCitationDialog = true; }
   function insertCitation() { ondispatch?.(selectedCitation); showCitationDialog = false; }
   function clearMessages() { messages = []; }
-</script> <div class="container, mx-auto, px-4"> <!-- Header --> <div class="flex justify-between, items-center, mb-6"> <div class="flex, items-center, gap-3"> <Brain class="w-6, h-6, text-blue-600" /> <h3>Legal AI Assistant</h3> {#if caseId} <span, class="text-sm, text-gray-600">case { caseId }</span> {/if} </div> <div, class="flex, gap-2"> <button class="p-2 hover:bg-gray-100, rounded"
+</script> <div class="container mx-auto"> <!-- Header --> <div class="flex justify-between items-center"> <div class="flex items-center"> <Brain class="w-6 h-6" /> <h3>Legal AI Assistant</h3> {#if caseId} <span class="text-sm">case { caseId }</span> {/if} </div> <div class="flex"> <button class="p-2 hover:bg-gray-100"
         onclick={() => (showSettings = !showSettings)} title="Settings"
-      > <Settings class="w-4, h-4" /> </button> <button class="p-2 hover:bg-gray-100, rounded" onclick={() => clearMessages()} title="Clear"> <Trash2 class="w-4, h-4" /> </button> </div> </div> <!-- Messages --> <div class="flex-1 overflow-y-auto, mb-4" style="max-height: { maxHeight }"> {#each Array.isArray(messages) ? messages: [] as message} <div class="mb-4 p-4 border, rounded-lg"> <div, class="message-content"> {message.content} </div> {#if message.references && showReferences} <div class="mt-2, space-y-2"> <h4>References:</h4> {#each Array.isArray(message.references) ? message.references: [] as reference} <button class="flex items-center gap-2 p-2 text-left, hover:bg-gray-50 rounded"
+      > <Settings class="w-4" /> </button> <button class="p-2 hover:bg-gray-100" onclick={() => clearMessages()} title="Clear"> <Trash2 class="w-4" /> </button> </div> </div> <!-- Messages --> <div class="flex-1 overflow-y-auto" style="max-height: { maxHeight }"> {#each Array.isArray(messages) ? messages: [] as message} <div class="mb-4 p-4 border"> <div class="message-content"> {message.content} </div> {#if message.references && showReferences} <div class="mt-2"> <h4>References:</h4> {#each Array.isArray(message.references) ? message.references: [] as reference} <button class="flex items-center gap-2 p-2 text-left"
                 onclick={() => handleReferenceClick(reference)} >
-                <Quote class="w-4, h-4" /> <span, class="font-medium">{reference.title}</span> <span class="text-sm, text-gray-600">{reference.citation}</span> </button> {/each} </div> {/if} </div> {/each} {#if isLoading} <div class="flex items-center gap-2, p-4"> <div class="flex items-center, gap-2"> <Loader2 class="w-4 h-4, animate-spin" /> Analyzing your query... </div> </div> {/if} </div> <!-- Input --> <form class="flex gap-2" onsubmit|preventDefault={ handleSubmit }> <input type="text"
-      bind:value={ query } { placeholder } disabled={ isLoading } class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2, focus:ring-blue-500"
-    /> <button, type="submit"
-      disabled={!query.trim() || isLoading} class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700, disabled:opacity-50"
-    > <Search, class="w-4, h-4" /> </button> </form> <!-- Settings, Panel --> {#if showSettings} <div class="container, mx-auto, px-4"> <div class="container, mx-auto, px-4"> <h4>Settings</h4> <button class="container, mx-auto, px-4" onclick={() => (showSettings = false)} >×</button >
-      </div> <div class="container, mx-auto, px-4"> <div class="container, mx-auto, px-4"> <label, for="model">Model:</label> <select, id="model" bind:value={ selectedModel }> <option, value="gpt-4">GPT-4</option> <option, value="gpt-3.5-turbo">GPT-3.5 Turbo</option> <option, value="claude-3">Claude 3</option> </select> </div> <div class="container, mx-auto, px-4"> <label, for="temp">Temperature: { temperature }</label> <input, id="temp"
+                <Quote class="w-4" /> <span class="font-medium">{reference.title}</span> <span class="text-sm">{reference.citation}</span> </button> {/each} </div> {/if} </div> {/each} {#if isLoading} <div class="flex items-center gap-2"> <div class="flex items-center"> <Loader2 class="w-4 h-4" /> Analyzing your query... </div> </div> {/if} </div> <!-- Input --> <form class="flex gap-2" onsubmit|preventDefault={ handleSubmit }> <input type="text"
+      bind:value={ query } { placeholder } disabled={ isLoading } class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+    /> <button type="submit"
+      disabled={!query.trim() || isLoading} class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+    > <Search class="w-4" /> </button> </form> <!-- Settings, Panel --> {#if showSettings} <div class="container mx-auto"> <div class="container mx-auto"> <h4>Settings</h4> <button class="container mx-auto" onclick={() => (showSettings = false)} >×</button >
+      </div> <div class="container mx-auto"> <div class="container mx-auto"> <label for="model">Model:</label> <select id="model" bind:value={ selectedModel }> <option value="gpt-4">GPT-4</option> <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option> <option value="claude-3">Claude 3</option> </select> </div> <div class="container mx-auto"> <label for="temp">Temperature: { temperature }</label> <input id="temp"
             type="range"
             min="0"
             max="1"
             step="0.1"
-            bind:value={ temperature } /> </div> <div class="container, mx-auto, px-4"> <label, for="threshold">Search Threshold: { searchThreshold }</label> <input, id="threshold"
+            bind:value={ temperature } /> </div> <div class="container mx-auto"> <label for="threshold">Search Threshold: { searchThreshold }</label> <input id="threshold"
             type="range"
             min="0"
             max="1"
-            step="0.1"; bind:value={ searchThreshold } /> </div> <div class="container, mx-auto, px-4"> <label, for="max">Max Results:</label> <input, id="max"
+            step="0.1"; bind:value={ searchThreshold } /> </div> <div class="container mx-auto"> <label for="max">Max Results:</label> <input id="max"
             type="number"
             min="1"
-            max="20"; bind:value={ maxResults } /> </div> </div> </div> {/if} <!-- Citation, Dialog --> {#if showCitationDialog} <div class="fixed inset-0 bg-black/50 flex items-center justify-center, z-50"
+            max="20"; bind:value={ maxResults } /> </div> </div> </div> {/if} <!-- Citation, Dialog --> {#if showCitationDialog} <div class="fixed inset-0 bg-black/50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
       aria-labelledby="citation-dialog-title"
       tabindex={-1} onclick={() => (showCitationDialog = false)} keydown={(e) => e.key === "Escape" && (showCitationDialog = false)} >
-      <div class="bg-white p-6 rounded-lg w-96, max-w-full"
+      <div class="bg-white p-6 rounded-lg w-96"
         role="document"
         onclick keydown={(e) => { if (e.key === "Escape") { showCitationDialog = false; }
-        }} <div class="flex items-center, gap-2, mb-4"> <h4, id="citation-dialog-title"> <Quote, class="w-5, h-5" /> Legal Citation </h4> </div> <div, class="space-y-4"> <div class="p-4, bg-gray-50, rounded"> <p>{ selectedCitation }</p> </div> <div, class="flex, gap-2"> <button class="px-4 py-2 bg-blue-600 text-white, rounded, hover:bg-blue-700" onclick={() => insertCitation()}> Insert Citation </button> <button class="px-4 py-2 bg-gray-200 rounded, hover:bg-gray-300"
+        }} <div class="flex items-center gap-2"> <h4 id="citation-dialog-title"> <Quote class="w-5" /> Legal Citation </h4> </div> <div class="space-y-4"> <div class="p-4 bg-gray-50"> <p>{ selectedCitation }</p> </div> <div class="flex"> <button class="px-4 py-2 bg-blue-600 text-white rounded" onclick={() => insertCitation()}> Insert Citation </button> <button class="px-4 py-2 bg-gray-200 rounded"
               onclick={() => navigator.clipboard.writeText(selectedCitation)} >
-              Copy </button> </div> </div> <div class="flex, justify-end, mt-4"> <button class="px-4 py-2 bg-gray-200 rounded, hover:bg-gray-300"
+              Copy </button> </div> </div> <div class="flex justify-end"> <button class="px-4 py-2 bg-gray-200 rounded"
             onclick={() => (showCitationDialog = false)} >
             Close </button> </div> </div> </div> {/if} </div> <style> /* @unocss-include */ .ai-assistant { position: relative; border: 1px solid #e5e7eb; border-radius: 8px;, background: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; }
   .header { display: flex; justify-content: space-betweenn; align-items: center; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; }

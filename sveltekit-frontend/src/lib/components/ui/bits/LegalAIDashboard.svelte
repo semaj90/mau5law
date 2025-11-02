@@ -1,6 +1,6 @@
 <!-- Enhanced-Bits Legal, AI, Dashboard -->
 <!-- Complete integration of Citations, Reports, and, POI, systems -->
-<script, lang="ts">
+<script lang="ts">
   import { Input } from '$lib/components/ui/input';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
@@ -206,39 +206,39 @@ import type { Case } from '$lib/types';
     }
   ]);
 </script>
-<div, class="legal-dashboard">
+<div class="legal-dashboard">
   <!-- Header -->
-  <header, class="dashboard-header">
-    <div, class="header-content">
+  <header class="dashboard-header">
+    <div class="header-content">
       <h1>⚖️ Legal AI Dashboard</h1>
-      <div, class="header-actions">
+      <div class="header-actions">
         <Input
           bind:value={searchQuery}
           placeholder="Search across all systems..."
           onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
-        <Button, onclick={handleSearch} disabled={loading}>
+        <Button onclick={handleSearch} disabled={loading}>
           {loading ? '🔍 Searching...' : '🔍 Search'}
         </Button>
-        <Button, onclick={handleCreateCase} variant="outline">📝 New Case</Button>
-        <Button, onclick={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
+        <Button onclick={handleCreateCase} variant="outline">📝 New Case</Button>
+        <Button onclick={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
       </div>
     </div>
   </header>
   <!-- Dashboard, Content -->
-  <main, class="dashboard-content">
-    <Tabs, bind:value={activeTab}>
+  <main class="dashboard-content">
+    <Tabs bind:value={activeTab}>
       <!-- Dashboard, Tab -->
       {#if activeTab === 'dashboard'}
-        <div, class="dashboard-overview">
+        <div class="dashboard-overview">
           <!-- Stats, Cards -->
-          <div, class="stats-grid">
+          <div class="stats-grid">
             <Card.Root, class="stat-card">
               <CardHeader>
                 <CardTitle>📂 Total Cases</CardTitle>
               </CardHeader>
               <CardContent>
-                <div, class="stat-value">{dashboardData.totalCases}</div>
+                <div class="stat-value">{dashboardData.totalCases}</div>
               </CardContent>
             </Card>
             <Card.Root, class="stat-card">
@@ -246,8 +246,8 @@ import type { Case } from '$lib/types';
                 <CardTitle>📚 Citations</CardTitle>
               </CardHeader>
               <CardContent>
-                <div, class="stat-value">{dashboardData.totalCitations}</div>
-                <div, class="stat-detail">{dashboardData.activeCitations} verified</div>
+                <div class="stat-value">{dashboardData.totalCitations}</div>
+                <div class="stat-detail">{dashboardData.activeCitations} verified</div>
               </CardContent>
             </Card>
             <Card.Root, class="stat-card">
@@ -255,8 +255,8 @@ import type { Case } from '$lib/types';
                 <CardTitle>📊 Reports</CardTitle>
               </CardHeader>
               <CardContent>
-                <div, class="stat-value">{dashboardData.totalReports}</div>
-                <div, class="stat-detail">{dashboardData.pendingReports} pending</div>
+                <div class="stat-value">{dashboardData.totalReports}</div>
+                <div class="stat-detail">{dashboardData.pendingReports} pending</div>
               </CardContent>
             </Card>
             <Card.Root, class="stat-card">
@@ -264,33 +264,33 @@ import type { Case } from '$lib/types';
                 <CardTitle>👥 Persons of Interest</CardTitle>
               </CardHeader>
               <CardContent>
-                <div, class="stat-value">{dashboardData.totalPOIs}</div>
-                <div, class="stat-detail, high-risk">{dashboardData.highRiskPOIs} high risk</div>
+                <div class="stat-value">{dashboardData.totalPOIs}</div>
+                <div class="stat-detail">{dashboardData.highRiskPOIs} high risk</div>
               </CardContent>
             </Card>
           </div>
           <!-- Recent, Activity -->
-          <div, class="recent-activity">
+          <div class="recent-activity">
             <Card>
               <CardHeader>
                 <CardTitle>🕒 Recent Activity</CardTitle>
               </CardHeader>
               <CardContent>
-                <div, class="activity-list">
-                  <div, class="activity-item">
-                    <span, class="activity-icon">🎯</span>
-                    <span, class="activity-text">John Doe added to FBI Most Wanted</span>
-                    <span, class="activity-time">2 hours ago</span>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <span class="activity-icon">🎯</span>
+                    <span class="activity-text">John Doe added to FBI Most Wanted</span>
+                    <span class="activity-time">2 hours ago</span>
                   </div>
-                  <div, class="activity-item">
-                    <span, class="activity-icon">📋</span>
-                    <span, class="activity-text">Criminal case report generated</span>
-                    <span, class="activity-time">4 hours ago</span>
+                  <div class="activity-item">
+                    <span class="activity-icon">📋</span>
+                    <span class="activity-text">Criminal case report generated</span>
+                    <span class="activity-time">4 hours ago</span>
                   </div>
-                  <div, class="activity-item">
-                    <span, class="activity-icon">📚</span>
-                    <span, class="activity-text">New citation verified: Smith v. Jones</span>
-                    <span, class="activity-time">6 hours ago</span>
+                  <div class="activity-item">
+                    <span class="activity-icon">📚</span>
+                    <span class="activity-text">New citation verified: Smith v. Jones</span>
+                    <span class="activity-time">6 hours ago</span>
                   </div>
                 </div>
               </CardContent>
@@ -299,12 +299,12 @@ import type { Case } from '$lib/types';
         {/if}
       <!-- POI, Tab -->
       {#if activeTab === 'poi'}
-        <div, class="poi-section">
-          <div, class="section-header">
+        <div class="poi-section">
+          <div class="section-header">
             <h2>👥 Persons of Interest</h2>
-            <Button, onclick={() => alert('Create new POI')}>➕ Add POI</Button>
+            <Button onclick={() => alert('Create new POI')}>➕ Add POI</Button>
           </div>
-          <div, class="poi-grid">
+          <div class="poi-grid">
             {#each Array.isArray(samplePOIs) ? samplePOIs : [] as poi}
               <LegalPOICard
                 {poi}
@@ -316,10 +316,10 @@ import type { Case } from '$lib/types';
         {/if}
       <!-- Citations, Tab -->
       {#if activeTab === 'citations'}
-        <div, class="citations-section">
-          <div, class="section-header">
+        <div class="citations-section">
+          <div class="section-header">
             <h2>📚 Legal Citations</h2>
-            <Button, onclick={() => alert('Add new citation')}>➕ Add Citation</Button>
+            <Button onclick={() => alert('Add new citation')}>➕ Add Citation</Button>
           </div>
           <Card>
             <CardContent>
@@ -330,10 +330,10 @@ import type { Case } from '$lib/types';
         {/if}
       <!-- Reports, Tab -->
       {#if activeTab === 'reports'}
-        <div, class="reports-section">
-          <div, class="section-header">
+        <div class="reports-section">
+          <div class="section-header">
             <h2>📊 Legal Reports</h2>
-            <Button, onclick={() => alert('Generate new report')}>➕ Generate Report</Button>
+            <Button onclick={() => alert('Generate new report')}>➕ Generate Report</Button>
           </div>
           <Card>
             <CardContent>
@@ -344,7 +344,7 @@ import type { Case } from '$lib/types';
         {/if}
       <!-- Search, Results -->
       {#if searchQuery && Object.keys(searchResults).length > 0}
-        <div, class="search-results">
+        <div class="search-results">
           <h2>🔍 Search Results for: "{searchQuery}"</h2>
           {#if searchResults.citations?.length > 0}
             <Card>
@@ -353,7 +353,7 @@ import type { Case } from '$lib/types';
               </CardHeader>
               <CardContent>
                 {#each Array.isArray(searchResults.citations.slice(0, 3)) ? searchResults.citations.slice(0, 3) : [] as citation}
-                  <div, class="search-result-item">
+                  <div class="search-result-item">
                     <strong>{citation.title}</strong>
                     <p>{citation.description}</p>
                   </div>
@@ -368,7 +368,7 @@ import type { Case } from '$lib/types';
               </CardHeader>
               <CardContent>
                 {#each Array.isArray(searchResults.reports.slice(0, 3)) ? searchResults.reports.slice(0, 3) : [] as report}
-                  <div, class="search-result-item">
+                  <div class="search-result-item">
                     <strong>{report.title}</strong>
                     <p>{report.description}</p>
                   </div>
@@ -383,7 +383,7 @@ import type { Case } from '$lib/types';
               </CardHeader>
               <CardContent>
                 {#each Array.isArray(searchResults.poi.slice(0, 3)) ? searchResults.poi.slice(0, 3) : [] as person}
-                  <div, class="search-result-item">
+                  <div class="search-result-item">
                     <strong>{person.name}</strong>
                     <p>Role: {person.role} |, Risk: {person.metadata.riskLevel}</p>
                   </div>
@@ -394,15 +394,15 @@ import type { Case } from '$lib/types';
         {/if}
     </Tabs>
     <!-- Navigation, Tabs -->
-    <nav, class="dashboard-nav">
-      <Button, onclick={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
+    <nav class="dashboard-nav">
+      <Button onclick={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
         📊 Dashboard
       </Button>
-      <Button, onclick={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
-      <Button, onclick={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
+      <Button onclick={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
+      <Button onclick={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
         📚 Citations
       </Button>
-      <Button, onclick={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
+      <Button onclick={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
         📊 Reports
       </Button>
     </nav>

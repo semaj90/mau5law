@@ -223,11 +223,7 @@
         timestamp: new Date().toLocaleTimeString(),
         metadata: { error: true }
       }];
-      notifications.add({
-        type: "error",
-        title: "Chat Error",
-        message: "Failed to get response from AI assistant",
-      });
+      notifications.add({ type: "error", title: "Chat Error", message: "Failed to get response from AI assistant" });
     } finally {
       isLoading = false;
       isTyping = $state(false);
@@ -250,13 +246,9 @@
       inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + "px";
     }
   }
-  async function analyzeDocuments() {
-    if (availableDocuments.length === 0) {
+  async function analyzeDocuments() { if (availableDocuments.length === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Documents",
-        message: "No documents available for analysis.",
-      });
+        type: "warning", title: "No Documents", message: "No documents available for analysis." });
       return;
     }
     try {
@@ -280,13 +272,9 @@
       const analysisQuery = `Please analyze these ${availableDocuments.length} document(s) for key insights, legal implications, and important findings. Focus on patterns, risks, and actionable recommendations.`;
       messageInput = analysisQuery;
       await sendMessage();
-    } catch (error) {
-      console.error('Document analysis failed:', error);
+    } catch (error) { console.error('Document analysis failed:', error);
       notifications.add({
-        type: "error",
-        title: "Analysis Failed",
-        message: error instanceof Error ? error.message: "Failed to analyze documents",
-      });
+        type: "error", title: "Analysis Failed", message: error instanceof Error ? error.message: "Failed to analyze documents" });
     } finally {
       isLoading = false;
     }
@@ -302,22 +290,14 @@
         title: "Service Health Check",
         message: `Status: ${health.status}. Capabilities: ${health.capabilities.join(', ')}`,
       });
-    } catch (error) {
-      console.error('Health check failed:', error);
+    } catch (error) { console.error('Health check failed:', error);
       notifications.add({
-        type: "error",
-        title: "Health Check Failed",
-        message: "Could not check service health",
-      });
+        type: "error", title: "Health Check Failed", message: "Could not check service health" });
     }
   }
-  async function queueEmbeddingJobs() {
-    if (availableDocuments.length === 0) {
+  async function queueEmbeddingJobs() { if (availableDocuments.length === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Documents",
-        message: "No documents to queue for processing.",
-      });
+        type: "warning", title: "No Documents", message: "No documents to queue for processing." });
       return;
     }
     try {
@@ -337,26 +317,18 @@
         title: "Jobs Queued",
         message: `Successfully queued ${successCount}/${availableDocuments.length} embedding jobs`,
       });
-    } catch (error) {
-      console.error('Job queuing failed:', error);
+    } catch (error) { console.error('Job queuing failed:', error);
       notifications.add({
-        type: "error",
-        title: "Queue Failed",
-        message: "Failed to queue embedding jobs",
-      });
+        type: "error", title: "Queue Failed", message: "Failed to queue embedding jobs" });
     } finally {
       isLoading = false;
     }
   }
-  function addDocument() {
-    const newDoc = prompt("Enter document content:");
+  function addDocument() { const newDoc = prompt("Enter document content:");
     if (newDoc?.trim()) {
       availableDocuments = [...availableDocuments, newDoc.trim()];
       notifications.add({
-        type: "success",
-        title: "Document Added",
-        message: "Document successfully added to context.",
-      });
+        type: "success", title: "Document Added", message: "Document successfully added to context." });
     }
   }
   function toggleDocumentSelection(_index: number) {

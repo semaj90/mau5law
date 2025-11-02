@@ -2,7 +2,7 @@
 Enhanced File Upload Component with localStorage Fallback
 Automatically handles server upload with localStorage fallback
 -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
@@ -31,7 +31,7 @@ Automatically handles server upload with localStorage fallback
   let storageStats: StorageStats = {, used: 0, available: 0, percentage: 0 };
   let fileInput: HTMLInputElement | null = null;
   // Combine initialization + periodic updater into one onMount to keep cleanup consistent
-  let, _interval: ReturnType<typeof setInterval> | null = null;
+  let _interval: ReturnType<typeof setInterval> | null = null;
   onMount(() => {
     try {
       storageStats = (localStorageFiles as: any).getStorageUsage?.() ?? storageStats;
@@ -133,11 +133,11 @@ Automatically handles server upload with localStorage fallback
     error = null;
   }
 </script>
-<div, class="file-upload-container">
+<div class="file-upload-container">
   <!-- Storage, Usage, Indicator -->
   {#if forceLocalStorage || storageStats.percentage > 0}
-    <div, class="storage-indicator">
-      <div, class="storage-bar">
+    <div class="storage-indicator">
+      <div class="storage-bar">
         <div
           class="storage-fill"
           style="width: {storageStats.percentage}%"
@@ -145,7 +145,7 @@ Automatically handles server upload with localStorage fallback
          , class:critical={storageStats.percentage > 90}
         ></div>
       </div>
-      <span, class="storage-text">
+      <span class="storage-text">
         localStorage: {Math.round(storageStats.used / 1024)}KB / {Math.round(storageStats.available / 1024)}KB
       </span>
     {/if}
@@ -163,26 +163,26 @@ Automatically handles server upload with localStorage fallback
     onclick={openFileSelector}
     onkeydown={(e: KeyboardEvent) => (e as KeyboardEvent).key === 'Enter' && openFileSelector()}
   >
-    <div, class="drop-zone-content">
+    <div class="drop-zone-content">
       {#if isUploading}
-        <div, class="upload-progress">
-          <div, class="spinner" aria-hidden="true"></div>
-          <div, class="progress-text">
+        <div class="upload-progress">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="progress-text">
             <div>Uploading {currentFile}...</div>
-            <div, class="progress-bar">
-              <div, class="progress-fill" style="width: {uploadProgress}%"></div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {uploadProgress}%"></div>
             </div>
             <div>{Math.round(uploadProgress)}% complete</div>
           </div>
         </div>
       {:else}
-        <div, class="upload-icon">📁</div>
-        <div, class="upload-text">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text">
           <strong>Drop files here or click to upload</strong>
-          <div, class="upload-subtitle">
+          <div class="upload-subtitle">
             {multiple ? 'Multiple files allowed' : 'Single file only'} • Max {maxSize}MB per file
             {#if forceLocalStorage}
-              <br><span, class="fallback-notice">⚠️ Using localStorage fallback</span>
+              <br><span class="fallback-notice">⚠️ Using localStorage fallback</span>
             {/if}
           </div>
         {/if}
@@ -202,33 +202,33 @@ Automatically handles server upload with localStorage fallback
   />
   <!-- Error, Display -->
   {#if error}
-    <div, class="error-message" role="alert">
+    <div class="error-message" role="alert">
       ❌ {error}
     {/if}
   <!-- Results, Display -->
   {#if uploadResults.length > 0}
-    <div, class="results-container">
-      <div, class="results-header">
+    <div class="results-container">
+      <div class="results-header">
         <h4>Upload Results</h4>
-        <button, class="clear-btn" onclick={clearResults} type="button">Clear</button>
+        <button class="clear-btn" onclick={clearResults} type="button">Clear</button>
       </div>
-      <div, class="results-list">
+      <div class="results-list">
         {#each uploadResults as result (result.fileName)}
-          <div, class="result-item" class:result-success={result.success}, class:result-error={!result.success}>
-            <div, class="result-icon">
+          <div class="result-item" class:result-success={result.success}, class:result-error={!result.success}>
+            <div class="result-icon">
               {result.success ? '✅' : '❌'}
             </div>
-            <div, class="result-details">
-              <div, class="result-name">{result.fileName}</div>
-              <div, class="result-meta">
+            <div class="result-details">
+              <div class="result-name">{result.fileName}</div>
+              <div class="result-meta">
                 {#if result.success}
-                  <span, class="storage-type">{result.storageType}</span>
+                  <span class="storage-type">{result.storageType}</span>
                   {#if result.fallbackUsed}
-                    <span, class="fallback-badge">localStorage fallback</span>
+                    <span class="fallback-badge">localStorage fallback</span>
                   {/if}
-                  <span, class="file-size">{Math.round(((result.size ?? 0) / 1024))}KB</span>
+                  <span class="file-size">{Math.round(((result.size ?? 0) / 1024))}KB</span>
                 {:else}
-                  <span, class="error-text">{result.error}</span>
+                  <span class="error-text">{result.error}</span>
                 {/if}
               </div>
             </div>

@@ -2,7 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- Observability Panel: Real-time alerts + sustained, monitoring, dashboard -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import type { ObservabilityState } from '$lib/services/observability-persistence';
@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // State
   let state: ObservabilityState | null = null;
-  let, alerts: Alert[] = $state([]);
+  let alerts: Alert[] = $state([]);
   let isConnected = $state<boolean>(false);
   let ws = $state<WebSocket | null >(null);
   let autoScroll = $state<boolean>(true);
@@ -160,90 +160,90 @@ await loadState();
     }
   });
 </script>
-<div, class="observability-panel">
+<div class="observability-panel">
   <!-- Header -->
-  <div, class="panel-header">
+  <div class="panel-header">
     <h3>🔍 Observability Dashboard</h3>
-    <div, class="header-controls">
-      <div, class="connection-status">
-        <span, class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
+    <div class="header-controls">
+      <div class="connection-status">
+        <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
         {isConnected ? 'Live' : 'Disconnected'}
       </div>
-      <button, class="btn-toggle" onclick={() => (showDetails = !showDetails)}>
+      <button class="btn-toggle" onclick={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
   </div>
   <!-- Sustained, Monitoring, Badges -->
-  <div, class="badges-row">
-    <div, class="badge {getBadgeClass(p99Badge.status)}">
-      <div, class="badge-label">P99 Breaches</div>
-      <div, class="badge-value">{p99Badge.count}/{p99Badge.budget}</div>
-      <div, class="badge-progress">
-        <div, class="progress-bar" style="width: {Math.min(p99Badge.ratio * 100, 100)}%"></div>
+  <div class="badges-row">
+    <div class="badge {getBadgeClass(p99Badge.status)}">
+      <div class="badge-label">P99 Breaches</div>
+      <div class="badge-value">{p99Badge.count}/{p99Badge.budget}</div>
+      <div class="badge-progress">
+        <div class="progress-bar" style="width: {Math.min(p99Badge.ratio * 100, 100)}%"></div>
       </div>
     </div>
-    <div, class="badge {getBadgeClass(errorBadge.status)}">
-      <div, class="badge-label">Error Spikes</div>
-      <div, class="badge-value">{errorBadge.count}/{errorBadge.budget}</div>
-      <div, class="badge-progress">
-        <div, class="progress-bar" style="width: {Math.min(errorBadge.ratio * 100, 100)}%"></div>
+    <div class="badge {getBadgeClass(errorBadge.status)}">
+      <div class="badge-label">Error Spikes</div>
+      <div class="badge-value">{errorBadge.count}/{errorBadge.budget}</div>
+      <div class="badge-progress">
+        <div class="progress-bar" style="width: {Math.min(errorBadge.ratio * 100, 100)}%"></div>
       </div>
     </div>
-    <div, class="badge {getBadgeClass(anomalyBadge.status)}">
-      <div, class="badge-label">Anomalies</div>
-      <div, class="badge-value">{anomalyBadge.count}/{anomalyBadge.budget}</div>
-      <div, class="badge-progress">
-        <div, class="progress-bar" style="width: {Math.min(anomalyBadge.ratio * 100, 100)}%"></div>
+    <div class="badge {getBadgeClass(anomalyBadge.status)}">
+      <div class="badge-label">Anomalies</div>
+      <div class="badge-value">{anomalyBadge.count}/{anomalyBadge.budget}</div>
+      <div class="badge-progress">
+        <div class="progress-bar" style="width: {Math.min(anomalyBadge.ratio * 100, 100)}%"></div>
       </div>
     </div>
   </div>
   {#if showDetails && state}
     <!-- Detailed, State -->
-    <div, class="details-section">
+    <div class="details-section">
       <h4>Current Baselines</h4>
-      <div, class="baselines-grid">
-        <div, class="baseline-item">
-          <span, class="label">P99 Latency:</span>
-          <span, class="value">{state.baselines.p99_latency_ms}ms</span>
+      <div class="baselines-grid">
+        <div class="baseline-item">
+          <span class="label">P99 Latency:</span>
+          <span class="value">{state.baselines.p99_latency_ms}ms</span>
         </div>
-        <div, class="baseline-item">
-          <span, class="label">Error Rate:</span>
-          <span, class="value">{state.baselines.error_rate_percent}%</span>
+        <div class="baseline-item">
+          <span class="label">Error Rate:</span>
+          <span class="value">{state.baselines.error_rate_percent}%</span>
         </div>
-        <div, class="baseline-item">
-          <span, class="label">Connections:</span>
-          <span, class="value">{state.baselines.connection_count}</span>
+        <div class="baseline-item">
+          <span class="label">Connections:</span>
+          <span class="value">{state.baselines.connection_count}</span>
         </div>
       </div>
-      <div, class="metadata">
+      <div class="metadata">
         <small>Last calculated: {formatTimestamp(state.baselines.last_calculated)}</small>
         <small>Last reset: {formatTimestamp(state.sustained_counters.last_reset)}</small>
       </div>
     {/if}
   <!-- Alert, Stream -->
-  <div, class="alerts-section">
-    <div, class="alerts-header">
+  <div class="alerts-section">
+    <div class="alerts-header">
       <h4>Live Alerts</h4>
-      <div, class="alerts-controls">
-        <label, class="auto-scroll">
-          <input, type="checkbox" bind:checked={autoScroll} />
+      <div class="alerts-controls">
+        <label class="auto-scroll">
+          <input type="checkbox" bind:checked={autoScroll} />
           Auto-scroll
         </label>
-        <button, class="btn-clear" onclick={clearAlerts}>Clear</button>
+        <button class="btn-clear" onclick={clearAlerts}>Clear</button>
       </div>
     </div>
-    <div, class="alerts-list" style="max-height: 300px; overflow-y: auto;">
+    <div class="alerts-list" style="max-height: 300px; overflow-y: auto;">
       {#if alerts.length === 0}
-        <div, class="no-alerts">No alerts yet...</div>
+        <div class="no-alerts">No alerts yet...</div>
       {:else}
         {#each alerts as alert (alert.id)}
-          <div, class="alert-item {getAlertClass(alert.severity)}">
-            <div, class="alert-timestamp">{formatTimestamp(alert.timestamp)}</div>
-            <div, class="alert-type">{alert.type.replace(/_/g, ' ')}</div>
-            <div, class="alert-message">{alert.message}</div>
+          <div class="alert-item {getAlertClass(alert.severity)}">
+            <div class="alert-timestamp">{formatTimestamp(alert.timestamp)}</div>
+            <div class="alert-type">{alert.type.replace(/_/g, ' ')}</div>
+            <div class="alert-message">{alert.message}</div>
             {#if alert.value !== undefined}
-              <div, class="alert-value">
+              <div class="alert-value">
                 Value: {alert.value}
                 {#if alert.threshold !== undefined}
                   (threshold: {alert.threshold})

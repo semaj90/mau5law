@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Compatibility shim: forward to real Card implementation
   import { Card, as RealCard } from '$lib/components/ui/Card';
   let { className = undefined, style = undefined, ...rest } = $props<{
@@ -6,7 +6,7 @@
     style?: string;
   }>();
 </script>
-<RealCard, class={className} {style} {...rest}>
+<RealCard class={className} {style} {...rest}>
   <slot />
 </RealCard>
 <style>

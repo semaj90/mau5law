@@ -455,9 +455,9 @@ Clear
     font-weight: bold;
     text-transform: uppercase;
   }
-  .source-nes_memory { background: #ff6b6b, }
-  .source-gpu_cache { background: #4ecdc4, }
-  .source-qlora { background: #45b7d1, }
+  .source-nes_memory { background: #ff6b6b }
+  .source-gpu_cache { background: #4ecdc4 }
+  .source-qlora { background: #45b7d1 }
   .instant-badge {
     color: #ffd93d;
     font-weight: bold;
@@ -554,8 +554,7 @@ Clear
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-  @keyframes spin {
-    to { transform: rotate(360deg), }
+  @keyframes spin { to { transform: rotate(360deg) }
   }
   @keyframes pulse {
     0%, 100% { opacity: 0.7; }

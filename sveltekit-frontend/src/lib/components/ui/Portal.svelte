@@ -1,5 +1,5 @@
 <!-- Portal component for rendering modals outside the, component, tree -->
-<script, lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   interface Props {
@@ -28,6 +28,6 @@
     }
   });
 </script>
-<div, bind:this={portal} style="display: contents;">
+<div bind:this={portal} style="display: contents;">
   <slot />
 </div>

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   // note: bits-ui's exported types vary by version; avoid relying on a specific RootProps'
   import { cn } from '$lib/utils.js';
@@ -17,7 +17,7 @@
   });
   let trigger: any = null;
   let menu: any = null;
-  let, open: any = false;
+  let open: any = false;
   (async () => {
     const ns = await getBitsNamespace();
     const factory = ns.createDropdownMenu ?? ns.DropdownMenu?.create ?? ns.DropdownMenu ?? null;
@@ -33,16 +33,16 @@
     }
   })();
 </script>
-<button, use:trigger {...$trigger} class={cn(className)}>
+<button use:trigger {...$trigger} class={cn(className)}>
   {#if children}
     {@render children()}
   {:else}
     Open Menu
   {/if}
 </button>
-<div, class={cn(className)}>
+<div class={cn(className)}>
   {#if $open}
-    <div, use:menu>
+    <div use:menu>
       {#if children}
         {@render children()}
       {/if}

@@ -14,28 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   import Button from '$lib/components/ui/Button.svelte';
   import { evidenceStore, type Evidence  } from '$lib/stores/unified";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
-  import {
-    Archive,
-    Calendar,
-    Eye,
-    File,
-    FileText,
-    Grid,
-    Image,
-    List,
-    Music,
-    Redo2,
-    RefreshCw,
-    Search,
-    SortAsc,
-    SortDesc,
-    Tag,
-    Trash2,
-    Undo2,
-    Video,
-    Wifi,
-    WifiOff,
-  } from "lucide-svelte";
+  import { Archive, Calendar, Eye, File, FileText, Grid, Image, List, Music, Redo2, RefreshCw, Search, SortAsc, SortDesc, Tag, Trash2, Undo2, Video, Wifi, WifiOff } from "lucide-svelte";
   import { onMount } from "svelte";
   // Props
   let showAdvancedFilters = $state(false);
@@ -71,8 +50,7 @@ https://svelte.dev/e/js_parse_error -->
           const searchableText = [
             (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title,
             (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description,
-            (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type,
-            ...((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).tags || []),
+            (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type ...((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).tags || []),
           ]
             .join.toLowerCase();
           if (!searchableText.includes(query)) return false;
@@ -148,10 +126,8 @@ https://svelte.dev/e/js_parse_error -->
       }
       // Then sync with server
       await syncWithServer();
-    } catch (err) {
-      console.error("Failed to initialize real-time evidence:", err);
-      error = err instanceof Error ? err.message: "Initialization failed",
-    }
+    } catch (err) { console.error("Failed to initialize real-time evidence:", err);
+      error = err instanceof Error ? err.message: "Initialization failed" }
   }
   function loadFromLocal() {
     try {
@@ -189,21 +165,13 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Evidence operations
-  async function createEvidence() {
-    try {
+  async function createEvidence() { try {
       const newEvidence = {
-        title: "New Evidence",
-        description: "",
-        type: "document",
-        caseId: caseId || "default-case",
-        tags: [],
-      }
+        title: "New Evidence", description: "", type: "document", caseId: caseId || "default-case", tags: [] }
       const evidenceId = await evidenceStore.createEvidence(newEvidence);
       editingEvidence = evidenceId;
-    } catch (err) {
-      console.error("Failed to create evidence:", err);
-      error = err instanceof Error ? err.message: "Failed to create evidence",
-    }
+    } catch (err) { console.error("Failed to create evidence:", err);
+      error = err instanceof Error ? err.message: "Failed to create evidence" }
   }
   async function updateEvidence(
     evidenceId: string
@@ -212,10 +180,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       await evidenceStore.updateEvidence(evidenceId, changes);
       editingEvidence = null;
-    } catch (err) {
-      console.error("Failed to update evidence:", err);
-      error = err instanceof Error ? err.message: "Failed to update evidence",
-    }
+    } catch (err) { console.error("Failed to update evidence:", err);
+      error = err instanceof Error ? err.message: "Failed to update evidence" }
   }
   async function deleteEvidence(evidenceId: string) {
     if (!confirm("Are you sure you want to delete this evidence?")) return;
@@ -223,10 +189,8 @@ https://svelte.dev/e/js_parse_error -->
       await evidenceStore.deleteEvidence(evidenceId);
       selectedEvidence.delete(evidenceId);
       selectedEvidence = selectedEvidence;
-    } catch (err) {
-      console.error("Failed to delete evidence:", err);
-      error = err instanceof Error ? err.message: "Failed to delete evidence",
-    }
+    } catch (err) { console.error("Failed to delete evidence:", err);
+      error = err instanceof Error ? err.message: "Failed to delete evidence" }
   }
   // UI interactions
   function toggleSelection(evidenceId: string) {

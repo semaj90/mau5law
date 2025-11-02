@@ -384,7 +384,7 @@
         <div.Content class="space-y-4 nes-container">
           <div class="grid grid-cols-2 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
-              <p class="text-2xl font-bold {getMetricColor(data.performanceMetrics.hit_rate, 80)}">{data.performanceMetrics.hit_rate.toFixed(1)}%</p>
+              <p class="text-2xl font-bold {getMetricColor(data.performanceMetrics.hit_rate">{data.performanceMetrics.hit_rate.toFixed(1)}%</p>
               <p class="text-sm nes-text is-disabled">Hit Rate</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">

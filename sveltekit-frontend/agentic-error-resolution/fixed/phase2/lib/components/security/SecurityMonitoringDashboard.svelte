@@ -7,27 +7,7 @@
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { notifications  } from '$lib/stores/unified';
   import { getSecurityEvents, type SecurityEvent } from '$lib/utils/security';
-  import {
-    Activity,
-    AlertCircle,
-    AlertTriangle,
-    CheckCircle,
-    Clock,
-    Database,
-    Download,
-    Eye,
-    Info,
-    Key,
-    Lock,
-    Monitor,
-    RefreshCw,
-    Server,
-    Shield,
-    Trash2,
-    Unlock,
-    Users,
-    XCircle,
-  } from 'lucide-svelte';
+  import { Activity, AlertCircle, AlertTriangle, CheckCircle, Clock, Database, Download, Eye, Info, Key, Lock, Monitor, RefreshCw, Server, Shield, Trash2, Unlock, Users, XCircle } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   let securityEvents = $state<SecurityEvent[]>([]);
@@ -47,12 +27,7 @@
   const loginAttempts = $derived(() => securityEvents.filter(e => e.type === 'login').length);
   const accessDeniedEvents = $derived(() => securityEvents.filter(e => e.type === 'access_denied').length);
   // System status
-  const systemHealth = writable({
-    database: 'healthy',
-    authentication: 'healthy',
-    fileSystem: 'healthy',
-    network: 'healthy',
-  });
+  const systemHealth = writable({ database: 'healthy', authentication: 'healthy', fileSystem: 'healthy', network: 'healthy' });
   $effect(() => {
     loadSecurityEvents();
     startAutoRefresh();
@@ -67,13 +42,9 @@
     try {
       securityEvents = getSecurityEvents();
       filterEvents();
-    } catch (error) {
-      console.error('Failed to load security events:', error);
+    } catch (error) { console.error('Failed to load security events:', error);
       notifications.add({
-        type: 'error',
-        title: 'Failed to Load Security Events',
-        message: 'Unable to retrieve security monitoring data.',
-      });
+        type: 'error', title: 'Failed to Load Security Events', message: 'Unable to retrieve security monitoring data.' });
     } finally {
       loading = false;
     }
@@ -103,16 +74,12 @@
     }
     showDetails = showDetail;
   }
-  function clearAllEvents() {
-    if (confirm('Are you sure you want to clear all security events? This cannot be undone.')) {
+  function clearAllEvents() { if (confirm('Are you sure you want to clear all security events? This cannot be undone.')) {
       localStorage.removeItem('security_events');
       securityEvents = [];
       filteredEvents = [];
       notifications.add({
-        type: 'success',
-        title: 'Security Events Cleared',
-        message: 'All security events have been cleared.',
-      });
+        type: 'success', title: 'Security Events Cleared', message: 'All security events have been cleared.' });
     }
   }
   function exportEvents() {

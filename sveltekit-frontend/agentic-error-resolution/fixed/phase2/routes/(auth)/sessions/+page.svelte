@@ -39,9 +39,7 @@
   async function revokeSession(sessionId: string) {
     try {
       revoking = sessionId;
-      const response = await fetch(`/api/auth/sessions/${sessionId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/auth/sessions/${sessionId}`, { method: 'DELETE' });
 
       if (response.ok) {
         message = 'Session revoked successfully';
@@ -58,13 +56,11 @@
     }
   }
 
-  async function revokeAllOtherSessions() {
-    if (!confirm('This will log you out from all other devices. Continue?')) return;
+  async function revokeAllOtherSessions() { if (!confirm('This will log you out from all other devices. Continue?')) return;
 
     try {
       const response = await fetch('/api/auth/sessions/revoke-others', {
-        method: 'POST',
-      });
+        method: 'POST' });
 
       if (response.ok) {
         message = 'All other sessions revoked';

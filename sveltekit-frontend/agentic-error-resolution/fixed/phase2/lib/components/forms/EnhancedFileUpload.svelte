@@ -24,17 +24,7 @@ export default ;
    from "$lib/components/ui/enhanced-bits.svelte";
   import  Label  from "$lib/components/ui/label/Label.svelte";
   // Badge replaced with span - not available in enhanced-bits
-  import {
-    AlertCircle,
-    File as FileIcon,
-    FileText,
-    Image,
-    Loader2,
-    Music,
-    Upload,
-    Video,
-    X,
-  } from "lucide-svelte";
+  import { AlertCircle, File as FileIcon, FileText, Image, Loader2, Music, Upload, Video, X } from "lucide-svelte";
   // File upload interface
   interface FileUpload {
     file: Fil;
@@ -80,27 +70,17 @@ export default ;
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
   let selectedFiles = $state<File[] >([]);
-  let uploadProgress = $state<Record<string, number>(0) >( );
-  let previews = $state<Record<string, string>('') >( );
+  let uploadProgress = $state<Record<string number>(0) >( );
+  let previews = $state<Record<string string>('') >( );
   let isUploading = $state(false);
   let currentUploadFile = $state("");
   // Local form state (no $form store)
-  let formState = $state({
-    title: '',
-    description: '',
-    tags: [] as string[],
-    caseId: caseId || '',
-    evidenceType: '',
-    confidentialityLevel: '',
-    collectedBy: '',
-    location: '',
-    enableAiAnalysis: false
+  let formState = $state({ title: '', description: '', tags: [] as string[], caseId: caseId || '', evidenceType: '', confidentialityLevel: '', collectedBy: '', location: '', enableAiAnalysis: false
     enableOcr: false
     enableEmbeddings: false
     enableSummarization false
-    isAdmissible: false,
-  });
-  let errors = $state<Record<string, string[]>([]) >( );
+    isAdmissible: false });
+  let errors = $state<Record<string string[]>([]) >( );
   // Options
   const evidenceTypes = [
     { value: "documents", label: "Documents" },
@@ -463,5 +443,5 @@ oncancel?.()} disabled={isUploading}>Cancel
 </div>
 <style>
   /* Minimal local styles; utilities provided by UnoCSS or your CSS framework. */
-  .hidden { display: none, }
+  .hidden { display: none }
 </style>

@@ -3,12 +3,7 @@
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
   import { enhancedAIPipeline as enhancedAiPipeline } from "$lib/services/enhanced-ai-pipeline";
-  import type {
-    EnhancedSearchOptions,
-    EnhancedSearchResult,
-    Jurisdiction,
-    PracticeArea,
-  } from "$lib/types/ai-types";
+  import type { EnhancedSearchOptions, EnhancedSearchResult, Jurisdiction, PracticeArea } from "$lib/types/ai-types";
   import { Button, Select } from "bits-ui";
   // Props
   interface Props {
@@ -18,13 +13,7 @@
     onResults?: (results: EnhancedSearchResult[]) => void;
     class?: string;
   }
-  let {
-    initialQuery = "",
-    practiceArea = "contract_law",
-    jurisdiction = "US",
-    onResults,
-    class: className = "",
-  }: Props = $props();
+  let { initialQuery = "", practiceArea = "contract_law", jurisdiction = "US", onResults, class: className = "" }: Props = $props();
   // Reactive state
   let query = $state(initialQuery);
   let results: EnhancedSearchResult[] = $state([]);
@@ -35,14 +24,9 @@
   let selectedJurisdiction = $state(jurisdiction);
   let searchTime = $state(0);
   // Search options
-  let searchOptions: EnhancedSearchOptions = $state({,
-    limit: 10,
-    minSimilarity: 0.6,
-    useCache: true
+  let searchOptions: EnhancedSearchOptions = $state({ limit: 10, minSimilarity: 0.6, useCache: true
     useGPU: true
-    ragMode: "enhanced",
-    includeContext: true,
-  });
+    ragMode: "enhanced", includeContext: true });
   // Practice areas options with proper mapping
   const practiceAreas = [
     { value: "contract_law", label: "Contract Law" },

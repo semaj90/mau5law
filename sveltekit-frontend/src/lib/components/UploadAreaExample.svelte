@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import  UploadArea  from "./UploadArea.svelte";
 
@@ -96,34 +96,34 @@
   });
 </script>
 
-<div, class="space-y-4">
-  <div, class="space-y-4">
-    <div, class="space-y-4">
+<div class="space-y-4">
+  <div class="space-y-4">
+    <div class="space-y-4">
       <h3>Enhanced UploadArea Component Demo</h3>
       <!-- Configuration, Controls -->
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <h5>Configuration Options</h5>
         </div>
-        <div, class="space-y-4">
-          <div, class="space-y-4">
-            <div, class="space-y-4">
-              <div, class="space-y-4">
-                <input, class="space-y-4" type="checkbox" id="showProgress" bind:checked={showProgress} />
-                <label, class="space-y-4" for="showProgress"> Show Progress </label>
+        <div class="space-y-4">
+          <div class="space-y-4">
+            <div class="space-y-4">
+              <div class="space-y-4">
+                <input class="space-y-4" type="checkbox" id="showProgress" bind:checked={showProgress} />
+                <label class="space-y-4" for="showProgress"> Show Progress </label>
               </div>
-              <div, class="space-y-4">
-                <input, class="space-y-4" type="checkbox" id="autoUpload" bind:checked={autoUpload} />
-                <label, class="space-y-4" for="autoUpload"> Auto Upload </label>
+              <div class="space-y-4">
+                <input class="space-y-4" type="checkbox" id="autoUpload" bind:checked={autoUpload} />
+                <label class="space-y-4" for="autoUpload"> Auto Upload </label>
               </div>
             </div>
-            <div, class="space-y-4">
-              <div, class="space-y-4">
-                <label, for="maxFiles" class="space-y-4">Max Files:</label>
-                <input, type="number" class="space-y-4" id="maxFiles" bind:value={maxFiles} min="1" max="20" />
+            <div class="space-y-4">
+              <div class="space-y-4">
+                <label for="maxFiles" class="space-y-4">Max Files:</label>
+                <input type="number" class="space-y-4" id="maxFiles" bind:value={maxFiles} min="1" max="20" />
               </div>
-              <div, class="space-y-4">
-                <label, for="maxSize" class="space-y-4">Max Size (MB):</label>
+              <div class="space-y-4">
+                <label for="maxSize" class="space-y-4">Max Size (MB):</label>
                 <input
                   type="number"
                   class="space-y-4"
@@ -167,40 +167,40 @@
       />
       <!-- Status, Display -->
       {#if uploadStatus}
-        <div, class="space-y-4" role="status">
-          <i, class="space-y-4"></i>
+        <div class="space-y-4" role="status">
+          <i class="space-y-4"></i>
           {uploadStatus}
-          <button, type="button" class="space-y-4" aria-label="Clear, status" onclick={() => clearStatus()}>Clear</button>
+          <button type="button" class="space-y-4" aria-label="Clear, status" onclick={() => clearStatus()}>Clear</button>
         {/if}
     </div>
-    <div, class="space-y-4">
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+    <div class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <h5>Upload Results</h5>
           {#if uploadedFiles.length > 0}
-            <button, type="button" class="space-y-4" onclick={() => clearStatus()}> Clear </button>
+            <button type="button" class="space-y-4" onclick={() => clearStatus()}> Clear </button>
           {/if}
         </div>
-        <div, class="space-y-4">
+        <div class="space-y-4">
           {#if uploadedFiles.length === 0}
-            <p, class="space-y-4">No files uploaded yet.</p>
+            <p class="space-y-4">No files uploaded yet.</p>
           {:else}
-            <div, class="space-y-4">
+            <div class="space-y-4">
               {#each uploadedFiles as result, index}
-                <div, class="space-y-4">
-                  <div, class="space-y-4">
+                <div class="space-y-4">
+                  <div class="space-y-4">
                     <div>
                       <h6 class="space-y-4">{result.file?.name || `File ${index + 1}`}</h6>
-                      <small, class="space-y-4">
+                      <small class="space-y-4">
                         {result.file ? (result.file.size / 1024 / 1024).toFixed(2) + ' MB' : 'Unknown size'}
                       </small>
                     </div>
-                    <span, class="space-y-4">
-                      <i, class="space-y-4"></i>
+                    <span class="space-y-4">
+                      <i class="space-y-4"></i>
                     </span>
                   </div>
                   {#if result.processingTime}
-                    <small, class="space-y-4">
+                    <small class="space-y-4">
                       Processed in {result.processingTime}ms
                     </small>
                   {/if}
@@ -210,22 +210,22 @@
         </div>
       </div>
       <!-- Feature, List -->
-      <div, class="space-y-4">
-        <div, class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
           <h6>Enhanced Features</h6>
         </div>
-        <div, class="space-y-4">
-          <ul, class="space-y-4">
+        <div class="space-y-4">
+          <ul class="space-y-4">
             <li><i class="space-y-4"></i>Drag & Drop with visual feedback</li>
-            <li><i, class="space-y-4"></i>File validation (size, type, name)</li>
-            <li><i, class="space-y-4"></i>Progress tracking per file</li>
-            <li><i, class="space-y-4"></i>Retry mechanism with backoff</li>
-            <li><i, class="space-y-4"></i>File preview and management</li>
-            <li><i, class="space-y-4"></i>Error handling and reporting</li>
-            <li><i, class="space-y-4"></i>Accessibility support</li>
-            <li><i, class="space-y-4"></i>Security validations</li>
-            <li><i, class="space-y-4"></i>Responsive design</li>
-            <li><i, class="space-y-4"></i>Customizable endpoints</li>
+            <li><i class="space-y-4"></i>File validation (size, type name)</li>
+            <li><i class="space-y-4"></i>Progress tracking per file</li>
+            <li><i class="space-y-4"></i>Retry mechanism with backoff</li>
+            <li><i class="space-y-4"></i>File preview and management</li>
+            <li><i class="space-y-4"></i>Error handling and reporting</li>
+            <li><i class="space-y-4"></i>Accessibility support</li>
+            <li><i class="space-y-4"></i>Security validations</li>
+            <li><i class="space-y-4"></i>Responsive design</li>
+            <li><i class="space-y-4"></i>Customizable endpoints</li>
           </ul>
         </div>
       </div>

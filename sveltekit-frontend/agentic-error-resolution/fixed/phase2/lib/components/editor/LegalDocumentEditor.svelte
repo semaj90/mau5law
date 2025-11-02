@@ -12,21 +12,8 @@
   import { Input } from '$lib/components/ui/input.svelte'";
   import { Label } from '$lib/components/ui/label.svelte'";
   import { Textarea } from '$lib/components/ui/textarea.svelte'";
-  import {
-    AlertCircle,
-    BookOpen,
-    Brain,
-    ChevronDown,
-    Eye,
-    FileText,
-    Loader2,
-    Save,
-    Scale,
-    Search,
-    Settings,
-    Share2, // Corrected import for Share icon
-    X,
-  } from "lucide-svelte";
+  import { AlertCircle, BookOpen, Brain, ChevronDown, Eye, FileText, Loader2, Save, Scale, Search, Settings, Share2, // Corrected import for Share icon
+    X } from "lucide-svelte";
   // Props
   let { caseId = undefined }: { caseId?: string } = $props();
   let { documentId = undefined }: { documentId?: string } = $props();
@@ -119,15 +106,10 @@
     isSaving = true;
     saveError = "";
     try {
-      const response = await fetch(`/api/documents/${documentId}/auto-save`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content, // Send the actual content
-          isDirty: hasUnsavedChanges,
-        }),
+      const response = await fetch(`/api/documents/${documentId}/auto-save`, { method: "POST", headers: {
+          "Content-Type": "application/json" },
+        body: JSON.stringify({ content, // Send the actual content
+          isDirty: hasUnsavedChanges }),
       });
       if (!response.ok) {
         throw new Error("Failed to auto-save document");
@@ -153,15 +135,10 @@
     isSaving = true;
     saveError = "";
     try {
-      const response = await fetch(`/api/documents/${documentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content, // Send the actual content
-          status: "draft",
-        }),
+      const response = await fetch(`/api/documents/${documentId}`, { method: "PUT", headers: {
+          "Content-Type": "application/json" },
+        body: JSON.stringify({ content, // Send the actual content
+          status: "draft" }),
       });
       if (!response.ok) {
         throw new Error("Failed to save document");
@@ -228,11 +205,8 @@
     loadingDocument = true;
     documentLoadError = "";
     try {
-      const response = await fetch(`/api/documents/${documentId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(`/api/documents/${documentId}`, { method: "GET", headers: {
+          "Content-Type": "application/json" },
       });
       if (!response.ok) {
         throw new Error(`Failed to load document: ${response.statusText}`);
@@ -278,7 +252,7 @@
       return valueB;
     };
     const styleToString = (
-      style: Record<string, number | string | undefined>
+      style: Record<string number | string | undefined>
     ): string => {
       return Object.keys(style).reduce((str, key) => {
         if (style[key] === undefined) return str;
@@ -387,13 +361,9 @@
               <u>U</u>
             </Button>
             <span class="toolbar-separator">|</span>
-            <Button variant="ghost" size="icon" title="Insert Citation" onclick={() =>
+            <Button variant="ghost" size="icon" title="Insert Citation" onclick={ () =>
               insertCitation({
-                id: Math.random().toString(),
-                text: 'Sample Citation',
-                source: 'Smith v. Jones, 123 F.3d 456 (2023)',
-                type: 'case',
-              })}>
+                id: Math.random().toString(), text: 'Sample Citation', source: 'Smith v. Jones, 123 F.3d 456 (2023)', type: 'case' })}>
               📚
             </Button>
             <Dialog>
@@ -497,13 +467,9 @@
           <Button
             variant="outline"
             class="w-full"
-            onclick={() =>
+            onclick={ () =>
               insertCitation({
-                id: Math.random().toString(),
-                text: 'Sample Citation',
-                source: 'Smith v. Jones, 123 F.3d 456 (2023)',
-                type: 'case',
-              })}
+                id: Math.random().toString(), text: 'Sample Citation', source: 'Smith v. Jones, 123 F.3d 456 (2023)', type: 'case' })}
           >
             Add Citation
           </Button>

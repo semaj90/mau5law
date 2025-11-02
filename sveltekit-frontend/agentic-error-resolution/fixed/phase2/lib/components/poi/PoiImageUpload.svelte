@@ -38,17 +38,14 @@
     // Upload file
     await uploadImage(file);
   }
-  async function uploadImage(file: File) {
-    try {
+  async function uploadImage(file: File) { try {
       uploading = true;
       message = '';
       const formData = new FormData();
       formData.append('file', file);
       formData.append('poiId', poiId);
       const response = await fetch('/api/poi/image', {
-        method: 'POST',
-        body: formData,
-      });
+        method: 'POST', body: formData });
       const data = await response.json();
       if (response.ok) {
         message = `Image uploaded successfully for ${poiName}`;

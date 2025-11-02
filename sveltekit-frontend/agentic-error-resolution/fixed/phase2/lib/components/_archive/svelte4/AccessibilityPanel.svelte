@@ -9,14 +9,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import { notifications  } from '$lib/stores/unified";
-  import {
-    AlertTriangle,
-    CheckCircle,
-    Download,
-    Info,
-    RefreshCw,
-    XCircle,
-  } from "lucide-svelte";
+  import { AlertTriangle, CheckCircle, Download, Info, RefreshCw, XCircle } from "lucide-svelte";
   import { onMount } from "svelte";
   let { showPanel = $bindable()  }: { showPanel = $bindable() : any } = $props(); // false
   interface AccessibilityIssue {
@@ -66,15 +59,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       console.warn("Failed to load accessibility settings:", error);
     }
   }
-  function saveAccessibilitySettings() {
-    try {
+  function saveAccessibilitySettings() { try {
       const settings = {
-        highContrast,
-        reducedMotion,
-        largeText,
-        keyboardNavigation,
-        screenReaderMode,
-      }
+        highContrast, reducedMotion, largeText, keyboardNavigation, screenReaderMode }
       localStorage.setItem("accessibility-settings", JSON.stringify(settings));
     } catch (error) {
       console.warn("Failed to save accessibility settings:", error);
@@ -166,13 +153,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         title: "Accessibility Audit Complete",
         message: `Found ${totalIssues} issues: ${errorCount} errors, ${warningCount} warnings`,
       });
-    } catch (error) {
-      console.error("Accessibility audit failed:", error);
+    } catch (error) { console.error("Accessibility audit failed:", error);
       notifications.add({
-        type: "error",
-        title: "Audit Failed",
-        message: "Failed to complete accessibility audit",
-      });
+        type: "error", title: "Audit Failed", message: "Failed to complete accessibility audit" });
     } finally {
       isAuditing = false;
     }
@@ -185,16 +168,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       headingLevels.push(level);
     });
     // Check for missing h1
-    if (!headingLevels.includes(1)) {
-      auditResults.push({
-        id: "missing-h1",
-        severity: "error",
-        category: "structure",
-        element: "document",
-        description: "Page is missing an h1 heading",
-        suggestion: "Add a main h1 heading to the page",
-        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
-      });
+    if (!headingLevels.includes(1)) { auditResults.push({
+        id: "missing-h1", severity: "error", category: "structure", element: "document", description: "Page is missing an h1 heading", suggestion: "Add a main h1 heading to the page", wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships" });
     }
     // Check for skipped heading levels
     for (let i = 1; i < headingLevels.length; i++) {
@@ -267,22 +242,14 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     });
   }
-  async function checkColorContrast() {
-    // Simplified contrast check - in real implementation, you'd check computed colors
+  async function checkColorContrast() { // Simplified contrast check - in real implementation, you'd check computed colors
     const textElements = document.querySelectorAll(
       "p, span, a, button, h1, h2, h3, h4, h5, h6"
     );
     // This is a placeholder - real contrast checking requires computed style analysis
     auditResults.push({
-      id: "contrast-check-needed",
-      severity: "info",
-      category: "color",
-      element: "various text elements",
-      description: "Color contrast should be manually verified",
-      suggestion:
-        "Ensure text has at least 4.5:1 contrast ratio (3:1 for large text)",
-      wcagGuideline: "WCAG 2.1 - 1.4.3 Contrast (Minimum)",
-    });
+      id: "contrast-check-needed", severity: "info", category: "color", element: "various text elements", description: "Color contrast should be manually verified", suggestion:
+        "Ensure text has at least 4.5:1 contrast ratio (3:1 for large text)", wcagGuideline: "WCAG 2.1 - 1.4.3 Contrast (Minimum)" });
   }
   async function checkKeyboardAccessibility() {
     const interactiveElements = document.querySelectorAll(
@@ -299,9 +266,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           element: element.tagName.toLowerCase(),
           description: "Positive tabindex values can cause navigation issues",
           suggestion:
-            'Use tabindex={${1" or remove tabindex to follow natural tab order',
-          wcagGuideline: "WCAG 2.1 - 2.4.3 Focus Order",
-        });
+            'Use tabindex={ ${1" or remove tabindex to follow natural tab order', wcagGuideline: "WCAG 2.1 - 2.4.3 Focus Order" });
       }
       // Check for missing href on links
       if (element.tagName === "A" && !element.getAttribute("href")) {
@@ -340,44 +305,20 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     });
   }
-  async function checkFocusManagement() {
-    // Check if focus indicators are visible
+  async function checkFocusManagement() { // Check if focus indicators are visible
     auditResults.push({
-      id: "focus-indicators",
-      severity: "info",
-      category: "keyboard",
-      element: "interactive elements",
-      description: "Verify focus indicators are visible",
-      suggestion:
-        "Ensure all interactive elements have visible focus indicators",
-      wcagGuideline: "WCAG 2.1 - 2.4.7 Focus Visible",
-    });
+      id: "focus-indicators", severity: "info", category: "keyboard", element: "interactive elements", description: "Verify focus indicators are visible", suggestion:
+        "Ensure all interactive elements have visible focus indicators", wcagGuideline: "WCAG 2.1 - 2.4.7 Focus Visible" });
   }
-  async function checkSemanticHTML() {
-    const hasMain = document.querySelector("main");
+  async function checkSemanticHTML() { const hasMain = document.querySelector("main");
     const hasNav = document.querySelector("nav");
     if (!hasMain) {
       auditResults.push({
-        id: "missing-main",
-        severity: "warning",
-        category: "structure",
-        element: "document",
-        description: "Page missing main landmark",
-        suggestion: "Use <main> element to identify primary content",
-        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
-      });
+        id: "missing-main", severity: "warning", category: "structure", element: "document", description: "Page missing main landmark", suggestion: "Use <main> element to identify primary content", wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships" });
     }
-    if (!hasNav) {
-      auditResults.push({
-        id: "missing-nav",
-        severity: "info",
-        category: "structure",
-        element: "document",
-        description: "Page missing navigation landmark",
-        suggestion: "Use <a href="#main-content" class="skip-link">Skip to main content</a>
-  <nav> element for navigation sections",
-        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
-      });
+    if (!hasNav) { auditResults.push({
+        id: "missing-nav", severity: "info", category: "structure", element: "document", description: "Page missing navigation landmark", suggestion: "Use <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav> element for navigation sections", wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships" });
     }
   }
   function exportAuditResults() {

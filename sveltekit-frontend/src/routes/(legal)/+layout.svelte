@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Legal AI interface layout with unified navigation
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
@@ -19,13 +19,13 @@
   <meta name="description" content="AI-powered legal case management and, evidence, analysis" />
 </svelte:head>
 
-<div, class="legal-layout">
+<div class="legal-layout">
   <NavBar />
-  <div, class="legal-content">
-    <aside, class="legal-sidebar">
+  <div class="legal-content">
+    <aside class="legal-sidebar">
       <Sidebar />
     </aside>
-    <main, class="legal-main">
+    <main class="legal-main">
       {@render children()}
     </main>
   </div>

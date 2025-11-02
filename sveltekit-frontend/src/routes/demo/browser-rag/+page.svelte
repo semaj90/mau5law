@@ -8,7 +8,7 @@
 
   NO DATA LEAVES THE BROWSER!
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import { browserRAG } from '$lib/ai/browser-rag-chain';
   import { onMount } from 'svelte';
@@ -151,26 +151,26 @@ import type { Document } from '$lib/types';
   <title>Browser RAG Demo - Legal AI</title>
 </svelte:head>
 
-<div, class="demo-container">
+<div class="demo-container">
   <!-- Header -->
-  <header, class="nes-container, is-dark">
-    <h1, class="title">🔒 Privacy-Preserving Legal RAG</h1>
-    <p, class="subtitle">100% Browser-Based • Gemma, 3 270M + LangChain.js + Transformer.js v3</p>
+  <header class="nes-container">
+    <h1 class="title">🔒 Privacy-Preserving Legal RAG</h1>
+    <p class="subtitle">100% Browser-Based • Gemma, 3 270M + LangChain.js + Transformer.js v3</p>
 
-    <div, class="privacy-badge">
-      <Lock, size={20} />
+    <div class="privacy-badge">
+      <Lock size={20} />
       <span>NO DATA LEAVES YOUR BROWSER</span>
     </div>
   </header>
 
   <!-- Status -->
   {#if isLoading && !isInitialized}
-    <div, class="nes-container, is-dark">
-      <div class="flex, items-center, gap-4">
-        <div, class="nes-spinner"></div>
+    <div class="nes-container">
+      <div class="flex items-center">
+        <div class="nes-spinner"></div>
         <div>
-          <p, class="font-bold">Loading AI Models...</p>
-          <p, class="text-sm">{currentStep}</p>
+          <p class="font-bold">Loading AI Models...</p>
+          <p class="text-sm">{currentStep}</p>
         </div>
       </div>
     </div>
@@ -178,33 +178,33 @@ import type { Document } from '$lib/types';
 
   <!-- Stats -->
   {#if isInitialized}
-    <div, class="stats-grid">
-      <div, class="nes-container, is-rounded" style="background: #1a1d20;">
-        <div class="flex, items-center, gap-2">
-          <Database, class="text-blue-400" size={24} />
+    <div class="stats-grid">
+      <div class="nes-container" style="background: #1a1d20;">
+        <div class="flex items-center">
+          <Database class="text-blue-400" size={24} />
           <div>
-            <p, class="text-xs, text-gray-400">Documents</p>
-            <p, class="text-lg, font-bold">{stats.documentCount}</p>
+            <p class="text-xs">Documents</p>
+            <p class="text-lg">{stats.documentCount}</p>
           </div>
         </div>
       </div>
 
-      <div, class="nes-container, is-rounded" style="background: #1a1d20;">
-        <div class="flex, items-center, gap-2">
-          <FileText, class="text-green-400" size={24} />
+      <div class="nes-container" style="background: #1a1d20;">
+        <div class="flex items-center">
+          <FileText class="text-green-400" size={24} />
           <div>
-            <p, class="text-xs, text-gray-400">Avg Length</p>
-            <p, class="text-lg, font-bold">{stats.avgDocLength} chars</p>
+            <p class="text-xs">Avg Length</p>
+            <p class="text-lg">{stats.avgDocLength} chars</p>
           </div>
         </div>
       </div>
 
-      <div, class="nes-container, is-rounded" style="background: #1a1d20;">
-        <div class="flex, items-center, gap-2">
-          <Zap, class="text-yellow-400" size={24} />
+      <div class="nes-container" style="background: #1a1d20;">
+        <div class="flex items-center">
+          <Zap class="text-yellow-400" size={24} />
           <div>
-            <p, class="text-xs, text-gray-400">Model</p>
-            <p, class="text-sm">Gemma, 3 270M</p>
+            <p class="text-xs">Model</p>
+            <p class="text-sm">Gemma, 3 270M</p>
           </div>
         </div>
       </div>
@@ -213,11 +213,11 @@ import type { Document } from '$lib/types';
 
   <!-- Query, Input -->
   {#if isInitialized}
-    <div, class="nes-container, is-dark">
+    <div class="nes-container">
       <h2>Ask a Legal Question</h2>
 
-      <div, class="mb-4">
-        <label, for="query_input" class="text-sm">Question</label>
+      <div class="mb-4">
+        <label for="query_input" class="text-sm">Question</label>
         <textarea
           id="query_input"
           class="nes-textarea"
@@ -227,13 +227,13 @@ import type { Document } from '$lib/types';
         ></textarea>
       </div>
 
-      <div, class="flex, gap-4">
+      <div class="flex">
         <button
           class="nes-btn is-primary"
           onclick={handleQuery}
           disabled={isLoading || isStreaming}
         >
-          <MessageSquare, size={16} class="inline" />
+          <MessageSquare size={16} class="inline" />
           Ask Question
         </button>
 
@@ -242,12 +242,12 @@ import type { Document } from '$lib/types';
           onclick={handleStreamQuery}
           disabled={isLoading || isStreaming}
         >
-          <Zap, size={16} class="inline" />
+          <Zap size={16} class="inline" />
           Stream Response
         </button>
 
-        <button, class="nes-btn" onclick={addCustomDocument}>
-          <FileText, size={16} class="inline" />
+        <button class="nes-btn" onclick={addCustomDocument}>
+          <FileText size={16} class="inline" />
           Add Document
         </button>
       </div>
@@ -256,9 +256,9 @@ import type { Document } from '$lib/types';
 
   <!-- Error -->
   {#if error}
-    <div, class="nes-container, is-rounded" style="background: #dc2626;, color: white;">
-      <div class="flex, items-center, gap-2">
-        <AlertCircle, size={20} />
+    <div class="nes-container" style="background: #dc2626;, color: white;">
+      <div class="flex items-center">
+        <AlertCircle size={20} />
         <p>{error}</p>
       </div>
     </div>
@@ -266,15 +266,15 @@ import type { Document } from '$lib/types';
 
   <!-- Answer -->
   {#if answer}
-    <div, class="nes-container, is-dark">
+    <div class="nes-container">
       <h2>Answer</h2>
 
-      <div, class="answer-box">
-        <p, class="whitespace-pre-wrap">{answer}</p>
+      <div class="answer-box">
+        <p class="whitespace-pre-wrap">{answer}</p>
       </div>
 
       {#if duration > 0}
-        <p class="text-xs, text-gray-400, mt-2">
+        <p class="text-xs text-gray-400">
           Generated in {(duration / 1000).toFixed(2)}s • Confidence: {(confidence * 100).toFixed(0)}%
         </p>
       {/if}
@@ -283,15 +283,15 @@ import type { Document } from '$lib/types';
 
   <!-- Sources -->
   {#if sources.length > 0}
-    <div, class="nes-container, is-dark">
+    <div class="nes-container">
       <h2>Sources ({sources.length})</h2>
 
       {#each sources as source, idx}
-        <div class="nes-container, is-rounded, mb-2" style="background: #1a1d20;">
-          <p class="text-sm, font-bold, mb-1">Source {idx + 1}</p>
-          <p, class="text-xs">{source.content.substring(0, 200)}...</p>
+        <div class="nes-container is-rounded" style="background: #1a1d20;">
+          <p class="text-sm font-bold">Source {idx + 1}</p>
+          <p class="text-xs">{source.content.substring(0, 200)}...</p>
           {#if source.metadata}
-            <p class="text-xs, text-gray-400, mt-1">
+            <p class="text-xs text-gray-400">
               Type: {source.metadata.type} • {source.metadata.jurisdiction || source.metadata.year || ''}
             </p>
           {/if}
@@ -301,20 +301,20 @@ import type { Document } from '$lib/types';
   {/if}
 
   <!-- Sample, Documents -->
-  <div, class="nes-container">
+  <div class="nes-container">
     <h3>Knowledge Base Documents</h3>
     {#each sampleDocuments as doc, idx}
-      <details, class="mb-2">
+      <details class="mb-2">
         <summary class="cursor-pointer text-sm">{idx + 1}. {doc.metadata?.type || 'Document'} - {doc.id}</summary>
-        <p class="text-xs, mt-2, whitespace-pre-wrap">{doc.content}</p>
+        <p class="text-xs mt-2">{doc.content}</p>
       </details>
     {/each}
   </div>
 
   <!-- Info -->
-  <div, class="nes-container">
+  <div class="nes-container">
     <h3>How It Works</h3>
-    <ul class="nes-list, is-disc, text-sm">
+    <ul class="nes-list is-disc">
       <li><strong>Embeddings:</strong> all-MiniLM-L6-v2 (384 dimensions) runs in browser with WebGPU</li>
       <li><strong>LLM:</strong> Gemma, 3 270M (quantized) generates answers entirely client-side</li>
       <li><strong>RAG:</strong> LangChain.js orchestrates retrieval + generation pipeline</li>

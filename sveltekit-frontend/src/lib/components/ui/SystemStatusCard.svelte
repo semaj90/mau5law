@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 // Auto-generated default export
@@ -81,15 +81,15 @@ https://svelte.dev/e/js_parse_error -->
 	margin-top: 0.5rem;
   }
 </style>
-<div, class="nier-bits-card" role="group" aria-label={title}>
-  <div, class="header">
-	<div, class="title">{title}</div>
-	<div, class="status {statusClass()}" aria-live="polite">
-	  <span, class="dot" aria-hidden="true"></span>
+<div class="nier-bits-card" role="group" aria-label={title}>
+  <div class="header">
+	<div class="title">{title}</div>
+	<div class="status {statusClass()}" aria-live="polite">
+	  <span class="dot" aria-hidden="true"></span>
 	  <span>{status}</span>
 	</div>
   </div>
   {#if formattedUpdatedAt}
-	<div, class="meta">Updated: {formattedUpdatedAt}{/if}
+	<div class="meta">Updated: {formattedUpdatedAt}{/if}
   <slot />
 </div>

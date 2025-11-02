@@ -31,12 +31,9 @@ https://svelte.dev/e/attribute_duplicate -->
   		isUnderlined: false
   		currentFormat: 'paragraph'
   	});
-  	let nieRTheme = $state({
-  		mode: 'android', // 'android' | 'yorha' | 'machine'
-  		glitchEnabled: true,
-  		scanlines: true
-  		typingSound: true,
-  	});
+  	let nieRTheme = $state({ mode: 'android', // 'android' | 'yorha' | 'machine'
+  		glitchEnabled: true, scanlines: true
+  		typingSound: true });
   	// Component props
   	let {
   		value = '',
@@ -120,11 +117,9 @@ https://svelte.dev/e/attribute_duplicate -->
   			saveContent();
   		}
   	}
-  	function updateStats() {
-  		const textContent = editorContainer?.textContent || '';
+  	function updateStats() { const textContent = editorContainer?.textContent || '';
   		characterCount = textContent.length;
-  		wordCount = textContent.trim() ? textContent.trim.split-length: 0,
-  	}
+  		wordCount = textContent.trim() ? textContent.trim.split-length: 0 }
   	function playTypingSound() {
   		// Simulate NieR typing sound effect
   		if (typeof window !== 'undefined' && 'AudioContext' in window) {
@@ -488,21 +483,19 @@ https://svelte.dev/e/attribute_duplicate -->
 		animation: scanlines 2s linear infinite;
 		pointer-events: none;
 	}
-	@keyframes scanlines {
-		0% { transform: translateY(0), }
-		100% { transform: translateY(4px), }
+	@keyframes scanlines { 0% { transform: translateY(0) }
+		100% { transform: translateY(4px) }
 	}
 	/* Glitch Effect */
 	.glitch-effect {
 		animation: glitch 0.1s ease-in-out;
 	}
-	@keyframes glitch {
-		0% { transform: translateX(0), }
-		20% { transform: translateX(-2px), }
-		40% { transform: translateX(2px), }
-		60% { transform: translateX(-1px), }
-		80% { transform: translateX(1px), }
-		100% { transform: translateX(0), }
+	@keyframes glitch { 0% { transform: translateX(0) }
+		20% { transform: translateX(-2px) }
+		40% { transform: translateX(2px) }
+		60% { transform: translateX(-1px) }
+		80% { transform: translateX(1px) }
+		100% { transform: translateX(0) }
 	}
 	/* Typography Enhancements */
 	.nier-editor-content h1,
@@ -559,8 +552,7 @@ d;
 		border: 1px solid #ff0000;
 		box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
 	}
-	@keyframes fadeInOut {
-		0%, 100% { opacity: 0; transform: translateY(-10px), }
-		10%, 90% { opacity: 1; transform: translateY(0), }
+	@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translateY(-10px) }
+		10%, 90% { opacity: 1; transform: translateY(0) }
 	}
 </style>

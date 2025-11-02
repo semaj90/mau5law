@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import * as BitsUI from 'bits-ui';
   interface Props {
     children?: import('svelte').Snippet;

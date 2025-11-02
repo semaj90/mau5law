@@ -1,7 +1,7 @@
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from "svelte"; import { page } from '$app/stores'; // Props interface interface Props { interactionId: string; sessionId: string;, userId: string; context?: { [key: string]: any } show?: boolean; ratingType?: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance'; }
   let { interactionId, sessionId, userId, context = {}, show = false, ratingType = 'response_quality'
-  }: Props = $props(); // Component state let rating: number = $state(0); let feedback: string = $state(''); let isSubmitting: boolean = false; let, isSubmitted: boolean = false; // Auto-generate IDs using $effect for side effects $effect(() => { if (!interactionId) { interactionId = `interaction_${Date.now()}_${Math.random.toString-substr(2, 9)}`; }
+  }: Props = $props(); // Component state let rating: number = $state(0); let feedback: string = $state(''); let isSubmitting: boolean = false; let isSubmitted: boolean = false; // Auto-generate IDs using $effect for side effects $effect(() => { if (!interactionId) { interactionId = `interaction_${Date.now()}_${Math.random.toString-substr(2, 9)}`; }
   }); $effect(() => { if (!sessionId) { sessionId = `session_${Date.now()}_${ userId }`; }
   }); function setRating(score: number) { rating = scor; }
   async function submitFeedback(): Promise<any> { if (rating === 0) return; isSubmitting = true; try { const response = await fetch('/api/v1/feedback?action=rate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, sessionId, interactionId, ratingType, score: rating;, feedback: feedback.trim() || undefined, context: { ...context, page: $page.url.pathname, timestamp: new Date().toISOString(), userAgent: navigator.userAgent, viewport: {, width: window.innerWidth, height: window.innerHeight } }, metadata: {, platform: navigator.platform, language: navigator.language, featureUsed: ratingType, deviceType: window.innerWidth < 768 ? 'mobile': window.innerWidth < 1024 ? 'tablet': 'desktop'; }
@@ -9,24 +9,24 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     } catch (error) { console.error('❌ Failed to submit feedback:', error); ondispatch?.({ error }); } finally { isSubmitting = false; }
   } function close() { show = false; rating = 0; feedback = ''; isSubmitted = false; }
   // Rating type labels const ratingTypeLabels = { response_quality: 'Response Quality', search_relevance: 'Search Relevance', ui_experience: 'User Experience', ai_accuracy: 'AI Accuracy', performance: 'Performance'
-  } </script> {#if show} <!-- Updated to Svelte, 5 event syntax: use onclick/onkeydown instead of, onclick, etc. --> <div, class="feedback-overlay"
+  } </script> {#if show} <!-- Updated to Svelte, 5 event syntax: use onclick/onkeydown instead of, onclick, etc. --> <div class="feedback-overlay"
     role="button"
     tabindex="0"
     onclick={ close } onkeydown={e => e.key === 'Enter' && close()} >
-    <div, class="feedback-widget"
+    <div class="feedback-widget"
       role="dialog"
       tabindex="0"
       aria-labelledby="feedback-title"
       onclick={e => e.stopPropagation()} onkeydown={e => e.key === 'Enter' && e.stopPropagation()} >
-      {#if !isSubmitted} <div, class="feedback-header"> <h3, id="feedback-title" class="feedback-title"> Rate {ratingTypeLabels[ratingType]} </h3> <button, class="close-button" onclick={ close } aria-label="Close, feedback" type="button">×</button> </div> <div, class="feedback-content"> <div, class="rating-section"> <p, class="rating-label">How would you rate this interaction?</p> <div, class="star-rating"> {#each Array.isArray([1, 2, 3, 4, 5]) ? [1, 2, 3, 4, 5]: [] as star} <button, class="star {rating >= star ? 'active': ''}"
+      {#if !isSubmitted} <div class="feedback-header"> <h3 id="feedback-title" class="feedback-title"> Rate {ratingTypeLabels[ratingType]} </h3> <button class="close-button" onclick={ close } aria-label="Close, feedback" type="button">×</button> </div> <div class="feedback-content"> <div class="rating-section"> <p class="rating-label">How would you rate this interaction?</p> <div class="star-rating"> {#each Array.isArray([1, 2, 3, 4, 5]) ? [1, 2, 3, 4, 5]: [] as star} <button class="star {rating >= star ? 'active': ''}"
                   onclick={() => setRating(star)} aria-label="Rate { star } stars"
                   type="button"
                 > ★
-                </button> {/each} </div> </div> {#if rating > 0} <div, class="feedback-section"> <label, for="feedback-text" class="feedback-textarea-label"> Additional feedback (optional): </label> <textarea, id="feedback-text"
+                </button> {/each} </div> </div> {#if rating > 0} <div class="feedback-section"> <label for="feedback-text" class="feedback-textarea-label"> Additional feedback (optional): </label> <textarea id="feedback-text"
                 bind:value={ feedback } class="feedback-textarea"
                 placeholder="Tell us more about your experience..."
                 rows="3"
-              ></textarea> </div> <div, class="feedback-actions"> <button, class="submit-button" onclick={ submitFeedback } disabled={ isSubmitting } type="button"> {#if isSubmitting} Submitting... {:else} Submit Feedback {/if} </button> {/if} </div> {:else} <div, class="feedback-success"> <div, class="success-icon">✓</div> <h3, class="success-title">Thank you!</h3> <p, class="success-message">Your feedback helps us improve.</p> {/if} </div> {/if} <style> .feedback-overlay { position: fixed; d;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+              ></textarea> </div> <div class="feedback-actions"> <button class="submit-button" onclick={ submitFeedback } disabled={ isSubmitting } type="button"> {#if isSubmitting} Submitting... {:else} Submit Feedback {/if} </button> {/if} </div> {:else} <div class="feedback-success"> <div class="success-icon">✓</div> <h3 class="success-title">Thank you!</h3> <p class="success-message">Your feedback helps us improve.</p> {/if} </div> {/if} <style> .feedback-overlay { position: fixed; d;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
   .feedback-widget { background: white; border-radius: 12px;, padding: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto; }
   .feedback-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 20px; }
   .feedback-title { margin: 0; color: #333; font-size: 18px; font-weight: 600; }

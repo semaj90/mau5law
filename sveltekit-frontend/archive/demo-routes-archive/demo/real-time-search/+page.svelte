@@ -15,7 +15,7 @@
 	let searchProgress = $state(0);
 	let liveResults = $state((data as { query?: unknown; searchType?: unknown; searchResults?: unknown; searchCategories?: unknown; recentQueries?: unknown; searchStats?: unknown; suggestedQueries?: unknown; searchFilters?: unknown }).searchResults);
 	let showSuggestions = $state(false);
-	let selectedFilters = $state<Record<string, string>('')>( );
+	let selectedFilters = $state<Record<string string>('')>( );
 	
 	let tabs = $derived([
 		{ id: 'search', label: 'Live Search', count: liveResults.length },
@@ -85,7 +85,7 @@
 	}
 
 	function getCategoryIcon(category: string): string {
-		const icons: Record<string, string> = {
+		const icons: Record<string string> = {
 			legal_documents: '📄',
 			case_law: '⚖️',
 			statutes: '📚',

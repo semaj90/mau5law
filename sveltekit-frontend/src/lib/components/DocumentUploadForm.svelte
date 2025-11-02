@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Button  from "$lib/components/ui/Button.svelte";
   import { fade, slide } from 'svelte/transition';
@@ -39,8 +39,8 @@
   // Local state variables
   let dragActive = $state<boolean>(false);
   let fileInput: HTMLInputElement | null = null;
-  let, uploadProgress: Record<string, number> = {};
-  let processingErrors: Record<string, string> = {};
+  let uploadProgress: Record<string number> = {};
+  let processingErrors: Record<string string> = {};
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
@@ -191,43 +191,43 @@
   }
 </script>
 
-<div, class="document-upload-form {className}" {id} data-test-id={testId}>
+<div class="document-upload-form {className}" {id} data-test-id={testId}>
   <div class="upload-area" role="region" aria-label="Document upload area" on:dragover|preventDefault={handleDragOver} on:dragleave|preventDefault={handleDragLeave}, on:drop|preventDefault={handleDrop}>
-    <input, type="file" bind:this={fileInput} multiple, accept={acceptedTypes.join(',')} onchange={handleFileInputChange} class="hidden" />
-    <div, class="drag-drop-content {dragActive ? 'active' : ''}">
+    <input type="file" bind:this={fileInput} multiple, accept={acceptedTypes.join(',')} onchange={handleFileInputChange} class="hidden" />
+    <div class="drag-drop-content {dragActive ? 'active' : ''}">
       <p>Drag and drop your files here</p>
       <p>or</p>
-      <Button, onclick={() => fileInput?.click()} variant="outline" class="browse-button">
+      <Button onclick={() => fileInput?.click()} variant="outline" class="browse-button">
         Browse files
       </Button>
     </div>
   </div>
-  <div, class="file-info">
+  <div class="file-info">
     {#each formData.uploaded_files as file, index (file.name)}
-      <div, class="file-item">
-      <span, class="file-icon">
-        <i, class={getFileIcon(file.type)} aria-hidden="true"></i>
+      <div class="file-item">
+      <span class="file-icon">
+        <i class={getFileIcon(file.type)} aria-hidden="true"></i>
       </span>
-        <span, class="file-name">{file.name}</span>
-        <span, class="file-size">{formatFileSize(file.size)}</span>
-        <div, class="file-actions">
-          <Button, onclick={() => removeFile(index)} variant="text" class="remove-button" aria-label="Remove file">
-            <i, class="i-lucide-trash" aria-hidden="true"></i>
+        <span class="file-name">{file.name}</span>
+        <span class="file-size">{formatFileSize(file.size)}</span>
+        <div class="file-actions">
+          <Button onclick={() => removeFile(index)} variant="text" class="remove-button" aria-label="Remove file">
+            <i class="i-lucide-trash" aria-hidden="true"></i>
           </Button>
         </div>
       </div>
     {/each}
   </div>
   {#if Object.keys(processingErrors).length > 0}
-    <div, class="error-messages">
+    <div class="error-messages">
       {#each Object.entries(processingErrors) as [_fileName, errorMessage]}
-        <div, class="error-message" role="alert">
-          <i, class="i-lucide-alert-triangle" aria-hidden="true"></i>
-          <span, class="error-text">{errorMessage}</span>
+        <div class="error-message" role="alert">
+          <i class="i-lucide-alert-triangle" aria-hidden="true"></i>
+          <span class="error-text">{errorMessage}</span>
         </div>
       {/each}
     {/if}
-  <div, class="actions">
+  <div class="actions">
     <Button.Root, onclick={handleSaveDraft} variant="secondary" class="save-draft-button">
       Save Draft
     </Button>

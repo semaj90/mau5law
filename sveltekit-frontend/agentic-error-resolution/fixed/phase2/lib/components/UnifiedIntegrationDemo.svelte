@@ -37,7 +37,7 @@
   }
 
   // Demo data for different operations (valid JS objects / strings)
-  const demoInputs: Record<string, string> = {
+  const demoInputs: Record<string string> = {
     processDocument: `LEGAL CONTRACT AGREEMENT
 This Service Agreement is entered into between Company A and Company B.
 TERMS AND CONDITIONS:

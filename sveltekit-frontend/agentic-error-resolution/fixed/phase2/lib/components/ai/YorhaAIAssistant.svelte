@@ -21,7 +21,7 @@
     content: string;
     timestamp: Date;
     streaming?: boolean;
-    metadata?: Record<string, unknown>; // Changed from 'any' to: 'unknown'
+    metadata?: Record<string unknown>; // Changed from 'any' to: 'unknown'
   };
 
   type ChatSession = {
@@ -45,14 +45,7 @@
   };
 
   // Svelte 5 Props
-  let {
-    userID,
-    caseID = '',
-    initialOpen = false,
-    theme = 'yorha',
-    enableGPUAcceleration = true,
-    enableMCPIntegration = true,
-  } = $props<Props>();
+  let { userID, caseID = '', initialOpen = false, theme = 'yorha', enableGPUAcceleration = true, enableMCPIntegration = true } = $props<Props>();
 
   // Svelte 5 State
   let isOpen = $state(initialOpen);
@@ -223,14 +216,7 @@
     chatSession.messages.push(userMessage);
     currentMessage = '';
 
-    const chatRequest = {
-      message,
-      user_id: userID,
-      session_id: chatSession.id,
-      case_id: caseID,
-      context: chatSession.context,
-      stream: true,
-    };
+    const chatRequest = { message, user_id: userID, session_id: chatSession.id, case_id: caseID, context: chatSession.context, stream: true };
 
     // Guard the socket reference — avoid calling send on null
     const sock = chatSocket;

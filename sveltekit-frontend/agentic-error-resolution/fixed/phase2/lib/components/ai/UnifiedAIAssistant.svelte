@@ -34,27 +34,11 @@
     webgpu: { available: false, status: 'unknown', initialized: false },
     goMicroservice: { available: false, status: 'unknown', endpoint: (env.PUBLIC_GO_MICROSERVICE_URL as string) || 'http://localhost:8080' },
   });
-  let performanceMetrics = $state({
-    responseTime: 0,
-    tokensPerSecond: 0,
-    contextLength: 0,
-    memoryUsage: 0,
-    gpuUtilization: 0,
-  });
-  let assistantConfig = $state({
-    model: 'gemma3-legal',
-    temperature: 0.7,
-    maxTokens: 1000,
-    streamResponse: true,
-    useGPUAcceleration: true, // Fixed syntax error: added colon
+  let performanceMetrics = $state({ responseTime: 0, tokensPerSecond: 0, contextLength: 0, memoryUsage: 0, gpuUtilization: 0 });
+  let assistantConfig = $state({ model: 'gemma3-legal', temperature: 0.7, maxTokens: 1000, streamResponse: true, useGPUAcceleration: true, // Fixed syntax error: added colon
     preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
-    legalContext: true,
-  });
-  let voiceRecording = $state({
-    isRecording: false,
-    mediaRecorder: null as MediaRecorder | null,
-    audioChunks: [] as Blob[],
-  });
+    legalContext: true });
+  let voiceRecording = $state({ isRecording: false, mediaRecorder: null as MediaRecorder | null, audioChunks: [] as Blob[] });
   let webgpuBridge: Worker | null = null;
   // Component props
   let { caseId = '', evidenceContext = [] as any[], readonly = false } = $props();
@@ -73,10 +57,7 @@
     console.log('🔌 Checking backend availability...');
     // Check vLLM
     try {
-      const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000),
-      });
+      const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, { method: 'GET', signal: AbortSignal.timeout(5000) });
       aiBackends.vllm.available = vllmResponse.ok;
       aiBackends.vllm.status = vllmResponse.ok ? 'healthy' : 'error';
     } catch {
@@ -85,10 +66,7 @@
     }
     // Check Ollama
     try {
-      const ollamaResponse = await fetch(`${aiBackends.ollama.endpoint}/api/version`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000),
-      });
+      const ollamaResponse = await fetch(`${aiBackends.ollama.endpoint}/api/version`, { method: 'GET', signal: AbortSignal.timeout(5000) });
       aiBackends.ollama.available = ollamaResponse.ok;
       aiBackends.ollama.status = ollamaResponse.ok ? 'healthy' : 'error';
     } catch {
@@ -135,7 +113,7 @@
         // Use Vite-compatible worker URL resolution
         webgpuBridge = new Worker(new URL('../../workers/webgpu-cuda-bridge.ts', import.meta.url), { type: 'module' });
         webgpuBridge.onmessage = event => {
-          const { type, data } = event.data;
+          const { type data } = event.data;
           switch (type) {
             case 'init-complete':
               aiBackends.webgpu.initialized = !!(data && (data as { success?: any }).success);
@@ -322,10 +300,7 @@
         model: assistantConfig.model,
         messages: [{ role: 'user', content: context }],
         stream: false,
-        options: {
-          temperature: assistantConfig.temperature,
-          num_predict: assistantConfig.maxTokens,
-        },
+        options: { temperature: assistantConfig.temperature, num_predict: assistantConfig.maxTokens },
       }),
     });
     if (!response.ok) {
@@ -335,11 +310,7 @@
     const duration = result?.eval_duration;
     const evalCount = result?.eval_count || 0;
     const tps = duration ? evalCount / (duration / 1_000_000_000) : 0;
-    return {
-      content: result?.message?.content || 'No response',
-      backend: 'Ollama',
-      tokensPerSecond: tps,
-    };
+    return { content: result?.message?.content || 'No response', backend: 'Ollama', tokensPerSecond: tps };
   }
   async function processWithWebASM(context: string): Promise<any> {
     // WebASM LLaMA.cpp processing (placeholder implementation)
@@ -366,11 +337,7 @@
     if (!result?.success) {
       throw new Error(result?.error || 'Go microservice error');
     }
-    return {
-      content: result?.data?.content || result?.data?.response || 'No response',
-      backend: 'Go Microservice',
-      tokensPerSecond: result?.metadata?.tokensPerSecond || 0,
-    };
+    return { content: result?.data?.content || result?.data?.response || 'No response', backend: 'Go Microservice', tokensPerSecond: result?.metadata?.tokensPerSecond || 0 };
   }
   async function saveConversation() {
     if (caseId) {
@@ -378,11 +345,8 @@
         await fetch('/api/legal/conversations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            caseId,
-            messages: messages.slice(-20), // Save last 20 messages
-            timestamp: new Date().toISOString(),
-          }),
+          body: JSON.stringify({ caseId, messages: messages.slice(-20), // Save last 20 messages
+            timestamp: new Date().toISOString() }),
         });
       } catch (error) {
         console.warn('⚠️ Failed to save conversation', error);
@@ -449,13 +413,8 @@
       tick().then(() => { try { messageInput?.focus?.(); } catch {} });
     }
   }
-  function exportConversation() {
-    const exportData = {
-      caseId,
-      messages,
-      timestamp: new Date().toISOString(),
-      performanceMetrics,
-    };
+  function exportConversation() { const exportData = {
+      caseId, messages, timestamp: new Date().toISOString(), performanceMetrics };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

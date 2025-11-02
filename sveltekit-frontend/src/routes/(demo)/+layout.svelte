@@ -1,5 +1,5 @@
 <!-- Demo Layout - Gaming-Inspired Legal, AI, Platform -->
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';
 
@@ -27,37 +27,37 @@
   let currentDemo = $derived($page.params.slug ?? 'showcase');
 </script>
 
-<div, class="demo-layout">
+<div class="demo-layout">
   <!-- Demo, Header -->
-  <header, class="demo-header">
-    <div, class="demo-brand">
-      <span, class="demo-icon">🎮</span>
-      <h1, class="demo-title">Legal AI Demo Showcase</h1>
-      <span, class="demo-badge">YoRHa Platform</span>
+  <header class="demo-header">
+    <div class="demo-brand">
+      <span class="demo-icon">🎮</span>
+      <h1 class="demo-title">Legal AI Demo Showcase</h1>
+      <span class="demo-badge">YoRHa Platform</span>
     </div>
 
     <!-- Demo, Navigation -->
-    <nav, class="demo-nav">
+    <nav class="demo-nav">
       {#each Array.isArray(demoRoutes) ? demoRoutes : [] as route}
         <a
           href={`/demo/${route.slug}`}
           class="demo-nav-item"
           class:active={currentDemo === route.slug}
         >
-          <span, class="demo-nav-icon">{route.icon}</span>
-          <span, class="demo-nav-text">{route.name}</span>
+          <span class="demo-nav-icon">{route.icon}</span>
+          <span class="demo-nav-text">{route.name}</span>
         </a>
       {/each}
     </nav>
   </header>
 
   <!-- Demo, Content -->
-  <main, class="demo-content">
-    <div, class="demo-container">
+  <main class="demo-content">
+    <div class="demo-container">
       {#if children}
         {@render children()}
       {:else}
-        <div, class="demo-placeholder">
+        <div class="demo-placeholder">
           <h2>🎮 Demo Coming Soon</h2>
           <p>This demo component is being prepared.</p>
         </div>
@@ -66,16 +66,16 @@
   </main>
 
   <!-- Demo, Footer -->
-  <footer, class="demo-footer">
-    <div, class="demo-footer-content">
-      <div, class="demo-info">
-        <span, class="demo-current">Current: <strong>{currentDemo}</strong></span>
-        <span, class="demo-separator">•</span>
-        <span, class="demo-tech">UnoCSS • WebGPU • CUDA</span>
+  <footer class="demo-footer">
+    <div class="demo-footer-content">
+      <div class="demo-info">
+        <span class="demo-current">Current: <strong>{currentDemo}</strong></span>
+        <span class="demo-separator">•</span>
+        <span class="demo-tech">UnoCSS • WebGPU • CUDA</span>
       </div>
-      <div, class="demo-controls">
-        <a, href="/demo/showcase" class="demo-home-btn">← Demo Home</a>
-        <a, href="/" class="demo-main-btn">← Main App</a>
+      <div class="demo-controls">
+        <a href="/demo/showcase" class="demo-home-btn">← Demo Home</a>
+        <a href="/" class="demo-main-btn">← Main App</a>
       </div>
     </div>
   </footer>

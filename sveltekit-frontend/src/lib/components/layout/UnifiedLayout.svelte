@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
@@ -16,7 +16,7 @@
   let variant: Props['variant'] = _props?.variant ?? 'full';
   let user: any = _props?.user ?? null;
   let title: string = _props?.title ?? '';
-  let, hideNav: boolean = _props?.hideNav ?? false;
+  let hideNav: boolean = _props?.hideNav ?? false;
   let sidebarOpen = $state<boolean>(false);
   let mounted = $state<boolean>(false);
   let autoVariant = $state(variant);
@@ -52,15 +52,15 @@
     mounted = true;
   });
 </script>
-<div, class="unified-layout" data-variant={autoVariant}>
+<div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
     <!-- bind sidebarOpen so NavBar can, toggle, it -->
-    <NavBar, bind:sidebarOpen {user} variant={autoVariant} />
+    <NavBar bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
   <!-- Skip Navigation Link, for, Accessibility -->
-  <a, href="#main-content" class="skip-nav">Skip to main content</a>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
   <!-- Main, Content, Area -->
-  <div, class="content-wrapper" class:no-nav={hideNav}>
+  <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay, for, Mobile -->
     {#if sidebarOpen && browser}
       <!-- svelte-ignore, a11y_click_events_have_key_events -->
@@ -82,15 +82,15 @@
       aria-label="Main content"
     >
       {#if title}
-        <div class="page-header, nes-container, with-title">
-          <p, class="title">{title}</p>
+        <div class="page-header nes-container">
+          <p class="title">{title}</p>
         {/if}
-      <div, class="content-container">
+      <div class="content-container">
         {#if mounted && children}
           {@render children()}
         {:else if mounted}
-          <div class="loading-fallback, nes-container, is-rounded">
-            <p, class<script, lang="ts">
+          <div class="loading-fallback nes-container">
+            <p class<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
@@ -108,7 +108,7 @@
   let variant: Props['variant'] = _props?.variant ?? 'full';
   let user: any = _props?.user ?? null;
   let title: string = _props?.title ?? '';
-  let, hideNav: boolean = _props?.hideNav ?? false;
+  let hideNav: boolean = _props?.hideNav ?? false;
   let sidebarOpen = $state<boolean>(false);
   let mounted = $state<boolean>(false);
   let autoVariant = $state(variant);
@@ -144,15 +144,15 @@
     mounted = true;
   });
 </script>
-<div, class="unified-layout" data-variant={autoVariant}>
+<div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
     <!-- bind sidebarOpen so NavBar can, toggle, it -->
-    <NavBar, bind:sidebarOpen {user} variant={autoVariant} />
+    <NavBar bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
   <!-- Skip Navigation Link, for, Accessibility -->
-  <a, href="#main-content" class="skip-nav">Skip to main content</a>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
   <!-- Main, Content, Area -->
-  <div, class="content-wrapper" class:no-nav={hideNav}>
+  <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay, for, Mobile -->
     {#if sidebarOpen && browser}
       <!-- svelte-ignore, a11y_click_events_have_key_events -->
@@ -174,15 +174,15 @@
       aria-label="Main content"
     >
       {#if title}
-        <div class="page-header, nes-container, with-title">
-          <p, class="title">{title}</p>
+        <div class="page-header nes-container">
+          <p class="title">{title}</p>
         {/if}
-      <div, class="content-container">
+      <div class="content-container">
         {#if mounted && children}
           {@render children()}
         {:else if mounted}
-          <div class="loading-fallback, nes-container, is-rounded">
-            <p, class
+          <div class="loading-fallback nes-container">
+            <p class
   /* Minimal Layout */
   [data-variant='minimal'] .main-content {
     padding: 1rem;

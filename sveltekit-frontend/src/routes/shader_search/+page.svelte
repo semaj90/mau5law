@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { browser } from '$app/environment';
   import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
@@ -210,37 +210,37 @@ https://svelte.dev/e/js_parse_error -->
     content="Search and explore cached WebGPU shaders using semantic similarity and advanced filters"
   />
 </svelte:head>
-<div, class="container">
+<div class="container">
   <header>
     <h1>🔍 WebGPU Shader Search</h1>
     <p>Search and explore cached shaders using semantic similarity and performance metrics</p>
   </header>
   <!-- Stats, Overview -->
   {#if stats}
-    <section, class="stats-section">
+    <section class="stats-section">
       <h2>Cache Statistics</h2>
-      <div, class="stats-grid">
-        <div, class="stat-nier-bits-card">
-          <div, class="stat-number">{stats.totalShaders.total}</div>
-          <div, class="stat-label">Total Shaders</div>
+      <div class="stats-grid">
+        <div class="stat-nier-bits-card">
+          <div class="stat-number">{stats.totalShaders.total}</div>
+          <div class="stat-label">Total Shaders</div>
         </div>
-        <div, class="stat-nier-bits-card">
-          <div, class="stat-number, webgpu-color">{stats.totalShaders.webgpu}</div>
-          <div, class="stat-label">WebGPU Shaders</div>
+        <div class="stat-nier-bits-card">
+          <div class="stat-number">{stats.totalShaders.webgpu}</div>
+          <div class="stat-label">WebGPU Shaders</div>
         </div>
-        <div, class="stat-nier-bits-card">
-          <div, class="stat-number, webgl-color">{stats.totalShaders.webgl}</div>
-          <div, class="stat-label">WebGL Shaders</div>
+        <div class="stat-nier-bits-card">
+          <div class="stat-number">{stats.totalShaders.webgl}</div>
+          <div class="stat-label">WebGL Shaders</div>
         </div>
-        <div, class="stat-nier-bits-card">
-          <div, class="stat-number">{formatExecutionTime(stats.averagePerformance)}</div>
-          <div, class="stat-label">Avg Performance</div>
+        <div class="stat-nier-bits-card">
+          <div class="stat-number">{formatExecutionTime(stats.averagePerformance)}</div>
+          <div class="stat-label">Avg Performance</div>
         </div>
       </div>
       {#if stats.topOperations.length > 0}
-        <div, class="top-operations">
+        <div class="top-operations">
           <h3>Top Operations</h3>
-          <div, class="operation-tags">
+          <div class="operation-tags">
             {#each Array.isArray(stats.topOperations) ? stats.topOperations : [] as op}
               <!-- REPLACED: non-interactive, span -> accessible button -->
               <button
@@ -259,9 +259,9 @@ https://svelte.dev/e/js_parse_error -->
     </section>
   {/if}
   <!-- Search, Interface -->
-  <section, class="search-section">
-    <div, class="search-controls">
-      <div, class="search-input-group">
+  <section class="search-section">
+    <div class="search-controls">
+      <div class="search-input-group">
         <input
           type="text"
           placeholder="Search shaders by description, operation, or WGSL code..."
@@ -269,49 +269,49 @@ https://svelte.dev/e/js_parse_error -->
           onkeydown={e => e.key === 'Enter' && performSearch()}
           class="search-input"
         />
-        <button, onclick={performSearch} disabled={isSearching} class="search-button">
+        <button onclick={performSearch} disabled={isSearching} class="search-button">
           {isSearching ? '⏳' : '🔍'} Search
         </button>
       </div>
-      <div, class="filters-row">
-        <div, class="filter-group">
-          <label, for="operation">Operation</label><select, id="operation" bind:value={selectedOperation}>
-            <option, value="">All Operations</option>
+      <div class="filters-row">
+        <div class="filter-group">
+          <label for="operation">Operation</label><select id="operation" bind:value={selectedOperation}>
+            <option value="">All Operations</option>
             {#each Array.isArray(availableOperations) ? availableOperations : [] as operation}
-              <option, value={operation}>{operation}</option>
+              <option value={operation}>{operation}</option>
             {/each}
           </select>
         </div>
-        <div, class="filter-group">
-          <label, for="shader-type">Shader Type:</label><select, id="shader-type" bind:value={selectedShaderType}>
-            <option, value="all">All (WebGPU + WebGL)</option>
-            <option, value="webgpu">WebGPU Only</option>
-            <option, value="webgl">WebGL Only</option>
+        <div class="filter-group">
+          <label for="shader-type">Shader Type:</label><select id="shader-type" bind:value={selectedShaderType}>
+            <option value="all">All (WebGPU + WebGL)</option>
+            <option value="webgpu">WebGPU Only</option>
+            <option value="webgl">WebGL Only</option>
           </select>
         </div>
-        <div, class="filter-group">
-          <label, for="sort-by">Sort by:</label><select, id="sort-by" bind:value={sortBy}>
-            <option, value="relevance">Relevance</option>
-            <option, value="performance">Performance</option>
-            <option, value="usage">Usage Count</option>
-            <option, value="recent">Recently Used</option>
+        <div class="filter-group">
+          <label for="sort-by">Sort by:</label><select id="sort-by" bind:value={sortBy}>
+            <option value="relevance">Relevance</option>
+            <option value="performance">Performance</option>
+            <option value="usage">Usage Count</option>
+            <option value="recent">Recently Used</option>
           </select>
         </div>
-        <div, class="filter-group">
-          <label, for="results">Results:</label><select, id="results" bind:value={limit}>
-            <option, value={10}>10</option>
-            <option, value={20}>20</option>
-            <option, value={50}>50</option>
-            <option, value={100}>100</option>
+        <div class="filter-group">
+          <label for="results">Results:</label><select id="results" bind:value={limit}>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
           </select>
         </div>
-        <button, onclick={clearFilters} class="clear-button">Clear Filters</button>
+        <button onclick={clearFilters} class="clear-button">Clear Filters</button>
       </div>
       <!-- Tag, Filters -->
       {#if availableTags.length > 0}
-        <div, class="tags-section">
-          <span, id="tags-label">Tags:</span>
-          <div, class="tag-filters" role="group" aria-labelledby="tags-label">
+        <div class="tags-section">
+          <span id="tags-label">Tags:</span>
+          <div class="tag-filters" role="group" aria-labelledby="tags-label">
             {#each Array.isArray(availableTags) ? availableTags : [] as tag}
               <!-- tag-button is already a button; keep but, ensure, aria-pressed -->
               <button
@@ -328,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
       {#if selectedTags.length > 0}
-        <div, class="selected-tags">
+        <div class="selected-tags">
           <strong>Selected Tags:</strong>
           {#each Array.isArray(selectedTags) ? selectedTags : [] as tag}
             <!-- REPLACED: non-interactive, span -> accessible button -->
@@ -346,11 +346,11 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </section>
   <!-- Search, Results -->
-  <section, class="results-section">
+  <section class="results-section">
     {#if searchMetadata}
-      <div, class="results-header">
+      <div class="results-header">
         <h2>Search Results</h2>
-        <div, class="results-meta">
+        <div class="results-meta">
           <span>
             {searchMetadata.totalResults} results in {searchMetadata.searchTime.toFixed(2)}ms
             {#if searchMetadata.breakdown}
@@ -358,23 +358,23 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </span>
           {#if searchResults.length > 0}
-            <button, onclick={exportResults} class="export-button">📥 Export Results</button>
+            <button onclick={exportResults} class="export-button">📥 Export Results</button>
           {/if}
         </div>
       </div>
     {/if}
     {#if isSearching}
-      <div, class="loading">
-        <div, class="loading-spinner"></div>
+      <div class="loading">
+        <div class="loading-spinner"></div>
         <p>Searching shaders...</p>
       </div>
     {:else if searchResults.length === 0}
-      <div, class="no-results">
+      <div class="no-results">
         <p>No shaders found matching your search criteria.</p>
         <p>Try adjusting your filters or search query.</p>
       </div>
     {:else}
-      <div, class="results-grid">
+      <div class="results-grid">
         {#each Array.isArray(searchResults) ? searchResults : [] as shader}
           <!-- REPLACED: div, role=button -> real <button> for accessibility -->
           <button
@@ -382,43 +382,43 @@ https://svelte.dev/e/js_parse_error -->
             class="shader-nier-bits-card"
             onclick={() => (selectedShader = shader)}
           >
-            <div, class="shader-header">
+            <div class="shader-header">
               <h3>{shader.id}</h3>
-              <div, class="shader-badges">
+              <div class="shader-badges">
                 <div class="shader-type">{shader.config?.type || 'unknown'}</div>
                 <!-- SAFE access to, optional, shaderType -->
-                <div, class="platform-badge {getShaderType(shader)}">{getShaderType(shader).toUpperCase()}</div>
+                <div class="platform-badge {getShaderType(shader)}">{getShaderType(shader).toUpperCase()}</div>
               </div>
             </div>
-            <div, class="shader-meta">
-              <div, class="meta-item">
+            <div class="shader-meta">
+              <div class="meta-item">
                 <strong>Operation</strong>
                 {shader.metadata.operation}
               </div>
-              <div, class="meta-item">
+              <div class="meta-item">
                 <strong>Usage:</strong>
                 {shader.metadata.usageCount} times
               </div>
-              <div, class="meta-item">
+              <div class="meta-item">
                 <strong>Performance:</strong>
                 {formatExecutionTime(shader.metadata.averageExecutionTime)}
               </div>
               {#if shader.relevanceScore}
-                <div, class="meta-item">
+                <div class="meta-item">
                   <strong>Relevance:</strong>
                   {formatRelevanceScore(shader.relevanceScore)}
                 </div>
               {/if}
             </div>
-            <div, class="shader-description">
+            <div class="shader-description">
               {shader.metadata.description}
             </div>
-            <div, class="shader-tags">
+            <div class="shader-tags">
               {#each Array.isArray(shader.metadata.tags) ? shader.metadata.tags : [] as tag}
-                <span, class="tag">{tag}</span>
+                <span class="tag">{tag}</span>
               {/each}
             </div>
-            <div, class="shader-preview">
+            <div class="shader-preview">
               <pre><code>{getWgslPreview(shader)}</code></pre>
             </div>
           </button>
@@ -447,15 +447,15 @@ https://svelte.dev/e/js_parse_error -->
         onclick={e => e.stopPropagation()}
         onkeydown={e => e.stopPropagation()}
       >
-        <div, class="modal-header">
-          <h2, id="shader-dialog-title">{selectedShader.id}</h2>
-          <button, type="button" aria-label="Close" onclick={() => (selectedShader = null)} class="close-button">×</button>
+        <div class="modal-header">
+          <h2 id="shader-dialog-title">{selectedShader.id}</h2>
+          <button type="button" aria-label="Close" onclick={() => (selectedShader = null)} class="close-button">×</button>
         </div>
-        <div, class="modal-content">
-          <div, class="shader-details">
-            <div, class="detail-group">
+        <div class="modal-content">
+          <div class="shader-details">
+            <div class="detail-group">
               <h3>Metadata</h3>
-              <div, class="detail-grid">
+              <div class="detail-grid">
                 <div><strong>Type:</strong> {selectedShader.config.type}</div>
                 <div><strong>Operation</strong> {selectedShader.metadata.operation}</div>
                 <div><strong>Usage, Count:</strong> {selectedShader.metadata.usageCount}</div>
@@ -473,24 +473,24 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             </div>
-            <div, class="detail-group">
+            <div class="detail-group">
               <h3>Description</h3>
               <p>{selectedShader.metadata.description}</p>
             </div>
-            <div, class="detail-group">
+            <div class="detail-group">
               <h3>Tags</h3>
-              <div, class="tags">
+              <div class="tags">
                 {#each Array.isArray(selectedShader.metadata.tags) ? selectedShader.metadata.tags : [] as tag}
-                  <span, class="tag">{tag}</span>
+                  <span class="tag">{tag}</span>
                 {/each}
               </div>
             </div>
-            <div, class="detail-group">
-              <div, class="code-header">
+            <div class="detail-group">
+              <div class="code-header">
                 <h3>WGSL Code</h3>
-                <button, type="button" onclick={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
+                <button type="button" onclick={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
               </div>
-              <div, class="code-container">
+              <div class="code-container">
                 <pre><code>{selectedShader.wgsl}</code></pre>
               </div>
             </div>

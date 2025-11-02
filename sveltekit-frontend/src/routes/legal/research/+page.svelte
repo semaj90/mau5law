@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -349,59 +349,59 @@ import type { Document } from '$lib/types';
   <title>Legal Research - Citation & Precedent Analysis</title>
   <meta name="description" content="Comprehensive legal research platform with AI-powered citation analysis and, precedent, matching" />
 </svelte:head>
-<div, class="min-h-screen, bg-gray-50">
+<div class="min-h-screen">
   <!-- Header -->
-  <div class="bg-white, border-b, border-gray-200">
-    <div class="max-w-7xl mx-auto px-4, sm:px-6, lg:px-8">
-      <div class="flex justify-between, items-center, py-6">
-        <div class="flex, items-center, space-x-4">
-          <div class="flex, items-center, space-x-2">
-            <Library class="h-8, w-8, text-blue-600" />
-            <h1 class="text-2xl, font-bold, text-gray-900">Legal Research</h1>
+  <div class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <div class="flex items-center">
+            <Library class="h-8 w-8" />
+            <h1 class="text-2xl font-bold">Legal Research</h1>
           </div>
-          <div class="hidden sm:flex items-center space-x-2, text-sm, text-gray-500">
+          <div class="hidden sm:flex items-center space-x-2 text-sm">
             <span>Session {researchSession.id?.slice(-8)}</span>
             <span>•</span>
             <span>{researchSession.queries.length} queries</span>
           </div>
         </div>
-        <div class="flex, items-center, space-x-3">
+        <div class="flex items-center">
           <button
             onclick={() => advancedSearch = !advancedSearch}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
-            <Filter class="h-4, w-4, mr-2" />
+            <Filter class="h-4 w-4" />
             Advanced
           </button>
-          <div, class="text-sm, text-gray-500">
+          <div class="text-sm">
             {totalResults.toLocaleString()} results
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6, lg:px-8, py-8">
-    <div class="lg:grid, lg:grid-cols-12, lg:gap-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="lg:grid lg:grid-cols-12">
       <!-- Search, Panel -->
-      <div, class="lg:col-span-8">
+      <div class="lg:col-span-8">
         <!-- Main, Search -->
-        <div class="bg-white rounded-lg shadow, p-6, mb-6">
-          <div, class="space-y-4">
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="space-y-4">
             <!-- Search, Input -->
-            <div, class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex, items-center, pointer-events-none">
-                <Search class="h-5, w-5, text-gray-400" />
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <Search class="h-5 w-5" />
               </div>
               <input
                 type="search"
                 bind:value={searchQuery}
                 onkeydown={(e) => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
-                class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500, focus:border-blue-500"
+                class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500"
               />
-              <div class="absolute inset-y-0 right-0, flex, items-center">
-                <div class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none, focus:ring-2, focus:ring-offset-2, focus:ring-blue-500">
-  <LoadingButton, onclick={performSearch}
+              <div class="absolute inset-y-0 right-0 flex">
+                <div class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2">
+  <LoadingButton onclick={performSearch}
                   loading={isSearching}
                   disabled={!searchQuery.trim()}>
                   {#if isSearching}
@@ -414,8 +414,8 @@ import type { Document } from '$lib/types';
               </div>
             </div>
             <!-- Search, Mode, Toggle -->
-            <div class="flex, items-center, space-x-4">
-              <span class="text-sm, font-medium, text-gray-700">Search Mode:</span>
+            <div class="flex items-center">
+              <span class="text-sm font-medium">Search Mode:</span>
               {#each [
                 {, id: 'semantic', label: 'AI Semantic', icon: Brain },
                 { id: 'boolean', label: 'Boolean', icon: Filter },
@@ -427,47 +427,47 @@ import type { Document } from '$lib/types';
                   class="inline-flex items-center px-3" py-1 rounded-full text-xs font-medium transition-colors
                          {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
-                  <Icon class="h-3, w-3, mr-1" />
+                  <Icon class="h-3 w-3" />
                   {mode.label}
                 </button>
               {/each}
             </div>
             <!-- Advanced, Filters -->
             {#if advancedSearch}
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4, bg-gray-50, rounded-lg">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50">
                 <div>
-                  <label class="block text-sm font-medium, text-gray-700, mb-1" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={selectedFilters.jurisdiction} class="w-full rounded-md, border-gray-300, text-sm">
-                    <option, value="">All Jurisdictions</option>
+                  <label class="block text-sm font-medium text-gray-700" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={selectedFilters.jurisdiction} class="w-full rounded-md border-gray-300">
+                    <option value="">All Jurisdictions</option>
                     {#each Array.isArray(filterOptions.jurisdictions) ? filterOptions.jurisdictions : [] as jurisdiction}
-                      <option, value={jurisdiction}>{jurisdiction}</option>
+                      <option value={jurisdiction}>{jurisdiction}</option>
                     {/each}
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium, text-gray-700, mb-1" for="court">Court</label><select id="court" bind:value={selectedFilters.court} class="w-full rounded-md, border-gray-300, text-sm">
-                    <option, value="">All Courts</option>
+                  <label class="block text-sm font-medium text-gray-700" for="court">Court</label><select id="court" bind:value={selectedFilters.court} class="w-full rounded-md border-gray-300">
+                    <option value="">All Courts</option>
                     {#each Array.isArray(filterOptions.courts) ? filterOptions.courts : [] as court}
-                      <option, value={court}>{court}</option>
+                      <option value={court}>{court}</option>
                     {/each}
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium, text-gray-700, mb-1" for="document-type">Document Type</label><select id="document-type" bind:value={selectedFilters.documentType} class="w-full rounded-md, border-gray-300, text-sm">
-                    <option, value="">All Types</option>
+                  <label class="block text-sm font-medium text-gray-700" for="document-type">Document Type</label><select id="document-type" bind:value={selectedFilters.documentType} class="w-full rounded-md border-gray-300">
+                    <option value="">All Types</option>
                     {#each Array.isArray(filterOptions.documentTypes) ? filterOptions.documentTypes : [] as type}
-                      <option, value={type}>{type}</option>
+                      <option value={type}>{type}</option>
                     {/each}
                   </select>
                 </div>
-                <div, class="md:col-span-2">
-                  <label class="block text-sm font-medium, text-gray-700, mb-1" for="precedential-value">Precedential Value</label><select id="precedential-value" bind:value={selectedFilters.precedentialValue} class="w-full rounded-md, border-gray-300, text-sm">
-                    <option, value="">All Values</option>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700" for="precedential-value">Precedential Value</label><select id="precedential-value" bind:value={selectedFilters.precedentialValue} class="w-full rounded-md border-gray-300">
+                    <option value="">All Values</option>
                     {#each Array.isArray(filterOptions.precedentialValues) ? filterOptions.precedentialValues : [] as value}
-                      <option, value={value}>{value}</option>
+                      <option value={value}>{value}</option>
                     {/each}
                   </select>
                 </div>
-                <div, class="flex, items-end">
+                <div class="flex">
                   <button
                     onclick={clearFilters}
                     class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
@@ -481,12 +481,12 @@ import type { Document } from '$lib/types';
         </div>
         <!-- AI, Suggestions -->
         {#if aiSuggestions.length > 0}
-          <div class="bg-blue-50 rounded-lg, p-4, mb-6">
-            <div class="flex, items-center, mb-3">
-              <Brain class="h-5 w-5, text-blue-600, mr-2" />
-              <h3 class="text-sm, font-medium, text-blue-900">AI Research Suggestions</h3>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="flex items-center">
+              <Brain class="h-5 w-5 text-blue-600" />
+              <h3 class="text-sm font-medium">AI Research Suggestions</h3>
             </div>
-            <div class="grid grid-cols-1, md:grid-cols-2, gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-2">
               {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
                 <button
                   onclick={() => { searchQuery = suggestion; performSearch(); }}
@@ -499,34 +499,34 @@ import type { Document } from '$lib/types';
           </div>
         {/if}
         <!-- Search, Results -->
-        <div, class="space-y-4">
+        <div class="space-y-4">
           {#if searchResults.length > 0}
             <!-- Sort, Controls -->
-            <div class="flex, items-center, justify-between">
-              <div class="flex, items-center, space-x-4">
-                <span, class="text-sm, text-gray-700">Sort by:</span>
-                <select, bind:value={sortBy} class="rounded-md, border-gray-300, text-sm">
-                  <option, value="relevance">Relevance</option>
-                  <option, value="date">Date</option>
-                  <option, value="citations">Citations</option>
-                  <option, value="court">Court</option>
+            <div class="flex items-center">
+              <div class="flex items-center">
+                <span class="text-sm">Sort by:</span>
+                <select bind:value={sortBy} class="rounded-md border-gray-300">
+                  <option value="relevance">Relevance</option>
+                  <option value="date">Date</option>
+                  <option value="citations">Citations</option>
+                  <option value="court">Court</option>
                 </select>
               </div>
-              <div, class="text-sm, text-gray-500">
+              <div class="text-sm">
                 Showing {((currentPage - 1) * 20) + 1}-{Math.min(currentPage * 20, totalResults)} of {totalResults.toLocaleString()}
               </div>
             </div>
             <!-- Results, List -->
             {#each Array.isArray(searchResults) ? searchResults : [] as result}
-              <div class="bg-white rounded-lg shadow border border-gray-200 p-6, hover:shadow-md, transition-shadow">
-                <div class="flex items-start, justify-between, mb-3">
-                  <div, class="flex-1">
-                    <h3 class="text-lg font-semibold, text-blue-600, hover:text-blue-800">
-                      <a, href={(result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).url}>{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).title}</a>
+              <div class="bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-md">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-blue-600">
+                      <a href={(result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).url}>{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).title}</a>
                     </h3>
-                    <p class="text-sm, text-gray-600, font-mono">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citation}</p>
+                    <p class="text-sm text-gray-600">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citation}</p>
                   </div>
-                  <div class="flex items-center, space-x-2, ml-4">
+                  <div class="flex items-center space-x-2">
                     <span
                       class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium, " + getRelevanceColor(((result as: any).relevanceScore ?? 0))}
                     >
@@ -537,27 +537,27 @@ import type { Document } from '$lib/types';
                       class="p-1 text-gray-400 transition-colors hover:text-yellow-500"
                       class:text-yellow-500={(result, as: any).isBookmarked}
                     >
-                      <Bookmark, class="h-4, w-4" />
+                      <Bookmark class="h-4" />
                     </button>
                   </div>
                 </div>
-                <p class="text-gray-700 text-sm, mb-3, line-clamp-2">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).summary}</p>
-                <div class="flex items-center, justify-between, text-sm">
-                  <div class="flex, items-center, space-x-4">
-                    <div class="flex, items-center, text-gray-500">
-                      <Gavel class="h-4, w-4, mr-1" />
+                <p class="text-gray-700 text-sm mb-3">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).summary}</p>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div class="flex items-center">
+                      <Gavel class="h-4 w-4" />
                       {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).court}
                     </div>
-                    <div class="flex, items-center, text-gray-500">
-                      <Calendar class="h-4, w-4, mr-1" />
+                    <div class="flex items-center">
+                      <Calendar class="h-4 w-4" />
                       {formatDate((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).dateDecided)}
                     </div>
-                    <div class="flex, items-center, text-gray-500">
-                      <Link class="h-4, w-4, mr-1" />
+                    <div class="flex items-center">
+                      <Link class="h-4 w-4" />
                       {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citedBy} citations
                     </div>
                   </div>
-                  <div class="flex, items-center, space-x-2">
+                  <div class="flex items-center">
                     <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs, font-medium, " + getPrecedentialColor((result, as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}>
                       {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue} Precedent
                     </span>
@@ -565,17 +565,17 @@ import type { Document } from '$lib/types';
                       onclick={() => openCitationDialog(result)}
                       class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
                     >
-                      <Eye class="h-3, w-3, mr-1" />
+                      <Eye class="h-3 w-3" />
                       View
                     </button>
                   </div>
                 </div>
                 <!-- Key, Topics -->
                 {#if (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics?.length > 0}
-                  <div class="mt-3 pt-3, border-t, border-gray-100">
-                    <div class="flex, flex-wrap, gap-1">
+                  <div class="mt-3 pt-3 border-t">
+                    <div class="flex flex-wrap">
                       {#each (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics.slice(0, 5) as topic}
-                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium, bg-gray-100, text-gray-800">
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100">
                           {topic}
                         </span>
                       {/each}
@@ -586,88 +586,88 @@ import type { Document } from '$lib/types';
             {/each}
             <!-- Pagination -->
             {#if totalResults > 20}
-              <div class="flex items-center justify-center, space-x-2, mt-8">
+              <div class="flex items-center justify-center space-x-2">
                 <button
                   onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(); }}
                   disabled={currentPage <= 1}
-                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50, disabled:opacity-50"
+                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   Previous
                 </button>
-                <span class="px-3 py-2, text-sm, text-gray-700">
+                <span class="px-3 py-2 text-sm">
                   Page {currentPage} of {Math.ceil(totalResults / 20)}
                 </span>
                 <button
                   onclick={() => { currentPage = currentPage + 1; performSearch(); }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
-                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50, disabled:opacity-50"
+                  class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   Next
                 </button>
               </div>
             {/if}
           {:else if searchQuery && !isSearching}
-            <div, class="text-center, py-12">
-              <BookOpen class="mx-auto h-12, w-12, text-gray-400" />
-              <h3 class="mt-2 text-sm, font-medium, text-gray-900">No results found</h3>
-              <p class="mt-1, text-sm, text-gray-500">Try adjusting your search terms or filters.</p>
+            <div class="text-center">
+              <BookOpen class="mx-auto h-12 w-12" />
+              <h3 class="mt-2 text-sm font-medium">No results found</h3>
+              <p class="mt-1 text-sm">Try adjusting your search terms or filters.</p>
             </div>
           {/if}
         </div>
       </div>
       <!-- Sidebar -->
-      <div, class="lg:col-span-4, space-y-6">
+      <div class="lg:col-span-4">
         <!-- Saved, Citations -->
-        <div class="bg-white rounded-lg, shadow, p-6">
-          <div class="flex items-center, justify-between, mb-4">
-            <h3 class="text-lg font-medium text-gray-900, flex, items-center">
-              <Star class="h-5 w-5, text-yellow-500, mr-2" />
+        <div class="bg-white rounded-lg shadow">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-medium text-gray-900 flex">
+              <Star class="h-5 w-5 text-yellow-500" />
               Saved Citations
             </h3>
-            <span, class="text-sm, text-gray-500">{savedCitations.length}</span>
+            <span class="text-sm">{savedCitations.length}</span>
           </div>
-          <div class="space-y-3, max-h-64, overflow-y-auto">
+          <div class="space-y-3 max-h-64">
             {#each Array.isArray(savedCitations.slice(0, 10)) ? savedCitations.slice(0, 10) : [] as citation}
-              <div class="border-l-2 border-yellow-400, pl-3, py-2">
-                <h4 class="text-sm, font-medium, text-gray-900">{citation.title}</h4>
-                <p class="text-xs, text-gray-600, font-mono">{citation.citation}</p>
-                <p, class="text-xs, text-gray-500">
+              <div class="border-l-2 border-yellow-400 pl-3">
+                <h4 class="text-sm font-medium">{citation.title}</h4>
+                <p class="text-xs text-gray-600">{citation.citation}</p>
+                <p class="text-xs">
                   Saved {formatDate(citation.savedAt)}
                 </p>
               </div>
             {/each}
             {#if savedCitations.length === 0}
-              <p class="text-sm text-gray-500, text-center, py-4">
+              <p class="text-sm text-gray-500 text-center">
                 No saved citations yet
               </p>
             {/if}
           </div>
         </div>
         <!-- Research, Session -->
-        <div class="bg-white rounded-lg, shadow, p-6">
-          <h3 class="text-lg font-medium text-gray-900 flex, items-center, mb-4">
-            <Clock class="h-5 w-5, text-blue-500, mr-2" />
+        <div class="bg-white rounded-lg shadow">
+          <h3 class="text-lg font-medium text-gray-900 flex items-center">
+            <Clock class="h-5 w-5 text-blue-500" />
             Research Session
           </h3>
-          <div, class="space-y-3">
-            <div class="flex, justify-between, text-sm">
-              <span, class="text-gray-600">Started:</span>
-              <span, class="font-medium">{formatDate(researchSession.startTime)}</span>
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Started:</span>
+              <span class="font-medium">{formatDate(researchSession.startTime)}</span>
             </div>
-            <div class="flex, justify-between, text-sm">
-              <span, class="text-gray-600">Queries:</span>
-              <span, class="font-medium">{researchSession.queries.length}</span>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Queries:</span>
+              <span class="font-medium">{researchSession.queries.length}</span>
             </div>
-            <div class="flex, justify-between, text-sm">
-              <span, class="text-gray-600">Findings:</span>
-              <span, class="font-medium">{savedCitations.length}</span>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Findings:</span>
+              <span class="font-medium">{savedCitations.length}</span>
             </div>
           </div>
           <!-- Recent, Queries -->
           {#if researchSession.queries.length > 0}
-            <div class="mt-4 pt-4, border-t, border-gray-200">
-              <h4 class="text-sm font-medium, text-gray-900, mb-2">Recent Queries</h4>
-              <div class="space-y-2, max-h-32, overflow-y-auto">
+            <div class="mt-4 pt-4 border-t">
+              <h4 class="text-sm font-medium text-gray-900">Recent Queries</h4>
+              <div class="space-y-2 max-h-32">
                 {#each Array.isArray(researchSession.queries.slice(-5)) ? researchSession.queries.slice(-5) : [] as query}
                   <button
                     onclick={() => { searchQuery = query.query; performSearch(); }}
@@ -682,9 +682,9 @@ import type { Document } from '$lib/types';
         </div>
         <!-- Related, Topics -->
         {#if relatedTopics.length > 0}
-          <div class="bg-white rounded-lg, shadow, p-6">
-            <h3 class="text-lg font-medium, text-gray-900, mb-4">Related Topics</h3>
-            <div, class="space-y-2">
+          <div class="bg-white rounded-lg shadow">
+            <h3 class="text-lg font-medium text-gray-900">Related Topics</h3>
+            <div class="space-y-2">
               {#each Array.isArray(relatedTopics) ? relatedTopics : [] as topic}
                 <button
                   onclick={() => { searchQuery = topic; performSearch(); }}
@@ -701,43 +701,43 @@ import type { Document } from '$lib/types';
   </div>
 </div>
 <!-- Citation, Detail, Dialog -->
-<HeadlessDialog, bind:open={showCitationDialog}>
+<HeadlessDialog bind:open={showCitationDialog}>
   {#if selectedDocument}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center, justify-center, p-4">
-      <div class="bg-white rounded-lg shadow-xl max-w-2xl, w-full, max-h-[80vh] overflow-y-auto">
-        <div class="px-6 py-4, border-b, border-gray-200">
-          <h2 class="text-lg, font-semibold, text-gray-900">{selectedDocument.title}</h2>
-          <p class="text-sm, text-gray-600, font-mono">{selectedDocument.fullCitation}</p>
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+        <div class="px-6 py-4 border-b">
+          <h2 class="text-lg font-semibold">{selectedDocument.title}</h2>
+          <p class="text-sm text-gray-600">{selectedDocument.fullCitation}</p>
         </div>
-        <div, class="p-6, space-y-4">
-          <div class="grid grid-cols-2, gap-4, text-sm">
+        <div class="p-6">
+          <div class="grid grid-cols-2 gap-4">
             <div>
-              <span, class="font-medium, text-gray-700">Court:</span>
-              <span, class="text-gray-600">{selectedDocument.court}</span>
+              <span class="font-medium">Court:</span>
+              <span class="text-gray-600">{selectedDocument.court}</span>
             </div>
             <div>
-              <span, class="font-medium, text-gray-700">Date:</span>
-              <span, class="text-gray-600">{formatDate(selectedDocument.dateDecided)}</span>
+              <span class="font-medium">Date:</span>
+              <span class="text-gray-600">{formatDate(selectedDocument.dateDecided)}</span>
             </div>
             <div>
-              <span, class="font-medium, text-gray-700">Jurisdiction</span>
-              <span, class="text-gray-600">{selectedDocument.jurisdiction}</span>
+              <span class="font-medium">Jurisdiction</span>
+              <span class="text-gray-600">{selectedDocument.jurisdiction}</span>
             </div>
             <div>
-              <span, class="font-medium, text-gray-700">Cited By:</span>
-              <span, class="text-gray-600">{selectedDocument.citedBy} cases</span>
+              <span class="font-medium">Cited By:</span>
+              <span class="text-gray-600">{selectedDocument.citedBy} cases</span>
             </div>
           </div>
           <div>
-            <h4 class="font-medium, text-gray-700, mb-2">Summary</h4>
-            <p, class="text-gray-600, text-sm">{selectedDocument.summary}</p>
+            <h4 class="font-medium text-gray-700">Summary</h4>
+            <p class="text-gray-600">{selectedDocument.summary}</p>
           </div>
           {#if selectedDocument.keyTopics?.length > 0}
             <div>
-              <h4 class="font-medium, text-gray-700, mb-2">Key Topics</h4>
-              <div class="flex, flex-wrap, gap-2">
+              <h4 class="font-medium text-gray-700">Key Topics</h4>
+              <div class="flex flex-wrap">
                 {#each Array.isArray(selectedDocument.keyTopics) ? selectedDocument.keyTopics : [] as topic}
-                  <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium, bg-blue-100, text-blue-800">
+                  <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100">
                     {topic}
                   </span>
                 {/each}
@@ -745,7 +745,7 @@ import type { Document } from '$lib/types';
             </div>
           {/if}
         </div>
-        <div class="px-6 py-4 border-t border-gray-200 flex, justify-end, space-x-3">
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
           <button
             onclick={() => showCitationDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
@@ -756,14 +756,14 @@ import type { Document } from '$lib/types';
             onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
-            <Bookmark class="h-4 w-4, mr-1, inline" />
+            <Bookmark class="h-4 w-4 mr-1" />
             Save Citation
           </button>
           <a
             href={selectedDocument.url}
             class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 inline-flex items-center"
           >
-            <ExternalLink class="h-4, w-4, mr-1" />
+            <ExternalLink class="h-4 w-4" />
             View Full Document
           </a>
         </div>

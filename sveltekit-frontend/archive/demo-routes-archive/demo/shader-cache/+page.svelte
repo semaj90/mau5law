@@ -23,8 +23,7 @@
   const workflowContext = {
     userId: 'demo-user-001',
     sessionId: 'demo-session-' + Date.now(),
-    currentStep: 'doc-load' as const,
-    previousSteps: ['login', 'dashboard'],
+    currentStep: 'doc-load' as const previousSteps: ['login', 'dashboard'],
     documentContext: {
       documentType: 'contract',
       caseId: 'case-001',
@@ -121,8 +120,7 @@
     // Simulate workflow progression
     const advancedContext = {
       ...workflowContext,
-      currentStep: 'evidence-view' as const,
-      previousSteps: [...workflowContext.previousSteps, 'doc-load']
+      currentStep: 'evidence-view' as const previousSteps: [...workflowContext.previousSteps, 'doc-load']
     };
     try {
       const response = await fetch('/api/v1/gpu-cache', {

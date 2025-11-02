@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
 
   import { tick } from 'svelte';
@@ -37,25 +37,25 @@ import type { Document } from '$lib/types';
   const searchDuration = $derived(lastDuration);
 
 </script>
-<div, class="enhanced-rag-interface, nes-container">
-  <div, class="search-bar, bits-row">
+<div class="enhanced-rag-interface">
+  <div class="search-bar">
     <Input bind:value={searchQuery} placeholder="Ask about, case, documents..." class="bits-input" />
-    <div, class="ml-2">
-      <Button, onclick={handleSearch} disabled={isLoading}>
+    <div class="ml-2">
+      <Button onclick={handleSearch} disabled={isLoading}>
         {isLoading ? 'Searching...' : 'Search'}
       </Button>
     </div>
-    <div, class="ml-2">
-      <Button, onclick={handleOptimize}>Optimize</Button>
+    <div class="ml-2">
+      <Button onclick={handleOptimize}>Optimize</Button>
     </div>
   </div>
-  <div, class="meta, mt-3"><small>Last search time: {searchDuration}ms</small></div>
+  <div class="meta"><small>Last search time: {searchDuration}ms</small></div>
   {#if intelligentSuggestions.length}
-    <div, class="mt-3">
-      <div, class="mb-2"><strong>Suggestions</strong></div>
-      <div, class="suggestions">
+    <div class="mt-3">
+      <div class="mb-2"><strong>Suggestions</strong></div>
+      <div class="suggestions">
         {#each Array.isArray(intelligentSuggestions) ? intelligentSuggestions : [] as s}
-          <div, class="bits-chip, mr-2" style="display:inline-block;">
+          <div class="bits-chip" style="display:inline-block;">
             <Button
               onclick={() => {
                 searchQuery = s;
@@ -68,30 +68,30 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     {/if}
-  <div, id="search-results" class="results, mt-4">
+  <div id="search-results" class="results">
     {#if optimizedResults && optimizedResults.length > 0}
-      <div class="results-header, nes-container, p-3">
-        <div class="flex, items-center, justify-between">
+      <div class="results-header nes-container">
+        <div class="flex items-center">
           <div>
-            <h3, class="is-primary">
+            <h3 class="is-primary">
               {optimizedResults.length} results {#if ragState.currentQuery}for, "{ragState.currentQuery}"{/if}
             </h3>
-            <p, class="text-sm">
+            <p class="text-sm">
               Found in {searchDuration}ms • Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%
             </p>
           </div>
         </div>
       </div>
-      <div, class="space-y-3, mt-3">
+      <div class="space-y-3">
         {#each Array.isArray(optimizedResults) ? optimizedResults : [] as result}
-          <div, class="nes-container, p-3">
-            <div, class="result-row">
-              <div, class="result-main">
+          <div class="nes-container">
+            <div class="result-row">
+              <div class="result-main">
                 <h4>{result?.document?.title || result?.id || 'Document'}</h4>
                 {#if result?.highlights && result.highlights.length > 0}
-                  <div, class="highlights, mt-2">{@html result.highlights[0]}{/if}
+                  <div class="highlights">{@html result.highlights[0]}{/if}
               </div>
-              <div, class="result-meta">
+              <div class="result-meta">
                 <div class="badge">Relevance: {Math.round((result?.score || 0) * 100)}%</div>
               </div>
             </div>
@@ -99,12 +99,12 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     {:else}
-      <div class="nes-container, p-4, mt-3">
-        <p, class="text-sm, text-gray-600">No results yet. Try searching for a case term or document title.</p>
+      <div class="nes-container p-4">
+        <p class="text-sm">No results yet. Try searching for a case term or document title.</p>
       {/if}
   </div>
   {#if ragState.error}
-    <div class="nes-container is-error, mt-3, p-3"><strong>Error:</strong> {ragState.error}{/if}
+    <div class="nes-container is-error mt-3"><strong>Error:</strong> {ragState.error}{/if}
 </div>
 <style>
   .enhanced-rag-interface {
@@ -139,7 +139,7 @@ import type { Document } from '$lib/types';
     {/if}
   </div>
   {#if ragState.error}
-    <div class="nes-container is-error, mt-3, p-3"><strong>Error:</strong> {ragState.error}{/if}
+    <div class="nes-container is-error mt-3"><strong>Error:</strong> {ragState.error}{/if}
 </div>
 <style>
   .enhanced-rag-interface {

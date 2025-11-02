@@ -17,32 +17,9 @@
   let completedUploads = $state([]);
   let failedUploads = $state([]);
   // Form data
-  let evidenceData = $state({
-    title: '',
-    description: '',
-    evidenceType: 'document',
-    tags: '',
-    isAdmissible: true,
-    admissibilityNotes: '',
-  });
+  let evidenceData = $state({ title: '', description: '', evidenceType: 'document', tags: '', isAdmissible: true, admissibilityNotes: '' });
   // File type icons
-  const fileTypeIcons = {
-    'image/jpeg': Image,
-    'image/png': Image,
-    'image/gif': Image,
-    'image/webp': Image,
-    'video/mp4': Video,
-    'video/avi': Video,
-    'video/mov': Video,
-    'video/wmv': Video,
-    'audio/mp3': Music,
-    'audio/wav': Music,
-    'audio/m4a': Music,
-    'application/pdf': FileText,
-    'text/plain': FileText,
-    'application/msword': FileText,
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': FileText,
-  };
+  const fileTypeIcons = { 'image/jpeg': Image, 'image/png': Image, 'image/gif': Image, 'image/webp': Image, 'video/mp4': Video, 'video/avi': Video, 'video/mov': Video, 'video/wmv': Video, 'audio/mp3': Music, 'audio/wav': Music, 'audio/m4a': Music, 'application/pdf': FileText, 'text/plain': FileText, 'application/msword': FileText, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': FileText };
   // Get file type icon
   function getFileIcon(file) {
     const icon = fileTypeIcons[file.type] || File;
@@ -88,16 +65,7 @@
     });
     selectedFiles = [
       ...selectedFiles,
-      ...validFiles.map(file => ({
-        id: Math.random().toString(36).substr(2, 9),
-        file,
-        title: file.name.replace(/\.[^/.]+$/, ''),
-        description: '',
-        evidenceType: getEvidenceTypeFromMimeType(file.type),
-        tags: '',
-        isAdmissible: true,
-        admissibilityNotes: '',
-      })),
+      ...validFiles.map(file => ({ id: Math.random().toString(36).substr(2, 9), file, title: file.name.replace(/\.[^/.]+$/, ''), description: '', evidenceType: getEvidenceTypeFromMimeType(file.type), tags: '', isAdmissible: true, admissibilityNotes: '' })),
     ];
   }
   // Get evidence type from MIME type
@@ -118,8 +86,7 @@
     selectedFiles = selectedFiles.map(f => (f.id === fileId ? { ...f, [field]: value } : f));
   }
   // Upload files
-  async function uploadFiles() {
-    if (selectedFiles.length === 0) return;
+  async function uploadFiles() { if (selectedFiles.length === 0) return;
     isUploading = true;
     uploadProgress = 0;
     uploadQueue = [...selectedFiles];
@@ -138,9 +105,7 @@
         formData.append('admissibilityNotes', fileData.admissibilityNotes);
         formData.append('caseId', caseId);
         const response = await fetch('/api/evidence/upload', {
-          method: 'POST',
-          body: formData,
-        });
+          method: 'POST', body: formData });
         const result = await response.json();
         if (result.success) {
           completedUploads.push({ ...fileData, evidenceId: result.data.id });
@@ -171,15 +136,8 @@
     failedUploads = [];
   }
   // Reset form
-  function resetForm() {
-    evidenceData = {
-      title: '',
-      description: '',
-      evidenceType: 'document',
-      tags: '',
-      isAdmissible: true,
-      admissibilityNotes: '',
-    };
+  function resetForm() { evidenceData = {
+      title: '', description: '', evidenceType: 'document', tags: '', isAdmissible: true, admissibilityNotes: '' };
   }
 </script>
 <div class="evidence-upload-container">

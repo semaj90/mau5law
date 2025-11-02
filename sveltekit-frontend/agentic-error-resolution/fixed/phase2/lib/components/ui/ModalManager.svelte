@@ -60,14 +60,8 @@
   		AlertModal,
   		PromptModal
   	}
-  	function getSizeClasses(size: string) {
-  		const sizeMap = {
-  			sm: 'max-w-md',
-  			md: 'max-w-lg',
-  			lg: 'max-w-2xl',
-  			xl: 'max-w-4xl',
-  			full: 'max-w-[95vw] max-h-[95vh]',
-  		}
+  	function getSizeClasses(size: string) { const sizeMap = {
+  			sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl', full: 'max-w-[95vw] max-h-[95vh]' }
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }
   	function handleBackdropClick(_event: MouseEvent, modal: any) {

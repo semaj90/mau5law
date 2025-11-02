@@ -28,17 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   import { fileUploadSchema } from '$lib/schemas/upload';
   import  Form  from "$lib/components/ui/Form.svelte";
   import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte";
-  import {
-    Binary,
-    CheckCircle,
-    FileText,
-    Film,
-    HardDrive,
-    Image,
-    Music,
-    Upload,
-    X,
-  } from 'lucide-svelte';
+  import { Binary, CheckCircle, FileText, Film, HardDrive, Image, Music, Upload, X } from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   interface Props {

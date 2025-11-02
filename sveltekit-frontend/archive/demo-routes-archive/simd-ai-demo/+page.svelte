@@ -62,7 +62,7 @@ https://svelte.dev/e/expected_token -->
       webWorker = new Worker('/workers/simd-text-worker.js');
       
       webWorker.onmessage = (event) => {
-        const { type, payload } = event.data;
+        const { type payload } = event.data;
         
         switch (type) {
           case 'simd_initialized':

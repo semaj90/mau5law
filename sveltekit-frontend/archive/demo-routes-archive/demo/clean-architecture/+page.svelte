@@ -182,8 +182,7 @@ https://svelte.dev/e/js_parse_error -->
         },
         body: JSON.stringify({
           fileName: uploadFile.name,
-          contentType: uploadFile.type,
-          contentLength: uploadFile.size,
+          contentType: uploadFile.type contentLength: uploadFile.size,
           caseId: selectedCase.id,
           evidenceType: uploadFile.type.startsWith('image/') ? 'image' : 'document'
         })

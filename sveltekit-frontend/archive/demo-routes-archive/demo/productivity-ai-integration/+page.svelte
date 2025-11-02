@@ -22,8 +22,7 @@
   let demoDocument = $state({
     id: 'demo_doc_123',
     title: 'Sample Legal Case Analysis',
-    type: 'case' as const,
-    progress: 0,
+    type: 'case' as const progress: 0,
     complexity: 0.7
   });
   let demoConnections = $state([

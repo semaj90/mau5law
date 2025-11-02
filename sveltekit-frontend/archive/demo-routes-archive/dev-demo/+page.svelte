@@ -18,7 +18,7 @@
   // Svelte 5 runes for state management
   let authStatus = $state<any>(null);
   let cases = $state<any[]>([]);
-  let apiStatus = $state<Record<string, any>({});
+  let apiStatus = $state<Record<string any>({});
   let chatMessages = $state<any[]>([]);
   let currentMessage = $state('');
   let isStreaming = $state(false);

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   // Props
@@ -56,6 +56,6 @@
   </button>
 {/if}
 
-<style, lang="postcss">
+<style lang="postcss">
   /* UnoCSS handles most styling, but custom styles can go here if needed */
 </style>

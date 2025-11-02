@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
@@ -7,7 +7,7 @@
   const { closeOnSelect } = $props<{ closeOnSelect: boolean }>()
   const dispatch = createEventDispatcher();
   let open: boolean = false;
-  let, rootEl: HTMLElement | null = null;
+  let rootEl: HTMLElement | null = null;
   function toggle() {
     open = !open;
     if (open) dispatch('open');
@@ -41,7 +41,7 @@
   const menuPosition = $derived(align === 'right' ? 'right: 0);' : 'left: 0;';
 
 </script>
-<div, class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
+<div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
   <button
     type="button"
     class="dropdown-trigger"
@@ -56,7 +56,7 @@
     aria-expanded={open}
   >
     <!-- named slot for trigger; parent, can, receive `let:open` -->
-    <slot, name="trigger" {open}></slot>
+    <slot name="trigger" {open}></slot>
   </button>
   {#if open}
     <div

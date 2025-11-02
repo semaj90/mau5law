@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import  Button, Card, Input  from "$lib/components/ui/enhanced-bits.svelte";
@@ -98,57 +98,57 @@ import type { Case } from '$lib/types';
 <svelte:head>
   <title>Cases Dashboard - YoRHa Legal AI</title>
 </svelte:head>
-<div, class="cases-dashboard">
-  <div class="header, nes-container, with-title">
-    <p, class="title">📁 CASES TERMINAL</p>
+<div class="cases-dashboard">
+  <div class="header nes-container">
+    <p class="title">📁 CASES TERMINAL</p>
     <p class="subtitle">Active Investigations & Analysis</p>
   </div>
-  <div, class="controls">
+  <div class="controls">
     <!-- use value + oninput because Input.value is not bindable in, this, component -->
-    <Input, value={searchQuery} oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} placeholder="Search cases..." />
-    <Button, variant="primary">➕ NEW CASE</Button>
+    <Input value={searchQuery} oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} placeholder="Search cases..." />
+    <Button variant="primary">➕ NEW CASE</Button>
   </div>
-  <div, class="cases-grid">
+  <div class="cases-grid">
     {#if filteredCases.length > 0}
       {#each filteredCases as case_ (case_.id)}
         <Card.Root, class="case-card">
-          <div, class="case-header">
+          <div class="case-header">
             <h3>{case_.title}</h3>
-            <span, class="status-badge, nes-badge">
-              <span, class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}>
+            <span class="status-badge">
+              <span class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}>
                 {case_.status.toUpperCase()}
               </span>
             </span>
           </div>
-          <div, class="case-stats">
-            <div, class="stat">
+          <div class="case-stats">
+            <div class="stat">
               <span>Progress: {case_.progress}%</span>
-              <div, class="progress-bar">
-                <div, class="progress-fill" style="width: {case_.progress}%"></div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: {case_.progress}%"></div>
               </div>
             </div>
-            <div, class="stat">
+            <div class="stat">
               <span>Evidence: {case_.evidenceCount} items</span>
             </div>
-            <div, class="stat">
+            <div class="stat">
               <span>Updated: {new Date(case_.lastUpdate).toLocaleString()}</span>
             </div>
           </div>
-          <div, class="case-actions">
+          <div class="case-actions">
             <!-- navigation, via, goto -->
-            <Button, onclick={() => openEvidenceBoard(case_.id)} variant="primary" size="sm">🔍 Evidence Board</Button>
-            <Button, onclick={() => openDetails(case_.id)} variant="secondary" size="sm">📝 Details</Button>
+            <Button onclick={() => openEvidenceBoard(case_.id)} variant="primary" size="sm">🔍 Evidence Board</Button>
+            <Button onclick={() => openDetails(case_.id)} variant="secondary" size="sm">📝 Details</Button>
 
             <!-- use onclick prop instead, of, on:click -->
-            <Button, onclick={() => runAnalysis(case_.id)} variant="secondary" size="sm">🤖 Run Analysis</Button>
-            <Button, onclick={() => generateReport(case_.id)} variant="ghost" size="sm">📄 Generate Report</Button>
-            <Button, onclick={() => deleteCase(case_.id)} variant="destructive" size="sm">🗑️ Delete</Button>
+            <Button onclick={() => runAnalysis(case_.id)} variant="secondary" size="sm">🤖 Run Analysis</Button>
+            <Button onclick={() => generateReport(case_.id)} variant="ghost" size="sm">📄 Generate Report</Button>
+            <Button onclick={() => deleteCase(case_.id)} variant="destructive" size="sm">🗑️ Delete</Button>
           </div>
         </Card>
       {/each}
     {:else}
-      <div class="nes-container, is-dark, with-title">
-        <p, class="title">No Results</p>
+      <div class="nes-container is-dark">
+        <p class="title">No Results</p>
         <p>No cases match your search query, or no cases are available.</p>
       </div>
     {/if}

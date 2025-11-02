@@ -387,20 +387,14 @@
     overflow: hidden;
 /* Fog effect */ background-image: var(--material-bg), radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
-/* Button content wrapper */ .button-content {
-    position: relative;
-    z-index: 2,
-  }
-/* Lighting overlay */ .lighting-overlay {
-    position: absolute;
-    top: 0,
-    left: 0;
-    right: 0,
-    bottom: 0;
+/* Button content wrapper */ .button-content { position: relative;
+    z-index: 2 }
+/* Lighting overlay */ .lighting-overlay { position: absolute;
+    top: 0, left: 0;
+    right: 0, bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 30%, transparent 60%, rgba(0, 0, 0, 0.2) 100% );
     pointer-events: none;
-    z-index: 1,
-  }
+    z-index: 1 }
 /* Reflection overlay */ .reflection-overlay {
     position: absolute;
     top: 10%;
@@ -504,18 +498,14 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
   :global(.n64-3d-button.anisotropic-16x) {
     filter: sharpen(0.8px) contrast(1.08) brightness(1.02);
   }
-/* Fog effects */ :global($1) {
-    content: '';
+/* Fog effects */ :global($1) { content: '';
     position: absolute;
-    top: 0,
-    left: 0;
-    right: 0,
-    bottom: 0;
+    top: 0, left: 0;
+    right: 0, bottom: 0;
 background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70% );
     opacity: 0.3;
     pointer-events: none;
-    z-index: 0,
-  }
+    z-index: 0 }
 /* Mobile optimizations */ @media (max-width: 480px) {
     :global(.n64-3d-button) {
       min-height: 44px;

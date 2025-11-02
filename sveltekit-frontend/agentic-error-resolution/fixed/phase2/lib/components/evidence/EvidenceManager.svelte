@@ -80,20 +80,9 @@
   // State
   let evidenceFiles = $state<EvidenceFile[]>([]);
   let searchResults = $state<SearchResult[]>([]);
-  let embeddingStats = $state<EmbeddingStats>({
-    total: 0,
-    withEmbeddings: 0,
-    withoutEmbeddings: 0,
-    percentage: 0,
-  });
+  let embeddingStats = $state<EmbeddingStats>({ total: 0, withEmbeddings: 0, withoutEmbeddings: 0, percentage: 0 });
   // Corrected loading object syntax (missing commas)
-  let loading = $state({
-    files: false,
-    upload: false,
-    backfill: false,
-    search: false,
-    stats: false,
-  });
+  let loading = $state({ files: false, upload: false, backfill: false, search: false, stats: false });
   let searchQuery = $state('');
   let showSearchResults = $state(false);
   let uploadProgress = $state<string>('');
@@ -206,15 +195,13 @@
       loading.backfill = false;
     }
   }
-  async function performSemanticSearch() {
-    if (!searchQuery.trim()) return;
+  async function performSemanticSearch() { if (!searchQuery.trim()) return;
     loading.search = true;
     error = '';
     try {
       const params = new URLSearchParams({
         search: searchQuery, // Corrected comma
-        limit: '10',
-      });
+        limit: '10' });
       if (caseId) params.set('case_id', caseId);
       // Declare response variable
       const response = await fetch(`/api/evidence-search?${params.toString()}`);
@@ -247,14 +234,8 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  function formatDate(dateString: string): string { return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
   // Drag & drop handlers
   function handleDragEnter(e: DragEvent) {

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -49,57 +49,57 @@ import type { Case } from '$lib/types';
   	});
 </script>
 <!-- Gaming, HUD, Container -->
-<div, class="gaming-hud">
+<div class="gaming-hud">
   <!-- Top, Bar -->
-  <div, class="hud-top-bar">
+  <div class="hud-top-bar">
     <!-- User Level & Experience -->
-    <div, class="level-section">
-      <div, class="level-badge" class:glow={glowEffect}>
-        <span, class="level-text">LVL</span>
-        <span, class="level-number">{userLevel}</span>
+    <div class="level-section">
+      <div class="level-badge" class:glow={glowEffect}>
+        <span class="level-text">LVL</span>
+        <span class="level-number">{userLevel}</span>
       </div>
-      <div, class="experience-bar">
-        <div, class="exp-background">
-          <div, class="exp-fill" style="width: {experiencePercent}%"></div>
+      <div class="experience-bar">
+        <div class="exp-background">
+          <div class="exp-fill" style="width: {experiencePercent}%"></div>
         </div>
-        <span, class="exp-text">{experience}/{maxExperience} EXP</span>
+        <span class="exp-text">{experience}/{maxExperience} EXP</span>
       </div>
     </div>
     <!-- Current, Case, Info -->
-    <div, class="case-section">
-      <div, class="case-label">ACTIVE CASE</div>
-      <div, class="case-id">{currentCase}</div>
+    <div class="case-section">
+      <div class="case-label">ACTIVE CASE</div>
+      <div class="case-id">{currentCase}</div>
     </div>
     <!-- System, Status -->
-    <div, class="status-section">
-      <div, class="status-indicator" class:online={isOnline}, class:offline={!isOnline}>
-        <div, class="status-dot"></div>
+    <div class="status-section">
+      <div class="status-indicator" class:online={isOnline}, class:offline={!isOnline}>
+        <div class="status-dot"></div>
         <span>{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
       </div>
-      <div, class="system-time">{currentTime}</div>
+      <div class="system-time">{currentTime}</div>
     </div>
   </div>
   <!-- Stats, Panel -->
-  <div, class="stats-panel">
-    <div, class="stat-item">
-      <div, class="stat-icon">📊</div>
-      <div, class="stat-content">
-        <div, class="stat-label">DOCUMENTS</div>
-        <div, class="stat-value">{documentsAnalyzed}</div>
+  <div class="stats-panel">
+    <div class="stat-item">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <div class="stat-label">DOCUMENTS</div>
+        <div class="stat-value">{documentsAnalyzed}</div>
       </div>
     </div>
-    <div, class="stat-item">
-      <div, class="stat-icon">🎯</div>
-      <div, class="stat-content">
-        <div, class="stat-label">ACCURACY</div>
-        <div, class="stat-value">{accuracyScore}%</div>
+    <div class="stat-item">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <div class="stat-label">ACCURACY</div>
+        <div class="stat-value">{accuracyScore}%</div>
       </div>
     </div>
-    <div, class="stat-item">
-      <div, class="stat-icon">⚡</div>
-      <div, class="stat-content">
-        <div, class="stat-label">AI STATUS</div>
-        <div, class="stat-value">ACTIVE</div>
+    <div class="stat-item">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-content">
+        <div class="stat-label">AI STATUS</div>
+        <div class="stat-value">ACTIVE</div>
       </div>
     </div>
   </div>
