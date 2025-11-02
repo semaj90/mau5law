@@ -1,5 +1,5 @@
-import amqp from 'amqplib';
-import type { Connection, Channel, Options, ConsumeMessage, Replies } from 'amqplib';
+import * as amqp from 'amqplib';
+import type { Connection, Channel, ConsumeMessage, Options, Replies } from 'amqplib';
 import { writable, get } from 'svelte/store'; // Import 'get'
 
 let connection: Connection | null = null;
@@ -77,7 +77,7 @@ export async function getRabbitMQChannel(): Promise<Channel | null> {
         connectionFailed.set(true);
         return null;
       }
-      connection.on('error', (err) => {
+      connection.on('error', err => {
         console.error('RabbitMQ Connection Error:', err);
         connectionFailed.set(true);
         closeRabbitMQConnection().then(() => {
@@ -131,9 +131,10 @@ export async function closeRabbitMQConnection() {
 export async function publishMessage(
   queueName: string,
   message: object, // Changed from 'any' to 'object' for better type safety
-  options?: Options.Publish
+  options?: Options.Publish // Updated type reference
 ): Promise<boolean> {
   const ch = await getRabbitMQChannel();
+  if (!ch) return false; // Handle case where channel is not available
   await ch.assertQueue(queueName, { durable: true });
   return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
 }
@@ -145,11 +146,12 @@ export async function publishMessage(
  */
 export async function consumeMessages(
   queueName: string,
-  onMessage: (msg: ConsumeMessage | null) => void,
-  options?: Options.Consume
+  onMessage: (msg: ConsumeMessage | null) => void, // Updated type reference
+  options?: Options.Consume // Updated type reference
 ): Promise<Replies.Consume> {
+  // Updated type reference
   const ch = await getRabbitMQChannel();
+  if (!ch) throw new Error('RabbitMQ channel unavailable'); // Handle case where channel is not available
   await ch.assertQueue(queueName, { durable: true });
   return ch.consume(queueName, onMessage, options);
-}
 }

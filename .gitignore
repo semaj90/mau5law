@@ -781,3 +781,19 @@ svelte-check-latest.txt
 sveltekit-frontend/svelte-check-errors-latest.txt
 sveltekit-frontend/svelte-check-output.txt
 sveltekit-frontend/svelte-check-errors.txt
+
+########################################
+# Large text files (>10MB)
+########################################
+# Error logs and diagnostic outputs
+**/*-check-raw.txt
+**/*-errors.txt
+**/*-output.txt
+**/phase*.txt
+# Exclude any .txt file larger than 10MB
+*.txt
+# But include important documentation
+!README*.txt
+!LICENSE*.txt
+!CHANGELOG*.txt
+!CONTRIBUTING*.txt
