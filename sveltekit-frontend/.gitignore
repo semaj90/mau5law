@@ -60,3 +60,10 @@ tsc_*.txt
 *-analysis-*.txt
 normalized-errors.jsonl
 template-ast-violations.jsonl
+
+# Large .txt files over 10MB (automated pattern)
+phase22-svelte-check-raw.txt
+svelte-check-errors.txt
+svelte-check-output.txt
+*-check-raw.txt
+*-output.txt
