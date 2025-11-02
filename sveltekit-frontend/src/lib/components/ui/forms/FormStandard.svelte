@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { HTMLFormAttributes } from "svelte/elements";
   import type {     Snippet     } from 'svelte';
@@ -7,7 +7,7 @@
   interface Props extends HTMLFormAttributes {
     // Form validation and submission
     onSubmit?: SubmitFunctio;
-    validationErrors?: Record<string, string[]>;
+    validationErrors?: Record<string string[]>;
     isSubmitting?: boolean;
     // Layout and styling
     variant?: 'default' | 'card' | 'inline';
@@ -52,7 +52,7 @@
     relaxed: 'space-y-6'
   }
   // Enhanced submit function with error handling
-  const, enhancedSubmit: SubmitFunction = ({ formElement, formData, action, cancel, submitter, controller }) => {
+  const enhancedSubmit: SubmitFunction = ({ formElement, formData, action, cancel, submitter, controller }) => {
     if (onSubmit) {
       return onSubmit({ formElement, formData, action, cancel, submitter, controller });
     }
@@ -75,12 +75,12 @@
   {...formProps}
 >
   {#if header}
-    <div, class="form-header">
+    <div class="form-header">
       {@render header()}
     {/if}
   {#if hasErrors}
-    <div class="form-errors bg-red-50 border border-red-200 rounded-md, p-4, mb-4">
-      <div, class="flex">
+    <div class="form-errors bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="flex">
         <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0, 0, 20, 20">
           <path
             fill-rule="evenodd"
@@ -88,10 +88,10 @@
             clip-rule="evenodd"
           />
         </svg>
-        <div, class="ml-3">
-          <h3 class="text-sm, font-medium, text-red-800">Please correct the following errors:</h3>
-          <div class="mt-2, text-sm, text-red-700">
-            <ul class="list-disc, pl-5, space-y-1">
+        <div class="ml-3">
+          <h3 class="text-sm font-medium">Please correct the following errors:</h3>
+          <div class="mt-2 text-sm">
+            <ul class="list-disc pl-5">
               {#each Object.entries(validationErrors) as [field, errors]}
                 {#each Array.isArray(errors) ? errors : [] as error}
                   <li>{error}</li>
@@ -102,18 +102,18 @@
         </div>
       </div>
     {/if}
-  <div class="form-content {variant === 'inline' ? 'flex flex-row, items-center, gap-4' : spacingClasses[spacing]}">
+  <div class="form-content {variant === 'inline' ? 'flex flex-row items-center">
     <slot />
   </div>
   {#if footer}
-    <div class="form-footer {variant !== 'inline' ? 'pt-4, border-t, border-gray-200' : ''}">
+    <div class="form-footer {variant !== 'inline' ? 'pt-4 border-t">
       {@render footer()}
     {/if}
   {#if isSubmitting}
-    <div class="form-loading absolute inset-0 bg-white/80 flex items-center, justify-center, rounded-lg">
-      <div class="flex, items-center, space-x-2">
-        <div class="animate-spin h-4 w-4 border-2 border-blue-600, border-t-transparent, rounded-full"></div>
-        <span, class="text-sm, text-gray-600">Submitting...</span>
+    <div class="form-loading absolute inset-0 bg-white/80 flex items-center justify-center">
+      <div class="flex items-center">
+        <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+        <span class="text-sm">Submitting...</span>
       </div>
     {/if}
 </form>

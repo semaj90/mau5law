@@ -26,25 +26,12 @@
     'data-testid': testId;
    }: EnhancedAuthFormProps = $props();
   // Enhanced Svelte 5 reactive state
-  let formData = $state({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    acceptTerms: false
-    rememberMe: false,
-  });
-  let formState = $state({
-    loading: false,
-    error: '',
-    success: '',
-    passwordStrength: 0,
-    showPassword: false
+  let formData = $state({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '', acceptTerms: false
+    rememberMe: false });
+  let formState = $state({ loading: false, error: '', success: '', passwordStrength: 0, showPassword: false
     showConfirmPassword: false
     emailExists: false
-    verificationSent: false,
-  });
+    verificationSent: false });
   // Form element references for focus management
   let emailInput: HTMLInputElement = $state(undefined as any);
   let passwordInput: HTMLInputElement = $state(undefined as any);
@@ -193,26 +180,13 @@
       console.error('Failed to log auth event:', error);
     }
   }
-  function resetForm() {
-    formData = {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      firstName: '',
-      lastName: '',
-      acceptTerms: false
-      rememberMe: false,
-    }
-    formState = {
-      loading: false,
-      error: '',
-      success: '',
-      passwordStrength: 0,
-      showPassword: false
+  function resetForm() { formData = {
+      email: '', password: '', confirmPassword: '', firstName: '', lastName: '', acceptTerms: false
+      rememberMe: false }
+    formState = { loading: false, error: '', success: '', passwordStrength: 0, showPassword: false
       showConfirmPassword: false
       emailExists: false
-      verificationSent: false,
-    }
+      verificationSent: false }
   }
   function toggleMode() {
     mode = mode === 'login' ? 'register' : 'login';

@@ -35,12 +35,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
     isProcessing = true;
     try {
       console.log(`🚀 Starting ${selectedPipeline} pipeline execution`);
-      const result = await pipelineManager.executePipeline(cacheKey, {
-        type: selectedPipeline
+      const result = await pipelineManager.executePipeline(cacheKey, { type: selectedPipeline
         enableGPU: true
         enableConcurrency: true
-        enableMemoryOptimization true,
-      });
+        enableMemoryOptimization true });
       results = [result, ...results.slice(0, 9)]; // Keep last 10 results
       updateMetrics();
     } catch (error) {

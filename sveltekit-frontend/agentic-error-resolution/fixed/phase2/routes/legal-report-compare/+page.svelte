@@ -197,8 +197,7 @@
     }
   }
 
-  async function submitReport() {
-    if (!uploadFile) return;
+  async function submitReport() { if (!uploadFile) return;
 
     isUploading = true;
     uploadProgress = 0;
@@ -218,9 +217,7 @@
       toastInfo('📄 Uploading PDF...');
 
       const response = await fetch('/api/legal-report/analyze', {
-        method: 'POST',
-        body: data,
-      });
+        method: 'POST', body: data });
 
       uploadProgress = 50;
       toastInfo('🔍 Extracting text with OCR...');

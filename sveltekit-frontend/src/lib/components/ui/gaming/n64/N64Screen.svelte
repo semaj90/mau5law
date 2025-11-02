@@ -1,6 +1,6 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
-  import, './N64Theme.css';
+  import './N64Theme.css';
   interface Props {
     width?: string;
     height?: string;
@@ -17,7 +17,7 @@
   aria-label={ariaLabel}
   style="width: {width}, height: {height}"
 >
-  <div, class="screen-content" tabindex="0">
+  <div class="screen-content" tabindex="0">
 	<slot />
   </div>
 </div>

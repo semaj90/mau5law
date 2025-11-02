@@ -18,38 +18,14 @@ https://svelte.dev/e/expected_token -->
 -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import {
-    instantSearchEngine,
-    type InstantSearchResult,
-    type SearchFilters,
-  } from '$lib/services/instant-search-engine.js';
+  import { instantSearchEngine, type InstantSearchResult, type SearchFilters } from '$lib/services/instant-search-engine.js';
   import  Input  from "$lib/components/ui/enhanced-bits.svelte";
   import  Button  from "$lib/components/ui/nes-button.svelte";
   import * as Card from '$lib/components/ui/card.svelte';
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import {
-    Search,
-    Loader2,
-    Filter,
-    TrendingUp,
-    Clock,
-    AlertTriangle,
-    FileText,
-    Scale,
-    Shield,
-    Zap,
-  } from 'lucide-svelte';
+  import { Search, Loader2, Filter, TrendingUp, Clock, AlertTriangle, FileText, Scale, Shield, Zap } from 'lucide-svelte';
   // Props using Svelte 5 syntax
-  let {
-    placeholder = 'Search legal documents, cases, evidence...',
-    showFilters = true,
-    showStats = true,
-    showAdvanced = false,
-    maxResults = 20,
-    onResultClick,
-    onResultAction,
-    class: className = '',
-  }: {
+  let { placeholder = 'Search legal documents, cases, evidence...', showFilters = true, showStats = true, showAdvanced = false, maxResults = 20, onResultClick, onResultAction, class: className = '' }: {
     placeholder?: string;
     showFilters?: boolean;
     showStats?: boolean;
@@ -67,13 +43,7 @@ https://svelte.dev/e/expected_token -->
   let searchStartTime = $state(0);
   let lastSearchTime = $state(0);
   // Filters
-  let selectedFilters = $state<SearchFilters>({
-    documentTypes: [],
-    riskLevels: [],
-    jurisdictions: [],
-    confidenceMin: 0.5,
-    priorityMin: 50,
-  });
+  let selectedFilters = $state<SearchFilters>({ documentTypes: [], riskLevels: [], jurisdictions: [], confidenceMin: 0.5, priorityMin: 50 });
   // Stats
   let searchStats = $state({
     totalSearches: 0,

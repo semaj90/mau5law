@@ -1,5 +1,5 @@
 <!-- AI Dialog: Svelte, 5, Bits, UI, UnoCSS, transitions, analytics, logging -->
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   import { accessibleClick } from '$lib/actions/accessibleClick';
   import { fade, scale } from 'svelte/transition';
@@ -19,7 +19,7 @@
   }: Props = $props();
 </script>
 {#if open}
-  <div class="fixed inset-0 bg-black/40 flex items-center, justify-center, z-50" transitionfade>
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center" transitionfade>
     <div
       class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative {className || ''}"
       ;
@@ -28,7 +28,7 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
     >
-      <h2 id="dialog-title" class="font-bold, text-lg, mb-4">{title}</h2>
+      <h2 id="dialog-title" class="font-bold text-lg">{title}</h2>
       {#if children}
         {@render children()}
       {/if}

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { toastStore } from '$lib/stores/toast';
   // helper: build, class: string safely to avoid inline expression parsing issues
   function toastClass(t: any) {
@@ -15,14 +15,14 @@
     return t?.type === 'error' ? 'assertive' : 'polite';
   }
 </script>
-<div, class="toast-container" role="region" aria-label="Notifications">
+<div class="toast-container" role="region" aria-label="Notifications">
   {#each $toastStore as t (t.id)}
     <div
       class={toastClass(t)}
       role="status"
       aria-live={ariaLiveFor(t)}
     >
-      <p, class="nes-text, toast-message">{t.message}</p>
+      <p class="nes-text">{t.message}</p>
     </div>
   {/each}
 </div>

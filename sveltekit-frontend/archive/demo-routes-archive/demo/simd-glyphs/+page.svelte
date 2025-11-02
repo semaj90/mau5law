@@ -26,8 +26,7 @@ https://svelte.dev/e/expected_token -->
     enable_tiling: true,
     tile_size: 16,
     compression_target: 50,
-    shader_format: 'webgpu' as const,
-    adaptive_quality: true,
+    shader_format: 'webgpu' as const adaptive_quality: true,
     performance_tier: 'n64' as const
   });
   

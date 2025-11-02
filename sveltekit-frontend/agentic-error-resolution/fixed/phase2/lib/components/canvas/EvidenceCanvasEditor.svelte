@@ -58,21 +58,11 @@
     data: any;
     position: { x: number; y: number };
     size: { width: number; height: number };
-    metadata?: Record<string, any>;
+    metadata?: Record<string any>;
   }
 
   // Props
-  let {
-    reportId = $bindable(''),
-    evidence = $bindable<EvidenceItem[]>([]),
-    citationPoints = $bindable<any[]>([]),
-    onSave,
-    width = 1400,
-    height = 900,
-    readOnly = false,
-    enableAutoTag = true,
-    enableCollaboration = true,
-  }: {
+  let { reportId = $bindable(''), evidence = $bindable<EvidenceItem[]>([]), citationPoints = $bindable<any[]>([]), onSave, width = 1400, height = 900, readOnly = false, enableAutoTag = true, enableCollaboration = true }: {
     reportId?: string;
     evidence?: EvidenceItem[];
     citationPoints?: any[];
@@ -99,27 +89,14 @@
     context: XStateContext;
   };
 
-  const xstate = writable<XStateValue>({
-    value: 'idle',
-    context: {
-      reportId: reportId || '',
-      canvasState: null,
-      selectedObjects: [],
-      history: [],
-      historyIndex: -1,
-    },
+  const xstate = writable<XStateValue>({ value: 'idle', context: {
+      reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 },
   });
 
-  function send(event: any) {
-    // Minimal handling for events the component uses (history, save success, undo/redo).
+  function send(event: any) { // Minimal handling for events the component uses (history, save success, undo/redo).
     xstate.update((ss) => {
       const ctx: XStateContext = ss.context || {
-        reportId: reportId || '',
-        canvasState: null,
-        selectedObjects: [],
-        history: [],
-        historyIndex: -1,
-      };
+        reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 };
 
       switch (event.type) {
         case 'ADD_TO_HISTORY': {
@@ -154,11 +131,8 @@
   }
 
   // Fallback in-memory Loki-like cache when the project's loki-cache export isn't available.
-  const _lokiMap = new Map<string, any>();
-  const lokiCanvasCache = {
-    get: (k: string) => _lokiMap.get(k),
-    set: (k: string, v: any) => _lokiMap.set(k, v),
-  };
+  const _lokiMap = new Map<string any>();
+  const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: any) => _lokiMap.set(k, v) };
 
   // Svelte 5 runes - avoid direct fabric type references to prevent TS namespace errors
   let canvas = $state<any | null>(null);
@@ -231,15 +205,9 @@
     loadCachedState();
   });
 
-  async function initializeCanvas(): Promise<void> {
-    try {
+  async function initializeCanvas(): Promise<void> { try {
       canvas = new fabric.Canvas(canvasElement, {
-        width,
-        height,
-        backgroundColor: '#ffffff',
-        selection: !readOnly,
-        isDrawingMode: false,
-      });
+        width, height, backgroundColor: '#ffffff', selection: !readOnly, isDrawingMode: false });
 
       // Setup event handlers
       setupCanvasEvents();
@@ -373,12 +341,7 @@
       const current = get(xstate);
       const version = ((current?.context?.canvasState?.version) ?? 0) + 1;
 
-      const stateObj: CanvasState = {
-        reportId,
-        canvasData,
-        objects,
-        version,
-      };
+      const stateObj: CanvasState = { reportId, canvasData, objects, version };
 
       const response = await fetch('/api/canvas', {
         method: 'POST',
@@ -436,8 +399,7 @@
       isAutoTagging = true;
 
       const objectData = {
-        type: obj.type,
-        content: (obj as any).text || (obj as any).src || '',
+        type: obj.type content: (obj as any).text || (obj as any).src || '',
         metadata: (obj as any).metadata || {},
       };
 
@@ -456,13 +418,10 @@
     }
   }
 
-  function applyTags(tags: string[]): void {
-    if (!selectedObject) return;
+  function applyTags(tags: string[]): void { if (!selectedObject) return;
 
     (selectedObject as any).metadata = {
-      ...(selectedObject as any).metadata,
-      tags,
-    };
+      ...(selectedObject as any).metadata, tags };
 
     canvas?.renderAll();
     isDirty = true;
@@ -470,14 +429,10 @@
   }
 
   // Loki.js caching
-  function saveToLokiCache(): void {
-    if (!canvas || !reportId) return;
+  function saveToLokiCache(): void { if (!canvas || !reportId) return;
 
     const cacheData = {
-      reportId,
-      canvasData: JSON.stringify(canvas.toJSON()),
-      timestamp: Date.now(),
-    };
+      reportId, canvasData: JSON.stringify(canvas.toJSON()), timestamp: Date.now() };
 
     lokiCanvasCache.set(`canvas_${reportId}`, cacheData);
   }
@@ -509,13 +464,9 @@
 
   async function broadcastChange(type: string, object: any): Promise<void> {
     try {
-      await rabbitMQClient.publish(`canvas.${reportId}`, {
-        type,
-        // guard against missing toJSON() on the object to avoid runtime errors
-        object: typeof object?.toJSON === 'function' ? object.toJSON() : object,
-        userId: 'current-user', // TODO: Get from auth
-        timestamp: Date.now(),
-      });
+      await rabbitMQClient.publish(`canvas.${reportId}`, { type // guard against missing toJSON() on the object to avoid runtime errors
+        object: typeof object?.toJSON === 'function' ? object.toJSON() : object, userId: 'current-user', // TODO: Get from auth
+        timestamp: Date.now() });
     } catch (err) {
       console.error('Failed to broadcast change:', err);
     }
@@ -638,32 +589,19 @@
         });
 
         (img as any).evidenceId = item.id;
-        (img as any).metadata = {
-          title: item.title,
-          description: item.description,
-          evidenceType: item.evidenceType,
-          tags: item.aiTags || [],
-        };
+        (img as any).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] };
 
         canvas?.add(img);
         canvas?.renderAll();
 
         isDirty = true;
       });
-    } else {
-      // Add as text annotation
+    } else { // Add as text annotation
       const text = new fabric.Text(item.title, {
-        left: 100,
-        top: 100,
-        fontSize: 16,
-        fill: '#333',
-      });
+        left: 100, top: 100, fontSize: 16, fill: '#333' });
 
       (text as any).evidenceId = item.id;
-      (text as any).metadata = {
-        description: item.description,
-        evidenceType: item.evidenceType,
-      };
+      (text as any).metadata = { description: item.description, evidenceType: item.evidenceType };
 
       canvas.add(text);
       canvas.renderAll();
@@ -680,38 +618,23 @@
     isDirty = true;
   }
 
-  function lockSelected(): void {
-    if (!selectedObject) return;
+  function lockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: true,
-      lockMovementY: true,
-      lockRotation: true,
-      lockScalingX: true,
-      lockScalingY: true,
-    });
+      lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
     canvas?.renderAll();
   }
 
-  function unlockSelected(): void {
-    if (!selectedObject) return;
+  function unlockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: false,
-      lockMovementY: false,
-      lockRotation: false,
-      lockScalingX: false,
-      lockScalingY: false,
-    });
+      lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
     canvas?.renderAll();
   }
 
   // Export functions
-  async function exportAsImage(): Promise<void> {
-    if (!canvas) return;
+  async function exportAsImage(): Promise<void> { if (!canvas) return;
 
     const dataURL = canvas.toDataURL({
-      format: 'png',
-      quality: 1,
-    });
+      format: 'png', quality: 1 });
 
     const link = document.createElement('a');
     link.download = `canvas_${reportId}_${Date.now()}.png`;
@@ -1212,21 +1135,11 @@
     data: any;
     position: { x: number; y: number };
     size: { width: number; height: number };
-    metadata?: Record<string, any>;
+    metadata?: Record<string any>;
   }
 
   // Props
-  let {
-    reportId = $bindable(''),
-    evidence = $bindable<EvidenceItem[]>([]),
-    citationPoints = $bindable<any[]>([]),
-    onSave,
-    width = 1400,
-    height = 900,
-    readOnly = false,
-    enableAutoTag = true,
-    enableCollaboration = true,
-  }: {
+  let { reportId = $bindable(''), evidence = $bindable<EvidenceItem[]>([]), citationPoints = $bindable<any[]>([]), onSave, width = 1400, height = 900, readOnly = false, enableAutoTag = true, enableCollaboration = true }: {
     reportId?: string;
     evidence?: EvidenceItem[];
     citationPoints?: any[];
@@ -1253,27 +1166,14 @@
     context: XStateContext;
   };
 
-  const xstate = writable<XStateValue>({
-    value: 'idle',
-    context: {
-      reportId: reportId || '',
-      canvasState: null,
-      selectedObjects: [],
-      history: [],
-      historyIndex: -1,
-    },
+  const xstate = writable<XStateValue>({ value: 'idle', context: {
+      reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 },
   });
 
-  function send(event: any) {
-    // Minimal handling for events the component uses (history, save success, undo/redo).
+  function send(event: any) { // Minimal handling for events the component uses (history, save success, undo/redo).
     xstate.update((ss) => {
       const ctx: XStateContext = ss.context || {
-        reportId: reportId || '',
-        canvasState: null,
-        selectedObjects: [],
-        history: [],
-        historyIndex: -1,
-      };
+        reportId: reportId || '', canvasState: null, selectedObjects: [], history: [], historyIndex: -1 };
 
       switch (event.type) {
         case 'ADD_TO_HISTORY': {
@@ -1308,11 +1208,8 @@
   }
 
   // Fallback in-memory Loki-like cache when the project's loki-cache export isn't available.
-  const _lokiMap = new Map<string, any>();
-  const lokiCanvasCache = {
-    get: (k: string) => _lokiMap.get(k),
-    set: (k: string, v: any) => _lokiMap.set(k, v),
-  };
+  const _lokiMap = new Map<string any>();
+  const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: any) => _lokiMap.set(k, v) };
 
   // Svelte 5 runes - avoid direct fabric type references to prevent TS namespace errors
   let canvas = $state<any | null>(null);
@@ -1385,15 +1282,9 @@
     loadCachedState();
   });
 
-  async function initializeCanvas(): Promise<void> {
-    try {
+  async function initializeCanvas(): Promise<void> { try {
       canvas = new fabric.Canvas(canvasElement, {
-        width,
-        height,
-        backgroundColor: '#ffffff',
-        selection: !readOnly,
-        isDrawingMode: false,
-      });
+        width, height, backgroundColor: '#ffffff', selection: !readOnly, isDrawingMode: false });
 
       // Setup event handlers
       setupCanvasEvents();
@@ -1527,12 +1418,7 @@
       const current = get(xstate);
       const version = ((current?.context?.canvasState?.version) ?? 0) + 1;
 
-      const stateObj: CanvasState = {
-        reportId,
-        canvasData,
-        objects,
-        version,
-      };
+      const stateObj: CanvasState = { reportId, canvasData, objects, version };
 
       const response = await fetch('/api/canvas', {
         method: 'POST',
@@ -1590,8 +1476,7 @@
       isAutoTagging = true;
 
       const objectData = {
-        type: obj.type,
-        content: (obj as any).text || (obj as any).src || '',
+        type: obj.type content: (obj as any).text || (obj as any).src || '',
         metadata: (obj as any).metadata || {},
       };
 
@@ -1610,13 +1495,10 @@
     }
   }
 
-  function applyTags(tags: string[]): void {
-    if (!selectedObject) return;
+  function applyTags(tags: string[]): void { if (!selectedObject) return;
 
     (selectedObject as any).metadata = {
-      ...(selectedObject as any).metadata,
-      tags,
-    };
+      ...(selectedObject as any).metadata, tags };
 
     canvas?.renderAll();
     isDirty = true;
@@ -1624,14 +1506,10 @@
   }
 
   // Loki.js caching
-  function saveToLokiCache(): void {
-    if (!canvas || !reportId) return;
+  function saveToLokiCache(): void { if (!canvas || !reportId) return;
 
     const cacheData = {
-      reportId,
-      canvasData: JSON.stringify(canvas.toJSON()),
-      timestamp: Date.now(),
-    };
+      reportId, canvasData: JSON.stringify(canvas.toJSON()), timestamp: Date.now() };
 
     lokiCanvasCache.set(`canvas_${reportId}`, cacheData);
   }
@@ -1663,13 +1541,9 @@
 
   async function broadcastChange(type: string, object: any): Promise<void> {
     try {
-      await rabbitMQClient.publish(`canvas.${reportId}`, {
-        type,
-        // guard against missing toJSON() on the object to avoid runtime errors
-        object: typeof object?.toJSON === 'function' ? object.toJSON() : object,
-        userId: 'current-user', // TODO: Get from auth
-        timestamp: Date.now(),
-      });
+      await rabbitMQClient.publish(`canvas.${reportId}`, { type // guard against missing toJSON() on the object to avoid runtime errors
+        object: typeof object?.toJSON === 'function' ? object.toJSON() : object, userId: 'current-user', // TODO: Get from auth
+        timestamp: Date.now() });
     } catch (err) {
       console.error('Failed to broadcast change:', err);
     }
@@ -1792,32 +1666,19 @@
         });
 
         (img as any).evidenceId = item.id;
-        (img as any).metadata = {
-          title: item.title,
-          description: item.description,
-          evidenceType: item.evidenceType,
-          tags: item.aiTags || [],
-        };
+        (img as any).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] };
 
         canvas?.add(img);
         canvas?.renderAll();
 
         isDirty = true;
       });
-    } else {
-      // Add as text annotation
+    } else { // Add as text annotation
       const text = new fabric.Text(item.title, {
-        left: 100,
-        top: 100,
-        fontSize: 16,
-        fill: '#333',
-      });
+        left: 100, top: 100, fontSize: 16, fill: '#333' });
 
       (text as any).evidenceId = item.id;
-      (text as any).metadata = {
-        description: item.description,
-        evidenceType: item.evidenceType,
-      };
+      (text as any).metadata = { description: item.description, evidenceType: item.evidenceType };
 
       canvas.add(text);
       canvas.renderAll();
@@ -1834,38 +1695,23 @@
     isDirty = true;
   }
 
-  function lockSelected(): void {
-    if (!selectedObject) return;
+  function lockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: true,
-      lockMovementY: true,
-      lockRotation: true,
-      lockScalingX: true,
-      lockScalingY: true,
-    });
+      lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
     canvas?.renderAll();
   }
 
-  function unlockSelected(): void {
-    if (!selectedObject) return;
+  function unlockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: false,
-      lockMovementY: false,
-      lockRotation: false,
-      lockScalingX: false,
-      lockScalingY: false,
-    });
+      lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
     canvas?.renderAll();
   }
 
   // Export functions
-  async function exportAsImage(): Promise<void> {
-    if (!canvas) return;
+  async function exportAsImage(): Promise<void> { if (!canvas) return;
 
     const dataURL = canvas.toDataURL({
-      format: 'png',
-      quality: 1,
-    });
+      format: 'png', quality: 1 });
 
     const link = document.createElement('a');
     link.download = `canvas_${reportId}_${Date.now()}.png`;

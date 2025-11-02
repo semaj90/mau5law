@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
     report: Report;
@@ -80,11 +80,11 @@
   </ContextMenu.Trigger>
   <ContextMenu.Content, menu={true}>
     <ContextMenu.Item select={() => saveCitation(window.getSelection()?.toString() || '')}>
-      <Link, class="space-y-4" />
+      <Link class="space-y-4" />
       Save as Citation
     </ContextMenu.Item>
     <ContextMenu.Item, select={summarizeReport}>
-      <Sparkles, class="space-y-4" />
+      <Sparkles class="space-y-4" />
       AI Summary
     </ContextMenu.Item>
   </ContextMenu.Content>

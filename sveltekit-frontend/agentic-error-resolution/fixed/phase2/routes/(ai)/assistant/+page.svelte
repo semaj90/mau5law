@@ -15,15 +15,10 @@
   let isStreaming = $state(false);
   let error = $state('');
 
-  async function sendMessage() {
-    if (!currentMessage.trim() || isStreaming) return;
+  async function sendMessage() { if (!currentMessage.trim() || isStreaming) return;
 
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date(),
-    };
+      id: crypto.randomUUID(), role: 'user', content: currentMessage, timestamp: new Date() };
 
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -36,23 +31,14 @@
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: messageToSend,
-          model: 'gemma3-legal:latest',
-          useRAG: true,
-        }),
+        body: JSON.stringify({ message: messageToSend, model: 'gemma3-legal:latest', useRAG: true }),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const aiMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: '',
-        timestamp: new Date(),
-      };
+      const aiMessage: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date() };
 
       messages = [...messages, aiMessage];
 

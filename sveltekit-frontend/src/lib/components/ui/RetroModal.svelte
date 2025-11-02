@@ -2,7 +2,7 @@
   RetroModal Component - bits-ui + nes.css integration
   Demonstrates the perfect marriage of headless functionality with retro styling
 -->
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     open?: boolean;
@@ -42,7 +42,7 @@
 </script>
 <!-- Trigger (wrap in a button to, open, modal) -->
 {#if trigger}
-  <button, class="nes-btn, is-primary" type="button" onclick={openModal} aria-haspopup="dialog" aria-expanded={isOpen}>
+  <button class="nes-btn" type="button" onclick={openModal} aria-haspopup="dialog" aria-expanded={isOpen}>
     {@render trigger?.()}
   </button>
 {:else}
@@ -50,7 +50,7 @@
 {/if}
 <!-- Modal -->
 {#if isOpen}
-  <div class="retro-modal-overlay fixed inset-0 z-50 flex, items-center, justify-center" onclick={overlayClick} role="presentation" tabindex="-1">
+  <div class="retro-modal-overlay fixed inset-0 z-50 flex items-center" onclick={overlayClick} role="presentation" tabindex="-1">
     <div
       class="nes-dialog is-rounded bg-white shadow-lg"
       role="dialog"
@@ -58,15 +58,15 @@
       aria-label={title}
       style="min-width:400px; max-width:600px;"
     >
-      <div class="flex justify-between items-center, mb-4, p-4">
-        <div class="nes-text is-primary, font-bold, text-lg">{title}</div>
-        <button class="nes-btn, is-error" style="padding:4px, 8px;" type="button" onclick={closeModal} aria-label="Close">×</button>
+      <div class="flex justify-between items-center mb-4">
+        <div class="nes-text is-primary font-bold">{title}</div>
+        <button class="nes-btn" style="padding:4px, 8px;" type="button" onclick={closeModal} aria-label="Close">×</button>
       </div>
-      <div class="modal-content, px-4, py-2">
+      <div class="modal-content px-4">
         <slot />
       </div>
       {#if footer}
-        <div class="modal-footer mt-4 pt-4 border-t-2 border-gray-300, px-4, pb-4">
+        <div class="modal-footer mt-4 pt-4 border-t-2 border-gray-300 px-4">
           {@render footer?.()}
         {/if}
     </div>

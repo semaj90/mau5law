@@ -81,26 +81,21 @@ https://svelte.dev/e/js_parse_error -->
       date: new Date('2024-01-15'),
       title: 'Case Filed',
       description: 'Initial complaint filed by plaintiff',
-      type: 'filing' as const,
-      status: 'completed' as const,
-      participants: ['John Doe', 'Attorney Wilson']
+      type: 'filing' as const status: 'completed' as const participants: ['John Doe', 'Attorney Wilson']
     },
     {
       id: '2',
       date: new Date('2024-01-22'),
       title: 'Discovery Phase Begin',
       description: 'Discovery period initiated',
-      type: 'milestone' as const,
-      status: 'completed' as const
+      type: 'milestone' as const status: 'completed' as const
     },
     {
       id: '3',
       date: new Date('2024-02-15'),
       title: 'Deposition Scheduled',
       description: 'Key witness deposition',
-      type: 'hearing' as const,
-      status: 'pending' as const,
-      location: 'Conference Room A'
+      type: 'hearing' as const status: 'pending' as const location: 'Conference Room A'
     }
   ];
 
@@ -109,13 +104,11 @@ https://svelte.dev/e/js_parse_error -->
     id: 'EV001',
     itemNumber: 'EV-2024-001',
     description: 'Blood sample from crime scene - DNA analysis',
-    category: 'biological' as const,
-    collectedDate: new Date('2024-01-15'),
+    category: 'biological' as const collectedDate: new Date('2024-01-15'),
     collectedBy: 'CSI Team Alpha',
     currentCustodian: 'Det. Sarah Johnson',
     location: 'Evidence Room B-12',
-    condition: 'excellent' as const,
-    sealed: true,
+    condition: 'excellent' as const sealed: true,
     compromised: false,
     chainOfCustody: [
       {
@@ -125,8 +118,7 @@ https://svelte.dev/e/js_parse_error -->
         toPerson: 'Det. Sarah Johnson',
         location: 'Crime Scene to Evidence Room',
         reason: 'Initial evidence collection transfer',
-        condition: 'excellent' as const,
-        signature: 'S. Johnson',
+        condition: 'excellent' as const signature: 'S. Johnson',
         witnessSignature: 'M. Chen',
         verified: true,
         notes: 'Sample collected using sterile procedures'
@@ -138,8 +130,7 @@ https://svelte.dev/e/js_parse_error -->
         toPerson: 'Lab Tech Rodriguez',
         location: 'Evidence Room to Forensics Lab',
         reason: 'DNA analysis processing',
-        condition: 'excellent' as const,
-        signature: 'A. Rodriguez',
+        condition: 'excellent' as const signature: 'A. Rodriguez',
         verified: true
       }
     ]
@@ -151,8 +142,7 @@ https://svelte.dev/e/js_parse_error -->
     caseNumber: '2022-SC-1234',
     caseName: 'State v. Anderson Digital Privacy Case',
     court: 'State Supreme Court',
-    jurisdiction: 'state' as const,
-    date: new Date('2022-03-15'),
+    jurisdiction: 'state' as const date: new Date('2022-03-15'),
     judge: 'Chief Justice Maria Rodriguez',
     summary: 'Landmark case establishing digital privacy rights in criminal investigations involving encrypted devices and cloud storage.',
     keyIssues: ['Digital Privacy', 'Fourth Amendment', 'Encrypted Devices', 'Cloud Storage'],
@@ -166,8 +156,7 @@ https://svelte.dev/e/js_parse_error -->
     citations: 45,
     relevanceScore: 92,
     similarityScore: 78,
-    precedentType: 'binding' as const,
-    overruled: false
+    precedentType: 'binding' as const overruled: false
   };
 
   // Sample criminal profile
@@ -179,8 +168,7 @@ https://svelte.dev/e/js_parse_error -->
       aliases: ['M. Will', 'Mac W.'],
       dateOfBirth: new Date('1985-06-20'),
       placeOfBirth: 'Chicago, IL',
-      gender: 'male' as const,
-      height: '6\'2"',
+      gender: 'male' as const height: '6\'2"',
       weight: '180 lbs',
       eyeColor: 'Brown',
       hairColor: 'Black',
@@ -205,8 +193,7 @@ https://svelte.dev/e/js_parse_error -->
         offense: 'Burglary in the Second Degree',
         date: new Date('2020-05-15'),
         jurisdiction: 'Cook County, IL',
-        disposition: 'convicted' as const,
-        sentence: '2 years probation',
+        disposition: 'convicted' as const sentence: '2 years probation',
         caseNumber: '2020-CR-5678'
       },
       {
@@ -214,19 +201,16 @@ https://svelte.dev/e/js_parse_error -->
         offense: 'Theft of Motor Vehicle',
         date: new Date('2018-11-22'),
         jurisdiction: 'Chicago PD',
-        disposition: 'dismissed' as const,
-        caseNumber: '2018-CR-9012'
+        disposition: 'dismissed' as const caseNumber: '2018-CR-9012'
       }
     ],
     riskAssessment: {
-      riskLevel: 'medium' as const,
-      flightRisk: false,
+      riskLevel: 'medium' as const flightRisk: false,
       violentHistory: false,
       reoffenseRisk: 35,
       lastUpdated: new Date('2024-01-01')
     },
-    currentStatus: 'on_parole' as const,
-    warrants: [
+    currentStatus: 'on_parole' as const warrants: [
       {
         id: 'W001',
         type: 'Probation Violation',

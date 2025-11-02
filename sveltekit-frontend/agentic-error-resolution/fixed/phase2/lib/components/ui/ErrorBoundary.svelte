@@ -15,14 +15,7 @@
   // Error details for debugging
   let errorDetails = $derived(
     error
-      ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-          timestamp: new Date().toISOString(),
-          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
-          url: typeof window !== 'undefined' ? window.location.href : 'Unknown',
-        }
+      ? { name: error.name, message: error.message, stack: error.stack, timestamp: new Date().toISOString(), userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown', url: typeof window !== 'undefined' ? window.location.href : 'Unknown' }
       : null
   );
   function handleError(_event: ErrorEvent | PromiseRejectionEvent) {
@@ -53,14 +46,10 @@
       window.location.href = '/';
     }
   }
-  function reportError() {
-    if (errorDetails) {
+  function reportError() { if (errorDetails) {
       // Create error report
       const report = {
-        ...errorDetails,
-        component: 'ErrorBoundary',
-        severity: 'high',
-      };
+        ...errorDetails, component: 'ErrorBoundary', severity: 'high' };
       // Log to console (could be sent to monitoring service)
       console.warn('Error report generated:', report);
       // You could implement actual error reporting here

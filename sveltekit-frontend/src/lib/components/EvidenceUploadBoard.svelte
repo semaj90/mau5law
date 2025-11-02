@@ -1,5 +1,5 @@
 <!-- Evidence Upload Board Component with, AI, Analysis -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   // import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // Temporarily disabled due to SSR issues
   // import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; // Temporarily disabled due to SSR issues
@@ -38,26 +38,26 @@
     }
   }
 </script>
-<div, class="p-6, space-y-6">
-  <div, class="nes-container, is-dark">
-    <div, class="yorha-panel-header">
+<div class="p-6">
+  <div class="nes-container">
+    <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Evidence Upload & AI Analysis</h3>
     </div>
-    <div, class="yorha-panel-content, space-y-4">
-      <input type="file" onchange={handleFileUpload} accept=".txt,.pdf,.doc,.docx" class="block, w-full, text-sm" />
+    <div class="yorha-panel-content">
+      <input type="file" onchange={handleFileUpload} accept=".txt,.pdf,.doc,.docx" class="block w-full" />
       {#if files.length > 0}
-        <div, class="text-sm, text-gray-600">
+        <div class="text-sm">
           Uploaded: {files[0].name}
         {/if}
       {#if isAnalyzing}
-        <div, class="text-center, p-4">
-          <div class="animate-spin h-6 w-6 border-b-2, border-blue-600, mx-auto"></div>
-          <p, class="mt-2">AI analyzing evidence...</p>
+        <div class="text-center">
+          <div class="animate-spin h-6 w-6 border-b-2 border-blue-600"></div>
+          <p class="mt-2">AI analyzing evidence...</p>
         {/if}
       {#if analysis}
-        <div, class="nes-container, is-rounded">
-          <h4, class="nes-text, is-success">AI Analysis:</h4>
-          <textarea, readonly, class="nes-textarea" rows={10}>{analysis}</textarea>
+        <div class="nes-container">
+          <h4 class="nes-text">AI Analysis:</h4>
+          <textarea readonly, class="nes-textarea" rows={10}>{analysis}</textarea>
         {/if}
     </div>
   </div>

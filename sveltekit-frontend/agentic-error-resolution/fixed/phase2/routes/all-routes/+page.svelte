@@ -82,7 +82,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     return clusters;
   }
   // Clustered API routes
-  let clusteredAPIs = $derived<Record<string, RouteItem[]>>(() => {
+  let clusteredAPIs = $derived<Record<string RouteItem[]>>(() => {
     return clusterAPIEndpoints(allRoutes);
   });
   // --- Add: lightweight types to avoid implicit any errors ---
@@ -104,9 +104,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
   type RouteStats = {
     total: number;
-    byCategory: Record<string, number>;
+    byCategory: Record<string number>;
     byType: { configured: number; 'file-based': number };
-    byPriority: Record<string, number>;
+    byPriority: Record<string number>;
     sections: {
       core: number;
       api: number;
@@ -117,7 +117,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   };
 
   // Enhanced route categorization with separation of core vs demo vs API testing
-  const routeCategories: Record<string, CategoryInfo> = {
+  const routeCategories: Record<string CategoryInfo> = {
     'core-user': { name: 'Core User Routes', icon: '👤', color: 'blue', priority: 'production' },
     'core-legal': { name: 'Legal Core', icon: '⚖️', color: 'indigo', priority: 'production' },
     'core-admin': { name: 'Administration', icon: '👨‍💼', color: 'red', priority: 'production' },
@@ -227,32 +227,18 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     return 'other';
   }
   // Enhanced route processing with categorization - typed
-  let allRoutes = $derived<RouteItem[]>(() => {
-    const routes: RouteItem[] = [];
+  let allRoutes = $derived<RouteItem[]>(() => { const routes: RouteItem[] = [];
     // Add configured routes
     if (data.availableRoutes) {
       data.availableRoutes.forEach(route => {
         routes.push({
-          path: route.path,
-          name: route.path.replace(/\//g, ' → '),
-          type: 'configured',
-          icon: route.icon || '📄',
-          description: route.description,
-          category: categorizeRoute(route.path),
-        });
+          path: route.path, name: route.path.replace(/\//g, ' → '), type: 'configured', icon: route.icon || '📄', description: route.description, category: categorizeRoute(route.path) });
       });
     }
     // Add file-based routes from inventory
-    if (data.routeInventory?.fileRoutesSample) {
-      data.routeInventory.fileRoutesSample.forEach(route => {
+    if (data.routeInventory?.fileRoutesSample) { data.routeInventory.fileRoutesSample.forEach(route => {
         routes.push({
-          path: route,
-          name: route.replace(/\//g, ' → '),
-          type: 'file-based',
-          icon: '🔗',
-          description: 'Auto-discovered route',
-          category: categorizeRoute(route),
-        });
+          path: route, name: route.replace(/\//g, ' → '), type: 'file-based', icon: '🔗', description: 'Auto-discovered route', category: categorizeRoute(route) });
       });
     }
     return routes.sort((a, b) => a.path.localeCompare(b.path));
@@ -263,20 +249,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       total: allRoutes.length,
       byCategory: {},
       byType: { configured: 0, 'file-based': 0 },
-      byPriority: {
-        production: 0,
-        testing: 0,
-        consolidation: 0,
-        demo: 0,
-        other: 0,
-      },
-      sections: {
-        core: 0,
-        api: 0,
-        demo: 0,
-        infrastructure: 0,
-        other: 0,
-      },
+      byPriority: { production: 0, testing: 0, consolidation: 0, demo: 0, other: 0 },
+      sections: { core: 0, api: 0, demo: 0, infrastructure: 0, other: 0 },
     };
     allRoutes.forEach(route => {
       const categoryInfo = routeCategories[route.category];
@@ -347,108 +321,17 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     console.log('All routes page loaded with', allRoutes.length, 'routes');
   });
   // --- Add: color class mapping helper to avoid `bg-{color}-50` style tokens ---
-  const colorClassMap: Record<string, Record<string, string>> = {
-    blue: {
-      bg50: 'bg-blue-50',
-      bg100: 'bg-blue-100',
-      text800: 'text-blue-800',
-      text700: 'text-blue-700',
-      text600: 'text-blue-600',
-      border200: 'border-blue-200',
-      border300: 'border-blue-300',
-      bg500: 'bg-blue-500',
-      hover500: 'hover:bg-blue-600',
-    },
-    green: {
-      bg50: 'bg-green-50',
-      bg100: 'bg-green-100',
-      text800: 'text-green-800',
-      text600: 'text-green-600',
-      border200: 'border-green-200',
-      border300: 'border-green-300',
-      bg500: 'bg-green-500',
-      hover500: 'hover:bg-green-600',
-    },
-    purple: {
-      bg50: 'bg-purple-50',
-      bg100: 'bg-purple-100',
-      text800: 'text-purple-800',
-      text600: 'text-purple-600',
-      border200: 'border-purple-200',
-      border300: 'border-purple-300',
-      bg500: 'bg-purple-500',
-      hover500: 'hover:bg-purple-600',
-    },
-    yellow: {
-      bg50: 'bg-yellow-50',
-      bg100: 'bg-yellow-100',
-      text800: 'text-yellow-800',
-      text600: 'text-yellow-600',
-      border200: 'border-yellow-200',
-      border300: 'border-yellow-300',
-      bg500: 'bg-yellow-500',
-      hover500: 'hover:bg-yellow-600',
-    },
-    gray: {
-      bg50: 'bg-gray-50',
-      bg100: 'bg-gray-100',
-      text800: 'text-gray-800',
-      text600: 'text-gray-600',
-      border200: 'border-gray-200',
-      border300: 'border-gray-300',
-      bg500: 'bg-gray-500',
-      hover500: 'hover:bg-gray-600',
-    },
-    orange: {
-      bg50: 'bg-orange-50',
-      bg100: 'bg-orange-100',
-      text800: 'text-orange-800',
-      text600: 'text-orange-600',
-      border200: 'border-orange-200',
-      border300: 'border-orange-300',
-      bg500: 'bg-orange-500',
-      hover500: 'hover:bg-orange-600',
-    },
-    pink: {
-      bg50: 'bg-pink-50',
-      bg100: 'bg-pink-100',
-      text800: 'text-pink-800',
-      text600: 'text-pink-600',
-      border200: 'border-pink-200',
-      border300: 'border-pink-300',
-      bg500: 'bg-pink-500',
-      hover500: 'hover:bg-pink-600',
-    },
-    indigo: {
-      bg50: 'bg-indigo-50',
-      bg100: 'bg-indigo-100',
-      text800: 'text-indigo-800',
-      text600: 'text-indigo-600',
-      border200: 'border-indigo-200',
-      border300: 'border-indigo-300',
-      bg500: 'bg-indigo-500',
-      hover500: 'hover:bg-indigo-600',
-    },
-    emerald: {
-      bg50: 'bg-emerald-50',
-      bg100: 'bg-emerald-100',
-      text800: 'text-emerald-800',
-      text600: 'text-emerald-600',
-      border200: 'border-emerald-200',
-      border300: 'border-emerald-300',
-      bg500: 'bg-emerald-500',
-      hover500: 'hover:bg-emerald-600',
-    },
-    cyan: {
-      bg50: 'bg-cyan-50',
-      bg100: 'bg-cyan-100',
-      text800: 'text-cyan-800',
-      text600: 'text-cyan-600',
-      border200: 'border-cyan-200',
-      border300: 'border-cyan-300',
-      bg500: 'bg-cyan-500',
-      hover500: 'hover:bg-cyan-600',
-    },
+  const colorClassMap: Record<string Record<string string>> = { blue: {
+      bg50: 'bg-blue-50', bg100: 'bg-blue-100', text800: 'text-blue-800', text700: 'text-blue-700', text600: 'text-blue-600', border200: 'border-blue-200', border300: 'border-blue-300', bg500: 'bg-blue-500', hover500: 'hover:bg-blue-600' },
+    green: { bg50: 'bg-green-50', bg100: 'bg-green-100', text800: 'text-green-800', text600: 'text-green-600', border200: 'border-green-200', border300: 'border-green-300', bg500: 'bg-green-500', hover500: 'hover:bg-green-600' },
+    purple: { bg50: 'bg-purple-50', bg100: 'bg-purple-100', text800: 'text-purple-800', text600: 'text-purple-600', border200: 'border-purple-200', border300: 'border-purple-300', bg500: 'bg-purple-500', hover500: 'hover:bg-purple-600' },
+    yellow: { bg50: 'bg-yellow-50', bg100: 'bg-yellow-100', text800: 'text-yellow-800', text600: 'text-yellow-600', border200: 'border-yellow-200', border300: 'border-yellow-300', bg500: 'bg-yellow-500', hover500: 'hover:bg-yellow-600' },
+    gray: { bg50: 'bg-gray-50', bg100: 'bg-gray-100', text800: 'text-gray-800', text600: 'text-gray-600', border200: 'border-gray-200', border300: 'border-gray-300', bg500: 'bg-gray-500', hover500: 'hover:bg-gray-600' },
+    orange: { bg50: 'bg-orange-50', bg100: 'bg-orange-100', text800: 'text-orange-800', text600: 'text-orange-600', border200: 'border-orange-200', border300: 'border-orange-300', bg500: 'bg-orange-500', hover500: 'hover:bg-orange-600' },
+    pink: { bg50: 'bg-pink-50', bg100: 'bg-pink-100', text800: 'text-pink-800', text600: 'text-pink-600', border200: 'border-pink-200', border300: 'border-pink-300', bg500: 'bg-pink-500', hover500: 'hover:bg-pink-600' },
+    indigo: { bg50: 'bg-indigo-50', bg100: 'bg-indigo-100', text800: 'text-indigo-800', text600: 'text-indigo-600', border200: 'border-indigo-200', border300: 'border-indigo-300', bg500: 'bg-indigo-500', hover500: 'hover:bg-indigo-600' },
+    emerald: { bg50: 'bg-emerald-50', bg100: 'bg-emerald-100', text800: 'text-emerald-800', text600: 'text-emerald-600', border200: 'border-emerald-200', border300: 'border-emerald-300', bg500: 'bg-emerald-500', hover500: 'hover:bg-emerald-600' },
+    cyan: { bg50: 'bg-cyan-50', bg100: 'bg-cyan-100', text800: 'text-cyan-800', text600: 'text-cyan-600', border200: 'border-cyan-200', border300: 'border-cyan-300', bg500: 'bg-cyan-500', hover500: 'hover:bg-cyan-600' },
   };
 
   function getCategoryClasses(color: string | undefined) {

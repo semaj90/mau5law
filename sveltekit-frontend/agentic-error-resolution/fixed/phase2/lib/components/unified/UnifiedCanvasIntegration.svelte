@@ -86,11 +86,7 @@ await initializeUnifiedSystems();
   			const response = await fetch('/api/ai/analyze-evidence', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({,
-  					evidenceId: evidenceItem.id,
-  					content: evidenceItem.description || evidenceItem.title,
-  					forceReanalyze: false,
-  				})
+  				body: JSON.stringify({ evidenceId: evidenceItem.id, content: evidenceItem.description || evidenceItem.title, forceReanalyze: false })
   			});
   			const analysisResult = await (response as { json?: any }).json();
   			if (analysisResult.success) {

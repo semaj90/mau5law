@@ -5,14 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import {
-    realtimeComm,
-    connectionStatus,
-    messages,
-    streamingResponses,
-    type RealtimeMessage,
-    type StreamingResponse,
-  } from '$lib/services/realtime-communication';
+  import { realtimeComm, connectionStatus, messages, streamingResponses, type RealtimeMessage, type StreamingResponse } from '$lib/services/realtime-communication';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
@@ -39,12 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   let streamingRequestType = $state<StreamingResponse['type']>('ai_chat');
   let streamingData = $state('Analyze this legal document for contract violations...');
   // Performance metrics
-  let performanceMetrics = $state({
-    messagesPerSecond: 0,
-    avgLatency: 0,
-    totalMessages: 0,
-    connectionUptime: 0,
-  });
+  let performanceMetrics = $state({ messagesPerSecond: 0, avgLatency: 0, totalMessages: 0, connectionUptime: 0 });
   let metricsInterval = $state({}) {
     status = $connectionStatus);
     messageList = $messages.slice(-50); // Keep last 50 messages for display
@@ -91,14 +79,10 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Send test message
    */
-  async function sendTestMessage() {
-    if (!isInitialized) return;
+  async function sendTestMessage() { if (!isInitialized) return;
     try {
-      await realtimeComm.sendMessage.toISOString(),
-          metadata: {
-            source: 'demo',
-            userAgent: navigator.userAgent,
-          },
+      await realtimeComm.sendMessage.toISOString(), metadata: {
+            source: 'demo', userAgent: navigator.userAgent },
         },
         selectedPriority
       );
@@ -110,14 +94,11 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Start streaming request
    */
-  async function startStreamingRequest() {
-    if (!isInitialized) return;
+  async function startStreamingRequest() { if (!isInitialized) return;
     try {
       const requestId = await realtimeComm.sendStreamingRequest(streamingRequestType, {
         prompt: streamingData
-        maxTokens: 500,
-        temperature: 0.7,
-      });
+        maxTokens: 500, temperature: 0.7 });
       console.log(`Streaming request started: ${requestId}`);
       // Set up stream handler
       realtimeComm.onStream(requestId, (response) => {
@@ -135,13 +116,10 @@ https://svelte.dev/e/js_parse_error -->
     const startTime = performance.now();
     const messageCount = 100;
     console.log(`Starting performance test: ${messageCount} messages`);
-    for (let i = 0; i < messageCount; i++) {
-      await realtimeComm.sendMessage(
-        'system_notification',
-        {
+    for (let i = 0; i < messageCount; i++) { await realtimeComm.sendMessage(
+        'system_notification', {
           testIndex: i
-          timestamp: performance.now(),
-        },
+          timestamp: performance.now() },
         'low'
       );
     }
@@ -226,16 +204,8 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Get message type color
    */
-  function getMessageTypeColor(type: string): string {
-    const colors = {
-      ai_response: 'bg-blue-100 text-blue-800',
-      document_analysis: 'bg-green-100 text-green-800',
-      system_notification: 'bg-gray-100 text-gray-800',
-      user_activity: 'bg-purple-100 text-purple-800',
-      rag_result: 'bg-yellow-100 text-yellow-800',
-      gpu_compute: 'bg-red-100 text-red-800',
-      semantic_update: 'bg-indigo-100 text-indigo-800',
-    }
+  function getMessageTypeColor(type: string): string { const colors = {
+      ai_response: 'bg-blue-100 text-blue-800', document_analysis: 'bg-green-100 text-green-800', system_notification: 'bg-gray-100 text-gray-800', user_activity: 'bg-purple-100 text-purple-800', rag_result: 'bg-yellow-100 text-yellow-800', gpu_compute: 'bg-red-100 text-red-800', semantic_update: 'bg-indigo-100 text-indigo-800' }
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
   $effect(() => {

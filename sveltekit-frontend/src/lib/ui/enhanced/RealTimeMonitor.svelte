@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
 
   export type ServiceHealth = {
@@ -8,17 +8,17 @@
    , status: 'healthy' | 'degraded' | 'down' | 'unknown';
     latencyMs?: number | null;
     lastChecked?: string | null;
-    details?: Record<string, any>;
+    details?: Record<string any>;
   };
 
   const { apiEndpoint } = $props<{ apiEndpoint: string }>() // configurable endpoint (server route recommended)
   const { pollingInterval = 5000 } = $props() // ms
 
   let services: ServiceHealth[] = [];
-  let, lastUpdated: Date | null = null;
+  let lastUpdated: Date | null = null;
   let loading = $state<boolean>(false);
   let error: string | null = null;
-  let, timer: number | null = null;
+  let timer: number | null = null;
 
   async function fetchHealth(): Promise<Response> {
     loading = true;
@@ -34,7 +34,7 @@
 
       // Expect payload to be an array or an: object with services.
       // Normalize into ServiceHealth[]
-      let, normalized: ServiceHealth[] = [];
+      let normalized: ServiceHealth[] = [];
       if (Array.isArray(payload)) {
         normalized = payload.map((s: any) => ({
           name: s.name || s.id || s.service || 'unknown',
@@ -113,49 +113,49 @@
   }
 </script>
 
-<section, class="realtime-monitor" aria-live="polite" aria-atomic="true">
-  <header, class="header">
+<section class="realtime-monitor" aria-live="polite" aria-atomic="true">
+  <header class="header">
     <h3>Go Services Health</h3>
-    <div, class="controls">
-      <button, onclick={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
+    <div class="controls">
+      <button onclick={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
         {#if loading}Refreshing...{:else}Refresh{/if}
       </button>
-      <button, onclick={() => { stopPolling(); }} title="Pause updates">Pause</button>
-      <button, onclick={() => { startPolling(); }} title="Resume updates">Resume</button>
+      <button onclick={() => { stopPolling(); }} title="Pause updates">Pause</button>
+      <button onclick={() => { startPolling(); }} title="Resume updates">Resume</button>
     </div>
   </header>
 
-  <div, class="summary">
+  <div class="summary">
     <span>Services: {services.length}</span>
-    <span, class="spacer" />
+    <span class="spacer" />
     <span>Last: {humanTime(lastUpdated)}</span>
     {#if error}
-      <span, class="error">Error: {error}</span>
+      <span class="error">Error: {error}</span>
     {/if}
   </div>
 
   {#if services.length === 0 && !loading}
-    <div, class="empty">No services found.</div>
+    <div class="empty">No services found.</div>
   {/if}
 
-  <ul, class="service-list">
+  <ul class="service-list">
     {#each services as svc (svc.name)}
-      <li, class="service-item">
-        <div, class="left">
-          <div, class={"badge, " + statusClass(svc.status)} aria-hidden="true" />
-          <div, class="meta">
-            <div, class="name">{svc.name}</div>
-            <div, class="sub">
+      <li class="service-item">
+        <div class="left">
+          <div class={"badge, " + statusClass(svc.status)} aria-hidden="true" />
+          <div class="meta">
+            <div class="name">{svc.name}</div>
+            <div class="sub">
               {#if svc.baseUrl}
-                <small, class="url">{svc.baseUrl}{svc.healthPath ? svc.healthPath : ''}</small>
+                <small class="url">{svc.baseUrl}{svc.healthPath ? svc.healthPath : ''}</small>
                 <span> • </span>
               {/if}
               <small>{svc.lastChecked ? new Date(svc.lastChecked).toLocaleTimeString() : ''}</small>
             </div>
           </div>
         </div>
-        <div, class="right">
-          <div, class="latency">{svc.latencyMs ?? '—'} ms</div>
+        <div class="right">
+          <div class="latency">{svc.latencyMs ?? '—'} ms</div>
         </div>
       </li>
     {/each}

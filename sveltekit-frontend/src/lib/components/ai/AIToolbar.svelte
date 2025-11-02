@@ -1,6 +1,6 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Input  from "$lib/components/ui/input/Input.svelte";
   import Loader2 from 'lucide-svelte/icons/loader-2';
@@ -19,12 +19,12 @@
 
   // Local state
   let aiSearchQuery: string = '';
-  let, errorMessage: string = '';
+  let errorMessage: string = '';
   let isAISearching = $state<boolean>(false);
   let isAIChatting = $state<boolean>(false);
   let isSummarizing = $state<boolean>(false);
   let aiSearchResults: any[] = [];
-  let, aiChatMessage: string = '';
+  let aiChatMessage: string = '';
   let aiChatResponse = '';
   let summarizeText = '';
   let summaryResult = '';
@@ -178,15 +178,15 @@
   }
 </script>
 
-<div, class="space-y-6">
-  <div, class="text-center">
-    <h2 class="text-2xl font-bold flex items-center, justify-center, gap-2">
-      <Sparkles class="h-6, w-6, text-primary" />
+<div class="space-y-6">
+  <div class="text-center">
+    <h2 class="text-2xl font-bold flex items-center justify-center">
+      <Sparkles class="h-6 w-6" />
       AI Legal Assistant
     </h2>
 
     <!-- Search -->
-    <div class="mt-3 flex items-center, justify-center, gap-2">
+    <div class="mt-3 flex items-center justify-center">
       <Input
         placeholder="Ask AI to find laws..."
         bind:value={aiSearchQuery}
@@ -199,37 +199,37 @@
         onclick={performAISearch}
         disabled={disabled || isAISearching || !aiSearchQuery.trim()}>
         {#if isAISearching}
-          <Loader2 class="h-4, w-4, animate-spin" />
+          <Loader2 class="h-4 w-4" />
         {:else}
-          <Search, class="h-4, w-4" />
+          <Search class="h-4" />
         {/if}
       </button>
     </div>
 
     {#if aiSearchResults.length > 0}
-      <div class="space-y-2 max-h-32, overflow-y-auto, mt-2">
+      <div class="space-y-2 max-h-32 overflow-y-auto">
         {#each Array.isArray(aiSearchResults.slice(0, 3)) ? aiSearchResults.slice(0, 3) : [] as result}
-          <div class="p-2 bg-muted/50, rounded, text-sm">
-            <div, class="font-medium, truncate">{result?.title}</div>
-            <div class="text-xs, nes-text, is-disabled">{result?.jurisdiction}</div>
+          <div class="p-2 bg-muted/50 rounded">
+            <div class="font-medium">{result?.title}</div>
+            <div class="text-xs nes-text">{result?.jurisdiction}</div>
           </div>
         {/each}
         {#if aiSearchResults.length > 3}
-          <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">+{aiSearchResults.length - 3} more results</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">+{aiSearchResults.length - 3} more results</span>
         {/if}
       {/if}
   </div>
 
   <!-- AI, Chat -->
-  <div, class="border-green-500/20, nes-container">
-    <div, class="yorha-panel-header, pb-3">
-      <h3 class="nes-text is-primary flex items-center, gap-2, text-lg">
-        <MessageSquare class="h-5, w-5, text-green-600" />
+  <div class="border-green-500/20">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary flex items-center gap-2">
+        <MessageSquare class="h-5 w-5" />
         AI Chat
       </h3>
     </div>
-    <div, class="yorha-panel-content, space-y-4">
-      <div, class="space-y-2">
+    <div class="yorha-panel-content">
+      <div class="space-y-2">
         <form on:submit|preventDefault={performAIChat} class="space-y-2">
           <textarea
             name="aiChat"
@@ -246,10 +246,10 @@
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             class="w-full bits-btn text-sm px-3 py-2">
             {#if isAIChatting}
-              <Loader2 aria-hidden="true" class="h-4 w-4, animate-spin, mr-2" />
+              <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin" />
               Thinking...
             {:else}
-              <MessageSquare aria-hidden="true" class="h-4, w-4, mr-2" />
+              <MessageSquare aria-hidden="true" class="h-4 w-4" />
               Ask AI
             {/if}
           </button>
@@ -257,24 +257,24 @@
       </div>
 
       {#if aiChatResponse}
-        <div class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm, max-h-32, overflow-y-auto">
-          <div class="prose, prose-sm, max-w-none">
-            <p, class="whitespace-pre-wrap">{aiChatResponse}</p>
+        <div class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32">
+          <div class="prose prose-sm">
+            <p class="whitespace-pre-wrap">{aiChatResponse}</p>
           </div>
         {/if}
     </div>
   </div>
 
   <!-- AI, Summarization -->
-  <div, class="border-blue-500/20, nes-container">
-    <div, class="yorha-panel-header, pb-3">
-      <h3 class="nes-text is-primary flex items-center, gap-2, text-lg">
-        <FileText class="h-5, w-5, text-blue-600" />
+  <div class="border-blue-500/20">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary flex items-center gap-2">
+        <FileText class="h-5 w-5" />
         AI Summary
       </h3>
     </div>
-    <div, class="yorha-panel-content, space-y-4">
-      <div, class="space-y-2">
+    <div class="yorha-panel-content">
+      <div class="space-y-2">
         <textarea
           placeholder="Paste legal text to summarize..."
           bind:value={summarizeText}
@@ -287,19 +287,19 @@
           disabled={disabled || isSummarizing || !summarizeText.trim()}
           class="w-full bits-btn text-sm px-3 py-2">
           {#if isSummarizing}
-            <Loader2 class="h-4 w-4, animate-spin, mr-2" />
+            <Loader2 class="h-4 w-4 animate-spin" />
             Summarizing...
           {:else}
-            <Zap class="h-4, w-4, mr-2" />
+            <Zap class="h-4 w-4" />
             Summarize
           {/if}
         </button>
       </div>
 
       {#if summaryResult}
-        <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm, max-h-32, overflow-y-auto">
-          <div class="prose, prose-sm, max-w-none">
-            <p, class="whitespace-pre-wrap">{summaryResult}</p>
+        <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm max-h-32">
+          <div class="prose prose-sm">
+            <p class="whitespace-pre-wrap">{summaryResult}</p>
           </div>
         {/if}
     </div>
@@ -307,19 +307,19 @@
 
   <!-- Clear, Results, Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
-    <div, class="text-center">
-      <button type="button" class="bits-btn text-sm, px-2, py-1" onclick={clearResults}>
+    <div class="text-center">
+      <button type="button" class="bits-btn text-sm px-2" onclick={clearResults}>
         Clear All Results
       </button>
     {/if}
 
   <!-- Quick, Actions -->
-  <div class="flex flex-wrap, gap-2, justify-center">
-    <button, type="button"
+  <div class="flex flex-wrap gap-2">
+    <button type="button"
       class="bits-btn text-sm px-2 py-1"
       onclick={() => { aiSearchQuery = 'California murder laws'; performAISearch(); }}
       disabled={disabled || isAISearching}>
-      <Bot class="h-3, w-3, mr-1" />
+      <Bot class="h-3 w-3" />
       Murder Laws
     </button>
 
@@ -328,7 +328,7 @@
       class="bits-btn text-sm px-2 py-1"
       onclick={() => { aiChatMessage = 'What are the elements of a valid contract?'; performAIChat(); }}
       disabled={disabled || isAIChatting}>
-      <MessageSquare class="h-3, w-3, mr-1" />
+      <MessageSquare class="h-3 w-3" />
       Contract Elements
     </button>
 
@@ -337,12 +337,12 @@
       class="bits-btn text-sm px-2 py-1"
       onclick={() => { aiSearchQuery = 'evidence admissibility rules'; performAISearch(); }}
       disabled={disabled || isAISearching}>
-      <Search class="h-3, w-3, mr-1" />
+      <Search class="h-3 w-3" />
       Evidence Rules
     </button>
   </div>
 
   <!-- Optional, error, display -->
   {#if errorMessage}
-    <div class="text-center text-sm, text-red-600, mt-2">{errorMessage}{/if}
+    <div class="text-center text-sm text-red-600">{errorMessage}{/if}
 </div>

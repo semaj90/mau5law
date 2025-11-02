@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
-<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression or a `{get, set}` pair
+<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression or a `{get set}` pair
 https://svelte.dev/e/bind_invalid_expression -->
 <!--
   Enhanced Claude Inline Suggestions Demo
@@ -277,7 +277,7 @@ Reset Demo
             <div class="mt-6">
               <h4 class="font-semibold mb-3">Suggestion Types</h4>
               <div class="flex flex-wrap gap-2">
-                {#each Object.entries(stats.suggestionTypes) as [type, count]}
+                {#each Object.entries(stats.suggestionTypes) as [type count]}
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{type.replace('_', ' ')}: {count}</span>
                 {/each}
               </div>

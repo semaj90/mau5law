@@ -1,5 +1,5 @@
 <!-- Legal AI Embedding & Search Test Component -->
-<script, lang="ts">
+<script lang="ts">
 import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -211,73 +211,73 @@ await checkSystemHealth();
   }
 </script>
 
-<div class="legal-ai-test-container max-w-6xl mx-auto, p-6, space-y-8">
+<div class="legal-ai-test-container max-w-6xl mx-auto p-6">
   <!-- Header -->
-  <div, class="text-center">
+  <div class="text-center">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Legal AI Embedding & Search Test</h1>
-    <p, class="text-gray-600">
+    <p class="text-gray-600">
       End-to-end testing of Ollama embeddings, PostgreSQL vector storage, and CUDA acceleration
     </p>
   </div>
   <!-- System, Status, Dashboard -->
-  <div class="grid grid-cols-1, md:grid-cols-3, gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-3">
     <!-- Main, Service, Health -->
-    <div class="bg-white rounded-lg shadow, p-4, border">
-      <h3 class="font-semibold, text-gray-800, mb-2">Legal AI Service</h3>
-      <div, class="space-y-1, text-sm">
-        <div, class="flex, justify-between">
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="font-semibold text-gray-800">Legal AI Service</h3>
+      <div class="space-y-1">
+        <div class="flex">
           <span>Status:</span>
           <span class={getStatusColor(systemHealth.status)}>{systemHealth.status || 'checking...'}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>Database:</span>
           <span class={getStatusColor(systemHealth.database)}>{systemHealth.database || 'checking...'}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>Ollama:</span>
           <span class={getStatusColor(systemHealth.ollama)}>{systemHealth.ollama || 'checking...'}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>Embeddings:</span>
           <span class="text-blue-600">{systemHealth.embeddings || 0}</span>
         </div>
       </div>
     </div>
     <!-- CUDA, Worker, Status -->
-    <div class="bg-white rounded-lg shadow, p-4, border">
-      <h3 class="font-semibold, text-gray-800, mb-2">CUDA Worker (RTX, 3060 Ti)</h3>
-      <div, class="space-y-1, text-sm">
-        <div, class="flex, justify-between">
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="font-semibold text-gray-800">CUDA Worker (RTX, 3060 Ti)</h3>
+      <div class="space-y-1">
+        <div class="flex">
           <span>Status:</span>
           <span class={getStatusColor(cudaStatus.status)}>{cudaStatus.status || 'checking...'}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>GPU Model:</span>
           <span class="text-blue-600">{cudaStatus.gpu_model || 'RTX, 3060 Ti'}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>CUDA Cores:</span>
           <span class="text-blue-600">{cudaStatus.cuda_cores || 4864}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>Memory:</span>
           <span class="text-blue-600">{cudaStatus.memory_gb || 8}GB</span>
         </div>
       </div>
     </div>
     <!-- Search, Statistics -->
-    <div class="bg-white rounded-lg shadow, p-4, border">
-      <h3 class="font-semibold, text-gray-800, mb-2">Search Statistics</h3>
-      <div, class="space-y-1, text-sm">
-        <div, class="flex, justify-between">
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="font-semibold text-gray-800">Search Statistics</h3>
+      <div class="space-y-1">
+        <div class="flex">
           <span>Documents:</span>
           <span class="text-blue-600">{searchStats?.totalDocuments || 0}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>Cases:</span>
           <span class="text-blue-600">{searchStats?.uniqueCases || 0}</span>
         </div>
-        <div, class="flex, justify-between">
+        <div class="flex">
           <span>Avg Length:</span>
           <span class="text-blue-600">{searchStats?.avgPayloadLength || 0} words</span>
         </div>
@@ -286,55 +286,55 @@ await checkSystemHealth();
   </div>
   <!-- Error, Display -->
   {#if errorMessage}
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4, py-3, rounded">
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3">
       {errorMessage}
     </div>
   {/if}
   <!-- Embedding, Submission, Section -->
-  <div class="bg-white rounded-lg shadow, p-6, border">
-    <h2 class="text-xl font-semibold, text-gray-800, mb-4">1. Submit Legal Document for Embedding</h2>
-    <div, class="space-y-4">
-      <div class="grid grid-cols-1, md:grid-cols-2, gap-4">
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold text-gray-800">1. Submit Legal Document for Embedding</h2>
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2">
         <div>
-          <label for="caseId" class="block text-sm font-medium, text-gray-700, mb-2">Case ID</label>
+          <label for="caseId" class="block text-sm font-medium text-gray-700">Case ID</label>
           <input
             id="caseId"
             type="text"
             bind:value={caseId}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
             placeholder="e.g., CASE_2024_001"
           />
         </div>
         <div>
           <!-- Status is display-only — use a div, not a, form, label -->
-          <div class="block text-sm font-medium, text-gray-700, mb-2">
+          <div class="block text-sm font-medium text-gray-700">
             Status:
-            <span, class={getStatusColor(embeddingStatus)}>{embeddingStatus}</span>
+            <span class={getStatusColor(embeddingStatus)}>{embeddingStatus}</span>
           </div>
         </div>
       </div>
       <div>
-        <label for="embeddingText" class="block text-sm font-medium, text-gray-700, mb-2">Legal Document Text</label>
+        <label for="embeddingText" class="block text-sm font-medium text-gray-700">Legal Document Text</label>
         <textarea
           id="embeddingText"
           bind:value={embeddingText}
           rows="4"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
           placeholder="Enter legal document text here..."
         ></textarea>
       </div>
-      <div, class="flex, space-x-4">
+      <div class="flex">
         <button
           onclick={submitEmbedding}
           disabled={isLoading}
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
         >
           {isLoading ? 'Processing...' : 'Submit for Embedding (Ollama)'}
         </button>
         <button
           onclick={testCUDAEmbedding}
           disabled={isLoading || cudaStatus.status !== 'healthy'}
-          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50, disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
         >
           {isLoading ? 'Processing...' : 'Test CUDA Embedding'}
         </button>
@@ -342,44 +342,44 @@ await checkSystemHealth();
     </div>
   </div>
   <!-- Search, Section -->
-  <div class="bg-white rounded-lg shadow, p-6, border">
-    <h2 class="text-xl font-semibold, text-gray-800, mb-4">2. Vector Similarity Search</h2>
-    <div, class="space-y-4">
-      <div class="grid grid-cols-1, md:grid-cols-3, gap-4">
-        <div, class="md:col-span-2">
-          <label for="searchQuery" class="block text-sm font-medium, text-gray-700, mb-2">Search Query</label>
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold text-gray-800">2. Vector Similarity Search</h2>
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-3">
+        <div class="md:col-span-2">
+          <label for="searchQuery" class="block text-sm font-medium text-gray-700">Search Query</label>
           <input
             id="searchQuery"
             type="text"
             bind:value={searchQuery}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
             placeholder="e.g., intellectual property patent"
           />
         </div>
         <div>
-          <label for="searchLimit" class="block text-sm font-medium, text-gray-700, mb-2">Limit</label>
+          <label for="searchLimit" class="block text-sm font-medium text-gray-700">Limit</label>
           <input
             id="searchLimit"
             type="number"
             bind:value={searchLimit}
             min="1"
             max="20"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2, focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
           />
         </div>
       </div>
-      <div, class="flex, space-x-4">
+      <div class="flex">
         <button
           onclick={performSearch}
           disabled={isLoading}
-          class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50, disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
         >
           {isLoading ? 'Searching...' : 'Simple Search (GET)'}
         </button>
         <button
           onclick={performAdvancedSearch}
           disabled={isLoading}
-          class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50, disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
         >
           {isLoading ? 'Searching...' : 'Advanced Search (POST)'}
         </button>
@@ -388,22 +388,22 @@ await checkSystemHealth();
   </div>
   <!-- Search, Results -->
   {#if searchResults.length > 0}
-    <div class="bg-white rounded-lg shadow, p-6, border">
-      <h2 class="text-xl font-semibold, text-gray-800, mb-4">Search Results ({searchResults.length})</h2>
-      <div, class="space-y-4">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-800">Search Results ({searchResults.length})</h2>
+      <div class="space-y-4">
         {#each searchResults as result, index}
-          <div class="border border-gray-200 rounded-lg p-4, hover:shadow-md, transition-shadow">
-            <div class="flex justify-between, items-start, mb-2">
-              <h3, class="font-medium, text-gray-800">Result #{index + 1}</h3>
-              <div class="flex, items-center, space-x-2">
-                <span, class="text-sm, text-gray-600">Similarity:</span>
-                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded, text-sm, font-medium">
+          <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md">
+            <div class="flex justify-between items-start">
+              <h3 class="font-medium">Result #{index + 1}</h3>
+              <div class="flex items-center">
+                <span class="text-sm">Similarity:</span>
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
                   {formatSimilarity(result.similarity)}
                 </span>
               </div>
             </div>
-            <p, class="text-gray-700, mb-3">{truncateText(result.payload)}</p>
-            <div class="flex flex-wrap gap-2, text-xs, text-gray-500">
+            <p class="text-gray-700">{truncateText(result.payload)}</p>
+            <div class="flex flex-wrap gap-2 text-xs">
               <span>Task ID: {result.taskId}</span>
               <span>•</span>
               <span>Created: {result.createdAt ? new Date(result.createdAt).toLocaleString() : '—'}</span>
@@ -421,31 +421,31 @@ await checkSystemHealth();
       </div>
     </div>
   {:else if searchResults.length === 0 && !isLoading}
-    <div class="bg-gray-50 rounded-lg, p-8, text-center">
-      <p, class="text-gray-600">No search results yet. Submit a search query to see vector similarity results.</p>
+    <div class="bg-gray-50 rounded-lg p-8">
+      <p class="text-gray-600">No search results yet. Submit a search query to see vector similarity results.</p>
     </div>
   {/if}
   <!-- API, Endpoints, Reference -->
-  <div class="bg-gray-50 rounded-lg, p-6, border">
-    <h2 class="text-xl font-semibold, text-gray-800, mb-4">API Endpoints Reference</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2, gap-4, text-sm">
+  <div class="bg-gray-50 rounded-lg p-6">
+    <h2 class="text-xl font-semibold text-gray-800">API Endpoints Reference</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <h3 class="font-medium, text-gray-700, mb-2">Legal AI Service (Port 8095)</h3>
-        <ul, class="space-y-1, text-gray-600">
-          <li><code class="bg-gray-200, px-1, rounded">GET /api/v1/health</code> - Service health</li>
-          <li><code class="bg-gray-200, px-1, rounded">POST /api/v1/submit</code> - Submit embedding</li>
-          <li><code class="bg-gray-200, px-1, rounded">GET /api/v1/search?q=...</code> - Simple search</li>
-          <li><code class="bg-gray-200, px-1, rounded">POST /api/v1/search</code> - Advanced search</li>
-          <li><code class="bg-gray-200, px-1, rounded">GET /api/v1/stats</code> - Search statistics</li>
+        <h3 class="font-medium text-gray-700">Legal AI Service (Port 8095)</h3>
+        <ul class="space-y-1">
+          <li><code class="bg-gray-200 px-1">GET /api/v1/health</code> - Service health</li>
+          <li><code class="bg-gray-200 px-1">POST /api/v1/submit</code> - Submit embedding</li>
+          <li><code class="bg-gray-200 px-1">GET /api/v1/search?q=...</code> - Simple search</li>
+          <li><code class="bg-gray-200 px-1">POST /api/v1/search</code> - Advanced search</li>
+          <li><code class="bg-gray-200 px-1">GET /api/v1/stats</code> - Search statistics</li>
         </ul>
       </div>
       <div>
-        <h3 class="font-medium, text-gray-700, mb-2">CUDA Worker (Port 8096)</h3>
-        <ul, class="space-y-1, text-gray-600">
-          <li><code class="bg-gray-200, px-1, rounded">GET /api/v1/health</code> - CUDA health</li>
-          <li><code class="bg-gray-200, px-1, rounded">POST /api/v1/submit</code> - Submit CUDA task</li>
-          <li><code class="bg-gray-200, px-1, rounded">GET /api/v1/workers</code> - Worker status</li>
-          <li><code class="bg-gray-200, px-1, rounded">GET /api/v1/metrics</code> - Performance metrics</li>
+        <h3 class="font-medium text-gray-700">CUDA Worker (Port 8096)</h3>
+        <ul class="space-y-1">
+          <li><code class="bg-gray-200 px-1">GET /api/v1/health</code> - CUDA health</li>
+          <li><code class="bg-gray-200 px-1">POST /api/v1/submit</code> - Submit CUDA task</li>
+          <li><code class="bg-gray-200 px-1">GET /api/v1/workers</code> - Worker status</li>
+          <li><code class="bg-gray-200 px-1">GET /api/v1/metrics</code> - Performance metrics</li>
         </ul>
       </div>
     </div>

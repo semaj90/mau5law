@@ -1,4 +1,4 @@
-<!-- Component exported, by, default --> <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu; https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- NieR-themed Rich Text Editor for Legal, Investigation, Notes --> <script, lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Button  from "$lib/components/ui/Button.svelte"; // Badge replaced with span - not available in enhanced-bits import { Bold, Italic, Underline, List, ListOrdered, Link2, Image, Quote, Code, Save, FileText, Zap, Eye, Search } from 'lucide-svelte'; // Svelte, 5 state management let editorContainer: HTMLDivElement; let editorContent = $state<string>(''); let isEditing = $state<boolean>(false); let wordCount = $state<number>(0); let characterCount = $state<number>(0); let editorState = $state({ isBold: false, isItalic: false, isUnderlined: false, currentFormat: 'paragraph'
+<!-- Component exported, by, default --> <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu; https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- NieR-themed Rich Text Editor for Legal, Investigation, Notes --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Button  from "$lib/components/ui/Button.svelte"; // Badge replaced with span - not available in enhanced-bits import { Bold, Italic, Underline, List, ListOrdered, Link2, Image, Quote, Code, Save, FileText, Zap, Eye, Search } from 'lucide-svelte'; // Svelte, 5 state management let editorContainer: HTMLDivElement; let editorContent = $state<string>(''); let isEditing = $state<boolean>(false); let wordCount = $state<number>(0); let characterCount = $state<number>(0); let editorState = $state({ isBold: false, isItalic: false, isUnderlined: false, currentFormat: 'paragraph'
   	}); let nieRTheme = $state({ mode: 'android', // 'android' | 'yorha' | 'machine'
   		glitchEnabled: true, scanlines: true, typingSound: true }); // Component props let { value = '', placeholder = 'Begin investigation notes...', caseId = '', readonly = false, autosave = true } = $props(); // Initialize editor $effect(() => { initializeNierEditor(); setupAutoSave(); if (value) { editorContent = valu; updateStats(); }
   	}); function initializeNierEditor() {/* JSX syntax converted to Svelte */} // Initialize NieR visual effects applyNierTheme(); function applyNierTheme() { console.log(`🎨 Applying NieR theme: ${nieRTheme.mode}`); if (nieRTheme.glitchEnabled) { startGlitchEffect(); }
@@ -31,41 +31,41 @@
   			}, 30000); // Auto-save every, 30 seconds }
   	} function switchTheme(mode: 'android' | 'yorha' | 'machine') { nieRTheme.mode = mod; applyNierTheme(); console.log(`🎨 Switched to ${ mode } theme`); }
   	onDestroy(() => { if (editorContainer) { editorContainer.removeEventListener('input', handleInput); editorContainer.removeEventListener('keydown', handleKeyDown); editorContainer.removeEventListener('focus', handleFocus); editorContainer.removeEventListener('blur', handleBlur); }
-  	}); </script> <!-- NieR Rich Text, Editor, Interface --> <div class="w-full h-full flex, flex-col, nier-editor-container" class:nier-android={nieRTheme.mode === 'android'} class:nier-yorha={nieRTheme.mode === 'yorha'}, class:nier-machine={nieRTheme.mode === 'machine'}> <!-- Editor, Toolbar --> <div class="mb-2, nier-toolbar, nes-container"> <div, class="yorha-panel-content, py-2"> <div class="flex, items-center, justify-between"> <div class="flex, items-center, gap-1"> <!-- Text, Formatting --> <div class="flex gap-1 border-r, border-muted, pr-2"> <Button, variant={editorState.isBold ? "default": "ghost"} size="sm"
+  	}); </script> <!-- NieR Rich Text, Editor, Interface --> <div class="w-full h-full flex flex-col" class:nier-android={nieRTheme.mode === 'android'} class:nier-yorha={nieRTheme.mode === 'yorha'}, class:nier-machine={nieRTheme.mode === 'machine'}> <!-- Editor, Toolbar --> <div class="mb-2 nier-toolbar"> <div class="yorha-panel-content"> <div class="flex items-center"> <div class="flex items-center"> <!-- Text, Formatting --> <div class="flex gap-1 border-r border-muted"> <Button variant={editorState.isBold ? "default": "ghost"} size="sm"
 							onclick={ toggleBold } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <Bold, class="w-4, h-4" /> </Button> <Button, variant={editorState.isItalic ? "default": "ghost"} size="sm"
+						> <Bold class="w-4" /> </Button> <Button variant={editorState.isItalic ? "default": "ghost"} size="sm"
 							onclick={ toggleItalic } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <Italic, class="w-4, h-4" /> </Button> <Button, variant={editorState.isUnderlined ? "default": "ghost"} size="sm"
+						> <Italic class="w-4" /> </Button> <Button variant={editorState.isUnderlined ? "default": "ghost"} size="sm"
 							onclick={ toggleUnderline } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <Underline, class="w-4, h-4" /> </Button> </div> <!-- Lists, and, Structure --> <div class="flex gap-1 border-r, border-muted, px-2"> <Button, variant="ghost"
+						> <Underline class="w-4" /> </Button> </div> <!-- Lists, and, Structure --> <div class="flex gap-1 border-r border-muted"> <Button variant="ghost"
 							size="sm"
 							onclick={ insertList } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <List, class="w-4, h-4" /> </Button> <Button, variant="ghost"
+						> <List class="w-4" /> </Button> <Button variant="ghost"
 							size="sm"
 							onclick={ insertOrderedList } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <ListOrdered, class="w-4, h-4" /> </Button> <Button, variant="ghost"
+						> <ListOrdered class="w-4" /> </Button> <Button variant="ghost"
 							size="sm"
 							onclick={ insertQuote } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <Quote, class="w-4, h-4" /> </Button> </div> <!-- Media, and, Links --> <div class="flex gap-1 border-r, border-muted, px-2"> <Button, variant="ghost"
+						> <Quote class="w-4" /> </Button> </div> <!-- Media, and, Links --> <div class="flex gap-1 border-r border-muted"> <Button variant="ghost"
 							size="sm"
 							onclick={ insertLink } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <Link2, class="w-4, h-4" /> </Button> <Button, variant="ghost"
+						> <Link2 class="w-4" /> </Button> <Button variant="ghost"
 							size="sm"
 							onclick={ insertCode } disabled={ readonly } class="h-8 w-8 p-0 bits-btn bits-btn"
-						> <Code, class="w-4, h-4" /> </Button> </div> <!-- Actions --> <div class="flex, gap-1, pl-2"> <Button, variant="ghost"
+						> <Code class="w-4" /> </Button> </div> <!-- Actions --> <div class="flex gap-1"> <Button variant="ghost"
 							size="sm"
 							onclick={ saveContent } disabled={ readonly } class="h-8 bits-btn bits-btn"
-						> <Save class="w-4, h-4, mr-1" /> Save </Button> </div> </div> <div class="flex, items-center, gap-2"> <!-- Theme, Switcher --> <div class="flex gap-1 bg-muted, rounded-md, p-1"> <button, variant={nieRTheme.mode === 'android' ? 'default': 'ghost'} size="sm"
+						> <Save class="w-4 h-4" /> Save </Button> </div> </div> <div class="flex items-center"> <!-- Theme, Switcher --> <div class="flex gap-1 bg-muted rounded-md"> <button variant={nieRTheme.mode === 'android' ? 'default': 'ghost'} size="sm"
 							onclick={() => switchTheme('android')} class="nes-btn bits-btn h-6 px-2 text-xs"
-						> 2B </Button> <button, variant={nieRTheme.mode === 'yorha' ? 'default': 'ghost'} size="sm"
+						> 2B </Button> <button variant={nieRTheme.mode === 'yorha' ? 'default': 'ghost'} size="sm"
 							onclick={() => switchTheme('yorha')} class="nes-btn bits-btn h-6 px-2 text-xs"
-						> 9S </Button> <button, variant={nieRTheme.mode === 'machine' ? 'default': 'ghost'} class="bits-btn"
+						> 9S </Button> <button variant={nieRTheme.mode === 'machine' ? 'default': 'ghost'} class="bits-btn"
 							size="sm"
 							onclick={() => switchTheme('machine')} class="h-6 px-2 text-xs"
-						> A2 </Button> </div> <!-- Stats --> <div class="flex gap-2 text-xs, nes-text, is-disabled"> <Badge, variant="ghost" class="px-2, py-1"> <FileText class="w-3, h-3, mr-1" /> { wordCount } words </Badge> <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">{ characterCount } chars</span> {#if isEditing} <Badge, variant="default" class="px-2, py-1"> <Zap class="w-3, h-3, mr-1" /> Editing </Badge> {/if} </div> </div> </div> </div> </div> <!-- Main, Editor, Area --> <div class="flex-1, nier-editor-main, nes-container"> <div class="yorha-panel-content, p-0, h-full"> <div; bind:this={ editorContainer } class="w-full h-full p-4 prose prose-sm max-w-none focus: outline-none nier-editor-content"; class:scanlines={nieRTheme.scanlines}, class:readonly, role="textbox"
+						> A2 </Button> </div> <!-- Stats --> <div class="flex gap-2 text-xs nes-text"> <Badge variant="ghost" class="px-2"> <FileText class="w-3 h-3" /> { wordCount } words </Badge> <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{ characterCount } chars</span> {#if isEditing} <Badge variant="default" class="px-2"> <Zap class="w-3 h-3" /> Editing </Badge> {/if} </div> </div> </div> </div> </div> <!-- Main, Editor, Area --> <div class="flex-1 nier-editor-main"> <div class="yorha-panel-content p-0"> <div; bind:this={ editorContainer } class="w-full h-full p-4 prose prose-sm max-w-none focus: outline-none nier-editor-content"; class:scanlines={nieRTheme.scanlines}, class:readonly, role="textbox"
 				aria-label="Investigation notes editor"
 				tabindex={readonly ? -1: 0} >
-				{#if !editorContent} <p class="nes-text, is-disabled, italic">{ placeholder }</p> {/if} </div> </div> </div> </div> <style> /* NieR: Automata Theme Styles */ /* Base NieR Editor */ .nier-editor-container { font-family: 'Courier New', 'Monaco', monospace; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #e8e6e3; }
+				{#if !editorContent} <p class="nes-text is-disabled">{ placeholder }</p> {/if} </div> </div> </div> </div> <style> /* NieR: Automata Theme Styles */ /* Base NieR Editor */ .nier-editor-container { font-family: 'Courier New', 'Monaco', monospace; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #e8e6e3; }
 	/* Android Theme (2B) */ .nier-android { background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); color: #ffffff; }
 	.nier-android .nier-toolbar {, background: rgba(0, 0, 0, 0.8); border: 1px solid #333; backdrop-filter: blur(10px); }
 	.nier-android .nier-editor-main { background: rgba(0, 0, 0, 0.6); border: 1px solid #333; backdrop-filter: blur(5px); }

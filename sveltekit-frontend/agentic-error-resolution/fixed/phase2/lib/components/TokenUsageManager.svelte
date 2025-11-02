@@ -52,22 +52,10 @@
   let usageHistory = $state<UsageEntry[]>([]);
 
   // Token usage breakdown
-  let currentSession = $state<Session>({
-    promptTokens: 0,
-    responseTokens: 0,
-    totalTokens: 0,
-    messageCount: 0,
-    averageTokensPerMessage: 0,
-    peakUsage: 0,
-    efficiency: 100,
-  });
+  let currentSession = $state<Session>({ promptTokens: 0, responseTokens: 0, totalTokens: 0, messageCount: 0, averageTokensPerMessage: 0, peakUsage: 0, efficiency: 100 });
 
   // Model token limits
-  const modelLimits: Record<string, number> = {
-    'gemma3:2b': 2048,
-    'gemma3:7b': 4096,
-    'gemma3-legal': 8000,
-  };
+  const modelLimits: Record<string number> = { 'gemma3:2b': 2048, 'gemma3:7b': 4096, 'gemma3-legal': 8000 };
 
   // Derived / computed state (kept in sync via $effect)
   let tokensRemaining = $state<number>(0);
@@ -98,17 +86,12 @@
     prompt: string;
     response: string;
     processingTime: number;
-  }) {
-    const totalTokens = usage.promptTokens + usage.responseTokens;
+  }) { const totalTokens = usage.promptTokens + usage.responseTokens;
 
     // Add to history
     usageHistory = [
       {
-        id: crypto.randomUUID(),
-        timestamp: new Date(),
-        totalTokens,
-        ...usage,
-      },
+        id: crypto.randomUUID(), timestamp: new Date(), totalTokens, ...usage },
       ...usageHistory.slice(0, 99) // Keep last 100 entries
     ];
 
@@ -132,13 +115,7 @@
       100 - ((currentSession.totalTokens - expectedTokens) / expectedTokens * 100)
     );
 
-    const payload = {
-      type: 'usage_recorded',
-      tokensUsed,
-      tokensRemaining,
-      usagePercentage,
-      session: currentSession,
-    };
+    const payload = { type: 'usage_recorded', tokensUsed, tokensRemaining, usagePercentage, session: currentSession };
     ondispatch?.(payload);
     dispatch('update', payload);
   }
@@ -153,11 +130,7 @@
       const totalFromHistory = compressed.reduce((sum: number, entry: UsageEntry) => sum + entry.totalTokens, 0);
       tokensUsed = totalFromHistory;
     }
-    const payload = {
-      type: 'history_compression',
-      method: 'history_compression',
-      tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8),
-    };
+    const payload = { type: 'history_compression', method: 'history_compression', tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8) };
     ondispatch?.(payload);
     dispatch('update', payload);
   }
@@ -189,37 +162,21 @@
     return [...recent, summaryEntry];
   }
 
-  function resetSession() {
-    tokensUsed = 0;
+  function resetSession() { tokensUsed = 0;
     usageHistory = [];
     currentSession = {
-      promptTokens: 0,
-      responseTokens: 0,
-      totalTokens: 0,
-      messageCount: 0,
-      averageTokensPerMessage: 0,
-      peakUsage: 0,
-      efficiency: 100,
-    };
+      promptTokens: 0, responseTokens: 0, totalTokens: 0, messageCount: 0, averageTokensPerMessage: 0, peakUsage: 0, efficiency: 100 };
     const payload = { type: 'reset' };
     ondispatch?.(payload);
     dispatch('reset', payload);
   }
 
-  function exportUsageData() {
-    const data = {
-      session: currentSession,
-      history: usageHistory,
-      settings: {
-        tokenLimit,
-        currentModel,
-        autoOptimize,
-      },
+  function exportUsageData() { const data = {
+      session: currentSession, history: usageHistory, settings: {
+        tokenLimit, currentModel, autoOptimize },
       timestamp: new Date(),
     };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
-    });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

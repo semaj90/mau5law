@@ -7,12 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import AIChatInterface from "$lib/components/ai/AIChatInterface.svelte";
-  import {
-    aiStore,
-    conversation,
-    settings,
-    status,
-  } from "$lib/stores/ai-store";
+  import { aiStore, conversation, settings, status } from "$lib/stores/ai-store";
 
   // Page state
   let isPageReady = $state(false);
@@ -59,8 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     selectedExample = query;
   }
   // Manual API test function (for debugging)
-  async function testAPIDirectly() {
-    if (!manualTestQuery.trim()) return;
+  async function testAPIDirectly() { if (!manualTestQuery.trim()) return;
 
     manualTestLoading = true;
     manualTestError = null;
@@ -68,18 +62,9 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const res = await fetch("/api/ai/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: manualTestQuery,
-          context: [],
-          includeHistory: false,
-          maxSources: 3,
-          searchThreshold: 0.7,
-          useCache: false,
-        }),
+        method: "POST", headers: {
+          "Content-Type": "application/json" },
+        body: JSON.stringify({ query: manualTestQuery, context: [], includeHistory: false, maxSources: 3, searchThreshold: 0.7, useCache: false }),
       });
 
       const data = await res.json();
@@ -117,11 +102,7 @@ https://svelte.dev/e/js_parse_error -->
       } catch (error) {
         console.log("Cloud AI Health: Not available");
   }
-      healthCheckResults = {
-        local: localHealth,
-        cloud: cloudHealth,
-        timestamp: new Date(),
-      };
+      healthCheckResults = { local: localHealth, cloud: cloudHealth, timestamp: new Date() };
     } catch (error) {
       console.error("Health check failed:", error);
       manualTestError =
@@ -140,16 +121,10 @@ https://svelte.dev/e/js_parse_error -->
       manualTestError = null;
   }}
   // Export conversation
-  function exportConversation() {
-    const data = {
-      conversation: $conversation,
-      settings: $settings,
-      timestamp: new Date().toISOString(),
-    };
+  function exportConversation() { const data = {
+      conversation: $conversation, settings: $settings, timestamp: new Date().toISOString() };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

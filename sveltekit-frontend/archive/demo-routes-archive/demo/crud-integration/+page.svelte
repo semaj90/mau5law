@@ -24,14 +24,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
   let newCaseForm = $state({
     title: '',
     description: '',
-    priority: 'medium' as const,
-    status: 'open' as const
+    priority: 'medium' as const status: 'open' as const
   });
 
   let newEvidenceForm = $state({
     content: '',
-    evidenceType: 'document' as const,
-    source: '',
+    evidenceType: 'document' as const source: '',
     tags: ''
   });
 

@@ -15,12 +15,7 @@ https://svelte.dev/e/js_parse_error -->
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { createEnhancedRAGEngine } from '$lib/services/enhanced-rag-pagerank';
-  import {
-    createCompilerFeedbackLoop,
-    type CompilerEvent,
-    type PatchCandidate,
-    type SOMCluster,
-  } from '$lib/services/compiler-feedback-loop';
+  import { createCompilerFeedbackLoop, type CompilerEvent, type PatchCandidate, type SOMCluster } from '$lib/services/compiler-feedback-loop';
   import { AlertCircle, CheckCircle, Cpu, Zap, Activity, Code, Brain, Target } from 'lucide-svelte';
 
   // System instances
@@ -32,30 +27,19 @@ https://svelte.dev/e/js_parse_error -->
   let events = $state<CompilerEvent[]>([]);
   let patches = $state<PatchCandidate[]>([]);
   let clusters = $state<SOMCluster[]>([]);
-  let performance = $state({
-    totalEvents: 0,
-    successfulPatches: 0,
-    averageProcessingTime: 0,
-    clusterCount: 0,
-  });
+  let performance = $state({ totalEvents: 0, successfulPatches: 0, averageProcessingTime: 0, clusterCount: 0 });
 
   // Demo controls
   let isMonitoring = $state(false);
   let selectedEvent: CompilerEvent | null = $state(null);
   let selectedPatch: PatchCandidate | null = $state(null);
 
-  onMount(async () => {
-    try {
+  onMount(async () => { try {
       console.log('🚀 Initializing Compiler AI Demo...');
 
       // Initialize Enhanced RAG Engine
       ragEngine = createEnhancedRAGEngine({
-        enablePageRank: true,
-        enableUserFeedback: true,
-        enableRealTimeUpdates: true,
-        vectorDimensions: 384,
-        maxDocuments: 1000,
-      });
+        enablePageRank: true, enableUserFeedback: true, enableRealTimeUpdates: true, vectorDimensions: 384, maxDocuments: 1000 });
 
       // Initialize Compiler Feedback Loop
       feedbackLoop = createCompilerFeedbackLoop(ragEngine);
@@ -124,19 +108,10 @@ https://svelte.dev/e/js_parse_error -->
           file: 'src/test/demo.ts',
           line: Math.floor(Math.random() * 100) + 1,
           code: 'const value = obj.nonExistent;',
-          metadata: {
-            component: 'TypeScript',
-            phase: 'type-checking',
-            category: 'type',
-          },
+          metadata: { component: 'TypeScript', phase: 'type-checking', category: 'type' },
         },
       ],
-      performance: {
-        compilationTime: Math.random() * 2000 + 500,
-        memoryUsage: Math.random() * 100 + 20,
-        errorCount: 1,
-        warningCount: Math.floor(Math.random() * 3),
-      },
+      performance: { compilationTime: Math.random() * 2000 + 500, memoryUsage: Math.random() * 100 + 20, errorCount: 1, warningCount: Math.floor(Math.random() * 3) },
     };
 
     feedbackLoop.addEvent(testEvent);

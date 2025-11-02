@@ -1,5 +1,5 @@
 <!-- Vector Pipeline, Demo, Component -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
@@ -12,7 +12,7 @@
   // Using Svelte, 4 store pattern instead of conflicting $state runes
   let machineState = $vectorPipelineStat;
   // Sample job data
-  const sampleJobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> = [
+  const sampleJobs: Array<Omit<VectorPipelineJob 'jobId' | 'status' | 'progress' | 'createdAt'> = [
     { ownerType: 'evidence', ownerId: 'evidence-001', event: 'upsert' },
     { ownerType: 'document', ownerId: 'doc-legal-brief-2024', event: 'reembed' },
     { ownerType: 'case', ownerId: 'case-murder-investigation', event: 'upsert' },
@@ -54,32 +54,32 @@
   }
 </script>
 
-<div class="w-full max-w-6xl mx-auto, p-4, space-y-6">
-  <div, class="nes-container">
-    <div, class="yorha-panel-header">
-      <h3 class="nes-text is-primary, text-2xl, font-bold">Vector Pipeline Demo</h3>
-      <p, class="text-gray-600">
+<div class="w-full max-w-6xl mx-auto p-4">
+  <div class="nes-container">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary text-2xl">Vector Pipeline Demo</h3>
+      <p class="text-gray-600">
         XState machine orchestrating PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
       </p>
     </div>
-    <div, class="yorha-panel-content">
+    <div class="yorha-panel-content">
       <!-- Current, State, Display -->
-      <div, class="mb-6">
-        <div class="flex items-center, gap-2, mb-2">
-          <span, class="font-semibold">Current State:</span>
-          <span class="px-3 py-1 rounded-full text-sm font-medium, bg-blue-100, text-blue-800">
+      <div class="mb-6">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold">Current State:</span>
+          <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100">
             {currentState}
           </span>
         </div>
         {#if errors.length > 0}
-          <div, class="text-red-600, text-sm">
+          <div class="text-red-600">
             <strong>Errors:</strong>
             {errors.join(', ')}
           </div>
         {/if}
       </div>
       <!-- Control, Buttons -->
-      <div class="grid grid-cols-2 md:grid-cols-4, gap-3, mb-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Button.Root, class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
           Submit Single Job
         </Button>
@@ -99,45 +99,45 @@
         </Button>
       </div>
       <!-- Pipeline, Status, Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3, gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <!-- Service, Status -->
-        <div, class="nes-container">
-          <div, class="yorha-panel-header">
-            <h3 class="nes-text, is-primary, text-lg">Service Status</h3>
+        <div class="nes-container">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Service Status</h3>
           </div>
-          <div, class="yorha-panel-content">
-            <div, class="space-y-2">
-              <div, class="flex, justify-between">
+          <div class="yorha-panel-content">
+            <div class="space-y-2">
+              <div class="flex">
                 <span>PostgreSQL:</span>
                 <span class={getStatusColor(pipelineStatus?.postgresql || false)}>
                   {getStatusIcon(pipelineStatus?.postgresql || false)}
                 </span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Redis:</span>
                 <span class={getStatusColor(pipelineStatus?.redis || false)}>
                   {getStatusIcon(pipelineStatus?.redis || false)}
                 </span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Go Microservice:</span>
                 <span class={getStatusColor(pipelineStatus?.goMicroservice || false)}>
                   {getStatusIcon(pipelineStatus?.goMicroservice || false)}
                 </span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>CUDA Worker:</span>
                 <span class={getStatusColor(pipelineStatus?.cudaWorker || false)}>
                   {getStatusIcon(pipelineStatus?.cudaWorker || false)}
                 </span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Qdrant:</span>
                 <span class={getStatusColor(pipelineStatus?.qdrant || false)}>
                   {getStatusIcon(pipelineStatus?.qdrant || false)}
                 </span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>WebGPU:</span>
                 <span class={getStatusColor(pipelineStatus?.webgpu || false)}>
                   {getStatusIcon(pipelineStatus?.webgpu || false)}
@@ -147,30 +147,30 @@
           </div>
         </div>
         <!-- Batch, Information -->
-        <div, class="nes-container">
-          <div, class="yorha-panel-header">
-            <h3 class="nes-text, is-primary, text-lg">Batch Status</h3>
+        <div class="nes-container">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Batch Status</h3>
           </div>
-          <div, class="yorha-panel-content">
-            <div, class="space-y-2">
-              <div, class="flex, justify-between">
+          <div class="yorha-panel-content">
+            <div class="space-y-2">
+              <div class="flex">
                 <span>Total Jobs:</span>
                 <span class="font-mono">{batchInfo?.totalJobs || 0}</span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Completed:</span>
                 <span class="font-mono text-green-600">{batchInfo?.completedJobs || 0}</span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Failed:</span>
                 <span class="font-mono text-red-600">{batchInfo?.failedJobs || 0}</span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Progress:</span>
                 <span class="font-mono">{batchInfo?.progress || 0}%</span>
               </div>
               {#if batchInfo && batchInfo.progress > 0}
-                <div class="w-full bg-gray-200, rounded-full, h-2">
+                <div class="w-full bg-gray-200 rounded-full">
                   <div
                     class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style="width: {batchInfo.progress}%"
@@ -181,27 +181,27 @@
           </div>
         </div>
         <!-- Performance, Metrics -->
-        <div, class="nes-container">
-          <div, class="yorha-panel-header">
-            <h3 class="nes-text, is-primary, text-lg">Performance</h3>
+        <div class="nes-container">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Performance</h3>
           </div>
-          <div, class="yorha-panel-content">
-            <div, class="space-y-2">
-              <div, class="flex, justify-between">
+          <div class="yorha-panel-content">
+            <div class="space-y-2">
+              <div class="flex">
                 <span>Processed:</span>
                 <span class="font-mono">{metrics?.totalJobsProcessed || 0}</span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Avg Time:</span>
                 <span class="font-mono">{metrics?.averageProcessingTime || 0}ms</span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Throughput:</span>
                 <span class="font-mono">{metrics?.throughputPerMinute || 0}/min</span>
               </div>
-              <div, class="flex, justify-between">
+              <div class="flex">
                 <span>Last Run:</span>
-                <span, class="text-sm">
+                <span class="text-sm">
                   {metrics?.lastProcessedAt ? new Date(metrics.lastProcessedAt).toLocaleTimeString() : 'Never'}
                 </span>
               </div>
@@ -211,31 +211,31 @@
       </div>
       <!-- Current, Jobs, Display -->
       {#if batchInfo && batchInfo.jobs.length > 0}
-        <div, class="mt-6, nes-container">
-          <div, class="yorha-panel-header">
-            <h3 class="nes-text, is-primary, text-lg">Active Jobs</h3>
+        <div class="mt-6">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Active Jobs</h3>
           </div>
-          <div, class="yorha-panel-content">
-            <div, class="overflow-x-auto">
-              <table, class="w-full, text-sm">
+          <div class="yorha-panel-content">
+            <div class="overflow-x-auto">
+              <table class="w-full">
                 <thead>
-                  <tr, class="border-b">
-                    <th, class="text-left, p-2">Job ID</th>
-                    <th, class="text-left, p-2">Type</th>
-                    <th, class="text-left, p-2">Owner ID</th>
-                    <th, class="text-left, p-2">Event</th>
-                    <th, class="text-left, p-2">Status</th>
-                    <th, class="text-left, p-2">Progress</th>
+                  <tr class="border-b">
+                    <th class="text-left">Job ID</th>
+                    <th class="text-left">Type</th>
+                    <th class="text-left">Owner ID</th>
+                    <th class="text-left">Event</th>
+                    <th class="text-left">Status</th>
+                    <th class="text-left">Progress</th>
                   </tr>
                 </thead>
                 <tbody>
                   {#each Array.isArray(batchInfo.jobs) ? batchInfo.jobs : [] as job}
-                    <tr, class="border-b, hover:bg-gray-50">
-                      <td class="p-2, font-mono, text-xs">{job.jobId}</td>
-                      <td, class="p-2">{job.ownerType}</td>
-                      <td class="p-2, font-mono, text-xs">{job.ownerId}</td>
-                      <td, class="p-2">{job.event}</td>
-                      <td, class="p-2">
+                    <tr class="border-b">
+                      <td class="p-2 font-mono">{job.jobId}</td>
+                      <td class="p-2">{job.ownerType}</td>
+                      <td class="p-2 font-mono">{job.ownerId}</td>
+                      <td class="p-2">{job.event}</td>
+                      <td class="p-2">
                         <span
                           class="px-2 py-1 rounded" text-xs font-medium
                           {job.status === 'succeeded'
@@ -249,7 +249,7 @@
                           {job.status}
                         </span>
                       </td>
-                      <td, class="p-2">{job.progress}%</td>
+                      <td class="p-2">{job.progress}%</td>
                     </tr>
                   {/each}
                 </tbody>
@@ -259,12 +259,12 @@
         </div>
       {/if}
       <!-- Integration, Test, Results -->
-      <div, class="mt-6, nes-container">
-        <div, class="yorha-panel-header">
-          <h3 class="nes-text, is-primary, text-lg">Service Integration Test</h3>
+      <div class="mt-6">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Service Integration Test</h3>
         </div>
-        <div, class="yorha-panel-content">
-          <p class="text-sm, text-gray-600, mb-4">
+        <div class="yorha-panel-content">
+          <p class="text-sm text-gray-600">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
           <Button

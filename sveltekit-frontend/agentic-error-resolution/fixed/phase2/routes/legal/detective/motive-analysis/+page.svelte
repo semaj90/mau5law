@@ -29,7 +29,7 @@
     primaryTraits: string[];
     riskFactors: string[];
     protectiveFactors: string[];
-    assessmentScore: Record<string, number>;
+    assessmentScore: Record<string number>;
     recommendations: string[];
   }
   interface RiskAssessment {
@@ -37,7 +37,7 @@
     immediateThreat: string;
     escalationPotential: string;
     publicSafety?: string;
-    factors: Record<string, { score: number; trend: string }>;
+    factors: Record<string { score: number; trend: string }>;
     timeline: { immediate: string; shortTerm: string; longTerm: string };
   }
   interface Recommendation {
@@ -89,14 +89,7 @@
   }
 
   // Detective AI system state
-  let detectiveSystem = $state({
-    status: 'idle',
-    processingStage: 'Awaiting input...',
-    confidenceLevel: 0,
-    totalEvidence: 0,
-    profiledSuspects: 0,
-    motiveConfidence: 0,
-  });
+  let detectiveSystem = $state({ status: 'idle', processingStage: 'Awaiting input...', confidenceLevel: 0, totalEvidence: 0, profiledSuspects: 0, motiveConfidence: 0 });
   // NES-GPU Memory Bridge Integration
   let memoryMetrics = $state({
     nesRAM: { used: 0, total: 2048 },
@@ -253,26 +246,11 @@
       memoryMetrics.gpuUtilization = Math.random() * 100;
     }, 2000);
   }
-  async function analyzeBehaviorPatterns() {
-    return [
+  async function analyzeBehaviorPatterns() { return [
       {
-        pattern: 'Escalating Aggression',
-        confidence: 0.87,
-        timeline: ['Week 1: Verbal confrontations', 'Week 2: Property damage', 'Week 3: Direct threats'],
-        riskLevel: 'HIGH',
-      },
-      {
-        pattern: 'Premeditation Indicators',
-        confidence: 0.72,
-        timeline: ['Research phase', 'Resource acquisition', 'Opportunity assessment'],
-        riskLevel: 'MEDIUM',
-      },
-      {
-        pattern: 'Emotional Dysregulation',
-        confidence: 0.94,
-        timeline: ['Trigger events', 'Emotional outbursts', 'Impulsive decisions'],
-        riskLevel: 'HIGH',
-      }
+        pattern: 'Escalating Aggression', confidence: 0.87, timeline: ['Week 1: Verbal confrontations', 'Week 2: Property damage', 'Week 3: Direct threats'], riskLevel: 'HIGH' },
+      { pattern: 'Premeditation Indicators', confidence: 0.72, timeline: ['Research phase', 'Resource acquisition', 'Opportunity assessment'], riskLevel: 'MEDIUM' },
+      { pattern: 'Emotional Dysregulation', confidence: 0.94, timeline: ['Trigger events', 'Emotional outbursts', 'Impulsive decisions'], riskLevel: 'HIGH' }
     ];
   }
   async function generatePsychologicalProfile() {
@@ -362,11 +340,7 @@
         opportunity: { score: 82, trend: 'increasing' },
         means: { score: 70, trend: 'stable' }
       },
-      timeline: {
-        immediate: 'Monitor closely - increased surveillance recommended',
-        shortTerm: 'Intervention required within 48-72 hours',
-        longTerm: 'Comprehensive treatment and ongoing monitoring',
-      }
+      timeline: { immediate: 'Monitor closely - increased surveillance recommended', shortTerm: 'Intervention required within 48-72 hours', longTerm: 'Comprehensive treatment and ongoing monitoring' }
     }
   }
   async function generateRecommendations() {
@@ -396,48 +370,17 @@
     const avgProbability = motiveMatrix.reduce((sum, motive) => sum + motive.probability, 0) / motiveMatrix.length;
     return Math.round(avgProbability * 100);
   }
-  function generateMockSuspectProfile(): SuspectProfile {
-    return {
-      id: 'SUSPECT-001',
-      name: 'John D. Anderson',
-      relationship: 'Former Business Partner',
-      opportunityScore: 82,
-      meansScore: 75,
-      motiveScore: 88,
-      overallThreatLevel: 'HIGH',
-      psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'],
-      behaviorAnalysis: {
-        aggression: 78,
-        deception: 65,
-        impulsivity: 89,
-        planning: 45,
-      },
+  function generateMockSuspectProfile(): SuspectProfile { return {
+      id: 'SUSPECT-001', name: 'John D. Anderson', relationship: 'Former Business Partner', opportunityScore: 82, meansScore: 75, motiveScore: 88, overallThreatLevel: 'HIGH', psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'], behaviorAnalysis: {
+        aggression: 78, deception: 65, impulsivity: 89, planning: 45 },
       timeline: [],
     }
   }
-  function generateMockTimeline(): TimelineEvent[] {
-    return [
+  function generateMockTimeline(): TimelineEvent[] { return [
       {
-        timestamp: '2024-01-15T10:30:00Z',
-        event: 'Threatening email sent to victim',
-        significance: 'HIGH',
-        evidenceIds: ['E001'],
-        correlationScore: 0.92,
-      },
-      {
-        timestamp: '2024-01-20T14:15:00Z',
-        event: 'Financial records accessed',
-        significance: 'MEDIUM',
-        evidenceIds: ['E002'],
-        correlationScore: 0.78,
-      },
-      {
-        timestamp: '2024-02-01T09:00:00Z',
-        event: 'Public confrontation witnessed',
-        significance: 'HIGH',
-        evidenceIds: ['E003'],
-        correlationScore: 0.85,
-      }
+        timestamp: '2024-01-15T10:30:00Z', event: 'Threatening email sent to victim', significance: 'HIGH', evidenceIds: ['E001'], correlationScore: 0.92 },
+      { timestamp: '2024-01-20T14:15:00Z', event: 'Financial records accessed', significance: 'MEDIUM', evidenceIds: ['E002'], correlationScore: 0.78 },
+      { timestamp: '2024-02-01T09:00:00Z', event: 'Public confrontation witnessed', significance: 'HIGH', evidenceIds: ['E003'], correlationScore: 0.85 }
     ];
   }
   function generateMockEvidence() {

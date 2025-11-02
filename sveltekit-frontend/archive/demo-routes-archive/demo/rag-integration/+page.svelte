@@ -430,13 +430,13 @@
           {#if (data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats?.queryLatency}
             <div class="grid grid-cols-2 gap-4">
               <div class="text-center p-3 bg-muted/50 rounded-lg">
-                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p50, 50)}">
+                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p50">
                   {(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p50}ms
                 </p>
                 <p class="text-xs nes-text is-disabled">P50 Latency</p>
               </div>
               <div class="text-center p-3 bg-muted/50 rounded-lg">
-                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p95, 100)}">
+                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p95">
                   {(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p95}ms
                 </p>
                 <p class="text-xs nes-text is-disabled">P95 Latency</p>

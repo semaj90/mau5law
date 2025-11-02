@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { HTMLButtonAttributes, HTMLAnchorAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
@@ -56,33 +56,33 @@
     .join(' ');
 </script>
 {#if to}
-  <a, class={classes} data-button-root, href={to} {...anchorProps}>
+  <a class={classes} data-button-root, href={to} {...anchorProps}>
     {#if icon && iconPosition === 'left'}
-      <i, class={icon} aria-hidden="true"></i>
+      <i class={icon} aria-hidden="true"></i>
     {/if}
     {#if loading}
-      <span, class="loader, mr-2"></span>
+      <span class="loader"></span>
     {/if}
     {#if children}
       {@render children()}
     {/if}
     {#if icon && iconPosition === 'right'}
-      <i, class={icon} aria-hidden="true"></i>
+      <i class={icon} aria-hidden="true"></i>
     {/if}
   </a>
 {:else}
-  <button, class={classes} disabled={loading} data-button-root {...restProps}>
+  <button class={classes} disabled={loading} data-button-root {...restProps}>
     {#if icon && iconPosition === 'left'}
-      <i, class={icon} aria-hidden="true"></i>
+      <i class={icon} aria-hidden="true"></i>
     {/if}
     {#if loading}
-      <span, class="loader, mr-2"></span>
+      <span class="loader"></span>
     {/if}
     {#if children}
       {@render children()}
     {/if}
     {#if icon && iconPosition === 'right'}
-      <i, class={icon} aria-hidden="true"></i>
+      <i class={icon} aria-hidden="true"></i>
     {/if}
   </button>
 {/if}

@@ -62,51 +62,11 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   let executionHistory = $state<any[]>([]) => []);
   // Demo examples
   const demoExamples = [
-    {
-      id: 'typescript-errors',
-      title: 'Fix TypeScript Errors',
-      prompt: 'I have multiple TypeScript errors in my SvelteKit application. Please analyze the codebase, identify all type issues, and provide a comprehensive solution plan.',
-      mode: 'comprehensive' as const,
-      platform: 'webapp' as const,
-      urgency: 'high' as const,
-      description: 'Comprehensive TypeScript error analysis and resolution',
-    },
-    {
-      id: 'performance-optimization',
-      title: 'Performance Optimization',
-      prompt: 'Our legal AI application is experiencing slow load times and high memory usage. Analyze the entire system and provide optimization recommendations.',
-      mode: 'autonomous' as const,
-      platform: 'all' as const,
-      urgency: 'critical' as const,
-      description: 'Full-stack performance analysis with autonomous engineering',
-    },
-    {
-      id: 'security-audit',
-      title: 'Security Audit',
-      prompt: 'Perform a comprehensive security audit of our legal document management system, including authentication, authorization, and data protection.',
-      mode: 'comprehensive' as const,
-      platform: 'webapp' as const,
-      urgency: 'high' as const,
-      description: 'Multi-agent security analysis',
-    },
-    {
-      id: 'deployment-pipeline',
-      title: 'CI/CD Pipeline Issues',
-      prompt: 'Our deployment pipeline is failing intermittently. Analyze the CI/CD configuration, identify failure points, and create a robust deployment strategy.',
-      mode: 'autonomous' as const,
-      platform: 'all' as const,
-      urgency: 'medium' as const,
-      description: 'DevOps automation and pipeline optimization',
-    },
-    {
-      id: 'api-integration',
-      title: 'API Integration Help',
-      prompt: 'How can I integrate the multi-agent AI system with external legal databases and ensure proper error handling and rate limiting?',
-      mode: 'quick' as const,
-      platform: 'webapp' as const,
-      urgency: 'medium' as const,
-      description: 'Quick semantic search for integration patterns',
-    }
+    { id: 'typescript-errors', title: 'Fix TypeScript Errors', prompt: 'I have multiple TypeScript errors in my SvelteKit application. Please analyze the codebase, identify all type issues, and provide a comprehensive solution plan.', mode: 'comprehensive' as const platform: 'webapp' as const urgency: 'high' as const description: 'Comprehensive TypeScript error analysis and resolution' },
+    { id: 'performance-optimization', title: 'Performance Optimization', prompt: 'Our legal AI application is experiencing slow load times and high memory usage. Analyze the entire system and provide optimization recommendations.', mode: 'autonomous' as const platform: 'all' as const urgency: 'critical' as const description: 'Full-stack performance analysis with autonomous engineering' },
+    { id: 'security-audit', title: 'Security Audit', prompt: 'Perform a comprehensive security audit of our legal document management system, including authentication, authorization, and data protection.', mode: 'comprehensive' as const platform: 'webapp' as const urgency: 'high' as const description: 'Multi-agent security analysis' },
+    { id: 'deployment-pipeline', title: 'CI/CD Pipeline Issues', prompt: 'Our deployment pipeline is failing intermittently. Analyze the CI/CD configuration, identify failure points, and create a robust deployment strategy.', mode: 'autonomous' as const platform: 'all' as const urgency: 'medium' as const description: 'DevOps automation and pipeline optimization' },
+    { id: 'api-integration', title: 'API Integration Help', prompt: 'How can I integrate the multi-agent AI system with external legal databases and ensure proper error handling and rate limiting?', mode: 'quick' as const platform: 'webapp' as const urgency: 'medium' as const description: 'Quick semantic search for integration patterns' }
   ];
   $effect(() => {
     if (autoExecuteExamples) {
@@ -137,19 +97,10 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       processingStage = 'Completing analysis...';
       processingProgress = 95;
       // Execute copilot self-prompt
-      const result = await copilotSelfPrompt(userPrompt, {
-        useSemanticSearch: true
-        useMemory: true,
-        useMultiAgent: selectedMode !== 'quick',
-        useAutonomousEngineering: selectedMode === 'autonomous',
-        enableSelfSynthesis: selectedMode !== 'quick',
-        context: {
-          projectPath: process.cwd(),
-          platform: selectedPlatform,
-          urgency: selectedUrgency
-          includeTests: true,
-          targetExtensions: ['cline', 'roo', 'copilot'],
-        },
+      const result = await copilotSelfPrompt(userPrompt, { useSemanticSearch: true
+        useMemory: true, useMultiAgent: selectedMode !== 'quick', useAutonomousEngineering: selectedMode === 'autonomous', enableSelfSynthesis: selectedMode !== 'quick', context: {
+          projectPath: process.cwd(), platform: selectedPlatform, urgency: selectedUrgency
+          includeTests: true, targetExtensions: ['cline', 'roo', 'copilot'] },
         outputFormat
       });
       currentResult = result;
@@ -181,15 +132,11 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       const response = await fetch('/api/copilot/self-prompt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          prompt: userPrompt,
-          mode: selectedMode,
-          options: {
+        body: JSON.stringify({ prompt: userPrompt, mode: selectedMode, options: {
             context: {
               platform: selectedPlatform;
               urgency: selectedUrgency
-              includeTests: true,
-            },
+              includeTests: true },
             outputFormat
           }
         })
@@ -199,14 +146,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       }
       const data = await response.json();
       // Transform API response to match component format
-      currentResult = {
-        ...data,
-        metadata: data.metadata || {,
-          processingTime: 0,
-          confidence: 0.8,
-          sources: [],
-          tokensUsed: 0,
-        }
+      currentResult = { ...data, metadata: data.metadata || {, processingTime: 0, confidence: 0.8, sources: [], tokensUsed: 0 }
       }
       processingStage = 'API call complete!';
     } catch (error) {
@@ -216,11 +156,9 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       isProcessing = false;
     }
   }
-  function downloadResult() {
-    if (!currentResult) return;
+  function downloadResult() { if (!currentResult) return;
     const blob = new Blob([JSON.stringify(currentResult, null, 2)], {
-      type: 'application/json',
-    });
+      type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

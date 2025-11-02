@@ -56,10 +56,7 @@
     // Generate data points for clustering
     testDataPoints = generateClusteredData(numDataPoints, vectorDimensions, numClusters);
     // Generate matrices for multiplication
-    testMatrices = {
-      matrixA: generateRandomMatrix(matrixSize, matrixSize),
-      matrixB: generateRandomMatrix(matrixSize, matrixSize),
-    }
+    testMatrices = { matrixA: generateRandomMatrix(matrixSize, matrixSize), matrixB: generateRandomMatrix(matrixSize, matrixSize) }
   }
   /**
    * Generate random vector with optional similarity to base vector
@@ -159,26 +156,19 @@
   /**
    * Run K-means clustering demo
    */
-  async function runClusteringDemo() {
-    if (!capabilities?.available || !testDataPoints) return;
+  async function runClusteringDemo() { if (!capabilities?.available || !testDataPoints) return;
     isProcessing = true;
     activeDemo = 'clustering';
     try {
       const startTime = performance.now();
       const clusterResult = await webGPUAccelerator.performKMeansClustering(
-        testDataPoints,
-        vectorDimensions,
-        numClusters,
-        10 // iterations
+        testDataPoints, vectorDimensions, numClusters, 10 // iterations
       );
       const gpuTime = performance.now() - startTime;
       results = {
-        type: 'clustering',
-        gpu: {
+        type: 'clustering', gpu: {
           time: gpuTime
-          centroids: clusterResult.centroids.length,
-          assignments: clusterResult.assignments.length,
-        },
+          centroids: clusterResult.centroids.length, assignments: clusterResult.assignments.length },
         numDataPoints,
         numClusters,
         vectorDimensions,
@@ -216,12 +206,9 @@
         cpuTime = performance.now() - cpuStartTim;
         speedup = cpuTime / gpuTim;
       }
-      results = {
-        type: 'matrix',
-        gpu: {
+      results = { type: 'matrix', gpu: {
           time: gpuTime
-          resultSize: matrixResult.length,
-        },
+          resultSize: matrixResult.length },
         cpu: {
           time: cpuTime;
         },

@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 
   import { onMount } from 'svelte';
@@ -80,7 +80,7 @@ import type { User } from '$lib/types';
 
 </script>
 
-<div, class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
+<div class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
   <div
     class="avatar"
     style="width: {avatarSize};, height: {avatarSize};"
@@ -99,8 +99,8 @@ import type { User } from '$lib/types';
     aria-label="Upload or change avatar"
   >
     {#if $avatarStore.isUploading}
-      <div, class="upload-overlay">
-        <div, class="spinner" aria-hidden="true"></div>
+      <div class="upload-overlay">
+        <div class="spinner" aria-hidden="true"></div>
       </div>
     {:else}
       <img
@@ -112,32 +112,32 @@ import type { User } from '$lib/types';
     {/if}
 
     {#if clickable}
-      <div, class="upload-icon" aria-hidden="true">
+      <div class="upload-icon" aria-hidden="true">
         <svg width="24" height="24" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2, 2, 0, 0 1-2 2H5a2, 2, 0, 0, 1-2-2v-4" />
           <polyline points="7,10, 12,15, 17,10" />
-          <line, x1="12" y1="15" x2="12" y2="3" />
+          <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
       </div>
     {/if}
   </div>
 
   {#if showUploadButton}
-    <div, class="upload-controls">
-      <button, type="button" class="upload-btn" onclick={() => fileInput?.click()} disabled={$avatarStore.isUploading}>
+    <div class="upload-controls">
+      <button type="button" class="upload-btn" onclick={() => fileInput?.click()} disabled={$avatarStore.isUploading}>
         {$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
       </button>
 
       {#if $avatarStore.url && $avatarStore.url !== '/images/default-avatar.svg'}
-        <button, type="button" class="remove-btn" onclick={handleRemoveAvatar}>Remove</button>
+        <button type="button" class="remove-btn" onclick={handleRemoveAvatar}>Remove</button>
       {/if}
     </div>
   {/if}
 
   {#if $avatarStore.error}
-    <div, class="error-row">
+    <div class="error-row">
       <span>{$avatarStore.error}</span>
-      <button, type="button" onclick={() => avatarStore.clearError()} class="close-error">×</button>
+      <button type="button" onclick={() => avatarStore.clearError()} class="close-error">×</button>
     </div>
   {/if}
 </div>

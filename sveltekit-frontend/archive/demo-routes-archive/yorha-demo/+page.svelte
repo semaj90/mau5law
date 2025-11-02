@@ -302,8 +302,7 @@ https://svelte.dev/e/js_parse_error -->
   function addNotification(type: 'success' | 'error' | 'warning' | 'info', message: string) {
     const notification = {
       id: Date.now(),
-      type,
-      message,
+      type message,
       timestamp: new Date()
     };
     notifications = [...notifications, notification];

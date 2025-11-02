@@ -128,16 +128,9 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
           l2ChrRomCache: 2 * 1024 * 1024, // 2MB
           l3PalaceCache: 1024 * 1024,     // 1MB
         },
-        performanceTargets: {
-          responseTime: 16,     // 60fps target
-          compressionRatio: 100,
-          lodSwitchTime: 2,
-        },
-        webgpu: {
-          enabled: true,
-          rtxOptimization: true,
-          textureStreaming: true,
-        }
+        performanceTargets: { responseTime: 16, // 60fps target
+          compressionRatio: 100, lodSwitchTime: 2 },
+        webgpu: { enabled: true, rtxOptimization: true, textureStreaming: true }
       });
 
       await orchestrator.initialize();

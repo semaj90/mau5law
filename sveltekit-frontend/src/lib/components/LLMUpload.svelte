@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = $state<string>('');
@@ -19,15 +19,15 @@
     }
   }
 </script>
-<div, class="space-y-4">
+<div class="space-y-4">
   <h2>Upload Local LLM Model</h2>
-  <button, class="space-y-4" onclick={() => handleUpload()} disabled={loading}>
+  <button class="space-y-4" onclick={() => handleUpload()} disabled={loading}>
     {loading ? 'Uploading...' : 'Select & Upload Model'}
   </button>
   {#if uploadResult}
-    <div, class="space-y-4">{uploadResult}{/if}
+    <div class="space-y-4">{uploadResult}{/if}
   {#if error}
-    <div, class="space-y-4">{error}{/if}
+    <div class="space-y-4">{error}{/if}
 </div>
 <style>
   /* @unocss-include */

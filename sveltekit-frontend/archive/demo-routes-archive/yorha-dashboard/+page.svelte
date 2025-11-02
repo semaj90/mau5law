@@ -291,8 +291,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
   function addNotification(type: 'success' | 'error' | 'warning' | 'info', message: string) {
     const notification = {
       id: Date.now(),
-      type,
-      message,
+      type message,
       timestamp: new Date()
     };
     notifications = [...notifications, notification];
@@ -848,8 +847,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     gap: 12px;
   }
 
-  .result-type,
-  .result-confidence {
+  .result-type .result-confidence {
     font-size: 12px;
     color: #808080;
     text-transform: uppercase;

@@ -64,8 +64,7 @@
     // Add processing message
     const processingMsg = {
       id: Date.now().toString(),
-      sender: '9s_assistant' as const,
-      content: '9S IS ANALYZING...',
+      sender: '9s_assistant' as const content: '9S IS ANALYZING...',
       timestamp: getCurrentTime(),
       processing: true
     };

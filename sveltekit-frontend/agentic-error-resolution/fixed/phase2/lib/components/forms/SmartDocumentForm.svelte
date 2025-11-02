@@ -41,11 +41,11 @@
   let ocrResult = $derived(ocrService.currentResult$);
   let extractedFields = $derived(ocrService.extractedFields$);
   // Form validation
-  const formErrors = writable<Record<string, string>>({});
+  const formErrors = writable<Record<string string>>({});
   let isFormValid = $state(false);
   // Smart suggestions
-  let activeSuggestions = $state<Record<string, string[]>>({});
-  let suggestionLoading = $state<Record<string, boolean>>({});
+  let activeSuggestions = $state<Record<string string[]>>({});
+  let suggestionLoading = $state<Record<string boolean>>({});
   // Default form schema if none provided
   $effect(() => {
     if (formSchema.length === 0) {
@@ -91,7 +91,7 @@
       if (!field.value && enableSmartSuggestions) {
         try {
           suggestionLoading[field.name] = true;
-          const suggestions = await ocrService.getSuggestions(field.name, field.type, documentText);
+          const suggestions = await ocrService.getSuggestions(field.name, field.type documentText);
           activeSuggestions[field.name] = suggestions || [];
         } catch (error) {
           console.warn(`Failed to generate suggestions for ${field.name}:`, error);
@@ -150,7 +150,7 @@
       if (field.value) validateField(field.name, field.value as string);
     });
     if (isFormValid) {
-      const formData = populatedFields.reduce((acc: Record<string, any>, field) => {
+      const formData = populatedFields.reduce((acc: Record<string any>, field) => {
         acc[field.name] = field.value || '';
         return acc;
       }, {} as { [key: string]: any });

@@ -34,57 +34,17 @@
   let searchQuery = $state('');
   // Help categories
   const categories = [
-    {
-      id: 'getting-started',
-      title: 'Getting Started',
-      icon: Star,
-      description: 'New to the system? Start here',
-    },
-    {
-      id: 'cases',
-      title: 'Case Management',
-      icon: Book,
-      description: 'Managing and organizing cases',
-    },
-    {
-      id: 'evidence',
-      title: 'Evidence Handling',
-      icon: Search,
-      description: 'Evidence collection and analysis',
-    },
-    {
-      id: 'ai-assistant',
-      title: 'AI Assistant',
-      icon: MessageSquare,
-      description: 'Using AI features effectively',
-    },
-    {
-      id: 'advanced',
-      title: 'Advanced Features',
-      icon: UserIcon,
-      description: 'Power user features and tips',
-    },
-    {
-      id: 'troubleshooting',
-      title: 'Troubleshooting',
-      icon: AlertTriangle,
-      description: 'Common issues and solutions',
-    },
+    { id: 'getting-started', title: 'Getting Started', icon: Star, description: 'New to the system? Start here' },
+    { id: 'cases', title: 'Case Management', icon: Book, description: 'Managing and organizing cases' },
+    { id: 'evidence', title: 'Evidence Handling', icon: Search, description: 'Evidence collection and analysis' },
+    { id: 'ai-assistant', title: 'AI Assistant', icon: MessageSquare, description: 'Using AI features effectively' },
+    { id: 'advanced', title: 'Advanced Features', icon: UserIcon, description: 'Power user features and tips' },
+    { id: 'troubleshooting', title: 'Troubleshooting', icon: AlertTriangle, description: 'Common issues and solutions' },
   ];
   // Help articles
   const articles = [
     // Getting Started
-    {
-      id: 'quick-start',
-      category: 'getting-started',
-      title: 'Quick Start Guide',
-      description: 'Get up and running in 5 minutes',
-      type: 'article',
-      duration: '5 min read',
-      popularity: 5,
-      tags: ['getting-started', 'tutorial', 'basics'],
-      lastUpdated: '2024-01-15',
-      content: `
+    { id: 'quick-start', category: 'getting-started', title: 'Quick Start Guide', description: 'Get up and running in 5 minutes', type: 'article', duration: '5 min read', popularity: 5, tags: ['getting-started', 'tutorial', 'basics'], lastUpdated: '2024-01-15', content: `
   # Quick Start Guide
   Welcome to the Legal Case Management System! This guide will help you get started quickly.
   ## Step 1: Set Up Your Profile
@@ -111,19 +71,8 @@
   - Explore the analytics dashboard
   - Set up notifications
   - Learn about advanced search features
-  			`,
-    },
-    {
-      id: 'navigation-tour',
-      category: 'getting-started',
-      title: 'System Navigation Tour',
-      description: 'Learn how to navigate the interface',
-      type: 'interactive',
-      duration: '10 min',
-      popularity: 4,
-      tags: [],
-      lastUpdated: '2024-01-15',
-      content: `
+  			` },
+    { id: 'navigation-tour', category: 'getting-started', title: 'System Navigation Tour', description: 'Learn how to navigate the interface', type: 'interactive', duration: '10 min', popularity: 4, tags: [], lastUpdated: '2024-01-15', content: `
   # System Navigation Tour
   ## Main Navigation
   The top navigation bar contains links to all major sections:
@@ -145,8 +94,7 @@
   - User settings
   - Preferences
   - Logout
-  			`,
-    },
+  			` },
     {
       id: 'first-case',
       category: 'getting-started',
@@ -184,16 +132,7 @@
   			`,
     },
     // Case Management
-    {
-      id: 'case-organization',
-      category: 'cases',
-      title: 'Case Organization Best Practices',
-      description: 'How to structure and organize cases effectively',
-      type: 'article',
-      duration: '7 min read',
-      popularity: 4,
-      tags: [],
-      content: `
+    { id: 'case-organization', category: 'cases', title: 'Case Organization Best Practices', description: 'How to structure and organize cases effectively', type: 'article', duration: '7 min read', popularity: 4, tags: [], content: `
   # Case Organization Best Practices
   ## Naming Conventions
   Use consistent naming patterns:
@@ -219,19 +158,9 @@
   - Document all actions taken
   - Include timestamps on updates
   - Use consistent terminology
-  			`,
-    },
+  			` },
     // Evidence
-    {
-      id: 'evidence-best-practices',
-      category: 'evidence',
-      title: 'Evidence Handling Best Practices',
-      description: 'Proper evidence collection and management',
-      type: 'article',
-      duration: '10 min read',
-      popularity: 5,
-      tags: [],
-      content: `
+    { id: 'evidence-best-practices', category: 'evidence', title: 'Evidence Handling Best Practices', description: 'Proper evidence collection and management', type: 'article', duration: '10 min read', popularity: 5, tags: [], content: `
   # Evidence Handling Best Practices
   ## Chain of Custody
   Maintain proper documentation
@@ -256,19 +185,9 @@
   - Control access permissions
   - Regular backup procedures
   - Audit trail maintenance
-  			`,
-    },
+  			` },
     // AI Assistant
-    {
-      id: 'ai-prompting',
-      category: 'ai-assistant',
-      title: 'Effective AI Prompting Techniques',
-      description: 'How to get better results from the AI assistant',
-      type: 'article',
-      duration: '8 min read',
-      popularity: 4,
-      tags: [],
-      content: `
+    { id: 'ai-prompting', category: 'ai-assistant', title: 'Effective AI Prompting Techniques', description: 'How to get better results from the AI assistant', type: 'article', duration: '8 min read', popularity: 4, tags: [], content: `
   # Effective AI Prompting Techniques
   ## Clear and Specific Queries
   Be specific about what you need:
@@ -290,19 +209,9 @@
   - **Recommendations**: "What should I investigate next?"
   - **Explanations**: "Explain the legal implications of..."
   - **Summaries**: "Summarize the key findings in this case"
-  			`,
-    },
+  			` },
     // Troubleshooting
-    {
-      id: 'common-issues',
-      category: 'troubleshooting',
-      title: 'Common Issues and Solutions',
-      description: 'Solutions to frequently encountered problems',
-      type: 'article',
-      duration: '6 min read',
-      popularity: 3,
-      tags: [],
-      content: `
+    { id: 'common-issues', category: 'troubleshooting', title: 'Common Issues and Solutions', description: 'Solutions to frequently encountered problems', type: 'article', duration: '6 min read', popularity: 3, tags: [], content: `
   # Common Issues and Solutions
   ## Login Problems
   **Issue**: Cannot log in to the system
@@ -332,32 +241,16 @@
   2. Remove filters and try again
   3. Use broader search terms
   4. Try advanced search options
-  			`,
-    },
+  			` },
   ];
   // FAQ items
   const faqs = [
-    {
-      question: 'How do I reset my password?',
-      answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.',
-    },
-    {
-      question: 'Can I export my case data?',
-      answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.',
-    },
-    {
-      question: 'How do I use keyboard shortcuts?',
-      answer:
-        'Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.',
-    },
-    {
-      question: 'What file types are supported for evidence?',
-      answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.',
-    },
-    {
-      question: 'How do I collaborate with team members?',
-      answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.',
-    },
+    { question: 'How do I reset my password?', answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.' },
+    { question: 'Can I export my case data?', answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.' },
+    { question: 'How do I use keyboard shortcuts?', answer:
+        'Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.' },
+    { question: 'What file types are supported for evidence?', answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.' },
+    { question: 'How do I collaborate with team members?', answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.' },
   ];
 
   const filteredArticles = $derived(() => {

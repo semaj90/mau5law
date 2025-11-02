@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import Search from 'lucide-svelte';
   import X from 'lucide-svelte'; // use default import for X (TS hint suggested this)
@@ -37,9 +37,9 @@
     inputElement?.focus();
   }
 </script>
-<div, class="search-input-container" class:focused={isFocused}>
-  <div, class="search-icon" aria-hidden="true">
-    <Search, size={18} />
+<div class="search-input-container" class:focused={isFocused}>
+  <div class="search-icon" aria-hidden="true">
+    <Search size={18} />
   </div>
   <input
     bind:this={inputElement}
@@ -54,8 +54,8 @@
     aria-label="Search"
   />
   {#if value}
-    <button, class="clear-button" onclick={clearValue} aria-label="Clear, search" type="button">
-      <X, size={16} />
+    <button class="clear-button" onclick={clearValue} aria-label="Clear, search" type="button">
+      <X size={16} />
     </button>
   {/if}
 </div>

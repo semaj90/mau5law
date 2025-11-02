@@ -58,12 +58,7 @@ Usage:
   let searchTime = 0;
   let cudaCapabilities: CudaCapabilities | null = null;
   let errorMessage = '';
-  let gpuMetrics = {
-    utilization: 0,
-    memory_usage: 0,
-    temperature: 0,
-    active_streams: 0,
-  };
+  let gpuMetrics = { utilization: 0, memory_usage: 0, temperature: 0, active_streams: 0 };
 
   // Performance tracking
   type Perf = {
@@ -77,18 +72,12 @@ Usage:
   let performanceHistory: Perf[] = [];
 
   // Load CUDA capabilities on mount
-  onMount(async () => {
-    try {
+  onMount(async () => { try {
       const response = await fetch('/api/ai/cuda-capabilities');
       if (response.ok) {
         const data = await response.json();
         cudaCapabilities = {
-          gpu_model: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.gpu_model || 'RTX 3060 Ti',
-          vram_gb: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.vram_gb || 8,
-          cuda_cores: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.cuda_cores || 4864,
-          simd_enabled: data.simd_capabilities?.avx2_enabled || false,
-          instruction_set: data.simd_capabilities?.instruction_set || 'AVX2',
-        };
+          gpu_model: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.gpu_model || 'RTX 3060 Ti', vram_gb: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.vram_gb || 8, cuda_cores: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.cuda_cores || 4864, simd_enabled: data.simd_capabilities?.avx2_enabled || false, instruction_set: data.simd_capabilities?.instruction_set || 'AVX2' };
       }
     } catch (error) {
       console.error('Failed to load CUDA capabilities:', error);
@@ -139,27 +128,13 @@ Usage:
               title: neighbor.payload?.title || `Legal Document ${index + 1}`,
               content: neighbor.payload?.content || 'Document content would be loaded from database...',
               score,
-              metadata: {
-                document_type: neighbor.payload?.document_type || 'contract',
-                jurisdiction: neighbor.payload?.jurisdiction || 'federal',
-                date: neighbor.payload?.date || new Date().toISOString().split('T')[0],
-                legal_domain: neighbor.payload?.legal_domain || legalDomain,
-              },
-              performance: {
-                gpu_accelerated: true,
-                search_time_ms: cudaResults.stats?.search_time_ms ?? 0,
-                gpu_utilization: cudaResults.stats?.gpu_utilization ?? 0,
-              },
+              metadata: { document_type: neighbor.payload?.document_type || 'contract', jurisdiction: neighbor.payload?.jurisdiction || 'federal', date: neighbor.payload?.date || new Date().toISOString().split('T')[0], legal_domain: neighbor.payload?.legal_domain || legalDomain },
+              performance: { gpu_accelerated: true, search_time_ms: cudaResults.stats?.search_time_ms ?? 0, gpu_utilization: cudaResults.stats?.gpu_utilization ?? 0 },
             } as SearchResult;
           });
 
-          if (cudaResults.stats) {
-            gpuMetrics = {
-              utilization: cudaResults.stats.gpu_utilization ?? 0,
-              memory_usage: cudaResults.stats.memory_usage_mb ?? 0,
-              temperature: cudaResults.stats.temperature_c ?? 65,
-              active_streams: cudaResults.stats.active_streams ?? 1,
-            };
+          if (cudaResults.stats) { gpuMetrics = {
+              utilization: cudaResults.stats.gpu_utilization ?? 0, memory_usage: cudaResults.stats.memory_usage_mb ?? 0, temperature: cudaResults.stats.temperature_c ?? 65, active_streams: cudaResults.stats.active_streams ?? 1 };
           }
         }
       }
@@ -169,13 +144,7 @@ Usage:
         const fallbackResponse = await fetch('/api/ai/enhanced-legal-search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query,
-            limit: maxResults,
-            legal_domain: legalDomain,
-            search_type: searchType,
-            use_embeddings: true,
-          }),
+          body: JSON.stringify({ query, limit: maxResults, legal_domain: legalDomain, search_type: searchType, use_embeddings: true }),
         });
 
         if (fallbackResponse.ok) {
@@ -186,17 +155,8 @@ Usage:
             title: result.title || `Document ${index + 1}`,
             content: result.content || result.summary || 'No content available',
             score: result.score ?? 0.5,
-            metadata: {
-              document_type: result.document_type || 'unknown',
-              jurisdiction: result.jurisdiction || 'unknown',
-              date: result.date || new Date().toISOString().split('T')[0],
-              legal_domain: result.legal_domain || legalDomain,
-            },
-            performance: {
-              gpu_accelerated: false,
-              search_time_ms: fallbackData.search_time_ms ?? 0,
-              gpu_utilization: 0,
-            },
+            metadata: { document_type: result.document_type || 'unknown', jurisdiction: result.jurisdiction || 'unknown', date: result.date || new Date().toISOString().split('T')[0], legal_domain: result.legal_domain || legalDomain },
+            performance: { gpu_accelerated: false, search_time_ms: fallbackData.search_time_ms ?? 0, gpu_utilization: 0 },
           } as SearchResult));
         }
       }
@@ -205,13 +165,7 @@ Usage:
       const totalSearchTime = Date.now() - startTime;
       searchTime = totalSearchTime;
 
-      performanceHistory.push({
-        timestamp: Date.now(),
-        search_time_ms: totalSearchTime,
-        gpu_utilization: gpuMetrics.utilization,
-        query_length: query.length,
-        results_count: searchResults.length,
-      });
+      performanceHistory.push({ timestamp: Date.now(), search_time_ms: totalSearchTime, gpu_utilization: gpuMetrics.utilization, query_length: query.length, results_count: searchResults.length });
       if (performanceHistory.length > 10) performanceHistory = performanceHistory.slice(-10);
 
       results = searchResults;

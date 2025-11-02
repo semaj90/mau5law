@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   onMount(async () => {
     try {
       // Cast the imported module to a loose type so TS doesn't require specific exports.
-      const m = (await import('$lib/stores/unified')) as unknown as Record<string, any>;
+      const m = (await import('$lib/stores/unified')) as unknown as Record<string any>;
       processEvidenceFn = typeof m.processEvidence === 'function' ? m.processEvidence : undefined;
       retryProcessingFn = typeof m.retryProcessing === 'function' ? m.retryProcessing : undefined;
       resetProcessorFn = typeof m.resetProcessor === 'function' ? m.resetProcessor : undefined;

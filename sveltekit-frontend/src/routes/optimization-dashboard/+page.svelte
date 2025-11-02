@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   Optimization Dashboard - Real-time monitoring of advanced features
   Shows neural memory prediction, ML caching, performance monitoring, and worker system
 -->
-<script, lang="ts">
+<script lang="ts">
   import { onMount } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
   import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
@@ -29,8 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     workerSystem: {
      , totalJobs: 0,
       activeWorkers: 0,
-      systemHealth: 'healthy' as const,
-      queuedJobs: 0
+      systemHealth: 'healthy' as const queuedJobs: 0
     } as WorkerStats,
     recommendations: [], as: string[]
   });
@@ -55,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
       const rag: any = enhancedRAGStore;
 
       // Get neural memory metrics if available
-      let, memoryReport: any = {};
+      let memoryReport: any = {};
       if (rag.neuralMemory?.generatePerformanceReport) {
         memoryReport = await rag.neuralMemory.generatePerformanceReport();
       }
@@ -199,111 +198,111 @@ https://svelte.dev/e/js_parse_error -->
   });
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900, text-white, p-6">
-  <div, class="max-w-7xl, mx-auto">
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+  <div class="max-w-7xl">
     <!-- Header -->
-    <div, class="mb-8">
-      <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400, bg-clip-text, text-transparent">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
         🧠 Advanced Optimization Dashboard
       </h1>
-      <p, class="text-slate-300">
+      <p class="text-slate-300">
         Real-time monitoring of neural memory prediction, ML-based caching, adaptive resource management, and
         specialized workers
       </p>
       <!-- Header button: use Svelte, event, directive -->
-      <div class="flex, gap-4, mt-4">
+      <div class="flex gap-4">
         <button
           onclick={isMonitoring ? stopMonitoring : startMonitoring}
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           {isMonitoring ? '⏸️ Stop Monitoring' : '▶️ Start Monitoring'}
         </button>
-        <span class="text-sm, text-slate-400, py-2">
+        <span class="text-sm text-slate-400">
           Last updated: {lastUpdate.toLocaleTimeString()}
         </span>
       </div>
     </div>
     <!-- System, Status, Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-4, gap-6, mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Neural, Memory, Status -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex, items-center, gap-2">🧠 Neural Memory</h3>
-        <div, class="space-y-3">
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Usage:</span>
-            <span, class="font-mono">{systemStatus.neuralMemory.currentUsage}MB</span>
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">🧠 Neural Memory</h3>
+        <div class="space-y-3">
+          <div class="flex">
+            <span class="text-slate-300">Usage:</span>
+            <span class="font-mono">{systemStatus.neuralMemory.currentUsage}MB</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Efficiency:</span>
-            <span, class="font-mono">{(systemStatus.neuralMemory.efficiency * 100).toFixed(1)}%</span>
+          <div class="flex">
+            <span class="text-slate-300">Efficiency:</span>
+            <span class="font-mono">{(systemStatus.neuralMemory.efficiency * 100).toFixed(1)}%</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">LOD Level:</span>
-            <span, class="font-mono, capitalize">{systemStatus.neuralMemory.lodLevel}</span>
+          <div class="flex">
+            <span class="text-slate-300">LOD Level:</span>
+            <span class="font-mono">{systemStatus.neuralMemory.lodLevel}</span>
           </div>
         </div>
       </div>
       <!-- ML, Caching, Status -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex, items-center, gap-2">⚡ ML Caching</h3>
-        <div, class="space-y-3">
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Hit Rate:</span>
-            <span, class="font-mono">{(systemStatus.mlCaching.hitRate * 100).toFixed(1)}%</span>
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">⚡ ML Caching</h3>
+        <div class="space-y-3">
+          <div class="flex">
+            <span class="text-slate-300">Hit Rate:</span>
+            <span class="font-mono">{(systemStatus.mlCaching.hitRate * 100).toFixed(1)}%</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Compression</span>
-            <span, class="font-mono">{(systemStatus.mlCaching.compressionRatio * 100).toFixed(1)}%</span>
+          <div class="flex">
+            <span class="text-slate-300">Compression</span>
+            <span class="font-mono">{(systemStatus.mlCaching.compressionRatio * 100).toFixed(1)}%</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Active Layers:</span>
-            <span, class="font-mono">{systemStatus.mlCaching.layersActive.length}/7</span>
+          <div class="flex">
+            <span class="text-slate-300">Active Layers:</span>
+            <span class="font-mono">{systemStatus.mlCaching.layersActive.length}/7</span>
           </div>
         </div>
       </div>
       <!-- Worker, System, Status -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex, items-center, gap-2">🏗️ Worker System</h3>
-        <div, class="space-y-3">
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Health:</span>
-            <span class="font-mono, capitalize, text-green-400">{systemStatus.workerSystem.systemHealth}</span>
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">🏗️ Worker System</h3>
+        <div class="space-y-3">
+          <div class="flex">
+            <span class="text-slate-300">Health:</span>
+            <span class="font-mono capitalize">{systemStatus.workerSystem.systemHealth}</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Active Workers:</span>
-            <span, class="font-mono">{systemStatus.workerSystem.activeWorkers}</span>
+          <div class="flex">
+            <span class="text-slate-300">Active Workers:</span>
+            <span class="font-mono">{systemStatus.workerSystem.activeWorkers}</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Total Jobs:</span>
-            <span, class="font-mono">{systemStatus.workerSystem.totalJobs}</span>
+          <div class="flex">
+            <span class="text-slate-300">Total Jobs:</span>
+            <span class="font-mono">{systemStatus.workerSystem.totalJobs}</span>
           </div>
         </div>
       </div>
       <!-- Performance, Overview -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex, items-center, gap-2">📊 Performance</h3>
-        <div, class="space-y-3">
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Avg Response:</span>
-            <span, class="font-mono">{(systemStatus.mlCaching as: any)?.avgResponseTime ?? 'N/A'}ms</span>
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">📊 Performance</h3>
+        <div class="space-y-3">
+          <div class="flex">
+            <span class="text-slate-300">Avg Response:</span>
+            <span class="font-mono">{(systemStatus.mlCaching as: any)?.avgResponseTime ?? 'N/A'}ms</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Throughput:</span>
-            <span, class="font-mono">1.2GB/s</span>
+          <div class="flex">
+            <span class="text-slate-300">Throughput:</span>
+            <span class="font-mono">1.2GB/s</span>
           </div>
-          <div, class="flex, justify-between">
-            <span, class="text-slate-300">Memory Saved:</span>
-            <span, class="font-mono, text-green-400">31%</span>
+          <div class="flex">
+            <span class="text-slate-300">Memory Saved:</span>
+            <span class="font-mono">31%</span>
           </div>
         </div>
       </div>
     </div>
     <!-- Action, Buttons -->
-    <div class="grid grid-cols-1 md:grid-cols-3, gap-6, mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- RAG, Search, Test -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-lg, font-semibold, mb-4">🔍 Enhanced RAG Search</h3>
-        <p class="text-slate-300, text-sm, mb-4">
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-lg font-semibold">🔍 Enhanced RAG Search</h3>
+        <p class="text-slate-300 text-sm">
           Test the SOM clustering, neural memory optimization, and recommendation engine
         </p>
         <!-- Action buttons (converted onclick, to, on:click) -->
@@ -314,20 +313,20 @@ https://svelte.dev/e/js_parse_error -->
           Run RAG Search
         </button>
         {#if systemStatus.recommendations.length > 0}
-          <div, class="mt-4">
-            <h4 class="text-sm font-semibold, text-slate-300, mb-2">AI Recommendations:</h4>
-            <ul, class="text-xs, space-y-1">
+          <div class="mt-4">
+            <h4 class="text-sm font-semibold text-slate-300">AI Recommendations:</h4>
+            <ul class="text-xs">
               {#each Array.isArray(systemStatus.recommendations) ? systemStatus.recommendations : [] as rec}
-                <li, class="text-blue-300">• {rec}</li>
+                <li class="text-blue-300">• {rec}</li>
               {/each}
             </ul>
           </div>
         {/if}
       </div>
       <!-- Cache, Optimization -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-lg, font-semibold, mb-4">⚡ Cache Optimization</h3>
-        <p class="text-slate-300, text-sm, mb-4">Trigger ML-based cache optimization and memory rebalancing</p>
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-lg font-semibold">⚡ Cache Optimization</h3>
+        <p class="text-slate-300 text-sm">Trigger ML-based cache optimization and memory rebalancing</p>
         <button
           onclick={optimizeCache}
           class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
@@ -336,28 +335,28 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
       <!-- Worker, System, Test -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-lg, font-semibold, mb-4">🏗️ Test Worker System</h3>
-        <p class="text-slate-300, text-sm, mb-4">Submit a test job to the specialized worker system</p>
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-lg font-semibold">🏗️ Test Worker System</h3>
+        <p class="text-slate-300 text-sm">Submit a test job to the specialized worker system</p>
         <button
           onclick={testWorkerSystem}
           disabled={isSubmittingJob}
-          class="w-full px-4 py-2 bg-green-600 hover:bg-green-700, disabled:bg-gray-600 rounded-lg transition-colors"
+          class="w-full px-4 py-2 bg-green-600 hover:bg-green-700"
         >
           {isSubmittingJob ? '⏳ Processing...' : 'Test Workers'}
         </button>
         {#if testJobResult}
-          <div class="mt-4 p-3, bg-slate-700, rounded-lg">
-            <h4 class="text-sm, font-semibold, mb-2">Job Result:</h4>
+          <div class="mt-4 p-3 bg-slate-700">
+            <h4 class="text-sm font-semibold">Job Result:</h4>
             {#if testJobResult.success}
-              <div, class="text-xs, text-green-300">
+              <div class="text-xs">
                 ✅ Success! Processing time: {testJobResult.processingTime}ms
                 {#if testJobResult.result?.summary}
-                  <p, class="mt-2, text-slate-300">Summary: {testJobResult.result.summary}</p>
+                  <p class="mt-2">Summary: {testJobResult.result.summary}</p>
                 {/if}
               </div>
             {:else}
-              <div, class="text-xs, text-red-300">
+              <div class="text-xs">
                 ❌ {testJobResult.error || 'Job failed'}
               </div>
             {/if}
@@ -366,11 +365,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
     <!-- Real-time, Charts -->
-    <div class="grid grid-cols-1, lg:grid-cols-2, gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2">
       <!-- Memory, Usage, Chart -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-lg, font-semibold, mb-4">📈 Memory Usage Trends</h3>
-        <div class="h-48 flex, items-end, gap-2">
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-lg font-semibold">📈 Memory Usage Trends</h3>
+        <div class="h-48 flex items-end">
           {#each performanceChart.memoryUsage as point, i}
             <div
               class="bg-blue-500 rounded-t opacity-80 hover:opacity-100 transition-opacity"
@@ -381,9 +380,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       <!-- Cache, Performance, Chart -->
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-        <h3 class="text-lg, font-semibold, mb-4">⚡ Cache Hit Rate</h3>
-        <div class="h-48 flex, items-end, gap-2">
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+        <h3 class="text-lg font-semibold">⚡ Cache Hit Rate</h3>
+        <div class="h-48 flex items-end">
           {#each performanceChart.cacheHitRate as point, i}
             <div
               class="bg-green-500 rounded-t opacity-80 hover:opacity-100 transition-opacity"
@@ -395,40 +394,40 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
     <!-- Feature, Status -->
-    <div class="mt-8 bg-slate-800/50 backdrop-blur rounded-xl p-6, border, border-slate-700">
-      <h3 class="text-xl, font-semibold, mb-4">✅ Advanced Features Status</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-4, gap-4">
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">Neural Memory Prediction</span>
+    <div class="mt-8 bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
+      <h3 class="text-xl font-semibold">✅ Advanced Features Status</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">Neural Memory Prediction</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">ML-Based Cache Eviction</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">ML-Based Cache Eviction</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">Real-time Performance Monitoring</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">Real-time Performance Monitoring</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">Adaptive Resource Management</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">Adaptive Resource Management</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">Recommendation Engine</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">Recommendation Engine</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">Event-Driven Workers</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">Event-Driven Workers</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">SOM Clustering</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">SOM Clustering</span>
         </div>
-        <div class="flex, items-center, gap-2">
-          <span class="w-3 h-3, bg-green-500, rounded-full"></span>
-          <span, class="text-sm">7-Layer Caching</span>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500"></span>
+          <span class="text-sm">7-Layer Caching</span>
         </div>
       </div>
     </div>

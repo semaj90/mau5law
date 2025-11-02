@@ -8,11 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Replaced Svelte-runic prop/state usage with standard Svelte exports and onMount subscription
   import { onMount, onDestroy } from 'svelte';
-  import {
-    createGPUProcessingActor,
-    type DocumentInput,
-    type ProcessingResult,
-  } from '$lib/state/gpu-processing-machine';
+  import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
   import { fade, fly } from 'svelte/transition';
 
   // Props (replace $props)
@@ -41,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
   // Define a minimal typed view of the actor snapshot so TS recognizes .matches and .context
   type GPUContext = {
     processingQueue?: DocumentInput[];
-    activeProcessing?: Map<string, DocumentInput>;
+    activeProcessing?: Map<string DocumentInput>;
     completedDocuments?: ProcessingResult[];
     errorDocuments?: ProcessingResult[];
     serviceHealth?: { gpu: string; webgpu: string; vectorDb: string };
@@ -58,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
   let isProcessing = state?.matches?.('processing') ?? false;
   let isPaused = state?.matches?.('paused') ?? false;
   let processingQueue = (state.context?.processingQueue ?? []) as DocumentInput[];
-  let activeProcessing = (state.context?.activeProcessing ?? new Map()) as Map<string, DocumentInput>;
+  let activeProcessing = (state.context?.activeProcessing ?? new Map()) as Map<string DocumentInput>;
   let completedDocuments = (state.context?.completedDocuments ?? []) as ProcessingResult[];
   let errorDocuments = (state.context?.errorDocuments ?? []) as ProcessingResult[];
   let serviceHealth = state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' };
@@ -85,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
       isProcessing = state.matches?.('processing') ?? false;
       isPaused = state.matches?.('paused') ?? false;
       processingQueue = (state.context?.processingQueue ?? []) as DocumentInput[];
-      activeProcessing = (state.context?.activeProcessing ?? new Map()) as Map<string, DocumentInput>;
+      activeProcessing = (state.context?.activeProcessing ?? new Map()) as Map<string DocumentInput>;
       completedDocuments = (state.context?.completedDocuments ?? []) as ProcessingResult[];
       errorDocuments = (state.context?.errorDocuments ?? []) as ProcessingResult[];
       serviceHealth = state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' };
@@ -119,13 +115,7 @@ https://svelte.dev/e/js_parse_error -->
       documentId: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       content: newDocumentContent,
       title: newDocumentTitle || undefined,
-      options: {
-        processType: processType as any,
-        priority,
-        timeout: 30000,
-        retries: 3,
-        batchSize: 1,
-      },
+      options: { processType: processType as any, priority, timeout: 30000, retries: 3, batchSize: 1 },
     };
     gpuActor.send({ type: 'PROCESS_DOCUMENT', ...document });
     // Clear form
@@ -522,9 +512,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     margin-bottom: 1rem;
   }
-  .priority-slider {
-    flex: 1,
-  }
+  .priority-slider { flex: 1 }
   .priority-label {
     min-width: 80px;
     font-size: 0.9rem;
@@ -586,9 +574,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #dc3545;
     background: #fff5f5;
   }
-  .document-info {
-    flex: 1,
-  }
+  .document-info { flex: 1 }
   .document-info h4 {
     margin: 0 0 0.5rem 0;
     color: #333;

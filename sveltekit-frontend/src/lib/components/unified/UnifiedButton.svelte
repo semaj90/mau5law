@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   - NES-style pixelated transitions
   - Memory-efficient animations (2KB budget)
 -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   import { spring } from 'svelte/motion';
@@ -253,10 +253,10 @@ https://svelte.dev/e/js_parse_error -->
     ].filter(Boolean).join(' ');
   }
 </script>
-<div, class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
-  <div, class="canvas-layer" aria-hidden="true">
+<div class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
+  <div class="canvas-layer" aria-hidden="true">
     <!-- make canvas non-self-closing to avoid potential, parsing, issues -->
-    <canvas, bind:this={canvas} class="gl-canvas"></canvas>
+    <canvas bind:this={canvas} class="gl-canvas"></canvas>
   </div>
   <button
     type="button"
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
   >
     <slot />
     {#if loading}
-      <span, class="spinner" aria-hidden="true">⏳</span>
+      <span class="spinner" aria-hidden="true">⏳</span>
     {/if}
   </button>
 </div>

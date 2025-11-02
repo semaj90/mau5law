@@ -13,20 +13,7 @@ Features:
   import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card.svelte';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
-  import {
-    Upload,
-    FileText,
-    Clock,
-    Link,
-    Brain,
-    Zap,
-    CheckCircle,
-    AlertCircle,
-    Eye,
-    Download,
-    BarChart3,
-    Network,
-  } from 'lucide-svelte';
+  import { Upload, FileText, Clock, Link, Brain, Zap, CheckCircle, AlertCircle, Eye, Download, BarChart3, Network } from 'lucide-svelte';
 
   // Reactive state
   let currentTab = $state('upload');
@@ -41,28 +28,12 @@ Features:
   let showAdvancedOptions = $state(false);
 
   // Analysis options
-  let analysisOptions = $state({
-    enableCrossDocumentAnalysis: true,
-    extractTimelines: true,
-    detectRelationships: true,
-    generateSummary: true,
-    parallelProcessing: true,
-    confidenceThreshold: 0.7,
-    maxConcurrency: 4,
-  });
+  let analysisOptions = $state({ enableCrossDocumentAnalysis: true, extractTimelines: true, detectRelationships: true, generateSummary: true, parallelProcessing: true, confidenceThreshold: 0.7, maxConcurrency: 4 });
 
   // File upload handling
-  function handleFileUpload(event) {
-    const files = Array.from(event.target.files);
+  function handleFileUpload(event) { const files = Array.from(event.target.files);
     const newFiles = files.map(file => ({
-      id: crypto.randomUUID(),
-      file,
-      filename: file.name,
-      size: file.size,
-      type: getDocumentType(file.name),
-      content: null,
-      analyzed: false,
-    }));
+      id: crypto.randomUUID(), file, filename: file.name, size: file.size, type: getDocumentType(file.name), content: null, analyzed: false }));
     uploadedFiles = [...uploadedFiles, ...newFiles];
 
     // Read file contents
@@ -76,19 +47,9 @@ Features:
     });
   }
 
-  function getDocumentType(filename) {
-    const ext = filename.toLowerCase().split('.').pop();
+  function getDocumentType(filename) { const ext = filename.toLowerCase().split('.').pop();
     const typeMap = {
-      pdf: 'document',
-      doc: 'document',
-      docx: 'document',
-      txt: 'document',
-      jpg: 'image',
-      jpeg: 'image',
-      png: 'image',
-      mp4: 'video',
-      mp3: 'audio',
-    };
+      pdf: 'document', doc: 'document', docx: 'document', txt: 'document', jpg: 'image', jpeg: 'image', png: 'image', mp4: 'video', mp3: 'audio' };
     return typeMap[ext] || 'other';
   }
 
@@ -102,18 +63,11 @@ Features:
     isAnalyzing = true;
     analysisProgress = 0;
 
-    try {
-      const filesToAnalyze = uploadedFiles
+    try { const filesToAnalyze = uploadedFiles
         .filter(file => file.content)
         .map(file => ({
-          id: file.id,
-          filename: file.filename,
-          content: file.content,
-          type: file.type,
-          metadata: {
-            fileSize: file.size,
-            uploadDate: new Date().toISOString(),
-          },
+          id: file.id, filename: file.filename, content: file.content, type: file.type metadata: {
+            fileSize: file.size, uploadDate: new Date().toISOString() },
         }));
 
       // Progress simulation
@@ -121,17 +75,9 @@ Features:
         analysisProgress = Math.min(analysisProgress + 10, 90);
       }, 500);
 
-      const response = await fetch('/api/v1/evidence/batch-analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-test-mode': 'true',
-        },
-        body: JSON.stringify({
-          caseId,
-          files: filesToAnalyze,
-          analysisOptions,
-        }),
+      const response = await fetch('/api/v1/evidence/batch-analyze', { method: 'POST', headers: {
+          'Content-Type': 'application/json', 'x-test-mode': 'true' },
+        body: JSON.stringify({ caseId, files: filesToAnalyze, analysisOptions }),
       });
 
       clearInterval(progressInterval);
@@ -164,29 +110,17 @@ Features:
   }
 
   // Timeline extraction
-  async function extractUnifiedTimeline() {
-    try {
+  async function extractUnifiedTimeline() { try {
       const allContent = uploadedFiles
         .filter(file => file.content)
         .map(file => file.content)
         .join('\n\n---\n\n');
 
       const response = await fetch('/api/v1/timeline', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-test-mode': 'true',
-        },
-        body: JSON.stringify({
-          caseId,
-          content: allContent,
-          documentType: 'other',
-          extractionOptions: {
-            includeImpliedDates: true,
-            confidenceThreshold: analysisOptions.confidenceThreshold,
-            maxEvents: 50,
-            enableEntityLinking: true,
-          },
+        method: 'POST', headers: {
+          'Content-Type': 'application/json', 'x-test-mode': 'true' },
+        body: JSON.stringify({ caseId, content: allContent, documentType: 'other', extractionOptions: {
+            includeImpliedDates: true, confidenceThreshold: analysisOptions.confidenceThreshold, maxEvents: 50, enableEntityLinking: true },
         }),
       });
 
@@ -229,9 +163,7 @@ Features:
       canvas: canvasData,
     };
 
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json',
-    });
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

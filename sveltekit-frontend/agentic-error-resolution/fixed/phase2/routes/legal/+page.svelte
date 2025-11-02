@@ -21,12 +21,7 @@
   const legalRoutes = legalGroup?.routes || [];
 
   // Legal dashboard statistics (mock data)
-  const stats = {
-    activeCases: 12,
-    pendingEvidence: 8,
-    documentsProcessed: 156,
-    aiAnalysisCompleted: 89,
-  };
+  const stats = { activeCases: 12, pendingEvidence: 8, documentsProcessed: 156, aiAnalysisCompleted: 89 };
 </script>
 
 <svelte:head>

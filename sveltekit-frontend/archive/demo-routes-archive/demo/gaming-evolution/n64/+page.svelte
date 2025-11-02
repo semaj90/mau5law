@@ -93,12 +93,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     legalError = null;
     const startTime = Date.now();
 
-    try {
-      const response = await fetch('http://localhost:8080/recommend', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    try { const response = await fetch('http://localhost:8080/recommend', {
+        method: 'POST', headers: {
+          'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: legalQuery,
           domain: selectedLegalDomain,
@@ -2014,8 +2011,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   .n64-card,
   .n64-btn-3d,
   .dialog-box-3d,
-  .legal-ai-interface,
-  .evidence-interface {
+  .legal-ai-interface .evidence-interface {
     transform-style: preserve-3d;
   }
 

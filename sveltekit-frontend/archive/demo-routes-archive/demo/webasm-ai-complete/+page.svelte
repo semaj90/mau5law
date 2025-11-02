@@ -132,8 +132,7 @@
     if (!prompt.trim()) return;
 
     const userMessage = {
-      role: 'user' as const,
-      content: prompt,
+      role: 'user' as const content: prompt,
       timestamp: Date.now()
     };
 
@@ -142,8 +141,7 @@
     isStreamingActive = true;
 
     const assistantMessage = {
-      role: 'assistant' as const,
-      content: '',
+      role: 'assistant' as const content: '',
       timestamp: Date.now()
     };
     chatHistory.push(assistantMessage);
@@ -184,8 +182,7 @@
     if (!prompt.trim()) return;
 
     const userMessage = {
-      role: 'user' as const,
-      content: prompt,
+      role: 'user' as const content: prompt,
       timestamp: Date.now()
     };
 
@@ -217,8 +214,7 @@
       }
 
       const assistantMessage = {
-        role: 'assistant' as const,
-        content: data.response,
+        role: 'assistant' as const content: data.response,
         timestamp: Date.now()
       };
 
@@ -233,8 +229,7 @@
 
     } catch (error) {
       const errorMessage = {
-        role: 'assistant' as const,
-        content: `Error: ${error.message}`,
+        role: 'assistant' as const content: `Error: ${error.message}`,
         timestamp: Date.now()
       };
       chatHistory.push(errorMessage);

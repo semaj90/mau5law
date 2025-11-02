@@ -72,9 +72,7 @@
   }
   async function handleDeleteDocument(docId: string) {
     try {
-      const response = await fetch(`/api/rag/documents/${docId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/rag/documents/${docId}`, { method: 'DELETE' });
       if (response.ok) {
         documents = documents.filter((d) => d.id !== docId);
         message = 'Document deleted successfully';

@@ -9,7 +9,7 @@
   - Customizable switch styles and effects
   - Integration with YoRHa design system
 -->
-<script, lang="ts">
+<script lang="ts">
 
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -66,7 +66,7 @@
   let particleStyleElement: HTMLStyleElement | null = null;
 
   // Effective render options
-  const, effectiveRenderOptions: N64RenderingOptions = {
+  const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
     enableTextureFiltering,
     enableMipMapping,
@@ -258,7 +258,7 @@
     const colors = (baseColors, as: any)[variantKey] || baseColors.primary;
     const stateColors = isOn ? colors.on : colors.off;
 
-    const materialMap: Record<string, any> = {
+    const materialMap: Record<string any> = {
       basic: {
        , trackBackground: isOn ? stateColors.base : '#2d3748',
         knobBackground: stateColors.base,
@@ -298,7 +298,7 @@
 
   function getSizeStyles(sz: string) {
     const normalized = sz === 'md' ? 'medium' : sz;
-    const sizeMap: Record<string, any> = {
+    const sizeMap: Record<string any> = {
       small: {, width: 44, height: 24, knobSize: 18, fontSize: '12px' },
       medium: {, width: 56, height: 32, knobSize: 24, fontSize: '14px' },
       large: {, width: 68, height: 40, knobSize: 30, fontSize: '16px' },
@@ -338,7 +338,7 @@
 
 </script>
 
-<div, class={"n64-switch-container, " + className}>
+<div class={"n64-switch-container, " + className}>
   <div
     bind:this={switchElement}
     class={
@@ -386,21 +386,21 @@
     onmouseleave={handleUnhover}
     onkeydown={handleKeyDown}
   >
-    <div, class="switch-track" style={`width: ${sizeStyles.width}px;, height: ${sizeStyles.height}px;`}>
-      <div, class="switch-knob" style={`width: ${sizeStyles.knobSize}px;, height: ${sizeStyles.knobSize}px;`}>
+    <div class="switch-track" style={`width: ${sizeStyles.width}px;, height: ${sizeStyles.height}px;`}>
+      <div class="switch-knob" style={`width: ${sizeStyles.knobSize}px;, height: ${sizeStyles.knobSize}px;`}>
         {#if enableLighting}
-          <div, class="knob-lighting">{/if}
+          <div class="knob-lighting">{/if}
         {#if enableReflections}
-          <div, class="knob-reflection">{/if}
+          <div class="knob-reflection">{/if}
         {#if loading}
-          <div, class="knob-loading">
-            <div, class="n64-spinner"></div>
+          <div class="knob-loading">
+            <div class="n64-spinner"></div>
           {/if}
       </div>
       {#if enableFog}
-        <div, class="track-fog">{/if}
+        <div class="track-fog">{/if}
       {#if enableToggleGlow && checked}
-        <div, class="toggle-glow">{/if}
+        <div class="toggle-glow">{/if}
     </div>
 
     <!-- Hidden input for, form, handling -->
@@ -418,12 +418,12 @@
   </div>
 
   {#if label || description}
-    <div, class="switch-content">
+    <div class="switch-content">
       {#if label}
-        <label, id="switch-label" class="switch-label" for={id}>{label}</label>
+        <label id="switch-label" class="switch-label" for={id}>{label}</label>
       {/if}
       {#if description}
-        <div, id="switch-description" class="switch-description">{description}{/if}
+        <div id="switch-description" class="switch-description">{description}{/if}
     {/if}
 </div>
 

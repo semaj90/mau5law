@@ -1,5 +1,5 @@
 <!-- Public Layout - Gaming-Inspired Legal, AI, Platform -->
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
@@ -31,13 +31,13 @@
   });
 </script>
 
-<div, class="public-layout">
+<div class="public-layout">
   <!-- Navigation Bar for, Public, Pages -->
   <NavBar {user} sidebarOpen={false} />
 
   <!-- Main, Content, Area -->
-  <main, class="public-content">
-    <div, class="content-container">
+  <main class="public-content">
+    <div class="content-container">
       {#if children}
         {@render children()}
       {/if}
@@ -45,16 +45,16 @@
   </main>
 
   <!-- Footer -->
-  <footer, class="public-footer">
-    <div, class="footer-content">
-      <div, class="footer-brand">
-        <span, class="footer-icon">🎮</span>
-        <span, class="footer-text">Legal AI Platform</span>
-        <span, class="footer-theme">{selectedTheme?.toUpperCase()}</span>
+  <footer class="public-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="footer-icon">🎮</span>
+        <span class="footer-text">Legal AI Platform</span>
+        <span class="footer-theme">{selectedTheme?.toUpperCase()}</span>
       </div>
-      <div, class="footer-info">
+      <div class="footer-info">
         <p>&copy; 2024 Enhanced Legal AI Platform - Gaming-Inspired Innovation</p>
-        <p, class="footer-subtitle">Justice Through Technology</p>
+        <p class="footer-subtitle">Justice Through Technology</p>
       </div>
     </div>
   </footer>

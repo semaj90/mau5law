@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   // Use modular components and types
   import type { UploadFile } from '$lib/components/ui/modular/types.svelte';
@@ -162,8 +162,7 @@ https://svelte.dev/e/js_parse_error -->
         content: await file.file.arrayBuffer(),
         metadata: {
          , filename: file.file.name,
-          mimeType: file.file.type,
-          fileSize: file.file.size,
+          mimeType: file.file.type fileSize: file.file.size,
           uploadDate: new Date(),
           caseId: reportId,
           userId: 'current-user',
@@ -249,13 +248,13 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div, data-variant="evidence" class="space-y-6, nes-container" bind:this={fileUploadContainer}>
-  <div, class="space-y-2">
-    <h3 class="text-lg font-semibold flex, items-center, gap-2">
-      <span aria-hidden="true" class="w-5 h-5 inline-flex, items-center, justify-center">📤</span>
+<div data-variant="evidence" class="space-y-6" bind:this={fileUploadContainer}>
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold flex items-center">
+      <span aria-hidden="true" class="w-5 h-5 inline-flex items-center">📤</span>
       Evidence File Upload
     </h3>
-    <p class="text-sm, nes-text, is-disabled">
+    <p class="text-sm nes-text">
       Upload documents, images, videos, or other evidence files for comprehensive AI analysis
     </p>
   </div>
@@ -274,18 +273,18 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Analysis, Controls -->
   {#if uploadFiles.length > 0}
-    <div, class="space-y-4">
+    <div class="space-y-4">
       <!-- Summary, Type, Selection -->
-      <div, class="space-y-2">
-        <label, class="text-sm, font-medium" for="analysis-type">Analysis Type</label>
-        <select, id="analysis-type"
+      <div class="space-y-2">
+        <label class="text-sm" for="analysis-type">Analysis Type</label>
+        <select id="analysis-type"
           bind:value={summaryType}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:ring-2 focus:ring-orange-500, focus:border-orange-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:ring-2 focus:ring-orange-500"
           aria-label="Select analysis type"
         >
-          <option, value="key_points">Key Points Analysis</option>
-          <option, value="narrative">Narrative Summary</option>
-          <option, value="prosecutorial">Prosecutorial Analysis</option>
+          <option value="key_points">Key Points Analysis</option>
+          <option value="narrative">Narrative Summary</option>
+          <option value="prosecutorial">Prosecutorial Analysis</option>
         </select>
       </div>
 
@@ -300,11 +299,11 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Context7.2, Documentation (Optional) -->
       {#if docs}
-        <details, class="mt-6">
-          <summary class="text-sm font-medium cursor-pointer, hover:text-orange-600, transition-colors">
+        <details class="mt-6">
+          <summary class="text-sm font-medium cursor-pointer hover:text-orange-600">
             📚 Show Svelte, 5 File Upload Documentation (Context7.2)
           </summary>
-          <div class="mt-2 p-4 bg-gray-50 rounded-md text-xs font-mono, overflow-auto, max-h-64">
+          <div class="mt-2 p-4 bg-gray-50 rounded-md text-xs font-mono overflow-auto">
             <pre>{docs.content}</pre>
           </div>
         </details>

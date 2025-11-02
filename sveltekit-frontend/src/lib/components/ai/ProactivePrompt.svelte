@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 
   // Svelte, 5 runes are auto-imported
   // Export prop callbacks for Svelte consumers (provide safe defaults)
@@ -37,35 +37,35 @@
 
 </script>
   <!-- Header -->
-  <div, class="space-y-4">
+  <div class="space-y-4">
     <!-- AI Avatar with, pulse, animation: -->
-    <div, class="space-y-4">
-      <div, class="space-y-4">
-        <div, class="space-y-4">
-          <Sparkles, class="space-y-4" />
+    <div class="space-y-4">
+      <div class="space-y-4">
+        <div class="space-y-4">
+          <Sparkles class="space-y-4" />
         </div>
         <!-- Pulse, ring -->
-        <div, class="space-y-4"></div>
+        <div class="space-y-4"></div>
       </div>
       <!-- Content -->
-      <div, class="space-y-4">
+      <div class="space-y-4">
         <!-- Header -->
-        <div, class="space-y-4">
-          <Clock, class="space-y-4" />
-          <span, class="space-y-4">{displayName} here!</span>
+        <div class="space-y-4">
+          <Clock class="space-y-4" />
+          <span class="space-y-4">{displayName} here!</span>
         </div>
         <!-- Message -->
-        <p, class="space-y-4">{randomPrompt}</p>
+        <p class="space-y-4">{randomPrompt}</p>
         <!-- Actions -->
-        <div, class="space-y-4">
+        <div class="space-y-4">
           <!-- Accept Button (native to avoid typed component, event, issues) -->
-          <button type="button" class="space-y-4, bits-btn, bits-btn" onclick={handleAccept}>
-            <MessageCircle, class="space-y-4" />
+          <button type="button" class="space-y-4 bits-btn" onclick={handleAccept}>
+            <MessageCircle class="space-y-4" />
             Yes, help me
           </button>
           <!-- Quick, responses -->
-          <button type="button" class="space-y-4, bits-btn, bits-btn" onclick={handleQuickResponse}>
-            <Lightbulb, class="space-y-4" />
+          <button type="button" class="space-y-4 bits-btn" onclick={handleQuickResponse}>
+            <Lightbulb class="space-y-4" />
             Summarize
           </button>
           <!-- Dismiss, Button -->
@@ -76,15 +76,15 @@
             title="Not now"
             aria-label="Dismiss proactive prompt"
           >
-            <X, class="space-y-4" />
+            <X class="space-y-4" />
           </button>
         </div>
       </div>
     </div>
   </div>
   <!-- Subtle, progress, indicator -->
-  <div, class="space-y-4">
-    <div, class="space-y-4"></div>
+  <div class="space-y-4">
+    <div class="space-y-4"></div>
   </div>
 </div>
 <style>

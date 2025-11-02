@@ -29,13 +29,8 @@
   let evidenceCanvasRef: any;
   let yorhaCanvasBoardRef: any;
   // State management
-  const canvasState = writable({
-    mode: initialMode
-    evidenceObjects: [],
-    drawingObjects: [],
-    selectedObjects: [],
-    lastSync: 0,
-  });
+  const canvasState = writable({ mode: initialMode
+    evidenceObjects: [], drawingObjects: [], selectedObjects: [], lastSync: 0 });
   let currentMode = $state(initialMode);
   let showYoRHaBoard = $state(false);
   let canvasObjects = $state([]);
@@ -131,19 +126,10 @@
     }));
     // ondispatch removed;
   }
-  function exportCanvasState() {
-    const state = {
-      timestamp: Date.now(),
-      caseId,
-      mode: currentMode
-      evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'),
-      drawings: canvasObjects.filter(obj => obj.type === 'drawing'),
-      canvasJson evidenceCanvasRef?.getCanvasJSON(),
-      metadata: {
-        objectCount: canvasObjects.length,
-        lastSync: Date.now(),
-        version: '1.0',
-      }
+  function exportCanvasState() { const state = {
+      timestamp: Date.now(), caseId, mode: currentMode
+      evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'), drawings: canvasObjects.filter(obj => obj.type === 'drawing'), canvasJson evidenceCanvasRef?.getCanvasJSON(), metadata: {
+        objectCount: canvasObjects.length, lastSync: Date.now(), version: '1.0' }
     }
     ondispatch?.(state);
     return stat;
@@ -320,12 +306,9 @@
     flex-direction row;
   }
   .evidence-canvas-section,
-  .yorha-canvas-section {
-    flex: 1,
-    display: flex;
+  .yorha-canvas-section { flex: 1, display: flex;
     flex-direction: column;
-    min-width: 0,
-  }
+    min-width: 0 }
   .evidence-canvas-section.full-width,
   .yorha-canvas-section.full-width {
     flex: none;

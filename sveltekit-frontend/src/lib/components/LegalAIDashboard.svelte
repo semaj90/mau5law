@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 	// add imports and use Svelte, 5 props/runic API
 	import { browser } from '$app/environment';
 	import { websocketStore } from '$lib/stores/websocketStore'; // adjust path if your store is located elsewhere

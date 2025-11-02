@@ -119,8 +119,7 @@
           contextSwitches: 1,
           userEngagement: 'high' as const
         },
-        mcpWorkerStatus: 'ready' as const,
-        lastProcessedText: '',
+        mcpWorkerStatus: 'ready' as const lastProcessedText: '',
         contextualPrompts: []
       };
       
@@ -197,8 +196,7 @@
           contextSwitches: 1,
           userEngagement: 'high' as const
         },
-        mcpWorkerStatus: 'ready' as const,
-        lastProcessedText: '',
+        mcpWorkerStatus: 'ready' as const lastProcessedText: '',
         contextualPrompts: prompts
       };
       

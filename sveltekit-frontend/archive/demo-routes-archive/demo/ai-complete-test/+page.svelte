@@ -142,14 +142,14 @@ https://svelte.dev/e/js_parse_error -->
       const duration = Date.now() - startTime;
       testResults = testResults.map(t =>
         t.test === testName
-          ? { ...t, status: 'success' as const, message: result, duration }
+          ? { ...t, status: 'success' as const message: result, duration }
           : t
       );
     } catch (error) {
       const duration = Date.now() - startTime;
       testResults = testResults.map(t =>
         t.test === testName
-          ? { ...t, status: 'error' as const, message: error.message, duration }
+          ? { ...t, status: 'error' as const message: error.message, duration }
           : t
       );
     }

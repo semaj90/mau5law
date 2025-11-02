@@ -85,11 +85,8 @@
 				})
 			};
 
-			const response = await fetch('/api/rag/semantic-search', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+			const response = await fetch('/api/rag/semantic-search', { method: 'POST', headers: {
+					'Content-Type': 'application/json' },
 				body: JSON.stringify(requestBody)
 			});
 

@@ -38,7 +38,7 @@
   // Create form store
   const form = createFormStore({
     ...options,
-    onSubmit: async (values: Record<string, any>) => {
+    onSubmit: async (values: Record<string any>) => {
       onsubmit?.({ values, isValid: true })
       if ((options as any).onSubmit) await (options as any).onSubmit(values)
     }
@@ -63,19 +63,9 @@
     onreset?.();
   }
   // Update formApi when form changes using $effect
-  $effect(() => {
-    if (formApi !== undefined) {
+  $effect(() => { if (formApi !== undefined) {
       formApi = {
-        setField: form.setField,
-        touchField: form.touchField,
-        validate: form.validate,
-        submit: form.submit,
-        reset: form.reset,
-        addField: form.addField,
-        removeField: form.removeField,
-        values: form.values,
-        errors: form.errors,
-      }
+        setField: form.setField, touchField: form.touchField, validate: form.validate, submit: form.submit, reset: form.reset, addField: form.addField, removeField: form.removeField, values: form.values, errors: form.errors }
     }
   });
 </script>
@@ -87,7 +77,7 @@
   {...restProps}
 >
   <!-- Form content -->
-  {@render children?.({ form, formApi, values: $form.values, errors: $form.errors, isValid: $form.isValid, isDirty: $form.isDirty, })}
+  { @render children?.({ form, formApi, values: $form.values, errors: $form.errors, isValid: $form.isValid, isDirty: $form.isDirty })}
   <!-- Form actions -->
   {#if showSubmitButton || showResetButton}
     <div class="flex gap-3 justify-end">

@@ -2,7 +2,7 @@
   Enhanced Bits - Alert
   Flexible alert component for notifications and messages
 -->
-<script, lang="ts">
+<script lang="ts">
   interface Props {
     variant?: 'info' | 'success' | 'warning' | 'error';
     title?: string;
@@ -18,23 +18,23 @@
 </script>
 
 {#if visible}
-  <div, class="alert, alert-{variant}" role="alert">
-    <div, class="alert-content">
+  <div class="alert" role="alert">
+    <div class="alert-content">
       {#if icon}
-        <div, class="alert-icon">
+        <div class="alert-icon">
           {@render icon()}
         </div>
       {/if}
-      <div, class="alert-body">
+      <div class="alert-body">
         {#if title}
-          <div, class="alert-title">{title}</div>
+          <div class="alert-title">{title}</div>
         {/if}
-        <div, class="alert-message">
+        <div class="alert-message">
           <slot />
         </div>
       </div>
       {#if dismissible}
-        <button, class="alert-dismiss" onclick={dismiss} aria-label="Dismiss"> × </button>
+        <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss"> × </button>
       {/if}
     </div>
   </div>

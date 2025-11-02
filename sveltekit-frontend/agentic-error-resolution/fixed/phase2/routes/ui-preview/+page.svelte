@@ -15,15 +15,7 @@
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
   // import  sessionActions, user, isAuthenticated  from "$lib/stores/sessionStore.svelte";
-  import {
-    formatRelativeTime,
-    formatDetailedTimestamp,
-    truncateFilename,
-    truncateText,
-    getFileIcon,
-    getPriorityColor,
-    getStatusColor,
-  } from '$lib/utils/formatting';
+  import { formatRelativeTime, formatDetailedTimestamp, truncateFilename, truncateText, getFileIcon, getPriorityColor, getStatusColor } from '$lib/utils/formatting';
 
   // Improved: Use QuickActionButton directly, ensure its props/events are typed correctly
 
@@ -38,11 +30,7 @@
   let modalVariant = $state('gradient');
   let modalSize = $state('md');
   // Mock user data for session/user demo
-  let mockUser = $state({
-    id: 'demo-user-123',
-    email: 'demo@legalai.com',
-    role: 'prosecutor' as const,
-  });
+  let mockUser = $state({ id: 'demo-user-123', email: 'demo@legalai.com', role: 'prosecutor' as const });
   interface TabItem {
     id: string;
     label: string;
@@ -78,20 +66,12 @@
   const avatarSizes = ['small', 'medium', 'large'] as const;
   type AvatarSize = (typeof avatarSizes)[number];
   // Mock session actions for demo
-  const mockSessionActions = {
-    setSession: (user: any, session: any) => console.log('Mock setSession', user, session),
-    clearSession: () => console.log('Mock clearSession'),
-    init: (data: any) => console.log('Mock init:', data),
-  };
+  const mockSessionActions = { setSession: (user: any, session: any) => console.log('Mock setSession', user, session), clearSession: () => console.log('Mock clearSession'), init: (data: any) => console.log('Mock init:', data) };
 
   // Mock session demo functions
-  function simulateLogin() {
-    mockSessionActive = true;
+  function simulateLogin() { mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
-      id: 'demo-session-123',
-      user: mockUser,
-      fresh: true,
-    });
+      id: 'demo-session-123', user: mockUser, fresh: true });
   }
   function simulateLogout() {
     mockSessionActive = $state(false);
@@ -125,24 +105,8 @@
   let authenticated = $derived(mockSessionActive);
   let stats = $derived(
     mockSessionActive
-      ? {
-          casesWorked: 23,
-          documentsReviewed: 157,
-          hoursLogged: 89.5,
-          accuracy: 94.2,
-          totalCases: 47,
-          totalEvidence: 1284,
-          totalDocuments: 567,
-          totalCitations: 89,
-          totalReports: 34,
-        }
-      : {
-          totalCases: 0,
-          totalEvidence: 0,
-          totalDocuments: 0,
-          totalCitations: 0,
-          totalReports: 0,
-        }
+      ? { casesWorked: 23, documentsReviewed: 157, hoursLogged: 89.5, accuracy: 94.2, totalCases: 47, totalEvidence: 1284, totalDocuments: 567, totalCitations: 89, totalReports: 34 }
+      : { totalCases: 0, totalEvidence: 0, totalDocuments: 0, totalCitations: 0, totalReports: 0 }
   );
   // MOCK DATA FOR UI PREVIEW/TESTING ONLY:
   // The following arrays are used exclusively for formatting demos in the UI preview.

@@ -1,5 +1,5 @@
-<script, lang="ts">
-  import, '../app.css';
+<script lang="ts">
+  import '../app.css';
   import type { Snippet } from 'svelte';
   interface Props {
      Snippet;
@@ -7,7 +7,7 @@
   let { children }: Props = $props();
 </script>
 
-<div, class="app">
+<div class="app">
   <header>
     <h1>YoRHa Legal AI</h1>
   </header>

@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
       // Mock entity extraction
       const patterns = [
         { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
-        { type: 'Date', regex: /(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/g, confidence: 0.95 },
+        { type: 'Date', regex: /(\d{1 2}\/\d{1 2}\/\d{4}|\d{4}-\d{2}-\d{2})/g, confidence: 0.95 },
         { type: 'Money', regex: /\$[\d,]+(?:\.\d{2})?/g, confidence: 0.90 },
         { type: 'Organization', regex: /([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\.?)/g, confidence: 0.80 },
         { type: 'Legal Document', regex: /(contract|agreement|lease|deed|will|testament)/gi, confidence: 0.75 }
@@ -102,8 +102,7 @@ https://svelte.dev/e/js_parse_error -->
           const value = match[1] ?? match[0];
           if (value && !entities.some((e) => e.value === value && e.type === pattern.type)) {
             entities.push({
-              type: pattern.type,
-              value,
+              type: pattern.type value,
               confidence: pattern.confidence
             });
           }

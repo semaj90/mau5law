@@ -18,8 +18,7 @@
   let newCaseData = $state({
     title: '',
     description: '',
-    priority: 'medium' as const,
-    status: 'open' as const
+    priority: 'medium' as const status: 'open' as const
   });
   let searchQuery = $state('');
   let userId = $state('demo-user-123');
@@ -65,20 +64,12 @@
       }
     });
     // Reset form
-    newCaseData = {
-      title: '',
-      description: '',
-      priority: 'medium',
-      status: 'open',
-    }
+    newCaseData = { title: '', description: '', priority: 'medium', status: 'open' }
   }
-  function searchCases() {
-    if (searchQuery.trim()) {
+  function searchCases() { if (searchQuery.trim()) {
       actor.send({
-        type: 'SEARCH_CASES_COGNITIVE',
-        query: searchQuery
-        useML: true,
-      });
+        type: 'SEARCH_CASES_COGNITIVE', query: searchQuery
+        useML: true });
     }
   }
   function refreshHealth() {

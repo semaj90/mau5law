@@ -16,22 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   import { Button as BitsButton } from 'bits-ui';
   // Icons
   import { invalidateAll } from "$app/navigation";
-  import {
-    Columns,
-    Download,
-    Eye,
-    Grid,
-    Layout,
-    Loader2,
-    Maximize2,
-    Minimize2,
-    PanelLeftOpen,
-    PenLine,
-    Plus,
-    Search,
-    Settings,
-    Trash2,
-  } from "lucide-svelte";
+  import { Columns, Download, Eye, Grid, Layout, Loader2, Maximize2, Minimize2, PanelLeftOpen, PenLine, Plus, Search, Settings, Trash2 } from "lucide-svelte";
   import type { ReportStoreState, ReportUIState, EditorState } from '$lib/types/report';
   import * as unified from '$lib/stores/unified';
   import { legalAnalysisCache } from '$lib/services/legal-analysis-cache';
@@ -79,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
   // reportActions fallback (use any access to avoid missing-property TS errors)
   const reportActions = (unified as any).reportActions ?? {
     updateTitle: (t: string) => report.update(r => ({ ...r, title: t })),
-    updateSettings: (s: Record<string, unknown>) => report.update(r => ({ ...r, settings: { ...(r as any).settings, ...(s as any) } })),
+    updateSettings: (s: Record<string unknown>) => report.update(r => ({ ...r, settings: { ...(r as any).settings, ...(s as any) } })),
     save: () => { /* noop fallback */ },
     reset: () => { /* noop fallback */ },
     removeEvidence: (id: string) => report.update(r => ({ ...(r as any), attachedEvidence: (r as any).attachedEvidence?.filter((e: any) => e.id !== id) })),
@@ -96,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   // Legal document comparison state
   let comparingId: string | null = null;
   let compareError: string | null = null;
-  let comparisonResults: Record<string, any> = {};
+  let comparisonResults: Record<string any> = {};
   let cacheStats = { totalEntries: 0, oldestEntry: null as number | null, newestEntry: null as number | null, totalSize: 0 };
   // Modal & form state (added to fix missing identifiers)
   let showEvidenceModal: boolean = $state(false);
@@ -181,25 +166,17 @@ https://svelte.dev/e/js_parse_error -->
       window.open(evidence.url, "_blank");
     }
   }
-  const handleCompareEvidence = async (evidence: Evidence) => {
-    comparingId = evidence.id;
+  const handleCompareEvidence = async (evidence: Evidence) => { comparingId = evidence.id;
     compareError = null;
     try {
       // 1. Check cache first for instant results
       const cached = await legalAnalysisCache.get(
-        evidence.id,
-        evidence.title,
-        evidence.description,
-        evidence.tags
+        evidence.id, evidence.title, evidence.description, evidence.tags
       );
       if (cached) {
         console.log('⚡ Using cached analysis for:', evidence.title);
         comparisonResults[evidence.id] = {
-          analysis: cached.analysis,
-          comparison: cached.comparison,
-          processingTime: cached.processingTime,
-          fromCache: true,
-        };
+          analysis: cached.analysis, comparison: cached.comparison, processingTime: cached.processingTime, fromCache: true };
         comparingId = null;
         updateCacheStats();
         return;
@@ -215,10 +192,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.append('documentType', 'evidence');
       formData.append('tags', (evidence.tags || []).join(','));
       formData.append('enableComparison', 'true');
-      const response = await fetch('/api/legal-report/analyze', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch('/api/legal-report/analyze', { method: 'POST', body: formData });
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
       }

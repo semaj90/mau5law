@@ -32,14 +32,7 @@
     showAnalysisPanel?: boolean;
     maxMessages?: number;
   };
-  let {
-    caseId = '',
-    userId = '',
-    enableWebGPU = true,
-    enableAttentionTracking = true,
-    showAnalysisPanel = true,
-    maxMessages = 100,
-  } = $props<Props>();
+  let { caseId = '', userId = '', enableWebGPU = true, enableAttentionTracking = true, showAnalysisPanel = true, maxMessages = 100 } = $props<Props>();
   // Component state using $state runes
   let chatContainer = $state<HTMLDivElement | null>(null);
   let messageInput = $state<any>(null); // Changed type from HTMLTextAreaElement | null to any
@@ -56,11 +49,7 @@
   let wsConnection = $state<WebSocket | null>(null);
   // WebGPU accelerator state
   let webgpuAccelerator = $state<any>(null);
-  let processingMetrics = $state({
-    tokensPerSecond: 0,
-    gpuUtilization: 0,
-    memoryUsage: 0,
-  });
+  let processingMetrics = $state({ tokensPerSecond: 0, gpuUtilization: 0, memoryUsage: 0 });
   // Dialog state for analysis panel
   // Melt UI component creation removed - replace with bits-ui declarative components
   // Initialize WebSocket connection
@@ -118,15 +107,8 @@
     const sessionId = raw?.sessionId ?? ''; // Ensure sessionId is always present
     const confidence = typeof raw?.confidence === 'number' ? raw.confidence : undefined;
     const tokensPerSecond = typeof raw?.tokensPerSecond === 'number' ? raw.tokensPerSecond : undefined;
-    return {
-      id: String(id),
-      role,
-      content: String(content),
-      timestamp,
-      sessionId, // Add sessionId
-      confidence,
-      tokensPerSecond,
-    } as UIMessage;
+    return { id: String(id), role, content: String(content), timestamp, sessionId, // Add sessionId
+      confidence, tokensPerSecond } as UIMessage;
   }
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
@@ -195,18 +177,11 @@
           data = {};
         }
       }
-      if (response.ok && data?.message) {
-        messages = [
-          ...messages,
-          {
-            id: Date.now().toString(),
-            role: 'assistant',
-            content: data.message,
-            timestamp: Date.now(), // Convert to number
+      if (response.ok && data?.message) { messages = [
+          ...messages, {
+            id: Date.now().toString(), role: 'assistant', content: data.message, timestamp: Date.now(), // Convert to number
             sessionId: sessionId, // Add sessionId
-            confidence: data.confidence,
-            tokensPerSecond: data.tokensPerSecond,
-          } as UIMessage,
+            confidence: data.confidence, tokensPerSecond: data.tokensPerSecond } as UIMessage,
         ];
       } else {
         const serverErr = data?.error ?? data?.message ?? `HTTP ${response.status}`;
@@ -244,18 +219,10 @@
     currentMessage = '';
     isTyping = true;
     // Try WebSocket first; if send fails, fall back to HTTP
-    if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
-      try {
+    if (wsConnection && wsConnection.readyState === WebSocket.OPEN) { try {
         wsConnection.send(
           JSON.stringify({
-            type: 'message',
-            content: messageToSend,
-            sessionId,
-            userId,
-            caseId,
-            enableAnalysis: showAnalysisPanel,
-            enableWebGPU: enableWebGPU,
-          })
+            type: 'message', content: messageToSend, sessionId, userId, caseId, enableAnalysis: showAnalysisPanel, enableWebGPU: enableWebGPU })
         );
         // leave isTyping state to be updated by server: 'typing'/'stream_complete' messages
       } catch (err) {
@@ -290,12 +257,9 @@
     streamingResponse = '';
   }
   // Track user attention if enabled
-  function trackUserAttention() {
-    if (!enableAttentionTracking || !browser) return;
+  function trackUserAttention() { if (!enableAttentionTracking || !browser) return;
     userAttention = {
-      focused: document.hasFocus(),
-      lastActivity: Date.now(),
-    };
+      focused: document.hasFocus(), lastActivity: Date.now() };
   }
   // Safe timestamp formatter (handles Date or ISO string or number)
   function formatTimestamp(ts: Date | string | number | undefined | null) {

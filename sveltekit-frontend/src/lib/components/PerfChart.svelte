@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 
   // Svelte, 5 runes are auto-imported
   interface Props {
@@ -33,7 +33,7 @@
 
 </script>
 <svg {width} {height} viewBox={`0, 0 ${width} ${height}`} class="overflow-visible" role="img" aria-label="performance, chart">
-  <polyline, points={d} fill="none" stroke={color} stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+  <polyline points={d} fill="none" stroke={color} stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
 </svg>
 <style>
   svg {

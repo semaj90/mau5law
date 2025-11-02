@@ -11,18 +11,7 @@
    from "$lib/components/ui/enhanced-bits.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import EnhancedAIChatTest from '$lib/components/ai/EnhancedAIChatTest.svelte';
-  import {
-    Bot,
-    MessageCircle,
-    Cpu,
-    Database,
-    Zap,
-    CheckCircle,
-    XCircle,
-    Loader2,
-    Server,
-    HardDrive,
-  } from 'lucide-svelte';
+  import { Bot, MessageCircle, Cpu, Database, Zap, CheckCircle, XCircle, Loader2, Server, HardDrive } from 'lucide-svelte';
   // State using Svelte 5 runes
   let systemStatus = $state(null);
   let chatOpen = $state(false);
@@ -40,13 +29,8 @@
       }
       const data = await response.json();
       // Normalize the response structure for compatibility
-      systemStatus = {
-        services: data.services,
-        environment: data.environment,
-        // Legacy compatibility
-        ollama: data.services?.ollama || data.ollama,
-        database: data.services?.database || data.database,
-      }
+      systemStatus = { services: data.services, environment: data.environment, // Legacy compatibility
+        ollama: data.services?.ollama || data.ollama, database: data.services?.database || data.database }
     } catch (error) {
       console.error('Failed to check system status:', error);
       systemStatus = {

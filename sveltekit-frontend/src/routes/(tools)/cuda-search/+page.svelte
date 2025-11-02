@@ -1,5 +1,5 @@
 <!-- Test page for CUDA, Search, integration -->
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import SearchBox from '$lib/components/SearchBox.svelte';
   // Handle search results
@@ -14,13 +14,13 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>CUDA Legal AI Search - Test</title>
-  <link, href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-  <link, href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
+  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
-<main, class="container">
-  <section class="hero, nes-container, with-title">
-    <h1, class="title">⚡ CUDA Legal AI Search</h1>
-    <p, class="nes-text">
+<main class="container">
+  <section class="hero nes-container">
+    <h1 class="title">⚡ CUDA Legal AI Search</h1>
+    <p class="nes-text">
       🚀 <strong>RTX, 3060 Ti</strong> powered semantic search using Ollama's Gemma3:legal-latest model'
       <br />
       🔗 <strong>pgvector</strong> similarity search with PostgreSQL
@@ -28,7 +28,7 @@ import type { Document } from '$lib/types';
       ⚡ <strong>GPU acceleration</strong> for embedding generation and vector operations
     </p>
   </section>
-  <section, class="search-section">
+  <section class="search-section">
     <SearchBox
       placeholder="Search legal precedents, contract clauses, case law..."
       limit={10}
@@ -37,30 +37,30 @@ import type { Document } from '$lib/types';
       onError={handleError}
     />
   </section>
-  <section class="features, nes-container, with-title">
-    <h2, class="title">🔧 System Features</h2>
-    <div, class="feature-grid">
-      <div, class="feature-item, nes-container">
-        <h3, class="nes-text, is-primary">🖥️ CUDA Acceleration</h3>
-        <ul, class="nes-list, is-disc">
+  <section class="features nes-container">
+    <h2 class="title">🔧 System Features</h2>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <h3 class="nes-text">🖥️ CUDA Acceleration</h3>
+        <ul class="nes-list">
           <li>RTX, 3060 Ti with, 4,864 CUDA cores</li>
           <li>152 Tensor cores for AI workloads</li>
           <li>8GB GDDR6X memory</li>
           <li>GPU-optimized embedding generation</li>
         </ul>
       </div>
-      <div, class="feature-item, nes-container">
-        <h3, class="nes-text, is-success">🤖 Ollama Integration</h3>
-        <ul, class="nes-list, is-disc">
+      <div class="feature-item">
+        <h3 class="nes-text">🤖 Ollama Integration</h3>
+        <ul class="nes-list">
           <li>Gemma3:legal-latest model</li>
           <li>Local LLM inference</li>
           <li>High-quality legal embeddings</li>
           <li>Real-time processing</li>
         </ul>
       </div>
-      <div, class="feature-item, nes-container">
-        <h3, class="nes-text, is-warning">📊 Vector Database</h3>
-        <ul, class="nes-list, is-disc">
+      <div class="feature-item">
+        <h3 class="nes-text">📊 Vector Database</h3>
+        <ul class="nes-list">
           <li>PostgreSQL with pgvector extension</li>
           <li>Cosine similarity search</li>
           <li>Indexed vector operations</li>
@@ -69,21 +69,21 @@ import type { Document } from '$lib/types';
       </div>
     </div>
   </section>
-  <section class="api-info, nes-container, with-title">
-    <h2, class="title">🔗 API Integration</h2>
-    <div, class="api-details">
-      <h3, class="nes-text">Search Endpoint</h3>
-      <div class="code-block, nes-container, is-dark">
-        <pre, class="nes-text">{@html `POST http://localhost:8096/api/v1/search`
+  <section class="api-info nes-container">
+    <h2 class="title">🔗 API Integration</h2>
+    <div class="api-details">
+      <h3 class="nes-text">Search Endpoint</h3>
+      <div class="code-block nes-container">
+        <pre class="nes-text">{@html `POST http://localhost:8096/api/v1/search`
 Content-Type: application/json
 {
   "q": "contract termination clause",
   "limit": 5
 }`}</pre>`
       </div>
-      <h3, class="nes-text">Response Format</h3>
-      <div class="code-block, nes-container, is-dark">
-        <pre, class="nes-text">{@html `{`
+      <h3 class="nes-text">Response Format</h3>
+      <div class="code-block nes-container">
+        <pre class="nes-text">{@html `{`
   "query": "contract termination clause",
   "results": [
     {,
@@ -100,27 +100,27 @@ Content-Type: application/json
       </div>
     </div>
   </section>
-  <section class="system-status, nes-container, with-title">
-    <h2, class="title">📡 System Status</h2>
-    <div, class="status-grid">
-      <div, class="status-item, nes-container">
-        <p, class="nes-text">
+  <section class="system-status nes-container">
+    <h2 class="title">📡 System Status</h2>
+    <div class="status-grid">
+      <div class="status-item">
+        <p class="nes-text">
           🖥️ <strong>CUDA Service:</strong>
-          <a, href="http://localhost:8096/api/v1/health" target="_blank" class="nes-text, is-primary"
+          <a href="http://localhost:8096/api/v1/health" target="_blank" class="nes-text"
             >, localhost:8096
           </a>
         </p>
       </div>
-      <div, class="status-item, nes-container">
-        <p, class="nes-text">
+      <div class="status-item">
+        <p class="nes-text">
           🤖 <strong>Ollama:</strong>
-          <a, href="http://localhost:11434/api/tags" target="_blank" class="nes-text, is-success">, localhost:11434 </a>
+          <a href="http://localhost:11434/api/tags" target="_blank" class="nes-text">, localhost:11434 </a>
         </p>
       </div>
-      <div, class="status-item, nes-container">
-        <p, class="nes-text">
+      <div class="status-item">
+        <p class="nes-text">
           📊 <strong>PostgreSQL:</strong>
-          <span, class="nes-text, is-warning">localhost:5432/legal_ai</span>
+          <span class="nes-text">localhost:5432/legal_ai</span>
         </p>
       </div>
     </div>

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   // Admin interface layout with security-focused styling
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
@@ -19,13 +19,13 @@
   <meta name="description" content="System administration and, monitoring, dashboard" />
 </svelte:head>
 
-<div, class="admin-layout">
-  <NavBar, user={data.user} />
-  <div, class="admin-content">
-    <aside, class="admin-sidebar">
+<div class="admin-layout">
+  <NavBar user={data.user} />
+  <div class="admin-content">
+    <aside class="admin-sidebar">
       <Sidebar />
     </aside>
-    <main, class="admin-main">
+    <main class="admin-main">
       {@render children()}
     </main>
   </div>

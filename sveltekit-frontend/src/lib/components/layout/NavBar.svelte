@@ -1,5 +1,5 @@
 <!-- Gaming-Themed Navigation Bar with Console, Theme, Switching -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -74,64 +74,64 @@ import type { User } from '$lib/types';
     }
   }
 </script>
-<nav, class="navbar">
-  <div, class="nav-container">
+<nav class="navbar">
+  <div class="nav-container">
     <!-- Left section, Logo + Sidebar, Toggle -->
-    <div, class="nav-left">
+    <div class="nav-left">
       {#if onToggleSidebar}
-        <button, class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle, sidebar">
-          <span, class="hamburger" class:open={sidebarOpen}>
+        <button class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle, sidebar">
+          <span class="hamburger" class:open={sidebarOpen}>
             <span></span>
             <span></span>
             <span></span>
           </span>
         </button>
       {/if}
-      <div, class="logo">
-        <button, class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
-          <span, class="logo-icon">🎮</span>
-          <span, class="logo-text">Legal AI</span>
+      <div class="logo">
+        <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
+          <span class="logo-icon">🎮</span>
+          <span class="logo-text">Legal AI</span>
         </button>
       </div>
     </div>
     <!-- Center section Main, Navigation (if, authenticated) -->
     {#if isAuthenticated}
-      <div, class="nav-center">
-  <a, href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> 🏠 Dashboard </a>
-        <a, href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> ⚖️ Cases </a>
-        <a, href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> 🤖 AI Assistant </a>
+      <div class="nav-center">
+  <a href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> 🏠 Dashboard </a>
+        <a href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> ⚖️ Cases </a>
+        <a href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> 🤖 AI Assistant </a>
         {#if isAdmin}
-          <a, href="/admin" class="nav-link, admin-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
+          <a href="/admin" class="nav-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
         {/if}
       {/if}
     <!-- Right section, Theme + User, Menu -->
-    <div, class="nav-right">
+    <div class="nav-right">
       <!-- Gaming, Theme, Selector -->
-      <div, class="theme-selector">
+      <div class="theme-selector">
         <button
           class="theme-btn"
           onclick={() => (showThemeDropdown = !showThemeDropdown)}
           aria-label="Switch console theme"
         >
-          <span, class="theme-icon">🎨</span>
-          <span, class="theme-name">{CONSOLE_PALETTES[selectedTheme].name}</span>
-          <span, class="dropdown-arrow" class:open={showThemeDropdown}>▼</span>
+          <span class="theme-icon">🎨</span>
+          <span class="theme-name">{CONSOLE_PALETTES[selectedTheme].name}</span>
+          <span class="dropdown-arrow" class:open={showThemeDropdown}>▼</span>
         </button>
         {#if showThemeDropdown}
-          <div, class="theme-dropdown">
+          <div class="theme-dropdown">
             {#each Object.entries(CONSOLE_PALETTES) as [key, palette]}
               <button
                 class="theme-option"
                 class:active={key === selectedTheme}
                 onclick={() => switchTheme(key as ConsolePaletteName)}
               >
-                <span, class="theme-preview" style="background: {palette.colors.primary}"></span>
-                <span, class="theme-info">
-                  <span, class="theme-title">{palette.name}</span>
-                  <span, class="theme-era">{palette.era}</span>
+                <span class="theme-preview" style="background: {palette.colors.primary}"></span>
+                <span class="theme-info">
+                  <span class="theme-title">{palette.name}</span>
+                  <span class="theme-era">{palette.era}</span>
                 </span>
                 {#if key === selectedTheme}
-                  <span, class="check-mark">✓</span>
+                  <span class="check-mark">✓</span>
                 {/if}
               </button>
             {/each}
@@ -140,45 +140,45 @@ import type { User } from '$lib/types';
       <!-- User, Menu -->
       {#if isAuthenticated && user}
         {#if showSignInBadge}
-          <span, class="signin-badge" aria-live="polite">Signed in</span>
+          <span class="signin-badge" aria-live="polite">Signed in</span>
         {/if}
-        <details, class="profile-dropdown">
-          <summary, class="profile-trigger" aria-haspopup="menu">
-            <span, class="user-avatar" aria-hidden="true">{user.avatar ? '' : '👤'}</span>
+        <details class="profile-dropdown">
+          <summary class="profile-trigger" aria-haspopup="menu">
+            <span class="user-avatar" aria-hidden="true">{user.avatar ? '' : '👤'}</span>
             {#if user.avatar}
-              <img, class="user-avatar-img" src={user.avatar} alt="Profile" />
+              <img class="user-avatar-img" src={user.avatar} alt="Profile" />
             {/if}
-            <span, class="user-name">{user.name ?? user.email}</span>
+            <span class="user-name">{user.name ?? user.email}</span>
           </summary>
-          <div, class="profile-menu" role="menu">
-            <div, class="profile-header">
-              <div, class="profile-row">
-                <span, class="profile-name">{user.name ?? 'User'}</span>
+          <div class="profile-menu" role="menu">
+            <div class="profile-header">
+              <div class="profile-row">
+                <span class="profile-name">{user.name ?? 'User'}</span>
                 {#if user.role}
-                  <span, class="profile-role">{user.role}</span>
+                  <span class="profile-role">{user.role}</span>
                 {/if}
               </div>
-              <div, class="profile-email">{user.email}</div>
+              <div class="profile-email">{user.email}</div>
             </div>
-            <button, class="profile-item" role="menuitem" onclick={() => goto('/profile')}>Profile</button>
-            <button, class="profile-item" role="menuitem" onclick={() => goto('/settings')}>Settings</button>
-            <div, class="profile-separator" aria-hidden="true"></div>
-            <button, class="profile-item, profile-logout" role="menuitem" onclick={handleLogout}>Sign out</button>
+            <button class="profile-item" role="menuitem" onclick={() => goto('/profile')}>Profile</button>
+            <button class="profile-item" role="menuitem" onclick={() => goto('/settings')}>Settings</button>
+            <div class="profile-separator" aria-hidden="true"></div>
+            <button class="profile-item" role="menuitem" onclick={handleLogout}>Sign out</button>
           </div>
         </details>
-        <div, class="user-menu">
-          <button, class="user-btn" onclick={() => goto('/profile')}>
-            <span, class="user-avatar">👤</span>
-            <span, class="user-name">{user.email}</span>
+        <div class="user-menu">
+          <button class="user-btn" onclick={() => goto('/profile')}>
+            <span class="user-avatar">👤</span>
+            <span class="user-name">{user.email}</span>
           </button>
-          <button, class="logout-btn" onclick={handleLogout}>
+          <button class="logout-btn" onclick={handleLogout}>
             <span>🚪</span> Logout
           </button>
         </div>
       {:else}
-        <div, class="auth-buttons">
-          <button, class="login-btn" onclick={() => goto('/login')}> Login </button>
-          <button, class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
+        <div class="auth-buttons">
+          <button class="login-btn" onclick={() => goto('/login')}> Login </button>
+          <button class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
         {/if}
     </div>
   </div>

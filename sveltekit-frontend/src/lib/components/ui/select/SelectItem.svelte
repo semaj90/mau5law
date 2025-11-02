@@ -1,6 +1,6 @@
-<script, lang="ts"> // Svelte, 5 runes are auto-imported import { getContext } from 'svelte'; import { writable } from 'svelte/store'; import type { SelectContext } from './types'; interface Props { value: any; class_?: string; children?: import('svelte').Snippet; }
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { getContext } from 'svelte'; import { writable } from 'svelte/store'; import type { SelectContext } from './types'; interface Props { value: any; class_?: string; children?: import('svelte').Snippet; }
   let { value, class_ = '', children }: Props = $props(); const context = getContext<SelectContext>('select') || ({ selected: writable(null), open: writable(false), onSelect: () => {}, onToggle: () => {} } as SelectContext); const { selected, open, onSelect, onToggle } = context; let isSelected = $derived($selected === value); function handleClick() { onSelect(value); open.set(false); }
-</script> <div, class="space-y-4 { class_ }"
+</script> <div class="space-y-4 { class_ }"
   role="option"
   aria-selected={isSelected ? 'true': 'false'} onclick={() => handleClick()} keydown={e => e.key === 'Enter' && handleClick()} tabindex={ 0 } >
   {#if children} {@render children()} {/if} </div> <style> /* @unocss-include */ {} .select-item { padding: 8px 12px; cursor: pointer; font-size: 14px; color: #374151; display: flex; align-items: center; }

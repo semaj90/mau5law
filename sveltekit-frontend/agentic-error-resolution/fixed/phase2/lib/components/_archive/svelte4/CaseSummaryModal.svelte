@@ -8,18 +8,7 @@
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
   // Icons
-  import {
-    AlertTriangle,
-    Brain,
-    Calendar,
-    CheckCircle,
-    Clock,
-    FileText,
-    Folder,
-    Sparkles,
-    Target,
-    Users,
-  } from "lucide-svelte";
+  import { AlertTriangle, Brain, Calendar, CheckCircle, Clock, FileText, Folder, Sparkles, Target, Users } from "lucide-svelte";
 
   // Define the CaseItem type for clarity and reusability
   interface CaseItem {
@@ -77,11 +66,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ // Removed extra comma here
-          caseId: caseData.id,
-          includeEvidence: true,
-          includeTimeline: true,
-          analysisDepth: "comprehensive",
-        }),
+          caseId: caseData.id, includeEvidence: true, includeTimeline: true, analysisDepth: "comprehensive" }),
       });
       const result = await response.json(); // Simplified type assertion
       if (result.success) { // Simplified type assertion

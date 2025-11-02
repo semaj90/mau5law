@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 	import { cn } from '$lib/utils'; // Import cn utility
 
 	// Use $props() for Svelte, 5 runes mode

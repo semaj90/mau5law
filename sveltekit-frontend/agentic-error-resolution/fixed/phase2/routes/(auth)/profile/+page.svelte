@@ -3,12 +3,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { get } from 'svelte/store';
-  import {
-    userStore,
-    loadUserSession,
-    updateUserProfile as updateUserStoreProfile,
-    type UserSession,
-  } from '$lib/stores/user';
+  import { userStore, loadUserSession, updateUserProfile as updateUserStoreProfile, type UserSession } from '$lib/stores/user';
   import Button from '$lib/components/ui/wrappers/bits/Button.svelte';
   import Input from '$lib/components/ui/bits/Input.svelte';
   import Card from '$lib/components/ui/bits/Card.svelte';
@@ -22,8 +17,8 @@
   let propsData = data as ProfilePageData | undefined;
 
   type ProfilePageData = PageData & {
-    profile?: Record<string, unknown> | null;
-    stats?: Record<string, unknown> | null;
+    profile?: Record<string unknown> | null;
+    stats?: Record<string unknown> | null;
   };
 
   interface ProfileUser {
@@ -59,37 +54,26 @@
     success?: boolean;
     message?: string;
     error?: string | { message?: string };
-    user?: Record<string, unknown>;
+    user?: Record<string unknown>;
   }
 
   // data is provided via the typed props above
   const initialData = (propsData ?? {}) as ProfilePageData;
-  const statsData = (initialData.stats ?? {}) as Record<string, unknown>;
+  const statsData = (initialData.stats ?? {}) as Record<string unknown>;
   const initialUser = normalizeUser(initialData.profile);
 
   let user = $state<ProfileUser | null>(initialUser);
-  let profileForm = $state({
-    firstName: initialUser?.firstName ?? '',
-    lastName: initialUser?.lastName ?? '',
-    email: initialUser?.email ?? '',
-  });
+  let profileForm = $state({ firstName: initialUser?.firstName ?? '', lastName: initialUser?.lastName ?? '', email: initialUser?.email ?? '' });
   let isSaving = $state(false);
   let isHydrating = $state(!initialUser);
   let feedback = $state<{ text: string; intent: 'success' | 'error' | 'info' | null }>({ text: '', intent: null });
   let showRagUpload = $state(false);
   let ragSummary = $state<RagUploadSummary | null>(null);
-  let stats = $state<ProfileStats>({
-    totalCases: toNumber(statsData['totalCases']) ?? 0,
-    openCases: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0,
-    closedCases:
+  let stats = $state<ProfileStats>({ totalCases: toNumber(statsData['totalCases']) ?? 0, openCases: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0, closedCases:
       toNumber(statsData['closedCases']) ??
       Math.max(
-        (toNumber(statsData['totalCases']) ?? 0) - (toNumber(statsData['activeCases']) ?? 0),
-        0
-      ),
-    totalEvidence: toNumber(statsData['totalEvidence']) ?? 0,
-    personsOfInterest: toNumber(statsData['totalCriminals']) ?? 0,
-  });
+        (toNumber(statsData['totalCases']) ?? 0) - (toNumber(statsData['activeCases']) ?? 0), 0
+      ), totalEvidence: toNumber(statsData['totalEvidence']) ?? 0, personsOfInterest: toNumber(statsData['totalCriminals']) ?? 0 });
 
   // Resolve API origin from available client-side env values (import.meta.env)
   const apiOrigin = $derived(() => {
@@ -132,8 +116,7 @@
     ragSummary?.results?.reduce((sum, item) => sum + (item.result?.embeddings ?? 0), 0) ?? 0
   );
 
-  onMount(() => {
-    if (!browser) return;
+  onMount(() => { if (!browser) return;
 
     const unsubscribe = userStore.subscribe(value => {
       if (value?.user) {
@@ -141,10 +124,7 @@
         if (normalized) {
           user = normalized;
           profileForm = {
-            firstName: normalized.firstName ?? '',
-            lastName: normalized.lastName ?? '',
-            email: normalized.email ?? '',
-          };
+            firstName: normalized.firstName ?? '', lastName: normalized.lastName ?? '', email: normalized.email ?? '' };
         }
       }
     });
@@ -173,9 +153,8 @@
     };
   });
 
-  function normalizeUser(raw: any): ProfileUser | null {
-    if (!raw || typeof raw !== 'object') return null;
-    const source = raw as Record<string, unknown>;
+  function normalizeUser(raw: any): ProfileUser | null { if (!raw || typeof raw !== 'object') return null;
+    const source = raw as Record<string unknown>;
     const email = typeof source.email === 'string' ? source.email : '';
     if (!email) return null;
 
@@ -200,14 +179,7 @@
           : null;
 
     return {
-      id: source.id as string | number | undefined,
-      email,
-      firstName: first,
-      lastName: last,
-      name: typeof source.name === 'string' ? source.name : undefined,
-      role: typeof source.role === 'string' ? source.role : undefined,
-      avatarUrl: avatar ?? undefined,
-    };
+      id: source.id as string | number | undefined, email, firstName: first, lastName: last, name: typeof source.name === 'string' ? source.name : undefined, role: typeof source.role === 'string' ? source.role : undefined, avatarUrl: avatar ?? undefined };
   }
 
   function toNumber(value: any): number | undefined {
@@ -234,23 +206,16 @@
     feedback = { text, intent };
   }
 
-  async function refreshProfile() {
-    try {
+  async function refreshProfile() { try {
       const response = await fetch(resolveApi('/api/user/profile'), {
-        method: 'GET',
-        credentials: 'include',
-      });
+        method: 'GET', credentials: 'include' });
       if (!response.ok) return;
       const payload = (await response.json()) as ProfileResponse;
-      if (payload?.user) {
-        const normalized = normalizeUser(payload.user);
+      if (payload?.user) { const normalized = normalizeUser(payload.user);
         if (normalized) {
           user = normalized;
           profileForm = {
-            firstName: normalized.firstName ?? '',
-            lastName: normalized.lastName ?? '',
-            email: normalized.email ?? '',
-          };
+            firstName: normalized.firstName ?? '', lastName: normalized.lastName ?? '', email: normalized.email ?? '' };
         }
       }
     } catch (error) {
@@ -258,12 +223,9 @@
     }
   }
 
-  async function loadStats() {
-    try {
+  async function loadStats() { try {
       const response = await fetch(resolveApi('/api/dashboard/stats'), {
-        method: 'GET',
-        credentials: 'include',
-      });
+        method: 'GET', credentials: 'include' });
       if (!response.ok) return;
 
       const payload = await response.json();
@@ -271,20 +233,13 @@
       const totalCases = toNumber(data.totalCases) ?? stats.totalCases ?? 0;
       const activeCases = toNumber(data.activeCases) ?? stats.openCases ?? 0;
       const closedCases = Math.max(totalCases - activeCases, 0);
-      stats = {
-        totalCases,
-        openCases: activeCases,
-        closedCases,
-        totalEvidence: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0,
-        personsOfInterest: stats.personsOfInterest ?? 0,
-      };
+      stats = { totalCases, openCases: activeCases, closedCases, totalEvidence: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0, personsOfInterest: stats.personsOfInterest ?? 0 };
     } catch (error) {
       console.error('Failed to load dashboard stats', error);
     }
   }
 
-  async function submitProfileUpdate(event: Event) {
-    event.preventDefault();
+  async function submitProfileUpdate(event: Event) { event.preventDefault();
     if (isSaving) return;
 
     clearFeedback();
@@ -292,10 +247,7 @@
 
     try {
       const body = {
-        firstName: profileForm.firstName.trim() || null,
-        lastName: profileForm.lastName.trim() || null,
-        email: profileForm.email.trim(),
-      };
+        firstName: profileForm.firstName.trim() || null, lastName: profileForm.lastName.trim() || null, email: profileForm.email.trim() };
       const response = await fetch(resolveApi('/api/user/profile'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -313,15 +265,11 @@
         return;
       }
 
-      if (payload.user) {
-        const normalized = normalizeUser(payload.user);
+      if (payload.user) { const normalized = normalizeUser(payload.user);
         if (normalized) {
           user = normalized;
           profileForm = {
-            firstName: normalized.firstName ?? '',
-            lastName: normalized.lastName ?? '',
-            email: normalized.email ?? '',
-          };
+            firstName: normalized.firstName ?? '', lastName: normalized.lastName ?? '', email: normalized.email ?? '' };
           const userUpdate: Partial<UserSession['user']> = { email: normalized.email };
           if (normalized.firstName !== undefined) userUpdate.firstName = normalized.firstName;
           if (normalized.lastName !== undefined) userUpdate.lastName = normalized.lastName;

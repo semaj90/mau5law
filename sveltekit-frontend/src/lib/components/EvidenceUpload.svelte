@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   onMount(async () => {
     try {
       // Cast the imported module to a loose type so TS doesn't require specific exports.'
-      const m = (await import('$lib/stores/unified')) as: unknown as Record<string, any>;
+      const m = (await import('$lib/stores/unified')) as: unknown as Record<string any>;
       processEvidenceFn = typeof m.processEvidence === 'function' ? m.processEvidence : undefined;
       retryProcessingFn = typeof m.retryProcessing === 'function' ? m.retryProcessing : undefined;
       resetProcessorFn = typeof m.resetProcessor === 'function' ? m.resetProcessor : undefined;
@@ -66,12 +66,12 @@ https://svelte.dev/e/js_parse_error -->
   let dragover = false;
   let selectedFile: File | null = null;
   let evidenceId = '';
-  let, processingStartTime: Date | null = null;
+  let processingStartTime: Date | null = null;
   // Local reactive state (replace with your xstate/store wiring later)
   let processing = false;
   let progress = 0;
   let errorMsg: string | null = null;
-  let, processingSteps: string[] = [];
+  let processingSteps: string[] = [];
   let completed = $state<boolean>(false);
   let artifactUrl: string | null = null;
   // Watch for outcomes (Svelte reactive statements)
@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
     // no-op; add cleanup logic if you attach background services
   }
 </script>
-<div class="evidence-upload-container p-6 border rounded-lg, bg-white, shadow-sm">
+<div class="evidence-upload-container p-6 border rounded-lg bg-white">
   <h2 class="text-2xl font-semibold mb-6 text-gray-900">Evidence Upload & Processing</h2>
   {#if !selectedFile && !processing}
     <div
@@ -193,9 +193,9 @@ https://svelte.dev/e/js_parse_error -->
       role="button"
       tabindex="0"
     >
-      <div class="w-12 h-12 mx-auto mb-4, text-gray-400, text-3xl">⬆️</div>
-      <p class="text-lg, mb-2, text-gray-600">Drop evidence file here or click to browse</p>
-      <p class="text-sm, text-gray-500, mb-4">
+      <div class="w-12 h-12 mx-auto mb-4 text-gray-400">⬆️</div>
+      <p class="text-lg mb-2">Drop evidence file here or click to browse</p>
+      <p class="text-sm text-gray-500">
         Supported formats: {allowedTypes.join(', ')} (max {formatFileSize(maxFileSize)})
       </p>
       <input
@@ -205,30 +205,30 @@ https://svelte.dev/e/js_parse_error -->
         onchange={handleFileSelect}
         class="hidden"
       />
-      <Button, class="bits-btn, mt-2" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
+      <Button class="bits-btn" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
     {/if}
   {#if selectedFile && !processing && !completed}
-    <div class="file-info bg-gray-50 p-4, rounded-lg, mb-6" transition:fade>
-      <div class="flex, items-center, justify-between">
+    <div class="file-info bg-gray-50 p-4 rounded-lg" transition:fade>
+      <div class="flex items-center">
         <div>
-          <p, class="font-medium, text-gray-900">{selectedFile.name}</p>
-          <p, class="text-sm, text-gray-600">
+          <p class="font-medium">{selectedFile.name}</p>
+          <p class="text-sm">
             {formatFileSize(selectedFile.size)} • {selectedFile.type}
           </p>
-          <p class="text-sm, text-blue-600, mt-1">Evidence ID: {evidenceId}</p>
+          <p class="text-sm text-blue-600">Evidence ID: {evidenceId}</p>
         </div>
-        <div, class="flex, gap-2">
+        <div class="flex">
           <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Change File</Button>
-          <Button onclick={startProcessing} class="bg-blue-600, hover:bg-blue-700, bits-btn">Process Evidence</Button>
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700">Process Evidence</Button>
         </div>
       </div>
     {/if}
   {#if processing}
-    <div, class="processing-status" transitionfly={{ y: 20 }}>
-      <div, class="mb-4">
-        <div class="flex items-center, justify-between, mb-2">
-          <h3, class="font-medium, text-gray-900">Processing Evidence</h3>
-          <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">
+    <div class="processing-status" transitionfly={{ y: 20 }}>
+      <div class="mb-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Processing Evidence</h3>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">
             {#if processingSteps.includes('validating')}
               Validating
             {:else if processingSteps.includes('analyzing')}
@@ -240,51 +240,51 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </span>
         </div>
-        <Progress, value={progress} class="w-full" />
-        <p class="text-sm, text-gray-600, mt-1">{progress}% complete</p>
+        <Progress value={progress} class="w-full" />
+        <p class="text-sm text-gray-600">{progress}% complete</p>
       </div>
-      <div, class="steps-list, space-y-2">
+      <div class="steps-list">
         {#each Array.isArray(processingSteps) ? processingSteps : [] as step}
-          <div class="flex items-center, gap-2, text-sm" style="color:var(--tw-color,inherit)">
-            <span, class="w-4">{iconFor(step)}</span>
+          <div class="flex items-center gap-2" style="color:var(--tw-color,inherit)">
+            <span class="w-4">{iconFor(step)}</span>
             <span>{step}</span>
           </div>
         {/each}
       </div>
       {#if processingStartTime}
-        <p class="text-xs, text-gray-500, mt-4">
+        <p class="text-xs text-gray-500">
           Processing time: {((Date.now() - processingStartTime.getTime()) / 1000).toFixed(1)}s
         </p>
       {/if}
     {/if}
   {#if completed}
-    <div class="completion-status bg-green-50, p-4, rounded-lg" transition:fade>
-      <div class="flex items-center, gap-3, mb-3">
-        <div class="w-6 h-6, text-green-600, text-xl">✅</div>
+    <div class="completion-status bg-green-50 p-4" transition:fade>
+      <div class="flex items-center gap-3">
+        <div class="w-6 h-6 text-green-600">✅</div>
         <div>
-          <h3, class="font-medium, text-green-900">Evidence Processing Complete</h3>
-          <p, class="text-sm, text-green-700">Legal AI metadata embedded and artifact indexed successfully</p>
+          <h3 class="font-medium">Evidence Processing Complete</h3>
+          <p class="text-sm">Legal AI metadata embedded and artifact indexed successfully</p>
         </div>
       </div>
       {#if artifactUrl}
-        <div class="flex, gap-2, mt-4">
+        <div class="flex gap-2">
           <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={() => window.open(artifactUrl!, '_blank')}>
             Download Artifact
           </Button>
           <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
         </div>
       {:else}
-        <div class="flex, gap-2, mt-4">
+        <div class="flex gap-2">
           <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
         {/if}
     {/if}
   {#if errorMsg}
-    <Alert, variant="destructive" class="mt-4">
-      <div class="flex, items-start, gap-2">
-        <div, class="text-red-600, text-xl">❌</div>
+    <Alert variant="destructive" class="mt-4">
+      <div class="flex items-start">
+        <div class="text-red-600">❌</div>
         <AlertDescription>
-          <div, class="mb-2">{errorMsg}</div>
-          <div, class="flex, gap-2">
+          <div class="mb-2">{errorMsg}</div>
+          <div class="flex">
             <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
             <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Reset</Button>
           </div>

@@ -250,7 +250,7 @@ await loadEngineData();
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           {#each Array.isArray(commonQueries) ? commonQueries : [] as query}
             <button
-              onclick={() => { queryInput = query,}}
+              onclick={ () => { queryInput = query }}
               class="text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
             >
               {query}

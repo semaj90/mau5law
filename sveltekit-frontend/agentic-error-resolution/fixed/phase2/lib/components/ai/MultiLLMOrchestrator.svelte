@@ -61,9 +61,9 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   let workerStatus = $state<WorkerStatus | null>(null);
   let workerPool = $state<WorkerPool | null>(null);
   let processingMetrics = $state<ProcessingMetrics[]>([]);
-  let activeTasks = $state<Map<string, AITask>('')>(new Map());
-  let completedTasks = $state<Map<string, AIResponse>('')>(new Map());
-  let taskErrors = $state<Map<string, Error>('')>(new Map());
+  let activeTasks = $state<Map<string AITask>('')>(new Map());
+  let completedTasks = $state<Map<string AIResponse>('')>(new Map());
+  let taskErrors = $state<Map<string Error>('')>(new Map());
   // UI state
   let selectedTask = $state<string | null>(null);
   let showSettings = $state(false);
@@ -181,18 +181,8 @@ if (autoStart) {
   function handleStatusUpdate(status: WorkerStatus) {
     workerStatus = statu;
   }
-  async function submitTestTask(providerId: string) {
-    const testTask: AITask = {
-      taskId: crypto.randomUUID(),
-      type: 'generate',
-      providerId,
-      model: providerConfigs.find(p => p.id === providerId)?.models[0] || 'default',
-      prompt: 'Hello! Please respond with a brief test message to verify the connection.',
-      timestamp: Date.now(),
-      priority: 'medium',
-      temperature: 0.1,
-      maxTokens: 50,
-    }
+  async function submitTestTask(providerId: string) { const testTask: AITask = {
+      taskId: crypto.randomUUID(), type: 'generate', providerId, model: providerConfigs.find(p => p.id === providerId)?.models[0] || 'default', prompt: 'Hello! Please respond with a brief test message to verify the connection.', timestamp: Date.now(), priority: 'medium', temperature: 0.1, maxTokens: 50 }
     try {
       activeTasks.set(testTask.taskId, testTask);
       activeTasks = new Map(activeTasks);

@@ -12,7 +12,7 @@
   let events: TelemetryEvent[] = [];
   const maxEvents = 150;
   // Aggregated metrics
-  let backendStats: Record<string, { count: number; success: number; totalDuration: number; lastMs: number }> = {};
+  let backendStats: Record<string { count: number; success: number; totalDuration: number; lastMs: number }> = {};
   let currentBackend = '';
   let embeddingDimension = 0;
   let upscaleCooldownRemaining = 0;
@@ -93,7 +93,7 @@
   async function forcePromote(to: string) {
     await (gpuVectorProcessor as any).forcePromote?.(to);
   }
-  function clearLog() { events = [], }
+  function clearLog() { events = [] }
   function setReductionMode(mode: 'auto' | 'gpu' | 'cpu') {
     reductionMode = mode;
     telemetryBus.publish({ type: 'gpu.reduction.mode' as any, meta: { mode } });

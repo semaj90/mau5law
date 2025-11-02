@@ -40,15 +40,8 @@
   let applicabilityAnalysis = $state<ApplicabilityAnalysisResult | null>(null);
   let strengthAssessment = $state<StrengthAssessmentResult | null>(null);
   // Legal AI System State
-  let legalSystem = $state({
-    status: 'idle',
-    processingStage: 'Ready for analysis...',
-    vectorSearchActive: false,
-    precedentDatabase: {
-      totalCases: 2847592,
-      indexed: 2847592,
-      lastUpdate: '2024-09-10',
-    },
+  let legalSystem = $state({ status: 'idle', processingStage: 'Ready for analysis...', vectorSearchActive: false, precedentDatabase: {
+      totalCases: 2847592, indexed: 2847592, lastUpdate: '2024-09-10' },
     aiConfidence: 0
   });
   // NES-GPU Memory Bridge Integration
@@ -207,21 +200,12 @@
       memoryMetrics.gpuUtilization = legalSystem.vectorSearchActive ? Math.random() * 40 + 60 : Math.random() * 30;
     }, 2000);
   }
-  async function performVectorSearch(): Promise<PrecedentMatch[]> {
-    // Replace mock data with an actual API call to a SvelteKit endpoint
+  async function performVectorSearch(): Promise<PrecedentMatch[]> { // Replace mock data with an actual API call to a SvelteKit endpoint
     try {
       const response = await fetch('/api/precedent-matching', { // Call SvelteKit API route
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          searchQuery,
-          caseFactPattern,
-          selectedJurisdiction,
-          selectedCourtLevel,
-          selectedPracticeArea,
-        }),
+        method: 'POST', headers: {
+          'Content-Type': 'application/json' },
+        body: JSON.stringify({ searchQuery, caseFactPattern, selectedJurisdiction, selectedCourtLevel, selectedPracticeArea }),
       });
 
       if (!response.ok) {

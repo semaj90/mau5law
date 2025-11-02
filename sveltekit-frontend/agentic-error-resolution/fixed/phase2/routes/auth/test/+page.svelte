@@ -28,25 +28,11 @@
   let clusterStatus = $state<any>(null);
   let context7Docs = $state<any>(null);
   // Mock data for testing
-  const testCredentials = {
-    login: {
-      email: 'prosecutor@legal-ai.com',
-      password: 'SecurePass123!@#',
-    },
-    register: {
-      email: 'investigator@police.gov',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      password: 'SecurePass123!@#',
-      confirmPassword: 'SecurePass123!@#',
-      role: 'investigator',
-      department: 'Metropolitan Police Department',
-      jurisdiction: 'Washington DC',
-      badgeNumber: 'MPD-4567',
-      enableTwoFactor: true
+  const testCredentials = { login: {
+      email: 'prosecutor@legal-ai.com', password: 'SecurePass123!@#' },
+    register: { email: 'investigator@police.gov', firstName: 'Jane', lastName: 'Smith', password: 'SecurePass123!@#', confirmPassword: 'SecurePass123!@#', role: 'investigator', department: 'Metropolitan Police Department', jurisdiction: 'Washington DC', badgeNumber: 'MPD-4567', enableTwoFactor: true
       agreeToTerms: true
-      agreeToPrivacy: true,
-    }
+      agreeToPrivacy: true }
   }
   $effect(() => {
     (async () => {
@@ -91,15 +77,8 @@ await runInitialTests();
           userAgent: navigator.userAgent,
           fingerprint: btoa(JSON.stringify({ test: true }))
         },
-        context: {
-          action: 'test_analysis',
-          enhancedSecurity: true,
-        },
-        config: {
-          useGPU: true,
-          model: 'gemma3-legal',
-          protocol: 'auto',
-        }
+        context: { action: 'test_analysis', enhancedSecurity: true },
+        config: { useGPU: true, model: 'gemma3-legal', protocol: 'auto' }
       });
       testResults.security = {
         success: securityTest.success,
@@ -112,24 +91,9 @@ await runInitialTests();
         id: `test_validation_${Date.now()}`,
         type: 'security_validation',
         priority: 'medium',
-        data: {
-          email: 'prosecutor@da.gov',
-          firstName: 'John',
-          lastName: 'Doe',
-          role: 'prosecutor',
-          department: 'District Attorney Office',
-          jurisdiction: 'Los Angeles County',
-          badgeNumber: 'DA-123',
-        },
-        context: {
-          action: 'test_validation',
-          legalProfessionalCheck: true,
-        },
-        config: {
-          useGPU: true,
-          model: 'gemma3-legal',
-          protocol: 'auto',
-        }
+        data: { email: 'prosecutor@da.gov', firstName: 'John', lastName: 'Doe', role: 'prosecutor', department: 'District Attorney Office', jurisdiction: 'Los Angeles County', badgeNumber: 'DA-123' },
+        context: { action: 'test_validation', legalProfessionalCheck: true },
+        config: { useGPU: true, model: 'gemma3-legal', protocol: 'auto' }
       });
       testResults.validation = {
         success: validationTest.success,
@@ -160,12 +124,8 @@ await runInitialTests();
   // Mock form data for components
   const mockFormData = {
     login: { email: '', password: '' },
-    register: {
-      email: '', firstName: '', lastName: '', password: '',
-      confirmPassword: '', role: 'prosecutor', department: '',
-      jurisdiction: '', badgeNumber: '', enableTwoFactor: false
-      agreeToTerms: false, agreeToPrivacy: false,
-    }
+    register: { email: '', firstName: '', lastName: '', password: '', confirmPassword: '', role: 'prosecutor', department: '', jurisdiction: '', badgeNumber: '', enableTwoFactor: false
+      agreeToTerms: false, agreeToPrivacy: false }
   }
   function populateTestData(form: 'login' | 'register') {
     if (form === 'login') {

@@ -49,7 +49,7 @@
     analysisType: 'semantic',
     priority: 'normal',
     useGPU: true,
-    errors: {} as Record<string, string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
+    errors: {} as Record<string string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
   });
   let realTimeStats = $state(true);
   $effect(() => {
@@ -160,17 +160,7 @@
       }
     ];
     activeJobs = [
-      {
-        id: 'job_003',
-        documentId: 'brief_2024_023',
-        analysisType: 'precedent_matching',
-        priority: 'high',
-        status: 'processing',
-        progress: 67,
-        startedAt: new Date(Date.now() - 900000).toISOString(),
-        bankId: 2,
-        gpuLayers: 23,
-      }
+      { id: 'job_003', documentId: 'brief_2024_023', analysisType: 'precedent_matching', priority: 'high', status: 'processing', progress: 67, startedAt: new Date(Date.now() - 900000).toISOString(), bankId: 2, gpuLayers: 23 }
     ];
   }
   async function submitProcessingJob(event: Event) {
@@ -181,7 +171,7 @@
       return;
     }
     isProcessing = true;
-    newJobForm.errors = {} as Record<string, string[]>;
+    newJobForm.errors = {} as Record<string string[]>;
     try {
       // Create processing job with NES-GPU optimization
       const job: Job = {
@@ -207,7 +197,7 @@
         analysisType: 'semantic',
         priority: 'normal',
         useGPU: true,
-        errors: {} as Record<string, string[]>
+        errors: {} as Record<string string[]>
       }
     } catch (error) {
       console.error('Failed to submit job:', error);

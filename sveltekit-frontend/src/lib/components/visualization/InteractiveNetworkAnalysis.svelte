@@ -2,7 +2,7 @@
   Interactive Network Analysis Component
   Advanced network visualization for evidence relationships and collaboration patterns
 -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
@@ -33,7 +33,7 @@
   // Reactive state
   let containerElement: HTMLDivElement;
   let svg: any;
-  let, simulation: any;
+  let simulation: any;
   let selectedNode = $state<any>(null);
   let hoveredNode = $state<any>(null);
   let networkMetrics = $state<any>({});
@@ -48,7 +48,7 @@
   let nodeElements: any;
   let linkElements: any;
   let labelElements: any;
-  let, clusterElements: any;
+  let clusterElements: any;
   // small UI helpers to use previously-unused state and wire simple interactions
   function setAnalysisMode(mode: 'relationships' | 'importance' | 'timeline' | 'similarity') {
     analysisMode = mode;
@@ -150,7 +150,7 @@
     if (!nodes || !links) return;
     if (analysisMode !== 'similarity') return;
     const existing = new Set(links.map(l => `${l.source}-${l.target}`));
-    const byCluster: Record<string, any[]> = {};
+    const byCluster: Record<string any[]> = {};
     for (const n of nodes) {
       (byCluster[n.cluster] ||= []).push(n);
     }
@@ -173,7 +173,7 @@
   // Simple community detection: connected components -> cluster ids
   function detectCommunities() {
     if (!nodes || !links) return;
-    const adj = new Map<string, Set<string>>();
+    const adj = new Map<string Set<string>>();
     for (const n of nodes) adj.set(n.id, new Set());
     for (const l of links) {
       if (!adj.has(l.source)) adj.set(l.source, new Set());
@@ -314,46 +314,46 @@
   }
 </script>
 <!-- Minimal DOM container for D3 to attach, the, SVG -->
-<div, bind:this={containerElement} class="d3-container"></div>
+<div bind:this={containerElement} class="d3-container"></div>
 <!-- Add minimal UI that uses the CSS classes and state variables so selectors are, considered, used -->
 {#if interactive}
-  <div, class="controls-panel">
-    <div, class="analysis-controls">
-      <label, for="analysis">Analysis mode</label>
-      <select, id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as: any)}>
-        <option, value="relationships" selected={analysisMode === 'relationships'}>Relationships</option>
-        <option, value="importance" selected={analysisMode === 'importance'}>Importance</option>
-        <option, value="timeline" selected={analysisMode === 'timeline'}>Timeline</option>
-        <option, value="similarity" selected={analysisMode === 'similarity'}>Similarity</option>
+  <div class="controls-panel">
+    <div class="analysis-controls">
+      <label for="analysis">Analysis mode</label>
+      <select id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as: any)}>
+        <option value="relationships" selected={analysisMode === 'relationships'}>Relationships</option>
+        <option value="importance" selected={analysisMode === 'importance'}>Importance</option>
+        <option value="timeline" selected={analysisMode === 'timeline'}>Timeline</option>
+        <option value="similarity" selected={analysisMode === 'similarity'}>Similarity</option>
       </select>
     </div>
-    <div, class="view-controls">
-      <label><input, type="checkbox" bind:checked={showClusters} /> Show clusters</label>
-      <label><input, type="checkbox" bind:checked={showMetrics} /> Show metrics</label>
+    <div class="view-controls">
+      <label><input type="checkbox" bind:checked={showClusters} /> Show clusters</label>
+      <label><input type="checkbox" bind:checked={showMetrics} /> Show metrics</label>
     </div>
-    <div, class="action-controls">
-      <button, class="btn-control" onclick={() => { calculateNetworkMetrics(); }}>Recalc</button>
-      <button, class="btn-control" onclick={() => { createVisualization(); }}>Refresh</button>
+    <div class="action-controls">
+      <button class="btn-control" onclick={() => { calculateNetworkMetrics(); }}>Recalc</button>
+      <button class="btn-control" onclick={() => { createVisualization(); }}>Refresh</button>
     </div>
   {/if}
 {#if showMetrics}
-  <div, class="metrics-panel">
+  <div class="metrics-panel">
     <h3>Network Metrics</h3>
-    <div, class="metrics-grid">
+    <div class="metrics-grid">
       <!-- replaced <label> with non-form span to satisfy a11y rule:
            "A form label must be associated with a control" -->
-      <div, class="metric"><span, class="metric-label">Nodes</span><span>{networkMetrics.nodeCount ?? nodes.length}</span></div>
-      <div, class="metric"><span, class="metric-label">Links</span><span>{networkMetrics.linkCount ?? links.length}</span></div>
+      <div class="metric"><span class="metric-label">Nodes</span><span>{networkMetrics.nodeCount ?? nodes.length}</span></div>
+      <div class="metric"><span class="metric-label">Links</span><span>{networkMetrics.linkCount ?? links.length}</span></div>
     </div>
   {/if}
 {#if selectedNode}
-  <div, class="node-details-panel">
-    <button, class="btn-close" onclick={closeNodeDetails}>✕</button>
+  <div class="node-details-panel">
+    <button class="btn-close" onclick={closeNodeDetails}>✕</button>
     <h3>{selectedNode.label ?? 'Node'}</h3>
-    <div, class="details-content">
+    <div class="details-content">
       <p>Type: {selectedNode.type}</p>
       <p>Importance: {selectedNode.importance}</p>
-      <div, class="connected-nodes">
+      <div class="connected-nodes">
         <h4>Connected</h4>
         <ul>
           {#each Array.isArray((links.filter(l => l.source === selectedNode.id || l.target === selectedNode.id)
@@ -366,8 +366,8 @@
     </div>
   {/if}
 {#if isLoading}
-  <div, class="loading-overlay">
-    <div, class="spinner"></div>
+  <div class="loading-overlay">
+    <div class="spinner"></div>
     <div>Loading network…</div>
   {/if}
 <style>

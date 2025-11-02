@@ -1,10 +1,10 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Props } from '$lib/types/global';
   let { checked = $bindable(false), disabled = false, id, class: klass = '' }: Props = $props();
 </script>
-<label, class="switch {disabled ? 'opacity-50' : ''}">
+<label class="switch {disabled ? 'opacity-50' : ''}">
   <input {id} type="checkbox" bind:checked {disabled} class="sr-only" />
-  <span, class="track {checked ? 'on' : ''} {klass}" aria-hidden="true"></span>
+  <span class="track {checked ? 'on' : ''} {klass}" aria-hidden="true"></span>
 </label>
 <style>
   .switch {

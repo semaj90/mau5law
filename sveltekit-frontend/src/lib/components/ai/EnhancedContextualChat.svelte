@@ -7,7 +7,7 @@
   - Real-time HMM state tracking
   - Entity extraction visualization
 -->
-<script, lang="ts">
+<script lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -175,17 +175,17 @@ import type { Document } from '$lib/types';
     }
   }
 </script>
-<div, class="enhanced-contextual-chat">
+<div class="enhanced-contextual-chat">
   <!-- Header -->
-  <div class="chat-header, nes-container, is-dark">
-    <div, class="header-content">
-      <h2, class="nes-text, is-primary">AI LEGAL ASSISTANT</h2>
-      <div, class="header-actions">
+  <div class="chat-header nes-container">
+    <div class="header-content">
+      <h2 class="nes-text">AI LEGAL ASSISTANT</h2>
+      <div class="header-actions">
         <Tooltip.Root>
-          <Tooltip.Trigger, class="nes-btn, is-small">
+          <Tooltip.Trigger, class="nes-btn">
             ⚙️
           </Tooltip.Trigger>
-          <Tooltip.Content class="tooltip-content, nes-container, is-dark">
+          <Tooltip.Content class="tooltip-content nes-container">
             <p>Settings</p>
           </Tooltip.Content>
         </Tooltip.Root>
@@ -200,31 +200,31 @@ import type { Document } from '$lib/types';
     </div>
     <!-- State, indicator -->
     {#if contextualState}
-      <div, class="state-indicator">
-        <span, class="state-label">Current State:</span>
-        <span, class="state-name">{currentStateName}</span>
-        <span, class="state-confidence">{confidencePercentage}%</span>
+      <div class="state-indicator">
+        <span class="state-label">Current State:</span>
+        <span class="state-name">{currentStateName}</span>
+        <span class="state-confidence">{confidencePercentage}%</span>
       {/if}
   </div>
-  <div, class="chat-body">
+  <div class="chat-body">
     <!-- Left: Conversation -->
-    <div, class="conversation-panel">
-      <div, class="messages-container">
+    <div class="conversation-panel">
+      <div class="messages-container">
         {#each conversationHistory as turn, idx (idx)}
-          <div, class="message-group">
-            <div class="user-message, nes-container, is-dark">
-              <div, class="message-label">👤 You</div>
+          <div class="message-group">
+            <div class="user-message nes-container">
+              <div class="message-label">👤 You</div>
               <p>{turn.userMessage}</p>
             </div>
-            <div, class="agent-message, nes-container">
-              <div, class="message-label">🤖 Assistant</div>
+            <div class="agent-message">
+              <div class="message-label">🤖 Assistant</div>
               <p>{turn.agentResponse}</p>
-              <div, class="message-meta">
-                <span, class="meta-item">
+              <div class="message-meta">
+                <span class="meta-item">
                   State: {stateNames[turn.hmmState as keyof typeof stateNames]}
                 </span>
                 {#if turn.entities.length > 0}
-                  <span, class="meta-item">
+                  <span class="meta-item">
                     Entities: {turn.entities.length}
                   </span>
                 {/if}
@@ -233,9 +233,9 @@ import type { Document } from '$lib/types';
           </div>
         {/each}
         {#if conversationHistory.length === 0}
-          <div, class="empty-state, nes-container">
-            <p, class="nes-text">Start a conversation about your legal case...</p>
-            <p, class="nes-text, is-disabled">
+          <div class="empty-state">
+            <p class="nes-text">Start a conversation about your legal case...</p>
+            <p class="nes-text">
               Try asking about case analysis, document review, or risk assessment.
             </p>
           {/if}
@@ -247,12 +247,12 @@ import type { Document } from '$lib/types';
         use:enhance
         class="message-form"
       >
-        <input, type="hidden" name="sessionId" bind:value={$form.sessionId} />
-        <input, type="hidden" name="userId" bind:value={$form.userId} />
+        <input type="hidden" name="sessionId" bind:value={$form.sessionId} />
+        <input type="hidden" name="userId" bind:value={$form.userId} />
         {#if caseId}
-          <input, type="hidden" name="caseId" bind:value={$form.caseId} />
+          <input type="hidden" name="caseId" bind:value={$form.caseId} />
         {/if}
-        <div, class="nes-field">
+        <div class="nes-field">
           <textarea
             name="message"
             bind:value={$form.message}
@@ -263,11 +263,11 @@ import type { Document } from '$lib/types';
             disabled={$submitting}
           ></textarea>
           {#if $errors.message}
-            <p class="error-text, nes-text, is-error">{$errors.message}</p>
+            <p class="error-text nes-text">{$errors.message}</p>
           {/if}
         </div>
-        <div, class="form-controls">
-          <label, class="nes-text">
+        <div class="form-controls">
+          <label class="nes-text">
             <input
               type="checkbox"
               class="nes-checkbox"
@@ -287,29 +287,29 @@ import type { Document } from '$lib/types';
       </form>
     </div>
     <!--, Right: State & Predictions -->
-    <div, class="info-panel">
+    <div class="info-panel">
       <Accordion.Root, multiple>
         <!-- Predictions -->
         <Accordion.Item, value="predictions">
           <Accordion.Header>
-            <Accordion.Trigger class="accordion-trigger, nes-container, is-dark">
+            <Accordion.Trigger class="accordion-trigger nes-container">
               <span>🔮 Next-Step Predictions</span>
-              <span, class="accordion-icon">▼</span>
+              <span class="accordion-icon">▼</span>
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content, class="accordion-content">
             {#if predictions.length > 0}
-              <div, class="predictions-list">
+              <div class="predictions-list">
                 {#each predictions as prediction, idx (idx)}
-                  <div, class="prediction-item, nes-container">
-                    <div, class="prediction-header">
-                      <span, class="prediction-action">{prediction.action}</span>
-                      <span, class="prediction-confidence">
+                  <div class="prediction-item">
+                    <div class="prediction-header">
+                      <span class="prediction-action">{prediction.action}</span>
+                      <span class="prediction-confidence">
                         {(prediction.confidence * 100).toFixed(0)}%
                       </span>
                     </div>
-                    <p, class="prediction-description">{prediction.description}</p>
-                    <div, class="confidence-bar">
+                    <p class="prediction-description">{prediction.description}</p>
+                    <div class="confidence-bar">
                       <div
                         class="confidence-fill"
                         style="width: {prediction.confidence * 100}%"
@@ -319,34 +319,34 @@ import type { Document } from '$lib/types';
                 {/each}
               </div>
             {:else}
-              <p, class="nes-text, is-disabled">No predictions yet</p>
+              <p class="nes-text">No predictions yet</p>
             {/if}
           </Accordion.Content>
         </Accordion.Item>
         <!-- Entities -->
         <Accordion.Item, value="entities">
           <Accordion.Header>
-            <Accordion.Trigger class="accordion-trigger, nes-container, is-dark">
+            <Accordion.Trigger class="accordion-trigger nes-container">
               <span>🏷️ Extracted Entities</span>
-              <span, class="accordion-icon">▼</span>
+              <span class="accordion-icon">▼</span>
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content, class="accordion-content">
             {#if entities.length > 0}
-              <div, class="entities-list">
+              <div class="entities-list">
                 {#each entities as entity, idx (idx)}
                   <button
                     type="button"
                     class="entity-item nes-btn is-small"
                     onclick={() => showEntity(entity)}
                   >
-                    <span, class="entity-type">{entity.type}</span>
-                    <span, class="entity-value">{entity.value}</span>
+                    <span class="entity-type">{entity.type}</span>
+                    <span class="entity-value">{entity.value}</span>
                   </button>
                 {/each}
               </div>
             {:else}
-              <p, class="nes-text, is-disabled">No entities extracted yet</p>
+              <p class="nes-text">No entities extracted yet</p>
             {/if}
           </Accordion.Content>
         </Accordion.Item>
@@ -354,17 +354,17 @@ import type { Document } from '$lib/types';
         {#if contextualState}
           <Accordion.Item, value="history">
             <Accordion.Header>
-              <Accordion.Trigger class="accordion-trigger, nes-container, is-dark">
+              <Accordion.Trigger class="accordion-trigger nes-container">
                 <span>📊 State History</span>
-                <span, class="accordion-icon">▼</span>
+                <span class="accordion-icon">▼</span>
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content, class="accordion-content">
-              <div, class="state-history">
+              <div class="state-history">
                 {#each contextualState.hmmState.stateHistory.slice(-10) as state, idx (idx)}
-                  <div, class="history-item, nes-container">
-                    <span, class="history-index">#{idx + 1}</span>
-                    <span, class="history-state">
+                  <div class="history-item">
+                    <span class="history-index">#{idx + 1}</span>
+                    <span class="history-state">
                       {stateNames[state as keyof typeof stateNames]}
                     </span>
                   </div>
@@ -381,35 +381,35 @@ import type { Document } from '$lib/types';
 <Dialog.Root, bind:open={showEntityDetails}>
   <Dialog.Portal>
     <Dialog.Overlay, class="dialog-overlay" />
-    <Dialog.Content class="dialog-content, nes-dialog, is-dark">
+    <Dialog.Content class="dialog-content nes-dialog">
       <Dialog.Title, class="dialog-title">
         Entity Details
       </Dialog.Title>
       {#if selectedEntity}
-        <div, class="entity-details">
-          <div, class="detail-row">
-            <span, class="detail-label">Type:</span>
-            <span, class="detail-value">{selectedEntity.type}</span>
+        <div class="entity-details">
+          <div class="detail-row">
+            <span class="detail-label">Type:</span>
+            <span class="detail-value">{selectedEntity.type}</span>
           </div>
-          <div, class="detail-row">
-            <span, class="detail-label">Value:</span>
-            <span, class="detail-value">{selectedEntity.value}</span>
+          <div class="detail-row">
+            <span class="detail-label">Value:</span>
+            <span class="detail-value">{selectedEntity.value}</span>
           </div>
-          <div, class="detail-row">
-            <span, class="detail-label">Confidence:</span>
-            <span, class="detail-value">
+          <div class="detail-row">
+            <span class="detail-label">Confidence:</span>
+            <span class="detail-value">
               {(selectedEntity.confidence * 100).toFixed(1)}%
             </span>
           </div>
           {#if selectedEntity.startPos !== undefined}
-            <div, class="detail-row">
-              <span, class="detail-label">Position</span>
-              <span, class="detail-value">
+            <div class="detail-row">
+              <span class="detail-label">Position</span>
+              <span class="detail-value">
                 {selectedEntity.startPos} - {selectedEntity.endPos}
               </span>
             {/if}
         {/if}
-      <Dialog.Close, class="nes-btn, is-primary">Close</Dialog.Close>
+      <Dialog.Close, class="nes-btn">Close</Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog>

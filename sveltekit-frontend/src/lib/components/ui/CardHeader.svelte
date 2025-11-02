@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     class?: string;
@@ -6,7 +6,7 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-<div class="{className} flex, flex-col, gap-4">
+<div class="{className} flex flex-col">
   {#if children}
     {@render children()}
   {/if}

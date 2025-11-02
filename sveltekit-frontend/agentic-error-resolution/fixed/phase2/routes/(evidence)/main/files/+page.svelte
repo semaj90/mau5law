@@ -10,28 +10,7 @@ https://svelte.dev/e/js_parse_error -->
   import Button from '$lib/components/ui/button/Button.svelte';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
   import { notifications  } from '$lib/stores/unified';
-  import {
-    AlertCircle,
-    Archive,
-    CheckSquare,
-    Download,
-    Eye,
-    File,
-    FileText,
-    Folder,
-    Grid,
-    Image,
-    List,
-    MoreHorizontal,
-    Music,
-    Plus,
-    RefreshCw,
-    Search,
-    Square,
-    Trash2,
-    Upload,
-    Video,
-  } from 'lucide-svelte';
+  import { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   // Props
@@ -104,15 +83,10 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         error = data.error || 'Failed to load evidence files';
       }
-    } catch (err) {
-      console.error('Error loading evidence:', err);
+    } catch (err) { console.error('Error loading evidence:', err);
       error = 'Failed to load evidence files';
       notifications.add({
-        type: 'error',
-        title: 'Error Loading Evidence',
-        message: 'Failed to load evidence files. Please try again.',
-        duration 5000,
-      });
+        type: 'error', title: 'Error Loading Evidence', message: 'Failed to load evidence files. Please try again.', duration 5000 });
     } finally {
       loading = false;
     }
@@ -192,8 +166,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-  async function uploadSingleFile() {
-    if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
+  async function uploadSingleFile() { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
     uploading = true;
     uploadProgress = 0;
@@ -207,9 +180,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.append('tags', uploadTags);
 
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST',
-        body: formData,
-      });
+        method: 'POST', body: formData });
 
       const result = await response.json();
 
@@ -229,14 +200,9 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         throw new Error(result.error || 'Upload failed');
       }
-    } catch (err) {
-      console.error('Upload error:', err);
+    } catch (err) { console.error('Upload error:', err);
       notifications.add({
-        type: 'error',
-        title: 'Upload Failed',
-        message: err instanceof Error ? err.message : 'File upload failed',
-        duration 5000,
-      });
+        type: 'error', title: 'Upload Failed', message: err instanceof Error ? err.message : 'File upload failed', duration 5000 });
     } finally {
       uploading = false;
       uploadProgress = 0;
@@ -255,10 +221,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       formData.append('caseId', caseId);
 
-      const response = await fetch('/api/evidence/upload', {
-        method: 'PUT',
-        body: formData,
-      });
+      const response = await fetch('/api/evidence/upload', { method: 'PUT', body: formData });
 
       const result = await response.json();
 
@@ -282,14 +245,9 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         throw new Error(result.error || 'Bulk upload failed');
       }
-    } catch (err) {
-      console.error('Bulk upload error:', err);
+    } catch (err) { console.error('Bulk upload error:', err);
       notifications.add({
-        type: 'error',
-        title: 'Bulk Upload Failed',
-        message: err instanceof Error ? err.message : 'Bulk upload failed',
-        duration 5000,
-      });
+        type: 'error', title: 'Bulk Upload Failed', message: err instanceof Error ? err.message : 'Bulk upload failed', duration 5000 });
     } finally {
       uploading = false;
       uploadProgress = 0;
@@ -794,12 +752,10 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Header */
-  .vault-header {
-    background: #1a1d20 !important;
+  .vault-header { background: #1a1d20 !important;
     border-bottom: 4px solid #d4af37;
     padding: 1.5rem;
-    margin-bottom: 0,
-  }
+    margin-bottom: 0 }
 
   .header-content {
     display: flex;
@@ -808,9 +764,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 1rem;
   }
 
-  .header-left {
-    flex: 1,
-  }
+  .header-left { flex: 1 }
 
   .vault-title {
     font-size: 1.5rem;
@@ -1063,9 +1017,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #d4af37;
   }
 
-  .list-file-info {
-    flex: 1,
-  }
+  .list-file-info { flex: 1 }
 
   .list-meta {
     display: flex;

@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     description?: string;
@@ -6,6 +6,6 @@
   }
   let { description = '', children }: Props = $props();
 </script>
-<p, class="space-y-4">
+<p class="space-y-4">
   <slot />
 </p>

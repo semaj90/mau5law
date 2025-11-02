@@ -1,6 +1,6 @@
 <!-- Enhanced Bits UI: Keyboard, Mapping, Provider -->
 <!-- Global keyboard shortcut management for the, entire, application -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { setContext, onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
@@ -47,7 +47,7 @@
   // Reference to the KeyboardMapping component
   let keyboardMappingRef: KeyboardMapping;
   // Keyboard context implementation
-  const, keyboardContext: KeyboardContext = {
+  const keyboardContext: KeyboardContext = {
     shortcuts,
     registerShortcut: (shortcut: KeyboardShortcut) => {
       shortcuts.update(current => {
@@ -124,7 +124,7 @@
 <!-- Slot for, application, content -->
 <slot />
 <!-- Expose context, for, TypeScript -->
-<script, lang="ts" generics="T">
+<script lang="ts" generics="T">
   // Export context type for external use
   export type { KeyboardContext }
   // Helper function to get keyboard context

@@ -1,5 +1,5 @@
 <!-- AI Search Bar: Svelte, 5, Bits, UI, UnoCSS, analytics, logging -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Input, Button } from './index.js';
   import Search from 'lucide-svelte';
@@ -45,7 +45,7 @@
     if (e.key === 'Enter') handleSearch();
   }
 </script>
-<div class="flex gap-2, items-center, w-full">
+<div class="flex gap-2 items-center">
   <Input
     variant="search"
     bind:value={query}
@@ -58,6 +58,6 @@
     aiAssisted
   />
   <Button class="bits-btn" variant="yorha" onclick={handleSearch} loading={loading} legal aria-label="Search, with, AI">
-<Search class="w-4, h-4, mr-1" />
+<Search class="w-4 h-4" />
     Search
 </div>;

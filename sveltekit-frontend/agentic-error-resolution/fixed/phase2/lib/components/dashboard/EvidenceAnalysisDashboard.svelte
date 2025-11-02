@@ -42,60 +42,23 @@
           signatures: ['John Doe', 'Jane Smith'];
         },
         chainOfCustody: [
-          {
-            timestamp: new Date('2024-01-15'),
-            handler: 'Legal Clerk',
-            action: 'Document received',
-            location: 'Law Office',
-            signature: 'LC-001',
-          }
+          { timestamp: new Date('2024-01-15'), handler: 'Legal Clerk', action: 'Document received', location: 'Law Office', signature: 'LC-001' }
         ],
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-20')
       },
-      {
-        id: '2',
-        caseId: 'CASE-2024-001',
-        type: 'digital',
-        title: 'Email Communications',
-        description: 'Email thread discussing contract terms and negotiations',
-        metadata: {
-          dateRange: '2023-12-01 to 2024-01-10',
-          participants: ['john@company.com', 'jane@client.com'],
-          messageCount: 47,
-        },
+      { id: '2', caseId: 'CASE-2024-001', type: 'digital', title: 'Email Communications', description: 'Email thread discussing contract terms and negotiations', metadata: {
+          dateRange: '2023-12-01 to 2024-01-10', participants: ['john@company.com', 'jane@client.com'], messageCount: 47 },
         chainOfCustody: [
-          {
-            timestamp: new Date('2024-01-16'),
-            handler: 'Digital Forensics',
-            action: 'Emails extracted and verified',
-            location: 'Digital Evidence Lab',
-            signature: 'DF-002',
-          }
+          { timestamp: new Date('2024-01-16'), handler: 'Digital Forensics', action: 'Emails extracted and verified', location: 'Digital Evidence Lab', signature: 'DF-002' }
         ],
         createdAt: new Date('2024-01-16'),
         updatedAt: new Date('2024-01-16')
       },
-      {
-        id: '3',
-        caseId: 'CASE-2024-001',
-        type: 'image',
-        title: 'Surveillance Footage Screenshot',
-        description: 'Screenshot from security camera showing meeting between parties',
-        metadata: {
-          captureDate: '2024-01-10',
-          location: 'Conference Room B',
-          cameraId: 'CAM-04',
-          resolution: '1920x1080',
-        },
+      { id: '3', caseId: 'CASE-2024-001', type: 'image', title: 'Surveillance Footage Screenshot', description: 'Screenshot from security camera showing meeting between parties', metadata: {
+          captureDate: '2024-01-10', location: 'Conference Room B', cameraId: 'CAM-04', resolution: '1920x1080' },
         chainOfCustody: [
-          {
-            timestamp: new Date('2024-01-17'),
-            handler: 'Security Department',
-            action: 'Image extracted from footage',
-            location: 'Security Office',
-            signature: 'SEC-003',
-          }
+          { timestamp: new Date('2024-01-17'), handler: 'Security Department', action: 'Image extracted from footage', location: 'Security Office', signature: 'SEC-003' }
         ],
         createdAt: new Date('2024-01-17'),
         updatedAt: new Date('2024-01-17')
@@ -142,8 +105,7 @@
       metadata: {
         fileName: file.name,
         fileSize: file.size,
-        mimeType: file.type,
-        uploadDate: new Date().toISOString()
+        mimeType: file.type uploadDate: new Date().toISOString()
       },
       chainOfCustody: [
         {

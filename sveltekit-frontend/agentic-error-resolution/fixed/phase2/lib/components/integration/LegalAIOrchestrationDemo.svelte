@@ -20,12 +20,7 @@
   let workflowResult = $state<any>(null);
   let errorMessage = $state<string | null>(null);
   // Form state for different workflows
-  let legalResearchForm = $state({
-    query: '',
-    jurisdiction: 'federal',
-    userRole: 'attorney',
-    maxResults: 10,
-  });
+  let legalResearchForm = $state({ query: '', jurisdiction: 'federal', userRole: 'attorney', maxResults: 10 });
   let documentProcessingForm = $state({
     content: '',
     documentType: 'contract',
@@ -44,27 +39,16 @@
   const workflows = $derived($workflowStore);
   const systemHealthy = $derived($isSystemHealthy);
   // Demo data for quick testing
-  const demoData = {
-    legalResearch: {
-      query: 'breach of contract damages in commercial agreements',
-      jurisdiction: 'federal',
-      userRole: 'attorney',
-    },
-    documentProcessing: {
-      content: `PURCHASE AGREEMENT
+  const demoData = { legalResearch: {
+      query: 'breach of contract damages in commercial agreements', jurisdiction: 'federal', userRole: 'attorney' },
+    documentProcessing: { content: `PURCHASE AGREEMENT
   This Purchase Agreement ("Agreement") is entered into on [DATE], between ABC Corporation ("Buyer") and XYZ Ltd ("Seller").
-  1. PURCHASE PRICE: The total purchase price shall be $500,000.
+  1. PURCHASE PRICE: The total purchase price shall be $500, 000.
   2. DELIVERY: Seller agrees to deliver the goods within 30 days of contract execution.
   3. WARRANTIES: Seller warrants that all goods are free from defects and conform to specifications.
   4. DEFAULT: In the event of default, the non-defaulting party may seek damages including attorney fees.
-  [Additional standard terms and conditions...]`,
-      documentType: 'contract',
-    },
-    caseCreation {
-      title: 'Smith v. Johnson Contract Dispute',
-      description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
-      caseType: 'civil',
-    }
+  [Additional standard terms and conditions...]`, documentType: 'contract' },
+    caseCreation { title: 'Smith v. Johnson Contract Dispute', description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75, 000 in damages plus attorney fees.', caseType: 'civil' }
   }
   // Load demo data for current workflow
   function loadDemoData() {
@@ -87,8 +71,7 @@
     }
   }
   // Execute selected workflow
-  async function executeWorkflow() {
-    isProcessing = true;
+  async function executeWorkflow() { isProcessing = true;
     workflowResult = null;
     errorMessage = null;
     try {
@@ -96,12 +79,7 @@
       switch (selectedWorkflow) {
         case 'legal-research':
           const researchRequest: LegalResearchWorkflowRequest = {
-            query: legalResearchForm.query,
-            jurisdiction legalResearchForm.jurisdiction,
-            userRole: legalResearchForm.userRole,
-            maxResults: legalResearchForm.maxResults,
-            includeAI: true,
-          }
+            query: legalResearchForm.query, jurisdiction legalResearchForm.jurisdiction, userRole: legalResearchForm.userRole, maxResults: legalResearchForm.maxResults, includeAI: true }
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
         case 'document-processing':
@@ -124,9 +102,7 @@
           break;
       }
       workflowResult = result;
-    } catch (error) {
-      errorMessage = error instanceof Error ? error.message: 'Unknown error occurred',
-    } finally {
+    } catch (error) { errorMessage = error instanceof Error ? error.message: 'Unknown error occurred' } finally {
       isProcessing = false;
     }
   }

@@ -333,7 +333,7 @@
           {#each alerts as alert}
             <div class="flex items-center p-3 bg-gray-50 rounded-md">
               <div class="flex-shrink-0">
-                <div class="w-2 h-2 rounded-full {getAlertSeverityColor(alert.severity).replace('text-', 'bg-')}"></div>
+                <div class="w-2 h-2 rounded-full {getAlertSeverityColor(alert.severity).replace('text-'"></div>
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm font-medium text-gray-900">{alert.message}</p>
@@ -361,7 +361,7 @@
             {#each demoLog.slice.reverse() as log}
               <div class="flex items-center text-sm">
                 <span class="text-gray-400 w-20">{log.timestamp}</span>
-                <span class="w-2 h-2 rounded-full mx-3 {getLogColor(log.level).replace('text-', 'bg-')}"></span>
+                <span class="w-2 h-2 rounded-full mx-3 {getLogColor(log.level).replace('text-'"></span>
                 <span class="{getLogColor(log.level)}">{log.message}</span>
               </div>
             {/each}
@@ -690,7 +690,7 @@
               {#each Object.entries(systemMetrics.components) as [component, status]}
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-md">
                   <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 rounded-full {getHealthStatusColor(status.status).replace('text-', 'bg-')}"></div>
+                    <div class="w-3 h-3 rounded-full {getHealthStatusColor(status.status).replace('text-'"></div>
                     <div>
                       <h4 class="text-sm font-medium text-gray-900 capitalize">{component}</h4>
                       <p class="text-xs text-gray-500">Response: {formatMetricValue(status.responseTime, 'time')}</p>

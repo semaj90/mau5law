@@ -200,7 +200,7 @@
 	}
 
 	function handleAIActionTrigger(payload: any) {
-		const { type, data } = payload ?? {};
+		const { type data } = payload ?? {};
 		switch (type) {
 			case 'suggestions':
 				console.log('AI suggestions', data);
@@ -711,7 +711,7 @@
 <style>id-pattern {
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-	.bg-grid-pattern {90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+	.bg-grid-pattern {90deg rgba(0, 0, 0, 0.1) 1px, transparent 1px);
 		background-image:50px 50px;
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);

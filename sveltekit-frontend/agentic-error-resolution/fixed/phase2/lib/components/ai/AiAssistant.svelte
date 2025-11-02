@@ -78,23 +78,14 @@ https://svelte.dev/e/js_parse_error -->
     aiGlobalActions.summarize(caseId, contextItems, user?.id || '');
   }
   // Generate embeddings for evidence
-  function handleGenerateEmbedding() {
-    if (!evidenceText || !caseId || !user?.id) return;
+  function handleGenerateEmbedding() { if (!evidenceText || !caseId || !user?.id) return;
     legalCaseActions.generateEmbedding({
-      caseId,
-      evidenceText,
-      userId: user.id,
-    });
+      caseId, evidenceText, userId: user.id });
   }
   // Search for related evidence using embeddings
-  function handleSearchRelatedEvidence() {
-    if (!evidenceText || !caseId || !user?.id) return;
+  function handleSearchRelatedEvidence() { if (!evidenceText || !caseId || !user?.id) return;
     legalCaseActions.searchRelatedEvidence({
-      caseId,
-      query: evidenceText,
-      userId: user.id,
-      limit: 10,
-    });
+      caseId, query: evidenceText, userId: user.id, limit: 10 });
   }
   // Save summary to DB using the comprehensive summaries API
   async function saveSummary() {
@@ -103,15 +94,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/summaries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'case',
-          targetId: caseId,
-          depth: 'comprehensive',
-          includeRAG: true,
-          includeUserActivity: false,
-          enableStreaming: false,
-          userId: user.id,
-        }),
+        body: JSON.stringify({ type: 'case', targetId: caseId, depth: 'comprehensive', includeRAG: true, includeUserActivity: false, enableStreaming: false, userId: user.id }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

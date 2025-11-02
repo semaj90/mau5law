@@ -60,7 +60,7 @@
   interface ServiceStatus {
     healthy: boolean;
     loading: boolean;
-    services: Record<string, string>;
+    services: Record<string string>;
     version: string;
     config: { [key: string]: any };
   }
@@ -149,26 +149,14 @@
       alert("Please enter document content");
       return;
     }
-    try {
-      processing = true;
+    try { processing = true;
       processResult = null;
       const request: DocumentRequest = {
-        content: documentContent,
-        document_type: selectedDocumentType,
-        practice_area: selectedPracticeArea,
-        jurisdiction: selectedJurisdiction,
-        use_gpu: useGPU,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          user_id: "demo-user",
-          session_id: "demo-session",
-        },
+        content: documentContent, document_type: selectedDocumentType, practice_area: selectedPracticeArea, jurisdiction: selectedJurisdiction, use_gpu: useGPU, metadata: {
+          timestamp: new Date().toISOString(), user_id: "demo-user", session_id: "demo-session" },
       }
-      const response = await fetch(`${API_BASE}/process`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(`${API_BASE}/process`, { method: "POST", headers: {
+          "Content-Type": "application/json" },
         body: JSON.stringify(request),
       });
       if (!response.ok) throw new Error("Document processing failed");

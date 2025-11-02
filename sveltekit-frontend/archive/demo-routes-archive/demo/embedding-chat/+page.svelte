@@ -52,16 +52,12 @@
     });
   }
 
-  function clearDocuments() {
-    currentDocuments = [];
+  function clearDocuments() { currentDocuments = [];
     documentType = 'custom';
     caseId = '';
     
     notifications.add({
-      type: "info",
-      title: "Documents Cleared",
-      message: "All documents removed from context",
-    });
+      type: "info", title: "Documents Cleared", message: "All documents removed from context" });
   }
 </script>
 

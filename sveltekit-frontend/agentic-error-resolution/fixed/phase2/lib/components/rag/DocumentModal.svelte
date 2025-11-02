@@ -57,9 +57,7 @@
     try {
       deleting = true;
       message = '';
-      const response = await fetch(`/api/rag/documents/${document.id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/rag/documents/${document.id}`, { method: 'DELETE' });
       if (response.ok) {
         message = 'Document deleted successfully';
         messageType = 'success';

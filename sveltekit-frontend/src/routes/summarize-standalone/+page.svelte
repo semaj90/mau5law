@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   - Professional legal document handling
   - Integration with your existing legal AI platform
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // Removed unused imports (onMount, enhance) and invalid type import ActionData
@@ -179,24 +179,24 @@ import type { Document } from '$lib/types';
   <title>Legal Document Summarization - Legal AI Platform</title>
   <meta name="description" content="AI-powered legal document summarization using advanced, language, models" />
 </svelte:head>
-<div, class="summarization-container">
-  <header, class="page-header">
+<div class="summarization-container">
+  <header class="page-header">
     <h1>🏛️ Legal Document Summarization</h1>
-    <p, class="subtitle">Advanced AI analysis powered by LangChain and your local legal model</p>
-    <div, class="status-bar">
-      <div, class="stats">
+    <p class="subtitle">Advanced AI analysis powered by LangChain and your local legal model</p>
+    <div class="status-bar">
+      <div class="stats">
         <span>📄 Words: {wordCount.toLocaleString()}</span>
         <span>📝 Characters: {charCount.toLocaleString()}</span>
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
-      <div, class="actions">
-        <button class="btn, nes-btn, btn-outline" onclick={loadSampleDocument}> Load Sample </button>
-        <button class="btn, nes-btn, btn-outline" onclick={clearAll}> Clear All </button>
+      <div class="actions">
+        <button class="btn nes-btn" onclick={loadSampleDocument}> Load Sample </button>
+        <button class="btn nes-btn" onclick={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
-  <div, class="tab-navigation">
-    <button, class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
+  <div class="tab-navigation">
+    <button class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
       📝 Document Input
     </button>
     <button
@@ -206,7 +206,7 @@ import type { Document } from '$lib/types';
     >
       📋 Summary
       {#if isLoading}
-        <span, class="loading-spinner">⏳</span>
+        <span class="loading-spinner">⏳</span>
       {/if}
     </button>
     <button
@@ -217,43 +217,43 @@ import type { Document } from '$lib/types';
       ⚖️ Legal Analysis
     </button>
   </div>
-  <main, class="content-area">
+  <main class="content-area">
     {#if activeTab === 'input'}
-      <div, class="input-panel">
-        <div, class="input-controls">
-          <div, class="file-upload">
-            <label, for="file-input" class="btn, nes-btn"> 📁 Upload Document </label>
-            <input, id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
+      <div class="input-panel">
+        <div class="input-controls">
+          <div class="file-upload">
+            <label for="file-input" class="btn"> 📁 Upload Document </label>
+            <input id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
           </div>
-          <div, class="options-grid">
-            <div, class="option-group">
-              <label, for="summary-length">Summary Length:</label>
-              <select, id="summary-length" bind:value={summaryLength}>
-                <option, value="short">Short (150 tokens)</option>
-                <option, value="medium">Medium (300 tokens)</option>
-                <option, value="long">Long (500 tokens)</option>
+          <div class="options-grid">
+            <div class="option-group">
+              <label for="summary-length">Summary Length:</label>
+              <select id="summary-length" bind:value={summaryLength}>
+                <option value="short">Short (150 tokens)</option>
+                <option value="medium">Medium (300 tokens)</option>
+                <option value="long">Long (500 tokens)</option>
               </select>
             </div>
-            <div, class="option-group">
-              <label, for="temperature">Analysis Creativity:</label>
-              <input, id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
-              <span, class="range-value">{temperature}</span>
+            <div class="option-group">
+              <label for="temperature">Analysis Creativity:</label>
+              <input id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
+              <span class="range-value">{temperature}</span>
             </div>
-            <div, class="option-group, checkbox-group">
+            <div class="option-group">
               <label>
-                <input, type="checkbox" bind:checked={includeKeyTerms} />
+                <input type="checkbox" bind:checked={includeKeyTerms} />
                 Extract Key Legal Terms
               </label>
             </div>
-            <div, class="option-group, checkbox-group">
+            <div class="option-group">
               <label>
-                <input, type="checkbox" bind:checked={includeLegalAnalysis} />
+                <input type="checkbox" bind:checked={includeLegalAnalysis} />
                 Include Risk Analysis
               </label>
             </div>
           </div>
         </div>
-        <div, class="text-input-area">
+        <div class="text-input-area">
           <textarea
             id="document-input"
             bind:value={reportText}
@@ -261,7 +261,7 @@ import type { Document } from '$lib/types';
             disabled={isLoading}
             rows="20"
           ></textarea>
-          <div, class="input-footer">
+          <div class="input-footer">
             <button
               class="btn nes-btn btn-primary btn-large"
               onclick={handleSummarize}
@@ -278,57 +278,57 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
     {#if activeTab === 'summary'}
-      <div, class="summary-panel">
+      <div class="summary-panel">
         {#if isLoading}
-          <div, class="processing-status">
+          <div class="processing-status">
             <h3>🧠 AI Processing in Progress</h3>
-            <div, class="processing-steps">
+            <div class="processing-steps">
               {#each processingSteps as step, i}
-                <div, class="step {i === processingSteps.length - 1 ? 'current' : 'completed'}">
+                <div class="step {i === processingSteps.length - 1 ? 'current' : 'completed'}">
                   {step}
                 </div>
               {/each}
             </div>
           </div>
         {:else if summary}
-          <div, class="summary-result">
-            <div, class="result-header">
+          <div class="summary-result">
+            <div class="result-header">
               <h3>📋 Document Summary</h3>
-              <div, class="result-actions">
-                <button id="copy-btn" class="btn, nes-btn, btn-outline" onclick={copySummary}> 📋 Copy Summary </button>
+              <div class="result-actions">
+                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
-            <div, class="summary-content">
-              <div, class="summary-text">
+            <div class="summary-content">
+              <div class="summary-text">
                 {summary}
               </div>
               {#if metadata}
-                <div, class="metadata-panel">
+                <div class="metadata-panel">
                   <h4>📊 Processing Metadata</h4>
-                  <div, class="metadata-grid">
-                    <div, class="metadata-item">
+                  <div class="metadata-grid">
+                    <div class="metadata-item">
                       <strong>Compression</strong>
                       {metadata.compressionRatio}:1 ratio
                     </div>
-                    <div, class="metadata-item">
+                    <div class="metadata-item">
                       <strong>Processing Time:</strong>
                       {metadata.processingTime}ms
                     </div>
-                    <div, class="metadata-item">
+                    <div class="metadata-item">
                       <strong>Chunks Processed:</strong>
                       {metadata.chunksProcessed}
                     </div>
-                    <div, class="metadata-item">
+                    <div class="metadata-item">
                       <strong>Model:</strong>
                       {metadata.model}
                     </div>
                   </div>
                   {#if metadata.keyLegalTerms?.length}
-                    <div, class="key-terms">
+                    <div class="key-terms">
                       <h5>🏷️ Key Legal Terms</h5>
-                      <div, class="terms-list">
+                      <div class="terms-list">
                         {#each Array.isArray(metadata.keyLegalTerms) ? metadata.keyLegalTerms : [] as term}
-                          <span, class="term-tag">{term}</span>
+                          <span class="term-tag">{term}</span>
                         {/each}
                       </div>
                     </div>
@@ -338,13 +338,13 @@ import type { Document } from '$lib/types';
             </div>
           </div>
         {:else if errorMessage}
-          <div, class="error-panel">
+          <div class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn, nes-btn, is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
+            <button class="btn nes-btn" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
           </div>
         {:else}
-          <div, class="empty-state">
+          <div class="empty-state">
             <h3>📝 No Summary Yet</h3>
             <p>Process a document in the Input tab to see the summary here.</p>
           </div>
@@ -352,16 +352,16 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
     {#if activeTab === 'analysis'}
-      <div, class="analysis-panel">
+      <div class="analysis-panel">
         {#if metadata?.legalRiskAnalysis}
-          <div, class="risk-analysis">
+          <div class="risk-analysis">
             <h3>⚖️ Legal Risk Analysis</h3>
-            <div, class="analysis-content">
+            <div class="analysis-content">
               {metadata.legalRiskAnalysis}
             </div>
           </div>
         {:else}
-          <div, class="empty-state">
+          <div class="empty-state">
             <h3>⚖️ No Legal Analysis Available</h3>
             <p>Enable, "Include Risk Analysis" in the options and process a document to see legal analysis here.</p>
           </div>

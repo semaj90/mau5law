@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -141,43 +141,42 @@ try {
   let uniqueCategories = $derived([...new Set(todos.map(todo => todo.category))]);
 </script>
 
-<div class="p-6, max-w-7xl, mx-auto">
-  <div, class="mb-8">
-    <h1 class="text-3xl font-bold, text-gray-900, mb-2">🧠 SOM-based Intelligent Todo Generator</h1>
-    <p, class="text-gray-600, mb-4">
+<div class="p-6 max-w-7xl">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">🧠 SOM-based Intelligent Todo Generator</h1>
+    <p class="text-gray-600">
       Advanced semantic analysis using Self-Organizing Maps, WebGPU acceleration, and real-time PageRank prioritization
     </p>
     <!-- Status, Indicators -->
-    <div class="flex flex-wrap, gap-4, mb-6">
-      <div class="flex, items-center, space-x-2">
+    <div class="flex flex-wrap gap-4">
+      <div class="flex items-center">
         <div class={`w-3, h-3, rounded-full ${webGPUEnabled ? 'bg-green-500' : 'bg-red-500'}`}></div>
-        <span, class="text-sm, font-medium">
+        <span class="text-sm">
           WebGPU: {webGPUEnabled ? 'Enabled' : 'Disabled'}
         </span>
       </div>
-      <div class="flex, items-center, space-x-2">
-        <div class="w-3 h-3, rounded-full, bg-blue-500"></div>
-        <span, class="text-sm, font-medium"> SOM Network: 8×8 Grid </span>
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full"></div>
+        <span class="text-sm"> SOM Network: 8×8 Grid </span>
       </div>
-      <div class="flex, items-center, space-x-2">
-        <div class="w-3 h-3, rounded-full, bg-purple-500"></div>
-        <span, class="text-sm, font-medium"> PageRank: Real-time </span>
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full"></div>
+        <span class="text-sm"> PageRank: Real-time </span>
       </div>
     </div>
   </div>
   <!-- NPM, Output, Input -->
-  <div class="bg-gray-900 rounded-lg, p-4, mb-6">
-    <h3 class="text-white, font-medium, mb-3">📋 NPM Check Output:</h3>
-    <textarea
-     , bind:value={npmOutput}
+  <div class="bg-gray-900 rounded-lg p-4">
+    <h3 class="text-white font-medium">📋 NPM Check Output:</h3>
+    <textarea bind:value={npmOutput}
       class="w-full h-32 bg-gray-800 text-green-400 font-mono text-sm p-3 rounded border-none resize-none"
       placeholder="Paste npm check output here..."
     ></textarea>
-    <div class="flex justify-between, items-center, mt-4">
+    <div class="flex justify-between items-center">
       <button
         onclick={processErrors}
         disabled={isLoading || !somCache}
-        class="bg-blue-600 hover:bg-blue-700, disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+        class="bg-blue-600 hover:bg-blue-700"
       >
         {#if isLoading}
           🧠 Processing with SOM...
@@ -186,79 +185,79 @@ try {
         {/if}
       </button>
       {#if processingTime > 0}
-        <div, class="text-white, text-sm">
+        <div class="text-white">
           ⚡ Processed in {processingTime.toFixed(1)}ms
         </div>
       {/if}
     </div>
   </div>
   {#if isLoading}
-    <div, class="text-center, py-12">
-      <div class="animate-spin w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full, mx-auto, mb-4"></div>
-      <p, class="text-gray-600">Running SOM analysis and WebGPU PageRank...</p>
+    <div class="text-center">
+      <div class="animate-spin w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+      <p class="text-gray-600">Running SOM analysis and WebGPU PageRank...</p>
     </div>
   {/if}
   {#if todos.length > 0}
     <!-- Performance, Metrics -->
-    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg, p-6, mb-6">
-      <h3 class="text-lg font-bold, text-gray-900, mb-4">⚡ Performance Metrics</h3>
-      <div class="grid grid-cols-2, md:grid-cols-5, gap-4">
-        <div, class="text-center">
-          <div class="text-2xl, font-bold, text-blue-600">{performanceMetrics.somTrainingTime.toFixed(0)}ms</div>
-          <div, class="text-sm, text-gray-600">SOM Training</div>
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+      <h3 class="text-lg font-bold text-gray-900">⚡ Performance Metrics</h3>
+      <div class="grid grid-cols-2 md:grid-cols-5">
+        <div class="text-center">
+          <div class="text-2xl font-bold">{performanceMetrics.somTrainingTime.toFixed(0)}ms</div>
+          <div class="text-sm">SOM Training</div>
         </div>
-        <div, class="text-center">
-          <div class="text-2xl, font-bold, text-purple-600">{performanceMetrics.webGPUProcessingTime.toFixed(0)}ms</div>
-          <div, class="text-sm, text-gray-600">WebGPU Processing</div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{performanceMetrics.webGPUProcessingTime.toFixed(0)}ms</div>
+          <div class="text-sm">WebGPU Processing</div>
         </div>
-        <div, class="text-center">
-          <div class="text-2xl, font-bold, text-green-600">{performanceMetrics.pageRankIterations}</div>
-          <div, class="text-sm, text-gray-600">PageRank Iterations</div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{performanceMetrics.pageRankIterations}</div>
+          <div class="text-sm">PageRank Iterations</div>
         </div>
-        <div, class="text-center">
-          <div class="text-2xl, font-bold, text-orange-600">{(performanceMetrics.cacheHitRatio * 100).toFixed(0)}%</div>
-          <div, class="text-sm, text-gray-600">Cache Hit Ratio</div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{(performanceMetrics.cacheHitRatio * 100).toFixed(0)}%</div>
+          <div class="text-sm">Cache Hit Ratio</div>
         </div>
-        <div, class="text-center">
-          <div class="text-2xl, font-bold, text-red-600">{performanceMetrics.totalProcessingTime.toFixed(0)}ms</div>
-          <div, class="text-sm, text-gray-600">Total Time</div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{performanceMetrics.totalProcessingTime.toFixed(0)}ms</div>
+          <div class="text-sm">Total Time</div>
         </div>
       </div>
     </div>
     <!-- Filters, and, Controls -->
-    <div class="flex flex-wrap justify-between items-center, mb-6, gap-4">
-      <div class="flex, flex-wrap, gap-4">
-        <select bind:value={filterCategory} class="px-3 py-2, border, rounded-lg">
-          <option, value="all">All Categories</option>
+    <div class="flex flex-wrap justify-between items-center mb-6">
+      <div class="flex flex-wrap">
+        <select bind:value={filterCategory} class="px-3 py-2 border">
+          <option value="all">All Categories</option>
           {#each Array.isArray(uniqueCategories) ? uniqueCategories : [] as category}
-            <option, value={category}>{category}</option>
+            <option value={category}>{category}</option>
           {/each}
         </select>
-        <select bind:value={sortBy} class="px-3 py-2, border, rounded-lg">
-          <option, value="priority">Sort by Priority</option>
-          <option, value="confidence">Sort by Confidence</option>
-          <option, value="effort">Sort by Effort</option>
+        <select bind:value={sortBy} class="px-3 py-2 border">
+          <option value="priority">Sort by Priority</option>
+          <option value="confidence">Sort by Confidence</option>
+          <option value="effort">Sort by Effort</option>
         </select>
       </div>
-      <div class="flex, items-center, space-x-4">
-        <label class="flex, items-center, space-x-2">
-          <input, type="checkbox" bind:checked={showDetails} class="rounded" />
-          <span, class="text-sm">Show Details</span>
+      <div class="flex items-center">
+        <label class="flex items-center">
+          <input type="checkbox" bind:checked={showDetails} class="rounded" />
+          <span class="text-sm">Show Details</span>
         </label>
-        <div, class="text-sm, text-gray-600">
+        <div class="text-sm">
           {filteredTodos.length} todos found
         </div>
       </div>
     </div>
     <!-- Intelligent, Todos -->
-    <div, class="space-y-4">
+    <div class="space-y-4">
       {#each filteredTodos as todo, index}
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm, hover:shadow-md, transition-shadow">
-          <div, class="p-6">
-            <div class="flex justify-between, items-start, mb-4">
-              <div, class="flex-1">
-                <div class="flex items-center, space-x-3, mb-2">
-                  <h3 class="text-lg, font-semibold, text-gray-900">
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md">
+          <div class="p-6">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center space-x-3">
+                  <h3 class="text-lg font-semibold">
                     {index + 1}. {todo.title}
                   </h3>
                   <div
@@ -267,31 +266,31 @@ try {
                     {todo.category}
                   </div>
                 </div>
-                <p, class="text-gray-600, mb-3">{todo.description}</p>
-                <div class="flex flex-wrap, gap-2, mb-3">
+                <p class="text-gray-600">{todo.description}</p>
+                <div class="flex flex-wrap gap-2">
                   {#each Array.isArray(todo.tags) ? todo.tags : [] as tag}
-                    <span class="px-2 py-1 bg-gray-100 text-gray-700, text-xs, rounded-full">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs">
                       {tag}
                     </span>
                   {/each}
                 </div>
               </div>
-              <div, class="text-right, ml-6">
+              <div class="text-right">
                 <div class={`text-lg, font-bold, mb-1 ${getPriorityColor(todo.priority)}`}>
                   Priority: {todo.priority.toFixed(4)}
                 </div>
-                <div, class="text-sm, text-gray-600">
+                <div class="text-sm">
                   Confidence: {(todo.confidence * 100).toFixed(1)}%
                 </div>
-                <div, class="text-sm, text-gray-600">
+                <div class="text-sm">
                   Effort: {formatDuration(todo.estimated_effort)}
                 </div>
               </div>
             </div>
             <!-- Suggested, Fixes -->
-            <div, class="mb-4">
-              <h4 class="font-medium, text-gray-900, mb-2">🔧 Suggested Fixes:</h4>
-              <ul class="list-disc list-inside text-sm, text-gray-700, space-y-1">
+            <div class="mb-4">
+              <h4 class="font-medium text-gray-900">🔧 Suggested Fixes:</h4>
+              <ul class="list-disc list-inside text-sm text-gray-700">
                 {#each Array.isArray(todo.suggested_fixes) ? todo.suggested_fixes : [] as fix}
                   <li>{fix}</li>
                 {/each}
@@ -299,47 +298,47 @@ try {
             </div>
             {#if showDetails}
               <!-- Related, Errors -->
-              <div, class="border-t, pt-4">
-                <h4 class="font-medium, text-gray-900, mb-2">
+              <div class="border-t">
+                <h4 class="font-medium text-gray-900">
                   📋 Related Errors ({todo.related_errors.length}):
                 </h4>
-                <div, class="space-y-2">
+                <div class="space-y-2">
                   {#each Array.isArray(todo.related_errors.slice(0, 3)) ? todo.related_errors.slice(0, 3) : [] as error}
-                    <div class="bg-gray-50 p-3, rounded, text-sm">
-                      <div class="flex justify-between, items-start, mb-1">
-                        <span, class="font-medium, text-gray-900">{error.file}:{error.line}</span>
+                    <div class="bg-gray-50 p-3 rounded">
+                      <div class="flex justify-between items-start">
+                        <span class="font-medium">{error.file}:{error.line}</span>
                         <span class={`px-2 py-1, rounded, text-xs ${getSeverityColor(error.severity)}`}>
                           {error.severity}
                         </span>
                       </div>
-                      <p, class="text-gray-700">{error.message}</p>
+                      <p class="text-gray-700">{error.message}</p>
                     </div>
                   {/each}
                   {#if todo.related_errors.length > 3}
-                    <p class="text-sm, text-gray-500, italic">
+                    <p class="text-sm text-gray-500">
                       ... and {todo.related_errors.length - 3} more errors
                     </p>
                   {/if}
                 </div>
               </div>
               <!-- Metadata -->
-              <div class="border-t, pt-4, mt-4">
-                <h4 class="font-medium, text-gray-900, mb-2">📊 Metadata:</h4>
-                <div class="grid grid-cols-2, md:grid-cols-4, gap-4, text-sm">
+              <div class="border-t pt-4">
+                <h4 class="font-medium text-gray-900">📊 Metadata:</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <span, class="text-gray-600">Todo ID:</span>
-                    <p, class="font-mono">{todo.id}</p>
+                    <span class="text-gray-600">Todo ID:</span>
+                    <p class="font-mono">{todo.id}</p>
                   </div>
                   <div>
-                    <span, class="text-gray-600">Created:</span>
+                    <span class="text-gray-600">Created:</span>
                     <p>{new Date(todo.created_at).toLocaleTimeString()}</p>
                   </div>
                   <div>
-                    <span, class="text-gray-600">Error Count:</span>
+                    <span class="text-gray-600">Error Count:</span>
                     <p>{todo.metadata.error_count || todo.related_errors.length}</p>
                   </div>
                   <div>
-                    <span, class="text-gray-600">Files Affected:</span>
+                    <span class="text-gray-600">Files Affected:</span>
                     <p>{todo.metadata.files_affected || new Set(todo.related_errors.map(e => e.file)).size}</p>
                   </div>
                 </div>
@@ -350,26 +349,26 @@ try {
       {/each}
     </div>
     <!-- Summary, Statistics -->
-    <div class="mt-8 bg-gradient-to-r from-green-50 to-blue-50, rounded-lg, p-6">
-      <h3 class="text-lg font-bold, text-gray-900, mb-4">📊 Analysis Summary</h3>
-      <div class="grid grid-cols-2 md:grid-cols-4, gap-4, text-center">
+    <div class="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+      <h3 class="text-lg font-bold text-gray-900">📊 Analysis Summary</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
-          <div class="text-2xl, font-bold, text-green-600">{todos.length}</div>
-          <div, class="text-sm, text-gray-600">Intelligent Todos</div>
+          <div class="text-2xl font-bold">{todos.length}</div>
+          <div class="text-sm">Intelligent Todos</div>
         </div>
         <div>
-          <div class="text-2xl, font-bold, text-blue-600">{errors.length}</div>
-          <div, class="text-sm, text-gray-600">Original Errors</div>
+          <div class="text-2xl font-bold">{errors.length}</div>
+          <div class="text-sm">Original Errors</div>
         </div>
         <div>
-          <div class="text-2xl, font-bold, text-purple-600">{uniqueCategories.length}</div>
-          <div, class="text-sm, text-gray-600">Categories Found</div>
+          <div class="text-2xl font-bold">{uniqueCategories.length}</div>
+          <div class="text-sm">Categories Found</div>
         </div>
         <div>
-          <div class="text-2xl, font-bold, text-orange-600">
+          <div class="text-2xl font-bold">
             {todos.reduce((sum, todo) => sum + todo.related_errors.length, 0)}
           </div>
-          <div, class="text-sm, text-gray-600">Total Error Clusters</div>
+          <div class="text-sm">Total Error Clusters</div>
         </div>
       </div>
     </div>

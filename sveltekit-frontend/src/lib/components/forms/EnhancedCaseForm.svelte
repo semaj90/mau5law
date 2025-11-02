@@ -1,5 +1,5 @@
 <!-- Enhanced Case Form with proper, schema, mapping -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { notifications } from '$lib/stores/unified';
   import type { User } from '$lib/types/user';
@@ -30,7 +30,7 @@
     leadProsecutor?: string;
     assignedTeam: string[];
     tags: string[];
-   , metadata: Record<string, any>;
+   , metadata: Record<string any>;
   }
   // Form data matching the database schema
   let formData = $state<FormData>({
@@ -55,7 +55,7 @@
     metadata: case_?.metadata ?? {}
   });
   let loading = $state<boolean>(false);
-  let errors = $state<Record<string, string>>({});
+  let errors = $state<Record<string string>>({});
   // Form validation
   function validateForm() {
     errors = {};
@@ -171,12 +171,12 @@
   }
 </script>
 <form on:submit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
-  <div class="container, mx-auto, px-4">
+  <div class="container mx-auto">
     <!-- Basic, Information -->
-    <section class="container, mx-auto, px-4">
+    <section class="container mx-auto">
       <h3>Basic Information</h3>
-      <div class="container, mx-auto, px-4">
-        <label for="title" class="container mx-auto, px-4, required">Case Title</label>
+      <div class="container mx-auto">
+        <label for="title" class="container mx-auto px-4">Case Title</label>
         <input
           id="title"
           type="text"
@@ -186,11 +186,11 @@
           required
         />
         {#if errors.title}
-          <span class="container mx-auto, px-4, field-error">{errors.title}</span>
+          <span class="container mx-auto px-4">{errors.title}</span>
         {/if}
       </div>
-      <div class="container, mx-auto, px-4">
-        <label for="caseNumber" class="container, mx-auto, px-4">Case Number</label>
+      <div class="container mx-auto">
+        <label for="caseNumber" class="container mx-auto">Case Number</label>
         <input
           id="caseNumber"
           type="text"
@@ -200,11 +200,11 @@
           required
         />
         {#if errors.caseNumber}
-          <span class="container, mx-auto, px-4">{errors.caseNumber}</span>
+          <span class="container mx-auto">{errors.caseNumber}</span>
         {/if}
       </div>
-      <div class="container, mx-auto, px-4">
-        <label, for="name">Case Name (Optional)</label>
+      <div class="container mx-auto">
+        <label for="name">Case Name (Optional)</label>
         <input
           id="name"
           type="text"
@@ -212,8 +212,8 @@
           placeholder="Alternative case name"
         />
       </div>
-      <div class="container, mx-auto, px-4">
-        <label, for="description">Description</label>
+      <div class="container mx-auto">
+        <label for="description">Description</label>
         <textarea
           id="description"
           bind:value={formData.description}
@@ -223,31 +223,31 @@
       </div>
     </section>
     <!-- Case, Details -->
-    <section class="container, mx-auto, px-4">
+    <section class="container mx-auto">
       <h3>Case Details</h3>
-      <div class="container, mx-auto, px-4">
-        <div class="container, mx-auto, px-4">
-          <label, for="priority">Priority</label>
-          <select, id="priority" bind:value={formData.priority}>
-            <option, value="low">Low</option>
-            <option, value="medium">Medium</option>
-            <option, value="high">High</option>
-            <option, value="urgent">Urgent</option>
+      <div class="container mx-auto">
+        <div class="container mx-auto">
+          <label for="priority">Priority</label>
+          <select id="priority" bind:value={formData.priority}>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
           </select>
         </div>
-        <div class="container, mx-auto, px-4">
-          <label, for="status">Status</label>
-          <select, id="status" bind:value={formData.status}>
-            <option, value="open">Open</option>
-            <option, value="active">Active</option>
-            <option, value="pending">Pending</option>
-            <option, value="closed">Closed</option>
-            <option, value="archived">Archived</option>
+        <div class="container mx-auto">
+          <label for="status">Status</label>
+          <select id="status" bind:value={formData.status}>
+            <option value="open">Open</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="closed">Closed</option>
+            <option value="archived">Archived</option>
           </select>
         </div>
       </div>
-      <div class="container, mx-auto, px-4">
-        <label, for="category">Category</label>
+      <div class="container mx-auto">
+        <label for="category">Category</label>
         <input
           id="category"
           type="text"
@@ -255,9 +255,9 @@
           placeholder="e.g., Criminal, Civil, Administrative"
         />
       </div>
-      <div class="container, mx-auto, px-4">
-        <div class="container, mx-auto, px-4">
-          <label, for="dangerScore">Danger Score (0-10)</label>
+      <div class="container mx-auto">
+        <div class="container mx-auto">
+          <label for="dangerScore">Danger Score (0-10)</label>
           <input
             id="dangerScore"
             type="number"
@@ -267,11 +267,11 @@
            , class:error={errors.dangerScore}
           />
           {#if errors.dangerScore}
-            <span class="container, mx-auto, px-4">{errors.dangerScore}</span>
+            <span class="container mx-auto">{errors.dangerScore}</span>
           {/if}
         </div>
-        <div class="container, mx-auto, px-4">
-          <label, for="estimatedValue">Estimated Value ($)</label>
+        <div class="container mx-auto">
+          <label for="estimatedValue">Estimated Value ($)</label>
           <input
             id="estimatedValue"
             type="number"
@@ -281,24 +281,24 @@
            , class:error={errors.estimatedValue}
           />
           {#if errors.estimatedValue}
-            <span class="container, mx-auto, px-4">{errors.estimatedValue}</span>
+            <span class="container mx-auto">{errors.estimatedValue}</span>
           {/if}
         </div>
       </div>
     </section>
     <!-- Location & Timeline -->
-    <section class="container, mx-auto, px-4">
+    <section class="container mx-auto">
       <h3>Location & Timeline</h3>
-      <div class="container, mx-auto, px-4">
-        <label, for="incidentDate">Incident Date</label>
+      <div class="container mx-auto">
+        <label for="incidentDate">Incident Date</label>
         <input
           id="incidentDate"
           type="date"
           bind:value={formData.incidentDate}
         />
       </div>
-      <div class="container, mx-auto, px-4">
-        <label, for="location">Location</label>
+      <div class="container mx-auto">
+        <label for="location">Location</label>
         <input
           id="location"
           type="text"
@@ -306,8 +306,8 @@
           placeholder="Incident location"
         />
       </div>
-      <div class="container, mx-auto, px-4">
-        <label, for="jurisdiction">Jurisdiction</label>
+      <div class="container mx-auto">
+        <label for="jurisdiction">Jurisdiction</label>
         <input
           id="jurisdiction"
           type="text"
@@ -317,48 +317,48 @@
       </div>
     </section>
     <!-- Team & Tags -->
-    <section class="container, mx-auto, px-4">
+    <section class="container mx-auto">
       <h3>Team & Tags</h3>
       <!-- Assigned, Team -->
-      <div class="container, mx-auto, px-4">
-        <label, for="new-member">Assigned Team</label>
-        <div class="container, mx-auto, px-4">
+      <div class="container mx-auto">
+        <label for="new-member">Assigned Team</label>
+        <div class="container mx-auto">
           <input
             id="new-member"
             type="text"
             placeholder="Add team member ID"
             onkeydown={(e) => e.key === "Enter" && (e.preventDefault(), addTeamMember())}
           />
-          <button, type="button" onclick={() => addTeamMember()}>Add</button>
+          <button type="button" onclick={() => addTeamMember()}>Add</button>
         </div>
         {#if formData.assignedTeam.length > 0}
-          <div class="container, mx-auto, px-4">
+          <div class="container mx-auto">
             {#each Array.isArray(formData.assignedTeam) ? formData.assignedTeam : [] as member}
-              <span class="container mx-auto, px-4, tag">
+              <span class="container mx-auto px-4">
                 {member}
-                <button, type="button" onclick={() => removeTeamMember(member)}>×</button>
+                <button type="button" onclick={() => removeTeamMember(member)}>×</button>
               </span>
             {/each}
           {/if}
       </div>
       <!-- Tags -->
-      <div class="container, mx-auto, px-4">
-        <label, for="new-tag">Tags</label>
-        <div class="container mx-auto, px-4, tag-input">
+      <div class="container mx-auto">
+        <label for="new-tag">Tags</label>
+        <div class="container mx-auto px-4">
           <input
             id="new-tag"
             type="text"
             placeholder="Add tag"
             onkeydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
           />
-          <button, type="button" onclick={() => addTag()}>Add</button>
+          <button type="button" onclick={() => addTag()}>Add</button>
         </div>
         {#if formData.tags.length > 0}
-          <div class="container mx-auto, px-4, tags-list">
+          <div class="container mx-auto px-4">
             {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
-              <span class="container mx-auto, px-4, tag">
+              <span class="container mx-auto px-4">
                 {tag}
-                <button, type="button" onclick={() => removeTag(tag)}>×</button>
+                <button type="button" onclick={() => removeTag(tag)}>×</button>
               </span>
             {/each}
           {/if}
@@ -366,9 +366,9 @@
     </section>
   </div>
   <!-- Form, Actions -->
-  <div class="form-actions container, mx-auto, px-4">
-    <button, type="button" onclick={() => dispatch('cancel')}>Cancel</button>
-    <button, type="submit" disabled={loading} class="primary">
+  <div class="form-actions container mx-auto">
+    <button type="button" onclick={() => dispatch('cancel')}>Cancel</button>
+    <button type="submit" disabled={loading} class="primary">
       {#if loading}
         Saving...
       {:else}

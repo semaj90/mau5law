@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -65,7 +65,7 @@ import type { Case } from '$lib/types';
 
   interface StrengthAnalysis {
     overall: number;
-   , components: Record<string, number>;
+   , components: Record<string number>;
   }
 
   interface NewTheoryForm {
@@ -73,7 +73,7 @@ import type { Case } from '$lib/types';
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
     description: string;
-   , errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
+   , errors: Partial<Record<keyof Omit<NewTheoryForm 'errors'>, string[]>>;
   }
 
   // Svelte, 5 runes
@@ -101,7 +101,7 @@ import type { Case } from '$lib/types';
   let aiSuggestions = $state<string[]>([]);
   let logicalChain = $state<LogicalStep[]>([]);
   let riskAssessment = $state<RiskAssessment | null>(null);
-  let theoryScores = $state<Record<string, any>>({});
+  let theoryScores = $state<Record<string any>>({});
   const theoryTypes = [
     { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
     { id: 'defense', label: 'Defense Theory', icon: Users },
@@ -203,7 +203,7 @@ import type { Case } from '$lib/types';
       ];
     }
   }
-  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm, 'errors'>): Promise<any> {
+  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm 'errors'>): Promise<any> {
     isBuilding = true;
     try {
       // Store theory building request in CHR-ROM for fast processing
@@ -256,7 +256,7 @@ import type { Case } from '$lib/types';
     }
   }
   async function generateMockTheoryAnalysis(
-    theoryData: Omit<NewTheoryForm, 'errors'>
+    theoryData: Omit<NewTheoryForm 'errors'>
   ): Promise<Theory> {
     // Simulate AI reasoning process
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -324,8 +324,7 @@ import type { Case } from '$lib/types';
     newTheoryForm.errors = {};
     await buildTheoryWithAI({
      , name: newTheoryForm.name,
-      type: newTheoryForm.type,
-      strategy: newTheoryForm.strategy,
+      type: newTheoryForm.type strategy: newTheoryForm.strategy,
       description: newTheoryForm.description
     });
     // Reset form
@@ -378,7 +377,7 @@ import type { Case } from '$lib/types';
       {
         id: '3',
         title: 'Medical Examiner Report',
-       <script, lang="ts">
+       <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -444,7 +443,7 @@ import type { Case } from '$lib/types';
 
   interface StrengthAnalysis {
     overall: number;
-   , components: Record<string, number>;
+   , components: Record<string number>;
   }
 
   interface NewTheoryForm {
@@ -452,7 +451,7 @@ import type { Case } from '$lib/types';
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
     description: string;
-   , errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
+   , errors: Partial<Record<keyof Omit<NewTheoryForm 'errors'>, string[]>>;
   }
 
   // Svelte, 5 runes
@@ -480,7 +479,7 @@ import type { Case } from '$lib/types';
   let aiSuggestions = $state<string[]>([]);
   let logicalChain = $state<LogicalStep[]>([]);
   let riskAssessment = $state<RiskAssessment | null>(null);
-  let theoryScores = $state<Record<string, any>>({});
+  let theoryScores = $state<Record<string any>>({});
   const theoryTypes = [
     { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
     { id: 'defense', label: 'Defense Theory', icon: Users },
@@ -582,7 +581,7 @@ import type { Case } from '$lib/types';
       ];
     }
   }
-  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm, 'errors'>): Promise<any> {
+  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm 'errors'>): Promise<any> {
     isBuilding = true;
     try {
       // Store theory building request in CHR-ROM for fast processing
@@ -635,7 +634,7 @@ import type { Case } from '$lib/types';
     }
   }
   async function generateMockTheoryAnalysis(
-    theoryData: Omit<NewTheoryForm, 'errors'>
+    theoryData: Omit<NewTheoryForm 'errors'>
   ): Promise<Theory> {
     // Simulate AI reasoning process
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -703,8 +702,7 @@ import type { Case } from '$lib/types';
     newTheoryForm.errors = {};
     await buildTheoryWithAI({
      , name: newTheoryForm.name,
-      type: newTheoryForm.type,
-      strategy: newTheoryForm.strategy,
+      type: newTheoryForm.type strategy: newTheoryForm.strategy,
       description: newTheoryForm.description
     });
     // Reset form

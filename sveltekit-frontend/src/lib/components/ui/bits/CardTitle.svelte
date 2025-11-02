@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { cn } from '$lib/utils/cn';
   interface CardTitleProps {
     class?: string;
@@ -6,7 +6,7 @@
   }
   let { class: className = '', children }: CardTitleProps = $props();
 </script>
-<h3, class={cn('shadcn-card-title', className)}>
+<h3 class={cn('shadcn-card-title', className)}>
   <slot />
 </h3>
 <style>

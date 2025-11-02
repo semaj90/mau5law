@@ -1,55 +1,55 @@
-<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling --> <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; --> <script, lang="ts">
+<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling --> <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; --> <script lang="ts">
 import type { Message } from '$lib/types'; import { browser } from '$app/environment'; import { slide } from 'svelte/transition'; let { message, showSources = false, showMetadata = false }: { message: { id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: Date; sources?: Array<any>; metadata?: { provider: 'local' | 'cloud' | 'hybrid'; model: string; confidence: number; executionTime: number;, fromCache: boolean; }; }; showSources?: boolean; showMetadata?: boolean; } = $props(); let formattedTime = $state<string>(''); let isLoading = $state<boolean>(false); let isSourcesExpanded = $state<boolean>(false); let isMetadataExpanded = $state<boolean>(false); // Format timestamp $effect(() => { if (browser) { formattedTime = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'
       }); }
   }); // Copy message content to clipboard async function copyToClipboard(): Promise<any> { if (!browser) return; try { await navigator.clipboard.writeText(message.content); // TODO: Show toast notification } catch (error) { console.error('Failed to copy:', error); }
   } // Format confidence as percentage function formatConfidence(confidence: number): string { return Math.round(confidence * 100) + '%'; }
   // Format execution time function formatExecutionTime(ms: number): string { if (ms < 1000) return `${ ms }ms`; return `${(ms / 1000).toFixed(1)}s`; }
-</script> <div, class="chat-message {message.role}" role="article" aria-label="{message.role} message"> <div, class="message-header"> <div, class="message-role"> {#if message.role === 'user'} <svg, width="20"
+</script> <div class="chat-message {message.role}" role="article" aria-label="{message.role} message"> <div class="message-header"> <div class="message-role"> {#if message.role === 'user'} <svg width="20"
           height="20"
           viewBox="0, 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           aria-hidden="true"
-        > <path d="M20 21v-2a4, 4, 0, 0 0-4-4H8a4, 4, 0, 0, 0-4, 4v2" /> <circle, cx="12" cy="7" r="4" /> </svg> You {:else if message.role === 'assistant'} <svg, width="20"
+        > <path d="M20 21v-2a4, 4, 0, 0 0-4-4H8a4, 4, 0, 0, 0-4, 4v2" /> <circle cx="12" cy="7" r="4" /> </svg> You {:else if message.role === 'assistant'} <svg width="20"
           height="20"
           viewBox="0, 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           aria-hidden="true"
-        > <rect, width="18" height="11" x="3" y="11" rx="2" ry="2" /> <circle, cx="12" cy="5" r="2" /> <path, d="M12, 7v4" /> <line, x1="8" y1="16" x2="8" y2="16" /> <line, x1="16" y1="16" x2="16" y2="16" /> </svg> AI Assistant {#if message.metadata?.provider} <span, class="provider-badge" class:local={message.metadata.provider === 'local'}> {message.metadata.provider} </span> {/if} {:else if message.role === 'system'} <svg, width="20"
+        > <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <circle cx="12" cy="5" r="2" /> <path d="M12, 7v4" /> <line x1="8" y1="16" x2="8" y2="16" /> <line x1="16" y1="16" x2="16" y2="16" /> </svg> AI Assistant {#if message.metadata?.provider} <span class="provider-badge" class:local={message.metadata.provider === 'local'}> {message.metadata.provider} </span> {/if} {:else if message.role === 'system'} <svg width="20"
           height="20"
           viewBox="0, 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           aria-hidden="true"
-        > <circle, cx="12" cy="12" r="3" /> <path d="M12, 1v6m0, 6v6" /> </svg> System {/if} </div> <div, class="message-actions"> <span class="timestamp" title="Message sent, at {new, Date(message.timestamp).toLocaleString()}"> { formattedTime } </span> <button, type="button"
+        > <circle cx="12" cy="12" r="3" /> <path d="M12, 1v6m0, 6v6" /> </svg> System {/if} </div> <div class="message-actions"> <span class="timestamp" title="Message sent, at {new Date(message.timestamp).toLocaleString()}"> { formattedTime } </span> <button type="button"
         class="action-btn"
         onclick={() => copyToClipboard()} title="Copy message"
         aria-label="Copy message to clipboard"
-      > <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2"> <rect, width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1, 0 2 .9, 2, 2" /> </svg> </button> </div> </div> <div, class="message-content"> <div, class="content-text"> {message.content} </div> {#if showSources && message.sources && message.sources.length > 0} <div, class="sources-section"> <button type="button"
+      > <svg width="16" height="16" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2"> <rect width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1, 0 2 .9, 2, 2" /> </svg> </button> </div> </div> <div class="message-content"> <div class="content-text"> {message.content} </div> {#if showSources && message.sources && message.sources.length > 0} <div class="sources-section"> <button type="button"
           class="sources-toggle"
           onclick={() => (isSourcesExpanded = !isSourcesExpanded)} aria-expanded={ isSourcesExpanded } aria-label="Toggle sources visibility"
-        > <svg, width="16"
+        > <svg width="16"
             height="16"
             viewBox="0, 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             class:rotated={ isSourcesExpanded } >
-            <polyline points="6,9, 12,15, 18,9" /> </svg> Sources ({message.sources.length}) </button> {#if isSourcesExpanded} <div class="sources-list" transitionslide={{ duration, 200 }}> {#each message.sources as source (source.id)} <div, class="source-item"> <div, class="source-header"> <span, class="source-title">{source.title}</span> <span, class="source-score">{Math.round(source.score * 100)}%</span> <span, class="source-type">{source.type}</span> </div> <div, class="source-content"> {source.content} </div> </div> {/each} {/if} {/if} {#if showMetadata && message.metadata} <div, class="metadata-section"> <button type="button"
+            <polyline points="6,9, 12,15, 18,9" /> </svg> Sources ({message.sources.length}) </button> {#if isSourcesExpanded} <div class="sources-list" transitionslide={{ duration, 200 }}> {#each message.sources as source (source.id)} <div class="source-item"> <div class="source-header"> <span class="source-title">{source.title}</span> <span class="source-score">{Math.round(source.score * 100)}%</span> <span class="source-type">{source.type}</span> </div> <div class="source-content"> {source.content} </div> </div> {/each} {/if} {/if} {#if showMetadata && message.metadata} <div class="metadata-section"> <button type="button"
           class="metadata-toggle"
           onclick={() => (isMetadataExpanded = !isMetadataExpanded)} aria-expanded={ isMetadataExpanded } aria-label="Toggle metadata visibility"
-        > <svg, width="16"
+        > <svg width="16"
             height="16"
             viewBox="0, 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             class:rotated={ isMetadataExpanded } >
-            <polyline points="6,9, 12,15, 18,9" /> </svg> Details </button> {#if isMetadataExpanded} <div, class="metadata-content" transitionslide={{ duration, 200 }}> <div, class="metadata-item"> <span, class="label">Model:</span> <span, class="value">{message.metadata.model}</span> </div> <div, class="metadata-item"> <span, class="label">Provider:</span> <span, class="value">{message.metadata.provider}</span> </div> <div, class="metadata-item"> <span, class="label">Confidence:</span> <span, class="value">{formatConfidence(message.metadata.confidence)}</span> </div> <div, class="metadata-item"> <span, class="label">Response Time:</span> <span, class="value">{formatExecutionTime(message.metadata.executionTime)}</span> </div> {#if message.metadata.fromCache} <div, class="metadata-item"> <span, class="label">Source:</span> <span, class="value, cache">Cached</span> {/if} {/if} {/if} </div> </div> <style> /* @unocss-include */ .chat-message { margin: 16px 0; padding: 16px; border-radius: 8px;, background: var(--bg-primary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); }
+            <polyline points="6,9, 12,15, 18,9" /> </svg> Details </button> {#if isMetadataExpanded} <div class="metadata-content" transitionslide={{ duration, 200 }}> <div class="metadata-item"> <span class="label">Model:</span> <span class="value">{message.metadata.model}</span> </div> <div class="metadata-item"> <span class="label">Provider:</span> <span class="value">{message.metadata.provider}</span> </div> <div class="metadata-item"> <span class="label">Confidence:</span> <span class="value">{formatConfidence(message.metadata.confidence)}</span> </div> <div class="metadata-item"> <span class="label">Response Time:</span> <span class="value">{formatExecutionTime(message.metadata.executionTime)}</span> </div> {#if message.metadata.fromCache} <div class="metadata-item"> <span class="label">Source:</span> <span class="value">Cached</span> {/if} {/if} {/if} </div> </div> <style> /* @unocss-include */ .chat-message { margin: 16px 0; padding: 16px; border-radius: 8px;, background: var(--bg-primary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); }
   .chat-message.user { margin-left: 20%;, background: var(--bg-user, #3b82f6); color: white; border-color: var(--border-user, #2563eb); }
   .chat-message.assistant { margin-right: 20%;, background: var(--bg-assistant, #f8fafc); border-color: var(--border-assistant, #e2e8f0); }
   .message-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 12px; font-size: 0.875rem; }

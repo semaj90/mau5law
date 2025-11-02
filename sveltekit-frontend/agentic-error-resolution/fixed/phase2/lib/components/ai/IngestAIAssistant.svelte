@@ -21,13 +21,7 @@ https://svelte.dev/e/attribute_duplicate -->
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import  Label  from "$lib/components/ui/label/LabelCompat.svelte";
   // Your established store patterns
-  import {
-    aiAgentStore,
-    isProcessing,
-    systemHealth,
-    performanceMetrics,
-    currentConversation,
-  } from '$lib/stores/ai-agent';
+  import { aiAgentStore, isProcessing, systemHealth, performanceMetrics, currentConversation } from '$lib/stores/ai-agent';
   import { enhancedIngestService } from '$lib/services/enhanced-ingest-integration';
   // Component state following your patterns
   let documentTitle = '';
@@ -56,22 +50,14 @@ https://svelte.dev/e/attribute_duplicate -->
     { value: 'precedent', label: 'Legal Precedent', icon: '📚' },
   ];
   // Enhanced ingest function with AI integration
-  async function ingestDocument() {
-    if (!get(canIngest)) return;
+  async function ingestDocument() { if (!get(canIngest)) return;
     processingStatus.set('processing');
     currentProgress.set(10);
     try {
       const request = {
-        title: documentTitle,
-        content: documentContent,
-        case_id: caseId || undefined,
-        metadata: {
-          document_type: selectedDocumentType,
-          source: 'ai_assistant_ui',
-          ai_enhanced: true,
-          // Integrate with your AI agent session
-          ai_session_id: get(aiAgentStore)?.activeSessionId,
-        },
+        title: documentTitle, content: documentContent, case_id: caseId || undefined, metadata: {
+          document_type: selectedDocumentType, source: 'ai_assistant_ui', ai_enhanced: true, // Integrate with your AI agent session
+          ai_session_id: get(aiAgentStore)?.activeSessionId },
       } as any;
       currentProgress.set(30);
       // Use your enhanced ingest service
@@ -91,16 +77,10 @@ https://svelte.dev/e/attribute_duplicate -->
       clearForm();
       processingStatus.set('completed');
       setTimeout(() => processingStatus.set('idle'), 2000);
-    } catch (error) {
-      console.error('Ingest failed:', error);
+    } catch (error) { console.error('Ingest failed:', error);
       errors.update(errs => [
-        ...errs,
-        {
-          id: Date.now(),
-          message: (error as any)?.message || String(error),
-          timestamp: new Date(),
-          type: 'ingest_error',
-        },
+        ...errs, {
+          id: Date.now(), message: (error as any)?.message || String(error), timestamp: new Date(), type: 'ingest_error' },
       ]);
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
@@ -111,11 +91,7 @@ https://svelte.dev/e/attribute_duplicate -->
     try {
       const prompt = `Please provide a concise legal analysis summary of this document:\n\n${content.substring(0, 1000)}...`;
       // Use your existing AI agent for summary
-      await aiAgentStore.sendMessage(prompt, {
-        document_id: documentId,
-        analysis_type: 'legal_summary',
-        source: 'ingest_assistant',
-      });
+      await aiAgentStore.sendMessage(prompt, { document_id: documentId, analysis_type: 'legal_summary', source: 'ingest_assistant' });
     } catch (error) {
       console.warn('AI summary generation failed:', error);
     }

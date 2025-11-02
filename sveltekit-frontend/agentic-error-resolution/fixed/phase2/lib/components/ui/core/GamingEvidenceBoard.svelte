@@ -29,28 +29,8 @@
   }
   // Gaming-style evidence data
   let evidenceItems = $state<EvidenceItem[]>([
-    {
-      id: 'security-camera',
-      title: 'SECURITY CAMERA',
-      type: 'video',
-      status: 'active',
-      x: 230,
-      y: 350,
-      connections: ['witness-statement'],
-      description: 'CCTV footage from the main entrance',
-      icon: '📹',
-    },
-    {
-      id: 'witness-statement',
-      title: 'WITNESS STATEMENT',
-      type: 'document',
-      status: 'complete',
-      x: 490,
-      y: 410,
-      connections: ['security-camera'],
-      description: 'Detailed written statement from key witness',
-      icon: '📄',
-    }
+    { id: 'security-camera', title: 'SECURITY CAMERA', type: 'video', status: 'active', x: 230, y: 350, connections: ['witness-statement'], description: 'CCTV footage from the main entrance', icon: '📹' },
+    { id: 'witness-statement', title: 'WITNESS STATEMENT', type: 'document', status: 'complete', x: 490, y: 410, connections: ['security-camera'], description: 'Detailed written statement from key witness', icon: '📄' }
   ]);
   let caseInfo = $state<CaseInfo>({
     title: 'Corporate Espionage Investigation',
@@ -66,13 +46,10 @@
   let isConnected = $state(false);
   let zoom = $state(100);
   // Enhanced-Bits builders for different evidence types
-  let evidenceBuilders = $derived(() => {
-    return evidenceItems.reduce((builders, item) => {
+  let evidenceBuilders = $derived(() => { return evidenceItems.reduce((builders, item) => {
       builders[item.id] = createEnhancedEvidenceCard({
-        priority: item.status === 'active' ? 'high' : 'medium',
-        interactive: true
-        webGpuAcceleration true,
-      });
+        priority: item.status === 'active' ? 'high' : 'medium', interactive: true
+        webGpuAcceleration true });
       return builder;
     }, {} as { [key: string]: any });
   });
@@ -277,17 +254,14 @@
     color: #ffffff;
     font-size: 0.875rem;
   }
-  .case-items {
-    position: absolute;
+  .case-items { position: absolute;
     top: 100%;
-    right: 0,
-    background: rgba(0, 0, 0, 0.95);
+    right: 0, background: rgba(0, 0, 0, 0.95);
     border: 2px solid #00ff41;
     border-radius: 4px;
     padding: 0.5rem;
     min-width: 300px;
-    z-index: 100,
-  }
+    z-index: 100 }
   .case-item {
     display: flex;
     justify-content: space-betweenn;
@@ -391,15 +365,12 @@
     background-size: 20px 20px;
     opacity: 0.3;
   }
-  .connection-canvas {
-    position: absolute;
+  .connection-canvas { position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 1,
-  }
+    z-index: 1 }
   /* Evidence Item Styles */
-  .evidence-item {
-    position: absolute;
+  .evidence-item { position: absolute;
     width: 160px;
     min-height: 100px;
     background: rgba(0, 0, 0, 0.9);
@@ -407,17 +378,14 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 2,
-  }
+    z-index: 2 }
   .evidence-item:hover {
     transform: scale(1.05);
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
-  .evidence-item.selected {
-    border-color: #00ff41 !important;
+  .evidence-item.selected { border-color: #00ff41 !important;
     box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
-    z-index: 3,
-  }
+    z-index: 3 }
   .evidence-item.video {
     border-color: #3b82f6;
   }

@@ -1,4 +1,4 @@
-<script, lang="ts"> import { createEventDispatcher } from 'svelte'; import { fade, scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface NESModalProps { open?: boolean; title?: string; variant?: 'default' | 'dark' | 'primary' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg' | 'xl'; closable?: boolean; backdrop?: boolean; children?: any; }
+<script lang="ts"> import { createEventDispatcher } from 'svelte'; import { fade, scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface NESModalProps { open?: boolean; title?: string; variant?: 'default' | 'dark' | 'primary' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg' | 'xl'; closable?: boolean; backdrop?: boolean; children?: any; }
   let { open = $bindable(false), title = '', variant = 'default', size = 'md', closable = true, backdrop = true, children, ...restProps }: NESModalProps = $props(); const dispatch = createEventDispatcher(); let modalElement: HTMLDivElement; let isClosing = $state<boolean>(false); const sizeClasses = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-2xl'
   } const variantClasses = {, default: 'nes-modal-default', dark: 'nes-modal-dark', primary: 'nes-modal-primary', warning: 'nes-modal-warning', danger: 'nes-modal-danger'
   } function closeModal() { if (!closable) return; isClosing = true; setTimeout(() => { open = false; isClosing = false; dispatch('close'); }, 150); }
@@ -11,17 +11,17 @@
       } }
     node.addEventListener('keydown', handleTabKey); firstElement?.focus(); return { destroy() { node.removeEventListener('keydown', handleTabKey); }
     } }
-</script> {#if open} <!-- Modal, Backdrop --> <div, class="nes-modal-overlay"
+</script> {#if open} <!-- Modal, Backdrop --> <div class="nes-modal-overlay"
     class:backdrop-blur={ backdrop } onclick={ handleBackdropClick } transitionfade={{ duration, 200 }} role="dialog"
     aria-modal="true"
     aria-labelledby={title ? 'modal-title': undefined} >
-    <!-- Modal, Container --> <div, bind:this={ modalElement } class="nes-modal {variantClasses[variant]} {sizeClasses[size]}"
+    <!-- Modal, Container --> <div bind:this={ modalElement } class="nes-modal {variantClasses[variant]} {sizeClasses[size]}"
      , class:is-closing={ isClosing } transitionscale={{ duration, 200, easing: quintOut }}, use:trapFocus {...restProps} >
-      <!-- Modal, Header --> {#if title || closable} <div, class="nes-modal-header"> {#if title} <h2, id="modal-title" class="nes-modal-title">{ title }</h2> {/if} {#if closable} <button class="nes-modal-close"
+      <!-- Modal, Header --> {#if title || closable} <div class="nes-modal-header"> {#if title} <h2 id="modal-title" class="nes-modal-title">{ title }</h2> {/if} {#if closable} <button class="nes-modal-close"
               onclick={ closeModal } aria-label="Close modal"
               type="button"
             > ✕
-            </button> {/if} {/if} <!-- Modal, Content --> <div, class="nes-modal-content"> <slot /> </div> </div> {/if} <!-- Keyboard, event, listener --> {#if open} <svelte:window, onkeydown={ handleKeydown } /> {/if} <style> .nes-modal-overlay { position: fixed; d;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;, padding: 1rem; z-index: 1000 }
+            </button> {/if} {/if} <!-- Modal, Content --> <div class="nes-modal-content"> <slot /> </div> </div> {/if} <!-- Keyboard, event, listener --> {#if open} <svelte:window, onkeydown={ handleKeydown } /> {/if} <style> .nes-modal-overlay { position: fixed; d;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;, padding: 1rem; z-index: 1000 }
   .backdrop-blur { backdrop-filter: blur(4px); }
   .nes-modal { position: relative;, width: 100%; max-height: calc(100vh - 2rem); overflow: hidden;, display: flex; flex-direction: column; font-family: 'Press Start 2P', cursiv; border: 4px solid theme('colors.nes.black'); box-shadow: 12px 12px 0px 0px theme('colors.nes.black'); }
   .nes-modal.is-closing { animation: modal-close 0.15s ease-out forward; }

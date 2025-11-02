@@ -1,5 +1,5 @@
 <!-- Cache System, Demo, Page -->
-<script, lang="ts">
+<script lang="ts">
   import CacheDemo from '$lib/components/cache/CacheDemo.svelte';
 </script>
 
@@ -7,11 +7,11 @@
   <title>Multi-Layer Cache System Demo</title>
   <meta name="description" content="Interactive demonstration of the comprehensive, caching, architecture" />
 </svelte:head>
-<main, class="min-h-screen, bg-background">
-  <div class="container, mx-auto, py-8">
-    <div, class="mb-8, text-center">
-      <h1 class="text-3xl, font-bold, mb-2">Multi-Layer Cache System Demo</h1>
-      <p class="nes-text, is-disabled, text-lg">
+<main class="min-h-screen">
+  <div class="container mx-auto">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold">Multi-Layer Cache System Demo</h1>
+      <p class="nes-text is-disabled">
         Interactive demonstration of Loki.js + Redis + PostgreSQL caching architecture
       </p>
     </div>

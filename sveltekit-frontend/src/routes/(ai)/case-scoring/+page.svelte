@@ -2,7 +2,7 @@
   Case Scoring Test Page - Enhanced-Bits Architecture
   Testing the CaseScoringDashboard with Enhanced-Bits UI components
 -->
-<script, lang="ts">
+<script lang="ts">
   import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
 </script>
 
@@ -13,7 +13,7 @@
     content="AI-powered case analysis and priority scoring dashboard using Enhanced-Bits architecture"
   />
 </svelte:head>
-<div, class="page-container">
+<div class="page-container">
   <CaseScoringDashboard />
 </div>
 

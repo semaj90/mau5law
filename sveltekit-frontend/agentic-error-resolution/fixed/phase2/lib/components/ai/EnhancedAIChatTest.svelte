@@ -14,25 +14,13 @@
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
   import  ScrollArea  from "$lib/components/ui/scrollarea/ScrollArea.svelte";
-  import {
-    Bot,
-    User,
-    Send,
-    Loader2,
-    CheckCircle, // Fixed typo
+  import { Bot, User, Send, Loader2, CheckCircle, // Fixed typo
     XCircle, // Fixed typo
-    MessageCircle,
-    Settings,
-    Download,
-    Trash2,
-  } from 'lucide-svelte';
+    MessageCircle, Settings, Download, Trash2 } from 'lucide-svelte';
   import { getOllamaHealthEndpoint } from '$lib/utils/ollama-endpoint'; // Import Ollama endpoint utility
   import type { ChatMessage } from '$lib/types/chat'; // Import ChatMessage type
   // Props using Svelte 5 runes
-  let { open = $bindable(false),
-    caseId = undefined,
-    title = 'Enhanced AI Legal Assistant',
-   }: {
+  let { open = $bindable(false), caseId = undefined, title = 'Enhanced AI Legal Assistant' }: {
     open?: boolean;
     caseId?: string;
     title?: string;
@@ -46,21 +34,14 @@
   let messagesContainer: HTMLElement = $state(undefined as any);
   let inputElement: HTMLInputElement = $state(undefined as any);
   // Check system status on mount
-  $effect(() => {
-    if (browser) {
+  $effect(() => { if (browser) {
       (async () => { // Wrap in async IIFE
         await checkSystemHealth();
         // Add welcome message
         messages = [
           {
-            id: 'welcome',
-            role: 'assistant',
-            content: `Hello! I'm your enhanced AI legal assistant powered by Gemma3 running on your RTX 3060 Ti GPU. I can help you with:\n\n• Legal research and case analysis\n• Document review and interpretation\n• Evidence analysis and timeline creation\n• Legal precedent research\n• Case strategy development\n\nWhat would you like to explore today?`,
-            timestamp: new Date(),
-            metadata: {
-              provider: 'local',
-              model: 'gemma3-legal-enhanced',
-            },
+            id: 'welcome', role: 'assistant', content: `Hello! I'm your enhanced AI legal assistant powered by Gemma3 running on your RTX 3060 Ti GPU. I can help you with:\n\n• Legal research and case analysis\n• Document review and interpretation\n• Evidence analysis and timeline creation\n• Legal precedent research\n• Case strategy development\n\nWhat would you like to explore today?`, timestamp: new Date(), metadata: {
+              provider: 'local', model: 'gemma3-legal-enhanced' },
           },
         ];
         // Auto-focus input
@@ -110,21 +91,11 @@
     }
   }
   // Send message to AI
-  async function sendMessage() {
-    if (!currentMessage.trim() || isLoading) return;
+  async function sendMessage() { if (!currentMessage.trim() || isLoading) return;
     const userMessage: ChatMessage = { // Explicitly type
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: currentMessage.trim(),
-      timestamp: new Date(),
-    }
+      id: crypto.randomUUID(), role: 'user', content: currentMessage.trim(), timestamp: new Date() }
     const loadingMessage: ChatMessage = { // Explicitly type
-      id: 'loading',
-      role: 'assistant',
-      content: 'Thinking...',
-      timestamp: new Date(),
-      loading: true,
-    }
+      id: 'loading', role: 'assistant', content: 'Thinking...', timestamp: new Date(), loading: true }
     // Add messages and clear input
     messages = [...messages, userMessage, loadingMessage];
     const messageContent = currentMessage; // Fixed typo
@@ -133,12 +104,9 @@
     // Scroll to bottom
     await tick();
     scrollToBottom();
-    try {
-      const response = await fetch('/api/contextual/chat', { // Changed from /api/chat to /api/contextual/chat
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    try { const response = await fetch('/api/contextual/chat', { // Changed from /api/chat to /api/contextual/chat
+        method: 'POST', headers: {
+          'Content-Type': 'application/json' },
         body: JSON.stringify({ // Fixed syntax
           caseId, // Pass caseId to the API
           messages: [
@@ -148,10 +116,7 @@
             },
             ...messages
               .filter((m) => !m.loading && !m.error)
-              .map((m) => ({
-                role: m.role,
-                content: m.content,
-              })),
+              .map((m) => ({ role: m.role, content: m.content })),
             {
               role: 'user',
               content: messageContent, // Fixed syntax
@@ -169,15 +134,8 @@
       messages = messages.filter((m) => m.id !== 'loading');
       // Create assistant message
       const assistantMessage: ChatMessage = { // Explicitly type
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: '',
-        timestamp: new Date(),
-        metadata: {
-          provider: 'local',
-          model: 'gemma3-legal-enhanced',
-          gpu: 'RTX 3060 Ti',
-        },
+        id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date(), metadata: {
+          provider: 'local', model: 'gemma3-legal-enhanced', gpu: 'RTX 3060 Ti' },
       }
       messages = [...messages, assistantMessage];
       if (reader) {
@@ -239,30 +197,17 @@
     }
   }
   // Clear conversation
-  function clearMessages() {
-    messages = [
+  function clearMessages() { messages = [
       {
-        id: 'welcome',
-        role: 'assistant',
-        content: 'Conversation cleared. How can I help you today?',
-        timestamp: new Date(),
-        metadata: {
-          provider: 'local',
-          model: 'gemma3-legal-enhanced',
-        },
+        id: 'welcome', role: 'assistant', content: 'Conversation cleared. How can I help you today?', timestamp: new Date(), metadata: {
+          provider: 'local', model: 'gemma3-legal-enhanced' },
       },
     ];
   }
   // Download conversation
-  function downloadConversation() {
-    const data = {
-      timestamp: new Date().toISOString(),
-      caseId,
-      messages: messages.filter((m) => !m.loading),
-    }
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
-    });
+  function downloadConversation() { const data = {
+      timestamp: new Date().toISOString(), caseId, messages: messages.filter((m) => !m.loading) }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

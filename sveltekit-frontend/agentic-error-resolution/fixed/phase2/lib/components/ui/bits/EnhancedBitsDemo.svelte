@@ -30,47 +30,16 @@
     { value: 'intellectual', label: 'Intellectual Property', description: 'Patents, trademarks, and IP disputes' },
   ];
   const evidenceCategories: SelectOption[] = [
-    {
-      value: 'critical',
-      label: 'Critical Evidence',
-      description: 'High-priority evidence for case',
-      category: 'Priority',
-    },
-    {
-      value: 'supporting',
-      label: 'Supporting Evidence',
-      description: 'Additional supporting materials',
-      category: 'Priority',
-    },
+    { value: 'critical', label: 'Critical Evidence', description: 'High-priority evidence for case', category: 'Priority' },
+    { value: 'supporting', label: 'Supporting Evidence', description: 'Additional supporting materials', category: 'Priority' },
     { value: 'document', label: 'Legal Documents', description: 'Contracts, motions, briefs', category: 'Type' },
     { value: 'multimedia', label: 'Multimedia Evidence', description: 'Audio, video, images', category: 'Type' },
     { value: 'witness', label: 'Witness Testimony', description: 'Depositions and statements', category: 'Type' },
   ];
   const mockEvidenceItems = [
-    {
-      id: '1',
-      title: 'Contract Amendment #3',
-      type: 'document',
-      priority: 'critical' as const,
-      confidence: 'high' as const,
-      description: 'Modified terms regarding liability clauses',
-    },
-    {
-      id: '2',
-      title: 'Security Camera Footage',
-      type: 'video',
-      priority: 'high' as const,
-      confidence: 'medium' as const,
-      description: 'Incident recording from 2024-01-15',
-    },
-    {
-      id: '3',
-      title: 'Expert Witness Statement',
-      type: 'document',
-      priority: 'medium' as const,
-      confidence: 'high' as const,
-      description: 'Technical analysis by Dr. Smith',
-    },
+    { id: '1', title: 'Contract Amendment #3', type: 'document', priority: 'critical' as const confidence: 'high' as const description: 'Modified terms regarding liability clauses' },
+    { id: '2', title: 'Security Camera Footage', type: 'video', priority: 'high' as const confidence: 'medium' as const description: 'Incident recording from 2024-01-15' },
+    { id: '3', title: 'Expert Witness Statement', type: 'document', priority: 'medium' as const confidence: 'high' as const description: 'Technical analysis by Dr. Smith' },
   ];
   // Demo functions
   async function runAIAnalysis() {
@@ -94,12 +63,9 @@
     selectedEvidenceCard = selectedEvidenceCard === id ? null : id;
   }
   // Reactive computed values using $derived
-  function tabClasses(tab: string) {
-    return cn('px-4 py-2 text-sm font-medium border-b-2 transition-colors', {
-      'border-nier-border-primary text-nier-text-primary bg-nier-bg-tertiary': currentTab === tab,
-      'border-transparent text-nier-text-secondary hover:text-nier-text-primary hover:border-nier-border-secondary':
-        currentTab !== tab,
-    });
+  function tabClasses(tab: string) { return cn('px-4 py-2 text-sm font-medium border-b-2 transition-colors', {
+      'border-nier-border-primary text-nier-text-primary bg-nier-bg-tertiary': currentTab === tab, 'border-transparent text-nier-text-secondary hover:text-nier-text-primary hover:border-nier-border-secondary':
+        currentTab !== tab });
   }
   let demoSections = $derived([
     { id: 'buttons', label: 'Enhanced Buttons', icon FileText },

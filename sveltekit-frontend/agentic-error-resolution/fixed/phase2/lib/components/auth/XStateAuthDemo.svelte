@@ -108,16 +108,10 @@
   function demonstrateSessionActivity() {
     xstateIntegration.recordActivity('/evidence/analysis', 'analyze_document');
   }
-  function demonstrateUpload() {
-    // Create a mock file for demo
+  function demonstrateUpload() { // Create a mock file for demo
     const mockFile = new File(['Mock legal document content'], 'evidence.pdf', {
-      type: 'application/pdf',
-    });
-    xstateIntegration.uploadDocument(mockFile, {
-      type: 'evidence',
-      caseId: 'case_2024_001',
-      description: 'Key evidence document',
-    });
+      type: 'application/pdf' });
+    xstateIntegration.uploadDocument(mockFile, { type: 'evidence', caseId: 'case_2024_001', description: 'Key evidence document' });
   }
   // Get status color based on health
   function getHealthColor(isHealthy: boolean): string {

@@ -78,19 +78,8 @@ https://svelte.dev/e/expected_token -->
     SAVE_RAM: { used: 0, capacity: 8192, active: false, documents: [] as string[] }
   });
   // Enhanced Performance Tracking
-  let frameStats = $state({
-    fps: 0,
-    drawCalls: 0,
-    verticesRendered: 0,
-    lastFrameTime: 0,
-    // NES-GPU specific metrics
-    nesMemoryUsed: 0,
-    binaryPipelineTime: 0,
-    documentsCached: 0,
-    compressionRatio: 0,
-    textureStreamingTime: 0,
-    quantizationSavings: 0,
-  });
+  let frameStats = $state({ fps: 0, drawCalls: 0, verticesRendered: 0, lastFrameTime: 0, // NES-GPU specific metrics
+    nesMemoryUsed: 0, binaryPipelineTime: 0, documentsCached: 0, compressionRatio: 0, textureStreamingTime: 0, quantizationSavings: 0 });
   // Pipeline performance stats
   let pipelineStats: PipelineStats | null = null;
   let textureStats = $state({ memoryUsed: 0, texturesLoaded: 0, compressionRatio: 1.0 });
@@ -101,7 +90,7 @@ https://svelte.dev/e/expected_token -->
   // MinIO Upload State
   let uploadInProgress = $state(false);
   let uploadQueue = $state<File[]>([]);
-  let uploadProgress = $state(new Map<string, UploadProgress>());
+  let uploadProgress = $state(new Map<string UploadProgress>());
   let uploadedFiles = $state<MinIOFile[]>([]);
   let showUploadArea = $state(false);
   let dragOverUpload = $state(false);
@@ -242,13 +231,12 @@ https://svelte.dev/e/expected_token -->
         output.quantizationLevel = input.quantizationLevel;
         return output;
       }
-      fn getBankOffset(bankId: f32) -> vec3f {
-        switch (i32(bankId)) {
-          case 0: { return vec3f(-0.8, 0.8, 0.2), }   // INTERNAL_RAM
-          case 1: { return vec3f(0.8, 0.8, 0.1), }    // CHR_ROM
-          case 2: { return vec3f(0.0, 0.0, 0.0), }    // PRG_ROM (center)
-          case 3: { return vec3f(-0.8, -0.8, 0.15), } // SAVE_RAM
-          default: { return vec3f(0.0, 0.0, 0.0), }
+      fn getBankOffset(bankId: f32) -> vec3f { switch (i32(bankId)) {
+          case 0: { return vec3f(-0.8, 0.8, 0.2) }   // INTERNAL_RAM
+          case 1: { return vec3f(0.8, 0.8, 0.1) }    // CHR_ROM
+          case 2: { return vec3f(0.0, 0.0, 0.0) }    // PRG_ROM (center)
+          case 3: { return vec3f(-0.8, -0.8, 0.15) } // SAVE_RAM
+          default: { return vec3f(0.0, 0.0, 0.0) }
         }
       }
       fn transformToMemoryPalace(pos: vec3f, bankId: f32, riskLevel: f32) -> vec3f {
@@ -340,12 +328,11 @@ https://svelte.dev/e/expected_token -->
         }
         return bankColor;
       }
-      fn getQuantizationBrightness(quantLevel: f32) -> f32 {
-        switch (i32(quantLevel)) {
-          case 0: { return 1.0, }   // FP32 - full brightness
-          case 1: { return 0.9, }   // FP16 - slightly dimmed
-          case 2: { return 0.8, }   // INT8 - more dimmed
-          default: { return 1.0, }
+      fn getQuantizationBrightness(quantLevel: f32) -> f32 { switch (i32(quantLevel)) {
+          case 0: { return 1.0 }   // FP32 - full brightness
+          case 1: { return 0.9 }   // FP16 - slightly dimmed
+          case 2: { return 0.8 }   // INT8 - more dimmed
+          default: { return 1.0 }
         }
       }
     `;
@@ -392,15 +379,11 @@ https://svelte.dev/e/expected_token -->
           }
         }]
       },
-      primitive: {
-        topology: 'triangle-list',
-        cullMode: 'back',
-      }
+      primitive: { topology: 'triangle-list', cullMode: 'back' }
     });
   }
   // Enhanced Vertex Buffer Creation with Full NES Integration
-  async function createEnhancedVertexBuffers() {
-    if (!device) return;
+  async function createEnhancedVertexBuffers() { if (!device) return;
     const currentDocs = document;
     if (currentDocs.length === 0) return;
     try {
@@ -415,20 +398,13 @@ https://svelte.dev/e/expected_token -->
       const memoryBankVertices = generateMemoryBankVisualization();
       // Step 4: Create GPU buffers with quantization-aware upload
       documentVertexBuffer = await WebGPUBufferUtils_Extended.uploadForLegalAI(
-        device,
-        new Float32Array(enhancedVertices),
-        quantizationProfile
+        device, new Float32Array(enhancedVertices), quantizationProfile
       );
       annotationVertexBuffer = await WebGPUBufferUtils_Extended.uploadForLegalAI(
-        device,
-        new Float32Array(annotationVertices),
-        'legal_compressed' // Annotations can use higher compression
+        device, new Float32Array(annotationVertices), 'legal_compressed' // Annotations can use higher compression
       );
       memoryBankVertexBuffer = device.createBuffer({
-        size: memoryBankVertices.byteLength,
-        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-        mappedAtCreation true,
-      });
+        size: memoryBankVertices.byteLength, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST, mappedAtCreation true });
       new Float32Array(memoryBankVertexBuffer.getMappedRange()).set(
         new Float32Array(memoryBankVertices)
       );
@@ -575,15 +551,11 @@ https://svelte.dev/e/expected_token -->
       documents = [];
       return;
     }
-    try {
-      const startTime = performance.now();
+    try { const startTime = performance.now();
       // Use NES-GPU integration for ultra-fast semantic search
       const searchResults = await nesGPUIntegration.searchLegalDocumentsGPU(query, {
-        limit: 50,
-        threshold: 0.7,
-        useNESCache: true
-        enableGPUAcceleration true,
-      });
+        limit: 50, threshold: 0.7, useNESCache: true
+        enableGPUAcceleration true });
       // Enhance results with full integration data
       const enhancedResults: EnhancedLegalDocument[] = searchResults.map((doc, index) => {
         const bankAssignment = assignOptimalNESBank(doc);
@@ -621,7 +593,7 @@ https://svelte.dev/e/expected_token -->
         autoProcess: autoProcessUploads
         priority: 200,
         caseId,
-        documentType: 'brief' // Default type, will be auto-detected;
+        documentType: 'brief' // Default type will be auto-detected;
       });
       uploadedFiles = [...uploadedFiles, ...uploadedMinIOFiles];
       // Process through RAG ingestion worker for vector embeddings
@@ -946,16 +918,11 @@ https://svelte.dev/e/expected_token -->
     const actualSize = fp32Count * 4 + fp16Count * 2 + int8Count * 1;
     return ((originalSize - actualSize) / originalSize) * 100;
   }
-  function updateMemoryBankStatus() {
-    const currentDocs = document;
+  function updateMemoryBankStatus() { const currentDocs = document;
     // Reset bank status
     for (const bank of Object.keys(memoryBankStatus)) {
       memoryBankStatus[bank as keyof typeof memoryBankStatus] = {
-        used: 0,
-        capacity: memoryBankStatus[bank as keyof typeof memoryBankStatus].capacity,
-        active: false,
-        documents: [],
-      }
+        used: 0, capacity: memoryBankStatus[bank as keyof typeof memoryBankStatus].capacity, active: false, documents: [] }
     }
     // Calculate usage
     currentDocs.forEach(doc => {

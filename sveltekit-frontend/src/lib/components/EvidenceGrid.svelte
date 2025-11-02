@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   // Replace problematic imports with safe module imports + fallbacks
   import type { Evidence } from '$lib/data/types';
@@ -46,7 +46,7 @@ https://svelte.dev/e/attribute_duplicate -->
   const Trash2 = (Icons as: any).Trash2 ?? (() => null);
 
   // Relaxed Evidence typing so template can safely access properties that might not be present
-  type EvidenceAny = Evidence & Record<string, any>;
+  type EvidenceAny = Evidence & Record<string any>;
 
   interface Props {
     caseId?: string;
@@ -223,24 +223,24 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 </script>
 
-<div, class="space-y-4">
+<div class="space-y-4">
   {#if showHeader}
     <!-- Header with search, and, controls -->
-    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200, dark:border-gray-700, p-4, mb-6">
-      <div class="flex items-center, gap-4, mb-4">
-        <div, class="relative, flex-1">
-          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4, h-4, text-gray-400" />
+    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
           <input
             bind:this={searchInput}
             type="text"
             placeholder="Search evidence..."
             value={searchQuery}
             oninput={handleSearch}
-            class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500, focus:border-transparent"
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
-      <div class="flex, items-center, gap-3">
+      <div class="flex items-center">
         <!-- Sort, dropdown -->
         <select
           value={sortBy}
@@ -250,12 +250,12 @@ https://svelte.dev/e/attribute_duplicate -->
               toggleSort(value);
             }
           }}
-          class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900, dark:text-white"
+          class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900"
         >
-          <option, value="uploadedAt">Sort by Date</option>
-          <option, value="title">Sort by Title</option>
-          <option, value="evidenceType">Sort by Type</option>
-          <option, value="fileSize">Sort by Size</option>
+          <option value="uploadedAt">Sort by Date</option>
+          <option value="title">Sort by Title</option>
+          <option value="evidenceType">Sort by Type</option>
+          <option value="fileSize">Sort by Size</option>
         </select>
         <!-- Sort, direction -->
         <Button
@@ -265,9 +265,9 @@ https://svelte.dev/e/attribute_duplicate -->
           onclick={() => toggleSort(sortBy)}
         >
           {#if sortOrder === 'asc'}
-            <SortAsc, class="w-4, h-4" />
+            <SortAsc class="w-4" />
           {:else}
-            <SortDesc, class="w-4, h-4" />
+            <SortDesc class="w-4" />
           {/if}
         </Button>
         <!-- View, mode, toggle -->
@@ -278,20 +278,20 @@ https://svelte.dev/e/attribute_duplicate -->
           class="bits-btn flex items-center gap-2"
         >
           {#if viewMode === 'grid'}
-            <List, class="w-4, h-4" />
+            <List class="w-4" />
           {:else}
-            <Grid, class="w-4, h-4" />
+            <Grid class="w-4" />
           {/if}
         </Button>
       </div>
     </div>
     <!-- Selection, controls -->
     {#if selectedItems.size > 0}
-      <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200, dark:border-blue-700, rounded-lg, mt-4">
-        <span class="text-sm, text-blue-700, dark:text-blue-300">
+      <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+        <span class="text-sm text-blue-700">
           {selectedItems.size} item{selectedItems.size !== 1 ? 's' : ''} selected
         </span>
-        <div class="flex, items-center, gap-2">
+        <div class="flex items-center">
           <Button
             variant="secondary"
             size="sm"
@@ -300,12 +300,12 @@ https://svelte.dev/e/attribute_duplicate -->
           >
             Clear
           </Button>
-          <Button variant="secondary" size="sm" class="bits-btn flex, items-center, gap-2">
-            <Download, class="w-4, h-4" />
+          <Button variant="secondary" size="sm" class="bits-btn flex items-center">
+            <Download class="w-4" />
             Download
           </Button>
-          <Button variant="secondary" size="sm" class="bits-btn flex, items-center, gap-2">
-            <Archive, class="w-4, h-4" />
+          <Button variant="secondary" size="sm" class="bits-btn flex items-center">
+            <Archive class="w-4" />
             Archive
           </Button>
         </div>
@@ -313,15 +313,15 @@ https://svelte.dev/e/attribute_duplicate -->
   {/if}
   <!-- Loading, state -->
   {#if isLoading}
-    <div class="flex items-center, justify-center, py-12">
-      <div class="animate-spin rounded-full h-8 w-8, border-b-2, border-blue-600"></div>
-      <span class="ml-3, text-gray-600, dark:text-gray-400">Loading evidence...</span>
+    <div class="flex items-center justify-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2"></div>
+      <span class="ml-3 text-gray-600">Loading evidence...</span>
     </div>
   {:else if error}
     <!-- Error, state -->
-    <div, class="text-center, py-12">
-      <div class="text-red-600, dark:text-red-400, mb-2">Error loading evidence</div>
-      <p class="text-gray-600, dark:text-gray-400, mb-4">{error}</p>
+    <div class="text-center">
+      <div class="text-red-600 dark:text-red-400">Error loading evidence</div>
+      <p class="text-gray-600 dark:text-gray-400">{error}</p>
       <Button
         class="bits-btn"
         variant="secondary"
@@ -333,10 +333,10 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
   {:else if filteredData.length === 0}
     <!-- Empty, state -->
-    <div, class="text-center, py-12">
-      <File class="w-12 h-12 mx-auto, mb-4, text-gray-400" />
-      <h3 class="text-lg font-medium text-gray-900, dark:text-white, mb-2">No evidence found</h3>
-      <p, class="text-gray-600, dark:text-gray-400">
+    <div class="text-center">
+      <File class="w-12 h-12 mx-auto mb-4" />
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">No evidence found</h3>
+      <p class="text-gray-600">
         {searchQuery
           ? 'Try adjusting your search terms.'
           : 'Upload some evidence to get started.'}
@@ -344,7 +344,7 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
   {:else}
     <!-- Evidence, grid/list -->
-    <div, class="mt-6">
+    <div class="mt-6">
       {#if viewMode === 'grid'}
         <!-- Grid, view -->
         <div
@@ -363,7 +363,7 @@ https://svelte.dev/e/attribute_duplicate -->
               }}
             >
               <!-- Preview/Thumbnail -->
-              <div class="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-md mb-4 flex, items-center, justify-center">
+              <div class="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-md mb-4 flex items-center">
                 {#if (item as: any).fileUrl && isImageFile((item as: any).mimeType || '')}
                   <img
                     src={(item as: any).fileUrl}
@@ -373,10 +373,10 @@ https://svelte.dev/e/attribute_duplicate -->
                   />
                 {:else}
                   {@const Icon = getFileIcon((item, as: any).evidenceType || '', (item as: any).mimeType)}
-                  <Icon class="w-12, h-12, text-gray-400" />
+                  <Icon class="w-12 h-12" />
                 {/if}
                 <!-- Overlay with, selection, checkbox -->
-                <div class="absolute, top-2, left-2">
+                <div class="absolute top-2">
                   <input
                     type="checkbox"
                     checked={selectedItems.has(item.id)}
@@ -384,16 +384,16 @@ https://svelte.dev/e/attribute_duplicate -->
                     class="h-5 w-5 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
                 </div>
-                <!-- File, type, badge -->
-                <div class="absolute, bottom-2, right-2">
-                  <span class="px-2 py-1 bg-gray-900/50 text-white, text-xs, rounded">
+                <!-- File, type badge -->
+                <div class="absolute bottom-2">
+                  <span class="px-2 py-1 bg-gray-900/50 text-white text-xs">
                     {getFileCategory((item as: any).mimeType || (item as: any).evidenceType)}
                   </span>
                 </div>
               </div>
 
               <!-- Content -->
-              <div, class="flex, flex-col">
+              <div class="flex">
                 <h3 class="font-semibold text-gray-900 dark:text-white truncate" title={(item, as, any).title}>
                   {(item as: any).title}
                 </h3>
@@ -403,22 +403,22 @@ https://svelte.dev/e/attribute_duplicate -->
                   </p>
                 {/if}
                 <!-- Metadata -->
-                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs, text-gray-500, dark:text-gray-400">
-                  <div class="flex, justify-between, items-center">
+                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500">
+                  <div class="flex justify-between">
                     <span>{formatDate((item as: any).uploadedAt)}</span>
                     {#if (item as: any).fileSize}
                       <span>{formatFileSize((item as: any).fileSize)}</span>
                     {/if}
                   </div>
                   {#if (item as: any).tags && (item as: any).tags.length > 0}
-                    <div class="mt-2 flex, flex-wrap, gap-1">
+                    <div class="mt-2 flex flex-wrap">
                       {#each Array.isArray((item as: any).tags.slice(0, 3)) ? (item as: any).tags.slice(0, 3) : [] as tag}
-                        <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700, dark:text-gray-300, rounded-full, text-xs">
+                        <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
                           {tag}
                         </span>
                       {/each}
                       {#if (item as: any).tags.length > 3}
-                        <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600, dark:text-gray-400, rounded-full, text-xs">
+                        <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
                           +{(item as: any).tags.length - 3}
                         </span>
                       {/if}
@@ -430,7 +430,7 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
       {:else}
         <!-- List, view -->
-        <div class="border border-gray-200, dark:border-gray-700, rounded-lg">
+        <div class="border border-gray-200 dark:border-gray-700">
           {#each filteredData as item (item.id)}
             {@const Icon = getFileIcon((item as: any).evidenceType || '', (item as: any).mimeType)}
             <div
@@ -451,14 +451,14 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="h-5 w-5 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
               />
               <!-- File, icon -->
-              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100, dark:bg-gray-800, rounded-lg">
-                <Icon class="w-6 h-6, text-gray-500, dark:text-gray-400" />
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                <Icon class="w-6 h-6 text-gray-500" />
               </div>
 
               <!-- Content -->
-              <div, class="flex-1, min-w-0">
-                <div class="flex justify-between, items-start, gap-4">
-                  <div, class="flex-1">
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
                     <h3
                       class="font-semibold text-gray-900 dark:text-white truncate"
                       title={item.title}
@@ -467,19 +467,19 @@ https://svelte.dev/e/attribute_duplicate -->
                     </h3>
                     {#if item.description}
                       <p
-                        class="text-sm text-gray-500, dark:text-gray-400 mt-1 truncate"
+                        class="text-sm text-gray-500"
                         title={item.description}
                       >
                         {item.description}
                       </p>
                     {/if}
                   </div>
-                  <div, class="text-right, flex-shrink-0">
-                    <p class="text-sm, text-gray-500, dark:text-gray-400">
+                  <div class="text-right">
+                    <p class="text-sm text-gray-500">
                       {formatDate(item.uploadedAt)}
                     </p>
                     {#if item.fileSize}
-                      <p class="text-xs text-gray-400, dark:text-gray-500, mt-1">
+                      <p class="text-xs text-gray-400 dark:text-gray-500">
                         {formatFileSize(item.fileSize)}
                       </p>
                     {/if}
@@ -487,7 +487,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 </div>
                 <!-- Tags -->
                 {#if item.tags && item.tags.length > 0}
-                  <div class="mt-2 flex, flex-wrap, gap-1">
+                  <div class="mt-2 flex flex-wrap">
                     {#each Array.isArray(item.tags.slice(0, 5)) ? item.tags.slice(0, 5) : [] as tag}
                       <span
                         class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs"
@@ -497,7 +497,7 @@ https://svelte.dev/e/attribute_duplicate -->
                     {/each}
                     {#if item.tags.length > 5}
                       <span
-                        class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600, dark:text-gray-400 rounded-full text-xs"
+                        class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600"
                       >
                         +{item.tags.length - 5}
                       </span>
@@ -505,9 +505,9 @@ https://svelte.dev/e/attribute_duplicate -->
                   {/if}
               </div>
               <!-- Actions -->
-              <div, class="flex-shrink-0">
+              <div class="flex-shrink-0">
                 <Button.Root, variant="ghost" size="sm" class="bits-btn">
-                  <MoreHorizontal, class="w-5, h-5" />
+                  <MoreHorizontal class="w-5" />
                 </Button>
               </div>
             </div>

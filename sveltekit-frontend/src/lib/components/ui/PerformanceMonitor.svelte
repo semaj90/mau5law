@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 	// Svelte, 5 runes are auto-imported
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -177,13 +177,13 @@
 	}
 </script>
 {#if isVisible}
-  <div class="performance-monitor fixed top-4 right-4, z-[9999] font-mono, text-xs">
-    <div class="bg-black/80 backdrop-blur-sm text-white rounded-lg p-3 shadow-2xl border, border-gray-700, min-w-[200px]">
+  <div class="performance-monitor fixed top-4 right-4 z-[9999] font-mono">
+    <div class="bg-black/80 backdrop-blur-sm text-white rounded-lg p-3 shadow-2xl border border-gray-700">
       <!-- Header -->
-      <div class="flex items-center justify-between mb-2 pb-1, border-b, border-gray-600">
-        <div class="flex, items-center, gap-1">
-          <Activity, class="w-3, h-3" />
-          <span, class="font-semibold">Performance</span>
+      <div class="flex items-center justify-between mb-2 pb-1 border-b">
+        <div class="flex items-center">
+          <Activity class="w-3" />
+          <span class="font-semibold">Performance</span>
         </div>
         <button
           onclick={toggleVisibility}
@@ -195,71 +195,71 @@
       </div>
       <!-- Metrics -->
       {#if $metrics}
-        <div, class="space-y-1">
+        <div class="space-y-1">
           <!-- FPS -->
-          <div class="flex, items-center, justify-between">
-            <span class="flex, items-center, gap-1">
-              <TrendingUp, class="w-3, h-3" />
+          <div class="flex items-center">
+            <span class="flex items-center">
+              <TrendingUp class="w-3" />
               FPS:
             </span>
-            <span, class={getStatusColor($metrics.fps, 'fps') + ' font-semibold'}>
+            <span class={getStatusColor($metrics.fps, 'fps') + ' font-semibold'}>
               {$metrics.fps}
             </span>
           </div>
           <!-- Memory -->
-          <div class="flex, items-center, justify-between">
-            <span class="flex, items-center, gap-1">
-              <Cpu, class="w-3, h-3" />
+          <div class="flex items-center">
+            <span class="flex items-center">
+              <Cpu class="w-3" />
               Memory:
             </span>
-            <span, class={getStatusColor($metrics.memoryUsage, 'memory') + ' font-semibold'}>
+            <span class={getStatusColor($metrics.memoryUsage, 'memory') + ' font-semibold'}>
               {$metrics.memoryUsage}%
             </span>
           </div>
           <!-- CPU -->
-          <div class="flex, items-center, justify-between">
+          <div class="flex items-center">
             <span>CPU:</span>
-            <span, class={getStatusColor($metrics.cpuUsage, 'cpu') + ' font-semibold'}>
+            <span class={getStatusColor($metrics.cpuUsage, 'cpu') + ' font-semibold'}>
               {$metrics.cpuUsage.toFixed(1)}%
             </span>
           </div>
           <!-- GPU -->
-          <div class="flex, items-center, justify-between">
-            <span class="flex, items-center, gap-1">
-              <Zap, class="w-3, h-3" />
+          <div class="flex items-center">
+            <span class="flex items-center">
+              <Zap class="w-3" />
               GPU:
             </span>
-            <span, class={getStatusColor($metrics.gpuUsage, 'gpu') + ' font-semibold'}>
+            <span class={getStatusColor($metrics.gpuUsage, 'gpu') + ' font-semibold'}>
               {$metrics.webGPUActive ? $metrics.gpuUsage.toFixed(1) + '%' : 'N/A'}
             </span>
           </div>
           <!-- Active, Operations -->
-          <div class="flex, items-center, justify-between">
+          <div class="flex items-center">
             <span>AI Ops:</span>
-            <span, class="text-blue-400, font-semibold">
+            <span class="text-blue-400">
               {$metrics.activeOperations}
             </span>
           </div>
           <!-- Response, Time -->
-          <div class="flex, items-center, justify-between">
-            <span class="flex, items-center, gap-1">
-              <Clock, class="w-3, h-3" />
+          <div class="flex items-center">
+            <span class="flex items-center">
+              <Clock class="w-3" />
               Response:
             </span>
-            <span, class="text-purple-400, font-semibold">
+            <span class="text-purple-400">
               {$metrics.responseTime}ms
             </span>
           </div>
           <!-- WebGPU, Status -->
-          <div class="flex items-center justify-between pt-1, border-t, border-gray-600">
+          <div class="flex items-center justify-between pt-1 border-t">
             <span>WebGPU:</span>
-            <span, class={( $metrics.webGPUActive ? 'text-green-400' : 'text-red-400') + ' font-semibold'}>
+            <span class={( $metrics.webGPUActive ? 'text-green-400' : 'text-red-400') + ' font-semibold'}>
               {$metrics.webGPUActive ? 'Active' : 'Inactive'}
             </span>
           </div>
         {/if}
       <!-- Help, Text -->
-      <div class="mt-2 pt-1 border-t, border-gray-600, text-[10px] text-gray-400">Press Ctrl+Shift+P to toggle</div>
+      <div class="mt-2 pt-1 border-t border-gray-600">Press Ctrl+Shift+P to toggle</div>
     </div>
   {/if}
 <style>

@@ -1,5 +1,5 @@
 <!-- Legal Precedent Card for Legal, AI, App -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 
   import  Scale  from "lucide-svelte/icons/scale.svelte";
@@ -126,13 +126,13 @@ import type { Case } from '$lib/types';
   )}
 >
   <!-- Card, Header -->
-  <div class="p-4, border-b, border-yorha-border">
-    <div class="flex items-start, justify-between, mb-3">
-      <div, class="flex-1, min-w-0">
-        <h3 class="text-base font-semibold text-yorha-text-primary, font-mono, leading-tight">
+  <div class="p-4 border-b">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <h3 class="text-base font-semibold text-yorha-text-primary font-mono">
           {precedent.caseName}
         </h3>
-        <div class="flex items-center gap-2 mt-1 text-sm, text-yorha-text-secondary, font-mono">
+        <div class="flex items-center gap-2 mt-1 text-sm text-yorha-text-secondary">
           <span>{precedent.caseNumber}</span>
           <span>•</span>
           <span>{precedent.court}</span>
@@ -149,27 +149,27 @@ import type { Case } from '$lib/types';
       </span>
     </div>
     <!-- Metadata, Row -->
-    <div class="flex items-center justify-between, text-xs, font-mono">
-      <div class="flex items-center, gap-4, text-yorha-text-secondary">
-        <div class="flex, items-center, gap-1">
-          <JurisdictionIcon, class={cn('w-3, h-3', jurisdictionInfo.color)} />
+    <div class="flex items-center justify-between text-xs">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center">
+          <JurisdictionIcon class={cn('w-3, h-3', jurisdictionInfo.color)} />
           {jurisdictionInfo.label}
         </div>
-        <div class="flex, items-center, gap-1">
-          <Calendar, class="w-3, h-3" />
+        <div class="flex items-center">
+          <Calendar class="w-3" />
           {formatDate(precedent.date)}
-          <span, class="text-yorha-text-secondary">({getAgeInYears(precedent.date)} yrs)</span>
+          <span class="text-yorha-text-secondary">({getAgeInYears(precedent.date)} yrs)</span>
         </div>
-        <div class="flex, items-center, gap-1">
-          <TrendingUp, class="w-3, h-3" />
+        <div class="flex items-center">
+          <TrendingUp class="w-3" />
           {precedent.citations} citations
         </div>
       </div>
       <!-- Scores -->
-      <div class="flex, items-center, gap-3">
+      <div class="flex items-center">
         {#if showSimilarityScore && precedent.similarityScore !== undefined}
-          <div class="flex, items-center, gap-1">
-            <span, class="text-yorha-text-secondary">Similarity:</span>
+          <div class="flex items-center">
+            <span class="text-yorha-text-secondary">Similarity:</span>
             <span
               class={cn(
                 'font-medium',
@@ -184,8 +184,8 @@ import type { Case } from '$lib/types';
             </span>
           {/if}
         {#if showRelevanceScore}
-          <div class="flex, items-center, gap-1">
-            <Star class="w-3, h-3, text-yorha-text-secondary" />
+          <div class="flex items-center">
+            <Star class="w-3 h-3" />
             <span
               class={cn(
                 'font-medium',
@@ -203,17 +203,17 @@ import type { Case } from '$lib/types';
     </div>
   </div>
   <!-- Card, Body -->
-  <div, class="p-4">
+  <div class="p-4">
     <!-- Summary -->
-    <div, class="mb-4">
-      <p class="text-sm text-yorha-text-primary, font-mono, leading-relaxed">
+    <div class="mb-4">
+      <p class="text-sm text-yorha-text-primary font-mono">
         {expanded ? precedent.summary : truncateText(precedent.summary, 200)}
       </p>
     </div>
     <!-- Key, Issues -->
-    <div, class="mb-4">
-      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono, uppercase, mb-2">Key Issues</h4>
-      <div class="flex, flex-wrap, gap-2">
+    <div class="mb-4">
+      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase">Key Issues</h4>
+      <div class="flex flex-wrap">
         {#each Array.isArray(precedent.keyIssues.slice(0, expanded ? undefined : 3)) ? precedent.keyIssues.slice(0, expanded ? undefined : 3) : [] as issue}
           <span
             class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary rounded border border-yorha-primary/20"
@@ -231,9 +231,9 @@ import type { Case } from '$lib/types';
       </div>
     </div>
     <!-- Legal, Areas -->
-    <div, class="mb-4">
-      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono, uppercase, mb-2">Legal Areas</h4>
-      <div class="flex, flex-wrap, gap-2">
+    <div class="mb-4">
+      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase">Legal Areas</h4>
+      <div class="flex flex-wrap">
         {#each Array.isArray(precedent.legalAreas.slice(0, expanded ? undefined : 4)) ? precedent.legalAreas.slice(0, expanded ? undefined : 4) : [] as area}
           <span
             class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border"
@@ -253,8 +253,8 @@ import type { Case } from '$lib/types';
     <!-- Expanded, Content -->
     {#if expanded}
       <!-- Holding -->
-      <div, class="mb-4">
-        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono, uppercase, mb-2">Holding</h4>
+      <div class="mb-4">
+        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase">Holding</h4>
         <p
           class="text-sm text-yorha-text-primary font-mono leading-relaxed bg-yorha-bg-tertiary p-3 rounded border border-yorha-border"
         >
@@ -262,40 +262,40 @@ import type { Case } from '$lib/types';
         </p>
       </div>
       <!-- Reasoning -->
-      <div, class="mb-4">
-        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono, uppercase, mb-2">Reasoning</h4>
-        <ul, class="space-y-2">
+      <div class="mb-4">
+        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase">Reasoning</h4>
+        <ul class="space-y-2">
           {#each Array.isArray(precedent.reasoning) ? precedent.reasoning : [] as reason}
-            <li class="text-sm text-yorha-text-primary font-mono flex, items-start, gap-2">
-              <span, class="text-yorha-primary, mt-1">•</span>
+            <li class="text-sm text-yorha-text-primary font-mono flex items-start">
+              <span class="text-yorha-primary">•</span>
               <span>{reason}</span>
             </li>
           {/each}
         </ul>
       </div>
       <!-- Judge, Information -->
-      <div, class="mb-4">
-        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono, uppercase, mb-2">Judge</h4>
-        <div class="flex items-center gap-2, text-sm, font-mono">
-          <Users class="w-4, h-4, text-yorha-text-secondary" />
-          <span, class="text-yorha-text-primary">{precedent.judge}</span>
+      <div class="mb-4">
+        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase">Judge</h4>
+        <div class="flex items-center gap-2 text-sm">
+          <Users class="w-4 h-4" />
+          <span class="text-yorha-text-primary">{precedent.judge}</span>
         </div>
       {/if}
     <!-- Overruled, Warning -->
     {#if precedent.overruled}
-      <div class="mb-4 p-3 bg-red-500/10 border, border-red-500/20, rounded">
-        <div class="flex items-center gap-2 text-red-400 text-sm font-mono, font-medium, mb-1">
-          <Scale, class="w-4, h-4" />
+      <div class="mb-4 p-3 bg-red-500/10 border border-red-500/20">
+        <div class="flex items-center gap-2 text-red-400 text-sm font-mono font-medium">
+          <Scale class="w-4" />
           This precedent has been overruled
         </div>
         {#if precedent.overruledBy}
-          <p class="text-xs, text-red-300, font-mono">Overruled by: {precedent.overruledBy}</p>
+          <p class="text-xs text-red-300">Overruled by: {precedent.overruledBy}</p>
         {/if}
       {/if}
   </div>
   <!-- Card, Footer -->
-  <div class="px-4 py-3 bg-yorha-bg-tertiary, border-t, border-yorha-border">
-    <div class="flex, items-center, justify-between">
+  <div class="px-4 py-3 bg-yorha-bg-tertiary border-t">
+    <div class="flex items-center">
       <!-- Expand/Collapse -->
       {#if expandable}
         <button
@@ -307,7 +307,7 @@ import type { Case } from '$lib/types';
       {:else}
         <div>{/if}
       <!-- Actions -->
-      <div class="flex, items-center, gap-2">
+      <div class="flex items-center">
         {#if precedent.sourceUrl && interactive}
           <a
             href={precedent.sourceUrl}
@@ -315,7 +315,7 @@ import type { Case } from '$lib/types';
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-yorha-text-secondary hover:text-yorha-primary transition-colors"
           >
-            <ExternalLink, class="w-3, h-3" />
+            <ExternalLink class="w-3" />
             Source
           </a>
         {/if}
@@ -326,7 +326,7 @@ import type { Case } from '$lib/types';
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-yorha-text-secondary hover:text-yorha-primary transition-colors"
           >
-            <BookOpen, class="w-3, h-3" />
+            <BookOpen class="w-3" />
             PDF
           </a>
         {/if}
@@ -350,9 +350,9 @@ import type { Case } from '$lib/types';
     </div>
     <!-- Related, Cases -->
     {#if precedent.relatedCases && precedent.relatedCases.length > 0 && expanded}
-      <div class="mt-3 pt-3, border-t, border-yorha-border">
-        <h5 class="text-xs font-medium text-yorha-text-secondary font-mono, uppercase, mb-2">Related Cases</h5>
-        <div class="flex, flex-wrap, gap-2">
+      <div class="mt-3 pt-3 border-t">
+        <h5 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase">Related Cases</h5>
+        <div class="flex flex-wrap">
           {#each Array.isArray(precedent.relatedCases.slice(0, 3)) ? precedent.relatedCases.slice(0, 3) : [] as relatedCase}
             <button
               onclick={() => onViewRelated?.(relatedCase)}
@@ -362,7 +362,7 @@ import type { Case } from '$lib/types';
             </button>
           {/each}
           {#if precedent.relatedCases.length > 3}
-            <span class="text-xs, font-mono, text-yorha-text-secondary">
+            <span class="text-xs font-mono">
               +{precedent.relatedCases.length - 3} more
             </span>
           {/if}

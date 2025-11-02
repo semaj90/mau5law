@@ -14,17 +14,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   import { browser } from '$app/environment';
   import { fade, fly } from 'svelte/transition';
   import { writable, derived } from 'svelte/store';
-  import {
-    Send,
-    Brain,
-    FileText,
-    Search,
-    AlertTriangle,
-    CheckCircle,
-    Loader2,
-    Settings,
-    Zap,
-  } from 'lucide-svelte';
+  import { Send, Brain, FileText, Search, AlertTriangle, CheckCircle, Loader2, Settings, Zap } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
@@ -51,16 +41,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     enableAdvancedFeatures?: boolean;
     persistConversation?: boolean; // New: Save to database
   }
-  let {
-    caseId = '',
-    reportId = '',
-    userId = '',
-    userRole = 'prosecutor',
-    documentIds = [],
-    class = '',
-    enableAdvancedFeatures = true,
-    persistConversation = true,
-  }: Props = $props();
+  let { caseId = '', reportId = '', userId = '', userRole = 'prosecutor', documentIds = [], class = '', enableAdvancedFeatures = true, persistConversation = true }: Props = $props();
   // Enhanced message interface
   interface EnhancedMessage {
     id: string;
@@ -163,12 +144,7 @@ if (browser) {
       // removed unused response assignment
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         const status = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
-        systemStatus = {
-          legalBERT: status.checks?.ollama ? 'active' : 'inactive',
-          rag: status.checks?.database ? 'active' : 'inactive',
-          synthesis: status.checks?.server ? 'active' : 'inactive',
-          lastCheck: new Date().toISOString(),
-        }
+        systemStatus = { legalBERT: status.checks?.ollama ? 'active' : 'inactive', rag: status.checks?.database ? 'active' : 'inactive', synthesis: status.checks?.server ? 'active' : 'inactive', lastCheck: new Date().toISOString() }
       }
     } catch (error) {
       console.warn('System status check failed:', error);
@@ -314,12 +290,8 @@ if (browser) {
       const response = await fetch('/api/v1/chat/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query,
-          userId,
-          caseId: caseId || null;
-          limit: 5,
-        })
+        body: JSON.stringify({ query, userId, caseId: caseId || null;
+          limit: 5 })
       });
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         return await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
@@ -422,15 +394,10 @@ if (browser) {
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma3-legal',
-          prompt: enhancedPrompt;
+        body: JSON.stringify({ model: 'gemma3-legal', prompt: enhancedPrompt;
           stream: true, // Enable streaming;
           options: {
-            temperature: 0.4,
-            num_ctx: 4096,
-            top_p: 0.9,
-          }
+            temperature: 0.4, num_ctx: 4096, top_p: 0.9 }
         }),
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -498,14 +465,9 @@ if (browser) {
     }
   }
   // Enhanced message sending with full pipeline integration
-  async function sendMessage() {
-    if (!currentInput.trim() || isProcessing) return;
+  async function sendMessage() { if (!currentInput.trim() || isProcessing) return;
     const userMessage: EnhancedMessage = {
-      id: generateId(),
-      role: 'user',
-      content: currentInput.trim(),
-      timestamp: Date.now(),
-    }
+      id: generateId(), role: 'user', content: currentInput.trim(), timestamp: Date.now() }
     // Add user message
     messages.update((msgs) => [...msgs, userMessage]);
     // Save user message to database
@@ -521,33 +483,16 @@ if (browser) {
       isProcessing = $state(false);
       return;
     }
-    try {
-      // Enhanced AI processing pipeline with streaming support
+    try { // Enhanced AI processing pipeline with streaming support
       const processingResult = await processAIQueryWithStreaming(query, {
-        userRole,
-        caseId: caseId || undefined
+        userRole, caseId: caseId || undefined
         documentIds: documentIds.length > 0 ? documentIds : undefined
-        enableLegalBERT: settings.enableLegalBERT,
-        enableRAG: settings.enableRAG,
-        enableSynthesis: settings.enableInputSynthesis,
-        maxDocuments: settings.maxDocuments,
-      });
+        enableLegalBERT: settings.enableLegalBERT, enableRAG: settings.enableRAG, enableSynthesis: settings.enableInputSynthesis, maxDocuments: settings.maxDocuments });
       // Create enhanced assistant response
-      const assistantMessage: EnhancedMessage = {
-        id: generateId(),
-        role: 'assistant',
-        content: settings.enableTypewriterEffect ? '' : (
+      const assistantMessage: EnhancedMessage = { id: generateId(), role: 'assistant', content: settings.enableTypewriterEffect ? '' : (
           processingResult.response ||
           'I apologize, but I encountered an issue processing your request.'
-        ),
-        timestamp: Date.now(),
-        synthesizedInput: processingResult.synthesizedInput,
-        legalAnalysis: processingResult.legalAnalysis,
-        ragResults: processingResult.ragResults,
-        confidence: processingResult.confidence || 0.5,
-        processingTime: processingResult.processingTime || 0,
-        metadata: processingResult.metadata,
-      }
+        ), timestamp: Date.now(), synthesizedInput: processingResult.synthesizedInput, legalAnalysis: processingResult.legalAnalysis, ragResults: processingResult.ragResults, confidence: processingResult.confidence || 0.5, processingTime: processingResult.processingTime || 0, metadata: processingResult.metadata }
       messages.update((msgs) => [...msgs, assistantMessage]);
       // Start typewriter streaming effect for AI response
       if (settings.enableTypewriterEffect && processingResult.response) {
@@ -570,10 +515,7 @@ if (browser) {
         }
       }
       // Update current analysis for detailed view
-      currentAnalysis = {
-        query,
-        ...processingResult,
-      }
+      currentAnalysis = { query, ...processingResult }
     } catch (error) {
       console.error('Enhanced AI processing failed:', error);
       const errorMessage: EnhancedMessage = {
@@ -604,20 +546,11 @@ if (browser) {
   3. Potential implications
   4. Recommended actions
   Response:`;
-    const response = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({,
-        model: 'gemma3-legal',
-        prompt: enhancedPrompt;
-        stream: false,
-        options: {
-          temperature: 0.4,
-          num_ctx: 4096,
-          top_p: 0.9,
-        }
+    const response = await fetch('http://localhost:11434/api/generate', { method: 'POST', headers: {
+        'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'gemma3-legal', prompt: enhancedPrompt;
+        stream: false, options: {
+          temperature: 0.4, num_ctx: 4096, top_p: 0.9 }
       }),
     });
     if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -713,10 +646,7 @@ if (browser) {
   Text to analyze: "${text}"
   Provide a structured analysis:`,
           stream: false,
-          options: {
-            temperature: 0.2,
-            num_ctx: 4096,
-          }
+          options: { temperature: 0.2, num_ctx: 4096 }
         })
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -762,10 +692,7 @@ if (browser) {
   5. Recommendations
   Topic: ${topic}`,
           stream: false,
-          options: {
-            temperature: 0.3,
-            num_ctx: 2048,
-          }
+          options: { temperature: 0.3, num_ctx: 2048 }
         })
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -827,13 +754,8 @@ if (browser) {
     }
   }
   // Add system message
-  async function addSystemMessage(content: string) {
-    const systemMessage: EnhancedMessage = {
-      id: generateId(),
-      role: 'system',
-      content,
-      timestamp: Date.now(),
-    }
+  async function addSystemMessage(content: string) { const systemMessage: EnhancedMessage = {
+      id: generateId(), role: 'system', content, timestamp: Date.now() }
     messages.update((msgs) => [...msgs, systemMessage]);
     await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
     scrollToBottom();
@@ -946,16 +868,8 @@ if (browser) {
       const response = await fetch('/api/ollama/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma3-legal',
-          prompt,
-          stream: true,
-          options: {
-            temperature: 0.3,
-            num_ctx: 4096,
-            top_p: 0.9,
-            top_k: 40,
-          }
+        body: JSON.stringify({ model: 'gemma3-legal', prompt, stream: true, options: {
+            temperature: 0.3, num_ctx: 4096, top_p: 0.9, top_k: 40 }
         })
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {

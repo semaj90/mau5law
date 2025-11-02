@@ -125,11 +125,9 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
     overflow-x: auto;
     margin: 1rem 0;
   }
-  .examples-content pre code {
-    background: none;
+  .examples-content pre code { background: none;
     color: inherit;
-    padding: 0,
-  }
+    padding: 0 }
   .live-example {
     background: #f0f9ff;
     border: 1px solid #0ea5e9;
@@ -141,10 +139,8 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
     margin: 0 0 0.5rem 0;
     color: #0c4a6;
   }
-  nav ul {
-    list-style: none;
-    padding: 0,
-  }
+  nav ul { list-style: none;
+    padding: 0 }
   nav li {
     margin: 0.5rem 0;
   }

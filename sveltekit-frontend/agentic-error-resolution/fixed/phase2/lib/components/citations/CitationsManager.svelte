@@ -576,7 +576,7 @@ deleteCitation(citation.id)}
 <!-- Add Citation Modal -->
 {#if showAddForm}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" role="button" tabindex="0"
-                onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(), }}>
+                onclick={ (e) => { if (e.target === e.currentTarget) hideAddCitationForm() }}>
 		<div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto nes-container">
 			<div class="yorha-panel-header">
 				<h3 class="nes-text is-primary">Add New Citation</h3>

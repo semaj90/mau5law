@@ -1,6 +1,6 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
     text?: string;
@@ -85,11 +85,11 @@
   {/if}
 </button>
 {#if errorMessage}
-  <div, class="space-y-2, error-message" role="status" aria-live="polite">
+  <div class="space-y-2" role="status" aria-live="polite">
     <strong>Error:</strong> {errorMessage}
   {/if}
 {#if summary}
-  <div, class="space-y-4">
-    <div, class="space-y-2"><strong>AI Summary</strong></div>
+  <div class="space-y-4">
+    <div class="space-y-2"><strong>AI Summary</strong></div>
     <div>{summary}</div>
   {/if}

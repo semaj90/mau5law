@@ -19,12 +19,7 @@
   let availableEvidence = $state([]);
   let availablePois = $state([]);
   // New item form
-  let newItem = $state({
-    type: 'note',
-    content: '',
-    evidenceId: null,
-    poiId: null,
-  });
+  let newItem = $state({ type: 'note', content: '', evidenceId: null, poiId: null });
   // Load board data
   async function loadBoard() {
     if (!caseId) return;
@@ -43,11 +38,7 @@
         const response = await fetch('/api/evidence-boards', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            caseId,
-            name: 'Evidence Board',
-            description: 'Evidence board for case',
-          }),
+          body: JSON.stringify({ caseId, name: 'Evidence Board', description: 'Evidence board for case' }),
         });
         const result = await response.json();
         if (result.success) {
@@ -113,9 +104,7 @@
   async function deleteItem(item) {
     if (!confirm('Are you sure you want to delete this item?')) return;
     try {
-      const response = await fetch(`/api/evidence-boards/${boardId}/items/${item.id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/evidence-boards/${boardId}/items/${item.id}`, { method: 'DELETE' });
       if (response.ok) {
         items = items.filter(i => i.id !== item.id);
         toast.success('Item deleted successfully');
@@ -128,13 +117,8 @@
     }
   }
   // Reset new item form
-  function resetNewItem() {
-    newItem = {
-      type: 'note',
-      content: '',
-      evidenceId: null,
-      poiId: null,
-    };
+  function resetNewItem() { newItem = {
+      type: 'note', content: '', evidenceId: null, poiId: null };
   }
   // Get item display text
   function getItemText(item) {
@@ -147,14 +131,8 @@
     }
   }
   // Get item color
-  function getItemColor(type) {
-    const colors = {
-      evidence: 'bg-blue-50 border-blue-200',
-      poi: 'bg-yellow-50 border-yellow-200',
-      note: 'bg-gray-50 border-gray-200',
-      connection: 'bg-purple-50 border-purple-200',
-      image: 'bg-pink-50 border-pink-200',
-    };
+  function getItemColor(type) { const colors = {
+      evidence: 'bg-blue-50 border-blue-200', poi: 'bg-yellow-50 border-yellow-200', note: 'bg-gray-50 border-gray-200', connection: 'bg-purple-50 border-purple-200', image: 'bg-pink-50 border-pink-200' };
     return colors[type] || 'bg-gray-50 border-gray-200';
   }
   // Initialize on mount

@@ -4,22 +4,9 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import {
-    errorHandler,
-    type UserFriendlyError,
-  } from "$lib/stores/error-handler";
+  import { errorHandler, type UserFriendlyError } from "$lib/stores/error-handler";
   import { notifications  } from '$lib/stores/unified";
-  import {
-    AlertCircle,
-    AlertTriangle,
-    Bug,
-    ChevronDown,
-    ChevronUp,
-    Copy,
-    Info,
-    RefreshCw,
-    X,
-  } from "lucide-svelte";
+  import { AlertCircle, AlertTriangle, Bug, ChevronDown, ChevronUp, Copy, Info, RefreshCw, X } from "lucide-svelte";
   import { onMount } from "svelte";
   let { showInline = false, // Show as inline alert vs modal
     autoHide = true, // Auto-hide non-critical errors
@@ -51,8 +38,7 @@ https://svelte.dev/e/attribute_duplicate -->
     showDetails = $state(false);
     retryInProgress = $state(false);
   }
-  async function retryAction() {
-    if (!currentError?.canRetry) return;
+  async function retryAction() { if (!currentError?.canRetry) return;
     retryInProgress = true;
     try {
       // The retry function should be attached to the error
@@ -60,10 +46,7 @@ https://svelte.dev/e/attribute_duplicate -->
       await new Promise((resolve) => setTimeout(resolve, 1000));
       clearError();
       notifications.add({
-        type: "success",
-        title: "Retry Successful",
-        message: "The operation completed successfully.",
-      });
+        type: "success", title: "Retry Successful", message: "The operation completed successfully." });
     } catch (error) {
       // If retry fails, show a new error
       errorHandler.handle(error, { context: "retry_failed" });
@@ -79,15 +62,10 @@ https://svelte.dev/e/attribute_duplicate -->
   Severity: ${currentError.severity}
   Timestamp: ${new Date().toISOString()}`;
     navigator.clipboard
-      .writeText.then(() => {
-        notifications.add({
-          type: "success",
-          title: "Copied",
-          message: "Error details copied to clipboard.",
-        });
+      .writeText.then(() => { notifications.add({
+          type: "success", title: "Copied", message: "Error details copied to clipboard." });
       })
-      .catch(() => {
-        // Fallback for older browsers
+      .catch(() => { // Fallback for older browsers
         const textarea = document.createElement("textarea");
         textarea.value = errorText;
         document.body.appendChild(textarea);
@@ -95,10 +73,7 @@ https://svelte.dev/e/attribute_duplicate -->
         document.execCommand("copy");
         document.body.removeChild(textarea);
         notifications.add({
-          type: "success",
-          title: "Copied",
-          message: "Error details copied to clipboard.",
-        });
+          type: "success", title: "Copied", message: "Error details copied to clipboard." });
       });
   }
   function getIcon(severity: string) {
@@ -136,15 +111,11 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   // Report error to support (placeholder)
-  function reportError() {
-    if (!currentError) return;
+  function reportError() { if (!currentError) return;
     // This would integrate with your error reporting service
     console.log("Reporting error:", currentError);
     notifications.add({
-      type: "success",
-      title: "Error Reported",
-      message: "Thank you for reporting this issue. Our team will investigate.",
-    });
+      type: "success", title: "Error Reported", message: "Thank you for reporting this issue. Our team will investigate." });
   }
 </script>
 {#if currentError}

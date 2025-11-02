@@ -15,63 +15,16 @@
   const CardComponent: any = CardOriginal;
 
   // Analysis data
-  let analysisData = $state({
-    caseMetrics: {
-      total: 12,
-      active: 8,
-      pending: 3,
-      closed: 1,
-      success_rate: 87,
-    },
-    evidenceAnalysis: {
-      total_pieces: 247,
-      processed: 203,
-      ai_analyzed: 189,
-      flagged: 24,
-      processing_queue: 15,
-    },
-    threatAssessment: {
-      critical: 2,
-      high: 5,
-      medium: 8,
-      low: 12,
-      cleared: 3,
-    },
-    aiPerformance: {
-      accuracy: 94.2,
-      processing_speed: 1.3,
-      confidence: 91.8,
-      last_update: '2024-01-22 14:35:00',
-    },
+  let analysisData = $state({ caseMetrics: {
+      total: 12, active: 8, pending: 3, closed: 1, success_rate: 87 },
+    evidenceAnalysis: { total_pieces: 247, processed: 203, ai_analyzed: 189, flagged: 24, processing_queue: 15 },
+    threatAssessment: { critical: 2, high: 5, medium: 8, low: 12, cleared: 3 },
+    aiPerformance: { accuracy: 94.2, processing_speed: 1.3, confidence: 91.8, last_update: '2024-01-22 14:35:00' },
   });
   let recentAnalyses = $state([
-    {
-      id: 'ANA-001',
-      case_id: 'CASE-2024-087',
-      type: 'Pattern Recognition',
-      status: 'completed',
-      confidence: 94.7,
-      findings: 'Corporate network intrusion patterns identified',
-      timestamp: '2 hours ago',
-    },
-    {
-      id: 'ANA-002',
-      case_id: 'CASE-2024-088',
-      type: 'Behavioral Analysis',
-      status: 'processing',
-      confidence: null,
-      findings: 'Analyzing communication patterns...',
-      timestamp: '15 minutes ago',
-    },
-    {
-      id: 'ANA-003',
-      case_id: 'CASE-2024-089',
-      type: 'Financial Correlation',
-      status: 'completed',
-      confidence: 88.3,
-      findings: 'Suspicious transaction clusters detected',
-      timestamp: '4 hours ago',
-    },
+    { id: 'ANA-001', case_id: 'CASE-2024-087', type: 'Pattern Recognition', status: 'completed', confidence: 94.7, findings: 'Corporate network intrusion patterns identified', timestamp: '2 hours ago' },
+    { id: 'ANA-002', case_id: 'CASE-2024-088', type: 'Behavioral Analysis', status: 'processing', confidence: null, findings: 'Analyzing communication patterns...', timestamp: '15 minutes ago' },
+    { id: 'ANA-003', case_id: 'CASE-2024-089', type: 'Financial Correlation', status: 'completed', confidence: 88.3, findings: 'Suspicious transaction clusters detected', timestamp: '4 hours ago' },
   ]);
 </script>
 

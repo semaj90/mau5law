@@ -1,5 +1,5 @@
 <!-- LazyLoader.svelte - Universal lazy loading, wrapper, component -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import {
@@ -10,9 +10,9 @@
     // removed: type imports from a .js module to avoid svelte-preprocess / TS issues
   } from '$lib/utils/intersection-observer.js';
   // Lightweight local types to avoid importing types from .js
-  type LazyLoadOptions = Record<string, any>;
+  type LazyLoadOptions = Record<string any>;
   type LazyLoadPreset = string;
-  type LazyComponentState = Record<string, any>;
+  type LazyComponentState = Record<string any>;
   // Props (Svelte 5)
   let { preset = 'NORMAL', customOptions = {}, showPlaceholder = true, placeholderHeight = '200px', placeholderClass = '', loadingText = 'Loading...', errorText = 'Failed to load content', unloadWhenHidden = false, enableProfiling = false, onLoad = undefined, onError = undefined, className = '', style = '', ariaLabel = 'Lazy loaded content', lazyState = undefined } = $props<{
     preset?: LazyLoadPreset;
@@ -97,9 +97,9 @@
 >
   {#if loadError}
     <!-- Error, state -->
-    <div, class="lazy-loader-error" role="alert">
-      <div, class="error-icon">⚠️</div>
-      <p, class="error-message">{errorText}</p>
+    <div class="lazy-loader-error" role="alert">
+      <div class="error-icon">⚠️</div>
+      <p class="error-message">{errorText}</p>
       <button
         class="retry-button"
         onclick={() => {
@@ -117,18 +117,18 @@
       style={"min-height: " + placeholderHeight}
       aria-label="Loading content"
     >
-      <div, class="placeholder-content">
-        <div, class="loading-spinner" aria-hidden="true"></div>
-        <p, class="loading-text">{loadingText}</p>
+      <div class="placeholder-content">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p class="loading-text">{loadingText}</p>
         {#if enableProfiling && intersectionRatio > 0}
-          <div, class="debug-info">
+          <div class="debug-info">
             Intersection {Math.round(intersectionRatio * 100)}%
           {/if}
       </div>
     </div>
   {:else if hasBeenVisible && !loadError}
     <!-- Actual content - only render, when, visible/seen -->
-    <div, class="lazy-loader-content" data-lazy-loaded="true">
+    <div class="lazy-loader-content" data-lazy-loaded="true">
       <!-- expose useful props to parent via, slot, let:... -->
       <slot {isVisible} {hasBeenVisible} {intersectionRatio}></slot>
     {/if}

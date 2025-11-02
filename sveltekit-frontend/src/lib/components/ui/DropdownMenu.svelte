@@ -1,5 +1,5 @@
 <!-- DropdownMenu component combining, dropdown-menu, parts -->
-<script, lang="ts">
+<script lang="ts">
   import  DropdownMenuRoot  from "./dropdown-menu/DropdownMenuRoot.svelte";
   import  DropdownMenuTrigger  from "./dropdown-menu/DropdownMenuTrigger.svelte";
   import  DropdownMenuContent  from "./dropdown-menu/DropdownMenuContent.svelte";

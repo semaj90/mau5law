@@ -46,7 +46,7 @@ https://svelte.dev/e/attribute_duplicate -->
   const Trash2 = (Icons as any).Trash2 ?? (() => null);
 
   // Relaxed Evidence typing so template can safely access properties that might not be present
-  type EvidenceAny = Evidence & Record<string, any>;
+  type EvidenceAny = Evidence & Record<string any>;
 
   interface Props {
     caseId?: string;

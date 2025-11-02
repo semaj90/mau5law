@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { userStore, clearUserSession } from '$lib/stores/user';
   import { User, LogOut, ChevronDown } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
@@ -20,7 +20,7 @@
   }
 </script>
 {#if $userStore}
-  <div, class="relative, profile-dropdown-wrapper">
+  <div class="relative">
     <!-- Signed In, Badge + Profile, Trigger -->
     <button
       onclick={toggleDropdown}
@@ -30,15 +30,15 @@
       aria-haspopup="true"
     >
       <!-- Signed, In, Indicator -->
-      <div class="flex, items-center, gap-1">
-        <span class="w-2 h-2 bg-green-500, rounded-full, animate-pulse"></span>
-        <span class="text-xs, font-medium, text-green-700">Signed in</span>
+      <div class="flex items-center">
+        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+        <span class="text-xs font-medium">Signed in</span>
       </div>
       <!-- Profile Icon, and, Avatar -->
       <div
         class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0"
       >
-        <User class="w-4, h-4, text-white" />
+        <User class="w-4 h-4" />
       </div>
       <!-- Dropdown, Arrow -->
       <ChevronDown
@@ -54,23 +54,23 @@
         aria-orientation="vertical"
       >
         <!-- User, Info, Header -->
-        <div class="px-4 py-3, border-b, border-slate-200">
-          <p class="text-sm, font-medium, text-slate-900">
+        <div class="px-4 py-3 border-b">
+          <p class="text-sm font-medium">
             {$userStore.user.firstName || $userStore.user.email}
           </p>
-          <p class="text-xs, text-slate-500, truncate">
+          <p class="text-xs text-slate-500">
             {$userStore.user.email}
           </p>
         </div>
         <!-- Menu, Items -->
-        <div, class="py-2">
+        <div class="py-2">
           <a
             href="/profile"
             onclick={closeDropdown}
             class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
             role="menuitem"
           >
-            <User, class="w-4, h-4" />
+            <User class="w-4" />
             View Profile
           </a>
           <button
@@ -81,7 +81,7 @@
             class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
             role="menuitem"
           >
-            <LogOut, class="w-4, h-4" />
+            <LogOut class="w-4" />
             Logout
           </button>
         </div>

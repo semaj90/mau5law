@@ -4,14 +4,7 @@
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import LegalDocumentEditor from "$lib/components/editor/LegalDocumentEditor.svelte";
   import WysiwygEditor from "$lib/components/editor/WysiwygEditor.svelte";
-  import {
-    BookOpen,
-    Brain,
-    FileText,
-    MessageCircle,
-    Scale,
-    Settings,
-  } from "lucide-svelte";
+  import { BookOpen, Brain, FileText, MessageCircle, Scale, Settings } from "lucide-svelte";
   import { onMount } from "svelte";
 
   // Simple tab state (replacing melt-ui tabs)

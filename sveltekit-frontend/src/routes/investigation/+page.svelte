@@ -2,7 +2,7 @@
   Integrated Legal Investigation Workspace
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -235,48 +235,48 @@ import type { Document } from '$lib/types';
   <meta name="description" content="Integrated workspace for legal investigation with AI-powered, evidence, analysis" />
 </svelte:head>
 
-<div class="investigation-workspace flex flex-col h-screen, bg-gradient-to-br, from-[#0a0a0a] to-[#1a1a1a] text-[#00ff88] font-mono">
+<div class="investigation-workspace flex flex-col h-screen bg-gradient-to-br">
   <!-- Header -->
-  <div class="workspace-header border-b-2 border-[#00ff88] bg-[#00ff88]/10 px-4 py-2, sm:px-8, sm:py-4">
-    <div class="header-content flex justify-between items-center flex-col, sm:flex-row, gap-4, sm:gap-0">
-      <div, class="case-info">
-        <h1 class="text-2xl font-bold, mb-2, text-shadow-green">🔍 Legal Investigation Workspace</h1>
+  <div class="workspace-header border-b-2 border-[#00ff88] bg-[#00ff88]/10 px-4 py-2 sm:px-8">
+    <div class="header-content flex justify-between items-center flex-col sm:flex-row gap-4">
+      <div class="case-info">
+        <h1 class="text-2xl font-bold mb-2">🔍 Legal Investigation Workspace</h1>
         {#if currentCase}
-          <div class="case-details flex, items-center, gap-2">
-            <Badge, class={`${getPriorityColor(currentCase.priority)} text-white, mr-2`}>
+          <div class="case-details flex items-center">
+            <Badge class={`${getPriorityColor(currentCase.priority)} text-white, mr-2`}>
               {currentCase.priority.toUpperCase()}
             </Badge>
-            <span class="case-title, font-semibold, text-[#FFD700]">{currentCase.title}</span>
-            <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-300">{currentCase.status}</span>
+            <span class="case-title font-semibold">{currentCase.title}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{currentCase.status}</span>
           </div>
         {/if}
       </div>
-      <div class="workspace-actions flex, items-center, gap-4">
+      <div class="workspace-actions flex items-center">
         <Button onclick={saveInvestigation} variant="ghost" size="sm" disabled={!currentCase || isSaving}>
           {#if isSaving}
-            <Cpu class="w-4 h-4, mr-2, animate-spin" />
+            <Cpu class="w-4 h-4 mr-2" />
             Saving...
           {:else}
-            <Save class="w-4, h-4, mr-2" />
+            <Save class="w-4 h-4" />
             Save Progress
           {/if}
         </Button>
         <!-- System, Status, Indicators -->
-        <div class="status-indicators, flex, gap-2">
-          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300, ease-in-out" class:active={systemStatus.evidenceCanvas} title="Evidence, Canvas">
-            <Camera, class="w-4, h-4" />
+        <div class="status-indicators flex">
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300" class:active={systemStatus.evidenceCanvas} title="Evidence, Canvas">
+            <Camera class="w-4" />
           </div>
-          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300, ease-in-out" class:active={systemStatus.detectiveAnalysis} title="Detective, Analysis">
-            <Shield, class="w-4, h-4" />
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300" class:active={systemStatus.detectiveAnalysis} title="Detective, Analysis">
+            <Shield class="w-4" />
           </div>
-          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300, ease-in-out" class:active={systemStatus.aiAssistant} title="AI, Assistant">
-            <Brain, class="w-4, h-4" />
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300" class:active={systemStatus.aiAssistant} title="AI, Assistant">
+            <Brain class="w-4" />
           </div>
-          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300, ease-in-out" class:active={systemStatus.webgpuAcceleration} title="WebGPU, Acceleration">
-            <Zap, class="w-4, h-4" />
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300" class:active={systemStatus.webgpuAcceleration} title="WebGPU, Acceleration">
+            <Zap class="w-4" />
           </div>
-          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300, ease-in-out" class:active={systemStatus.ollamaConnection} title="Ollama, Connection">
-            <Cpu, class="w-4, h-4" />
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300" class:active={systemStatus.ollamaConnection} title="Ollama, Connection">
+            <Cpu class="w-4" />
           </div>
         </div>
       </div>
@@ -284,31 +284,31 @@ import type { Document } from '$lib/types';
   </div>
 
   <!-- Main, Content -->
-  <div class="workspace-content, flex-1, overflow-hidden">
-    <Tabs, bind:value={activeTab} class="w-full, h-full">
-      <TabsList, class="workspace-tabs">
-        <TabsTrigger, value="evidence" class="tab-trigger">
-          <FileText class="w-4, h-4, mr-2" />
+  <div class="workspace-content flex-1">
+    <Tabs bind:value={activeTab} class="w-full">
+      <TabsList class="workspace-tabs">
+        <TabsTrigger value="evidence" class="tab-trigger">
+          <FileText class="w-4 h-4" />
           Evidence Analysis
         </TabsTrigger>
-        <TabsTrigger, value="investigation" class="tab-trigger">
-          <Search class="w-4, h-4, mr-2" />
+        <TabsTrigger value="investigation" class="tab-trigger">
+          <Search class="w-4 h-4" />
           Investigation Notes
         </TabsTrigger>
-        <TabsTrigger, value="chat" class="tab-trigger">
-          <MessageSquare class="w-4, h-4, mr-2" />
+        <TabsTrigger value="chat" class="tab-trigger">
+          <MessageSquare class="w-4 h-4" />
           AI Assistant
         </TabsTrigger>
-        <TabsTrigger, value="citations" class="tab-trigger">
-          <Database class="w-4, h-4, mr-2" />
+        <TabsTrigger value="citations" class="tab-trigger">
+          <Database class="w-4 h-4" />
           Citations & References
         </TabsTrigger>
       </TabsList>
 
       <!-- Evidence, Analysis, Tab -->
-      <TabsContent, value="evidence" class="tab-content">
-        <div class="evidence-layout grid grid-cols-1 lg:grid-cols-3 gap-4, h-full, p-4">
-          <div class="evidence-canvas-section, lg:col-span-2, min-h-0">
+      <TabsContent value="evidence" class="tab-content">
+        <div class="evidence-layout grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
+          <div class="evidence-canvas-section lg:col-span-2">
             <Card.Root, class="h-full">
               <CardHeader>
                 <CardTitle>Enhanced Evidence Canvas</CardTitle>
@@ -316,7 +316,7 @@ import type { Document } from '$lib/types';
                   Upload and analyze evidence with AI-powered detection and CUDA acceleration
                 </CardDescription>
               </CardHeader>
-              <CardContent, class="h-full, p-0">
+              <CardContent class="h-full">
                 <UnifiedCanvasIntegration
                   caseId={currentCase?.id || 'demo-case'}
                   enableYoRHaBoard={true}
@@ -330,26 +330,26 @@ import type { Document } from '$lib/types';
               </CardContent>
             </Card>
            </div>
-           <div class="evidence-sidebar lg:col-span-1, max-h-[300px] lg:max-h-full, overflow-y-auto">
+           <div class="evidence-sidebar lg:col-span-1 max-h-[300px] lg:max-h-full">
             <Card>
               <CardHeader>
                 <CardTitle>Evidence Items</CardTitle>
                 <CardDescription>{evidence.length} items</CardDescription>
               </CardHeader>
               <CardContent>
-                 <div, class="evidence-list">
+                 <div class="evidence-list">
                    {#each evidence as item}
-                     <div class="evidence-item p-3 border border-[#00ff88]/30 rounded-md, mb-2, bg-black/30">
-                       <div class="evidence-header flex justify-between, items-center, mb-2">
-                         <span, class="evidence-title, font-medium">{item.title}</span>
-                         <Badge, class={`${getStatusColor(item.status)} text-white, text-xs`}>
+                     <div class="evidence-item p-3 border border-[#00ff88]/30 rounded-md mb-2">
+                       <div class="evidence-header flex justify-between items-center">
+                         <span class="evidence-title">{item.title}</span>
+                         <Badge class={`${getStatusColor(item.status)} text-white, text-xs`}>
                           {item.status}
                         </Badge>
                        </div>
                        {#if item.confidence}
-                        <div, class="confidence-meter, mt-2">
-                          <span class="confidence-label, text-xs, text-gray-400">Confidence: {Math.round((item.confidence ?? 0) * 100)}%</span>
-                          <div class="confidence-bar h-2 bg-gray-700, rounded-full, mt-1">
+                        <div class="confidence-meter">
+                          <span class="confidence-label text-xs">Confidence: {Math.round((item.confidence ?? 0) * 100)}%</span>
+                          <div class="confidence-bar h-2 bg-gray-700 rounded-full">
                             <div
                               class="confidence-fill h-full rounded-full"
                               style="width: {((item.confidence ?? 0) * 100)}%; background: linear-gradient(to right, #ff4444, #ffaa00, #00ff88);"
@@ -358,21 +358,21 @@ import type { Document } from '$lib/types';
                         </div>
                       {/if}
                       {#if item.aiAnalysis}
-                        <p class="evidence-analysis text-sm text-gray-400, mt-2, leading-tight">{item.aiAnalysis}</p>
+                        <p class="evidence-analysis text-sm text-gray-400 mt-2">{item.aiAnalysis}</p>
                       {/if}
                       {#if item.tags.length > 0}
-                        <div class="evidence-tags flex flex-wrap, gap-1, mt-2">
+                        <div class="evidence-tags flex flex-wrap gap-1">
                           {#each Array.isArray(item.tags) ? item.tags : [] as tag}
-                            <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-300">{tag}</span>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{tag}</span>
                           {/each}
                         </div>
                       {/if}
                     </div>
                    {/each}
                    {#if evidence.length === 0}
-                     <div class="empty-state flex flex-col items-center justify-center h-48, text-center, opacity-60">
-                       <Upload class="w-8 h-8, text-gray-400, mb-2" />
-                       <p, class="text-gray-500">Upload evidence to begin analysis</p>
+                     <div class="empty-state flex flex-col items-center justify-center h-48 text-center">
+                       <Upload class="w-8 h-8 text-gray-400" />
+                       <p class="text-gray-500">Upload evidence to begin analysis</p>
                      </div>
                    {/if}
                  </div>
@@ -383,7 +383,7 @@ import type { Document } from '$lib/types';
        </TabsContent>
 
        <!-- Investigation, Notes, Tab -->
-       <TabsContent, value="investigation" class="tab-content, p-4">
+       <TabsContent value="investigation" class="tab-content">
         <Card.Root, class="h-full">
           <CardHeader>
             <CardTitle>Investigation Notes</CardTitle>
@@ -391,7 +391,7 @@ import type { Document } from '$lib/types';
               Document findings, observations, and analysis using the rich text editor
             </CardDescription>
           </CardHeader>
-          <CardContent, class="h-full">
+          <CardContent class="h-full">
              <NierRichTextEditor
                bind:content={investigationNotes}
                placeholder="Document your investigation findings, observations, and analysis..."
@@ -401,7 +401,7 @@ import type { Document } from '$lib/types';
        </TabsContent>
 
        <!-- AI, Assistant, Tab -->
-       <TabsContent, value="chat" class="tab-content, p-4">
+       <TabsContent value="chat" class="tab-content">
         <Card.Root, class="h-full">
           <CardHeader>
             <CardTitle>Unified AI Legal Assistant</CardTitle>
@@ -409,7 +409,7 @@ import type { Document } from '$lib/types';
               Advanced AI assistant with Ollama, vLLM, WebGPU acceleration, and Go microservices integration
             </CardDescription>
           </CardHeader>
-          <CardContent, class="h-full, p-0">
+          <CardContent class="h-full">
              <EnhancedAIAssistant
                caseId={currentCase?.id || 'demo-case'}
                legalContext="legal-investigation"
@@ -424,7 +424,7 @@ import type { Document } from '$lib/types';
        </TabsContent>
 
        <!-- Citations, Tab -->
-       <TabsContent, value="citations" class="tab-content, p-4">
+       <TabsContent value="citations" class="tab-content">
         <Card.Root, class="h-full">
           <CardHeader>
             <CardTitle>Legal Citations & References</CardTitle>
@@ -432,7 +432,7 @@ import type { Document } from '$lib/types';
               Advanced citation management with AI-powered legal research integration
             </CardDescription>
           </CardHeader>
-          <CardContent, class="h-full, p-0">
+          <CardContent class="h-full">
             <CitationsManager
               caseId={currentCase?.id || 'demo-case'}
               readonly={false}

@@ -57,7 +57,7 @@
 
   // Local state
   let files: File[] = [];
-  let uploadStates: Map<string, any> = new Map();
+  let uploadStates: Map<string any> = new Map();
   let isDragOver = $state(false);
   let fileInput: HTMLInputElement | undefined;
   let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
@@ -184,8 +184,7 @@
       progress: 0,
       fileName: file.name,
       fileSize: file.size,
-      fileType: file.type,
-      stages: {
+      fileType: file.type stages: {
         validation: 'pending',
         storage: 'pending',
         ocr: enableOCR ? 'pending' : 'skipped',
@@ -341,7 +340,7 @@
           body: formData,
           headers: {
             'X-Upload-Protocol': protocol.toUpperCase()
-          } as Record<string, string>
+          } as Record<string string>
         });
         if (response.ok) return await response.json();
       } catch (err) {
@@ -355,8 +354,7 @@
       id: crypto.randomUUID(),
       fileName: file.name,
       fileSize: file.size,
-      fileType: file.type,
-      minioPath: storageResult.path,
+      fileType: file.type minioPath: storageResult.path,
       uploadId: fileId,
       caseId,
       metadata: {
@@ -440,7 +438,7 @@
     const response = await fetch('/api/v1/ai/auto-tags', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content, fileName: file.name, fileType: file.type, fileId })
+      body: JSON.stringify({ content, fileName: file.name, fileType: file.type fileId })
     });
     if (!response.ok) throw new Error('Auto-tagging failed');
     const result = await response.json();

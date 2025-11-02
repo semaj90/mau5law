@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   /**
    * A simple progress bar component.
    * @param value - The current progress value.

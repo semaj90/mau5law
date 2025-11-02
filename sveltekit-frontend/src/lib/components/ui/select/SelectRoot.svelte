@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { Select } from 'bits-ui';
   interface Props {
     value?: string;

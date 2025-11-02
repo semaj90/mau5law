@@ -6,12 +6,7 @@
   import  CheckCircle  from "lucide-svelte/icons/check-circle.svelte";
   // Test data
   let testMessages = $state([
-    {
-      role: 'user',
-      content: 'Can you analyze this contract for potential risks?',
-      timestamp: new Date().toLocaleTimeString(),
-      references: [],
-    },
+    { role: 'user', content: 'Can you analyze this contract for potential risks?', timestamp: new Date().toLocaleTimeString(), references: [] },
     {
       role: 'assistant',
       content:
@@ -22,12 +17,7 @@
         { id: 'legal-precedent-042', score: 0.87 },
       ],
     },
-    {
-      role: 'system',
-      content: 'Analysis completed with 94% confidence. 2 similar cases found in database.',
-      timestamp: new Date().toLocaleTimeString(),
-      references: [],
-    },
+    { role: 'system', content: 'Analysis completed with 94% confidence. 2 similar cases found in database.', timestamp: new Date().toLocaleTimeString(), references: [] },
   ]);
   let searchQuery = $state('');
   let testStatus = $state('ready');

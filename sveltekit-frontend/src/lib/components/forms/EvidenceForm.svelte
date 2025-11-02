@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import type { Props } from "$lib/types/global";
   let {
@@ -25,15 +25,15 @@ import type { Document } from '$lib/types';
     form.update((f: any) => ({ ...(f ?? {}), [key]: value }));
   }
 </script>
-<form, method="POST" use:enhance, class="space-y-4">
+<form method="POST" use:enhance, class="space-y-4">
   {#if evidence}
-    <input, type="hidden" name="id" value={$form.id} />
+    <input type="hidden" name="id" value={$form.id} />
   {/if}
   {#if serverData?.form?.message}
-    <div, class="space-y-4">{serverData.form.message}{/if}
+    <div class="space-y-4">{serverData.form.message}{/if}
   <div>
     <!-- replaced Label component with, native, label -->
-    <label for="title" class="block text-sm, font-medium, text-gray-700">Title</label>
+    <label for="title" class="block text-sm font-medium">Title</label>
     <!-- use native input and update form, via, helper -->
     <input
       id="title"
@@ -44,11 +44,11 @@ import type { Document } from '$lib/types';
       required
     />
     {#if $errors.title}
-      <span, class="text-sm, text-red-600">{$errors.title}</span>
+      <span class="text-sm">{$errors.title}</span>
     {/if}
   </div>
   <div>
-    <label for="description" class="block text-sm, font-medium, text-gray-700">Description</label>
+    <label for="description" class="block text-sm font-medium">Description</label>
     <textarea
       id="description"
       name="description"
@@ -58,7 +58,7 @@ import type { Document } from '$lib/types';
     >{$form?.description ?? ''}</textarea>
   </div>
   <div>
-    <label for="type" class="block text-sm, font-medium, text-gray-700">Type</label>
+    <label for="type" class="block text-sm font-medium">Type</label>
     <select
       id="type"
       name="type"
@@ -67,19 +67,19 @@ import type { Document } from '$lib/types';
       value={$form?.type ?? ''}
       onchange={(e: Event) => updateField('type', (e.target as HTMLSelectElement).value)}
     >
-      <option, value="">Select a type</option>
-      <option, value="Document">Document</option>
-      <option, value="Image">Image</option>
-      <option, value="Video">Video</option>
-      <option, value="Audio">Audio</option>
-      <option, value="Other">Other</option>
+      <option value="">Select a type</option>
+      <option value="Document">Document</option>
+      <option value="Image">Image</option>
+      <option value="Video">Video</option>
+      <option value="Audio">Audio</option>
+      <option value="Other">Other</option>
     </select>
     {#if $errors.type}
-      <span, class="text-sm, text-red-600">{$errors.type}</span>
+      <span class="text-sm">{$errors.type}</span>
     {/if}
   </div>
   <div>
-    <label for="url" class="block text-sm, font-medium, text-gray-700">URL</label>
+    <label for="url" class="block text-sm font-medium">URL</label>
     <input
       id="url"
       name="url"
@@ -89,11 +89,11 @@ import type { Document } from '$lib/types';
       oninput={(e: Event) => updateField('url', (e.target as HTMLInputElement).value)}
     />
     {#if $errors.url}
-      <span, class="text-sm, text-red-600">{$errors.url}</span>
+      <span class="text-sm">{$errors.url}</span>
     {/if}
   </div>
   <div>
-    <label for="tags" class="block text-sm, font-medium, text-gray-700">Tags (comma-separated)</label>
+    <label for="tags" class="block text-sm font-medium">Tags (comma-separated)</label>
     <input
       id="tags"
       name="tags"
@@ -103,14 +103,14 @@ import type { Document } from '$lib/types';
       oninput={(e: Event) => updateField('tags', (e.target as HTMLInputElement).value)}
     />
     {#if $errors.tags}
-      <span, class="text-sm, text-red-600">{$errors.tags}</span>
+      <span class="text-sm">{$errors.tags}</span>
     {/if}
   </div>
-  <div, class="space-y-4">
-    <button, class="bits-btn" type="button" onclick={() => { /* Cancel no-op for now */ }}>
+  <div class="space-y-4">
+    <button class="bits-btn" type="button" onclick={() => { /* Cancel no-op for now */ }}>
       Cancel
     </button>
-    <button, class="bits-btn" type="submit" disabled={$submitting}>
+    <button class="bits-btn" type="submit" disabled={$submitting}>
       {#if $submitting}
         Saving...
       {:else}

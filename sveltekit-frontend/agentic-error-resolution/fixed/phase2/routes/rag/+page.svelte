@@ -104,10 +104,7 @@
         formData.append('tags', tags);
       }
 
-      const res = await fetch('/api/rag/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch('/api/rag/upload', { method: 'POST', body: formData });
 
       const json = await res.json();
 
@@ -147,12 +144,7 @@
       const res = await fetch('/api/rag/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,
-          searchType,
-          tags: searchTagsArray.length > 0 ? searchTagsArray : undefined,
-          limit: 10,
-        }),
+        body: JSON.stringify({ query: searchQuery, searchType, tags: searchTagsArray.length > 0 ? searchTagsArray : undefined, limit: 10 }),
       });
 
       const json = await res.json();

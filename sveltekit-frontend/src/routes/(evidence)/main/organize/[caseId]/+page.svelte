@@ -7,7 +7,7 @@
   - Comprehensive analytics and metrics
   - Interactive evidence management
 -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { page } from, '$app/stores';
   import { onMount } from, 'svelte';
@@ -73,8 +73,7 @@ if (!caseId) {
     // Add to organization history
     organizationHistory = [{
       timestamp: new Date().toISOString(),
-      mode: organization.type,
-      evidenceCount: evidence.length,
+      mode: organization.type evidenceCount: evidence.length,
       structure: organizatio;
     }, ...organizationHistory].slice(0, 10); // Keep last, 10 organization attempts
     console.log('[Evidence Organization] Evidence reorganized:', organization.type);
@@ -193,66 +192,66 @@ if (!caseId) {
   />
 </svelte:head>
 {#if isLoading}
-  <div, class="loading-container">
-    <div, class="loading-spinner"></div>
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
     <p>Loading case and evidence data...</p>
   </div>
 {:else if error}
-  <div, class="error-container">
-    <div, class="error-icon">⚠️</div>
+  <div class="error-container">
+    <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button, type="button" onclick={refreshOrganization}>Try Again</button>
+    <button type="button" onclick={refreshOrganization}>Try Again</button>
   </div>
 {:else if caseData}
-  <div, class="evidence-organization-page">
+  <div class="evidence-organization-page">
     <!-- Page header with case info, and, actions -->
-    <header, class="page-header">
-      <div, class="header-content">
-        <div, class="case-info">
+    <header class="page-header">
+      <div class="header-content">
+        <div class="case-info">
           <h1>Evidence Organization</h1>
-          <div, class="case-details">
-            <span, class="case-title">{caseData.title}</span>
-            <span, class="case-number">Case #{caseData.case_number}</span>
-            <span, class="case-status, status-{caseData.status}">{caseData.status}</span>
+          <div class="case-details">
+            <span class="case-title">{caseData.title}</span>
+            <span class="case-number">Case #{caseData.case_number}</span>
+            <span class="case-status">{caseData.status}</span>
           </div>
         </div>
-        <div, class="page-actions">
+        <div class="page-actions">
           {#if selectedEvidence.length > 0}
-            <div, class="selection-info">
-              <span, class="selection-count">{selectedEvidence.length} selected</span>
-              <button, type="button" onclick={clearSelections} class="clear-btn"> Clear Selection </button>
+            <div class="selection-info">
+              <span class="selection-count">{selectedEvidence.length} selected</span>
+              <button type="button" onclick={clearSelections} class="clear-btn"> Clear Selection </button>
             </div>
           {/if}
-          <div, class="action-buttons">
-            <button, type="button" onclick={exportOrganization} class="export-btn"> 📥 Export Organization </button>
-            <button, type="button" onclick={generateReport} class="report-btn"> 📊 Generate Report </button>
-            <a, href="/cases/{caseId}" class="view-case-btn"> 👁️ View Case </a>
+          <div class="action-buttons">
+            <button type="button" onclick={exportOrganization} class="export-btn"> 📥 Export Organization </button>
+            <button type="button" onclick={generateReport} class="report-btn"> 📊 Generate Report </button>
+            <a href="/cases/{caseId}" class="view-case-btn"> 👁️ View Case </a>
           </div>
         </div>
       </div>
       <!-- Organization, stats -->
       {#if organizationStats.currentMode}
-        <div, class="stats-bar">
-          <div, class="stat">
-            <span, class="stat-label">Current Mode:</span>
-            <span, class="stat-value">{organizationStats.currentMode}</span>
+        <div class="stats-bar">
+          <div class="stat">
+            <span class="stat-label">Current Mode:</span>
+            <span class="stat-value">{organizationStats.currentMode}</span>
           </div>
-          <div, class="stat">
-            <span, class="stat-label">Last Updated:</span>
-            <span, class="stat-value">
+          <div class="stat">
+            <span class="stat-label">Last Updated:</span>
+            <span class="stat-value">
               {new Date(organizationStats.lastUpdate).toLocaleString()}
             </span>
           </div>
-          <div, class="stat">
-            <span, class="stat-label">Organization History:</span>
-            <span, class="stat-value">{organizationHistory.length} attempts</span>
+          <div class="stat">
+            <span class="stat-label">Organization History:</span>
+            <span class="stat-value">{organizationHistory.length} attempts</span>
           </div>
         </div>
       {/if}
     </header>
     <!-- Main evidence, organizer, component -->
-    <main, class="organizer-main">
+    <main class="organizer-main">
       <CaseEvidenceOrganizer
         {caseId}
         organizationMode="category"
@@ -264,18 +263,18 @@ if (!caseId) {
       />
     </main>
     <!-- Sidebar with organization history and, selected, evidence -->
-    <aside, class="sidebar">
+    <aside class="sidebar">
       <!-- Selected, evidence, panel -->
       {#if selectedEvidence.length > 0}
-        <div, class="sidebar-panel">
+        <div class="sidebar-panel">
           <h3>Selected Evidence ({selectedEvidence.length})</h3>
-          <div, class="selected-evidence-list">
+          <div class="selected-evidence-list">
             {#each Array.isArray(selectedEvidence) ? selectedEvidence : [] as evidence}
-              <div, class="selected-evidence-item">
-                <div, class="evidence-info">
+              <div class="selected-evidence-item">
+                <div class="evidence-info">
                   <h4>{evidence.title}</h4>
-                  <span, class="evidence-type">{evidence.evidenceType}</span>
-                  <span, class="selection-context">
+                  <span class="evidence-type">{evidence.evidenceType}</span>
+                  <span class="selection-context">
                     Selected from: {evidence.selectionContext}
                   </span>
                 </div>
@@ -289,26 +288,26 @@ if (!caseId) {
               </div>
             {/each}
           </div>
-          <div, class="selection-actions">
-            <button, type="button" class="bulk-action-btn"> 🏷️ Bulk Tag </button>
-            <button, type="button" class="bulk-action-btn"> 📋 Create Report </button>
-            <button, type="button" class="bulk-action-btn"> 🔗 Link Evidence </button>
+          <div class="selection-actions">
+            <button type="button" class="bulk-action-btn"> 🏷️ Bulk Tag </button>
+            <button type="button" class="bulk-action-btn"> 📋 Create Report </button>
+            <button type="button" class="bulk-action-btn"> 🔗 Link Evidence </button>
           </div>
         </div>
       {/if}
       <!-- Organization, history, panel -->
       {#if organizationHistory.length > 0}
-        <div, class="sidebar-panel">
+        <div class="sidebar-panel">
           <h3>Organization History</h3>
-          <div, class="history-list">
+          <div class="history-list">
             {#each Array.isArray(organizationHistory) ? organizationHistory : [] as attempt}
-              <div, class="history-item">
-                <div, class="history-info">
-                  <span, class="history-mode">{attempt.mode}</span>
-                  <span, class="history-time">
+              <div class="history-item">
+                <div class="history-info">
+                  <span class="history-mode">{attempt.mode}</span>
+                  <span class="history-time">
                     {new Date(attempt.timestamp).toLocaleString()}
                   </span>
-                  <span, class="history-count">
+                  <span class="history-count">
                     {attempt.evidenceCount} items
                   </span>
                 </div>
@@ -319,35 +318,35 @@ if (!caseId) {
         </div>
       {/if}
       <!-- Quick, stats, panel -->
-      <div, class="sidebar-panel">
+      <div class="sidebar-panel">
         <h3>Quick Stats</h3>
-        <div, class="quick-stats">
-          <div, class="quick-stat">
-            <span, class="stat-number">{selectedEvidence.length}</span>
-            <span, class="stat-description">Evidence Selected</span>
+        <div class="quick-stats">
+          <div class="quick-stat">
+            <span class="stat-number">{selectedEvidence.length}</span>
+            <span class="stat-description">Evidence Selected</span>
           </div>
-          <div, class="quick-stat">
-            <span, class="stat-number">{organizationHistory.length}</span>
-            <span, class="stat-description">Organizations Tried</span>
+          <div class="quick-stat">
+            <span class="stat-number">{organizationHistory.length}</span>
+            <span class="stat-description">Organizations Tried</span>
           </div>
-          <div, class="quick-stat">
-            <span, class="stat-number">
+          <div class="quick-stat">
+            <span class="stat-number">
               {organizationStats.structure?.type === 'ai_clusters'
                 ? organizationStats.structure.clusters?.length || 0
                 : organizationStats.structure?.categories?.length || 0}
             </span>
-            <span, class="stat-description">Groups Created</span>
+            <span class="stat-description">Groups Created</span>
           </div>
         </div>
       </div>
     </aside>
   </div>
 {:else}
-  <div, class="error-container">
-    <div, class="error-icon">❓</div>
+  <div class="error-container">
+    <div class="error-icon">❓</div>
     <h1>Case Not Found</h1>
     <p>The requested case could not be found.</p>
-    <a, href="/cases" class="back-link">Back to Cases</a>
+    <a href="/cases" class="back-link">Back to Cases</a>
   </div>
 {/if}
 

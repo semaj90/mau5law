@@ -181,7 +181,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- File Upload Area -->
     <div
       class="border-2 border-dashed border-cyan-500/30 rounded-lg p-8 text-center transition-all duration-200 {dragActive ? 'border-cyan-400 bg-cyan-500/10' : 'hover:border-cyan-500/50'}"
-      role="region" aria-label="Drop zone" ondragover={(e) => { e.preventDefault(); dragActive = true, }}
+      role="region" aria-label="Drop zone" ondragover={ (e) => { e.preventDefault(); dragActive = true }}
       ondragleave={() => dragActive = false}
       ondrop={handleFileDrop}
     >

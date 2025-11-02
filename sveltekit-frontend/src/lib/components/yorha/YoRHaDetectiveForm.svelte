@@ -1,5 +1,5 @@
-<!-- YoRHa Detective Form Component - Fixed dynamic, type, binding -->
-<script, lang="ts">
+<!-- YoRHa Detective Form Component - Fixed dynamic, type binding -->
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface FormField {
     name: string;
@@ -57,13 +57,13 @@
     formData[fieldName] = valu;
   }
 </script>
-<form, class="yorha-form" onsubmit={handleSubmit}>
-  <div, class="form-fields">
+<form class="yorha-form" onsubmit={handleSubmit}>
+  <div class="form-fields">
     {#each Array.isArray(fields) ? fields : [] as field}
-      <div, class="form-field">
-        <label, for={field.name} class="form-label">
+      <div class="form-field">
+        <label for={field.name} class="form-label">
           {field.label}
-          {#if field.required}<span, class="required">*</span>{/if}
+          {#if field.required}<span class="required">*</span>{/if}
         </label>
         {#if field.type === 'textarea'}
           <textarea
@@ -85,7 +85,7 @@
           >
             {#if field.options}
               {#each Array.isArray(field.options) ? field.options : [] as option}
-                <option, value={option.value}>{option.label}</option>
+                <option value={option.value}>{option.label}</option>
               {/each}
             {/if}
           </select>
@@ -123,8 +123,8 @@
       </div>
     {/each}
   </div>
-  <div, class="form-actions">
-    <button, type="submit" class="submit-btn {submitClass}" disabled={isSubmitting}>
+  <div class="form-actions">
+    <button type="submit" class="submit-btn {submitClass}" disabled={isSubmitting}>
       {#if isSubmitting}
         SUBMITTING...
       {:else}

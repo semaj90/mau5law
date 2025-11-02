@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { ScrollArea, as ScrollAreaPrimitive } from 'bits-ui';
   import { cn } from '$lib/utils.js';
   import type { ScrollAreaRootProps } from 'bits-ui';
@@ -8,7 +8,7 @@
   let { class: classNameVar, children, ...rest }: Props & { children?: any } = $props();
 </script>
 <ScrollAreaPrimitive.Root, class={cn('relative, overflow-hidden', classNameVar)} {...rest}>
-  <ScrollAreaPrimitive.Viewport class="h-full, w-full, rounded-[inherit]">
+  <ScrollAreaPrimitive.Viewport class="h-full w-full">
     {#if children}
       {@render children()}
     {/if}

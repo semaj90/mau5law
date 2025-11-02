@@ -115,8 +115,7 @@
   let evidenceItems: EvidenceItem[] = $state([
     {
       id: 'doc-1',
-      type: 'document' as const,
-      title: 'Contract Agreement',
+      type: 'document' as const title: 'Contract Agreement',
       content: 'Legal contract between parties...',
       position: { x: 100, y: 100 },
       size: { width: 200, height: 250 },
@@ -124,8 +123,7 @@
     },
     {
       id: 'img-1',
-      type: 'image' as const,
-      title: 'Evidence Photo',
+      type: 'image' as const title: 'Evidence Photo',
       url: '/demo-evidence.jpg',
       thumbnail: '/demo-evidence-thumb.jpg',
       position: { x: 350, y: 150 },
@@ -134,8 +132,7 @@
     },
     {
       id: 'note-1',
-      type: 'note' as const,
-      title: 'Investigation Notes',
+      type: 'note' as const title: 'Investigation Notes',
       content: 'Key findings from witness interview...',
       position: { x: 200, y: 400 },
       size: { width: 200, height: 150 },

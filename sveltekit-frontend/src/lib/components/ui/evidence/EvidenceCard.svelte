@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { CaseLogic } from '$lib/core/logic/case-logic';
   import type { CaseFile } from '$lib/core/logic/case-logic';
   // Replace unsupported optional prop syntax with an explicit union + default
@@ -17,28 +17,28 @@
   }
 </script>
 {#if caseFile}
-  <div class="nes-container is-dark, with-title, evidence-card">
-    <header, class="card-header">
-      <h3, class="card-title, title">{caseFile.title}</h3>
-      <p, class="card-description">{displayStatus}</p>
+  <div class="nes-container is-dark with-title">
+    <header class="card-header">
+      <h3 class="card-title">{caseFile.title}</h3>
+      <p class="card-description">{displayStatus}</p>
     </header>
-    <div, class="card-content, space-y-4">
+    <div class="card-content">
       <p>{caseFile.summary}</p>
       <!-- slot, for, children/content -->
       <slot />
-      <div, class="flex, justify-end">
-        <button, class="nes-btn, is-primary" onclick={handleAnalyzeClick} type="button">Analyze</button>
+      <div class="flex">
+        <button class="nes-btn" onclick={handleAnalyzeClick} type="button">Analyze</button>
       </div>
     </div>
   </div>
 {:else}
   <!-- graceful fallback while props are not, yet, present -->
-  <div class="nes-container is-dark, with-title, evidence-card">
-    <header, class="card-header">
-      <h3, class="card-title, title">Loading…</h3>
-      <p, class="card-description">{displayStatus}</p>
+  <div class="nes-container is-dark with-title">
+    <header class="card-header">
+      <h3 class="card-title">Loading…</h3>
+      <p class="card-description">{displayStatus}</p>
     </header>
-    <div, class="card-content, space-y-4">
+    <div class="card-content">
       <p>No case data available.</p>
     </div>
   {/if}

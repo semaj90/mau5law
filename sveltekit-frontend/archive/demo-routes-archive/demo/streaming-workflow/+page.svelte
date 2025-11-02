@@ -80,7 +80,7 @@
   }
 
   function getStateEmoji(state: string): string {
-    const stateEmojis: Record<string, string> = {
+    const stateEmojis: Record<string string> = {
       'idle': '⏸️',
       'uploading': '📤',
       'analyzing': '🔍',

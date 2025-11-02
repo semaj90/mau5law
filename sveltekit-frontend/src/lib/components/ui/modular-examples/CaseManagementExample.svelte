@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating, Svelte, code: `<svelte:window>` does not support non-event attributes or spread attribute;
 https://svelte.dev/e/illegal_element_attribute -->
 <!--, Example: Modular Case Management with, API, Integration -->
-<script, lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { ModularDialog } from '../modular-dialog';
   import { ModularCommand } from '../modular-command';
@@ -79,80 +79,80 @@ https://svelte.dev/e/illegal_element_attribute -->
   }
 </script>
 <svelte:window, keydown={handleKeydown} />
-<div class="p-6, max-w-6xl, mx-auto">
+<div class="p-6 max-w-6xl">
   <!-- Header -->
-  <div class="flex items-center, justify-between, mb-8">
+  <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-3xl font-bold, font-mono, text-yorha-text-primary">Case Management</h1>
-      <p class="text-yorha-text-secondary, font-mono, mt-2">
+      <h1 class="text-3xl font-bold font-mono">Case Management</h1>
+      <p class="text-yorha-text-secondary font-mono">
         Search and manage legal cases with AI-powered tools
       </p>
     </div>
-    <div class="flex, items-center, gap-3">
+    <div class="flex items-center">
       <!-- Global, Search, Button -->
       <button
         onclick={() => showCommandPalette = true}
         class="flex items-center gap-2 px-4 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors font-mono"
       >
-        <Search, class="h-4, w-4" />
+        <Search class="h-4" />
         <span>Search</span>
-        <kbd class="px-2 py-1 text-xs bg-yorha-bg-primary border, border-yorha-border, rounded">⌘K</kbd>
+        <kbd class="px-2 py-1 text-xs bg-yorha-bg-primary border border-yorha-border">⌘K</kbd>
       </button>
       <!-- Create, Case, Button -->
       <button
         onclick={createNewCase}
         class="flex items-center gap-2 px-4 py-2 bg-yorha-accent text-yorha-text-accent border border-yorha-accent rounded-md hover:bg-yorha-accent/80 transition-colors font-mono"
       >
-        <Plus, class="h-4, w-4" />
+        <Plus class="h-4" />
         New Case
       </button>
     </div>
   </div>
   <!-- Quick, Actions -->
-  <div class="grid grid-cols-1 md:grid-cols-4, gap-4, mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <button
       onclick={() => showCommandPalette = true}
       class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors text-left"
     >
-      <Search class="h-6 w-6, text-yorha-accent, mb-2" />
-      <h3 class="font-mono, font-semibold, text-yorha-text-primary">Global Search</h3>
-      <p class="text-sm, text-yorha-text-secondary, font-mono">Find cases, evidence, documents</p>
+      <Search class="h-6 w-6 text-yorha-accent" />
+      <h3 class="font-mono font-semibold">Global Search</h3>
+      <p class="text-sm text-yorha-text-secondary">Find cases, evidence, documents</p>
     </button>
     <button
       onclick={createNewCase}
       class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors text-left"
     >
-      <Plus class="h-6 w-6, text-yorha-accent, mb-2" />
-      <h3 class="font-mono, font-semibold, text-yorha-text-primary">New Case</h3>
-      <p class="text-sm, text-yorha-text-secondary, font-mono">Create a new legal case</p>
+      <Plus class="h-6 w-6 text-yorha-accent" />
+      <h3 class="font-mono font-semibold">New Case</h3>
+      <p class="text-sm text-yorha-text-secondary">Create a new legal case</p>
     </button>
-    <div class="p-4 bg-yorha-bg-secondary border, border-yorha-border, rounded-md">
-      <FileText class="h-6 w-6, text-yorha-accent, mb-2" />
-      <h3 class="font-mono, font-semibold, text-yorha-text-primary">Evidence</h3>
-      <p class="text-sm, text-yorha-text-secondary, font-mono">Manage case evidence</p>
+    <div class="p-4 bg-yorha-bg-secondary border border-yorha-border">
+      <FileText class="h-6 w-6 text-yorha-accent" />
+      <h3 class="font-mono font-semibold">Evidence</h3>
+      <p class="text-sm text-yorha-text-secondary">Manage case evidence</p>
     </div>
-    <div class="p-4 bg-yorha-bg-secondary border, border-yorha-border, rounded-md">
-      <Calendar class="h-6 w-6, text-yorha-accent, mb-2" />
-      <h3 class="font-mono, font-semibold, text-yorha-text-primary">Timeline</h3>
-      <p class="text-sm, text-yorha-text-secondary, font-mono">Case timeline view</p>
+    <div class="p-4 bg-yorha-bg-secondary border border-yorha-border">
+      <Calendar class="h-6 w-6 text-yorha-accent" />
+      <h3 class="font-mono font-semibold">Timeline</h3>
+      <p class="text-sm text-yorha-text-secondary">Case timeline view</p>
     </div>
   </div>
   <!-- Demo, Instructions -->
-  <div class="bg-yorha-bg-secondary border border-yorha-border rounded-md, p-6, font-mono">
-    <h2 class="text-lg font-semibold, text-yorha-text-primary, mb-4">Modular Components Demo</h2>
-    <div class="space-y-4, text-sm, text-yorha-text-secondary">
+  <div class="bg-yorha-bg-secondary border border-yorha-border rounded-md p-6">
+    <h2 class="text-lg font-semibold text-yorha-text-primary">Modular Components Demo</h2>
+    <div class="space-y-4 text-sm">
       <div>
-        <h3 class="font-semibold, text-yorha-text-primary, mb-2">Command Palette (Global Search)</h3>
-        <ul class="list-disc list-inside, space-y-1, ml-4">
-          <li>Press <kbd class="bg-yorha-bg-primary px-1, py-0.5, rounded">Ctrl+K</kbd> or <kbd class="bg-yorha-bg-primary px-1, py-0.5, rounded">⌘K</kbd> to open</li>
+        <h3 class="font-semibold text-yorha-text-primary">Command Palette (Global Search)</h3>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Press <kbd class="bg-yorha-bg-primary px-1 py-0.5">Ctrl+K</kbd> or <kbd class="bg-yorha-bg-primary px-1 py-0.5">⌘K</kbd> to open</li>
           <li>Search across cases, evidence, documents, and people</li>
           <li>Real-time API integration with PostgreSQL + pgvector</li>
           <li>Vector similarity search for semantic matching</li>
         </ul>
       </div>
       <div>
-        <h3 class="font-semibold, text-yorha-text-primary, mb-2">Modular Dialog System</h3>
-        <ul class="list-disc list-inside, space-y-1, ml-4">
+        <h3 class="font-semibold text-yorha-text-primary">Modular Dialog System</h3>
+        <ul class="list-disc list-inside space-y-1">
           <li>Auto-loading data based on entity ID</li>
           <li>Reactive updates through API client</li>
           <li>Built-in error handling and retry logic</li>
@@ -160,8 +160,8 @@ https://svelte.dev/e/illegal_element_attribute -->
         </ul>
       </div>
       <div>
-        <h3 class="font-semibold, text-yorha-text-primary, mb-2">API Integration Features</h3>
-        <ul class="list-disc list-inside, space-y-1, ml-4">
+        <h3 class="font-semibold text-yorha-text-primary">API Integration Features</h3>
+        <ul class="list-disc list-inside space-y-1">
           <li>PostgreSQL with pgvector similarity search</li>
           <li>Drizzle ORM for type-safe database operations</li>
           <li>Reactive data stores with caching</li>
@@ -196,18 +196,18 @@ https://svelte.dev/e/illegal_element_attribute -->
 >
   {#snippet children({, data: caseData, refresh })}
     {#if caseData}
-      <div, class="space-y-6">
+      <div class="space-y-6">
         <!-- Case, Overview -->
-        <div class="grid, grid-cols-2, gap-4">
+        <div class="grid grid-cols-2">
           <div>
-            <label class="text-sm font-semibold, text-yorha-text-primary, font-mono">Status</label>
-            <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border, rounded-md, font-mono">
+            <label class="text-sm font-semibold text-yorha-text-primary">Status</label>
+            <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md">
               {caseData.status}
             </div>
           </div>
           <div>
-            <label class="text-sm font-semibold, text-yorha-text-primary, font-mono">Priority</label>
-            <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border, rounded-md, font-mono">
+            <label class="text-sm font-semibold text-yorha-text-primary">Priority</label>
+            <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md">
               {caseData.priority}
             </div>
           </div>
@@ -215,13 +215,13 @@ https://svelte.dev/e/illegal_element_attribute -->
         <!-- Case, Description -->
         {#if caseData.description}
           <div>
-            <label class="text-sm font-semibold, text-yorha-text-primary, font-mono">Description</label>
-            <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md, font-mono, text-sm">
+            <label class="text-sm font-semibold text-yorha-text-primary">Description</label>
+            <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md font-mono">
               {caseData.description}
             </div>
           {/if}
         <!-- Quick, Actions -->
-        <div class="flex, flex-wrap, gap-2">
+        <div class="flex flex-wrap">
           <button
             onclick={() => updateCase({ status: 'investigating' })}
             class="px-3 py-1 text-sm bg-yorha-accent text-yorha-text-accent border border-yorha-accent rounded-md hover:bg-yorha-accent/80 transition-colors font-mono"
@@ -230,19 +230,19 @@ https://svelte.dev/e/illegal_element_attribute -->
           </button>
           <button
             onclick={refresh}
-            class="px-3 py-1 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md, hover:bg-yorha-bg-hover transition-colors font-mono"
+            class="px-3 py-1 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md"
           >
             Refresh Data
           </button>
         </div>
       </div>
     {:else}
-      <div, class="text-center, py-8">
-        <p, class="font-mono, text-yorha-text-secondary">No case data available</p>
+      <div class="text-center">
+        <p class="font-mono">No case data available</p>
       {/if}
   {/snippet}
   {#snippet footer({ close })}
-    <div class="flex, justify-end, gap-2">
+    <div class="flex justify-end">
       <button
         onclick={close}
         class="px-4 py-2 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors font-mono"

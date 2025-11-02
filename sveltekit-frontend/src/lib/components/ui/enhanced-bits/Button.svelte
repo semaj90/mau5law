@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   const { onclick } = $props<{ onclick: (() }>()
   const { disabled } = $props<{ disabled: boolean }>()
   const { variant } = $props<{ variant: string | undefined }>()

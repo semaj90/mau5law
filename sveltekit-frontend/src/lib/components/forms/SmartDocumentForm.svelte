@@ -1,5 +1,5 @@
 <!-- Smart Document Form with, OCR, Auto-Population -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -43,11 +43,11 @@ import type { Document } from '$lib/types';
   let ocrResult = $derived(ocrService.currentResult$);
   let extractedFields = $derived(ocrService.extractedFields$);
   // Form validation
-  const formErrors = writable<Record<string, string>>({});
+  const formErrors = writable<Record<string string>>({});
   let isFormValid = $state<boolean>(false);
   // Smart suggestions
-  let activeSuggestions = $state<Record<string, string[]>>({});
-  let suggestionLoading = $state<Record<string, boolean>>({});
+  let activeSuggestions = $state<Record<string string[]>>({});
+  let suggestionLoading = $state<Record<string boolean>>({});
   // Default form schema if none provided
   $effect(() => {
     if (formSchema.length === 0) {
@@ -93,7 +93,7 @@ import type { Document } from '$lib/types';
       if (!field.value && enableSmartSuggestions) {
         try {
           suggestionLoading[field.name] = true;
-          const suggestions = await ocrService.getSuggestions(field.name, field.type, documentText);
+          const suggestions = await ocrService.getSuggestions(field.name, field.type documentText);
           activeSuggestions[field.name] = suggestions || [];
         } catch (error) {
           console.warn(`Failed to generate suggestions for ${field.name}:`, error);
@@ -152,7 +152,7 @@ import type { Document } from '$lib/types';
       if (field.value) validateField(field.name, field.value as: string);
     });
     if (isFormValid) {
-      const formData = populatedFields.reduce((acc: Record<string, any>, field) => {
+      const formData = populatedFields.reduce((acc: Record<string any>, field) => {
         acc[field.name] = field.value || '';
         return acc;
       }, {} as { [key: string]: any });
@@ -202,33 +202,32 @@ import type { Document } from '$lib/types';
     _event.preventDefault();
   };
 </script>
-<div class="smart-document-form max-w-4xl mx-auto, p-6, space-y-6">
+<div class="smart-document-form max-w-4xl mx-auto p-6">
   <!-- Header -->
-  <div, class="text-center">
-    <h1 class="text-2xl font-bold, text-yorha-text-primary, mb-2">{title}</h1>
-    <p, class="text-yorha-text-secondary">{description}</p>
+  <div class="text-center">
+    <h1 class="text-2xl font-bold text-yorha-text-primary">{title}</h1>
+    <p class="text-yorha-text-secondary">{description}</p>
   </div>
   <!-- File, Upload, Section -->
   {#if enableOCR}
-    <div, class="nes-container">
-      <div, class="yorha-panel-header">
-        <h3 class="nes-text is-primary flex, items-center, space-x-2">
+    <div class="nes-container">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary flex items-center">
           <span>📄</span>
           <span>Document Upload & Processing</span>
         </h3>
       </div>
-      <div, class="yorha-panel-content, space-y-4">
+      <div class="yorha-panel-content">
         <!-- Document, Type, Selection -->
-        <div class="flex, items-center, space-x-4">
+        <div class="flex items-center">
           <!-- replaced Label component with, native, label -->
-          <label, class="text-sm, font-medium">Document Type:</label>
-          <select
-           , bind:value={selectedDocumentType}
+          <label class="text-sm">Document Type:</label>
+          <select bind:value={selectedDocumentType}
             class="px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary"
           >
-            <option, value="auto">Auto-detect</option>
+            <option value="auto">Auto-detect</option>
             {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
-              <option, value={type}>{type.replace(/_/g, ' ').toUpperCase()}</option>
+              <option value={type}>{type.replace(/_/g, ' ').toUpperCase()}</option>
             {/each}
           </select>
         </div>
@@ -243,20 +242,20 @@ import type { Document } from '$lib/types';
           tabindex={0}
         >
           {#if uploadedFile}
-            <div class="flex items-center, justify-center, space-x-3">
-              <span, class="text-2xl">📄</span>
+            <div class="flex items-center justify-center">
+              <span class="text-2xl">📄</span>
               <div>
-                <p, class="font-medium, text-yorha-text-primary">{uploadedFile.name}</p>
-                <p, class="text-sm, text-yorha-text-secondary">
+                <p class="font-medium">{uploadedFile.name}</p>
+                <p class="text-sm">
                   {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
             </div>
           {:else}
-            <div, class="space-y-2">
-              <span, class="text-4xl">📁</span>
-              <p, class="text-yorha-text-primary">Drop your document here or click to browse</p>
-              <p, class="text-sm, text-yorha-text-secondary">Supports PDF, PNG, JPG, TIFF</p>
+            <div class="space-y-2">
+              <span class="text-4xl">📁</span>
+              <p class="text-yorha-text-primary">Drop your document here or click to browse</p>
+              <p class="text-sm">Supports PDF, PNG, JPG, TIFF</p>
             {/if}
           <input
             bind:this={fileInput}
@@ -283,25 +282,25 @@ import type { Document } from '$lib/types';
         </div>
         <!-- Processing, Status -->
         {#if $processing}
-          <div, class="space-y-2" transition:fade>
-            <div class="flex, items-center, justify-between">
-              <span, class="text-sm, text-yorha-text-secondary">Processing document...</span>
-              <span, class="text-sm, text-yorha-text-secondary">{Math.round($progress)}%</span>
+          <div class="space-y-2" transition:fade>
+            <div class="flex items-center">
+              <span class="text-sm">Processing document...</span>
+              <span class="text-sm">{Math.round($progress)}%</span>
             </div>
             <!-- native progress element instead of, Progress, component -->
-            <progress, value={$progress} max="100" class="h-2, w-full"></progress>
+            <progress value={$progress} max="100" class="h-2"></progress>
           {/if}
         <!-- OCR, Results, Preview -->
         {#if $ocrResult && showPreview}
-          <div class="bg-yorha-bg-secondary rounded-md p-4, border, border-yorha-border">
-            <div class="flex items-center, justify-between, mb-2">
-              <h4, class="font-medium, text-yorha-text-primary">Extraction Results</h4>
+          <div class="bg-yorha-bg-secondary rounded-md p-4 border">
+            <div class="flex items-center justify-between">
+              <h4 class="font-medium">Extraction Results</h4>
               <!-- Badge replaced, with, span -->
-              <span class="badge bg-yorha-success text-yorha-bg-primary px-2, py-1, rounded">
+              <span class="badge bg-yorha-success text-yorha-bg-primary px-2 py-1">
                 {$extractedFields.length} fields found
               </span>
             </div>
-            <div, class="text-xs, text-yorha-text-secondary">
+            <div class="text-xs">
               Confidence: {Math.round($ocrResult.confidence ?? 0)}% |
               Processing Time: {$ocrResult.processingTime ?? 0}ms |
               Document, Type: {$ocrResult.metadata?.documentType ?? 'unknown'}
@@ -310,39 +309,39 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
   <!-- Form, Fields -->
-  <div, class="nes-container">
-    <div, class="yorha-panel-header">
-      <h3 class="nes-text is-primary flex, items-center, space-x-2">
+  <div class="nes-container">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary flex items-center">
         <span>📝</span>
         <span>Form Fields</span>
         {#if enableOCR && $extractedFields.length > 0}
           <!-- Badge replaced, with, span -->
-          <span class="bg-yorha-accent text-yorha-bg-primary px-2, py-1, rounded">
+          <span class="bg-yorha-accent text-yorha-bg-primary px-2 py-1">
             Auto-populated
           </span>
         {/if}
       </h3>
     </div>
-    <div, class="yorha-panel-content">
-      <form, onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-6">
-        <div class="grid grid-cols-1, md:grid-cols-2, gap-6">
+    <div class="yorha-panel-content">
+      <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2">
           {#each populatedFields as field (field.name)}
-            <div, class="space-y-2" transition:fade>
+            <div class="space-y-2" transition:fade>
               <!-- Field, Label -->
-              <div class="flex, items-center, justify-between">
+              <div class="flex items-center">
                 <!-- use native label (already, present, elsewhere) -->
-                <label class="flex, items-center, space-x-2">
-                  <span, class="text-lg">{getFieldTypeIcon(field.type)}</span>
+                <label class="flex items-center">
+                  <span class="text-lg">{getFieldTypeIcon(field.type)}</span>
                   <span>{field.label}</span>
                   {#if field.required}
-                    <span, class="text-yorha-danger">*</span>
+                    <span class="text-yorha-danger">*</span>
                   {/if}
                 </label>
                 <!-- Confidence, Indicator -->
                 {#if field.confidence}
-                  <div class="flex, items-center, space-x-1">
+                  <div class="flex items-center">
                     <div class={`w-2, h-2, rounded-full ${getConfidenceColor(field.confidence)}`}></div>
-                    <span, class="text-xs, text-yorha-text-secondary">
+                    <span class="text-xs">
                       {Math.round((field.confidence ?? 0) * 100)}%
                     </span>
                   {/if}
@@ -368,15 +367,15 @@ import type { Document } from '$lib/types';
               {/if}
               <!-- Field, Error -->
               {#if $formErrors[field.name]}
-                <p, class="text-xs, text-yorha-danger" transition:scale>
+                <p class="text-xs" transition:scale>
                   {$formErrors[field.name]}
                 </p>
               {/if}
               <!-- Smart, Suggestions -->
               {#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
-                <div, class="space-y-1">
-                  <p, class="text-xs, text-yorha-text-secondary">Suggestions:</p>
-                  <div class="flex, flex-wrap, gap-1">
+                <div class="space-y-1">
+                  <p class="text-xs">Suggestions:</p>
+                  <div class="flex flex-wrap">
                     {#each Array.isArray(activeSuggestions[field.name]) ? activeSuggestions[field.name] : [] as suggestion}
                       <Button
                         variant="ghost"
@@ -391,27 +390,27 @@ import type { Document } from '$lib/types';
                 {/if}
               <!-- Loading, Suggestions -->
               {#if suggestionLoading[field.name]}
-                <div class="flex items-center space-x-2, text-xs, text-yorha-text-secondary">
-                  <div class="animate-spin w-3 h-3 border border-yorha-accent, border-t-transparent, rounded-full"></div>
+                <div class="flex items-center space-x-2 text-xs">
+                  <div class="animate-spin w-3 h-3 border border-yorha-accent border-t-transparent"></div>
                   <span>Generating suggestions...</span>
                 {/if}
             </div>
           {/each}
         </div>
         <!-- Form, Actions -->
-        <div class="flex items-center justify-between pt-6, border-t, border-yorha-border">
-          <div class="flex, items-center, space-x-4">
+        <div class="flex items-center justify-between pt-6 border-t">
+          <div class="flex items-center">
             <!-- Badge replaced, with, span -->
             <span class={isFormValid ? 'bg-yorha-success text-yorha-bg-primary px-2 py-1 rounded' : 'bg-yorha-warning text-yorha-bg-primary px-2, py-1, rounded'}>
               {isFormValid ? 'Ready to Submit' : 'Incomplete'}
             </span>
             {#if enableOCR && $extractedFields.length > 0}
-              <span, class="text-xs, text-yorha-text-secondary">
+              <span class="text-xs">
                 {populatedFields.filter(f => f.value && f.value.toString().trim().length > 0).length} / {populatedFields.length} fields completed
               </span>
             {/if}
           </div>
-          <div class="flex, items-center, space-x-3">
+          <div class="flex items-center">
             <Button.Root, class="bits-btn" variant="ghost" onclick={() => {
               populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
               formErrors.set({});
@@ -421,7 +420,7 @@ import type { Document } from '$lib/types';
             <Button
               type="submit"
               disabled={!isFormValid}
-              class="bg-yorha-primary hover:bg-yorha-primary/80, disabled:opacity-50 bits-btn"
+              class="bg-yorha-primary hover:bg-yorha-primary/80"
             >
               Submit Form
             </Button>
@@ -432,9 +431,9 @@ import type { Document } from '$lib/types';
   </div>
   <!-- Extracted, Fields, Preview -->
   {#if $extractedFields.length > 0 && showPreview}
-    <div, class="nes-container">
-      <div, class="yorha-panel-header">
-        <h3 class="nes-text is-primary flex, items-center, space-x-2">
+    <div class="nes-container">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary flex items-center">
           <span>🔍</span>
           <span>Extracted Data</span>
           <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={() => showPreview = !showPreview}>
@@ -444,9 +443,9 @@ import type { Document } from '$lib/types';
       </div>
       <!-- each, extracted, item: Badge -> span -->
       {#each $extractedFields as field (field.fieldName)}
-        <div class="bg-yorha-bg-secondary rounded p-3, border, border-yorha-border">
-          <div class="flex items-center, justify-between, mb-1">
-            <span class="text-sm, font-medium, text-yorha-text-primary">
+        <div class="bg-yorha-bg-secondary rounded p-3 border">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium">
               {field.fieldName.replace(/_/g, ' ')}
             </span>
             <span
@@ -459,8 +458,8 @@ import type { Document } from '$lib/types';
               {field.validationStatus}
             </span>
           </div>
-          <p class="text-sm, text-yorha-text-secondary, mb-1">{field.value}</p>
-          <div class="flex items-center justify-between, text-xs, text-yorha-text-tertiary">
+          <p class="text-sm text-yorha-text-secondary">{field.value}</p>
+          <div class="flex items-center justify-between text-xs">
             <span>{field.fieldType}</span>
             <span>{Math.round((field.confidence ?? 0) * 100)}%</span>
           </div>

@@ -19,34 +19,17 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
-  import {
-    AlertTriangle,
-    CheckCircle,
-    Edit3,
-    Save,
-    Tag,
-    XCircle,
-  } from "lucide-svelte";
+  import { AlertTriangle, CheckCircle, Edit3, Save, Tag, XCircle } from "lucide-svelte";
     import type { Evidence  } from '$lib/stores/unified';
   let validationChoice = $state<"approve" | "reject" | null >(null);
   let feedback = $state<string >("");
-  let corrections = $state({
-    summary: "",
-    tags: [] as string[],
-    evidenceType: "",
-    analysis: "",
-  });
+  let corrections = $state({ summary: "", tags: [] as string[], evidenceType: "", analysis: "" });
   let isSubmitting = $state(false);
   let showCorrections = $state(false);
   // Initialize corrections with current AI analysis
-  $effect(() => {
-    if (evidence && open) {
+  $effect(() => { if (evidence && open) {
       corrections = {
-        summary: evidence.aiSummary || "",
-        tags: evidence.aiTags || [],
-        evidenceType: evidence.evidenceType || "",
-        analysis: evidence.aiAnalysis?.analysis || "",
-      }
+        summary: evidence.aiSummary || "", tags: evidence.aiTags || [], evidenceType: evidence.evidenceType || "", analysis: evidence.aiAnalysis?.analysis || "" }
     }
   });
   function handleValidationChoice(choice: "approve" | "reject") {

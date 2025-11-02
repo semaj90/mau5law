@@ -50,8 +50,7 @@
   async function sendMessage() {
     if (!inputMessage.trim() || isLoading) return;
     const userMessage = {
-      role: 'user' as const,
-      content: inputMessage;
+      role: 'user' as const content: inputMessage;
       timestamp: new Date().toLocaleTimeString();
     }
     // Add user message immediately
@@ -73,8 +72,7 @@
       console.log('🤖 CUDA AI response:', data);
       if (response.ok && data.message) {
         const assistantMessage = {
-          role: 'assistant' as const,
-          content: data.message,
+          role: 'assistant' as const content: data.message,
           timestamp: new Date().toLocaleTimeString(),
           confidence: data.confidence,
           tokensPerSecond: data.tokensPerSecond,
@@ -84,8 +82,7 @@
       } else {
         // Error response
         const errorMessage = {
-          role: 'assistant' as const,
-          content: `Error: ${data.error || 'Unknown error'}`,
+          role: 'assistant' as const content: `Error: ${data.error || 'Unknown error'}`,
           timestamp: new Date().toLocaleTimeString();
         }
         messages = [...messages, errorMessage];
@@ -93,8 +90,7 @@
     } catch (error) {
       console.error('❌ Chat error:', error);
       const errorMessage = {
-        role: 'assistant' as const,
-        content: `Network error: ${error.message}`,
+        role: 'assistant' as const content: `Network error: ${error.message}`,
         timestamp: new Date().toLocaleTimeString();
       }
       messages = [...messages, errorMessage];

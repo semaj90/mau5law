@@ -1,5 +1,5 @@
 <!-- Criminal Profile Component for Legal, AI, App -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Removed invalid runes import and problematic lucide-svelte named imports
   import { cn } from '$lib/utils';
@@ -139,62 +139,62 @@ import type { Case } from '$lib/types';
 >
   <!-- Profile, Header -->
   <div class={cn('p-4 border-b border-yorha-border', profile?.currentStatus === 'at_large' && 'bg-red-500/5')}>
-    <div class="flex, items-start, gap-4">
+    <div class="flex items-start">
       <!-- Profile, Photo/Mugshot -->
-      <div, class="shrink-0">
+      <div class="shrink-0">
         {#if firstMugshot}
           <button
             onclick={() => onViewMugshot?.(firstMugshot)}
             class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded overflow-hidden hover:border-yorha-primary/30 transition-colors group"
             type="button"
           >
-            <div class="w-full h-full flex items-center justify-center, text-yorha-text-secondary, group-hover:text-yorha-primary">
+            <div class="w-full h-full flex items-center justify-center text-yorha-text-secondary">
               <!-- camera, emoji, fallback -->
-              <span, class="text-xl">🖼️</span>
+              <span class="text-xl">🖼️</span>
             </div>
           </button>
         {:else}
-          <div class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex, items-center, justify-center">
+          <div class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center">
             <!-- user, emoji, fallback -->
-            <span, class="text-2xl">👤</span>
+            <span class="text-2xl">👤</span>
           {/if}
       </div>
       <!-- Profile, Info -->
-      <div, class="flex-1, min-w-0">
-        <div class="flex items-start, justify-between, mb-2">
+      <div class="flex-1">
+        <div class="flex items-start justify-between">
           <div>
-            <h2 class="text-xl font-bold, text-yorha-text-primary, font-mono">{getFullName()}</h2>
-            <div class="text-sm, text-yorha-text-secondary, font-mono">ID: {profile?.id} •, Age: {age}</div>
+            <h2 class="text-xl font-bold text-yorha-text-primary">{getFullName()}</h2>
+            <div class="text-sm text-yorha-text-secondary">ID: {profile?.id} •, Age: {age}</div>
           </div>
           <!-- Current Status (computed reactively, in, script) -->
-          <div class="flex, items-center, gap-2">
+          <div class="flex items-center">
             <span class={cn('px-3 py-1 text-xs font-mono, rounded, border', statusInfo.className)}>
-              {#if statusInfo.icon}<span, class="inline, mr-1">{statusInfo.icon}</span>{/if}
+              {#if statusInfo.icon}<span class="inline">{statusInfo.icon}</span>{/if}
               {statusInfo.label}
             </span>
           </div>
         </div>
         <!-- Aliases -->
         {#if profile.personalInfo.aliases?.length}
-          <div, class="mb-2">
-            <span class="text-xs, text-yorha-text-secondary, font-mono">AKA:</span>
-            <span class="text-sm text-yorha-text-primary, font-mono, ml-2">
+          <div class="mb-2">
+            <span class="text-xs text-yorha-text-secondary">AKA:</span>
+            <span class="text-sm text-yorha-text-primary font-mono">
               {profile.personalInfo.aliases.join(', ')}
             </span>
           {/if}
         <!-- Risk, Assessment -->
-        <div class="flex items-center gap-4, text-xs, font-mono">
-          <div class="flex, items-center, gap-2">
-            <span, class="text-yorha-text-secondary">Risk Level:</span>
+        <div class="flex items-center gap-4 text-xs">
+          <div class="flex items-center">
+            <span class="text-yorha-text-secondary">Risk Level:</span>
             <span class={cn('px-2 py-0.5, rounded, border', riskConfig[profile.riskAssessment.riskLevel]?.className)}>
               {riskConfig[profile.riskAssessment.riskLevel]?.label}
             </span>
           </div>
           {#if profile.riskAssessment.flightRisk}
-            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border, border-red-500/30, rounded"> FLIGHT RISK </span>
+            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30"> FLIGHT RISK </span>
           {/if}
           {#if profile.riskAssessment.violentHistory}
-            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border, border-red-500/30, rounded">
+            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30">
               VIOLENT HISTORY
             </span>
           {/if}
@@ -203,65 +203,65 @@ import type { Case } from '$lib/types';
     </div>
     <!-- Active, Warrants, Alert -->
     {#if activeWarrants.length > 0}
-      <div class="mt-3 p-3 bg-red-500/10 border, border-red-500/20, rounded">
-        <div class="flex items-center gap-2 text-red-400 font-medium text-sm, font-mono, mb-1">
+      <div class="mt-3 p-3 bg-red-500/10 border border-red-500/20">
+        <div class="flex items-center gap-2 text-red-400 font-medium text-sm font-mono">
           <!-- alert, emoji, fallback -->
-          <span, class="text-sm">⚠️</span>
+          <span class="text-sm">⚠️</span>
           {activeWarrants.length} Active Warrant{activeWarrants.length !== 1 ? 's' : ''}
         </div>
         {#each Array.isArray(activeWarrants) ? activeWarrants : [] as warrant}
-          <div class="text-xs, text-red-300, font-mono">
+          <div class="text-xs text-red-300">
             {warrant.type} - {warrant.jurisdiction} ({formatDate(warrant.issueDate)})
           </div>
         {/each}
       {/if}
   </div>
   <!-- Profile, Content -->
-  <div, class="p-4, space-y-4">
+  <div class="p-4">
     <!-- Personal, Information -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono, mb-3, uppercase">Personal Information</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3 gap-3, text-sm, font-mono">
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3">Personal Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
           <div>
-            <span, class="text-yorha-text-secondary">Date of Birth:</span>
-            <div, class="text-yorha-text-primary">{formatDate(profile.personalInfo.dateOfBirth)}</div>
+            <span class="text-yorha-text-secondary">Date of Birth:</span>
+            <div class="text-yorha-text-primary">{formatDate(profile.personalInfo.dateOfBirth)}</div>
           </div>
           {#if profile.personalInfo.placeOfBirth}
             <div>
-              <span, class="text-yorha-text-secondary">Place of Birth:</span>
-              <div, class="text-yorha-text-primary">{profile.personalInfo.placeOfBirth}</div>
+              <span class="text-yorha-text-secondary">Place of Birth:</span>
+              <div class="text-yorha-text-primary">{profile.personalInfo.placeOfBirth}</div>
             {/if}
           <div>
-            <span, class="text-yorha-text-secondary">Gender:</span>
-            <div, class="text-yorha-text-primary, capitalize">{profile.personalInfo.gender}</div>
+            <span class="text-yorha-text-secondary">Gender:</span>
+            <div class="text-yorha-text-primary">{profile.personalInfo.gender}</div>
           </div>
           {#if profile.personalInfo.height}
             <div>
-              <span, class="text-yorha-text-secondary">Height:</span>
-              <div, class="text-yorha-text-primary">{profile.personalInfo.height}</div>
+              <span class="text-yorha-text-secondary">Height:</span>
+              <div class="text-yorha-text-primary">{profile.personalInfo.height}</div>
             {/if}
           {#if profile.personalInfo.weight}
             <div>
-              <span, class="text-yorha-text-secondary">Weight:</span>
-              <div, class="text-yorha-text-primary">{profile.personalInfo.weight}</div>
+              <span class="text-yorha-text-secondary">Weight:</span>
+              <div class="text-yorha-text-primary">{profile.personalInfo.weight}</div>
             {/if}
           {#if profile.personalInfo.eyeColor}
             <div>
-              <span, class="text-yorha-text-secondary">Eye Color:</span>
-              <div, class="text-yorha-text-primary">{profile.personalInfo.eyeColor}</div>
+              <span class="text-yorha-text-secondary">Eye Color:</span>
+              <div class="text-yorha-text-primary">{profile.personalInfo.eyeColor}</div>
             {/if}
           {#if profile.personalInfo.hairColor}
             <div>
-              <span, class="text-yorha-text-secondary">Hair Color:</span>
-              <div, class="text-yorha-text-primary">{profile.personalInfo.hairColor}</div>
+              <span class="text-yorha-text-secondary">Hair Color:</span>
+              <div class="text-yorha-text-primary">{profile.personalInfo.hairColor}</div>
             {/if}
         </div>
         <!-- Distinguishing, Marks -->
         {#if profile.personalInfo.distinguishingMarks?.length}
-          <div, class="mt-3">
-            <span class="text-xs, text-yorha-text-secondary, font-mono">Distinguishing Marks:</span>
-            <div class="flex flex-wrap, gap-2, mt-1">
+          <div class="mt-3">
+            <span class="text-xs text-yorha-text-secondary">Distinguishing Marks:</span>
+            <div class="flex flex-wrap gap-2">
               {#each Array.isArray(profile.personalInfo.distinguishingMarks) ? profile.personalInfo.distinguishingMarks : [] as mark}
                 <span
                   class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border"
@@ -275,31 +275,31 @@ import type { Case } from '$lib/types';
     <!-- Identification -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono, mb-3, uppercase">Identification</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3, text-sm, font-mono">
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3">Identification</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           {#if profile.identification.ssn}
             <div>
-              <span, class="text-yorha-text-secondary">SSN:</span>
-              <div, class="text-yorha-text-primary">{maskSSN(profile.identification.ssn)}</div>
+              <span class="text-yorha-text-secondary">SSN:</span>
+              <div class="text-yorha-text-primary">{maskSSN(profile.identification.ssn)}</div>
             {/if}
           {#if profile.identification.driverLicense}
             <div>
-              <span, class="text-yorha-text-secondary">Driver's License:</span>'
-              <div, class="text-yorha-text-primary">{profile.identification.driverLicense}</div>
+              <span class="text-yorha-text-secondary">Driver's License:</span>'
+              <div class="text-yorha-text-primary">{profile.identification.driverLicense}</div>
             {/if}
           {#if profile.identification.passport}
             <div>
-              <span, class="text-yorha-text-secondary">Passport:</span>
-              <div, class="text-yorha-text-primary">{profile.identification.passport}</div>
+              <span class="text-yorha-text-secondary">Passport:</span>
+              <div class="text-yorha-text-primary">{profile.identification.passport}</div>
             {/if}
         </div>
         <!-- Biometric, Data -->
         {#if profile.identification.biometrics}
-          <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3, text-xs, font-mono">
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             {#if profile.identification.biometrics.fingerprints?.length}
-              <div class="flex, items-center, gap-2">
-                <span, class="text-yorha-text-secondary">🔎</span>
-                <span, class="text-yorha-text-primary">
+              <div class="flex items-center">
+                <span class="text-yorha-text-secondary">🔎</span>
+                <span class="text-yorha-text-primary">
                   {profile.identification.biometrics.fingerprints.length} fingerprint record{profile.identification
                     .biometrics.fingerprints.length !== 1
                     ? 's'
@@ -307,13 +307,13 @@ import type { Case } from '$lib/types';
                 </span>
               {/if}
             {#if profile.identification.biometrics.dnaProfile}
-              <div class="flex items-center, gap-2, text-yorha-text-primary">
-                <span, class="text-yorha-text-secondary">🧬</span>
+              <div class="flex items-center gap-2">
+                <span class="text-yorha-text-secondary">🧬</span>
                 DNA profile on file
               {/if}
             {#if profile.identification.biometrics.facialRecognition}
-              <div class="flex items-center, gap-2, text-yorha-text-primary">
-                <span, class="text-yorha-text-secondary">📸</span>
+              <div class="flex items-center gap-2">
+                <span class="text-yorha-text-secondary">📸</span>
                 Facial recognition data
               {/if}
           {/if}
@@ -321,21 +321,21 @@ import type { Case } from '$lib/types';
     <!-- Criminal, History -->
     {#if viewMode === 'full' || viewMode === 'summary'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono, mb-3, uppercase">
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3">
           Criminal History ({profile.criminalHistory.length} record{profile.criminalHistory.length !== 1 ? 's' : ''})
         </h3>
         {#if recentRecords.length === 0}
-          <p class="text-sm, text-yorha-text-secondary, font-mono">No criminal records found</p>
+          <p class="text-sm text-yorha-text-secondary">No criminal records found</p>
         {:else}
-          <div, class="space-y-3">
+          <div class="space-y-3">
             {#each Array.isArray(recentRecords) ? recentRecords : [] as record}
-              <div class="bg-yorha-bg-tertiary border border-yorha-border, rounded, p-3">
-                <div class="flex items-start, justify-between, mb-2">
+              <div class="bg-yorha-bg-tertiary border border-yorha-border rounded">
+                <div class="flex items-start justify-between">
                   <div>
-                    <h4 class="text-sm font-medium, text-yorha-text-primary, font-mono">
+                    <h4 class="text-sm font-medium text-yorha-text-primary">
                       {record.offense}
                     </h4>
-                    <div class="text-xs, text-yorha-text-secondary, font-mono">
+                    <div class="text-xs text-yorha-text-secondary">
                       {formatDate(record.date)} • {record.jurisdiction}
                       {#if record.caseNumber}
                         • Case #{record.caseNumber}
@@ -352,7 +352,7 @@ import type { Case } from '$lib/types';
                   </span>
                 </div>
                 {#if record.sentence}
-                  <p class="text-xs, text-yorha-text-secondary, font-mono">
+                  <p class="text-xs text-yorha-text-secondary">
                     Sentence: {record.sentence}
                   </p>
                 {/if}
@@ -368,8 +368,8 @@ import type { Case } from '$lib/types';
               </div>
             {/each}
             {#if profile.criminalHistory.length > 5}
-              <div, class="text-center">
-                <span class="text-xs, font-mono, text-yorha-text-secondary">
+              <div class="text-center">
+                <span class="text-xs font-mono">
                   Showing {recentRecords.length} of {profile.criminalHistory.length} records
                 </span>
               {/if}
@@ -378,9 +378,9 @@ import type { Case } from '$lib/types';
     <!-- Additional, Notes -->
     {#if profile.notes && viewMode === 'full'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono, mb-3, uppercase">Notes</h3>
-        <div class="bg-yorha-bg-tertiary border border-yorha-border, rounded, p-3">
-          <p class="text-sm text-yorha-text-primary, font-mono, whitespace-pre-wrap">
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3">Notes</h3>
+        <div class="bg-yorha-bg-tertiary border border-yorha-border rounded">
+          <p class="text-sm text-yorha-text-primary font-mono">
             {profile.notes}
           </p>
         </div>
@@ -388,8 +388,8 @@ import type { Case } from '$lib/types';
   </div>
   <!-- Footer, Actions -->
   {#if interactive && onUpdateProfile}
-    <div class="px-4 py-3 bg-yorha-bg-tertiary, border-t, border-yorha-border">
-      <div, class="flex, justify-end">
+    <div class="px-4 py-3 bg-yorha-bg-tertiary border-t">
+      <div class="flex">
         <button
           onclick={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
@@ -411,8 +411,8 @@ import type { Case } from '$lib/types';
   </div>
   <!-- Footer, Actions -->
   {#if interactive && onUpdateProfile}
-    <div class="px-4 py-3 bg-yorha-bg-tertiary, border-t, border-yorha-border">
-      <div, class="flex, justify-end">
+    <div class="px-4 py-3 bg-yorha-bg-tertiary border-t">
+      <div class="flex">
         <button
           onclick={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"

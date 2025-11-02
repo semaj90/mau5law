@@ -198,13 +198,7 @@ async function tryClientSideFallback() {
 		results = [{
 			content: `Client-side analysis: "${query}". This is processed locally using WebAssembly Gemma3-270M model when server services are unavailable.`,
 			score: 0.6,
-			metadata: {
-				document_id: 'client_fallback_001',
-				legal_category: 'client_analysis',
-				confidence: 0.6,
-				processing_time_ms: 150,
-				gpu_accelerated: false,
-			}
+			metadata: { document_id: 'client_fallback_001', legal_category: 'client_analysis', confidence: 0.6, processing_time_ms: 150, gpu_accelerated: false }
 		}];
 		console.log('🔧 Using client-side WebAssembly fallback');
 	} catch (err) {

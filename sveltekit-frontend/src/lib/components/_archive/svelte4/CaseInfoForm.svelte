@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // import { Button } from 'bits-ui'; // removed unused Button import
@@ -26,7 +26,7 @@ import type { Case } from '$lib/types';
   const { formData } = $props<{ formData: FormData }>()
 
   const dispatch = createEventDispatcher();
-  let validationErrors: Record<string, string> = {};
+  let validationErrors: Record<string string> = {};
 
   // Case type options
   const caseTypes = [
@@ -106,16 +106,16 @@ import type { Case } from '$lib/types';
   }
 </script>
 
-<div class="max-w-4xl mx-auto p-6 bg-white, rounded-lg, shadow-lg" transition:fade>
-  <div, class="mb-8">
-    <h2 class="text-2xl font-bold, text-gray-900, mb-2">Case Information</h2>
-    <p, class="text-gray-600">Enter the basic information about this legal case</p>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg" transition:fade>
+  <div class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-900">Case Information</h2>
+    <p class="text-gray-600">Enter the basic information about this legal case</p>
   </div>
 
   <form on:submit|preventDefault={handleNext} class="space-y-6">
     <!-- Case, Title -->
     <div>
-      <label for="title" class="block text-sm font-medium, text-gray-700, mb-2"> Case Title * </label>
+      <label for="title" class="block text-sm font-medium text-gray-700"> Case Title * </label>
       <input
         id="title"
         type="text"
@@ -124,13 +124,13 @@ import type { Case } from '$lib/types';
         placeholder="e.g., Smith vs. Jones Contract Dispute"
       />
       {#if validationErrors.title}
-        <p class="mt-1, text-sm, text-red-600">{validationErrors.title}</p>
+        <p class="mt-1 text-sm">{validationErrors.title}</p>
       {/if}
     </div>
 
     <!-- Client, Name -->
     <div>
-      <label for="client_name" class="block text-sm font-medium, text-gray-700, mb-2"> Client Name * </label>
+      <label for="client_name" class="block text-sm font-medium text-gray-700"> Client Name * </label>
       <input
         id="client_name"
         type="text"
@@ -139,42 +139,42 @@ import type { Case } from '$lib/types';
         placeholder="Enter client's full name"'
       />
       {#if validationErrors.client_name}
-        <p class="mt-1, text-sm, text-red-600">{validationErrors.client_name}</p>
+        <p class="mt-1 text-sm">{validationErrors.client_name}</p>
       {/if}
     </div>
 
     <!-- Case Type and, Priority, Row -->
-    <div class="grid grid-cols-1, md:grid-cols-2, gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2">
       <div>
-        <label for="case_type" class="block text-sm font-medium, text-gray-700, mb-2"> Case Type * </label>
+        <label for="case_type" class="block text-sm font-medium text-gray-700"> Case Type * </label>
         <select
           id="case_type"
           bind:value={formData.case_type}
           class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.case_type ? 'border-red-500' : ''}`}
         >
-          <option, value="">Select case type</option>
+          <option value="">Select case type</option>
           {#each Array.isArray(caseTypes) ? caseTypes : [] as type}
-            <option, value={type}>{type}</option>
+            <option value={type}>{type}</option>
           {/each}
         </select>
         {#if validationErrors.case_type}
-          <p class="mt-1, text-sm, text-red-600">{validationErrors.case_type}</p>
+          <p class="mt-1 text-sm">{validationErrors.case_type}</p>
         {/if}
       </div>
 
       <div>
-        <label for="priority" class="block text-sm font-medium, text-gray-700, mb-2"> Priority Level </label>
+        <label for="priority" class="block text-sm font-medium text-gray-700"> Priority Level </label>
         <select
           id="priority"
           bind:value={formData.priority}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option, value="low">Low Priority</option>
-          <option, value="medium">Medium Priority</option>
-          <option, value="high">High Priority</option>
-          <option, value="urgent">Urgent</option>
+          <option value="low">Low Priority</option>
+          <option value="medium">Medium Priority</option>
+          <option value="high">High Priority</option>
+          <option value="urgent">Urgent</option>
         </select>
-        <div, class="mt-2">
+        <div class="mt-2">
           <!-- merged static classes + dynamic color classes into one, class, attribute -->
           <span
             class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(formData.priority)}`}
@@ -187,25 +187,25 @@ import type { Case } from '$lib/types';
 
     <!-- Jurisdiction -->
     <div>
-      <label for="jurisdiction" class="block text-sm font-medium, text-gray-700, mb-2"> Jurisdiction * </label>
+      <label for="jurisdiction" class="block text-sm font-medium text-gray-700"> Jurisdiction * </label>
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
         class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.jurisdiction ? 'border-red-500' : ''}`}
       >
-        <option, value="">Select jurisdiction</option>
+        <option value="">Select jurisdiction</option>
         {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
-          <option, value={jurisdiction}>{jurisdiction}</option>
+          <option value={jurisdiction}>{jurisdiction}</option>
         {/each}
       </select>
       {#if validationErrors.jurisdiction}
-        <p class="mt-1, text-sm, text-red-600">{validationErrors.jurisdiction}</p>
+        <p class="mt-1 text-sm">{validationErrors.jurisdiction}</p>
       {/if}
     </div>
 
     <!-- Case, Description -->
     <div>
-      <label for="description" class="block text-sm font-medium, text-gray-700, mb-2"> Case Description * </label>
+      <label for="description" class="block text-sm font-medium text-gray-700"> Case Description * </label>
       <textarea
         id="description"
         bind:value={formData.description}
@@ -214,16 +214,16 @@ import type { Case } from '$lib/types';
         placeholder="Provide a detailed description of the case, including key issues, parties involved, and relevant background information..."
       ></textarea>
       {#if validationErrors.description}
-        <p class="mt-1, text-sm, text-red-600">{validationErrors.description}</p>
+        <p class="mt-1 text-sm">{validationErrors.description}</p>
       {/if}
     </div>
 
     <!-- Actions -->
-    <div class="flex, justify-end, gap-2">
-      <button type="button" onclick={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100, text-gray-800, border"
+    <div class="flex justify-end">
+      <button type="button" onclick={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800"
         >Save Draft</button
       >
-      <button type="submit" class="px-4 py-2 rounded-md, bg-blue-600, text-white">Next</button>
+      <button type="submit" class="px-4 py-2 rounded-md bg-blue-600">Next</button>
     </div>
   </form>
 </div>

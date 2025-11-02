@@ -206,22 +206,18 @@ https://svelte.dev/e/js_parse_error -->
       const testDocs = [
         {
           id: 'test_contract_1',
-          type: 'contract' as const,
-          priority: 200,
+          type: 'contract' as const priority: 200,
           size: 1024,
           confidenceLevel: 0.9,
-          riskLevel: 'high' as const,
-          compressed: false,
+          riskLevel: 'high' as const compressed: false,
           metadata: { caseId: 'demo_case_1' }
         },
         {
           id: 'test_evidence_1',
-          type: 'evidence' as const,
-          priority: 180,
+          type: 'evidence' as const priority: 180,
           size: 1024,
           confidenceLevel: 0.85,
-          riskLevel: 'medium' as const,
-          compressed: false,
+          riskLevel: 'medium' as const compressed: false,
           metadata: { caseId: 'demo_case_1' }
         }
       ];
@@ -246,12 +242,10 @@ https://svelte.dev/e/js_parse_error -->
       // Store test documents in cache
       const testDoc = {
         id: 'cache_test_1',
-        type: 'brief' as const,
-        priority: 150,
+        type: 'brief' as const priority: 150,
         size: 2048,
         confidenceLevel: 0.8,
-        riskLevel: 'medium' as const,
-        lastAccessed: Date.now(),
+        riskLevel: 'medium' as const lastAccessed: Date.now(),
         compressed: false,
         metadata: {
           caseId: 'demo_case_cache',
@@ -319,9 +313,7 @@ https://svelte.dev/e/js_parse_error -->
   // Button configurations for different demos
   const getDemoButtonProps = (demoId: string): UnifiedButtonProps => {
     const base = {
-      variant: 'primary' as const,
-      size: 'md' as const,
-      gpuEffects: true,
+      variant: 'primary' as const size: 'md' as const gpuEffects: true,
       glowIntensity: 0.6
     };
 

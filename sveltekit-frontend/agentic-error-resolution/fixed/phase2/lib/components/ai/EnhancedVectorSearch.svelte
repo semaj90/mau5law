@@ -32,33 +32,11 @@ https://svelte.dev/e/js_parse_error -->
   //   TabsList,
   //   TabsTrigger,
   // } from "bits-ui"
-  import {
-    BarChart3,
-    Brain,
-    ChevronDown,
-    ChevronUp,
-    Clock,
-    Download,
-    Eye,
-    Filter,
-    Loader2,
-    Search,
-    Share2,
-    Target,
-    TrendingUp,
-    Zap,
-  } from "lucide-svelte";
+  import { BarChart3, Brain, ChevronDown, ChevronUp, Clock, Download, Eye, Filter, Loader2, Search, Share2, Target, TrendingUp, Zap } from "lucide-svelte";
   import { onMount  } from "svelte";
   import { derived, get, writable } from "svelte/store";
   // Props
-  let { caseId = "",
-    userId = "",
-    maxResults = 20,
-    enableAnalytics = true,
-    enableFilters = true,
-    showPreview = true,
-    class: className = "",
-   }: { caseId = "",
+  let { caseId = "", userId = "", maxResults = 20, enableAnalytics = true, enableFilters = true, showPreview = true, class: className = "" }: { caseId = "",
     userId = "",
     maxResults = 20,
     enableAnalytics = true,
@@ -111,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
     averageSimilarity: number;
     responseTime: number;
     clickThroughRate: number;
-    commonFilters: Record<string, number>;
+    commonFilters: Record<string number>;
     performanceMetrics: {
       vectorSearchTime: number;
       rankingTime: number;
@@ -122,29 +100,10 @@ https://svelte.dev/e/js_parse_error -->
   const searchQuery = writable("");
   const searchResults = writable<SearchResult[]>([]);
   const isSearching = writable(false);
-  const searchFilters = writable<SearchFilters>({
-    documentTypes: [],
-    jurisdictions: [],
-    dateRange: ,
-    similarityThreshold: 0.7,
-    maxResults: maxResults;
-    tags: [],
-    sortBy: "relevance",
-    sortOrder: "desc",
-  });
-  const searchAnalytics = writable<SearchAnalytics>({
-    totalSearches: 0,
-    averageResultCount: 0,
-    topQueries: [],
-    averageSimilarity: 0,
-    responseTime: 0,
-    clickThroughRate: 0,
-    commonFilters: ,
-    performanceMetrics: {
-      vectorSearchTime: 0,
-      rankingTime: 0,
-      totalTime: 0,
-    },
+  const searchFilters = writable<SearchFilters>({ documentTypes: [], jurisdictions: [], dateRange:, similarityThreshold: 0.7, maxResults: maxResults;
+    tags: [], sortBy: "relevance", sortOrder: "desc" });
+  const searchAnalytics = writable<SearchAnalytics>({ totalSearches: 0, averageResultCount: 0, topQueries: [], averageSimilarity: 0, responseTime: 0, clickThroughRate: 0, commonFilters:, performanceMetrics: {
+      vectorSearchTime: 0, rankingTime: 0, totalTime: 0 },
   });
   const showFilters = writable(false);
   const showAnalytics = writable(false);
@@ -160,10 +119,10 @@ https://svelte.dev/e/js_parse_error -->
     );
   });
   const topDocumentTypes = derived(searchResults, ($results) => {
-    const types = new Map<string, number>();
+    const types = new Map<string number>();
     $results.forEach((result) => {
       const type = (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.documentType || "unknown";
-      types.set(type, (types.get(type) || 0) + 1);
+      types.set(type (types.get(type) || 0) + 1);
     });
     return Array.from(types.entries())
       .sort(([, a], [, b]) => b - a)
@@ -196,8 +155,7 @@ https://svelte.dev/e/js_parse_error -->
   // ============================================================================
   // SEARCH FUNCTIONALITY
   // ============================================================================
-  async function performSearch(query?: string) {
-    const searchTerm = query || get(searchQuery);
+  async function performSearch(query?: string) { const searchTerm = query || get(searchQuery);
     if (!searchTerm.trim()) return;
     isSearching.set(true);
     const startTime = Date.now();
@@ -208,13 +166,7 @@ https://svelte.dev/e/js_parse_error -->
         query: searchTerm
         caseId: caseId || undefined;
         filters: {
-          documentTypes: filters.documentTypes,
-          jurisdictions: filters.jurisdictions,
-          dateRange: filters.dateRange,
-          tags: filters.tags,
-          similarityThreshold: filters.similarityThreshold,
-          maxResults: filters.maxResults,
-        },
+          documentTypes: filters.documentTypes, jurisdictions: filters.jurisdictions, dateRange: filters.dateRange, tags: filters.tags, similarityThreshold: filters.similarityThreshold, maxResults: filters.maxResults },
         sortBy: filters.sortBy,
         sortOrder: filters.sortOrder,
         includeAnalytics: enableAnalytics
@@ -265,13 +217,9 @@ https://svelte.dev/e/js_parse_error -->
       }
       // Dispatch events
       ondispatch?.({ query: searchTerm, results });
-      ondispatch?.({
-        event: "search_performed",
-        data: {
+      ondispatch?.({ event: "search_performed", data: {
           query: searchTerm
-          resultCount: results.length,
-          responseTime: Date.now() - startTime,
-        },
+          resultCount: results.length, responseTime: Date.now() - startTime },
       });
     } catch (error) {
       console.error("Search error:", error);
@@ -331,17 +279,9 @@ https://svelte.dev/e/js_parse_error -->
       performSearch();
     }
   }
-  function resetFilters() {
-    searchFilters.set({
-      documentTypes: [],
-      jurisdictions: [],
-      dateRange: ,
-      similarityThreshold: 0.7,
-      maxResults: maxResults;
-      tags: [],
-      sortBy: "relevance",
-      sortOrder: "desc",
-    });
+  function resetFilters() { searchFilters.set({
+      documentTypes: [], jurisdictions: [], dateRange:, similarityThreshold: 0.7, maxResults: maxResults;
+      tags: [], sortBy: "relevance", sortOrder: "desc" });
     applyFilters();
   }
   // ============================================================================
@@ -360,18 +300,8 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
   }
-  function getDocumentTypeColor(type?: string): string {
-    const colors = {
-      contract: "blue",
-      motion: "green",
-      brief: "purple",
-      evidence: "red",
-      correspondence: "yellow",
-      statute: "indigo",
-      regulation: "pink",
-      case_law: "gray",
-      other: "slate",
-    }
+  function getDocumentTypeColor(type?: string): string { const colors = {
+      contract: "blue", motion: "green", brief: "purple", evidence: "red", correspondence: "yellow", statute: "indigo", regulation: "pink", case_law: "gray", other: "slate" }
     return colors[type as keyof typeof colors] || "gray";
   }
   function highlightText(text: string, highlights: string[]): string {
@@ -618,7 +548,7 @@ Apply Filters
           <div class="quick-stats">
             <p class="stats-label">Document Types:</p>
             <div class="stats-badges">
-              {#each $topDocumentTypes as [type, count]}
+              {#each $topDocumentTypes as [type count]}
                 <Badge variant={getDocumentTypeColor(type)}>
                   {documentTypes.find((t) => t.value === type)?.label || type}: {count}
                 </Badge>
@@ -901,10 +831,8 @@ Reset Filters
     display: flex;
     gap: 0.5rem;
   }
-  @media (min-width: 1024px) {
-    .search-actions {
-      flex-shrink: 0,
-    }
+  @media (min-width: 1024px) { .search-actions {
+      flex-shrink: 0 }
   }
   .search-button,
   .filter-button {
@@ -1041,10 +969,8 @@ Reset Filters
     align-items: flex-start;
     justify-content: space-betweenn;
   }
-  .result-title-section {
-    flex: 1;
-    min-width: 0,
-  }
+  .result-title-section { flex: 1;
+    min-width: 0 }
   .result-title {
     font-weight: 500;
     font-size: 1.125rem;
@@ -1191,9 +1117,7 @@ Reset Filters
     width: 6rem;
     font-size: 0.875rem;
   }
-  .performance-bar {
-    flex: 1,
-  }
+  .performance-bar { flex: 1 }
   .performance-value {
     width: 4rem;
     font-size: 0.875rem;

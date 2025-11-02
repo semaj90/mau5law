@@ -47,20 +47,7 @@
   let errorMessage = $state('');
   let successMessage = $state('');
   // Form data
-  let formData = $state({
-    email: '',
-    firstName: '',
-    lastName: '',
-    password: '',
-    confirmPassword: '',
-    role: 'analyst',
-    department: '',
-    jurisdiction: '',
-    badgeNumber: '',
-    agreeToTerms: false,
-    agreeToPrivacy: false,
-    enableTwoFactor: false,
-  });
+  let formData = $state({ email: '', firstName: '', lastName: '', password: '', confirmPassword: '', role: 'analyst', department: '', jurisdiction: '', badgeNumber: '', agreeToTerms: false, agreeToPrivacy: false, enableTwoFactor: false });
   // Role options
   const roleOptions = [
     { value: 'prosecutor', label: 'Prosecutor' },
@@ -137,15 +124,9 @@
     lastModified: number;
     status: 'pending' | 'needs-attach' | 'success' | 'error';
   }
-  function saveManifest() {
-    try {
+  function saveManifest() { try {
       const manifest: FileManifest[] = files.map(f => ({
-        id: f.id,
-        name: f.file.name,
-        size: f.file.size,
-        lastModified: f.file.lastModified,
-        status: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status,
-      }));
+        id: f.id, name: f.file.name, size: f.file.size, lastModified: f.file.lastModified, status: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status }));
       localStorage.setItem(FILES_MANIFEST_KEY, JSON.stringify(manifest));
     } catch (e) {
       // ignore storage errors
@@ -252,12 +233,7 @@
     const fd = new FormData();
     fd.append('file', entry.file, entry.file.name);
     // Hint server to run embeddings / ingest pipeline (Gemma) and AI analysis
-    const uploadData = {
-      enableEmbeddings: true,
-      enableAiAnalysis: true,
-      enableOcr: false,
-      title: entry.file.name,
-    };
+    const uploadData = { enableEmbeddings: true, enableAiAnalysis: true, enableOcr: false, title: entry.file.name };
     fd.append('uploadData', JSON.stringify(uploadData));
     xhr.send(fd);
   }

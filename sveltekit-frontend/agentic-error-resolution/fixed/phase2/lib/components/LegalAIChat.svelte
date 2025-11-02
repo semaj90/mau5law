@@ -24,14 +24,9 @@
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma3-legal',
-          prompt: userMessage;
-          stream: false,
-          options: {
-            temperature: 0.3,
-            num_ctx: 2048,
-          }
+        body: JSON.stringify({ model: 'gemma3-legal', prompt: userMessage;
+          stream: false, options: {
+            temperature: 0.3, num_ctx: 2048 }
         })
       });
       if (!response.ok) throw new Error('AI service unavailable');

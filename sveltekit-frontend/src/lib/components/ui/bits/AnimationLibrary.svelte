@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { fade, fly, scale, slide, blur, draw } from 'svelte/transition';
   import { quintOut, elasticOut, backOut, bounceOut } from 'svelte/easing';
   import { createEventDispatcher } from 'svelte';

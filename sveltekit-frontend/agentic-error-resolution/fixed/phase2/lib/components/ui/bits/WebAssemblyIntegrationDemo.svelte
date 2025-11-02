@@ -44,18 +44,13 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       isLoading = false;
     }
   }
-  async function testWebAssemblyRuntime() {
-    try {
+  async function testWebAssemblyRuntime() { try {
       console.log('🧪 Testing WebAssembly runtime...');
       demoData.webassemblyTest = 'Running...';
       const result = await unifiedRuntime.executeInference({
-        model: 'gemma3:270m',
-        prompt: testPrompt
-        useCase: 'chat',
-        useCHRROMCache: true
-        maxTokens: 100,
-        temperature: 0.7,
-      });
+        model: 'gemma3:270m', prompt: testPrompt
+        useCase: 'chat', useCHRROMCache: true
+        maxTokens: 100, temperature: 0.7 });
       testResult = result.text || 'WebAssembly inference completed successfully!';
       demoData.webassemblyTest = 'SUCCESS';
       console.log('✅ WebAssembly test completed:', result);

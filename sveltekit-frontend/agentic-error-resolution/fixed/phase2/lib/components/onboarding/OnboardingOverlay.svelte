@@ -7,18 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount } from 'svelte';
   import { browser } from "$app/environment";
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  Lightbulb,
-  MousePointer,
-  Pause,
-  Play,
-  SkipForward,
-  Target,
-  X,
-  } from 'lucide-svelte';
+  import { ArrowLeft, ArrowRight, Check, Lightbulb, MousePointer, Pause, Play, SkipForward, Target, X } from 'lucide-svelte';
   interface OnboardingStep {
   id: string;
   title: string;
@@ -115,20 +104,11 @@ https://svelte.dev/e/js_parse_error -->
       return;
   }
     targetElement = document.querySelector(currentStepData.targetSelector);
-    if (targetElement) {
-      const rect = targetElement.getBoundingClientRect();
+    if (targetElement) { const rect = targetElement.getBoundingClientRect();
       highlightBox = {
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        height: rect.height,
-      }
+        top: rect.top + window.scrollY, left: rect.left + window.scrollX, width: rect.width, height: rect.height }
       // Scroll element into view
-      targetElement.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
+      targetElement.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
     } else {
       highlightBox = null;
   }}
@@ -223,11 +203,7 @@ https://svelte.dev/e/js_parse_error -->
           left: `${highlightBox.left + highlightBox.width + margin}px`,
           transform: "translate(0, -50%)",
         }
-      default: return {
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }
+      default: return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" }
   }}
 </script>
 {#if open && currentStepData}
@@ -432,18 +408,15 @@ d;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(2px);
 }
-  .highlight-box {
-    position: absolute;
+  .highlight-box { position: absolute;
     border: 3px solid #3b82f6;
     border-radius: 8px;
     box-shadow:
-      0 0 0 4px rgba(59, 130, 246, 0.2),
-      0 0 20px rgba(59, 130, 246, 0.3);
+      0 0 0 4px rgba(59, 130, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.3);
     background: rgba(255, 255, 255, 0.1);
     pointer-events: none;
     animation: highlight-pulse 2s infinite;
-    z-index: 10001,
-}
+    z-index: 10001 }
   @keyframes highlight-pulse {
     0%,
     100% {

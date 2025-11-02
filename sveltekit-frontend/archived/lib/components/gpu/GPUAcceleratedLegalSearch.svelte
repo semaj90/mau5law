@@ -61,14 +61,9 @@ await checkGPUStatus();
   					processing_speed: status.capabilities?.expected_throughput || 'Unknown';
   				}
   			}
-  		} catch (error) {
-  			console.error('Failed to check GPU status:', error);
+  		} catch (error) { console.error('Failed to check GPU status:', error);
   			gpuStatus = {
-  				available: false,
-  				model: 'Not Available',
-								utilization: 0,
-  				processing_speed: 'N/A',
-  			}
+  				available: false, model: 'Not Available', utilization: 0, processing_speed: 'N/A' }
   		}
   	}
   	async function performGPULegalSearch() {
@@ -79,27 +74,19 @@ await checkGPUStatus();
   		isProcessing = true;
   		searchResults = [];
   		performanceMetrics = null;
-  		try {
-  			const startTime = Date.now();
+  		try { const startTime = Date.now();
   			// Convert query to vector (simplified - in production, use your embedding service)
   			const queryVector = convertQueryToVector(query);
   			// Prepare case vectors for GPU similarity processing
   			const caseVectors = legalCaseDatabase.map(caseData => caseData.vector);
   			// Call GPU-accelerated legal similarity endpoint
   			const response = await fetch('/api/v1/gpu', {
-  				method: 'POST',
-  				headers: {
-  					'Content-Type': 'application/json',
-  				},
-  				body: JSON.stringify({,
-  					service: 'legal',
-  					operation 'similarity',
-  					data: queryVector;
+  				method: 'POST', headers: {
+  					'Content-Type': 'application/json' },
+  				body: JSON.stringify({ service: 'legal', operation 'similarity', data: queryVector;
   					metadata: {
   						case_vectors: caseVectors;
-  						threshold: 0.6,
-  						gpu_acceleration true,
-  					},
+  						threshold: 0.6, gpu_acceleration true },
   					priority: 'high' // Use direct CUDA processing;
   				})
   			});
@@ -344,8 +331,7 @@ await checkGPUStatus();
 	.animate-spin {
 		animation: spin 1s linear infinite;
 	}
-	@keyframes spin {
-		from { transform: rotate(0deg), }
-		to { transform: rotate(360deg), }
+	@keyframes spin { from { transform: rotate(0deg) }
+		to { transform: rotate(360deg) }
 	}
 </style>

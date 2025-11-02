@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   const { as } = $props<{ as: keyof, HTMLElementTagNameMap }>()
   const { className = '' } = $props()
   const Tag: any = as;

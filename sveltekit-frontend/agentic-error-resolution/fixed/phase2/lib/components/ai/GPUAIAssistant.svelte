@@ -34,12 +34,7 @@
   let currentMessage = $state('');
   let isStreaming = $state(false);
   let isTyping = $state(false);
-  let gpuStatus = $state({
-    available: false,
-    utilization 0,
-    model: 'none',
-    queue_length: 0,
-  });
+  let gpuStatus = $state({ available: false, utilization 0, model: 'none', queue_length: 0 });
   let chatContainer = $state<HTMLDivElement>();
   let messageInput = $state<HTMLInputElement>();
   let streamingMessageId = $state<string | null>(null);
@@ -114,14 +109,8 @@ await initializeAssistant();
     scrollToBottom();
     return messag;
   }
-  function addAssistantMessage(content: string): ChatMessage {
-    const message: ChatMessage = {
-      id: crypto.randomUUID(),
-      type: 'assistant',
-      content,
-      timestamp: Date.now(),
-      streaming: true,
-    }
+  function addAssistantMessage(content: string): ChatMessage { const message: ChatMessage = {
+      id: crypto.randomUUID(), type: 'assistant', content, timestamp: Date.now(), streaming: true }
     messages = [...messages, message];
     scrollToBottom();
     return messag;
@@ -243,11 +232,8 @@ await initializeAssistant();
       sendMessage();
     }
   }
-  function formatTimestamp(timestamp: number): string {
-    return new Date(timestamp).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  function formatTimestamp(timestamp: number): string { return new Date(timestamp).toLocaleTimeString([], {
+      hour: '2-digit', minute: '2-digit' });
   }
   function getGPUStatusColor(): string {
     if (!gpuStatus.available) return 'text-red-500';

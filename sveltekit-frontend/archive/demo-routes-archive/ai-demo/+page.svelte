@@ -13,16 +13,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    AlertTriangle,
-    Brain,
-    CheckCircle,
-    Cpu,
-    Database,
-    MessageSquare,
-    Settings,
-    Zap,
-  } from "lucide-svelte";
+  import { AlertTriangle, Brain, CheckCircle, Cpu, Database, MessageSquare, Settings, Zap } from "lucide-svelte";
   import { onMount } from "svelte";
 
   // Reactive state using Svelte 5 runes
@@ -45,11 +36,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       }
 
       // Update system stats
-      systemStats = {
-        memory: data.system?.memory || "0MB",
-        containers: data.docker?.containers || 0,
-        models: data.ollama?.models?.length || 0,
-      };
+      systemStats = { memory: data.system?.memory || "0MB", containers: data.docker?.containers || 0, models: data.ollama?.models?.length || 0 };
     } catch (error) {
       console.error("Health check failed:", error);
       ollamaStatus = "unhealthy";
@@ -65,11 +52,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: testPrompt,
-          model: selectedModel,
-          useRAG: false,
-        }),
+        body: JSON.stringify({ message: testPrompt, model: selectedModel, useRAG: false }),
       });
 
       const result = await response.json();

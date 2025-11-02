@@ -3,18 +3,7 @@
   import { onMount } from 'svelte';
   // import * as Select from 'bits-ui'; // Removed melt dependency
   import { fade, fly } from 'svelte/transition';
-  import {
-    ChevronDown,
-    CheckCircle,
-    AlertCircle,
-    Loader2,
-    Cpu,
-    Brain,
-    Zap,
-    Database,
-    Globe,
-    Settings,
-  } from 'lucide-svelte';
+  import { ChevronDown, CheckCircle, AlertCircle, Loader2, Cpu, Brain, Zap, Database, Globe, Settings } from 'lucide-svelte';
   // LLM Provider Types
   interface LLMModel {
     id: string;
@@ -48,67 +37,23 @@
   }: Props = $props();
   // Available LLM Models
   let availableModels = $state<LLMModel[]>([
-    {
-      id: 'gemma3-legal',
-      name: 'gemma3-legal:latest',
-      displayName: 'Gemma3 Legal Specialist',
-      provider: 'ollama',
-      size: '7.3GB',
-      specialization: 'legal',
-      status: 'online',
-      performance: {
-        tokensPerSecond: 25,
-        memoryUsage: '6.8GB',
-        responseTime: 1200,
-      },
+    { id: 'gemma3-legal', name: 'gemma3-legal:latest', displayName: 'Gemma3 Legal Specialist', provider: 'ollama', size: '7.3GB', specialization: 'legal', status: 'online', performance: {
+        tokensPerSecond: 25, memoryUsage: '6.8GB', responseTime: 1200 },
       capabilities: ['legal-analysis', 'case-research', 'document-review'],
       endpoint: 'http://localhost:11434',
     },
-    {
-      id: 'llama3-instruct',
-      name: 'gemma3-legal:latest',
-      displayName: 'Llama3 Instruct',
-      provider: 'ollama',
-      size: '4.7GB',
-      specialization: 'general',
-      status: 'online',
-      performance: {
-        tokensPerSecond: 35,
-        memoryUsage: '4.2GB',
-        responseTime: 800,
-      },
+    { id: 'llama3-instruct', name: 'gemma3-legal:latest', displayName: 'Llama3 Instruct', provider: 'ollama', size: '4.7GB', specialization: 'general', status: 'online', performance: {
+        tokensPerSecond: 35, memoryUsage: '4.2GB', responseTime: 800 },
       capabilities: ['general-chat', 'reasoning', 'summarization'],
       endpoint: 'http://localhost:11434',
     },
-    {
-      id: 'codellama-code',
-      name: 'codellama:7b-code',
-      displayName: 'CodeLlama Code Expert',
-      provider: 'ollama',
-      size: '3.8GB',
-      specialization: 'code',
-      status: 'offline',
-      performance: {
-        tokensPerSecond: 40,
-        memoryUsage: '3.5GB',
-        responseTime: 600,
-      },
+    { id: 'codellama-code', name: 'codellama:7b-code', displayName: 'CodeLlama Code Expert', provider: 'ollama', size: '3.8GB', specialization: 'code', status: 'offline', performance: {
+        tokensPerSecond: 40, memoryUsage: '3.5GB', responseTime: 600 },
       capabilities: ['code-generation', 'debugging', 'refactoring'],
       endpoint: 'http://localhost:11434',
     },
-    {
-      id: 'nomic-embed',
-      name: 'nomic-embed-text',
-      displayName: 'Nomic Embeddings',
-      provider: 'ollama',
-      size: '274MB',
-      specialization: 'embedding',
-      status: 'online',
-      performance: {
-        tokensPerSecond: 500,
-        memoryUsage: '512MB',
-        responseTime: 100,
-      },
+    { id: 'nomic-embed', name: 'nomic-embed-text', displayName: 'Nomic Embeddings', provider: 'ollama', size: '274MB', specialization: 'embedding', status: 'online', performance: {
+        tokensPerSecond: 500, memoryUsage: '512MB', responseTime: 100 },
       capabilities: ['text-embedding', 'similarity-search', 'vector-generation'],
       endpoint: 'http://localhost:11434',
     },
@@ -200,10 +145,7 @@
     // Check each model's health
     for (const model of availableModels) {
       try {
-        const response = await fetch(`${model.endpoint}/api/tags`, {
-          method: 'GET',
-          signal: AbortSignal.timeout(2000),
-        });
+        const response = await fetch(`${model.endpoint}/api/tags`, { method: 'GET', signal: AbortSignal.timeout(2000) });
         if (response.ok) {
           const data = await response.json();
           const isModelLoaded = data.models?.some((m: any) => m.name === model.name);
@@ -247,11 +189,7 @@
   <button
     onclick={() => (isOpen = !isOpen)}
     class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
-           bg-white dark:bg-gray-800 px-3 py-2 text-sm,
-           hover:bg-gray-50 dark:hover:bg-gray-700,
-           focus: outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-           disabled:cursor-not-allowed disabled:opacity-50
-           transition-colors duration-200"
+           bg-white dark:bg-gray-800 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
     aria-label="Select AI Model"
   >
     <div class="flex items-center gap-3">

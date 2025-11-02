@@ -320,9 +320,9 @@ https://svelte.dev/e/tag_invalid_name -->
 
   function getStatusBadge(status: string) {
     switch (status) {
-      case 'healthy': return { variant: 'default' as const, icon: CheckCircle };
-      case 'unhealthy': return { variant: 'destructive' as const, icon: AlertCircle };
-      default: return { variant: 'secondary' as const, icon: Activity };
+      case 'healthy': return { variant: 'default' as const icon: CheckCircle };
+      case 'unhealthy': return { variant: 'destructive' as const icon: AlertCircle };
+      default: return { variant: 'secondary' as const icon: Activity };
     }
   }
 </script>

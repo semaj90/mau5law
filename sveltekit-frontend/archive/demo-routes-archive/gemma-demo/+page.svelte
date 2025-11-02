@@ -34,7 +34,7 @@
   let demoDescription = $derived(() => {
     switch (activeDemo) {
       case 'complete':
-        return 'Full-featured demo with tabbed interface, stats, and real-time activity monitoring';
+        return 'Full-featured demo with tabbed interface stats, and real-time activity monitoring';
       case 'form':
         return 'Standalone embedding generation form with Gemma API and WASM fallback';
       case 'search':

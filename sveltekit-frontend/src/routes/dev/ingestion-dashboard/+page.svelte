@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -98,7 +98,7 @@ import type { Document } from '$lib/types';
     }
   }
 
-  async function controlWorkflow(action: string, params: Record<string, any> = {}): Promise<any> {
+  async function controlWorkflow(action: string, params: Record<string any> = {}): Promise<any> {
     try {
       const response = await fetch('/api/ingestion/comprehensive', {
         method: 'POST',

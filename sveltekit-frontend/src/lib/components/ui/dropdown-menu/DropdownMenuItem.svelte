@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   let ItemCtor: any = null;
   (async () => {
@@ -52,13 +52,13 @@
   {/if}
 {:else if ItemCtor}
   <svelte:component, this={ItemCtor} class={itemClasses} {disabled} onSelect={onselect} {...rest}>
-    <button type="button" class="flex w-full items-center, gap-2, text-left" onclick={handleClick} {disabled}>
+    <button type="button" class="flex w-full items-center gap-2" onclick={handleClick} {disabled}>
       <slot />
     </button>
   </svelte:component>
 {:else}
   <!-- Fallback while ItemCtor, is, loading -->
-  <button, type="button" class={itemClasses} onclick={handleClick} {disabled} {...rest}>
+  <button type="button" class={itemClasses} onclick={handleClick} {disabled} {...rest}>
     <slot />
   </button>
 {/if}

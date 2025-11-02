@@ -1,7 +1,7 @@
 <!--
 AI Document Summarization - Generate summaries of legal documents
 -->
-<script, lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
 	// Safe imports (works with default or named exports)
 	import * as EssentialRoutePageModule from '$lib/templates/EssentialRoutePage.svelte';
@@ -116,20 +116,20 @@ import type { Document } from '$lib/types';
 <!-- render the resolved, template, component -->
 <svelte:component this={EssentialRouteComponent} pageTitle="Document Summarization" description="AI-powered legal document analysis, and, summarization" showBackButton={true}>
 	{#snippet children()}
-		<div class="grid grid-cols-1, lg:grid-cols-2, gap-6">
+		<div class="grid grid-cols-1 lg:grid-cols-2">
 			<!-- Upload, and, Controls -->
 			<div>
-				<div class="nes-container, is-rounded, mb-6">
-					<div class="flex items-center, justify-between, mb-3">
-						<div class="nes-text is-primary flex, items-center, gap-2">
-							<Upload, class="w-5, h-5" />
+				<div class="nes-container is-rounded">
+					<div class="flex items-center justify-between">
+						<div class="nes-text is-primary flex items-center">
+							<Upload class="w-5" />
 							Document Upload
 						</div>
 					</div>
 
-					<div, class="space-y-4">
-						<div, class="nes-field">
-							<label class="nes-text text-sm, mb-2, block">Select legal document</label>
+					<div class="space-y-4">
+						<div class="nes-field">
+							<label class="nes-text text-sm mb-2">Select legal document</label>
 							<input
 								type="file"
 								accept=".pdf,.doc,.docx,.txt"
@@ -140,48 +140,48 @@ import type { Document } from '$lib/types';
 						</div>
 
 						{#if selectedFile}
-							<div class="nes-container, with-title, is-centered">
-								<p, class="title">Selected File</p>
-								<div class="flex, items-center, justify-between">
-									<div class="flex, items-center, gap-2">
-										<FileText, class="w-4, h-4" />
-										<span, class="text-sm">{selectedFile.name}</span>
+							<div class="nes-container with-title">
+								<p class="title">Selected File</p>
+								<div class="flex items-center">
+									<div class="flex items-center">
+										<FileText class="w-4" />
+										<span class="text-sm">{selectedFile.name}</span>
 									</div>
-									<span, class="nes-badge, is-success">{Math.round(selectedFile.size / 1024)} KB</span>
+									<span class="nes-badge">{Math.round(selectedFile.size / 1024)} KB</span>
 								</div>
 							</div>
 						{/if}
 
 						{#if isUploading}
-							<div class="nes-text is-primary, animate-pulse, text-center">Uploading document...</div>
+							<div class="nes-text is-primary animate-pulse">Uploading document...</div>
 						{/if}
 					</div>
 				</div>
 
 				<!-- Summary, Options -->
-				<div, class="nes-container, is-rounded">
-					<div, class="mb-2">
-						<div, class="nes-text, is-primary">Summary Options</div>
+				<div class="nes-container">
+					<div class="mb-2">
+						<div class="nes-text">Summary Options</div>
 					</div>
-					<div, class="space-y-4">
+					<div class="space-y-4">
 						{#each Array.isArray(summaryTypes) ? summaryTypes : [] as type}
-							<label class="flex items-center, gap-3, cursor-pointer">
-								<input, type="radio" bind:group={summaryType} value={type.value} class="nes-radio" />
+							<label class="flex items-center gap-3">
+								<input type="radio" bind:group={summaryType} value={type.value} class="nes-radio" />
 								<div>
-									<div, class="nes-text, text-sm">{type.label}</div>
-									<div class="nes-text, is-disabled, text-xs">{type.description}</div>
+									<div class="nes-text">{type.label}</div>
+									<div class="nes-text is-disabled">{type.description}</div>
 								</div>
 							</label>
 						{/each}
 
-						<div class="pt-4, border-t, border-gray-600">
-							<div class="nes-btn, is-primary, w-full">
+						<div class="pt-4 border-t">
+							<div class="nes-btn is-primary">
   <EnhancedButton onclick={generateSummary} disabled={!selectedFile || isUploading || isSummarizing}>
 								{#if isSummarizing}
-									<Brain class="w-4 h-4, mr-2, animate-pulse" />
+									<Brain class="w-4 h-4 mr-2" />
 									Generating Summary...
 								{:else}
-									<Brain class="w-4, h-4, mr-2" />
+									<Brain class="w-4 h-4" />
 									Generate Summary
 								{/if}
 							</EnhancedButton>
@@ -193,13 +193,13 @@ import type { Document } from '$lib/types';
 
 			<!-- Summary, Output -->
 			<div>
-				<div, class="nes-container, is-rounded">
-					<div class="flex justify-between, items-center, mb-3">
-						<div, class="nes-text, is-primary">AI Summary</div>
+				<div class="nes-container">
+					<div class="flex justify-between items-center">
+						<div class="nes-text">AI Summary</div>
 						{#if summary}
-							<div, class="nes-btn">
-  <EnhancedButton, size="sm"  onclick={exportSummary}>
-								<Download class="w-3, h-3, mr-1" />
+							<div class="nes-btn">
+  <EnhancedButton size="sm"  onclick={exportSummary}>
+								<Download class="w-3 h-3" />
 								Export
 							</EnhancedButton>
 </div>
@@ -207,57 +207,57 @@ import type { Document } from '$lib/types';
 					</div>
 
 					{#if isSummarizing}
-						<div, class="text-center, py-8">
-							<Brain class="w-8 h-8 mx-auto, mb-4, animate-pulse" />
-							<div, class="nes-text, is-primary">AI is analyzing your document...</div>
-							<div class="nes-text is-disabled, text-xs, mt-2">This may take a few moments</div>
+						<div class="text-center">
+							<Brain class="w-8 h-8 mx-auto mb-4" />
+							<div class="nes-text">AI is analyzing your document...</div>
+							<div class="nes-text is-disabled text-xs">This may take a few moments</div>
 						</div>
 					{:else if summary}
-						<div, class="space-y-4">
-							<div class="nes-container, with-title, is-centered">
-								<p, class="title">Summary</p>
-								<div class="text-sm, leading-relaxed, whitespace-pre-wrap">{summary}</div>
+						<div class="space-y-4">
+							<div class="nes-container with-title">
+								<p class="title">Summary</p>
+								<div class="text-sm leading-relaxed">{summary}</div>
 							</div>
 
 							<!-- Summary, Stats -->
-							<div class="grid, grid-cols-3, gap-2">
-								<div, class="text-center">
-									<div class="nes-text, is-success, text-sm">{wordCount}</div>
-									<div class="nes-text, is-disabled, text-xs">Words</div>
+							<div class="grid grid-cols-3">
+								<div class="text-center">
+									<div class="nes-text is-success">{wordCount}</div>
+									<div class="nes-text is-disabled">Words</div>
 								</div>
-								<div, class="text-center">
-									<div class="nes-text, is-success, text-sm">{readMinutes} min</div>
-									<div class="nes-text, is-disabled, text-xs">Min Read</div>
+								<div class="text-center">
+									<div class="nes-text is-success">{readMinutes} min</div>
+									<div class="nes-text is-disabled">Min Read</div>
 								</div>
-								<div, class="text-center">
-									<div class="nes-text is-success text-sm flex items-center, justify-center, gap-1">
-										<Star, class="w-3, h-3" />95%
+								<div class="text-center">
+									<div class="nes-text is-success text-sm flex items-center justify-center">
+										<Star class="w-3" />95%
 									</div>
-									<div class="nes-text, is-disabled, text-xs">Confidence</div>
+									<div class="nes-text is-disabled">Confidence</div>
 								</div>
 							</div>
 						</div>
 					{:else}
-						<div, class="text-center, py-8">
-							<FileText class="w-8 h-8 mx-auto, mb-4, opacity-50" />
-							<div, class="nes-text, is-disabled">Upload a document to generate AI summary</div>
+						<div class="text-center">
+							<FileText class="w-8 h-8 mx-auto mb-4" />
+							<div class="nes-text">Upload a document to generate AI summary</div>
 						</div>
 					{/if}
 				</div>
 
 				<!-- Recent, Summaries -->
-				<div class="nes-container, is-rounded, mt-6">
-					<div class="flex items-center, gap-2, mb-2">
-						<Clock, class="w-4, h-4" />
-						<div class="nes-text, is-primary, text-sm">Recent Summaries</div>
+				<div class="nes-container is-rounded">
+					<div class="flex items-center gap-2">
+						<Clock class="w-4" />
+						<div class="nes-text is-primary">Recent Summaries</div>
 					</div>
 
 					<!-- Placeholder for recent, summaries, list -->
-					<div, class="space-y-2">
-						<div class="animate-pulse, flex, gap-4">
-							<div class="flex-1 h-4, bg-gray-300, rounded"></div>
-							<div class="flex-1 h-4, bg-gray-300, rounded"></div>
-							<div class="flex-1 h-4, bg-gray-300, rounded"></div>
+					<div class="space-y-2">
+						<div class="animate-pulse flex">
+							<div class="flex-1 h-4 bg-gray-300"></div>
+							<div class="flex-1 h-4 bg-gray-300"></div>
+							<div class="flex-1 h-4 bg-gray-300"></div>
 						</div>
 					</div>
 				</div>

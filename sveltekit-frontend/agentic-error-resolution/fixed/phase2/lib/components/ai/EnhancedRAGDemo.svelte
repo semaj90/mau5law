@@ -1,16 +1,7 @@
 <!-- Enhanced RAG Demo Component with WebGPU/CUDA acceleration and Svelte 5 runes -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import {
-    semanticAnalyzer,
-    isAnalyzingStore,
-    semanticAnalysisStore,
-    ragResponseStore,
-    ragQueryStore,
-    type SemanticAnalysisResult,
-    type RAGQuery,
-    type RAGResponse,
-  } from '$lib/services/enhanced-rag-semantic-analyzer';
+  import { semanticAnalyzer, isAnalyzingStore, semanticAnalysisStore, ragResponseStore, ragQueryStore, type SemanticAnalysisResult, type RAGQuery, type RAGResponse } from '$lib/services/enhanced-rag-semantic-analyzer';
   import  Button  from "$lib/components/ui/Button.svelte";
   import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
@@ -117,24 +108,16 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     }
   }
   // Enhanced RAG query with GPU-accelerated similarity search
-  async function performRAGQuery() {
-    if (!queryText.trim()) return;
+  async function performRAGQuery() { if (!queryText.trim()) return;
     const startTime = performance.now();
     isAnalyzing = true;
     try {
       isAnalyzingStore.set(true);
       // Build query with modern TypeScript patterns
       const ragQuery: RAGQuery = {
-        query: queryText,
-        filters: {
-          entityTypes: selectedEntityTypes,
-          confidenceThreshold: confidenceThreshold,
-        },
-        semantic: {
-          useEmbeddings: true,
-          expandConcepts: useSemanticExpansion,
-          includeRelated: true,
-        },
+        query: queryText, filters: {
+          entityTypes: selectedEntityTypes, confidenceThreshold: confidenceThreshold },
+        semantic: { useEmbeddings: true, expandConcepts: useSemanticExpansion, includeRelated: true },
       };
       // Store the query
       ragQueryStore.set(ragQuery);
@@ -163,13 +146,13 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   // Computed properties using derived state
   let entitySummary = $derived(() => {
     if (!analysisResult) return null;
-    const summary = new Map<string, number>();
+    const summary = new Map<string number>();
     analysisResult.entities.forEach(entity => {
-      summary.set(entity.type, (summary.get(entity.type) || 0) + 1);
+      summary.set(entity.type (summary.get(entity.type) || 0) + 1);
     });
     return Array.from(summary.entries())
       .sort(([, a], [, b]) => b - a)
-      .map(([type, count]) => ({ type, count }));
+      .map(([type count]) => ({ type count }));
   });
   let performanceColor = $derived(() => {
     if (processingTime === 0) return 'text-gray-500';
@@ -293,7 +276,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 <div>
                   <h4 class="text-sm font-medium text-gray-700 mb-2">Detected Entities</h4>
                   <div class="space-y-1">
-                    {#each entitySummary as { type, count }}
+                    {#each entitySummary as { type count }}
                       <div class="flex justify-between text-sm">
                         <span class="text-gray-600">{type.replace('_', ' ')}</span>
                         <span class="font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{count}</span>

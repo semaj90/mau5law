@@ -88,24 +88,19 @@ https://svelte.dev/e/expected_token -->
     }
     checkSystemHealth();
   });
-  function initialize3DScene() {
-    if (!canvasContainer) return;
+  function initialize3DScene() { if (!canvasContainer) return;
     // Set up Three.js scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(NES_YORHA_PALETTE.yorhaBlack);
     // Camera setup
     camera = new THREE.PerspectiveCamera(
-      75,
-      canvasContainer.clientWidth / canvasContainer.clientHeight,
-      0.1,
-      1000
+      75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000
     );
     camera.position.set(0, 0, 10);
     // Renderer setup with NES-style pixelation
     renderer = new THREE.WebGLRenderer({
       antialias: false, // Keep pixels sharp for NES aesthetic;
-      alpha: true,
-    });
+      alpha: true });
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
     renderer.setPixelRatio(1); // Maintain pixel-perfect rendering
     canvasContainer.appendChild(renderer.domElement);
@@ -122,12 +117,9 @@ https://svelte.dev/e/expected_token -->
     // Handle resize
     window.addEventListener('resize', handleResize);
   }
-  function createInitial3DComponents() {
-    // Create main analysis container
+  function createInitial3DComponents() { // Create main analysis container
     const mainContainer = createNESContainer({
-      title: "Legal AI Analysis Engine",
-      dark: true,
-    });
+      title: "Legal AI Analysis Engine", dark: true });
     mainContainer.position.set(0, 2, 0);
     scene.add(mainContainer);
     analysisComponents.push(mainContainer);
@@ -202,22 +194,14 @@ https://svelte.dev/e/expected_token -->
         title: "System Health Check",
         message: `Active: ${activeBackends.join(', ')}. Service: ${serviceHealth.status}`,
       });
-    } catch (error) {
-      console.error('Health check failed:', error);
+    } catch (error) { console.error('Health check failed:', error);
       notifications.add({
-        type: "warning",
-        title: "Health Check Failed",
-        message: "Some services may be offline",
-      });
+        type: "warning", title: "Health Check Failed", message: "Some services may be offline" });
     }
   }
-  async function startHybridAnalysis() {
-    if (documents.length === 0) {
+  async function startHybridAnalysis() { if (documents.length === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Documents",
-        message: "Please provide documents for analysis",
-      });
+        type: "warning", title: "No Documents", message: "Please provide documents for analysis" });
       return;
     }
     isAnalyzing = true;
@@ -248,12 +232,9 @@ https://svelte.dev/e/expected_token -->
           const enhancedAnalysis = await enhancedEmbeddingService.enhancedRAGQuery(
             `Analyze this legal document for key insights, entities, and risks: ${doc.substring(0, 500)}`,
             [doc],
-            {
-              model: embeddingModel
+            { model: embeddingModel
               useGPU: true
-              practiceArea: 'legal',
-              jurisdiction: 'us-federal',
-            }
+              practiceArea: 'legal', jurisdiction: 'us-federal' }
           );
           // Create analysis result
           const result: AnalysisResult = {
@@ -291,13 +272,9 @@ https://svelte.dev/e/expected_token -->
         title: "Hybrid Analysis Complete",
         message: `Analyzed ${documents.length} documents using ${vectorBackend} backend`,
       });
-    } catch (error) {
-      console.error('Hybrid analysis failed:', error);
+    } catch (error) { console.error('Hybrid analysis failed:', error);
       notifications.add({
-        type: "error",
-        title: "Analysis Failed",
-        message: error instanceof Error ? error.message: "Unknown error",
-      });
+        type: "error", title: "Analysis Failed", message: error instanceof Error ? error.message: "Unknown error" });
     } finally {
       isAnalyzing = false;
     }
@@ -452,32 +429,20 @@ https://svelte.dev/e/expected_token -->
       message: `Loaded ${documents.length} documents for analysis`
     });
   }
-  export function generateEmbeddings() {
-    if (documents.length === 0) {
+  export function generateEmbeddings() { if (documents.length === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Documents",
-        message: "Load documents first before generating embeddings",
-      });
+        type: "warning", title: "No Documents", message: "Load documents first before generating embeddings" });
       return;
     }
     startHybridAnalysis();
   }
-  export function start3DVisualization() {
-    enable3DVisualization = true;
+  export function start3DVisualization() { enable3DVisualization = true;
     if (analysisData.length > 0) {
       visualizeClusters();
       notifications.add({
-        type: "success",
-        title: "3D Visualization Active",
-        message: "3D semantic space visualization is now running",
-      });
-    } else {
-      notifications.add({
-        type: "info",
-        title: "3D Visualization Ready",
-        message: "Generate embeddings first to populate the 3D space",
-      });
+        type: "success", title: "3D Visualization Active", message: "3D semantic space visualization is now running" });
+    } else { notifications.add({
+        type: "info", title: "3D Visualization Ready", message: "Generate embeddings first to populate the 3D space" });
     }
   }
 </script>
@@ -730,10 +695,8 @@ enable3DVisualization = !enable3DVisualization}
     padding-bottom: 0.5rem;
     border-bottom: 1px solid rgba(212, 197, 169, 0.3);
   }
-  .doc-title {
-    font-weight: bold;
-    flex: 1,
-  }
+  .doc-title { font-weight: bold;
+    flex: 1 }
   .confidence-badge {
     background: #d4af00;
     color: #0a0a0a;
@@ -745,10 +708,10 @@ enable3DVisualization = !enable3DVisualization}
     margin: 0.5rem 0;
     font-size: 0.9rem;
   }
-  .risk-low { color: #00d800, }
-  .risk-medium { color: #d4af00, }
-  .risk-high { color: #fc9838, }
-  .risk-critical { color: #f83800, }
+  .risk-low { color: #00d800 }
+  .risk-medium { color: #d4af00 }
+  .risk-high { color: #fc9838 }
+  .risk-critical { color: #f83800 }
   .key-findings, .recommendations {
     margin: 1rem 0;
   }

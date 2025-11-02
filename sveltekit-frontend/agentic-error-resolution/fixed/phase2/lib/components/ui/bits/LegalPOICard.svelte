@@ -71,17 +71,10 @@
       console.error('Failed to add to FBI Most Wanted:', error);
     }
   }
-  async function handleRecordSighting() {
-    // This would typically open a dialog for sighting details
+  async function handleRecordSighting() { // This would typically open a dialog for sighting details
     try {
       await recordSighting(poi.id, {
-        location: 'Manual entry required',
-        date: new Date().toISOString(),
-        description: 'Sighting reported via POI card',
-        reportedBy: 'System User',
-        reliability: 0.5,
-        verified: false,
-      });
+        location: 'Manual entry required', date: new Date().toISOString(), description: 'Sighting reported via POI card', reportedBy: 'System User', reliability: 0.5, verified: false });
     } catch (error) {
       console.error('Failed to record sighting:', error);
     }
@@ -237,9 +230,7 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  .poi-identity {
-    flex: 1,
-  }
+  .poi-identity { flex: 1 }
   .aliases {
     font-size: 0.875rem;
     color: var(--enhanced-bits-textMuted);

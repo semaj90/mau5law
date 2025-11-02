@@ -258,8 +258,7 @@
       mode={demoConfig.mode}
       legalContext={{
         practiceArea: demoConfig.practiceArea,
-        caseType: mockCase.type,
-        urgency: demoConfig.urgency
+        caseType: mockCase.type urgency: demoConfig.urgency
       }}
     />
   </div>

@@ -68,13 +68,8 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function formatDate(date: string | Date): string {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  function formatDate(date: string | Date): string { return new Date(date).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 </script>
 <Card
@@ -187,8 +182,7 @@
 </Card>
 <style>
   /* Modern CSS line clamping with fallback */
-  .line-clamp-2 {
-    display: -webkit-box;
+  .line-clamp-2 { display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -196,8 +190,7 @@
     white-space: nowrap;
     max-height: calc(1.2em * 2);
     line-height: 1.2em;
-    line-clamp: 2,
-  }
+    line-clamp: 2 }
   /* Enhanced NES styling for better legal UI */
   .yorha-panel-header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);

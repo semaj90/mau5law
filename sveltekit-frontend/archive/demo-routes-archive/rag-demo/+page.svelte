@@ -4,14 +4,7 @@
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
-  import {
-    AlertTriangle,
-    Brain,
-    CheckCircle,
-    Database,
-    Search,
-    Zap,
-  } from "lucide-svelte";
+  import { AlertTriangle, Brain, CheckCircle, Database, Search, Zap } from "lucide-svelte";
   import { onMount } from "svelte";
 
   interface SystemStatus {
@@ -20,12 +13,7 @@
     embeddings: boolean;
     vectorSearch: boolean;
   }
-  let systemStatus: SystemStatus = $state({
-    database: false,
-    qdrant: false,
-    embeddings: false,
-    vectorSearch: false,
-  });
+  let systemStatus: SystemStatus = $state({ database: false, qdrant: false, embeddings: false, vectorSearch: false });
 
   let isLoadingStatus = $state(true);
   let testQuery = $state("");
@@ -93,13 +81,8 @@
       const response = await fetch("/api/search/vector", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: testQuery,
-          options: {
-            limit: 5,
-            threshold: 0.5,
-            searchType: "hybrid",
-          },
+        body: JSON.stringify({ query: testQuery, options: {
+            limit: 5, threshold: 0.5, searchType: "hybrid" },
         }),
       });
 

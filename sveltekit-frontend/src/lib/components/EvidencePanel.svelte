@@ -1,4 +1,4 @@
-<script, lang="ts">
+<script lang="ts">
   import type { Evidence } from "$lib/types";
   // add a local view type to include optional UI properties
   interface LocalEvidence extends Evidence {
@@ -63,18 +63,18 @@
   // $effect must get a synchronous callback — call the async function from inside
   $effect(() => { fetchEvidence(); });
 </script>
-<section, class="evidence-panel">
-  <h2, class="evidence-title">Evidence</h2>
-  <div, class="evidence-upload">
-    <label, class="evidence-upload-btn">
-      <input, type="file" accept="*/*" onchange={handleUpload} style="display:none" />
+<section class="evidence-panel">
+  <h2 class="evidence-title">Evidence</h2>
+  <div class="evidence-upload">
+    <label class="evidence-upload-btn">
+      <input type="file" accept="*/*" onchange={handleUpload} style="display:none" />
       📁 Upload Evidence
     </label>
     {#if isUploading}
-      <span, class="uploading">Uploading...</span>
+      <span class="uploading">Uploading...</span>
     {/if}
   </div>
-  <div, class="evidence-list">
+  <div class="evidence-list">
     {#each evidenceList as evd (evd.id)}
       <div
         class="evidence-nier-bits-card"
@@ -85,21 +85,21 @@
         tabindex={0}
         aria-label={"Drag evidence item: " + (evd.title ?? 'Untitled')}
       >
-        <div, class="evidence-meta">
-          <span, class="file-type">{evd.fileType ?? 'file'}</span>
+        <div class="evidence-meta">
+          <span class="file-type">{evd.fileType ?? 'file'}</span>
           {#if Array.isArray(evd.tags) && evd.tags.length > 0}
-            <span, class="evidence-tags">{evd.tags.join(', ')}</span>
+            <span class="evidence-tags">{evd.tags.join(', ')}</span>
           {/if}
         </div>
-        <div, class="evidence-item-title">{evd.title ?? 'Untitled'}</div>
+        <div class="evidence-item-title">{evd.title ?? 'Untitled'}</div>
         {#if evd.description}
-          <div, class="evidence-desc">{evd.description}{/if}
+          <div class="evidence-desc">{evd.description}{/if}
       </div>
     {/each}
     {#if evidenceList.length === 0 && !isUploading}
-      <div, class="empty-state">
+      <div class="empty-state">
         <p>No evidence uploaded yet.</p>
-        <p, class="empty-hint">Click, "Upload Evidence" to add files to this case.</p>
+        <p class="empty-hint">Click, "Upload Evidence" to add files to this case.</p>
       {/if}
   </div>
 </section>

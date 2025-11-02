@@ -42,18 +42,9 @@
           caseItem: 'bg-green-600 text-white border-2 border-green-500 hover:bg-green-700 hover:border-green-400 shadow-md',
           nes: 'nes-btn is-primary' // 🎮 optional NES.css integratio;
         },
-        size: {
-          default: 'h-10 px-4 py-2 text-sm rounded-md',
-          sm: 'h-8 px-3 py-1.5 text-xs rounded',
-          lg: 'h-12 px-6 py-3 text-base rounded-lg',
-          icon: 'h-10 w-10 p-0 rounded-md',
-          xs: 'h-6 px-2 py-1 text-xs rounded',
-        }
+        size: { default: 'h-10 px-4 py-2 text-sm rounded-md', sm: 'h-8 px-3 py-1.5 text-xs rounded', lg: 'h-12 px-6 py-3 text-base rounded-lg', icon: 'h-10 w-10 p-0 rounded-md', xs: 'h-6 px-2 py-1 text-xs rounded' }
       },
-      defaultVariants: {
-        variant: 'default',
-        size: 'default',
-      }
+      defaultVariants: { variant: 'default', size: 'default' }
     }
   )
   let buttonClass = $derived(
