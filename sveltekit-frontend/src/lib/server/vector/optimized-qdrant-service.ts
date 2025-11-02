@@ -5,10 +5,10 @@
  * - Supports hybrid caching and async lazy embedding
  */
 
-import { cache, getCachedEmbedding, cacheEmbedding } from, '$lib/server/cache/redis';
-import { formatError } from, '$lib/server/cache/redis';
-import { embeddingGemma } from, '$lib/server/ai/embeddinggemma-service'; // use exported name
-import { qdrant } from, '$lib/server/vector/qdrant-client'; // Qdrant client instance
+import { cache, getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis';
+import { formatError } from '$lib/server/cache/redis';
+import { embeddingGemma } from '$lib/server/ai/embeddinggemma-service'; // use exported name
+import { qdrant } from '$lib/server/vector/qdrant-client'; // Qdrant client instance
 // removed invalid @qdrant/js-client-rest type imports (use: any to avoid missing-export errors)
 
 /* -------------------------------------------------------------------------- */

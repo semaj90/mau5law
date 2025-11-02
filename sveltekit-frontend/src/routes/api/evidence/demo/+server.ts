@@ -1,9 +1,9 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { writeFile } from, 'fs/promises';
-import { mkdir } from, 'fs/promises';
-import { join } from, 'path';
-import { v4, as uuidv4 } from, 'uuid';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { writeFile } from 'fs/promises';
+import { mkdir } from 'fs/promises';
+import { join } from 'path';
+import { v4, as uuidv4 } from 'uuid';
 /**
  * Demo-friendly evidence upload endpoint
  * Works without authentication for development/demo purposes

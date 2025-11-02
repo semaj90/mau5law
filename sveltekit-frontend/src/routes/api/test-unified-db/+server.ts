@@ -1,7 +1,7 @@
-import { unifiedDb, db } from, '$lib/server/db/unified-client';
-import { sql } from, 'drizzle-orm';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { unifiedDb, db } from '$lib/server/db/unified-client';
+import { sql } from 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     console.log('🧪 Testing Unified Database Client...');

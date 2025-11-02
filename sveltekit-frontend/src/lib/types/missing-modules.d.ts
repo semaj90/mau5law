@@ -94,7 +94,7 @@ declare module, 'bullmq' {
   }
 }
 declare module, '@tensorflow/tfjs-node' {
-  export * from, '@tensorflow/tfjs';
+  export * from '@tensorflow/tfjs';
 }
 declare module, 'ioredis' {
   export default class Redis {

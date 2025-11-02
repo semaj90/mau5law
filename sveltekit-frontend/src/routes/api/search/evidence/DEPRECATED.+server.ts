@@ -16,7 +16,7 @@
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('q');

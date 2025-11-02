@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types';
-import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { json, error } from '@sveltejs/kit';
 const GEMMA3_SUMMARIZATION_SERVICE_URL = 'http://localhost:8080';
 // Health check endpoint
 export const, GET: RequestHandler = async ({ url }) => {

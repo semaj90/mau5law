@@ -1,8 +1,8 @@
-import type { SearchResult } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { SearchResult } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference, types="vite/client" />
-import Redis, { RedisOptions } from, 'ioredis';
-import type { OCRResult } from, '../types/ocr';
+import Redis, { RedisOptions } from 'ioredis';
+import type { OCRResult } from '../types/ocr';
 // Note: dynamic import of Ollama integration is used to avoid static resolution errors
 // when typechecking in different TS module modes. We import at runtime inside generateEmbedding().
 

@@ -1,5 +1,5 @@
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { CONFIG } from, '$lib/config/env.server';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { CONFIG } from '$lib/config/env.server';
 
 const qdrantUrl = CONFIG.QDRANT_URL || process.env.QDRANT_URL || 'http://127.0.0.1:6333';
 
@@ -22,12 +22,12 @@ if (CONFIG.NODE_ENV !== 'production') {
 }
 
 export default qdrantClient;
-import type { DocumentItem, VisionItem, SearchResult } from, '$lib/types/sharedTypes';
+import type { DocumentItem, VisionItem, SearchResult } from '$lib/types/sharedTypes';
 
 // Added/relocated imports (moved here so they are available to functions defined earlier)
-import { qdrantOptimized } from, './qdrant-optimized.js';
-import { createQdrantWrapper, QdrantApiWrapper } from, './qdrant-api-wrapper.js';
-import { productionLogger, as logger } from, '../production-logger.js';
+import { qdrantOptimized } from './qdrant-optimized.js';
+import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
+import { productionLogger, as logger } from '../production-logger.js';
 
 // Inferred types from QdrantApiWrapper as they are not exported directly
 type QdrantCollection = NonNullable<Awaited<ReturnType<QdrantApiWrapper['getCollection']>>>;

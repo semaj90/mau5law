@@ -4,9 +4,9 @@
  * Automatically generates embeddings for evidence files that don't have them yet.'
  * Integrates with the existing evidence upload pipeline and embedding API.
  */
-import { query } from, '$lib/server/db/client.js';
-import { minioService } from, '$lib/server/storage/minio-service.js';
-import { embeddingService } from, '$lib/services/embedding-service.js';
+import { query } from '$lib/server/db/client.js';
+import { minioService } from '$lib/server/storage/minio-service.js';
+import { embeddingService } from '$lib/services/embedding-service.js';
 interface EvidenceFile { id: number;, title: string;
   description?: string;
   storage_bucket: string;

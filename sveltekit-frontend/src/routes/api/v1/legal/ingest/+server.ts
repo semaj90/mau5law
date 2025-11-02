@@ -8,9 +8,9 @@
  * - Metadata caching (Redis)
  */
 
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getLegalAIPipeline } from, '$lib/server/integrations';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getLegalAIPipeline } from '$lib/server/integrations';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

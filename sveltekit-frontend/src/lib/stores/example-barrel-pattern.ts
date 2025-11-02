@@ -5,7 +5,7 @@
  * Benefits:
  * - Type-safe centralized state management
  * - Auto-completion in IDEs
- * - Easy to import import { counterStore, todoStore } from, '$lib/stores'
+ * - Easy to import import { counterStore, todoStore } from '$lib/stores'
  * - Performance optimized with fine-grained reactivity
  */
 
@@ -308,4 +308,4 @@ export const themeStore = (() => {
 // Barrel Export Pattern
 // ==================================================
 // You can import all stores at once or individually:
-// import { counterStore, todoStore, legalAIStore } from, '$lib/stores';
+// import { counterStore, todoStore, legalAIStore } from '$lib/stores';

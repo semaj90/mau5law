@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🌉 Hybrid RAG + SIMD Pipeline Bridge
  *
@@ -11,15 +11,15 @@ import type { Document } from, '$lib/types';
  * - MCP Multi-core Server (mcp-multicore-server.mjs) - Worker distribution
  */
 
-import { advancedPipeline } from, './advanced-simd-pipeline';
-import type { StreamingResult, PipelineExecutionResult } from, './advanced-simd-pipeline';
-import { ragKnowledgePipeline } from, './rag-knowledge-pipeline';
+import { advancedPipeline } from './advanced-simd-pipeline';
+import type { StreamingResult, PipelineExecutionResult } from './advanced-simd-pipeline';
+import { ragKnowledgePipeline } from './rag-knowledge-pipeline';
 import type {
   RAGDocument,
   RAGPipelineResult,
   RankedDocument,
   SynthesisRankingConfig
-} from, './rag-knowledge-pipeline';
+} from './rag-knowledge-pipeline';
 
 // ============================================================================
 // Hybrid Pipeline Configuration

@@ -1,17 +1,17 @@
-import type { SearchResult } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { cuidSchema } from, '$lib/server/z-schemas';
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import { cuidSchema } from '$lib/server/z-schemas';
 // Legal AI Form State Machines with XState
 // Advanced state management for legal document processing workflows
 import {
   createMachine,
   assign,
   fromPromise,
-  type ActorRefFrom,
+  type ActorReffrom 
   type ErrorActorEvent,
   type DoneActorEvent
-} from, 'xstate';
-import { z } from, 'zod';
+} from 'xstate';
+import { z } from 'zod';
 // ============================================================================
 // ZOD VALIDATION SCHEMAS
 // ============================================================================
@@ -425,7 +425,7 @@ export const documentUploadMachine = createMachine(
         async ({ input }: {, input: ProcessDocumentActorInput }): Promise<ProcessDocumentOutput> => {
           // Use the new interface here and specify return type
           const started = Date.now();
-          let baseResults: AIResults | null = null; // Changed from, 'unknown' to AIResults | null
+          let baseResults: AIResults | null = null; // Changed from 'unknown' to AIResults | null
           // 1) Keep existing processing endpoint (best-effort)
           try {
             const resp = await fetch('/api/ai/process-document', {
@@ -441,7 +441,7 @@ export const documentUploadMachine = createMachine(
           }
 
           // 2) Agentic compare with Qdrant via new endpoint
-          let comparison: any = null; // Changed from, 'any' to: 'unknown'
+          let comparison: any = null; // Changed from 'any' to: 'unknown'
           try {
             if (input?.options?.compareWithRAG) {
               // Now: 'input.options' is correctly typed

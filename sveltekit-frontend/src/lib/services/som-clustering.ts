@@ -4,10 +4,10 @@ import {
   type DocumentCluster,
   type ClusterResult,
   type APIResponse, // Added APIResponse
-} from, '$lib/api/enhanced-rest-architecture';
-import type Redis from, 'ioredis';
-import createIOIORedisInstance from, '$lib/server/redis.js'; // Changed to default import
-import type { LegalMetadata } from, '$lib/services/simd-json-acceleration'; // Imported LegalMetadata
+} from '$lib/api/enhanced-rest-architecture';
+import type Redis from 'ioredis';
+import createIOIORedisInstance from '$lib/server/redis.js'; // Changed to default import
+import type { LegalMetadata } from '$lib/services/simd-json-acceleration'; // Imported LegalMetadata
 
 // Define specific types for, 'any' usages
 interface ClusterPositionResult { x: number;

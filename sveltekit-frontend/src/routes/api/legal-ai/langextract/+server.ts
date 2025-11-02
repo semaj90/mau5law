@@ -1,7 +1,7 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { langExtractService } from, '$lib/services/langextract-ollama-service';
-import type { RequestHandler } from, './$types';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import { langExtractService } from '$lib/services/langextract-ollama-service';
+import type { RequestHandler } from './$types';
 /*
  * LangExtract + Ollama API Endpoint
  * Provides local LLM processing for legal document extraction

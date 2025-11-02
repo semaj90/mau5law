@@ -19,7 +19,7 @@
  *, TODO: Remove this route after frontend migration is complete
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   return json({

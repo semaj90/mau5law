@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // MCP (Model Context Protocol) Tools Integration
 
 export interface MCPToolResponse<T = any> {

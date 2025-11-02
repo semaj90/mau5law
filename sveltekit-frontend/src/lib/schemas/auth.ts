@@ -1,4 +1,4 @@
-import { z } from, 'zod';
+import { z } from 'zod';
 // Validation schemas for authentication forms
 export const loginSchema = z.object({
   email: z

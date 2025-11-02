@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from, "bits-ui";
+  import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   interface SelectOption {
     value: string;
     label: string;

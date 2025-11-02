@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import ollama from, '$lib/server/ollama'; // Changed to default import
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import ollama from '$lib/server/ollama'; // Changed to default import
 
 export const GET: RequestHandler = async () => {
   // Changed to RequestHandler

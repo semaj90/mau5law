@@ -12,18 +12,18 @@
   - Cached Palace integration for instant page access
 -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { browser } from, '$app/environment';
-  import { onMount, onDestroy } from, 'svelte';
-  import { LoadingButton } from, '$lib/headless';
-  import * as Card from, '$lib/components/ui/Card.svelte';
-  import  Badge  from, "$lib/components/ui/badge/Badge.svelte";
+  import { browser } from '$app/environment';
+  import { onMount, onDestroy } from 'svelte';
+  import { LoadingButton } from '$lib/headless';
+  import * as Card from '$lib/components/ui/Card.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import {
     ZoomIn, ZoomOut, RotateCw, FileText,
     Eye, Layers, Download, Navigation
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
   interface DocumentPage {
     pageNumber: number;
     textContent: string;

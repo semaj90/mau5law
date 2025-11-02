@@ -3,8 +3,8 @@
  * Returns authenticated user data and session details
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
 
 export const GET: RequestHandler = async (event) => {
   try {

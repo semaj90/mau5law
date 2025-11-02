@@ -2,8 +2,8 @@
  * TensorRT-LLM QUIC Client for Sub-1ms Legal AI Processing
  * Optimized for Svelte, 5 with HTTP/3, streaming, and connection pooling
  */
-import { browser } from, '$app/environment';
-import { writable, derived } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { writable, derived } from 'svelte/store';
 // Performance monitoring
 export const performanceMetrics = writable({
 	requestCount: 0,

@@ -3,10 +3,10 @@
  * Supports Gemma, nomic-embed-text, and GPU-accelerated embeddings
  * Integrates with OCR processing and agentic controller
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { generateEmbedding, generateEmbeddings } from, '$lib/server/services/embedding-service';
-import { getOllamaBaseUrl, getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { generateEmbedding, generateEmbeddings } from '$lib/server/services/embedding-service';
+import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 /**
  * POST /api/v1/embeddings - Generate embeddings using multiple models

@@ -1,12 +1,12 @@
-import type { Message } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 /*
  * RabbitMQ Message Publishing API Endpoint
  *
  * Handles publishing messages to RabbitMQ queues for NLP processing pipeline
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { exchange, routingKey, message, headers } = await request.json();

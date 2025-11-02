@@ -1,7 +1,7 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  	import { type, ButtonVariants, buttonVariants } from, './button-variants';
-  	import type { HTMLButtonAttributes } from, 'svelte/elements';
+  	import { type, ButtonVariants, buttonVariants } from './button-variants';
+  	import type { HTMLButtonAttributes } from 'svelte/elements';
   	interface Props extends Omit<HTMLButtonAttributes, 'class'> {
   		variant?: ButtonVariants['variant'];
   		size?: ButtonVariants['size'];

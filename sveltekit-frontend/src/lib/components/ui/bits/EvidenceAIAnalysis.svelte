@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from, 'lucide-svelte';
-  import { Card } from, './index';
-  import type { AIAnalysis, EvidenceItem } from, './types';
+  import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from 'lucide-svelte';
+  import { Card } from './index';
+  import type { AIAnalysis, EvidenceItem } from './types';
   interface Props {
     analysis: AIAnalysis; // fixed typo
    , evidence: EvidenceItem;

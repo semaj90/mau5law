@@ -10,12 +10,12 @@
  * Routes to enhanced-rag-service.exe for semantic search
  * Integrates with your WebAssembly Graph Engine
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { enhancedRAGClient } from, '$lib/services/enhanced-rag-client';
-import { db } from, '$lib/server/db';
-import { contentEmbeddings, caseEmbeddings, evidenceVectors } from, '$lib/server/db/schema-postgres';
-import { desc, sql } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { enhancedRAGClient } from '$lib/services/enhanced-rag-client';
+import { db } from '$lib/server/db';
+import { contentEmbeddings, caseEmbeddings, evidenceVectors } from '$lib/server/db/schema-postgres';
+import { desc, sql } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

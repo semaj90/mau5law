@@ -3,9 +3,9 @@
  * Shows dramatic performance improvements with Redis caching
  * Demonstrates 240x speed improvement for complex operations
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { createRedisInstance } from, '$lib/server/redis'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { createRedisInstance } from '$lib/server/redis'
 // Create Redis client directly
 let redis = createRedisInstance()
 interface PerformanceResult { operation: string, uncachedTime: number; cachedTime: number; speedupFactor: number;

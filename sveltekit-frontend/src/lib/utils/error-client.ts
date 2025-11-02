@@ -1,4 +1,4 @@
-import { pushToast } from, '$lib/stores/errorStore';
+import { pushToast } from '$lib/stores/errorStore';
 
 export const ERROR_CODE_MAP: Record<string, { title: string; message: string }> = {, INVALID_CREDENTIALS: {, title: 'Login failed', message: 'Email or password is incorrect.' },
   EMAIL_TAKEN: {, title: 'Registration failed', message: 'This email is already in use.' },

@@ -9,17 +9,17 @@
  * - Vector operations with proper type casting
  * - Production-ready connection pooling
  */
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { sql } from, 'drizzle-orm';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { sql } from 'drizzle-orm';
 // Import centralized connection management
 import {
   getDrizzleDb,
   getPostgresJsClient,
   // removed getDatabaseConfig/getConnectionString which are not exported
-} from, './connection-manager.js';
+} from './connection-manager.js';
 // Import unified schema
-import * as schema from, './schema-unified.js';
-import type { DocumentMetadata } from, './schema-unified.js';
+import * as schema from './schema-unified.js';
+import type { DocumentMetadata } from './schema-unified.js';
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -301,7 +301,7 @@ export const unifiedDb = {
 };
 
 // Re-export schema for convenience
-export * from, './schema-unified.js';
+export * from './schema-unified.js';
 
 // Re-export types
 export type { VectorSearchOptions, HybridSearchResult, DocumentMetadata };

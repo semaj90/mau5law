@@ -8,8 +8,8 @@
  * -, Ollama: Embedding generation
  */
 
-import crypto from, 'crypto';
-import { ensureRedisReady, redis } from, '$lib/server/redis-client';
+import crypto from 'crypto';
+import { ensureRedisReady, redis } from '$lib/server/redis-client';
 
 const redisClient = redis;
 

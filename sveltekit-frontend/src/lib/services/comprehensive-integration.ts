@@ -2,7 +2,7 @@
  * Comprehensive Integration Layer for Legal AI Platform
  * Unifies Enhanced RAG, WebGPU Acceleration, Real-time Communication, and Database Integration
  */
-import { writable, type Writable } from, 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 // Define types for missing dependencies
 export interface SemanticAnalysisResult { summaryEmbedding: number[];, legalRelevanceScore: number;
   concepts: Array<KeyValue>; // replaced Array<any>
@@ -668,7 +668,7 @@ class ComprehensiveIntegrationService {
       RETURN id(r) as relationshipId
     `;`
     const result = await this.queryNeo4j(cypher, {
-      from Number.isFinite(Number(from)) ? Number(from) : from,
+      from Number.isFinite(Number(from)) ? Number(from) : from 
       to: Number.isFinite(Number(to)) ? Number(to) : to,
       props: properties || {}
     });

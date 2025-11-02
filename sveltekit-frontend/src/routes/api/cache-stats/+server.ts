@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { dbPool } from, '$lib/server/database-pool-service';
-import { embeddingCache } from, '$lib/server/embedding-cache-service';
-import { redisService } from, '$lib/server/redis-service';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { dbPool } from '$lib/server/database-pool-service';
+import { embeddingCache } from '$lib/server/embedding-cache-service';
+import { redisService } from '$lib/server/redis-service';
 export const GET: RequestHandler = async () => {
   try {
     // Get comprehensive cache and connection statistics

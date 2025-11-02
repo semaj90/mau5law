@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltejs/kit';
-import { ollamaConfig } from, '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from, '$lib/config/environment.js';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 /*
  * Evidence Enhancement API
  * Analyzes uploaded evidence and suggests relevant labels and classifications
  */
-import postgres from, 'postgres';
-import { z } from, 'zod';
+import postgres from 'postgres';
+import { z } from 'zod';
 // Configuration
 const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' }' },
   redis: {

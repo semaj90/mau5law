@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Admin interface layout with security-focused styling
-  import NavBar from, '$lib/components/layout/NavBar.svelte';
-  import Sidebar from, '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
+  import NavBar from '$lib/components/layout/NavBar.svelte';
+  import Sidebar from '$lib/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   let { children, data }: {  any; data: { user?: any } } = $props();
 

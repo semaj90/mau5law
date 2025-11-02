@@ -3,9 +3,9 @@
  * Advanced anti-aliasing techniques for smooth, high-quality 3D UI components
  * Implements MSAA, FXAA, SMAA, and TAA for production-quality rendering
  */
-import * as THREE from, 'three';
-import { YoRHa3DComponent, YORHA_COLORS } from, './YoRHaUI3D.js';
-import type { YoRHaStyle } from, './YoRHaUI3D.js';
+import * as THREE from 'three';
+import { YoRHa3DComponent, YORHA_COLORS } from './YoRHaUI3D.js';
+import type { YoRHaStyle } from './YoRHaUI3D.js';
 // Anti-aliasing configuration types
 export interface AntiAliasingConfig {
   type: 'none' | 'msaa' | 'fxaa' | 'smaa' | 'taa' | 'auto';

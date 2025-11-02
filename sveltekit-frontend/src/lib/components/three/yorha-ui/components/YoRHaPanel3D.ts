@@ -2,8 +2,8 @@
  * YoRHa 3D Panel Component
  * Container/card component with advanced styling and YoRHa aesthetic
  */
-import * as THREE from, 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
+import * as THREE from 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
 export interface YoRHaPanel3DOptions extends YoRHaStyle {
   title?: string;
   variant?:

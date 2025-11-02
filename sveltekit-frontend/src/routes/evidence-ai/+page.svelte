@@ -1,8 +1,8 @@
 <script, lang="ts">
-  import { browser } from, '$app/environment';
-  import { onMount } from, 'svelte';
-  import { Button } from, 'bits-ui';
-  import xstateIntegration from, '$lib/services/xstate-integration';
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+  import { Button } from 'bits-ui';
+  import xstateIntegration from '$lib/services/xstate-integration';
 
   // ======================
   // SVELTE, 5 RUNES STATE

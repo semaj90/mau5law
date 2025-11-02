@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis Cache with Hit/Miss Metrics
  * Tracks cache performance for optimization insights
  */
-import { createClient, type RedisClientType } from, 'redis';
+import { createClient, type RedisClientType } from 'redis';
 interface CacheMetrics { hits: number;, misses: number;
   sets: number;
   deletes: number;

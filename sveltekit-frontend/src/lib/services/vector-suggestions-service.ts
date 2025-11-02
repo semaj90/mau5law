@@ -1,12 +1,12 @@
-import { db } from, '$lib/server/db/index.js';
-import { chatRecommendations, cases, evidence } from, '$lib/server/db/schema-unified.js';
-import { eq } from, 'drizzle-orm';
+import { db } from '$lib/server/db/index.js';
+import { chatRecommendations, cases, evidence } from '$lib/server/db/schema-unified.js';
+import { eq } from 'drizzle-orm';
 import {
   searchSimilarMessages,
   searchSimilarEvidence,
   searchAcrossAllVectors,
   type VectorSearchResult
-} from, '$lib/server/db/pgvector-utils.js';
+} from '$lib/server/db/pgvector-utils.js';
 
 export interface GraphNode { id: string;, type: 'case' | 'evidence' | 'precedent' | 'person';
  , properties: Record<string, string>;

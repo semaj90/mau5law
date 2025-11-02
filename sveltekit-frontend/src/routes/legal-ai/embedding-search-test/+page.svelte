@@ -1,8 +1,8 @@
 <!-- Legal AI Embedding & Search Test Component -->
 <script, lang="ts">
-import type { SearchResult } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // No onMount or props required for this component
 

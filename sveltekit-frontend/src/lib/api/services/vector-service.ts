@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Vector Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from, './auth-service.js';
+import { getAuthHeaders } from './auth-service.js';
 export interface VectorDocument { id: string;, content: string;
   metadata: {
     title?: string;

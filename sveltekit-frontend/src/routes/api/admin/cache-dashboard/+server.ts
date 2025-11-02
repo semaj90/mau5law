@@ -3,11 +3,11 @@
  * Real-time monitoring and management for Redis-based caching system
  * Provides comprehensive cache analytics and performance metrics
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { redisService } from, '$lib/server/redis-service';
-import { getVectorCacheStats, clearVectorCache } from, '$lib/server/vector-cache';
-import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } from, '$lib/server/summarizeCache';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { redisService } from '$lib/server/redis-service';
+import { getVectorCacheStats, clearVectorCache } from '$lib/server/vector-cache';
+import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';
 
 interface CacheMetrics { redis: {, connected: boolean;
     status: string;

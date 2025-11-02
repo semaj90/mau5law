@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 	// Replace broken named imports with safe namespace import + fallbacks
-	import { browser } from, '$app/environment';
-	import { derived, writable } from, 'svelte/store';
-	import * as unified from, '$lib/stores/unified';
-  import LoginButton from, '$lib/components/auth/LoginButton.svelte';
-  import RegisterModal from, '$lib/components/auth/RegisterModal.svelte';
+	import { browser } from '$app/environment';
+	import { derived, writable } from 'svelte/store';
+	import * as unified from '$lib/stores/unified';
+  import LoginButton from '$lib/components/auth/LoginButton.svelte';
+  import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
 
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
 	function createFileUploader(url: string) {

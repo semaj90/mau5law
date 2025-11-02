@@ -2,12 +2,12 @@
  * Route Registry for Dynamic Route Management
  * Centralized registry for all application routes
  */
-import { writable, derived, type Readable } from, 'svelte/store';
-import { page } from, '$app/stores';
-import type { RouteDefinition } from, '$lib/data/routes-config';
-import { allRoutes } from, '$lib/data/routes-config';
-import type { GeneratedRoute, DynamicRouteConfig } from, './dynamic-route-generator.js';
-import { dynamicRouteGenerator } from, './dynamic-route-generator.js';
+import { writable, derived, type Readable } from 'svelte/store';
+import { page } from '$app/stores';
+import type { RouteDefinition } from '$lib/data/routes-config';
+import { allRoutes } from '$lib/data/routes-config';
+import type { GeneratedRoute, DynamicRouteConfig } from './dynamic-route-generator.js';
+import { dynamicRouteGenerator } from './dynamic-route-generator.js';
 
 /**
  * Route Registry State interface

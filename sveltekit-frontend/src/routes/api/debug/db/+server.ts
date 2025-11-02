@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const GET = async ({ url }): Promise<any> => {
   if (process.env.NODE_ENV === 'production') {
     return json({ error: 'Not available in production' }, { status: 403 });

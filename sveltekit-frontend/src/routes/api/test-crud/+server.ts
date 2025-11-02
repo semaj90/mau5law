@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /*
  * PostgreSQL CRUD Test Endpoint
  * Tests database connectivity and basic operations
  */
-import { json, error } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { users } from, '$lib/server/db/schema-postgres';
-import type { RequestHandler } from, './$types.js';
+import { json, error } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema-postgres';
+import type { RequestHandler } from './$types.js';
 
 // Helper: safely extract error info, from: unknown
 function getErrorInfo(err: any) {

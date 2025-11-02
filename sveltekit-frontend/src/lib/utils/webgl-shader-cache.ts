@@ -1,8 +1,8 @@
 /* Clean, consolidated WebGL shader cache with optional server-side embedding hooks. */
-import { writable, type Writable } from, 'svelte/store';
-import type { Pool } from, 'pg'; // pg-native
-import Redis from, 'ioredis';
-// import { cosineSimilarity } from, 'scikitjs'; // Removed as per new instructions
+import { writable, type Writable } from 'svelte/store';
+import type { Pool } from 'pg'; // pg-native
+import Redis from 'ioredis';
+// import { cosineSimilarity } from 'scikitjs'; // Removed as per new instructions
 
 /* ============================================
  * Types & Interfaces (consolidated)

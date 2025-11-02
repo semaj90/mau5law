@@ -1,8 +1,8 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Lightweight Markov-chain predictor for next-action precomputation (RNN-inspired)
 // Learns P(next|prev) from short user interaction sequences
 // Enhanced with Redis caching for persistence and performance
-import { env } from, '$env/dynamic/private';
+import { env } from '$env/dynamic/private';
 type Action = string; // e.g., 'open:doc:123', 'hover:doc:123', 'search:term:indemnification'
 interface PredictionResult {, action: Action;, p: number;
 }

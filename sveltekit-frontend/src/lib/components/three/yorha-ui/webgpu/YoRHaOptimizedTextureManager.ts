@@ -4,8 +4,8 @@
  * Features: Smart caching, NES-style memory banks, RTX acceleration, texture streaming
  */
 /// <reference, types="@webgpu/types" />
-import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from, './YoRHaMipmapShaders.js';
-import type { LegalDocument, MemoryBank } from, '../../../../memory/nes-memory-architecture.js';
+import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from './YoRHaMipmapShaders.js';
+import type { LegalDocument, MemoryBank } from '../../../../memory/nes-memory-architecture.js';
 export interface TextureBankConfig { bankType: 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';, maxTextures: number;
   maxMemoryMB: number;
   mipmapLevels: number;

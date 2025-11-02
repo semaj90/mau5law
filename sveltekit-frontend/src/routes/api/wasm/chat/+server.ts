@@ -1,14 +1,14 @@
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * WebAssembly Chat API - Fallback for Ollama
  *
  * Provides local LLM inference using WebAssembly when Ollama is unavailable
  * Uses llama.cpp compiled to WebAssembly for client-side processing
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Define options type for WebAssembly LLM
 interface WasmLLMOptions { temperature: number;, maxTokens: number;

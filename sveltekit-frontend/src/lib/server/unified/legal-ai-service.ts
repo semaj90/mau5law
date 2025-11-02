@@ -2,15 +2,15 @@
  * Unified Legal AI Service
  * Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
  */
-import { db } from, '../db.js';
-import { evidence, legalDocuments as documents } from, '../db/schema.js';
-import { cache } from, '../cache/redis.js';
-import { minioStorage } from, '../storage/minio.js';
-import qdrant from, '../vector/qdrant.js';
-import { embedText } from, '../ai/embedder.js';
-import { createId } from, '@paralleldrive/cuid2';
-import { eq } from, 'drizzle-orm/expressions';
-import { sql } from, 'drizzle-orm/sql';
+import { db } from '../db.js';
+import { evidence, legalDocuments as documents } from '../db/schema.js';
+import { cache } from '../cache/redis.js';
+import { minioStorage } from '../storage/minio.js';
+import qdrant from '../vector/qdrant.js';
+import { embedText } from '../ai/embedder.js';
+import { createId } from '@paralleldrive/cuid2';
+import { eq } from 'drizzle-orm/expressions';
+import { sql } from 'drizzle-orm/sql';
 
 // --- Added types & guards ---
 type MinioUploadResult = { objectName: string; size: number;, url: string };

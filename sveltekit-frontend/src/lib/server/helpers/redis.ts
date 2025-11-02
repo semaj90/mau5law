@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/helpers/redis.ts
-import { createClient, type RedisClientType } from, 'redis';
-import { REDIS_CONFIG } from, '$lib/server/config'; // Assuming this config exists
+import { createClient, type RedisClientType } from 'redis';
+import { REDIS_CONFIG } from '$lib/server/config'; // Assuming this config exists
 
 let redisClient: RedisClientType | null = null;
 

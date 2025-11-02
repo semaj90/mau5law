@@ -1,8 +1,8 @@
 <script, lang="ts">
 	// Svelte, 5 runes are auto-imported
-	import { onMount, onDestroy } from, 'svelte';
-	import { writable } from, 'svelte/store';
-	import { Activity, Cpu, Zap, Clock, TrendingUp } from, 'lucide-svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
 	interface Props {
 		showOverlay?: boolean;
 		autoHide?: boolean;

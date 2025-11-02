@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import { db, legalDocuments } from, '$lib/server/db';
-import { eq } from, 'drizzle-orm';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { db, legalDocuments } from '$lib/server/db';
+import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types.js';
 
 // Add small, explicit types to avoid `any`
 type DocumentRow = {

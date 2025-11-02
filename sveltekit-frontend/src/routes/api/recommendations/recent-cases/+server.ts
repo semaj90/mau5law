@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🎯 Recent Cases Recommendation API
  * Returns the most recent, 5 cases with priority scoring
  */
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { multiLayerCache } from, '$lib/cache/MultiLayerCacheSystem';
-import { calculateDocumentPriority } from, '$lib/config/legal-priorities';
-import type { LegalDocument } from, '$lib/config/legal-priorities'; // added import
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
+import { calculateDocumentPriority } from '$lib/config/legal-priorities';
+import type { LegalDocument } from '$lib/config/legal-priorities'; // added import
 interface CaseRecommendation { id: string;, title: string;
   status: 'active' | 'pending' | 'closed';
   lastAccessed: string;

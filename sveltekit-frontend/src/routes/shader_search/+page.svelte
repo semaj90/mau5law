@@ -3,8 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { browser } from, '$app/environment';
-  import type { ShaderSearchResult, ShaderSearchQuery } from, '$lib/webgpu/shader-cache-manager';
+  import { browser } from '$app/environment';
+  import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
 
   interface SearchResponse {
     shaders: ShaderSearchResult[];

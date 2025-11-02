@@ -1,10 +1,10 @@
-import crypto from, 'crypto';
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import crypto from 'crypto';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 // Add explicit Node performance import to avoid DOM type dependencies in server code
-import { performance } from, 'perf_hooks';
+import { performance } from 'perf_hooks';
 // SIMD + Redis Performance Testing API
-import { simdRedisClient } from, '$lib/services/simd-redis-client';
+import { simdRedisClient } from '$lib/services/simd-redis-client';
 
 // Add a small typed surface for the simdRedisClient to avoid `any` casts
 type SimdBenchmarkResult = Record<string, unknown> | null;

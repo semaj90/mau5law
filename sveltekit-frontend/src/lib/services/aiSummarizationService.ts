@@ -1,5 +1,5 @@
 // Minimal clean stub for AISummarizationService to unblock parsing and typechecking
-import { dev } from, '$app/environment';
+import { dev } from '$app/environment';
 
 // Local minimal EvidenceItem stub to avoid namespace/import issues.
 // Keep this lightweight; replace with the project's canonical type when available.'

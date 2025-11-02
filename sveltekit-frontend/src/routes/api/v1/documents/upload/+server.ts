@@ -1,17 +1,17 @@
-import type { User } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { minioStorage } from, '$lib/server/storage/minio';
-import { createId } from, '@paralleldrive/cuid2';
-import { exec } from, 'child_process';
-import { promisify } from, 'util';
-import { writeFile, unlink, mkdir } from, 'fs/promises';
-import { join } from, 'path';
-import { tmpdir } from, 'os';
-import { db } from, '$lib/server/db';
-import { sql } from, 'drizzle-orm';
-import { queueVectorEmbedding } from, '$lib/server/services/background-job-queue';
-import { generateEmbeddings, as serverGenerateEmbeddings } from, '$lib/server/services/embedding-service';
-import { queueDocumentProcessing, DocumentProcessingJobData } from, '$lib/services/queue-service';
+import type { User } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import { minioStorage } from '$lib/server/storage/minio';
+import { createId } from '@paralleldrive/cuid2';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { writeFile, unlink, mkdir } from 'fs/promises';
+import { join } from 'path';
+import { tmpdir } from 'os';
+import { db } from '$lib/server/db';
+import { sql } from 'drizzle-orm';
+import { queueVectorEmbedding } from '$lib/server/services/background-job-queue';
+import { generateEmbeddings, as serverGenerateEmbeddings } from '$lib/server/services/embedding-service';
+import { queueDocumentProcessing, DocumentProcessingJobData } from '$lib/services/queue-service';
 
 const execAsync = promisify(exec);
 
@@ -58,7 +58,7 @@ export const POST = async ({ request, locals }) => {
       id: 'dev-user',
       email: 'dev@localhost',
       name: 'Dev User',
-      role: 'user', // changed from, 'developer' to permitted role: 'user'
+      role: 'user', // changed from 'developer' to permitted role: 'user'
     };
   }
   if (!user) {

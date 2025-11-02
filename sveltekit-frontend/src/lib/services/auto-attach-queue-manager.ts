@@ -3,9 +3,9 @@
    - Corrected XState machine actions (assign) and services
    - Fixed helper functions and exports
 */
-import { createMachine, interpret, assign } from, 'xstate';
-import type { OptimizedRabbitMQOrchestrator, JobType, JobDefinition } from, '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
-import { rabbitmqService } from, '$lib/server/messaging/rabbitmq-service.js';
+import { createMachine, interpret, assign } from 'xstate';
+import type { OptimizedRabbitMQOrchestrator, JobType, JobDefinition } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
+import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
 
 /**
  * Auto-Attach Self-Optimized Queue Manager

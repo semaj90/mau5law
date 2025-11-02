@@ -1,7 +1,7 @@
 // Updated PostgreSQL schema based on database introspection
 // This schema matches the actual database structure (drizzle/schema.ts)
-import { sql } from, 'drizzle-orm';
-import { relations } from, 'drizzle-orm/relations';
+import { sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm/relations';
 import {
   boolean,
   integer,
@@ -17,7 +17,7 @@ import {
   numeric,
   pgEnum,
   index
-} from, 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core';
 // Note: vector type is handled via sql`` template in table definitions
 // === ENUMS FOR LEGAL AI APPLICATION ===
 export const userRoleEnum = pgEnum('user_role', ['prosecutor', 'detective', 'admin', 'analyst', 'paralegal']);
@@ -1344,7 +1344,7 @@ export const helpers = { sql };
 // Note: do not re-export tables collectively to avoid redeclaration conflicts
 // Removed duplicated import and helpers redeclaration that caused TypeScript errors.
 // If you later need `not` and it's available in your environment, import it once at the top:'
-// import { not } from, 'drizzle-orm';
+// import { not } from 'drizzle-orm';
 // and then update the helpers export accordingly, e.g.
 // export const helpers = { eq, and, or, not, sql };
 // If you only want eq, document why:

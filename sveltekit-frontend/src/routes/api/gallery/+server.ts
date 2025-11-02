@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /*
  * Gallery API Server - Main Gallery Data Handler
  * Provides unified access to all media types across the legal AI platform
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler as SvelteKitRequestHandler } from, '@sveltejs/kit'; // Removed RouteParams
-import { db } from, '$lib/server/database';
-import usersTable, { cases, evidence, legalDocuments } from, '$lib/server/database'; // Changed: 'default as users';, to: 'users' and renamed to usersTable
-import { eq, desc, asc, and, or, like, count, gte, lte } from, 'drizzle-orm';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit'; // Removed RouteParams
+import { db } from '$lib/server/database';
+import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed: 'default as users';, to: 'users' and renamed to usersTable
+import { eq, desc, asc, and, or, like, count, gte, lte } from 'drizzle-orm';
 
 // Define a type for the selected evidence items
 type EvidenceSelect = typeof evidence.$inferSelect;

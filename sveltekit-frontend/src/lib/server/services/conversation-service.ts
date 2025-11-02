@@ -2,9 +2,9 @@
  * Conversation Service for Legal AI Chat
  * Provides lightweight in-memory storage with optional Redis persistence.
  */
-import { randomUUID } from, 'crypto';
-import { logger } from, '../production-logger.js';
-import { getRedisClient } from, '$lib/server/database/redis-client';
+import { randomUUID } from 'crypto';
+import { logger } from '../production-logger.js';
+import { getRedisClient } from '$lib/server/database/redis-client';
 export interface ConversationContext {
   [key: string]: any;
 }

@@ -8,14 +8,14 @@
  * - citation-precedent.ts
  *
  *, Usage:
- *   import { citationStore, searchCitations } from, '$lib/stores/unified';
+ *   import { citationStore, searchCitations } from '$lib/stores/unified';
  *
  *   await citationStore.searchCitations('statute, 42 USC');
  *   const similar = await citationStore.findSimilarCitations(citationId);
  *   $: citations = $citationStore.citations;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -448,11 +448,11 @@ export const similarCitations = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { citations  } from, '$lib/stores/unified'
- *   import { legalCitations, searchCitations } from, '$lib/stores/legal-citations'
+ *   import { citations  } from '$lib/stores/unified'
+ *   import { legalCitations, searchCitations } from '$lib/stores/legal-citations'
  *
  * New imports:
- *   import { citationStore, citations, filteredCitations } from, '$lib/stores/unified'
+ *   import { citationStore, citations, filteredCitations } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ;, Old: $citations, $legalCitations

@@ -1,14 +1,14 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Legal Workflow Optimization API
  * Integrates binary encoding, GPU caching, and NES orchestration for legal workflows
  */
-import { binaryGPUShaderCache } from, '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
-import { nesCacheOrchestrator } from, '../../../../../lib/services/nes-cache-orchestrator.js';
-import * as webgpuRAGService from, '../../../../../lib/webgpu/webgpu-rag-service.js';
-import { binaryEncoder, type EncodingFormat } from, '../../../../../lib/middleware/binary-encoding.js';
+import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
+import { nesCacheOrchestrator } from '../../../../../lib/services/nes-cache-orchestrator.js';
+import * as webgpuRAGService from '../../../../../lib/webgpu/webgpu-rag-service.js';
+import { binaryEncoder, type EncodingFormat } from '../../../../../lib/middleware/binary-encoding.js';
 
 // Add a typed WebGPU result and a type-guard to avoid `any` casts
 type WebGPUResult = {

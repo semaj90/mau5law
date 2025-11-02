@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit'
-import { apiRegistry } from, '$lib/server/api/service-registry'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import { apiRegistry } from '$lib/server/api/service-registry'
+import type { RequestHandler } from './$types.js'
 
 // Define the ServiceStatus type based on usage in this file and inferred properties from apiRegistry.
 // This interface should align with the ServiceCheckResult type returned by apiRegistry.checkAllServices().

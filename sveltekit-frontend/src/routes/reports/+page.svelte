@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-  import { onMount, onDestroy } from, 'svelte';
-  import type { Report } from, '$lib/types/index';
-  import TauriAPI from, '$lib/tauri';
+import type { Case } from '$lib/types';
+  import { onMount, onDestroy } from 'svelte';
+  import type { Report } from '$lib/types/index';
+  import TauriAPI from '$lib/tauri';
 
   // Stores & helpers
-  import { reports, as reportsStore, activeReport, isSaving, saveReport, loadReports } from, '$lib/stores/reports';
+  import { reports, as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
 
   // Local UI state (avoid colliding with `reports` store name)
   let reportList: Report[] = [];

@@ -3,7 +3,7 @@
  * Simple wrapper around Ollama integration for backwards compatibility
  */
 
-import { getOllamaService } from, '../server/integrations/ollama';
+import { getOllamaService } from '../server/integrations/ollama';
 
 const ollamaService = getOllamaService();
 

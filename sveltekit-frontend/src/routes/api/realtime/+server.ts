@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 
 // Define types for SSE messages
 interface WelcomeMessage { type: 'welcome';, ts: number;

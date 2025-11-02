@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Centralized Connection Pool for QUIC/HTTP3 Concurrent Requests
  *
@@ -14,11 +14,11 @@ import { redis, ensureRedisReady } from, '$lib/server/redis-client';
  *
  *, Date: 2025-10-17
  */
-import { Redis } from, 'ioredis';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import neo4j, { Driver } from, 'neo4j-driver';
-import amqp, { Connection, Channel } from, 'amqplib';
-import { VECTOR_CONFIG } from, '../config/vector-config';
+import { Redis } from 'ioredis';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import neo4j, { Driver } from 'neo4j-driver';
+import amqp, { Connection, Channel } from 'amqplib';
+import { VECTOR_CONFIG } from '../config/vector-config';
 // ============================================================================
 // Redis Connection Pool
 // ============================================================================

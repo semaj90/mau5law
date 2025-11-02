@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 // Types for legal search components
 export interface SearchResult { id: string;, title: string;
   type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document';

@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Type-safe API Response Schemas for Bits UI SSR
  */

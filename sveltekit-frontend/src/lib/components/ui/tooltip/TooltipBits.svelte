@@ -1,10 +1,10 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
   import, '$lib/styles/tooltip-global.css';
-  import * as TooltipPrimitive from, "bits-ui/tooltip";
-  import type { Snippet } from, 'svelte';
-  import { cn } from, '$lib/utils';
-  import { fade, scale } from, 'svelte/transition';
+  import * as TooltipPrimitive from "bits-ui/tooltip";
+  import type { Snippet } from 'svelte';
+  import { cn } from '$lib/utils';
+  import { fade, scale } from 'svelte/transition';
   interface Props {
     content: string;
     side?: 'top' | 'right' | 'bottom' | 'left';

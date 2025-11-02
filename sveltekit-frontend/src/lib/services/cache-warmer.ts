@@ -1,10 +1,10 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Legal Cache Warmer - Proactive preloading for legal assets
  */
-import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } from, '$lib/config/legal-priorities';
-import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
-import { lodManager } from, '$lib/services/N64LODManager';
+import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } from '$lib/config/legal-priorities';
+import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
+import { lodManager } from '$lib/services/N64LODManager';
 
 export interface UserProfile { userId: string;, practiceAreas: LegalCategory[];
   recentCases: string[];

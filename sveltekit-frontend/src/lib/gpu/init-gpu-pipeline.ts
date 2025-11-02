@@ -1,4 +1,4 @@
-import shaderCache from, './webgl-shader-cache';
+import shaderCache from './webgl-shader-cache';
 export interface GPUInitResult {
   gl?: WebGL2RenderingContext;
   adapter?: GPUAdapter;

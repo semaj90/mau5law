@@ -1,5 +1,5 @@
-import type { RequestHandler } from, '@sveltejs/kit'
-import { cacheEventBus } from, '$lib/server/cache/cache-events'
+import type { RequestHandler } from '@sveltejs/kit'
+import { cacheEventBus } from '$lib/server/cache/cache-events'
 export const GET: RequestHandler = async () => {
   const encoder = new TextEncoder()
   const stream = new ReadableStream<Uint8Array>({

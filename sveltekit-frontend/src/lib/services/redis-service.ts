@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client'; // Redis pub/sub service for real-time updates import { createClient } from, '$lib/shims/redis-shim'; export interface RedisConfig { url: string;, retryDelayOnFailover: number; maxRetriesPerRequest: number; }
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client'; // Redis pub/sub service for real-time updates import { createClient } from '$lib/shims/redis-shim'; export interface RedisConfig { url: string;, retryDelayOnFailover: number; maxRetriesPerRequest: number; }
 class RedisService { private client: any = null; private publisher: any = null; private, subscriber: any = null; private isConnected = $state(false); private realTimeServer: any = null; constructor() { // Remove circular dependency - will be set externally if needed this.initializeClients(); }
   private async initializeClients() { const config: RedisConfig = {, url: import.meta.env.REDIS_URL || 'redis://localhost:4005', retryDelayOnFailover: 100, maxRetriesPerRequest: 3 }
     try { // Main client for operations this.client = await redis; this.publisher = await redis; this.subscriber = await redis; // Setup error handlers this.client.on('error', this.handleError.bind(this); this.publisher.on('error', this.handleError.bind(this); this.subscriber.on('error', this.handleError.bind(this); // Connect all clients await Promise.all([) this.client.connect(), this.publisher.connect(), this.subscriber.connect() ]); this.isConnected = true; console.log('✅ Redis clients connected successfully'); } catch (error: any) { console.error('❌ Redis connection failed:', error); this.isConnected = $state(false); }

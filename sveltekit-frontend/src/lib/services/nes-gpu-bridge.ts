@@ -2,8 +2,8 @@
  * NES-Style GPU Bridge - Integrates NES caching architecture with GPU acceleration
  * Provides 8-bit efficiency optimizations for modern GPU computing
  */
-import type { CanvasState } from, '$lib/types';
-import type { MultiDimArray } from, '$lib/workers/gpu-tensor-worker'; // Removed GPUProcessingStats
+import type { CanvasState } from '$lib/types';
+import type { MultiDimArray } from '$lib/workers/gpu-tensor-worker'; // Removed GPUProcessingStats
 
 // Define FabricObject and FabricShadow interfaces for better typing
 interface FabricShadow {

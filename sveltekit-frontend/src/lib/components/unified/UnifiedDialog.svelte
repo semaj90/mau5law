@@ -13,10 +13,10 @@ https://svelte.dev/e/js_parse_error -->
   - Legal AI context integration
 -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
-  import { onMount, onDestroy } from, 'svelte';
-  import { fade, scale } from, 'svelte/transition';
-  import { cubicInOut } from, 'svelte/easing';
+import type { User } from '$lib/types';
+  import { onMount, onDestroy } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
+  import { cubicInOut } from 'svelte/easing';
 
   interface DialogProps {
     open?: boolean;

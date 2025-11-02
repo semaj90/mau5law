@@ -6,7 +6,7 @@
  * with direct PostgreSQL vector queries for 5-10x performance improvement
  */
 
-import type { z } from, 'zod';
+import type { z } from 'zod';
 
 export interface PgvectorSearchRequest {
   query: string;

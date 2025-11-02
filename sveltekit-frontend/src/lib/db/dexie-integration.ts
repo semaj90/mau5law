@@ -4,7 +4,7 @@
  * Replaces raw IndexedDB with clean async/await syntax
  * Provides reactive Svelte stores for real-time UI updates
  */
-import Dexie, { type Table, liveQuery } from, 'dexie';
+import Dexie, { type Table, liveQuery } from 'dexie';
 // ============================================================================
 // DATABASE SCHEMA DEFINITIONS
 // ============================================================================

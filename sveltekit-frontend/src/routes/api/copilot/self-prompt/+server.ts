@@ -1,9 +1,9 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * Copilot Self-Prompt API Endpoint
  * Enables Copilot to leverage comprehensive AI orchestration for autonomous problem-solving
  */
-import { json, error } from, '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 
 // Placeholder for copilotSelfPrompt - will be implemented
 async function copilotSelfPrompt(prompt: string, options: CopilotSelfPromptOptions): Promise<SelfPromptResult> {

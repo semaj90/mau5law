@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,13 +16,13 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit'; // Added import for json
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'; // Added import for json
 
 // Assuming App.Locals is globally available from src/app.d.ts
 // If not, you might need to define a minimal interface or import it.
-// For example: import type { Locals } from, '@sveltejs/kit/types/hooks';
+// For example: import type { Locals } from '@sveltejs/kit/types/hooks';
 // Or: declare namespace App { interface Locals extends Record<string, unknown> {} }
 
 /*

@@ -5,9 +5,9 @@
  * combining optimized job orchestration, auto-attach queue management,
  * and asynchronous state management into one cohesive service.
  */
-import { OptimizedRabbitMQOrchestrator } from, '$lib/orchestration/optimized-rabbitmq-orchestrator';
-import type { JobType, JobStatus, ProcessingMetrics } from, '$lib/types/rabbitmq-types';
-import type { Readable } from, 'svelte/store';
+import { OptimizedRabbitMQOrchestrator } from '$lib/orchestration/optimized-rabbitmq-orchestrator';
+import type { JobType, JobStatus, ProcessingMetrics } from '$lib/types/rabbitmq-types';
+import type { Readable } from 'svelte/store';
 
 export interface LegalProcessingRequest {
   documentId?: string;

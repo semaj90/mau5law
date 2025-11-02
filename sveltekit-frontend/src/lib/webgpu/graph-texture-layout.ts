@@ -7,8 +7,8 @@
  * - Level of Detail (LOD) streaming system
  * - Breadth-First Search layout for optimal memory access patterns
  */
-import { db, type GraphNode, type GraphEdge } from, '../db/dexie-integration.js';
-import { firstValueFrom, type Observable } from, 'rxjs'; // Import firstValueFrom and Observable type
+import { db, type GraphNode, type GraphEdge } from '../db/dexie-integration.js';
+import { firstValuefrom type Observable } from 'rxjs'; // Import firstValueFrom and Observable type
 // ============================================================================
 // GPU DATA STRUCTURES
 // ============================================================================

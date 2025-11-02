@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // WebSocket Server for Live Evidence Processing Updates
 // Broadcasts XState workflow updates to connected clients with Redis caching
 
-import { WebSocketServer, WebSocket } from, 'ws';
-import type { EvidenceActor, WSMessage, WorkflowContext } from, '$lib/types/evidence';
+import { WebSocketServer, WebSocket } from 'ws';
+import type { EvidenceActor, WSMessage, WorkflowContext } from '$lib/types/evidence';
 
 // Simple Redis client stub (replace with actual implementation)
 interface SimpleRedis {

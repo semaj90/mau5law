@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -21,9 +21,9 @@ import type { Document } from, '$lib/types';
  * Document History API
  * GET /api/ai/document-drafting/history - Get user's document history'
  */
-import { json } from, '@sveltejs/kit';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     // In production, this would query the database for the user's document history'

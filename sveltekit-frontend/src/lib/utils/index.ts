@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Comprehensive Utility Functions
  * SvelteKit, 2 + Svelte, 5 + TypeScript Compatible
  */
-import clsx, { type ClassValue } from, 'clsx';
+import clsx, { type ClassValue } from 'clsx';
 // ===== CLASS NAME UTILITIES =====
 export function cn(...inputs: ClassValue[]): string {
   return clsx(inputs);

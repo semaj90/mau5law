@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestEvent } from, '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 // Import health check functions from our services
-import { ollamaSuggestionsService } from, '$lib/services/ollama-suggestions-service.js';
-import { enhancedRAGSuggestionsService } from, '$lib/services/enhanced-rag-suggestions-service.js';
-import { aiSuggestionsClient } from, '$lib/services/ai-suggestions-grpc-client.js';
+import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js';
+import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js';
+import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client.js';
 
 /* Minimal health types to avoid `any` */
 type HealthStatus = 'healthy' | 'degraded' | 'down' | 'unknown';

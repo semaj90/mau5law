@@ -13,8 +13,8 @@ import {
   type EmbeddingRequest,
   type VectorSearchRequest,
   type VectorSearchResult
-} from, './gemma-embeddings-service';
-import { qdrantClient, type QdrantSearchRequest, type QdrantPoint } from, './qdrant-client';
+} from './gemma-embeddings-service';
+import { qdrantClient, type QdrantSearchRequest, type QdrantPoint } from './qdrant-client';
 
 export interface HybridSearchOptions {
   use_qdrant?: boolean; // Use Qdrant for search (default: true)

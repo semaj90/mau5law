@@ -1,9 +1,9 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import type { HTMLFormAttributes } from, "svelte/elements";
-  import type {     Snippet     } from, 'svelte';
-  import { enhance } from, "$app/forms";
-  import type { SubmitFunction } from, "@sveltejs/kit";
+  import type { HTMLFormAttributes } from "svelte/elements";
+  import type {     Snippet     } from 'svelte';
+  import { enhance } from "$app/forms";
+  import type { SubmitFunction } from "@sveltejs/kit";
   interface Props extends HTMLFormAttributes {
     // Form validation and submission
     onSubmit?: SubmitFunctio;

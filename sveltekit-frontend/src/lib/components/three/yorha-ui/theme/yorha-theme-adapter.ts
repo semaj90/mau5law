@@ -3,7 +3,7 @@
  * Bridges 3D YoRHa component color usage with UnoCSS tokens, NES.css fallback palette,
  * and Bits UI v2 semantic roles. Allows future theming without touching core geometry logic.
  */
-import { YORHA_COLORS } from, '../YoRHaUI3D.js';
+import { YORHA_COLORS } from '../YoRHaUI3D.js';
 // NES.css retro fallback palette (selected core colors)
 export const NES_PALETTE = {
   blue: '#209cee',

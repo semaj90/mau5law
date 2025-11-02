@@ -2,10 +2,10 @@
 // CANONICAL CACHE API ENDPOINT - SvelteKit Integration
 // Provides HTTP/REST interface for the canonical result cache system
 // ======================================================================
-import { json, error } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import type { RequestHandler } from, './$types.js';
-import { canonicalResultCache, type CanonicalResult, type RankingSet } from, '$lib/services/canonical-result-cache.js';
+import { json, error } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import type { RequestHandler } from './$types.js';
+import { canonicalResultCache, type CanonicalResult, type RankingSet } from '$lib/services/canonical-result-cache.js';
 // Add a precise type for incoming results to avoid `any`
 type RawCanonicalResult = { docId: string | number;, score: number;
   flags?: number;

@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * XState v5 Actor for Embedding Generation
  * Uses fromPromise for async embedding operations with legal AI context
  */
-import { fromPromise } from, 'xstate/actors';
-import { createActor } from, 'xstate';
-import { ollamaService } from, '$lib/services/ollamaService';
+import { fromPromise } from 'xstate/actors';
+import { createActor } from 'xstate';
+import { ollamaService } from '$lib/services/ollamaService';
 export interface EmbeddingInput {
   text: string;
   context?: {

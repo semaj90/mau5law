@@ -2,18 +2,18 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
 </script>
-  import { onMount, onDestroy } from, 'svelte';
-  import  WebGPUWebAssemblyBridge  from, "$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte";
+  import { onMount, onDestroy } from 'svelte';
+  import  WebGPUWebAssemblyBridge  from "$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from, "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from, "$lib/components/ui/badge.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
   // Props
   interface Props {
     maxConcurrent?: number;

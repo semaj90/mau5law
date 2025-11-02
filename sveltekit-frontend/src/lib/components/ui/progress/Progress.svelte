@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { cn } from, '$lib/utils';
+  import { cn } from '$lib/utils';
   interface Props {
     value?: any;
     max?: any;

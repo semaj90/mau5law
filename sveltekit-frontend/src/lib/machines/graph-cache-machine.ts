@@ -1,7 +1,7 @@
 // XState Graph Cache Machine - Orchestrates cache states and background refresh
 // Implements the recommended runtime flow with idle signals and telemetry
-import { createMachine, assign } from, 'xstate';
-import type { ActorRefFrom } from, 'xstate';
+import { createMachine, assign } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 // Types for the graph cache system
 export interface GraphCacheContext { query: string | null;, params: Record<string, unknown>;
   result: any;
@@ -397,7 +397,7 @@ export const graphCacheMachine = createMachine(
         console.log('❌ Cache miss - fetching from sources');
       },
       notifyProvisionalResult: context => {
-        console.log('⚡ Provisional result from, WASM:', `${context.latency}ms`);
+        console.log('⚡ Provisional result from WASM:', `${context.latency}ms`);
       },
       notifyRehydration: context => {
         console.log('🔄 UI rehydrated with authoritative, data:', context.source);

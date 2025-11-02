@@ -1,5 +1,5 @@
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import RedisTaskQueue from, '$lib/services/redis-orchestrator';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import RedisTaskQueue from '$lib/services/redis-orchestrator';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

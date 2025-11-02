@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * LangChain RAG Integration for Legal AI
  * Connects LangChain Ollama service to API endpoints
  */
-import { LangChainOllamaService } from, './langchain-ollama-service';
+import { LangChainOllamaService } from './langchain-ollama-service';
 // Initialize singleton LangChain service
 let langChainServiceInstance: LangChainOllamaService | null = null;
 export function getLangChainService(): LangChainOllamaService {

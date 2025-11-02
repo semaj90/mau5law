@@ -1,12 +1,12 @@
-import { randomUUID } from, 'node:crypto';
-import Loki, { type Collection } from, 'lokijs';
-import Fuse from, 'fuse.js';
-import Redis, { type Redis as IORedis } from, 'ioredis';
-import { QdrantClient, type PointStruct } from, '@qdrant/js-client-rest';
-import { Pool, type PoolClient } from, 'pg';
-import neo4j, { type Driver as Neo4jDriver, type Session } from, 'neo4j-driver';
-import { RecursiveCharacterTextSplitter } from, '@langchain/textsplitters';
-import { OpenAIEmbeddings } from, '@langchain/openai';
+import { randomUUID } from 'node:crypto';
+import Loki, { type Collection } from 'lokijs';
+import Fuse from 'fuse.js';
+import Redis, { type Redis as IORedis } from 'ioredis';
+import { QdrantClient, type PointStruct } from '@qdrant/js-client-rest';
+import { Pool, type PoolClient } from 'pg';
+import neo4j, { type Driver as Neo4jDriver, type Session } from 'neo4j-driver';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { OpenAIEmbeddings } from '@langchain/openai';
 
 type SummarizationPipeline = (
   text: string,

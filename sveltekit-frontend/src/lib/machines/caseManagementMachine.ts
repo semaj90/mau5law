@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * XState Machine for Case Management
  * Uses MCP Tools Layer for all database operations
  */
-import { createMachine, assign, fromPromise, type StateFrom } from, 'xstate';
-import type { CaseData, EvidenceData } from, '../mcp/cases.mcp.js';
+import { createMachine, assign, fromPromise, type StateFrom } from 'xstate';
+import type { CaseData, EvidenceData } from '../mcp/cases.mcp.js';
 // Machine Context
 export interface CaseManagementContext {
   // Current case data

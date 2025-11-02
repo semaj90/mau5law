@@ -1,5 +1,5 @@
-import { describe, it, expect } from, 'vitest';
-import { getBitsOverrides, registerOverride } from, '../components/ui/wrappers/bits/bits-overrides';
+import { describe, it, expect } from 'vitest';
+import { getBitsOverrides, registerOverride } from '../components/ui/wrappers/bits/bits-overrides';
 describe('Bits overrides registry', () => {
   it('allows registering and retrieving an override', () => {
     const fake = { Button: {, name: 'FakeButton' } };

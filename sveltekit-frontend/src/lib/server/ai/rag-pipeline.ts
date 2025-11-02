@@ -1,4 +1,4 @@
-import { eq, sql as drizzleSql, and, gte } from, 'drizzle-orm';
+import { eq, sql as drizzleSql, and, gte } from 'drizzle-orm';
 // Fallback schema import - will gracefully degrade if schema not available
 // Use non-any types to satisfy lint/TS rules while still allowing a runtime fallback.
 type TablePlaceholder = Record<string, unknown>;
@@ -21,19 +21,19 @@ try {
     // NOTE: these are plain placeholders — replace with your real Drizzle schema when available;, __fallback: {} as TablePlaceholder
   };
 }
-import Redis from, 'ioredis';
-import { createHash } from, 'crypto';
+import Redis from 'ioredis';
+import { createHash } from 'crypto';
 // RAG Pipeline with PostgreSQL + pgvector + LangChain + Ollama
 // (Header line previously corrupted; cleaned.)
-import { Ollama } from, '@langchain/community/llms/ollama';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
-import { PromptTemplate } from, '@langchain/core/prompts';
-import { RunnableSequence, RunnablePassthrough } from, '@langchain/core/runnables';
-import { StringOutputParser } from, '@langchain/core/output_parsers';
-import type { Document as LangChainDocument } from, '@langchain/core/documents';
+import { Ollama } from '@langchain/community/llms/ollama';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence, RunnablePassthrough } from '@langchain/core/runnables';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+import type { Document as LangChainDocument } from '@langchain/core/documents';
 const postgres = require('postgres');
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { getOllamaBaseUrl, getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 // Import schema directly (same path used across project). If it fails at runtime we degrade gracefully.
 // Configuration
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';

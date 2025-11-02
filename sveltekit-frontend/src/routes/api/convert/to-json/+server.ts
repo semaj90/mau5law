@@ -1,5 +1,5 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 type OCRPage = {
   page?: number;

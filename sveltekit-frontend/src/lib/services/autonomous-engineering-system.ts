@@ -1,12 +1,12 @@
-import type { AIResponse } from, '$lib/types';
-import crypto from, "crypto";
+import type { AIResponse } from '$lib/types';
+import crypto from "crypto";
 /**
  * Autonomous Engineering System
  * Comprehensive wrapper for Copilot self-prompting with multi-agent orchestration,
  * semantic search, memory MCP, and automated problem-solving
  */
-import { autoGenService } from, './autogen-service.js';
-import { crewAIService } from, './crewai-service.js';
+import { autoGenService } from './autogen-service.js';
+import { crewAIService } from './crewai-service.js';
 
 // Safe mock implementation for missing aiWorkerManager methods (used as fallback)
 const aiWorkerManager = {

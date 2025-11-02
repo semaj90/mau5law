@@ -1,18 +1,18 @@
 <script, lang="ts">
-  import Fuse from, 'fuse.js';
-  import { onMount } from, 'svelte';
-  import { quintOut } from, 'svelte/easing';
-  import { slide } from, 'svelte/transition';
-  import { sidebarStore } from, '../stores/canvas';
-  import { loki, lokiStore } from, '../stores/lokiStore';
-  import  InfiniteScrollList  from, "./InfiniteScrollList.svelte";
-  import  SearchBar  from, "./SearchBar.svelte";
-  import  TagList  from, "./TagList.svelte";
+  import Fuse from 'fuse.js';
+  import { onMount } from 'svelte';
+  import { quintOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
+  import { sidebarStore } from '../stores/canvas';
+  import { loki, lokiStore } from '../stores/lokiStore';
+  import  InfiniteScrollList  from "./InfiniteScrollList.svelte";
+  import  SearchBar  from "./SearchBar.svelte";
+  import  TagList  from "./TagList.svelte";
   // FileText and Tag are available as named exports in this environment
-  import { FileText, Tag } from, 'lucide-svelte';
+  import { FileText, Tag } from 'lucide-svelte';
   // Folder and X may be provided as default exports depending on lucide-svelte version
-  import Folder from, 'lucide-svelte';
-  import X from, 'lucide-svelte';
+  import Folder from 'lucide-svelte';
+  import X from 'lucide-svelte';
   let sidebarElement: HTMLElement;
   let isHovered = $state<boolean>(false);
   let isPinned = $state<boolean>(false);

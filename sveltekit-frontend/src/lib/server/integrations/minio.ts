@@ -5,7 +5,7 @@
  * and multimodal data with streaming uploads, presigned URLs, and versioning.
  */
 
-import * as Minio from, 'minio';
+import * as Minio from 'minio';
 
 interface MinIOConfig {
   endPoint: string;

@@ -8,9 +8,9 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { writable } from, 'svelte/store';
-  import { legalPlatformClient, type CaseData, type ApiResponse } from, '$lib/services/legal-platform-client';
+  import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
+  import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';
   // Component state
   let cases = writable<CaseData[]>([]);
   let loading = writable(false);

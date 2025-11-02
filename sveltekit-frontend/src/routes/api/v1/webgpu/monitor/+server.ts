@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { webgpuRedisOptimizer } from, '$lib/server/webgpu-redis-optimizer.js';
-import { embeddingCache } from, '$lib/server/embedding-cache-middleware.js';
-import { cache } from, '$lib/server/cache/redis.js';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
+import { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
+import { cache } from '$lib/server/cache/redis.js';
 /**
  * WebGPU Cache System Monitoring API
  * Real-time performance monitoring and analytics dashboard

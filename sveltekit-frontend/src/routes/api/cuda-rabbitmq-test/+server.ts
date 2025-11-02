@@ -2,8 +2,8 @@
  * Enhanced RabbitMQ-CUDA Test API
  * Test endpoint for the enhanced RabbitMQ-CUDA bridge integration
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import {
   initializeBridge,
   submitCudaTensorJob,
@@ -11,7 +11,7 @@ import {
   submitEmbeddingNormalizationJob,
   getBridgeStatus,
   rabbitMQCudaBridge
-} from, '$lib/integrations/enhanced-rabbitmq-cuda-bridge.js';
+} from '$lib/integrations/enhanced-rabbitmq-cuda-bridge.js';
 // GET: Get bridge status and health
 export const, GET: RequestHandler = async ({ url }) => {
   try {

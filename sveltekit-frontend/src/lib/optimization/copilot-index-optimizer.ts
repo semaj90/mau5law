@@ -1,11 +1,11 @@
-import type { RequestHandler } from, "@sveltejs/kit";
-import type { RAGSearchResult } from, "$lib/types/rag";
+import type { RequestHandler } from "@sveltejs/kit";
+import type { RAGSearchResult } from "$lib/types/rag";
 /**
  * Copilot Index Optimizer - Advanced semantic search with Context7 MCP integration
  * Optimizes the copilot.md context for enhanced GitHub Copilot suggestions
  */
-import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } from, './simd-json-index-processor.js';
-import { enhancedRAGStore } from, '$lib/stores/unified';
+import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } from './simd-json-index-processor.js';
+import { enhancedRAGStore } from '$lib/stores/unified';
 
 // Context7 MCP integration patterns
 export interface Context7Pattern { id: string;, pattern: string;

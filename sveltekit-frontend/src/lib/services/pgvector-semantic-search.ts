@@ -2,16 +2,16 @@
  * Postgres/pgvector Semantic Search Service
  * Provides embedding-based semantic search for chat history and legal documents
  */
-import { db } from, '$lib/db';
-import { chatEmbeddings, legalDocuments } from, '$lib/server/schema';
-import { sql } from, 'drizzle-orm';
+import { db } from '$lib/db';
+import { chatEmbeddings, legalDocuments } from '$lib/server/schema';
+import { sql } from 'drizzle-orm';
 import type {
   VectorSearchQuery,
   VectorSearchResult,
   ContextualEmbedding,
   ChatMessage,
   SemanticSearchResult
-} from, '$lib/types/ai-assistant';
+} from '$lib/types/ai-assistant';
 export class PgVectorSemanticSearch {
   private embeddingModel: string;
   private dimensions: number;
@@ -241,7 +241,7 @@ export class PgVectorSemanticSearch {
           WHERE s1.session_id < s2.session_id>
           AND (1 - (s1.centroid <=> s2.centroid)) > 0.7
         )
-        SELECT * FROM, similarity_matrix
+        SELECT * from similarity_matrix
         ORDER BY similarity DESC
       `);`
       // Process results into clusters (simplified approach)

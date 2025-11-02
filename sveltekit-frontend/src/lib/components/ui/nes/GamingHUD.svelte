@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  	import { onMount } from, 'svelte';
-  	import type { ComponentProps } from, 'svelte';
+  	import { onMount } from 'svelte';
+  	import type { ComponentProps } from 'svelte';
   	// Gaming-themed props using Svelte, 5 patterns
   	interface GamingHUDProps {
   		userLevel?: number;

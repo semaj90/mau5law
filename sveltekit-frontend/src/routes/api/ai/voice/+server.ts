@@ -15,10 +15,10 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import { SpeechService } from, '$lib/services/speech-service';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { SpeechService } from '$lib/services/speech-service';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 export async function POST({ request }): Promise<any> {
   try {
     const { audio } = await request.json();

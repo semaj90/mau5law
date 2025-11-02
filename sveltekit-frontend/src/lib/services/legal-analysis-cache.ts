@@ -3,7 +3,7 @@
  * Provides fast client-side lookup without re-analyzing
  */
 
-import Loki from, 'lokijs';
+import Loki from 'lokijs';
 
 export interface LegalAnalysisCacheEntry { evidenceId: string;, evidenceTitle: string;
   evidenceHash: string; // Hash of content to detect changes

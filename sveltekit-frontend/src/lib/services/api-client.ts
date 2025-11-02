@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * API Client for Legal AI Platform
  * Provides type-safe client-side API access with Lucia v3 authentication
@@ -24,7 +24,7 @@ import type { Case } from, '$lib/types';
 //   type UpdatePersonOfInterestData,
 //   type PaginationOptions,
 //   type PaginationResult
-// } from, '$lib/server/services/user-scoped-crud'
+// } from '$lib/server/services/user-scoped-crud'
 // Temporary stub types
 export type CreateCaseData = { title: string; description?: string };
 export type UpdateCaseData = { id: string; title?: string; description?: string };

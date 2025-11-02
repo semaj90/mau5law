@@ -1,5 +1,5 @@
-import { error } from, '@sveltejs/kit';
-import type { PageServerLoad } from, './$types.js';
+import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async () => {
   try {
     const user = { id: 'mock-user-id', firstName: 'Detective', lastName: 'Smith', role: 'detective' };

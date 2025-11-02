@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types.js';
-import { minioService, BUCKETS } from, '$lib/server/storage/minio-service';
+import type { RequestHandler } from './$types.js';
+import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
 
 // Add a minimal typed shape for files returned by minioService.listFiles
 type MinioFile = {

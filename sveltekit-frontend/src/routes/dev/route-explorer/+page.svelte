@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from, 'svelte'; import { browser } from, '$app/environment'; interface RouteData { generated: string; filters: { applied: boolean; category: string | null; status: string | null; tag: string | null; search: string | null; }
+<script, lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { browser } from '$app/environment'; interface RouteData { generated: string; filters: { applied: boolean; category: string | null; status: string | null; tag: string | null; search: string | null; }
     counts: { total: { config: number; fileBased: number; api: number; }
       displayed: { config: number; fileBased: number; }
       issues: { configMissingFiles: number; filesMissingConfig: number; }

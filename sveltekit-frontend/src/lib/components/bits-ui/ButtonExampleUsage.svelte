@@ -3,8 +3,8 @@
    * Usage Examples for bits-ui Button Component
    * This demonstrates how to use the ButtonExample component in Svelte, 5
    */
-  import  ButtonExample  from, "./ButtonExample.svelte";
-  import { counterStore } from, '$lib/stores/example-barrel-pattern';
+  import  ButtonExample  from "./ButtonExample.svelte";
+  import { counterStore } from '$lib/stores/example-barrel-pattern';
   let isLoading = $state<boolean>(false);
   async function handleAsyncAction(): Promise<any> {
     isLoading = true;
@@ -107,8 +107,8 @@
   <div class="mt-8 p-4, bg-muted, rounded-lg">
     <h3 class="text-lg, font-semibold, mb-2">Usage Code:</h3>
     <pre, class="text-sm, overflow-x-auto"><code>{`<script, lang="ts">`
-  import  ButtonExample  from, "$lib/components/bits-ui/ButtonExample.svelte";
-  import { counterStore } from, '$lib/stores';
+  import  ButtonExample  from "$lib/components/bits-ui/ButtonExample.svelte";
+  import { counterStore } from '$lib/stores';
 </script>
 <!-- Basic, usage -->
 <ButtonExample, variant="default" onclick={() => console.log('Clicked')}>

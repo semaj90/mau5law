@@ -1,4 +1,4 @@
-import * as pako from, 'pako';
+import * as pako from 'pako';
 /**
  * Protobuf-style type definitions for QLoRA binary transport
  * These types ensure type safety for binary serialization/deserialization

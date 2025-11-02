@@ -2,10 +2,10 @@
  * Unified AI Service - Integration Hub
  * Connects WASM LLM, LangChain + Ollama, NES-GPU Integration, and PostgreSQL
  */
-import { browser } from, '$app/environment';
-import type { LegalDocument } from, '$lib/gpu/nes-gpu-integration.js';
-import type { LangChainConfig, ProcessingResult, QueryResult } from, '$lib/ai/langchain-ollama-service.js';
-import type { WASMLLMConfig, WASMLLMResponse } from, '$lib/types/vector-jobs.js';
+import { browser } from '$app/environment';
+import type { LegalDocument } from '$lib/gpu/nes-gpu-integration.js';
+import type { LangChainConfig, ProcessingResult, QueryResult } from '$lib/ai/langchain-ollama-service.js';
+import type { WASMLLMConfig, WASMLLMResponse } from '$lib/types/vector-jobs.js';
 
 // --- Added lightweight service interfaces to avoid `any` ---
 type WASMLLMService = {

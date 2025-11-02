@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Props } from, '$lib/types/global';
+  import type { Props } from '$lib/types/global';
   let { checked = $bindable(false), disabled = false, id, class: klass = '' }: Props = $props();
 </script>
 <label, class="switch {disabled ? 'opacity-50' : ''}">

@@ -2,9 +2,9 @@
  * Singleton instance of VectorSearchService
  * Provides lazy initialization for the search service
  */
-import { VectorSearchService } from, './vector-search-service';
-import { redis } from, '$lib/server/cache/redis';
-import { db } from, '$lib/server/db/client';
+import { VectorSearchService } from './vector-search-service';
+import { redis } from '$lib/server/cache/redis';
+import { db } from '$lib/server/db/client';
 let serviceInstance: VectorSearchService | null = null;
 /**
  * Get or create the vector search service instance

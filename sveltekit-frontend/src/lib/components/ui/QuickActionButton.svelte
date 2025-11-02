@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import { getOllamaGenerateEndpoint } from, '$lib/utils/ollama';
-  import { browser } from, '$app/environment';
+  import { getOllamaGenerateEndpoint } from '$lib/utils/ollama';
+  import { browser } from '$app/environment';
   interface Props {
     label: string;
     model: string;

@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Transaction Manager with Advisory Locks for Legal AI Platform
  * Ensures ACID properties for critical legal operations
  */
-import { sql } from, '$lib/database/connection';
-import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from, './advisory-locks.js';
-import { randomUUID } from, 'crypto';
+import { sql } from '$lib/database/connection';
+import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from './advisory-locks.js';
+import { randomUUID } from 'crypto';
 
 export interface TransactionOptions {
   isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';

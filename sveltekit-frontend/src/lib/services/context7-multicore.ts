@@ -1,5 +1,5 @@
-import { EventEmitter } from, 'events';
-import os from, 'os';
+import { EventEmitter } from 'events';
+import os from 'os';
 
 /**
  * Context7 Multicore Service - lightweight, type-safe placeholder implementation.

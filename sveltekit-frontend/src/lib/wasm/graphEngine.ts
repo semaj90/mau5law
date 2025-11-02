@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // @ts-nocheck - Complex experimental service with external dependencies
 /**
  * TinyGo WASM Graph Engine Integration
  * Handles local graph queries with cache hydration
  * Prevents Neo4j local bundling - uses remote + WASM pattern
  */
-import { unifiedServiceRegistry } from, '$lib/services/unifiedServiceRegistry';
-import { browser } from, '$app/environment';
+import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
+import { browser } from '$app/environment';
 export interface GraphNode { id: string;, label: string;
   properties: { [key: string]: any };
   type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';

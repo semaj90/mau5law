@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import { onMount, onDestroy } from, 'svelte';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import { onMount, onDestroy } from 'svelte';
   // removed static uploadStore import because the module has no exported member: 'uploadStore'
-  import { writable, type Writable } from, 'svelte/store';
+  import { writable, type Writable } from 'svelte/store';
   // Props (exported to avoid $props() compile issues in this environment)
   const { caseId } = $props<{ caseId: string }>()
   const { uploadId } = $props<{ uploadId: string }>()

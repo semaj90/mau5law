@@ -1,16 +1,16 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Citations API with Rich Text Editor Integration
  *
  * Provides comprehensive citation management for legal cases
  * Integrates with detective mode and case management system
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/db/index.js';
-import { eq, and, or, ilike, count, desc } from, 'drizzle-orm';
-import { citations } from, '$lib/server/db/schemas/cases-schema.js';
-import { caseManagementService } from, '$lib/services/case-management-service.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/index.js';
+import { eq, and, or, ilike, count, desc } from 'drizzle-orm';
+import { citations } from '$lib/server/db/schemas/cases-schema.js';
+import { caseManagementService } from '$lib/services/case-management-service.js';
 // Sample citations for when database is not available or for demo data
 
 // Define a minimal interface for CaseDetails based on its usage in this file

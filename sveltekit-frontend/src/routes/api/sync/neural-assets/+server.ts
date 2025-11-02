@@ -2,13 +2,13 @@
  * Neural Topology Assets API
  * Manages predictive asset cache, bitmap sprite states, and CHR-ROM manifest operations
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, '@sveltejs/kit'
-import { mockDataGenerators } from, '$lib/server/sync/mock-api-sync-simple'
-// import { bitmapSpriteCache } from, '$lib/ai/bitmap-sprite-cache'
-// import { chrRomManager } from, '$lib/services/chr-rom-manager'
-// import { db } from, '$lib/server/db/drizzle'
-// import { vectorEmbeddings, legalDocuments } from, '$lib/server/db/schema-postgres'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
+import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple'
+// import { bitmapSpriteCache } from '$lib/ai/bitmap-sprite-cache'
+// import { chrRomManager } from '$lib/services/chr-rom-manager'
+// import { db } from '$lib/server/db/drizzle'
+// import { vectorEmbeddings, legalDocuments } from '$lib/server/db/schema-postgres'
 
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'assets';

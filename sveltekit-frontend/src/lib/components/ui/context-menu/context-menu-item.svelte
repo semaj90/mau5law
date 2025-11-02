@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { getContext } from, 'svelte';
+  import { getContext } from 'svelte';
   // Expose props correctly for Svelte
   const { disabled } = $props<{ disabled: boolean }>()
   const { onClick } = $props<{ onClick: (event?: MouseEvent | unknown) }>()

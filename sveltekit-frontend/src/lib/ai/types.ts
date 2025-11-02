@@ -62,7 +62,7 @@ import {
   commonMCPQueries,
   type MCPToolRequest,
   type OrchestrationOptions
-} from, '../utils/mcp-helpers.js';
+} from '../utils/mcp-helpers.js';
 // Context7 Semantic Search Integration
 export interface Context7SearchOptions {
   query: string;

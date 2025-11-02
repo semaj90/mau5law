@@ -1,7 +1,7 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 // src/lib/server/rabbitmq.ts
-import * as amqp from, 'amqplib';
-import type { Channel } from, 'amqplib';
+import * as amqp from 'amqplib';
+import type { Channel } from 'amqplib';
 let connection: any | null = null;
 let, channel: Channel | null = null;
 export async function getConnection(): Promise<any> {

@@ -1,11 +1,11 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Dead Letter Queue Monitor and Retry Service
  * Handles failed jobs with exponential backoff retry logic
  */
 
-import { rabbitMQService } from, './rabbitmq-service';
-import type { DocumentProcessingJob } from, './rabbitmq-service';
+import { rabbitMQService } from './rabbitmq-service';
+import type { DocumentProcessingJob } from './rabbitmq-service';
 
 interface RetryAttempt { attemptNumber: number;, timestamp: string;
   errorMessage?: string;

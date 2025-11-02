@@ -1,16 +1,16 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * RabbitMQ Embedding Worker - Server-side Background Job Processing
  * Processes embedding generation jobs via RabbitMQ message queues
  */
-import { rabbitMQService, type JobMessage, type JobResult } from, '../services/rabbitmq-connection';
-import { QUEUES } from, '../config/rabbitmq-config';
-import { createEmbedding, createEmbeddings } from, '../services/embedding-service';
-import { db } from, '../server/db/unified-client';
-import { documents, document_chunks, cases } from, '../server/schema/documents';
-import { eq, sql } from, 'drizzle-orm';
-import { redis } from, '../server/redis';
+import { rabbitMQService, type JobMessage, type JobResult } from '../services/rabbitmq-connection';
+import { QUEUES } from '../config/rabbitmq-config';
+import { createEmbedding, createEmbeddings } from '../services/embedding-service';
+import { db } from '../server/db/unified-client';
+import { documents, document_chunks, cases } from '../server/schema/documents';
+import { eq, sql } from 'drizzle-orm';
+import { redis } from '../server/redis';
 
 export interface EmbeddingJobPayload { entity_type: 'document' | 'case' | 'chunk';, entity_id: string;
   text_content?: string;

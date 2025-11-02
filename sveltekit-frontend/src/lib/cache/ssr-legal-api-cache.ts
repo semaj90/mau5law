@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * SSR Legal API Cache
  * High-performance SSR-optimized cache for legal AI platform
  * Integrates with existing parallel cache orchestrator
  */
-import { parallelCacheOrchestrator } from, './parallel-cache-orchestrator';
-import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics } from, './parallel-cache-orchestrator';
-import { browser } from, '$app/environment';
+import { parallelCacheOrchestrator } from './parallel-cache-orchestrator';
+import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics } from './parallel-cache-orchestrator';
+import { browser } from '$app/environment';
 export interface SSRCacheConfig { defaultTTL: number;, maxAge: number;
   staleWhileRevalidate: number;
   quantizeResponses: boolean;

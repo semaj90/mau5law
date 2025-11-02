@@ -3,12 +3,12 @@ https://svelte.dev/e/illegal_element_attribute -->
 <!--, Example: Modular Case Management with, API, Integration -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { ModularDialog } from, '../modular-dialog';
-  import { ModularCommand } from, '../modular-command';
-  import Button from, 'bits-ui';
-  import { Search, Plus, FileText, Users, Calendar } from, 'lucide-svelte';
-  import { reactiveApiClient } from, '$lib/services/api-client';
-  import type { Case, Evidence } from, '$lib/types/api';
+  import { ModularDialog } from '../modular-dialog';
+  import { ModularCommand } from '../modular-command';
+  import Button from 'bits-ui';
+  import { Search, Plus, FileText, Users, Calendar } from 'lucide-svelte';
+  import { reactiveApiClient } from '$lib/services/api-client';
+  import type { Case, Evidence } from '$lib/types/api';
   // Component state
   let showCaseDialog = $state<boolean>(false);
   let showCommandPalette = $state<boolean>(false);

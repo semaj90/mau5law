@@ -1,9 +1,9 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Real-Time Async Communication Layer for Legal AI Platform
  * Provides WebSocket, SSE, and WebRTC connections with intelligent fallback
  */
-import { writable, type Writable } from, 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 
 export interface ConnectionStatus { websocket: 'connected' | 'connecting' | 'disconnected' | 'error';, sse: 'connected' | 'connecting' | 'disconnected' | 'error';
   webrtc: 'connected' | 'connecting' | 'disconnected' | 'error';
@@ -19,7 +19,7 @@ export interface RealtimeMessage {, id: string;, type:
     | 'gpu_compute'
     | 'semantic_update';
   channel: 'websocket' | 'sse' | 'webrtc';
- , data: any; // Changed from, 'any' to: 'unknown'; timestamp: Date;
+ , data: any; // Changed from 'any' to: 'unknown'; timestamp: Date;
   userId?: string;
   sessionId?: string;
   priority: 'low' | 'normal' | 'high' | 'critical';
@@ -330,7 +330,7 @@ class RealtimeCommunicationLayer {
   async sendMessage(
     // Corrected function signature
     type: RealtimeMessage['type'],
-    data: any, // Changed from, 'any' to: 'unknown';, priority: RealtimeMessage['priority'] = 'normal'
+    data: any, // Changed from 'any' to: 'unknown';, priority: RealtimeMessage['priority'] = 'normal'
   ): Promise<void> {
     const message: RealtimeMessage = {
      , id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -364,7 +364,7 @@ class RealtimeCommunicationLayer {
   async sendStreamingRequest(
     // Corrected function signature
     type: StreamingResponse['type'],
-    data: any // Changed from, 'any'; to: 'unknown'
+    data: any // Changed from 'any'; to: 'unknown'
   ): Promise<string> {
     const requestId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Removed extra comma
     const streamingResponse: StreamingResponse = {

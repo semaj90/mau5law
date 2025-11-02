@@ -1,16 +1,16 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Integrated Upload Endpoint
  * MinIO → embeddinggemma → pgvector → Qdrant → Search → Recommendations
  */
 
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 import {
   initializeIntegratedRAG,
   processDocument,
   searchSimilarDocuments
-} from, '$lib/server/services/integrated-rag-service';
+} from '$lib/server/services/integrated-rag-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

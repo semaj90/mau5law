@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 // sveltekit-frontend/src/lib/types/qdrant.d.ts
 
 /**

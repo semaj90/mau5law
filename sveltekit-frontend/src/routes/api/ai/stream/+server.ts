@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 
 /**
  * Simple SSE streaming endpoint that accepts a JSON body { prompt }

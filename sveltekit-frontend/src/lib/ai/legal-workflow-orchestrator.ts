@@ -5,9 +5,9 @@
  * This integration layer connects the revolutionary Bitmap HMM-SOM predictor
  * with real legal workflows, enabling seamless, predictive user experiences.
  */
-import { HybridGemmaBitmapEngine } from, './hybrid-gemma-bitmap-engine.js';
-import type { LegalContext, HybridPredictionResult } from, './hybrid-gemma-bitmap-engine.js';
-import { createRedisInstance } from, '$lib/server/redis.js';
+import { HybridGemmaBitmapEngine } from './hybrid-gemma-bitmap-engine.js';
+import type { LegalContext, HybridPredictionResult } from './hybrid-gemma-bitmap-engine.js';
+import { createRedisInstance } from '$lib/server/redis.js';
 // --- new: small adapter type covering the methods we use from Redis clients ---
 type RedisSetReturn = 'OK' | null;
 interface RedisLike {

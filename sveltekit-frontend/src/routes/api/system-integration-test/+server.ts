@@ -1,18 +1,18 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Comprehensive System Integration Test API
  * Tests the complete legal AI platform with all integrated services
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { db } from, '$lib/server/db/unified-client'
-import { sql } from, 'drizzle-orm'
-import * as schema from, '$lib/server/db/schema-postgres'
-import { redisService } from, '$lib/server/redis-service'
-import { natsQuicSearchService } from, '$lib/server/search/nats-quic-search-service'
-import { lokiRedisCache } from, '$lib/cache/loki-redis-integration'
-import { instantSearchEngine } from, '$lib/services/instant-search-engine'
-import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db/unified-client'
+import { sql } from 'drizzle-orm'
+import * as schema from '$lib/server/db/schema-postgres'
+import { redisService } from '$lib/server/redis-service'
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service'
+import { lokiRedisCache } from '$lib/cache/loki-redis-integration'
+import { instantSearchEngine } from '$lib/services/instant-search-engine'
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline'
 
 interface TestResult {
   status: string;

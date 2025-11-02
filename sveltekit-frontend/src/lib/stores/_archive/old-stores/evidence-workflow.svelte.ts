@@ -1,9 +1,9 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // SvelteKit + xState integration for Legal AI PNG Evidence Workflow
-import { createMachine, assign, interpret } from, 'xstate';
-import { writable, derived } from, 'svelte/store';
-import { PNGEmbedExtractor } from, '$lib/services/png-embed-extractor';
-import type { LegalAIMetadata } from, '$lib/services/png-embed-extractor';
+import { createMachine, assign, interpret } from 'xstate';
+import { writable, derived } from 'svelte/store';
+import { PNGEmbedExtractor } from '$lib/services/png-embed-extractor';
+import type { LegalAIMetadata } from '$lib/services/png-embed-extractor';
 // Evidence Processing State Machine
 interface EvidenceContext { file: File | null;, evidenceId: string;
   caseId: string;

@@ -1,6 +1,6 @@
-import { drizzle, type NodePgDatabase } from, 'drizzle-orm/node-postgres';
-import postgres from, 'postgres';
-import * as schema from, './schema-postgres.js';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import postgres from 'postgres';
+import * as schema from './schema-postgres.js';
 // ===============================
 // Configuration & Environment
 // ===============================
@@ -118,7 +118,7 @@ async function initializeDatabase(): Promise<void> {
   if (!isDev) {
     console.log('🔄 initializeDatabase: production initialization placeholder');
     // Recommended: Use Drizzle ORM migrations.
-    //, Example: import { migrate } from, 'drizzle-orm/node-postgres/migrator';
+    //, Example: import { migrate } from 'drizzle-orm/node-postgres/migrator';
     // await migrate(runtimeDb, { migrationsFolder: `./drizzle/migrations` });
     // See https://orm.drizzle.team/docs/migrations for details.
   }
@@ -148,4 +148,4 @@ export const getAdminDbClient = createAdminConnection;
 // ===============================
 // Re-export schema
 // ===============================
-export * from, './schema-postgres.js';
+export * from './schema-postgres.js';

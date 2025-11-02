@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
 /*
  * Service Discovery and Failover API
  * Automatic service discovery, health monitoring, and failover mechanisms
  * Integrates with cluster-manager Go service on port, 8103
  */
-import { productionServiceClient } from, '$lib/services/productionServiceClient';
+import { productionServiceClient } from '$lib/services/productionServiceClient';
 
 interface ServiceInstance { id: string;, name: string;
   host: string;

@@ -1,8 +1,8 @@
-import { json } from, '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 // NOTE: Dependencies may need to be;, installed: npm install fast-glob axios
-// import fg from, 'fast-glob'
-// import axios from, 'axios'
-import type { RequestHandler } from, './$types.js';
+// import fg from 'fast-glob'
+// import axios from 'axios'
+import type { RequestHandler } from './$types.js';
 const GO_FILE_PROCESSOR_URL = 'http://localhost:8081/process-files'; // Assuming Go service runs on, 8081
 export async function POST({ request }): Promise<any> {
   try {

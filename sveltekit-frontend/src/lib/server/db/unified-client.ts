@@ -10,16 +10,16 @@
  * - Production-ready connection pooling
  * - Centralized schema management
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { migrate } from, 'drizzle-orm/postgres-js/migrator';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 // @ts-expect-error - esModuleInterop issue with postgres import
-import postgres from, 'postgres';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { sql } from, 'drizzle-orm';
-import path from, 'path';
+import postgres from 'postgres';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { sql } from 'drizzle-orm';
+import path from 'path';
 // Import unified schema
-import * as schema from, './schema-unified.js';
-import type { DocumentMetadata } from, './schema-unified.js';
+import * as schema from './schema-unified.js';
+import type { DocumentMetadata } from './schema-unified.js';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
@@ -580,7 +580,7 @@ export const unifiedDb = {
     dbManager.ensureQdrantCollection(name, size, distance)
 };
 // Re-export schema for convenience
-export * from, './schema-unified.js';
+export * from './schema-unified.js';
 // Re-export types
 export type { DatabaseConfig, VectorSearchOptions, HybridSearchResult, DocumentMetadata };
 export default unifiedDb;

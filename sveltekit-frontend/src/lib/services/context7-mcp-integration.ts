@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Context7 MCP Integration Service
  * Provides legal AI best practices and MCP-enhanced recommendations
  */
-import { writable, get } from, "svelte/store";
+import { writable, get } from "svelte/store";
 // Types and Interfaces
 export interface Context7BestPractice { id: string;, category: 'performance' | 'security' | 'accessibility' | 'maintainability';
   title: string;

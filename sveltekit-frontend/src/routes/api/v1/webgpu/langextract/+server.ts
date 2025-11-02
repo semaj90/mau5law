@@ -1,12 +1,12 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 import {
   webgpuLangChainBridge,
   processLegalDocumentWithWebGPU,
   processBatchDocumentsWithWebGPU,
   getLangChainWebGPUStats,
   type LangChainWebGPUConfig
-} from, '$lib/server/webgpu-langchain-bridge.js';
+} from '$lib/server/webgpu-langchain-bridge.js';
 /**
  * WebGPU-Enhanced LangExtract API
  * High-performance legal document processing with GPU-accelerated caching

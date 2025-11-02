@@ -3,10 +3,10 @@
   Real-time monitoring and analytics
 -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { writable } from, 'svelte/store';
+  import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
   interface PerformanceMetrics {
     totalRequests: number;
     averageResponseTime: number;

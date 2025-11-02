@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * HMM (Hidden Markov Model) State Machine for Pattern Detection
  *
@@ -11,7 +11,7 @@ import type {
   HMMState,
   ConversationTurn,
   NextStepPrediction
-} from, '$lib/types/sharedTypes';
+} from '$lib/types/sharedTypes';
 interface HMMStateTransition { fromState: number;, toState: number;
   probability: number;
  , observedPattern: number[];
@@ -85,10 +85,10 @@ export class HMMStateMachine {
       [LegalConversationState.CONCLUSION, LegalConversationState.GREETING, 0.1],
       [LegalConversationState.CONCLUSION, LegalConversationState.CONCLUSION, 0.9]
     ];
-    for (const [from, to, prob] of transitions) {
+    for (const [from to, prob] of transitions) {
       const key = `${from}->${to}`;
       this.transitions.set(key, {
-        fromState: from,
+        fromState: from 
         toState: to,
         probability: prob,
         observedPattern: []

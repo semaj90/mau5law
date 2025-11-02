@@ -3,17 +3,17 @@
  * Connects the existing Enhanced Caching Service with Revolutionary AI Architecture
  * Provides seamless integration between Redis L1/L2 caching and Nintendo-inspired optimizations
  */
-import { enhancedCachingService } from, './enhanced-caching-service.js';
-import type { EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from, './enhanced-caching-service.js';
-import { revolutionaryAI } from, './revolutionary-ai-integration.js'; // Corrected import for the singleton instance
-import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from, './revolutionary-ai-integration.js';
+import { enhancedCachingService } from './enhanced-caching-service.js';
+import type { EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from './enhanced-caching-service.js';
+import { revolutionaryAI } from './revolutionary-ai-integration.js'; // Corrected import for the singleton instance
+import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from './revolutionary-ai-integration.js';
 // simdJSONAccelerator is not directly used in the bridge, but revolutionaryAI might use it.
-// import { simdJSONAccelerator } from, '$lib/wasm/simd-json-wrapper';
-import { chrRomPatternCache } from, '$lib/cache/chr-rom-pattern-cache';
-import { visualMemoryPalace } from, '$lib/memory/visual-memory-palace-integration';
-import type { LegalDocumentJSON } from, '$lib/wasm/simd-json-wrapper'; // Needed for UnifiedCacheResult
-import type { CHRROMPattern } from, '$lib/cache/chr-rom-pattern-cache'; // Needed for UnifiedCacheResult
-import type { LegalVisualizationVertex } from, '$lib/gpu/webgpu-vertex-streaming'; // Needed for UnifiedCacheResult
+// import { simdJSONAccelerator } from '$lib/wasm/simd-json-wrapper';
+import { chrRomPatternCache } from '$lib/cache/chr-rom-pattern-cache';
+import { visualMemoryPalace } from '$lib/memory/visual-memory-palace-integration';
+import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper'; // Needed for UnifiedCacheResult
+import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache'; // Needed for UnifiedCacheResult
+import type { LegalVisualizationVertex } from '$lib/gpu/webgpu-vertex-streaming'; // Needed for UnifiedCacheResult
 
 // Local lightweight type to avoid casting to `any` everywhere
 type AnyCachedResult = {

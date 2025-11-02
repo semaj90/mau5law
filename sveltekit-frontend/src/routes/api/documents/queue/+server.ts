@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { randomUUID } from, 'crypto';
-import { rabbitMQService, createDocumentProcessingJob } from, '$lib/services/rabbitmq-service';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { randomUUID } from 'crypto';
+import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabbitmq-service';
 
 /**
  * RabbitMQ Document Processing Queue API

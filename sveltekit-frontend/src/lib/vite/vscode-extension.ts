@@ -1,7 +1,7 @@
 // VS Code Extension Integration for Vite Error Logger
 // Provides real-time error notifications and quick navigation
-import { existsSync, readFileSync, watchFile } from, 'fs';
-import { resolve } from, 'path';
+import { existsSync, readFileSync, watchFile } from 'fs';
+import { resolve } from 'path';
 
 export interface VSCodeCommand {
   command: string;

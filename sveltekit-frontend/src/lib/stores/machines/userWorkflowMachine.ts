@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 
 /**
  * User Workflow XState Machine
  * Manages user interaction workflows, case management, and collaborative processes
  */
-import { createMachine, assign, type ActorRefFrom } from, 'xstate';
+import { createMachine, assign, type ActorRefFrom } from 'xstate';
 // Type definitions
 export interface User { id: string;, email: string;
   name: string;

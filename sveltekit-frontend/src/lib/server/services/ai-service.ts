@@ -1,10 +1,10 @@
-import { OllamaService } from, '$lib/services/ollamaService.js';
-import { userAiQueries, autoTags, documentChunks, embeddingCache } from, '../db/schema-postgres.js';
-import { eq, sql } from, 'drizzle-orm';
-import type { NewUserAiQuery, NewAutoTag, NewDocumentChunk } from, '../db/schema-postgres.js';
-import { generateIdFromEntropySize } from, 'lucia';
-import crypto from, 'crypto';
-import { db } from, '../database/index.js';
+import { OllamaService } from '$lib/services/ollamaService.js';
+import { userAiQueries, autoTags, documentChunks, embeddingCache } from '../db/schema-postgres.js';
+import { eq, sql } from 'drizzle-orm';
+import type { NewUserAiQuery, NewAutoTag, NewDocumentChunk } from '../db/schema-postgres.js';
+import { generateIdFromEntropySize } from 'lucia';
+import crypto from 'crypto';
+import { db } from '../database/index.js';
 /**
  * Add a minimal local type for the Ollama client shape we expect
  */

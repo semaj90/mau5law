@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   interface Props {
     items?: string[];
   }
   let { items = ['Active Cases', 'Pending Cases', 'Closed Cases'] }: Props = $props();
-  import { fade } from, 'svelte/transition';
+  import { fade } from 'svelte/transition';
   export const title = 'Legal Case Manager';
   let dialogOpen = $state<boolean>(false);
   let selectOpen = $state<boolean>(false);

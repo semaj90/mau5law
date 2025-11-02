@@ -1,9 +1,9 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { json } from, '@sveltejs/kit';
-import { db, uploads } from, '$lib/server/db';
-import { eq } from, 'drizzle-orm';
-import { caseManagementService } from, '$lib/services/case-management-service';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { db, uploads } from '$lib/server/db';
+import { eq } from 'drizzle-orm';
+import { caseManagementService } from '$lib/services/case-management-service';
 
 const DEV_BYPASS_AUTH = process.env.DEV_BYPASS_AUTH === 'true' || false;
 

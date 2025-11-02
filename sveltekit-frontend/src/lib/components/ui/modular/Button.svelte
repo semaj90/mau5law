@@ -1,7 +1,7 @@
-<script, lang="ts"> import { Button } from, '$lib/components/ui/button'; // Svelte, 5 runes are auto-imported import { cva, type VariantProps } from, 'class-variance-authority'
-  import { cn } from, '$lib/utils'
-  import type { HTMLButtonAttributes } from, 'svelte/elements'
-  // optional: import { Button, as ButtonPrimitive } from, 'bits-ui'
+<script, lang="ts"> import { Button } from '$lib/components/ui/button'; // Svelte, 5 runes are auto-imported import { cva, type VariantProps } from 'class-variance-authority'
+  import { cn } from '$lib/utils'
+  import type { HTMLButtonAttributes } from 'svelte/elements'
+  // optional: import { Button, as ButtonPrimitive } from 'bits-ui'
   type Props = HTMLButtonAttributes & { variant?: VariantProps<typeof, buttonVariants>['variant'] size?: VariantProps<typeof, buttonVariants>['size'] loading?: boolean icon?: string ariaLabel?: string // ✅ explicit aria-label when icon-only class?: string children?: import('svelte').Snippet }
   let { variant = 'default', size = 'default', loading = false, icon, ariaLabel, class: className = '', children, disabled, type = 'button', ...restProp }: Props = $props() const buttonVariants = cva(
     'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50, disabled:pointer-events-none whitespace-nowrap hover-lift', {

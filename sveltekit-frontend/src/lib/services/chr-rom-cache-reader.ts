@@ -5,9 +5,9 @@
  * This service provides instant access to pre-computed UI patterns
  * with graceful fallbacks when cache misses occur
  */
-import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
-import { chrROMPrecomputation } from, './chr-rom-precomputation.js';
-import type { CHRROMPattern } from, './chr-rom-precomputation.js';
+import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
+import { chrROMPrecomputation } from './chr-rom-precomputation.js';
+import type { CHRROMPattern } from './chr-rom-precomputation.js';
 
 // Define an interface for the precomputation service to avoid using: 'any'
 interface CHRROMPrecomputationService {

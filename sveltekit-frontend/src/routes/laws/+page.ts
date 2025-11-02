@@ -1,5 +1,5 @@
-import type { PageLoad } from, './$types.js';
-import { error } from, '@sveltejs/kit';
+import type { PageLoad } from './$types.js';
+import { error } from '@sveltejs/kit';
 export const load: PageLoad = async ({ fetch, url, depends }) => {
   // Dependency tracking for cache invalidation
   depends('laws:quicklinks');

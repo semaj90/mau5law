@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,10 +16,10 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, "@sveltejs/kit"
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types.js'
-import { aiPipeline } from, '$lib/ai/ai-pipeline.server'; // Adjust path as per actual file location
+import { json } from "@sveltejs/kit"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
+import { aiPipeline } from '$lib/ai/ai-pipeline.server'; // Adjust path as per actual file location
 
 // Define the expected structure of the ingestion result
 interface IngestionResult {

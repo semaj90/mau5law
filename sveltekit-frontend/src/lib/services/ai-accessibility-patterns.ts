@@ -2,7 +2,7 @@
  * AI-Specific Accessibility Patterns for Legal AI Application
  * Enhanced accessibility features tailored for AI interactions and complex legal outputs
  */
-import { accessibilityService } from, './accessibility-service.js';
+import { accessibilityService } from './accessibility-service.js';
 export interface AIAccessibilityOptions {
   enableVoiceCommands?: boolean;
   progressiveDisclosure?: boolean;

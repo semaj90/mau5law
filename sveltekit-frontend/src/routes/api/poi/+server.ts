@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { personsOfInterest, casePoiRelations } from, '$lib/database/enhanced-schema';
-import { eq, and, desc, ilike, or } from, 'drizzle-orm';
-import { z } from, 'zod';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { personsOfInterest, casePoiRelations } from '$lib/database/enhanced-schema';
+import { eq, and, desc, ilike, or } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Validation schemas
 const createPoiSchema = z.object({

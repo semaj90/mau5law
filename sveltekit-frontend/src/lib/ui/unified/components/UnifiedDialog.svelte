@@ -9,7 +9,7 @@
     DialogTitle as BitsDialogTitle,
     DialogTrigger as BitsDialogTrigger,
     DialogClose as BitsDialogClose
-  } from, 'bits-ui'; // Changed import path
+  } from 'bits-ui'; // Changed import path
   import type {
     DialogProps,
     DialogTriggerProps,
@@ -20,8 +20,8 @@
     DialogFooterProps,
     DialogCloseProps,
     DialogOverlayProps
-  } from, '$lib/ui/types/Dialog';
-  import { cn } from, '$lib/utils'; // Assuming a utility for class merging exists
+  } from '$lib/ui/types/Dialog';
+  import { cn } from '$lib/utils'; // Assuming a utility for class merging exists
 
   // --- Dialog Root Props ---
   type $$Props = DialogProps;

@@ -5,7 +5,7 @@
  * we gracefully fall back to in-memory mock results. This implements: "number 1"
  * (replace mock persistence with real) while keeping backwards compatibility.
  */
-import { EventEmitter } from, 'events';
+import { EventEmitter } from 'events';
 
 // Replace loose: any for DB with a minimal Drizzle-like shape
 type DrizzleDB = {

@@ -1,8 +1,8 @@
 // Database connection management with role separation
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { Pool } from, 'pg';
-import * as schema from, './schema-postgres.js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { Pool } from 'pg';
+import * as schema from './schema-postgres.js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Environment configuration
 const isDevelopment = process.env.NODE_ENV === 'development';
 /**

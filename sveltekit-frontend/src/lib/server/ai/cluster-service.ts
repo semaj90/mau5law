@@ -1,5 +1,5 @@
-import { redis } from, '$lib/server/redis';
-import { logger } from, './logger.js';
+import { redis } from '$lib/server/redis';
+import { logger } from './logger.js';
 const CLUSTER_MODEL_KEY = 'foaf:cluster:model';
 export interface ClusterCentroid {, id: string;, vector: number[];
   metadata?: Record<string, unknown>;

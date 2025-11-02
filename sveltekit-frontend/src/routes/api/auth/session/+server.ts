@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Session Validation API Endpoint
  * GET /api/auth/session - Check current session status
  */
-import { ExistingUserAuthService, as UserAuthService } from, '$lib/server/db/existing-user-operations.js';
-import { dev } from, '$app/environment';
+import { ExistingUserAuthService, as UserAuthService } from '$lib/server/db/existing-user-operations.js';
+import { dev } from '$app/environment';
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
     const sessionId = cookies.get('session_id');

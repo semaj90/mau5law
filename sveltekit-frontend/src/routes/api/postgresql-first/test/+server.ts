@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit';
+import type { Document } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
 /*
  * PostgreSQL-First Architecture Test Endpoint
  *
@@ -12,12 +12,12 @@ import { json } from, '@sveltejs/kit';
  * 4. PostgreSQL notifications → Worker tagging
  * 5. Qdrant sync → Search index mirroring
  */
-import { db } from, '$lib/server/db/index.js'
-import { evidence, documentMetadata } from, '$lib/server/db/schema-unified.js';
-import { eq, sql } from, 'drizzle-orm';
-import { v4, as uuidv4 } from, 'uuid';
-import { createClient } from, 'redis';
-import { postgresqlQdrantSync } from, '$lib/services/postgresql-qdrant-sync.js';
+import { db } from '$lib/server/db/index.js'
+import { evidence, documentMetadata } from '$lib/server/db/schema-unified.js';
+import { eq, sql } from 'drizzle-orm';
+import { v4, as uuidv4 } from 'uuid';
+import { createClient } from 'redis';
+import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js';
 
 // Test data for demonstration
 const SAMPLE_EVIDENCE = {

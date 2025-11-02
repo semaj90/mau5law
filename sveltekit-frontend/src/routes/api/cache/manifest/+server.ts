@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 /**
  * Cache manifest endpoint for headless UI cache sync
  * GET /api/cache/manifest - Get cache manifest for synchronization

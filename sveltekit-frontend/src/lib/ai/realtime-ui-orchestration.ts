@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Real-Time UI Orchestration with Fabric.js + Loki.js + RabbitMQ + XState
  * Live progress visualization and collaborative legal document analysis
@@ -10,11 +10,11 @@ import type { User } from, '$lib/types';
  * - XState orchestration for complex UI state management
  * - GPU-accelerated rendering for smooth animations
  */
-import { fabric } from, 'fabric';
-import Loki from, 'lokijs';
-import amqp from, 'amqplib';
-import { createMachine, interpret, assign } from, 'xstate';
-import { performance } from, 'perf_hooks';
+import { fabric } from 'fabric';
+import Loki from 'lokijs';
+import amqp from 'amqplib';
+import { createMachine, interpret, assign } from 'xstate';
+import { performance } from 'perf_hooks';
 // =============================================================================
 // FABRIC.JS REAL-TIME CANVAS MANAGER
 // =============================================================================

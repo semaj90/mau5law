@@ -1,6 +1,6 @@
 <script, context="module" lang="ts">
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
-  import { Button } from, '$lib/components/ui/button';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
   // Move interfaces here so: 'export' modifiers are allowed
   export interface ContractClause {
     id: string;
@@ -23,14 +23,14 @@
 </script>
 
 <script, lang="ts">
-  import { fade, scale, fly } from, 'svelte/transition';
+  import { fade, scale, fly } from 'svelte/transition';
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent,
     Button
-   from, "$lib/components/ui/enhanced-bits.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
 
   // exported props - use explicit union types to avoid svelte-preprocess parsing issues
   const { contract } = $props<{ contract: ContractAnalysis | undefined }>()

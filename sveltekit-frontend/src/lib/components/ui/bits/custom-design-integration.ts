@@ -1,6 +1,6 @@
 // Custom Design Integration System for Enhanced-Bits
 // SSR-Safe design token management and custom styling
-import type { CustomDesignTokens, CustomComponentConfig } from, './index';
+import type { CustomDesignTokens, CustomComponentConfig } from './index';
 // ======================================================================
 // DESIGN SYSTEM INTEGRATION
 // ======================================================================

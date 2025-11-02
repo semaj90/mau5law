@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Fixed Loki.js + Redis High-Performance Caching - Phase, 14
  *
@@ -9,10 +9,10 @@ import type { SearchResult } from, '$lib/types';
  * - NES memory architecture integration for overflow management
  * - Improved error handling and type safety
  */
-import Loki from, 'lokijs';
-import type { Collection } from, 'lokijs';
-import { EventEmitter } from, 'events';
-import crypto from, 'crypto';
+import Loki from 'lokijs';
+import type { Collection } from 'lokijs';
+import { EventEmitter } from 'events';
+import crypto from 'crypto';
 // Conditional imports to avoid circular dependencies
 const redisServicePromise = import('$lib/server/redis-service.js').then(m => m.redisService).catch(() => null);
 

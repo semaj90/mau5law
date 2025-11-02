@@ -10,10 +10,10 @@
  *
  * Complements your server-side, "tricubic tensor" PostgreSQL system
  */
-import Dexie from, 'dexie';
-import type { Table } from, 'dexie';
-import { writable } from, 'svelte/store';
-import { liveQuery } from, 'dexie';
+import Dexie from 'dexie';
+import type { Table } from 'dexie';
+import { writable } from 'svelte/store';
+import { liveQuery } from 'dexie';
 
 // ============================================================================
 // TYPE DEFINITIONS

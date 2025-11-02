@@ -17,11 +17,11 @@
  */
 // Enhanced GRPO-thinking API endpoint - Simplified working version
 // Integrates with existing infrastructure and new GRPO database tables
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { db } from, '$lib/db/connection'
-import { sql } from, 'drizzle-orm'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/db/connection'
+import { sql } from 'drizzle-orm'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Generate embedding using nomic-embed-text
 async function generateEmbedding(text: string): Promise<number[]> {
   try {

@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Minimal repaired Legal Precedents API
-import { db } from, '$lib/server/db/index';
+import { db } from '$lib/server/db/index';
 // Import with fallback for different schema files
 let legalPrecedents: any;
 try {
@@ -10,8 +10,8 @@ try {
 } catch (error: any) {
   console.warn('Legal precedents schema not available');
 }
-import { eq } from, 'drizzle-orm';
-import crypto from, 'crypto';
+import { eq } from 'drizzle-orm';
+import crypto from 'crypto';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

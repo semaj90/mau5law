@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { masterServiceCoordinator } from, '$lib/services/master-service-coordinator.js';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
 
 // Add narrow types to avoid `any`
 type ServiceStatus = {

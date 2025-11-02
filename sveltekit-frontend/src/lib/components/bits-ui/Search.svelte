@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import  VectorCard  from, "./VectorCard.svelte";
+  import  VectorCard  from "./VectorCard.svelte";
   const { searchUrl } = $props<{ searchUrl: string }>()
   const { onSelect } = $props<{ onSelect: (item: any) }>()
   let query = '';

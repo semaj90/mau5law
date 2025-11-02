@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Type definitions for Enhanced Vector Search Service
 // Legal AI Platform - Vector Similarity Search Types
 export interface VectorSearchResult {

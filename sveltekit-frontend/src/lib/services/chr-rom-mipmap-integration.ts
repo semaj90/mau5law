@@ -5,11 +5,11 @@
  * This service pre-computes and caches mipmap visualization patterns
  * for instant legal document preview rendering
  */
-import { chrROMPatternOptimizer } from, './chr-rom-pattern-optimizer.js';
-import { chrROMCacheReader } from, './chr-rom-cache-reader.js';
-import { yorhaMipmapShaders } from, '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
-import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
-import type { CHRROMPattern, PatternType } from, './chr-rom-precomputation.js';
+import { chrROMPatternOptimizer } from './chr-rom-pattern-optimizer.js';
+import { chrROMCacheReader } from './chr-rom-cache-reader.js';
+import { yorhaMipmapShaders } from '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
+import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
+import type { CHRROMPattern, PatternType } from './chr-rom-precomputation.js';
 export interface MipmapCHRROMPattern extends CHRROMPattern { mipmapLevel: number;, originalSize: { width: number; height: number };
   compressed: boolean;
   rtxOptimized: boolean;

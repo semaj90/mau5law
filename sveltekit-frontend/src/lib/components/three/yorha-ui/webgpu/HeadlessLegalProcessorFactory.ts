@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎯 Headless Legal AI Processor Factory
  *
@@ -8,10 +8,10 @@ import type { Document } from, '$lib/types';
  * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
  */
 /// <reference, types="@webgpu/types" />
-import { yorhaMipmapShaders } from, './YoRHaMipmapShaders.js';
-import { lodCacheEngine } from, '$lib/ai/lod-cache-engine.js';
-import type { LODLevel, LODCacheEntry } from, '$lib/ai/lod-cache-engine.js';
-import { ollamaService } from, '$lib/server/ai/ollama-service.js';
+import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js';
+import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
+import type { LODLevel, LODCacheEntry } from '$lib/ai/lod-cache-engine.js';
+import { ollamaService } from '$lib/server/ai/ollama-service.js';
 
 export interface LegalAnalysisResult { confidence: number;, entities: Array<{ text: string; type: string; confidence: number }>;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';

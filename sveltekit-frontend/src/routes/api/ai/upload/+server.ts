@@ -1,8 +1,8 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import { CONFIG } from, '$lib/config/env.server';
-import { db } from, '$lib/server/db/drizzle';
-import { documents } from, '$lib/server/db/schema';
-import { redis } from, '$lib/server/redis';
+import type { RequestHandler } from '@sveltejs/kit';
+import { CONFIG } from '$lib/config/env.server';
+import { db } from '$lib/server/db/drizzle';
+import { documents } from '$lib/server/db/schema';
+import { redis } from '$lib/server/redis';
 
 export const POST: RequestHandler = async ({ request }) => {
   // Dynamically import AWS S3 client so TS/tsserver doesn't error when the package isn't installed.

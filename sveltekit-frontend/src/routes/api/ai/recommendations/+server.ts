@@ -10,11 +10,11 @@
  * Routes to enhanced-rag-service.exe for recommendation engine
  * Uses WASM Graph Engine for graph-based recommendations
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/db';
-import { caseScores, autoTags, userAiQueries } from, '$lib/server/db/schema-postgres';
-import { eq, desc, and, gte } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db';
+import { caseScores, autoTags, userAiQueries } from '$lib/server/db/schema-postgres';
+import { eq, desc, and, gte } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

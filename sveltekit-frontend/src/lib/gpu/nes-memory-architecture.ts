@@ -1,4 +1,4 @@
-import { globalGPUManager } from, './global-gpu-manager';
+import { globalGPUManager } from './global-gpu-manager';
 /**
  * MemorySlot interface represents a slot in memory with an id, embedding, timestamp,
  * usage count, and optional metadata.

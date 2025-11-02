@@ -1,6 +1,6 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import { createClient } from, 'redis';
-import type { RedisClientType } from, 'redis';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 
 export interface CacheLayer { name: string;, priority: number;
   avgResponseTime: number;

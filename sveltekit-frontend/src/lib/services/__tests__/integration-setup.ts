@@ -1,5 +1,5 @@
 // src/lib/services/__tests__/integration-setup.ts
-import { beforeAll, afterAll, vi } from, 'vitest';
+import { beforeAll, afterAll, vi } from 'vitest';
 // Integration test setup for real network testing
 beforeAll(async () => {
   console.log('🚀 Setting up integration test environment...');

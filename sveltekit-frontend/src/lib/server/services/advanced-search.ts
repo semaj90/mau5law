@@ -1,11 +1,11 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Advanced Search & Filtering System (Simplified)
  * Supports full-text search, filters, and suggestions
  */
-import { db, and, gte, like, lte, or } from, '$lib/server/db/index';
-import type { SQL } from, 'drizzle-orm/sql';
-import { cases, evidence } from, '$lib/server/db/schema-postgres';
+import { db, and, gte, like, lte, or } from '$lib/server/db/index';
+import type { SQL } from 'drizzle-orm/sql';
+import { cases, evidence } from '$lib/server/db/schema-postgres';
 // --- ADD: typed result shapes for selected columns (fixes missing names) ---
 type CaseRow = { id: number | string;, title: string | null;
   description: string | null;

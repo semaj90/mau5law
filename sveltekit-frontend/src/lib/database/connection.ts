@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import postgres, { type ParameterOrJSON } from, 'postgres';
-import * as schema from, './schema.js';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres, { type ParameterOrJSON } from 'postgres';
+import * as schema from './schema.js';
 // Get DATABASE_URL from environment with fallback
 const DATABASE_URL =
   import.meta.env.VITE_DATABASE_URL ||

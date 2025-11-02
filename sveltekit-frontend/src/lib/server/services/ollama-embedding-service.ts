@@ -1,5 +1,5 @@
-import { env } from, '$env/dynamic/private';
-import type { IOllamaEmbeddingService } from, '$lib/types/external-services.d.ts';
+import { env } from '$env/dynamic/private';
+import type { IOllamaEmbeddingService } from '$lib/types/external-services.d.ts';
 
 // Default endpoints (Docker/Prod fallback)
 const API_URL = env.OLLAMA_API_URL || env.PUBLIC_OLLAMA_API_URL || 'http://localhost:11434';

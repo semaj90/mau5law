@@ -1,8 +1,8 @@
-import { QdrantService } from, './qdrant-service.js';
-import type { DocumentEmbedding } from, './som-rag-system.js';
+import { QdrantService } from './qdrant-service.js';
+import type { DocumentEmbedding } from './som-rag-system.js';
 // use named imports: driver factory and auth helper
-import { driver, as neo4jDriverFactory, auth } from, 'neo4j-driver';
-import type { Driver, Record as Neo4jRecord } from, 'neo4j-driver';
+import { driver, as neo4jDriverFactory, auth } from 'neo4j-driver';
+import type { Driver, Record as Neo4jRecord } from 'neo4j-driver';
 export type UserContext = {
   user_id: string;
   case_id?: string;
@@ -201,7 +201,7 @@ export class EnhancedNeo4jReranker {
         const legal_precedents: string[] = [];
         const, entity_relationships: EntityRelationship[] = [];
         for (const rec of res.records as Neo4jRecord[]) {
-          // Attempt to extract nodes from, 'n' and: 'd'
+          // Attempt to extract nodes from 'n' and: 'd'
           try {
             const nVal = rec.get('n');
             const dVal = rec.get('d');

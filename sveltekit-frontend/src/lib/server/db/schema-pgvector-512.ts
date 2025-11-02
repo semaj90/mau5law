@@ -10,10 +10,10 @@ import {
   real,
   jsonb,
   index
-} from, "drizzle-orm/pg-core";
-import { sql, type InferModel } from, "drizzle-orm";
-import { vector } from, "pgvector/drizzle";
-// import { relations } from, "drizzle-orm/relations"; // enable when cases/evidence tables are imported
+} from "drizzle-orm/pg-core";
+import { sql, type InferModel } from "drizzle-orm";
+import { vector } from "pgvector/drizzle";
+// import { relations } from "drizzle-orm/relations"; // enable when cases/evidence tables are imported
 
 // Core case embeddings table - 512 dimensions for optimal performance
 export const caseEmbeddings = pgTable(

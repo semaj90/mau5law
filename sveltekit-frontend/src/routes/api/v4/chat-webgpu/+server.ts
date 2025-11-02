@@ -1,15 +1,15 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * WebGPU-Accelerated Chat API v4
  * High-performance chat with RTX, 3060 Ti optimization and tensor acceleration
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { webgpuAI } from, '$lib/webgpu/webgpu-ai-engine.js';
-import { webgpuRedisOptimizer } from, '$lib/server/webgpu-redis-optimizer.js';
-import { webgpuLangChainBridge } from, '$lib/server/webgpu-langchain-bridge.js';
-import { ollamaChatStream } from, '$lib/services/ollamaChatStream.js';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuAI } from '$lib/webgpu/webgpu-ai-engine.js';
+import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
+import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream.js';
 // Rate limiter for WebGPU operations
 const GPU_RATE_LIMIT = new Map<string, number>();
 const GPU_RATE_WINDOW = 60000; // 1 minute

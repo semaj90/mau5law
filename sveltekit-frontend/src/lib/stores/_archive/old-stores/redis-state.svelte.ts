@@ -1,4 +1,4 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Redis State Management with Svelte, 5 Runes
  * Provides reactive state management for Redis connections and pub/sub

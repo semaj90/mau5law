@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/helpers/ollama.ts
-import { OLLAMA_CONFIG } from, '$lib/server/config';
-import type { OllamaConfig } from, '$lib/types/ollama'; // Assuming this type exists or will be created
+import { OLLAMA_CONFIG } from '$lib/server/config';
+import type { OllamaConfig } from '$lib/types/ollama'; // Assuming this type exists or will be created
 
 /**
  * Retrieves the base URL for the Ollama service.

@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 interface SecurityValidationRequest { email: string;, password: string;
   firstName?: string;
   lastName?: string;

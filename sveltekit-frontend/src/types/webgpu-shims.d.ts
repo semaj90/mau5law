@@ -18,7 +18,7 @@ declare module, '$lib/services/latency-logger' {
 }
 
 declare module, '$lib/services/system-monitor-client' {
-  import type { LatencyEntry } from, '$lib/services/latency-logger';
+  import type { LatencyEntry } from '$lib/services/latency-logger';
   export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs?: number; url?: string }): { push?: (e: LatencyEntry) => void; stop?: () => void; service?: any };
   const _default: {, startSystemMonitorClient: typeof startSystemMonitorClient };
   export default _default;

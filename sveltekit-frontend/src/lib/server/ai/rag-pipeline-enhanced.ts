@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced RAG Pipeline - Legal AI Platform
  *
@@ -21,17 +21,17 @@ import type { Document } from, '$lib/types';
  * @version 4.2.0
  * @lastModified 2025-01-20
  */
-import crypto from, 'crypto';
-import Redis from, 'ioredis';
-import postgres, { type Notice } from, 'postgres';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { sql, eq } from, 'drizzle-orm';
-import { PromptTemplate } from, '@langchain/core/prompts';
-import { RunnableSequence } from, '@langchain/core/runnables';
-import { StringOutputParser } from, '@langchain/core/output_parsers';
-import type { Runnable } from, '@langchain/core/runnables';
-import * as schema from, '$lib/server/db/schema-postgres';
-import { OLLAMA_CONFIG } from, '$lib/services/providers/ollama/config.js';
+import crypto from 'crypto';
+import Redis from 'ioredis';
+import postgres, { type Notice } from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { sql, eq } from 'drizzle-orm';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+import type { Runnable } from '@langchain/core/runnables';
+import * as schema from '$lib/server/db/schema-postgres';
+import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config.js';
 // ===== CONFIGURATION & CONSTANTS =====
 /**
  * RAG Pipeline Configuration

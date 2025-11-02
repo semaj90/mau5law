@@ -1,9 +1,9 @@
-import { createHash } from, 'crypto';
-import fs from, 'fs/promises';
-import path from, 'path';
-import { fileURLToPath, pathToFileURL } from, 'url';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { sql } from, 'drizzle-orm';
+import { createHash } from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { sql } from 'drizzle-orm';
 import {
   boolean,
   integer,
@@ -12,8 +12,8 @@ import {
   serial,
   text,
   timestamp
-} from, 'drizzle-orm/pg-core';
-import postgres from, 'postgres';
+} from 'drizzle-orm/pg-core';
+import postgres from 'postgres';
 /**
  * Migration metadata tracked in the database.
  */

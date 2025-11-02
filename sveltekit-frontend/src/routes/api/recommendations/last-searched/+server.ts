@@ -2,9 +2,9 @@
  * 🔍 Last Searched Items API
  * Returns user's recent search history with intelligent suggestions'
  */
-import type { RequestHandler } from, './$types'
-import { json } from, '@sveltejs/kit'
-import { multiLayerCache } from, '$lib/cache/MultiLayerCacheSystem'
+import type { RequestHandler } from './$types'
+import { json } from '@sveltejs/kit'
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
 interface SearchItem { id: string, query: string; timestamp: string; resultCount: number; searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients'
   filters?: {
     practiceArea?: string

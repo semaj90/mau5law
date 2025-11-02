@@ -1,5 +1,5 @@
-import { writable, derived } from, 'svelte/store';
-import type { User } from, 'lucia';
+import { writable, derived } from 'svelte/store';
+import type { User } from 'lucia';
 
 export interface UserSession { user: {, id: string;
     email: string;

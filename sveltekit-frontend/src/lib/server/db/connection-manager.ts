@@ -2,11 +2,11 @@
  * Centralized Database Connection Manager
  * Handles all database connections with connection pooling and error recovery
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import pgClient, { poolShim } from, '$lib/server/db-shim';
-import { getDatabaseConfig, validateDatabaseConfig } from, '$lib/config/database.js';
-import * as schema from, './schema-postgres.js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import pgClient, { poolShim } from '$lib/server/db-shim';
+import { getDatabaseConfig, validateDatabaseConfig } from '$lib/config/database.js';
+import * as schema from './schema-postgres.js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Minimal pool/client shapes to avoid importing: 'pg' types broadly
 type LocalClientLike = { query: (;, textOrConfig: string | {;, text: string; values?: any[] },

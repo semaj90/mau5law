@@ -1,17 +1,17 @@
-import type { SearchResult } from, '$lib/types';
-import crypto from, "crypto";
+import type { SearchResult } from '$lib/types';
+import crypto from "crypto";
 // Enhanced AI Pipeline Service - Real Integration
 // Connects Ollama models with PostgreSQL pgvector for semantic search
 // Production-ready legal document processing
-import { OllamaEmbeddings } from, "@langchain/community/embeddings/ollama";
-import { Ollama } from, "@langchain/community/llms/ollama";
-import { PGVectorStore } from, "@langchain/community/vectorstores/pgvector";
-import { drizzle } from, "drizzle-orm/postgres-js";
-import postgres from, "postgres";
-import { Pool } from, "pg";
-import type { Document } from, "@langchain/core/documents";
-import { users, embeddingCache } from, '$lib/database/schema';
-import { OllamaService } from, './ollamaService.js';
+import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
+import { Ollama } from "@langchain/community/llms/ollama";
+import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { Pool } from "pg";
+import type { Document } from "@langchain/core/documents";
+import { users, embeddingCache } from '$lib/database/schema';
+import { OllamaService } from './ollamaService.js';
 
 export interface LegalAnalysisResult { summary: string;, risks: string[];
   entities: string[];

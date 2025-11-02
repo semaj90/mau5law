@@ -4,14 +4,14 @@ https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
   // Use modular components and types
-  import type { UploadFile } from, '$lib/components/ui/modular/types.svelte';
-  import  FileUpload  from, "$lib/components/ui/modular/FileUpload.svelte";
-  import { browser } from, '$app/environment';
-  import { onMount } from, 'svelte';
-  import { processDocumentWorkflow } from, '$lib/services/minio-neo4j-pgvector-integration';
-  import ComprehensiveAISystemIntegration from, '$lib/integration/comprehensive-ai-system-integration';
-  import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
-  import loki from, '$lib/services/loki-client';
+  import type { UploadFile } from '$lib/components/ui/modular/types.svelte';
+  import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte";
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+  import { processDocumentWorkflow } from '$lib/services/minio-neo4j-pgvector-integration';
+  import ComprehensiveAISystemIntegration from '$lib/integration/comprehensive-ai-system-integration';
+  import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
+  import loki from '$lib/services/loki-client';
 
   // Props (use standard Svelte exports)
   const { reportId } = $props<{ reportId: string }>()

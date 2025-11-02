@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * src/lib/server/auth.ts
  * Production-Grade Lucia v3 Authentication with SvelteKit, 2 + Drizzle ORM
@@ -6,15 +6,15 @@ import type { Case } from, '$lib/types';
  * Includes structured error handling with custom error classes
  */
 
-import { Lucia } from, 'lucia';
-import { DrizzlePostgreSQLAdapter } from, '@lucia-auth/adapter-drizzle';
-import bcrypt from, 'bcryptjs';
-import { eq } from, 'drizzle-orm';
-import type { RequestEvent } from, '@sveltejs/kit';
-import type { Session, User } from, 'lucia';
+import { Lucia } from 'lucia';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
+import type { RequestEvent } from '@sveltejs/kit';
+import type { Session, User } from 'lucia';
 
-import { db, pool } from, './db/drizzle';
-import { users, sessions } from, './db/schema';
+import { db, pool } from './db/drizzle';
+import { users, sessions } from './db/schema';
 import {
   RegistrationError,
   SessionError,
@@ -23,7 +23,7 @@ import {
   ProfileError,
   MicroserviceError,
   ERROR_CODES
-} from, './errors';
+} from './errors';
 
 // ============================================================================
 // LUCIA v3 INITIALIZATION (Corrected for v3 API)

@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import type { ComponentType } from, 'svelte';
-  import { getBitsOverrides } from, './bits-overrides';
+  import type { Snippet } from 'svelte';
+  import type { ComponentType } from 'svelte';
+  import { getBitsOverrides } from './bits-overrides';
   let { asChild = false, children }: { asChild?: boolean; children?: Snippet } = $props();
   // Define a type for the expected structure of the Dialog overrides
   type DialogOverrides = {

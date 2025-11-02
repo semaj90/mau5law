@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 // Context7 Documentation RAG API endpoint
 // Integrates with Go RAG pipeline and Gemma embeddings
 const CONTEXT7_MCP_ENDPOINT = 'http://localhost:4000'

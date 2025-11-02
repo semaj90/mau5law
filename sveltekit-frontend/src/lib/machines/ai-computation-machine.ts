@@ -2,8 +2,8 @@
  * AI Computation State Machine
  * Handles user idle states, 3D computations, and RabbitMQ async processing
  */
-import { createMachine, assign, fromPromise } from, 'xstate';
-import { dimensionalCache, type DimensionalArray } from, '../ai/dimensional-cache-engine.js';
+import { createMachine, assign, fromPromise } from 'xstate';
+import { dimensionalCache, type DimensionalArray } from '../ai/dimensional-cache-engine.js';
 // Add a concrete type for computation results
 export type ComputationResult = {
   computation?: string | number;

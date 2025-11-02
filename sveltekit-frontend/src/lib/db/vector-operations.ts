@@ -1,11 +1,11 @@
 // Legal Vector Operations with Drizzle ORM
 // Production-ready vector search for gemma3-legal:latest + pgvector
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { sql, desc, eq, or, gt, isNotNull, and } from, 'drizzle-orm';
-import type { SQL } from, 'drizzle-orm';
-import postgres from, 'postgres';
-import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } from, './schema.js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { sql, desc, eq, or, gt, isNotNull, and } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
+import postgres from 'postgres';
+import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } from './schema.js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Database connection
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';

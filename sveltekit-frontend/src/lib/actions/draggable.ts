@@ -1,5 +1,5 @@
 // Enhanced draggable action for detective board evidence nodes
-import { evidenceStore  } from, '$lib/stores/unified';
+import { evidenceStore  } from '$lib/stores/unified';
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
   onDrag?: (x: number, y: number) => void;

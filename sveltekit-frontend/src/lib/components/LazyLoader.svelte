@@ -1,14 +1,14 @@
 <!-- LazyLoader.svelte - Universal lazy loading, wrapper, component -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import {
     lazyLoad,
     createLazyStore,
     LAZY_LOAD_PRESETS,
     lazyLoadProfiler
     // removed: type imports from a .js module to avoid svelte-preprocess / TS issues
-  } from, '$lib/utils/intersection-observer.js';
+  } from '$lib/utils/intersection-observer.js';
   // Lightweight local types to avoid importing types from .js
   type LazyLoadOptions = Record<string, any>;
   type LazyLoadPreset = string;

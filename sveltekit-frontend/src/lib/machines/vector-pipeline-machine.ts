@@ -1,17 +1,17 @@
 // XState v5 machine for coordinating vector processing pipeline
 // Orchestrates PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
-import { setup, assign, createActor, fromPromise } from, 'xstate';
-import { writable } from, 'svelte/store';
-import { readActorSnapshot, safeStart, safeStop } from, '$lib/utils/xstate-compat';
+import { setup, assign, createActor, fromPromise } from 'xstate';
+import { writable } from 'svelte/store';
+import { readActorSnapshot, safeStart, safeStop } from '$lib/utils/xstate-compat';
 // --- Service Imports for real implementations ---
-import { productionServiceClient } from, '$lib/api/production-service-client';
-import { db } from, '$lib/server/db';
-import { vectorJobs } from, '$lib/server/db/schema';
-import { cache } from, '$lib/server/cache/redis';
-import { workflowQueue } from, '$lib/server/message-queue';
-import { WebGPUManager } from, '$lib/server/compute/web-gpu-manager';
-import { qdrantClient } from, '$lib/server/db/qdrant';
-import { sql } from, 'drizzle-orm';
+import { productionServiceClient } from '$lib/api/production-service-client';
+import { db } from '$lib/server/db';
+import { vectorJobs } from '$lib/server/db/schema';
+import { cache } from '$lib/server/cache/redis';
+import { workflowQueue } from '$lib/server/message-queue';
+import { WebGPUManager } from '$lib/server/compute/web-gpu-manager';
+import { qdrantClient } from '$lib/server/db/qdrant';
+import { sql } from 'drizzle-orm';
 // --- Type Definitions ---
 export interface VectorPipelineJob { jobId: string;, ownerType: 'evidence' | 'report' | 'case' | 'document';
   ownerId: string;

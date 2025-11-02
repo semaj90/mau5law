@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { legalAI } from, '$lib/server/unified/legal-ai-service';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { legalAI } from '$lib/server/unified/legal-ai-service';
 export const GET: RequestHandler = async _event => {
   try {
     const health = await legalAI.healthCheck();

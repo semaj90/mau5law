@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Query Cache for Legal AI Platform
  *
@@ -10,9 +10,9 @@ import type { Case } from, '$lib/types';
  *
  * Expected improvement: 3.75x faster query responses (300ms → 80ms)
  */
-import { getRedisMetricsCache } from, '../cache/redis-metrics';
-import type { RedisMetricsCache } from, '../cache/redis-metrics';
-import crypto from, 'crypto';
+import { getRedisMetricsCache } from '../cache/redis-metrics';
+import type { RedisMetricsCache } from '../cache/redis-metrics';
+import crypto from 'crypto';
 export interface CacheConfig { redis: {, enabled: boolean;
     defaultTTL: number;      //, Default: 3600s (1 hour); maxTTL: number;          //, Max: 86400s (24 hours)
   };
@@ -388,7 +388,7 @@ export const defaultQueryCache = new QueryCache();
  */
 export const QUERY_CACHE_EXAMPLES = `
 // 1. BASIC QUERY CACHING
-import { defaultQueryCache } from, '$lib/server/optimize/query-cache';
+import { defaultQueryCache } from '$lib/server/optimize/query-cache';
 const { data, cacheHit } = await defaultQueryCache.getOrQuery(
   { caseId: '123', type: 'evidence-list' },'`'`
   async () => {
@@ -400,7 +400,7 @@ const { data, cacheHit } = await defaultQueryCache.getOrQuery(
 console.log(\`Cache \${cacheHit.hit ? 'HIT' : `MISS' } (\${cacheHit.source})\`);'`
 console.log(\`Latency: \${cacheHit.latency.toFixed(2)}ms\`);
 // 2. VECTOR SEARCH CACHING
-import { vectorSearchCache } from, '$lib/server/optimize/query-cache';
+import { vectorSearchCache } from '$lib/server/optimize/query-cache';
 const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSearch(
   queryEmbedding,
   async () => {
@@ -410,7 +410,7 @@ const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSea
   { ttl: 1800, caseId: `123' }'`
 );
 // 3. RAG QUERY CACHING
-import { ragQueryCache } from, '$lib/server/optimize/query-cache';
+import { ragQueryCache } from '$lib/server/optimize/query-cache';
 const { data: ragResponse, cacheHit } = await ragQueryCache.cacheRAGQuery(
   "What are the key evidence in this case?",
   ['case_123', 'doc_456'],
@@ -421,11 +421,11 @@ const { data: ragResponse, cacheHit } = await ragQueryCache.cacheRAGQuery(
   { ttl: 600 }
 );
 // 4. CACHE INVALIDATION
-import { caseQueryCache } from, '$lib/server/optimize/query-cache';
+import { caseQueryCache } from '$lib/server/optimize/query-cache';
 // After updating case data
 await caseQueryCache.invalidateCase('123');
 // 5. CACHE WARMING (ON SERVER START)
-import { defaultQueryCache } from, '$lib/server/optimize/query-cache';
+import { defaultQueryCache } from '$lib/server/optimize/query-cache';
 // In hooks.server.ts
 await defaultQueryCache.warmCache();
 // 6. CACHE STATISTICS

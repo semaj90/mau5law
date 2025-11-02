@@ -1,8 +1,8 @@
-import { json, error as kitError } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { eq, inArray, desc } from, 'drizzle-orm';
-import { db } from, '$lib/server/db/index';
-import { cases, evidence } from, '$lib/server/db/schema-postgres';
+import { json, error as kitError } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { eq, inArray, desc } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
+import { cases, evidence } from '$lib/server/db/schema-postgres';
 
 type BulkHashRequest = {
   hashes?: string[];

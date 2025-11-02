@@ -1,8 +1,8 @@
-import type { SearchResult } from, '$lib/types';
-import { superValidate } from, 'sveltekit-superforms';
-import { zod } from, 'sveltekit-superforms/adapters';
-import type { PageServerLoad, Actions } from, './$types';
-import { z } from, 'zod';
+import type { SearchResult } from '$lib/types';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { PageServerLoad, Actions } from './$types';
+import { z } from 'zod';
 
 // ===== SEARCH FORM SCHEMA =====
 export const SearchFormSchema = z.object({

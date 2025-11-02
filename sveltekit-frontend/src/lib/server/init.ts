@@ -9,7 +9,7 @@
  * Usage:
  * ```typescript`
  * // In hooks.server.ts or main entry point
- * import { initializeServer } from, '$lib/server/init';
+ * import { initializeServer } from '$lib/server/init';
  *
  * await initializeServer();
  * ```
@@ -18,7 +18,7 @@
 import {
   initializeCommonServices,
   getServiceDiscovery
-} from, '$lib/server/helpers/service-discovery';
+} from '$lib/server/helpers/service-discovery';
 
 export interface ServerServices { minio: { url: string; source: 'env' | 'discovery' | 'fallback' };
   minioConsole: { url: string; source: 'env' | 'discovery' | 'fallback' };
@@ -229,4 +229,4 @@ export async function verifyServices(): Promise<Map<string, boolean>> {
 /**
  * Import for verification helper
  */
-import { verifyServiceEndpoint } from, '$lib/server/helpers/docker-discovery';
+import { verifyServiceEndpoint } from '$lib/server/helpers/docker-discovery';

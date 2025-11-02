@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * LLM Orchestrator Bridge - Unifies local and server orchestrators
  * Connects enhanced-orchestrator.ts, unified-client-llm-orchestrator.ts, and API endpoints
@@ -8,8 +8,8 @@ import type { Document } from, '$lib/types';
  * - Client-side: Unified Client LLM Orchestrator (Gemma + ONNX)
  * - Bridge: Routes requests to optimal orchestrator based on task type and context
  */
-import { execSync } from, 'child_process';
-import * as dotenv from, 'dotenv';
+import { execSync } from 'child_process';
+import * as dotenv from 'dotenv';
 dotenv.config(); // load .env if present
 
 // Auto-discover Docker container hostnames
@@ -44,13 +44,13 @@ export const dockerEnv = {
 
 console.log('🌐 Unified Docker Environment:', dockerEnv);
 
-import { orchestrator, as enhancedOrchestrator } from, './enhanced-orchestrator.js';
-import { unifiedClientLLMOrchestrator } from, '$lib/ai/unified-client-llm-orchestrator.js';
-import { mcpMultiCore } from, '$lib/server/mcp/multi-core-integration.js';
-import type { MCPTask } from, '$lib/server/mcp/multi-core-integration.js';
-import { logger } from, './logger.js';
-import type { ClientLLMRequest, InferenceResult } from, '$lib/ai/unified-client-llm-orchestrator.js';
-import xstateIntegration from, '$lib/services/xstate-integration'; // ADDED: Import xstateIntegration
+import { orchestrator, as enhancedOrchestrator } from './enhanced-orchestrator.js';
+import { unifiedClientLLMOrchestrator } from '$lib/ai/unified-client-llm-orchestrator.js';
+import { mcpMultiCore } from '$lib/server/mcp/multi-core-integration.js';
+import type { MCPTask } from '$lib/server/mcp/multi-core-integration.js';
+import { logger } from './logger.js';
+import type { ClientLLMRequest, InferenceResult } from '$lib/ai/unified-client-llm-orchestrator.js';
+import xstateIntegration from '$lib/services/xstate-integration'; // ADDED: Import xstateIntegration
 
 // A helper type to represent the loosely-typed result from various orchestrator/inference calls
 // This avoids using `any` in casts.

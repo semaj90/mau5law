@@ -4,9 +4,9 @@
  * Orchestrates the complete pipeline:
  * Upload → Analysis → Neural Sprite → PNG Embedding → MinIO Storage → Search Indexing
  */
-import { createMachine, assign, fromPromise } from, 'xstate';
-import type { LegalAIMetadata } from, '$lib/services/png-embed-extractor.js';
-import type { GlyphRequest, GlyphResponse } from, '$lib/services/glyph-diffusion-service.js';
+import { createMachine, assign, fromPromise } from 'xstate';
+import type { LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
+import type { GlyphRequest, GlyphResponse } from '$lib/services/glyph-diffusion-service.js';
 // Evidence processing context
 export interface EvidenceProcessingContext {
   evidenceId: string;

@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * gRPC AI Orchestrator - Multi-Model Coordination Service
  *
@@ -15,18 +15,18 @@ import type { Document } from, '$lib/types';
  * - Automatic model switching based on complexity
  * - Performance monitoring and optimization
  */
-import { enhancedAIAnalysis } from, './enhanced-ai-analysis.js';
+import { enhancedAIAnalysis } from './enhanced-ai-analysis.js';
 import type {
   LegalDocument,
   SemanticAnalysis,
   LegalReasoning,
   LegalEntity
-} from, './enhanced-ai-analysis.js';
+} from './enhanced-ai-analysis.js';
 import type {
   CaseScoringRequest,
   CaseScoringResult,
   ScoringCriteria
-} from, '../types/scoring.js';
+} from '../types/scoring.js';
 // gRPC Service Configuration
 interface GRPCServiceConfig { baseUrl: string;, port: number;
   useCompression: boolean;

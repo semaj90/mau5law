@@ -2,8 +2,8 @@
  * Production-Ready Logging Service for Legal AI Platform
  * Enhanced logging with Windows support, structured logging, and performance monitoring
  */
-import { getConfig } from, '../config/unified-config.js';
-import type { LoggingConfig } from, '../config/unified-config.js';
+import { getConfig } from '../config/unified-config.js';
+import type { LoggingConfig } from '../config/unified-config.js';
 
 const dev = import.meta.env.NODE_ENV === 'development';
 

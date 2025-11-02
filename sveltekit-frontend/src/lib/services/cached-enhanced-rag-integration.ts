@@ -3,12 +3,12 @@
  * Bridges the Unified Legal Cache Orchestrator with the existing Enhanced RAG system
  * Provides intelligent caching for both retrieval results and embeddings
  */
-import { UnifiedLegalCacheOrchestrator } from, './unified-legal-cache-orchestrator.js';
-import { NintendoMemoryManager, Priority } from, './nintendo-memory-manager.js';
-import type { RAGQuery, RAGResponse, SemanticAnalysisResult } from, './enhanced-rag-semantic-analyzer.js';
-import type { Redis } from, 'ioredis';
-import type { Pool } from, 'pg';
-import { createHash } from, 'crypto';
+import { UnifiedLegalCacheOrchestrator } from './unified-legal-cache-orchestrator.js';
+import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
+import type { RAGQuery, RAGResponse, SemanticAnalysisResult } from './enhanced-rag-semantic-analyzer.js';
+import type { Redis } from 'ioredis';
+import type { Pool } from 'pg';
+import { createHash } from 'crypto';
 
 interface CacheConfig { enableRetrievalCache: boolean;, enableEmbeddingCache: boolean;
   enableSemanticCache: boolean;

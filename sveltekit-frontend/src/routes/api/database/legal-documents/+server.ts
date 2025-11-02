@@ -1,20 +1,20 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Database Integration API for Legal Documents
 // Handles storage with Drizzle ORM and PostgreSQL
-import { json } from, '@sveltejs';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/database';
+import { json } from '@sveltejs';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/database';
 import {
   Document as documents,
   Case as cases,
   User as users,
   UserSession as userSessions,
   Embedding as embeddings
-} from, '$lib/server/database/schema';
-import { nanoid } from, 'nanoid';
-import { eq } from, 'drizzle-orm';
+} from '$lib/server/database/schema';
+import { nanoid } from 'nanoid';
+import { eq } from 'drizzle-orm';
 
 interface UploadResult {
   success?: boolean;

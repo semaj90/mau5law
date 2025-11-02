@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import { json, error } from, '@sveltejs/kit';
-import pdf from, 'pdf-parse';
-import crypto from, 'node:crypto';
-import { v4, as uuidv4 } from, 'uuid';
-import { createClient } from, 'redis';
-import type { RequestHandler } from, './$types';
+import type { Case } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { json, error } from '@sveltejs/kit';
+import pdf from 'pdf-parse';
+import crypto from 'node:crypto';
+import { v4, as uuidv4 } from 'uuid';
+import { createClient } from 'redis';
+import type { RequestHandler } from './$types';
 // Enhanced RAG processing pipeline
 export interface LegalDocument { id: string;, filename: string;
   jurisdiction: string;
@@ -118,7 +118,7 @@ const TRUSTED_LEGAL_SOURCES = [
 ];
 // Import for production Drizzle storage: Persists processed LegalDocument[] to PostgreSQL/pgvector for downstream RAG and search.
 // Expected, contract: storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void>
-import { storeDocumentsInDatabase } from, '$lib/server/db';
+import { storeDocumentsInDatabase } from '$lib/server/db';
 
 // Use the redis package exported client type
 type RedisClientType = ReturnType<typeof, createClient>;

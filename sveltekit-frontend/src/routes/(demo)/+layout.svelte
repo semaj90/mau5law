@@ -1,7 +1,7 @@
 <!-- Demo Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import { page } from, '$app/stores';
+  import type { Snippet } from 'svelte';
+  import { page } from '$app/stores';
 
   interface Props {
     data?: any;

@@ -19,9 +19,9 @@
  * Unified AI Service API Endpoint
  * Tests integration between WASM, LangChain, GPU, and PostgreSQL
  */
-import { json } from, '@sveltejs/kit';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { query, mode = 'auto', useContext7 = false, maxResults = 10 } = await request.json();

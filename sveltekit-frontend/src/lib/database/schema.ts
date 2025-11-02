@@ -1,14 +1,14 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // DEPRECATION WARNING:
 // This legacy camelCase schema is retained temporarily for non-auth code paths.
-// Do NOT import from, '$lib/database/schema' for authentication/session logic.
+// Do NOT import from '$lib/database/schema' for authentication/session logic.
 // Use: '$lib/server/db/schema-postgres' instead. A runtime guard below logs when
 // auth-critical tables are imported from this module.
-import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar } from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-import { sql, relations } from, 'drizzle-orm';
+import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+import { sql, relations } from 'drizzle-orm';
 // Users table with enhanced authentication fields
 export const users = pgTable('users', {
   id: uuid('id')
@@ -208,5 +208,5 @@ export type NewAIInteraction = typeof aiInteractions.$inferInsert;
 export type SearchIndex = typeof searchIndex.$inferSelect;
 export type NewSearchIndex = typeof searchIndex.$inferInsert;
 // Re-export missing tables from additional-tables.ts
-export { embeddingCache } from, '../server/db/additional-tables.js';
-// Database connection re-export { db } from, '../server/db/index.js'
+export { embeddingCache } from '../server/db/additional-tables.js';
+// Database connection re-export { db } from '../server/db/index.js'

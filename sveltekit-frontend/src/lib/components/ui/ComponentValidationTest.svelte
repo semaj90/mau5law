@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import  Dropdown  from, "./Dropdown.svelte";
-  import  Checkbox  from, "./Checkbox.svelte";
-  import  SearchBar  from, "./SearchBar.svelte";
+  import  Dropdown  from "./Dropdown.svelte";
+  import  Checkbox  from "./Checkbox.svelte";
+  import  SearchBar  from "./SearchBar.svelte";
   // Test data for dropdown
   const legalCaseTypes = [
     { value: 'contract', label: 'Contract Dispute' },

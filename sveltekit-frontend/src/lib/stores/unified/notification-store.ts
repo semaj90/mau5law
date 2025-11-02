@@ -8,14 +8,14 @@
  * - analyticsStore.ts (feedback component)
  *
  * Usage:
- *   import { notificationStore, showToast } from, '$lib/stores/unified';
+ *   import { notificationStore, showToast } from '$lib/stores/unified';
  *
  *   notificationStore.showToast('Success!', 'success', 3000);
  *   notificationStore.addNotification({ title: 'Update', message: 'Task complete' });
  *   $: notifications = $notificationStore.notifications;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -336,12 +336,12 @@ export const activeAlerts = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { alerts, addAlert, dismissAlert  } from, '$lib/stores/unified'
- *   import { notifications } from, '$lib/stores/notifications'
- *   import { showToast } from, '$lib/stores/toast'
+ *   import { alerts, addAlert, dismissAlert  } from '$lib/stores/unified'
+ *   import { notifications } from '$lib/stores/notifications'
+ *   import { showToast } from '$lib/stores/toast'
  *
  * New imports:
- *   import { notificationStore, showToast, notifications, alerts } from, '$lib/stores/unified'
+ *   import { notificationStore, showToast, notifications, alerts } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ;, Old: addAlert(...) - function based

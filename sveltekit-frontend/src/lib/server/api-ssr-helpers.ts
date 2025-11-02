@@ -5,12 +5,12 @@
  * This module ensures all API route data is properly serialized and structured
  * for server-side rendering with Bits UI components.
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { threadSafePostgres } from, './thread-safe-postgres.js';
-import { concurrentSerializer, serializeForAPI } from, './concurrent-json-serializer.js';
-import { gpuCoordinator, gpuProcessJsonb } from, './gpu-thread-coordinator.js';
-import { cognitiveCache } from, '../services/cognitive-cache-integration.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { threadSafePostgres } from './thread-safe-postgres.js';
+import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
+import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 export interface SSRResponse<T = any> { success: boolean;, data: T;
   meta: {, timestamp: string;, cached: boolean;
    , source: 'ssr' | 'api';

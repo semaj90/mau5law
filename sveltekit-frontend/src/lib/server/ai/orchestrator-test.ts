@@ -2,8 +2,8 @@
  * LLM Orchestrator Integration Test Suite
  * Tests the bridge connection between local and server orchestrators
  */
-import { llmOrchestratorBridge } from, './llm-orchestrator-bridge.js';
-import type { LLMBridgeRequest } from, './llm-orchestrator-bridge.js';
+import { llmOrchestratorBridge } from './llm-orchestrator-bridge.js';
+import type { LLMBridgeRequest } from './llm-orchestrator-bridge.js';
 export async function testOrchestratorIntegration(): Promise<any> {
   const results: any[] = [];
   let successCount = 0;

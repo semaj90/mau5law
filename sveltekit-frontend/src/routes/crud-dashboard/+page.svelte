@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import CRUDDashboard from, '$lib/components/CRUDDashboard.svelte';
+  import CRUDDashboard from '$lib/components/CRUDDashboard.svelte';
 </script>
 
 <div, class="space-y-4">

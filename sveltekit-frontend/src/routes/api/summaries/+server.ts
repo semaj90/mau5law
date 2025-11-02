@@ -1,15 +1,15 @@
-import type { User } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { evidence, cases, legalDocuments } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { vectorService } from, '$lib/server/vector/vectorService';
-import { qdrantService } from, '$lib/server/services/qdrant-service';
-import Fuse from, 'fuse.js';
-import { interpret } from, 'xstate';
-import { aiSummaryMachine } from, '$lib/machines/aiSummaryMachine';
-import { ollamaService } from, '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
+import type { User } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { evidence, cases, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { vectorService } from '$lib/server/vector/vectorService';
+import { qdrantService } from '$lib/server/services/qdrant-service';
+import Fuse from 'fuse.js';
+import { interpret } from 'xstate';
+import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
+import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
 
 // Request payload for summary generation
 export interface SummaryRequest { type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';, targetId: string;

@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { dev } from, '$app/environment';
-import { db } from, '$lib/server/db';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { dev } from '$app/environment';
+import { db } from '$lib/server/db';
 // Adjust the table/import names to match your schema; this tries common names used in this repo
-import { embeddingCache, as embeddingTable } from, '$lib/server/db/schema-postgres-enhanced';
+import { embeddingCache, as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
 // Optional Qdrant config
 const QDRANT_URL = process.env.QDRANT_URL || import.meta.env.QDRANT_URL || '';
 

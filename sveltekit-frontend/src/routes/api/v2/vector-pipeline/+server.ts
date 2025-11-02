@@ -1,13 +1,13 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /*
  * Enhanced Vector Pipeline API Endpoint
  * Integrates MinIO law PDFs with FastEmbed for optimized vector search
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { minio } from, '$lib/server/minio/client';
-import { db } from, '$lib/server/db';
-import embeddingService from, '$lib/services/embedding-service';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { minio } from '$lib/server/minio/client';
+import { db } from '$lib/server/db';
+import embeddingService from '$lib/services/embedding-service';
 
 /*
  * Typed DB wrapper and helpers to avoid `any` casts

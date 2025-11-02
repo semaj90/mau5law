@@ -1,10 +1,10 @@
 <!-- Enhanced Chat Component with, bits-ui, shadcn-svelte, integration -->
 <script, lang="ts">
 	import, 'uno.css';
-	import { onMount, onDestroy, tick } from, 'svelte';
-	import { createMachine, assign } from, 'xstate';
-	import { useMachine } from, '@xstate/svelte';
-	import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+	import { onMount, onDestroy, tick } from 'svelte';
+	import { createMachine, assign } from 'xstate';
+	import { useMachine } from '@xstate/svelte';
+	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
 
 	// small classnames helper (optional, replace with your cn)
 	const cn = (...args: Array<string | false | null | undefined>) => args.filter(Boolean).join(' ');

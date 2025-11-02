@@ -2,9 +2,9 @@
  * YoRHa 3D Button Component
  * Low-poly button with advanced styling and YoRHa aesthetic
  */
-import * as THREE from, 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
-import { resolveVariantStyle } from, '../theme/yorha-theme-adapter.js';
+import * as THREE from 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+import { resolveVariantStyle } from '../theme/yorha-theme-adapter.js';
 export interface YoRHaButton3DOptions extends Omit<YoRHaStyle, 'variant'> {
   text?: string;
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger';

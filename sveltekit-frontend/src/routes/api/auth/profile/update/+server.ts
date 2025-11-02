@@ -3,11 +3,11 @@
  * Only allows authenticated users to update their own profile
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
-import { db } from, '$lib/server/db';
-import { users } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 interface UpdateProfileRequest {
   firstName?: string;

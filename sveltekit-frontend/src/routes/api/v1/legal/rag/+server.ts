@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * POST /api/v1/legal/rag
  *
@@ -10,9 +10,9 @@ import type { Document } from, '$lib/types';
  * - Complete response caching (Redis)
  */
 
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getLegalAIPipeline } from, '$lib/server/integrations';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getLegalAIPipeline } from '$lib/server/integrations';
 
 /**
  * POST /api/v1/legal/rag

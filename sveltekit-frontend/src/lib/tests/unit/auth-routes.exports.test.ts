@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from, 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 // Mocks for heavy modules (relative to project root resolution used by Vitest)
 vi.mock('../../../server/db', () => ({ db: {} }))

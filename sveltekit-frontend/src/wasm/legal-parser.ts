@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Document Parser in AssemblyScript
  */
 // === Memory Management ===
-import { allocateVectorMemory, freeVectorMemory } from, './vector-operations.js';
+import { allocateVectorMemory, freeVectorMemory } from './vector-operations.js';
 
 // --- Removed unused `u8` alias to fix TS unused-variable error ---
 type usize = number;

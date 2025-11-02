@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Intelligent Web Analyzer - Complete AI-Aware Pipeline
  * Full-page semantic understanding with minimal CPU/GPU usage
@@ -6,9 +6,9 @@ import type { User } from, '$lib/types';
  *
  * Flow: DOM Analysis → Text Extraction → Tensor Processing → User Context → Cache
  */
-import { extractTextFromImage, type OCRResult } from, '$lib/ocr/ocr-client.js';
-import { getCachedEmbedding, cacheEmbedding } from, '$lib/server/cache/redis.js';
-import { browser } from, '$app/environment';
+import { extractTextFromImage, type OCRResult } from '$lib/ocr/ocr-client.js';
+import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
+import { browser } from '$app/environment';
 export interface WebElement { id: string;, tagName: string;
   textContent: string;
   innerHTML: string;

@@ -188,7 +188,7 @@ export interface Neo4jPathContext { userPath: string[];, relatedCases: string[]
 /**
  * Enhanced search with Neo4j path context
  */
-import type { Schemas } from, '@qdrant/js-client-rest/dist/types';
+import type { Schemas } from '@qdrant/js-client-rest/dist/types';
 export async function enhancedSearchWithNeo4j(
   query: string,
   userContext: UserContext,
@@ -270,8 +270,8 @@ export async function enhancedSearch(
 }
 // Export for use in components
 export { LegalAIReranker, as default };
-import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from, './types.js';
-import { dimensionalCache } from, './dimensional-cache-engine';
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from './types.js';
+import { dimensionalCache } from './dimensional-cache-engine';
 /**
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.

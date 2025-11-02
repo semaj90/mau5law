@@ -1,9 +1,9 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { exec } from, 'child_process';
-import { promisify } from, 'util';
-import { writeFile, unlink } from, 'fs/promises';
-import { join } from, 'path';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { writeFile, unlink } from 'fs/promises';
+import { join } from 'path';
 
 const execAsync = promisify(exec);
 

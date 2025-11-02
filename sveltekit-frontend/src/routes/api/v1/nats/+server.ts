@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Enhanced NATS API Integration
-import { EnhancedNATSMessagingService } from, '$lib/services/enhanced-nats-messaging';
+import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging';
 
 // Global NATS service instance
 let natsService: EnhancedNATSMessagingService | null = null;

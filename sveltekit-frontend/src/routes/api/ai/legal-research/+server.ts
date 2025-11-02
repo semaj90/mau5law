@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,14 +16,14 @@ import type { Case } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, '@sveltejs/kit';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 /*
  * Legal Research API Endpoint
  * Provides comprehensive legal research capabilities with RAG integration
  */
-import { rerankSearchResults } from, '$lib/services/comprehensive-database-orchestrator';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { rerankSearchResults } from '$lib/services/comprehensive-database-orchestrator';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 export interface LegalResearchRequest {
   topic: string;
   userRole?: string;

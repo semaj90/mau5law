@@ -1,5 +1,5 @@
 // Lightweight embedding utilities with safe fallbacks and strict typing
-import { createHash } from, 'crypto';
+import { createHash } from 'crypto';
 export interface CacheInterface { getCachedEmbedding: (_key: string) => Promise<number[] | null>;, cacheEmbedding: (_key: string, embedding: number[], ttl?: number) => Promise<void>;
 }
 // Minimal in-memory/cache shim; apps should replace with Redis-backed implementation

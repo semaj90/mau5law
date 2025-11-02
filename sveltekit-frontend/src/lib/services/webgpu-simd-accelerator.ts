@@ -3,9 +3,9 @@
  * Combines WebGPU compute shaders with SIMD parsing for ultimate legal AI performance
  * Optimized for RTX, 3060 Ti with Redis orchestrator integration
  */
-import { browser } from, '$app/environment';
-import { unifiedSIMDParser, ParseMode } from, './unified-simd-parser.js';
-import { redisOptimized } from, '../middleware/redis-orchestrator-middleware.js';
+import { browser } from '$app/environment';
+import { unifiedSIMDParser, ParseMode } from './unified-simd-parser.js';
+import { redisOptimized } from '../middleware/redis-orchestrator-middleware.js';
 interface WebGPUSIMDConfig { enableWebGPU: boolean;, enableSIMD: boolean;
   enableRedisCache: boolean;
   maxBatchSize: number;

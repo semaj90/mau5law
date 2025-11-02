@@ -1,8 +1,8 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference, types="vite/client" />
-import Redis from, 'ioredis';
-import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } from, '$lib/config/redis-config';
-import type { RedisOptions } from, 'ioredis';
+import Redis from 'ioredis';
+import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } from '$lib/config/redis-config';
+import type { RedisOptions } from 'ioredis';
 // Singleton Redis client
 let redisClient: Redis | null = null;
 /**

@@ -8,13 +8,13 @@
  * - canvas-collaboration.ts
  *
  *, Usage:
- *   import { canvasStore } from, '$lib/stores/unified';
+ *   import { canvasStore } from '$lib/stores/unified';
  *
  *   canvasStore.addElement('node', { x: 100, y: 100 });
  *   $: canvas = $canvasStore.canvasData;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -563,9 +563,9 @@ export const selectedElements = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { canvasData, addElement } from, '$lib/stores/canvas-state'
- *   import { canvasStore } from, '$lib/stores/canvas-store'
+ *   import { canvasData, addElement } from '$lib/stores/canvas-state'
+ *   import { canvasStore } from '$lib/stores/canvas-store'
  *
  * New imports:
- *   import { canvasStore, canvasElements, canvasConnections } from, '$lib/stores/unified'
+ *   import { canvasStore, canvasElements, canvasConnections } from '$lib/stores/unified'
  */

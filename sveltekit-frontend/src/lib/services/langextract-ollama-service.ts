@@ -1,6 +1,6 @@
 // Note: langextract package may not be available; provide a mock fallback that
 // routes to the local Ollama server's generate API.'
-// import langextract from, 'langextract'
+// import langextract from 'langextract'
 // Interface for a minimal langextract-like client
 export interface LangExtract {
   extract(_options: {, text_or_documents: string;, prompt_description: string;

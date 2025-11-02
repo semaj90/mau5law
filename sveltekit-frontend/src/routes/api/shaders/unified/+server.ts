@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { cache } from, '$lib/server/cache/redis';
-import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { cache } from '$lib/server/cache/redis';
+import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
 interface UnifiedShaderQuery {
   text?: string;
   operation?: string;

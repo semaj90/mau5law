@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   /**
    * 🧪 Hybrid RAG + SIMD Pipeline Demo
    *
@@ -9,8 +9,8 @@ import type { Document } from, '$lib/types';
    * - View synthesis ranking scores
    */
 
-  import Button from, '$lib/components/ui/Button.svelte';
-  import { Upload, Search, Zap, Database } from, 'lucide-svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import { Upload, Search, Zap, Database } from 'lucide-svelte';
 
   // State management using Svelte, 5 runes
   let query = $state<string>('');

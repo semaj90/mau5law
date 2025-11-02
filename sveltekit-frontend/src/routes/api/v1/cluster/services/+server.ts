@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 import {
   productionServiceRegistry,
   GO_SERVICES_REGISTRY,
   type ServiceDefinition
-} from, '$lib/services/production-service-registry';
-import { context7OrchestrationService } from, '$lib/services/context7-orchestration-integration';
+} from '$lib/services/production-service-registry';
+import { context7OrchestrationService } from '$lib/services/context7-orchestration-integration';
 
 /* clarified literal types matching registry API */
 type Category = 'ai_rag' | 'file_upload' | 'xstate_orchestration' | 'protocol' | 'infrastructure';

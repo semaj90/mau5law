@@ -2,14 +2,14 @@
  * Comprehensive Optimization Test Suite and Validation System
  * Tests all optimization components and validates integration
  */
-import { performance } from, 'perf_hooks';
+import { performance } from 'perf_hooks';
 import {
   type EnhancedOptimizationSuite as ImportedEnhancedOptimizationSuite, // Renamed to avoid conflict
   // type EnhancedPerformanceMetrics, // Removed: unused
   createEnhancedOptimizationSuite,
   // optimizeForLegalAIProduction, // Removed: unused
-} from, './index.js';
-import { createContext7MCPIntegration } from, './context7-mcp-integration.js';
+} from './index.js';
+import { createContext7MCPIntegration } from './context7-mcp-integration.js';
 // === Inferred Interfaces for EnhancedOptimizationSuite components ===
 interface VSCodeStats { cache: {, utilization: number };
  , commands: number;

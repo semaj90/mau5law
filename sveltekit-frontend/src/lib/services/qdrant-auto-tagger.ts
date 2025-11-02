@@ -15,7 +15,7 @@
  * @module qdrant-auto-tagger
  */
 
-import type { ErrorMetadata, ErrorCategory } from, '$lib/services/mcp-simd-parser';
+import type { ErrorMetadata, ErrorCategory } from '$lib/services/mcp-simd-parser';
 
 /**
  * Qdrant collection configuration for error storage

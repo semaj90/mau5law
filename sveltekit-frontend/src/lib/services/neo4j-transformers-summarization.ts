@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Cleaned and fixed Neo4j Transformers Summarization pipeline.
  * - Valid TypeScript, fixed imports / signatures / typos.
  * - Core methods preserved with simplified/defensive implementations.
  * - TODO markers where functionality can be extended.
  */
-import neo4j from, 'neo4j-driver';
-import * as langChainOllamaService from, './langchain-ollama-llama-integration.js';
-import { vectorProxy } from, './grpc-quic-vector-proxy.js';
-import crypto from, 'crypto';
+import neo4j from 'neo4j-driver';
+import * as langChainOllamaService from './langchain-ollama-llama-integration.js';
+import { vectorProxy } from './grpc-quic-vector-proxy.js';
+import crypto from 'crypto';
 
 // add a minimal Neo4j record shape so .get() is typed
 type Neo4jRecord = {
@@ -400,7 +400,7 @@ export class Neo4jTransformersSummarization {
           MERGE (from)-[rr:${this.normalizeRelType(r.type)} {strength:$strength, metadata:$metadata, createdAt: datetime()}]->(to)
           RETURN rr
         `;`
-        await this.session.run(relQuery, { fromId: r.from, toId: r.to, strength: r.strength, metadata: r.metadata ?? {} });
+        await this.session.run(relQuery, { fromId: r.from toId: r.to, strength: r.strength, metadata: r.metadata ?? {} });
       }
 
       return graphNodes;

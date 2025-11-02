@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltejs/kit';
-import { legalAIResultCache } from, '$lib/services/advanced-result-cache.js';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import { legalAIResultCache } from '$lib/services/advanced-result-cache.js';
 /*
  * AI-Assisted Boilerplate Generation API
  * Generates legal boilerplate text based on high-performing phrase patterns
  */
-import postgres from, 'postgres';
-import { z } from, 'zod';
+import postgres from 'postgres';
+import { z } from 'zod';
 // Configuration
 const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' }' },
   olloma: {

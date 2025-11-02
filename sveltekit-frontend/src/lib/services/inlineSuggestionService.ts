@@ -1,10 +1,10 @@
 /**
  * Enhanced Inline Suggestion Service - corrected implementation
  */
-import { createActor } from, "xstate";
-import { aiProcessingMachine, goMicroserviceMachine /*, createAITask, aiTaskCreators */ } from, "$lib/machines";
-import { enhancedRAGStore } from, "$lib/stores";
-import { debounce } from, "$lib/utils";
+import { createActor } from "xstate";
+import { aiProcessingMachine, goMicroserviceMachine /*, createAITask, aiTaskCreators */ } from "$lib/machines";
+import { enhancedRAGStore } from "$lib/stores";
+import { debounce } from "$lib/utils";
 
 // --- Types ---
 export interface SuggestionContext { text: string;, cursorPosition: number;

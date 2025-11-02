@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { legalAI } from, '$lib/server/unified/legal-ai-service';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { legalAI } from '$lib/server/unified/legal-ai-service';
 
 // Helper to safely extract an error message from: unknown
 function getErrorMessage(err: any): string {

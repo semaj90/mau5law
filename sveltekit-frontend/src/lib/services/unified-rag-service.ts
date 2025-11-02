@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified Legal RAG Service
  *
@@ -16,8 +16,8 @@ import type { Document } from, '$lib/types';
  * - Gemma embeddings (primary), nomic-embed-text (fallback)
  */
 
-import type Redis from, 'ioredis';
-import type { Sql } from, 'postgres';
+import type Redis from 'ioredis';
+import type { Sql } from 'postgres';
 
 // Vector search provider
 export type VectorProvider = 'pgvector' | 'qdrant';

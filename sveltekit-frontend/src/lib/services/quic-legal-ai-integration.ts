@@ -1,8 +1,8 @@
-import { GPUAIService } from, '$lib/services/gpu-ai-service';
-import RedisOrchestrator from, '$lib/services/redis-orchestrator';
-import { productionServiceClient } from, '$lib/api/production-service-client';
-import { createHash } from, 'crypto';
-import { getOllamaEndpoint } from, '$lib/server/services/ollama-client'; // add import for endpoint helper
+import { GPUAIService } from '$lib/services/gpu-ai-service';
+import RedisOrchestrator from '$lib/services/redis-orchestrator';
+import { productionServiceClient } from '$lib/api/production-service-client';
+import { createHash } from 'crypto';
+import { getOllamaEndpoint } from '$lib/server/services/ollama-client'; // add import for endpoint helper
 
 // Define types for better clarity and type safety
 interface LegalAIStatus { status: 'online' | 'degraded' | 'offline';, message: string;

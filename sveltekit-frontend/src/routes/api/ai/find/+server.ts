@@ -1,18 +1,18 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /** * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied *
  * Endpoint: find * Category: aggressive * Memory Bank: CHR_ROM * Priority: 170 * Redis; Type: aiSearch *
  * Performance Impact: * - Cache; Strategy: aggressive * - Memory, Bank: CHR_ROM (Nintendo-style) * - Cache hits: ~2ms response time * - Fresh;, queries: Background processing for complex requests *
- * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */ import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
-import { Buffer } from, 'buffer'
-import { copilotOrchestrator, generateMCPPrompt, commonMCPQueries, semanticSearch, mcpMemoryReadGraph } from, "$lib/utils/mcp-helpers"
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */ import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { Buffer } from 'buffer'
+import { copilotOrchestrator, generateMCPPrompt, commonMCPQueries, semanticSearch, mcpMemoryReadGraph } from "$lib/utils/mcp-helpers"
 // Define the types locally since they're not exported from mcp-helpers export interface MCPContextAnalysis { query?: string context?: any suggestions?: string[] confidence?: number stackAnalysis?: any recommendations?: any[] bestPractices?: any[] integrationSuggestions?: any[] [key: string]: any; // Allow additional properties }'
 export interface AutoMCPSuggestion {, type: 'enhancement' | 'correction' | 'alternative' | 'ai-integration' | 'performance' | 'ui-enhancement'; original?: string suggested?: string reasoning?: string confidence?: number priority?: string suggestion?: string implementation?: string [key: string]: any; // Allow additional properties }
-// Mock database imports for testing without DB connection // { db } from, '$lib/server/db'
-import { or, like, desc, sql, and, gte } from, "drizzle-orm"
+// Mock database imports for testing without DB connection // { db } from '$lib/server/db'
+import { or, like, desc, sql, and, gte } from "drizzle-orm"
 
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-// Mock Redis for testing without Redis connection // import { Redis } from, 'ioredis'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+// Mock Redis for testing without Redis connection // import { Redis } from 'ioredis'
 // Mock Redis implementation (fixed stray brace) const redis = { async incr(_key: string): Promise<number> { return 1; // Always allow for testing }, async expire(_key: string, _seconds: number): Promise<void> { // No-op for testing }, async get(_key: string): Promise<string | null> { return: null; // Always cache miss for testing }, async setex(_key: string, _seconds: number, _value: string): Promise<void> { // No-op for testing }, async ping(): Promise<string> { return, 'PONG'
   } }
 export interface AIFindRequest { query: string; type?: 'all' | 'cases' | 'evidence' | 'documents' | 'ai'

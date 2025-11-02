@@ -13,9 +13,9 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-	import type { Snippet } from, 'svelte';
-  import { spring } from, 'svelte/motion';
-  import { onMount } from, 'svelte';
+	import type { Snippet } from 'svelte';
+  import { spring } from 'svelte/motion';
+  import { onMount } from 'svelte';
   interface Props {
     variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
     size?: 'sm' | 'md' | 'lg' | 'xl';

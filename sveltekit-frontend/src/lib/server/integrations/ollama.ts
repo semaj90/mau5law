@@ -11,7 +11,7 @@ import type {
   ChatMessage,
   ChatOptions,
   ChatResult
-} from, '$lib/types/external-services';
+} from '$lib/types/external-services';
 interface OllamaConfig { baseUrl: string;
 , embeddingModel: string;
  , chatModel: string;

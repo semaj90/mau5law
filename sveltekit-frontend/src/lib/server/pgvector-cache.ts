@@ -1,4 +1,4 @@
-import pgClient, { poolShim } from, '$lib/server/db-shim';
+import pgClient, { poolShim } from '$lib/server/db-shim';
 
 const pool = poolShim;
 

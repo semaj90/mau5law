@@ -9,8 +9,8 @@ Visual progress indicator for the Evidence Chain of Custody workflow
    , stageName: string;
   }
   let { progress, stage, stageName }: { progress; stage; stageName: any } = $props();
-  import  Progress  from, "$lib/components/ui/progress/Progress.svelte";
-  import { CheckCircle, Clock, AlertCircle } from, 'lucide-svelte';
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
+  import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
   // Define workflow stages
   const workflowStages = [
     { id: 'idle', name: 'Idle', description: 'Waiting to start' },

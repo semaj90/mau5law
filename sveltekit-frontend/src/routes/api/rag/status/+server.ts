@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { exec } from, 'child_process';
-import { promisify } from, 'util';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 // Helper to safely stringify: unknown errors

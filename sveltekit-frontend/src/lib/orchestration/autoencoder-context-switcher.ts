@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Autoencoder Context Switcher - Dynamic QLoRA Model Load Balancer
  * Features:
@@ -8,9 +8,9 @@ import type { User } from, '$lib/types';
  * - FlatBuffer serialization for maximum efficiency
  * - Dynamic QLoRA model creation based on usage patterns
  */
-import { qloraWasmLoader } from, '$lib/wasm/qlora-wasm-loader';
-import { qloraOllamaOrchestrator, as $qloraOllamaOrchestrator } from, './qlora-ollama-orchestrator.js';
-import { predictiveAssetEngine, as $predictiveAssetEngine } from, '$lib/services/predictive-asset-engine';
+import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
+import { qloraOllamaOrchestrator, as $qloraOllamaOrchestrator } from './qlora-ollama-orchestrator.js';
+import { predictiveAssetEngine, as $predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 // FlatBuffer-like serialization structure
 interface ContextVector { userId: string;, sessionId: string;
   timestamp: number;

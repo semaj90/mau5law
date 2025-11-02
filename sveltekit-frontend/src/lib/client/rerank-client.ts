@@ -1,5 +1,5 @@
-import { browser } from, '$app/environment';
-import Loki from, 'lokijs'; // Import Loki.js
+import { browser } from '$app/environment';
+import Loki from 'lokijs'; // Import Loki.js
 // Define a lightweight local type that captures the collection methods used here.
 type LokiCollection<T> = {
 	insert: (doc: T) => T | T[] | undefined; // allow Loki to return: undefined or an array

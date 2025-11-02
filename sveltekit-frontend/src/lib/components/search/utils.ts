@@ -1,5 +1,5 @@
 // Utility functions for legal search components
-import type { SearchResult, SearchFilter } from, './types.js';
+import type { SearchResult, SearchFilter } from './types.js';
 
 // Define a common type for the raw search result: object to simplify type assertions
 type RawSearchResult = {

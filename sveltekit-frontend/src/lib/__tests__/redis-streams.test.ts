@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from, 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Import by relative path to avoid alias resolution issues in the test runner
-import * as redisStreams from, '../server/redis-streams';
+import * as redisStreams from '../server/redis-streams';
 describe('redis-streams helpers', () => {
   beforeEach(() => {
     // reset mocks

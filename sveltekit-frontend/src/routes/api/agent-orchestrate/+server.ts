@@ -1,8 +1,8 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { claudeAgent } from, '$lib/ai/claude-agent';
-import { context7Service, autoGenAgent, crewAIAgent, enhancedRAGService } from, '$lib/services/agent-stubs';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { claudeAgent } from '$lib/ai/claude-agent';
+import { context7Service, autoGenAgent, crewAIAgent, enhancedRAGService } from '$lib/services/agent-stubs';
 /*
  * Agent Orchestrator API Endpoint
  * Coordinates multiple AI agents with Context7 MCP integration and auto-fix capabilities
@@ -39,8 +39,8 @@ export interface AgentOrchestrationContext {
   autoFixResults?: AutoFixResults;
   [key: string]: any; //, was: any
 }
-// import { autoGenAgent } from, '../../../../../agents/autogen-agent.js'
-// import { enhancedRAGService } from, '../../../../../rag/enhanced-rag-service.js'
+// import { autoGenAgent } from '../../../../../agents/autogen-agent.js'
+// import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service.js'
 export interface AgentOrchestrationRequest {
   prompt: string;
   context?: AgentOrchestrationContext;

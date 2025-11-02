@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { env } from, '$env/dynamic/public';
+  import { env } from '$env/dynamic/public';
   // Svelte, 5 runes usage (consistent with other components)
   let messages = $state<Array<{ role: 'user' | 'assistant';, text: string }>>([]);
   let input = $state<string>('');

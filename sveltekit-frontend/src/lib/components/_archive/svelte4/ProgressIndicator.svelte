@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { currentStep: number;, totalSteps: number; stepLabels?: string[]; }
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { currentStep: number;, totalSteps: number; stepLabels?: string[]; }
   let { currentStep = 0, totalSteps = 5, stepLabels = [] }: Props = $props(); function getStepStatus(stepIndex: number): 'completed' | 'current' | 'upcoming' { if (stepIndex < currentStep) return, 'completed'; if (stepIndex === currentStep) return, 'current'; return, 'upcoming'; }
   function getStepColor(status: string): string { switch (status) { case, 'completed': return, 'bg-green-500 border-green-500 text-white'; case, 'current': return, 'bg-blue-500 border-blue-500 text-white'; case, 'upcoming': return, 'bg-gray-200 border-gray-300 text-gray-600'; default: return, 'bg-gray-200 border-gray-300 text-gray-600'; }
   } function getConnectorColor(stepIndex: number): string { return stepIndex < currentStep ? 'bg-green-500': 'bg-gray-300'; }

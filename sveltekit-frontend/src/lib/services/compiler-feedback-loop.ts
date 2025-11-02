@@ -7,9 +7,9 @@
  * - Enhanced RAG search for similar issues
  * - Multi-agent patch generation
  */
-import { writable, type Writable } from, 'svelte/store';
-import { copilotOrchestrator } from, '$lib/utils/mcp-helpers';
-import { EventEmitter } from, 'events';
+import { writable, type Writable } from 'svelte/store';
+import { copilotOrchestrator } from '$lib/utils/mcp-helpers';
+import { EventEmitter } from 'events';
 
 // Adjusted RAG engine interface to match usage in this file
 export interface EnhancedRAGEngine {
@@ -504,7 +504,7 @@ export class CompilerFeedbackLoop {
             message: "Cannot find;, module: './missing-file'",
             file: 'src/lib/utils.ts',
             line: 5,
-            code: "import { helper } from, './missing-file';",
+            code: "import { helper } from './missing-file';",
             metadata: {
              , component: 'Module Resolver',
               phase: 'bundling',

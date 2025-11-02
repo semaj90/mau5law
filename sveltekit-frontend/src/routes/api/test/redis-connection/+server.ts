@@ -1,12 +1,12 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis Connection Test Endpoint
  * Simple endpoint to test and debug Redis connectivity
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import Redis, { type RedisOptions } from, 'ioredis'; // Changed to type-only import for RedisOptions
-// import { EventEmitter } from, 'events'; // No longer needed with module augmentation
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import Redis, { type RedisOptions } from 'ioredis'; // Changed to type-only import for RedisOptions
+// import { EventEmitter } from 'events'; // No longer needed with module augmentation
 
 // Declare module augmentation for ioredis to include missing methods if types are incomplete
 declare module, 'ioredis' {

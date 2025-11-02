@@ -1,10 +1,10 @@
-import { json } from, '@sveltejs/kit';
-import { db, sql } from, '$lib/server/db';
-import { cases, evidence, legalDocuments, users } from, '$lib/server/db';
-import { helpers } from, '$lib/server/db';
-import { vectorOps } from, '$lib/server/db/enhanced-vector-operations';
-import type { CommandSearchRequest, CommandSearchResponse } from, '$lib/types/api';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { db, sql } from '$lib/server/db';
+import { cases, evidence, legalDocuments, users } from '$lib/server/db';
+import { helpers } from '$lib/server/db';
+import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
+import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
+import type { RequestHandler } from './$types.js';
 
 type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
 type EvidenceResult = typeof evidence.$inferSelect & {, caseTitle: string | null;, similarity: number;

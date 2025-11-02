@@ -15,10 +15,10 @@
  * - Type-safe implementation
  * - Graceful error handling
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { generateChatResponse } from, '$lib/server/services';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateChatResponse } from '$lib/server/services';
 
 type ChatMessage = { role: 'user' | 'assistant' | 'system';, content: string };
 type ChatSimpleRequest = { messages?: ChatMessage[] } | unknown;

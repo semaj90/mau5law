@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // @ts-nocheck - Emergency TypeScript error suppression
 // ---
 // TYPE GUARD UTILITIES
@@ -13,7 +13,7 @@ import type {
   WorkerMessage,
   WorkerMessageType,
   AITaskType
-} from, '$lib/types';
+} from '$lib/types';
 // Define missing types locally
 type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 interface Evidence { id: string;, type: string;

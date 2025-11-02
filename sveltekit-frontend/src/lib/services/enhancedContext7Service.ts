@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { LegalEntities } from, './legalRAGEngine.js';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { LegalEntities } from './legalRAGEngine.js';
 /**
  * Enhanced Context7 Service with Legal AI Integration
  * Connects to Context7 MCP Server and provides legal-specific functionality

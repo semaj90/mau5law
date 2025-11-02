@@ -2,12 +2,12 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { Button } from, 'bits-ui';
-  import { fade, slide } from, 'svelte/transition';
-  import { writable } from, 'svelte/store';
-  import type { OCRResult } from, '$lib/services/ocr-processor';
+  import { Button } from 'bits-ui';
+  import { fade, slide } from 'svelte/transition';
+  import { writable } from 'svelte/store';
+  import type { OCRResult } from '$lib/services/ocr-processor';
 
   // explicit props (Svelte, 5 safe, TypeScript-friendly)
   const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()

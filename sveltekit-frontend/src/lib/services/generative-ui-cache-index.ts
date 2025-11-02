@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Comprehensive Indexing and Caching System for Generative UI Components
  * Revolutionary system that combines all our advanced AI technologies:
@@ -10,10 +10,10 @@ import type { SearchResult } from, '$lib/types';
  * - Vector embeddings for semantic search
  * - WebGPU acceleration for compute-heavy operations
  */
-import { BitmapHMMSOMPredictor } from, '$lib/ai/bitmap-hmm-som-predictor.js';
-import { QLoRAReinforcementLearningService } from, '$lib/services/qlora-rl-training-service.js';
-import createRedisInstance from, '$lib/server/redis.js';
-import type Redis from, 'ioredis'; // Changed from, 'type IORedis from, 'ioredis';'
+import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
+import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js';
+import createRedisInstance from '$lib/server/redis.js';
+import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';'
 
 // Generative UI component metadata
 export interface UIComponentMetadata { id: string;, type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation';

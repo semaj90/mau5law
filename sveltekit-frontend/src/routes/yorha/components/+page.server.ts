@@ -1,4 +1,4 @@
-import type { PageServerLoad } from, './$types.js';
+import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ url, fetch }) => {
   try {
     // Define YoRHa 3D component specifications for SSR
@@ -127,7 +127,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     // Generate demo code snippets
     const codeSnippets = {
      , button: '<script>,'
-  import { YoRHaButton3D } from, '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaButton3D } from '$lib/components/three/yorha-ui.svelte';
   let buttonConfig = {
     text: 'Execute Command',
     variant: 'primary',
@@ -140,7 +140,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   onclick={() => console.log('YoRHa button clicked')}
 />`,`
       panel: '<script>,'
-  import { YoRHaPanel3D } from, '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaPanel3D } from '$lib/components/three/yorha-ui.svelte';
 </script>
 <YoRHaPanel3D
   title="System Status"
@@ -152,7 +152,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   </div>
 </YoRHaPanel3D>`,`
       input: '<script>,'
-  import { YoRHaInput3D } from, '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaInput3D } from '$lib/components/three/yorha-ui.svelte';
   let inputValue = '';
 </script>
 <YoRHaInput3D
@@ -162,7 +162,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   neuralGlow={true}
 />`,`
       modal: '<script>,'
-  import { YoRHaModal3D } from, '$lib/components/three/yorha-ui.svelte';
+  import { YoRHaModal3D } from '$lib/components/three/yorha-ui.svelte';
   let showModal = $state<boolean>(false);
 </script>
 <YoRHaModal3D

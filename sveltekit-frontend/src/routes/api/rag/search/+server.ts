@@ -1,12 +1,12 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 /*
  * GPU-Accelerated RAG Search API
  * Supports: Ollama GPU + embeddinggemma + Qdrant + pgvector + QUIC/HTTP fallback
  */
-import { db, documents, embeddings } from, '$lib/server/database';
+import { db, documents, embeddings } from '$lib/server/database';
 // Cast the imported DB symbols to `any` for conservative dev-time typing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dbC: any = db as: any;
@@ -14,10 +14,10 @@ const dbC: any = db as: any;
 const documentsC: any = documents as: any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const embeddingsC: any = embeddings, as: any;
-import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration';
-import { fastStringify, fastParse } from, '$lib/utils/fast-json';
-import { desc, eq, sql } from, 'drizzle-orm';
-import { gpuRAGService } from, '$lib/services/gpu-rag-service';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
+import { fastStringify, fastParse } from '$lib/utils/fast-json';
+import { desc, eq, sql } from 'drizzle-orm';
+import { gpuRAGService } from '$lib/services/gpu-rag-service';
 
 // Define the type for a raw search result before final processing
 interface RawSearchResult {

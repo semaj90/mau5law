@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Enhanced RAG from Compressed Glyphs System
  *
@@ -7,9 +7,9 @@ import type { User } from, '$lib/types';
  * cache engine and vector metadata auto-encoder for topology-aware semantic understanding
  * with predictive analytics for optimal content retrieval.
  */
-import { lodCacheEngine, type LODCacheEntry } from, './lod-cache-engine.js';
-import { vectorMetadataAutoEncoder } from, './vector-metadata-auto-encoder.js';
-import { ollamaService } from, '$lib/server/ai/ollama-service.js';
+import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
+import { vectorMetadataAutoEncoder } from './vector-metadata-auto-encoder.js';
+import { ollamaService } from '$lib/server/ai/ollama-service.js';
 // Glyph-based RAG configuration
 interface GlyphRAGConfig {
   glyph_context_window: number; // Number of glyphs to include in context,

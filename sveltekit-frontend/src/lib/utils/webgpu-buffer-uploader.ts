@@ -11,7 +11,7 @@ import {
   BufferTypeGuards,
   createAlignedBuffer,
   copyBufferAligned
-} from, './buffer-conversion.js';
+} from './buffer-conversion.js';
 import {
   quantizeForWebGPU,
   quantizeForLegalAI,
@@ -19,7 +19,7 @@ import {
   type LegalAIProfile,
   type QuantizedData,
   dequantize
-} from, './typed-array-quantization.js';
+} from './typed-array-quantization.js';
 export interface WebGPUBufferUploadOptions {
   usage: GPUBufferUsageFlags;
   quantization?: QuantizationMode | LegalAIProfile;

@@ -12,9 +12,9 @@ import {
   serial,
   uuid,
   real
-} from, "drizzle-orm/pg-core";
-import { relations } from, "drizzle-orm";
-import { users, cases } from, './schema-postgres.js';
+} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { users, cases } from './schema-postgres.js';
 // === REPORTS & DOCUMENTS ===
 export const reports = pgTable("reports", {
   id: uuid("id").primaryKey().defaultRandom(),

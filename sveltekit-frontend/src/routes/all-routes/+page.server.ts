@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { PageServerLoad } from, './$types.js';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
   // Detect logged-in user (locals preferred) or session cookie as fallback

@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Master Service Coordinator Hub
  * Unified integration hub for all, 38 Go microservices with comprehensive error resolution
@@ -11,9 +11,9 @@ import type { Document } from, '$lib/types';
  * - Performance optimization and load balancing
  * - Production-ready deployment management
  */
-import { writable, derived, get } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { goBinaryService } from, './go-binary-integration.js';
+import { writable, derived, get } from 'svelte/store';
+import { browser } from '$app/environment';
+import { goBinaryService } from './go-binary-integration.js';
 
 export interface ServiceDefinition { id: string;, name: string;
   displayName: string;

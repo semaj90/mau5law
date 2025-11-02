@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import { onMount, onDestroy } from, 'svelte';
-  import { fade, scale } from, 'svelte/transition';
+  import { onMount, onDestroy } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
   let loading = $state<boolean>(false);
   let result: any = null;
   let, error: string | null = null;

@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Production Vector Search Testing API
 // Tests vector ranking, reranking, and RAG pipeline integration
-import { vectorRankingService } from, '$lib/services/vector-ranking-service';
-import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline';
+import { vectorRankingService } from '$lib/services/vector-ranking-service';
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 
 // Placeholder imports for missing services
 const legalBERT = { analyzeLegalText: async (_text: string) => ({, entities: [],

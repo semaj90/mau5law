@@ -1,18 +1,18 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Legal Chat API Endpoint
  * Demonstrates Redis List-based chat history with legal AI integration
  * Integrates with Gemma embeddings and CHR-ROM caching
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { legalChatMemory, type ChatMessage, type ConversationContext } from, '$lib/services/chat-memory-service';
-import { cachedVectorSearch } from, '$lib/services/cached-vector-search';
-import { gemmaEmbeddingService } from, '$lib/services/embedding-generator';
-import callOllamaApi from, '$lib/services/ollama-client';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { legalChatMemory, type ChatMessage, type ConversationContext } from '$lib/services/chat-memory-service';
+import { cachedVectorSearch } from '$lib/services/cached-vector-search';
+import { gemmaEmbeddingService } from '$lib/services/embedding-generator';
+import callOllamaApi from '$lib/services/ollama-client';
 // Import the redis orchestrator module as a namespace to tolerate different export shapes
-import * as redisOrchestratorModule from, '$lib/services/redis-orchestrator';
-import type { LegalCategory } from, '$lib/config/legal-priorities';
+import * as redisOrchestratorModule from '$lib/services/redis-orchestrator';
+import type { LegalCategory } from '$lib/config/legal-priorities';
 
 // --- Replace fragile resolution with a safe runtime resolver ---
 const _redisModule = redisOrchestratorModule as: unknown as Record<string, unknown>;

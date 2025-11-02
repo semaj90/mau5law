@@ -1,4 +1,4 @@
-import type { PageServerLoad } from, './$types.js';
+import type { PageServerLoad } from './$types.js';
 
 export interface PageData { systemData: {, activeCases: number;
     evidenceItems: number;

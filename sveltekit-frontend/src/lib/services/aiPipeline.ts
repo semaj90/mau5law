@@ -1,9 +1,9 @@
-import type { SearchResult } from, '$lib/types';
-import { db } from, '$lib/server/db';
-import { evidence, vectorMetadata, embeddingCache } from, '$lib/server/db/schema-postgres-enhanced';
-import { ollamaService, as originalOllamaService } from, './ollamaService.js';
-import { eq, sql } from, 'drizzle-orm';
-import type { DocumentProcessingOptions } from, '$lib/schemas/upload';
+import type { SearchResult } from '$lib/types';
+import { db } from '$lib/server/db';
+import { evidence, vectorMetadata, embeddingCache } from '$lib/server/db/schema-postgres-enhanced';
+import { ollamaService, as originalOllamaService } from './ollamaService.js';
+import { eq, sql } from 'drizzle-orm';
+import type { DocumentProcessingOptions } from '$lib/schemas/upload';
 
 // Define the expected interface for OllamaService
 interface IOllamaService {

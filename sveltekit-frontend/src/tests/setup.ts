@@ -2,9 +2,9 @@
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } from, 'vitest';
-import { config } from, 'dotenv';
-import path from, 'path';
+import { beforeAll, afterAll } from 'vitest';
+import { config } from 'dotenv';
+import path from 'path';
 // Load test environment variables
 config({
   path: path.join(process.cwd(), '.env.test'),
@@ -22,9 +22,9 @@ global.TEST_CONFIG = {
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } from, 'vitest';
-import { config } from, 'dotenv';
-import path from, 'path';
+import { beforeAll, afterAll } from 'vitest';
+import { config } from 'dotenv';
+import path from 'path';
 
 // make TypeScript aware of our test-global
 declare global {

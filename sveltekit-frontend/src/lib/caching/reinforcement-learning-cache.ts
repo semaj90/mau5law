@@ -168,7 +168,7 @@ export class ReinforcementLearningCache {
   // ===============================
   private updateTransitionMatrix(from: string, to: string): void {
     if (!this.componentTransitionMatrix.has(from)) {
-      this.componentTransitionMatrix.set(from, new Map<string, number>());
+      this.componentTransitionMatrix.set(from new Map<string, number>());
     }
     const transitions = this.componentTransitionMatrix.get(from)!;
     const currentCount = transitions.get(to) || 0;

@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 // Minimal stats endpoint: only raw COUNT queries. Returns safe defaults on: any error.
 export const, GET: RequestHandler = async ({ url }) => {

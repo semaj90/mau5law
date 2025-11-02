@@ -1,16 +1,16 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltejs/kit';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
 /*
  * Enhanced Upload API Endpoint - SvelteKit, 2 Production
  * Integrates with Upload service (port 8093) with advanced file processing
  * Supports document analysis, OCR, embedding generation, and metadata extraction
  */
-import { ensureError } from, '$lib/utils/ensure-error';
-import { dev } from, '$app/environment';
-import type { EnhancedUploadRequest, EnhancedUploadResponse, APIRequestContext } from, '$lib/types/api.js';
-import { embeddingService } from, '$lib/server/embedding-service.js';
-import crypto from, 'crypto';
+import { ensureError } from '$lib/utils/ensure-error';
+import { dev } from '$app/environment';
+import type { EnhancedUploadRequest, EnhancedUploadResponse, APIRequestContext } from '$lib/types/api.js';
+import { embeddingService } from '$lib/server/embedding-service.js';
+import crypto from 'crypto';
 
 // Upload Service Configuration
 const UPLOAD_SERVICE_CONFIG = {

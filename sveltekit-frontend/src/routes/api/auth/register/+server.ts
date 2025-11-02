@@ -4,9 +4,9 @@
  * Validates email, password strength, and duplicate accounts
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { authService, auth } from, '$lib/server/auth';
-import { isAuthError, formatErrorResponse } from, '$lib/server/errors';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { authService, auth } from '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from '$lib/server/errors';
 
 interface RegisterRequest { email: string;, password: string;
   firstName?: string;

@@ -3,10 +3,10 @@ import type {
   RAGResponse,
   RAGSearchResult,
   VectorSearchOptions as RAGVectorSearchOptions
-} from, '$lib/types/rag';
-import type { RedisClient } from, '$lib/types/redis';
-import type { EmbeddingService } from, '$lib/services/feedback-loop-service';
-import type { PgDatabase } from, 'drizzle-orm/pg-core'; // Assuming pg-core for PostgreSQL
+} from '$lib/types/rag';
+import type { RedisClient } from '$lib/types/redis';
+import type { EmbeddingService } from '$lib/services/feedback-loop-service';
+import type { PgDatabase } from 'drizzle-orm/pg-core'; // Assuming pg-core for PostgreSQL
 
 // Interface for a generic AI model that can predict
 interface LegalBERTModel {

@@ -16,11 +16,11 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performanceeep Legal Analysis API Endpoint
  * Provides comprehensive legal text analysis using LegalBERT and enhanced processing
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { analyzeLegalText } from, '$lib/services/comprehensive-database-orchestrator';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint } from, '$lib/utils/ollama'; // Import the centralized utility
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { analyzeLegalText } from '$lib/services/comprehensive-database-orchestrator';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the centralized utility
 
 export interface DeepAnalysisRequest {
   text: string;

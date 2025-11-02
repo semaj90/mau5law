@@ -2,11 +2,11 @@
  * 🎯 Pipeline Manager - Orchestrates All Pipeline Services
  */
 // Old static imports removed (they caused: "no exported member" errors)
-// import { optimizedPipeline } from, './optimized-redis-pipeline.js';
-// import { advancedPipeline } from, './advanced-simd-pipeline.js';
-// import { pipeline } from, './end-to-end-pipeline.js';
-import { cudaService } from, './cuda-tensor-service.js';
-import { PipelineVisualizer } from, './pipeline-visualizer.js';
+// import { optimizedPipeline } from './optimized-redis-pipeline.js';
+// import { advancedPipeline } from './advanced-simd-pipeline.js';
+// import { pipeline } from './end-to-end-pipeline.js';
+import { cudaService } from './cuda-tensor-service.js';
+import { PipelineVisualizer } from './pipeline-visualizer.js';
 
 // -----------------------------------------------------------------------------
 // New: explicit interfaces for dynamic pipeline modules

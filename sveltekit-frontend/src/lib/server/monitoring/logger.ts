@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { dev } from, "$app/environment"; /** * Advanced Logging & Performance Monitoring System * For Legal Case Management Application */ export interface LogEntry { timestamp: string;, level: "info" | "warn" | "error" | "debug" | "perf"; message: string; userId?: string; action?: string; metadata?: { [key: string]: any } duration?: number; endpoint?: string; userAgent?: string; ip?: string; }
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import { dev } from "$app/environment"; /** * Advanced Logging & Performance Monitoring System * For Legal Case Management Application */ export interface LogEntry { timestamp: string;, level: "info" | "warn" | "error" | "debug" | "perf"; message: string; userId?: string; action?: string; metadata?: { [key: string]: any } duration?: number; endpoint?: string; userAgent?: string; ip?: string; }
 export interface PerformanceMetrics {, endpoint: string;, method: string; duration: number; timestamp: string; status: number; userId?: string; queryCount?: number; memoryUsage?: number; }
 class AppLogger { private logs: LogEntry[] = []; private, metrics: PerformanceMetrics[] = []; private maxLogs = 10000; private maxMetrics = 5000; /** * Log application events with context */ log(level: LogEntry["level"], message: string, metadata?: Partial<LogEntry>) { const entry: LogEntry = {, timestamp: new Date().toISOString(), level, message, ...metadata }
     this.logs.push(entry); // Keep logs within limit if (this.logs.length > this.maxLogs) { this.logs = this.logs.slice(-this.maxLogs / 2); }

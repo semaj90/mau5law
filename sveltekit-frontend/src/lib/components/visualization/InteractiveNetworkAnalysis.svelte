@@ -4,10 +4,10 @@
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import { browser } from, '$app/environment';
-  import { websocketStore  } from, '$lib/stores/unified';
-  import * as d3 from, 'd3';
+  import { onMount, onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
+  import { websocketStore  } from '$lib/stores/unified';
+  import * as d3 from 'd3';
   interface Props {
     caseId: string;
     evidenceData: any[];

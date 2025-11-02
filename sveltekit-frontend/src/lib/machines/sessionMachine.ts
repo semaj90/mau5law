@@ -1,6 +1,6 @@
 // XState Machine for Session Management with Production Services Integration
-import { createMachine, assign } from, 'xstate';
-import type { User } from, '../stores/auth.svelte.js';
+import { createMachine, assign } from 'xstate';
+import type { User } from '../stores/auth.svelte.js';
 // Session context interface
 export interface SessionContext { user: User | null;, sessionId: string | null;
   expiresAt: Date | null;

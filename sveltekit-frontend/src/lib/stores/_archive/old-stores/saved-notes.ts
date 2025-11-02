@@ -1,5 +1,5 @@
-import { browser } from, '$app/environment';
-import { derived, writable } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { derived, writable } from 'svelte/store';
 
 // Stronger types for the lightweight Fuse fallback
 type FuseKey<T> = { name: keyof T | string; weight?: number };

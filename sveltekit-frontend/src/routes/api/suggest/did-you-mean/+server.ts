@@ -1,11 +1,11 @@
 // Hybrid: "Did You Mean" suggestion endpoint with AI intent prediction
 // Returns lexical (pg_trgm), semantic (pgvector), and AI-enhanced suggestions merged & ranked.
-import type { RequestHandler } from, '@sveltejs/kit'
-import { db } from, '$lib/server/database'; // drizzle instance
-import { getRedisService } from, '$lib/server/redis/redis-service'
-import postgres from, 'postgres'
-import { getEmbedding } from, '$lib/server/services/embedding-service'
-import { userIntentPredictionSystem } from, '$lib/ai/user-intent-prediction-system'
+import type { RequestHandler } from '@sveltejs/kit'
+import { db } from '$lib/server/database'; // drizzle instance
+import { getRedisService } from '$lib/server/redis/redis-service'
+import postgres from 'postgres'
+import { getEmbedding } from '$lib/server/services/embedding-service'
+import { userIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system'
 // NOTE: We fall back to a direct postgres-js client for raw SQL needed for pg_trgm & vector ops
 const sql = (db, as: any).session?.client as ReturnType<typeof postgres> | undefined
 const REDIS_TTL_SECONDS = 600

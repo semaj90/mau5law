@@ -1,13 +1,13 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Enhanced Saved Notes Store - Integrated with Legal AI Platform
  * Features: OCR integration, AI-generated notes, legal citations, embeddings
  */
-import { browser } from, "$app/environment";
-import { derived, writable } from, "svelte/store";
-import { fastParse, fastStringify, createSIMDJSONCache } from, '$lib/utils/simd-json-cache';
-import { createWorkerPool } from, '$lib/workers/legal-ai-worker-pool';
+import { browser } from "$app/environment";
+import { derived, writable } from "svelte/store";
+import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
+import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
 // Enhanced Legal Note Interface
 export interface LegalNote { id: string;, title: string;
   content: string;

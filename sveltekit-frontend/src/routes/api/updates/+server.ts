@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Server-Sent Events API route for SSR-safe real-time updates
-import { createClient } from, 'redis';
+import { createClient } from 'redis';
 
 // SSE connection manager
 class SSEConnectionManager {

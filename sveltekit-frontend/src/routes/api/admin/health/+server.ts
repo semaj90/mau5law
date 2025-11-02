@@ -1,9 +1,9 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * System Health API Endpoint
  */
-import { json } from, '@sveltejs/kit';
-import { rateLimitAPI } from, '$lib/server/monitoring/security';
+import { json } from '@sveltejs/kit';
+import { rateLimitAPI } from '$lib/server/monitoring/security';
 export const GET: RequestHandler = async event => {
   try {
     const { locals, request } = event;

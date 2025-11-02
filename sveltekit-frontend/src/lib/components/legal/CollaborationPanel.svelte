@@ -4,13 +4,13 @@ Real-time collaboration interface for multiple investigators working on evidence
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import  Button  from, "$lib/components/ui/enhanced-bits/Button.svelte";
-  import  Card  from, "$lib/components/ui/enhanced-bits/Card.svelte";
-  import  CardHeader  from, "$lib/components/ui/enhanced-bits/CardHeader.svelte";
-  import  CardTitle  from, "$lib/components/ui/enhanced-bits/CardTitle.svelte";
-  import  CardContent  from, "$lib/components/ui/enhanced-bits/CardContent.svelte";
-  import  Textarea  from, "$lib/components/ui/textarea/Textarea.svelte";
-  import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from, 'lucide-svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
+  import  Card  from "$lib/components/ui/enhanced-bits/Card.svelte";
+  import  CardHeader  from "$lib/components/ui/enhanced-bits/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/enhanced-bits/CardTitle.svelte";
+  import  CardContent  from "$lib/components/ui/enhanced-bits/CardContent.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
+  import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from 'lucide-svelte';
   // --- Type Definitions ---
   interface Position {
     x: number;

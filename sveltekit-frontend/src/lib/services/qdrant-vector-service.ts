@@ -1,10 +1,10 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Qdrant Vector Database Service with Scalar Quantization
  * Integrates: Qdrant + embeddinggemma (768-dim) + Scalar Quantization + Auto-tagging
  */
 
-import { GPU_RAG_CONFIG } from, '$lib/config/gpu-rag-config';
+import { GPU_RAG_CONFIG } from '$lib/config/gpu-rag-config';
 
 export interface QdrantCollectionConfig { name: string;, vectorSize: number;
   distance: 'Cosine' | 'Euclid' | 'Dot';

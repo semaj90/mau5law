@@ -19,9 +19,9 @@
  * Recent Documents API
  * GET /api/ai/document-drafting/recent - Get recently created/modified documents
  */
-import { json } from, '@sveltejs/kit'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     const limit = parseInt(url.searchParams.get('limit') || '10')

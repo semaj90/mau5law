@@ -3,15 +3,15 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- AI Processing, Dashboard - Integration, Demo -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from, 'bits-ui';
-  import  LLMProviderSelector  from, "./LLMProviderSelector.svelte";
-  import { aiServiceWorkerManager, type AITaskResult } from, '$lib/services/aiServiceWorkerManager';
-  import type { LLMProvider } from, '$lib/types/llm';
-  import { fly } from, 'svelte/transition';
+  import { onMount, onDestroy } from 'svelte';
+  import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from 'bits-ui';
+  import  LLMProviderSelector  from "./LLMProviderSelector.svelte";
+  import { aiServiceWorkerManager, type AITaskResult } from '$lib/services/aiServiceWorkerManager';
+  import type { LLMProvider } from '$lib/types/llm';
+  import { fly } from 'svelte/transition';
 
   // Reactive local state (Svelte, 5 runes $state used; kept as simple reactive variables)
   let taskQueue: any[] = [];

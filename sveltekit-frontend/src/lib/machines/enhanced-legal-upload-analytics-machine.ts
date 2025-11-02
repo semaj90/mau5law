@@ -1,7 +1,7 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { createMachine, assign, createActor } from, 'xstate';
-import { z } from, 'zod';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+import { createMachine, assign, createActor } from 'xstate';
+import { z } from 'zod';
 // Enhanced Types for Legal AI Integration
 export interface UploadContext { files: File[];, uploadProgress: number;
   uploadResults: UploadResult[];

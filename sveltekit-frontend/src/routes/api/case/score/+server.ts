@@ -1,10 +1,10 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { caseScoringService } from, '$lib/server/services/CaseScoringService';
-import { cognitiveCache } from, '$lib/server/ai/cache';
-import { runLegalCaseScoringAgent } from, '$lib/server/ai/gemma3-agentic-functions';
-import type { ExtendedCaseScoringRequest } from, '$lib/server/ai/gemma3-agentic-functions';
-import type { CaseScoringRequest, CaseScoringResult } from, '$lib/types/scoring';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { caseScoringService } from '$lib/server/services/CaseScoringService';
+import { cognitiveCache } from '$lib/server/ai/cache';
+import { runLegalCaseScoringAgent } from '$lib/server/ai/gemma3-agentic-functions';
+import type { ExtendedCaseScoringRequest } from '$lib/server/ai/gemma3-agentic-functions';
+import type { CaseScoringRequest, CaseScoringResult } from '$lib/types/scoring';
 
 const CACHE_TTL_SECONDS = 3600;
 

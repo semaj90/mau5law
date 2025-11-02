@@ -1,8 +1,8 @@
 // Predictor statistics and monitoring endpoint
 // Provides real-time metrics for Redis cache and prediction performance
-import { json } from, '@sveltejs/kit'
-import { predictor } from, '$lib/server/chrrom/predictor.js'
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit'
+import { predictor } from '$lib/server/chrrom/predictor.js'
+import type { RequestHandler } from './$types';
 
 interface PredictorStats { lastSync: number;, totalTransitions: number;
   uniqueActions: number;

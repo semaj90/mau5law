@@ -1,6 +1,6 @@
-import type { SearchResult, LLMOutput } from, '$lib/types/sharedTypes';
-import { runGPUInference } from, './embedding';
-import { getFromMemoryCache, setCache } from, '$lib/server/cache';
+import type { SearchResult, LLMOutput } from '$lib/types/sharedTypes';
+import { runGPUInference } from './embedding';
+import { getFromMemoryCache, setCache } from '$lib/server/cache';
 export async function synthesizeNextSteps(query: string, results: SearchResult[]): Promise<LLMOutput> {
   const cacheKey = `synth:${query}`;
   const mem = getFromMemoryCache(cacheKey);

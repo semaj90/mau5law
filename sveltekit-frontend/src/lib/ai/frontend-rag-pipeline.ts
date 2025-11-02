@@ -1,9 +1,9 @@
 // Enhanced Frontend RAG Pipeline with Loki.js, SIMD, and Semantic Synthesis
 // Lightweight text generation with g0llama microservice integration
-import Loki from, 'lokijs';
-import { pipeline, env } from, '@xenova/transformers';
-import type { Pipeline } from, '@xenova/transformers';
-import { browser } from, '$app/environment';
+import Loki from 'lokijs';
+import { pipeline, env } from '@xenova/transformers';
+import type { Pipeline } from '@xenova/transformers';
+import { browser } from '$app/environment';
 // Configure for frontend use
 if (browser) {
   env.allowRemoteModels = $state(false);

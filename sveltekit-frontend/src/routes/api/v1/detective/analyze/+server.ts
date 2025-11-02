@@ -1,4 +1,4 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Detective Mode Analysis API Routes
  * POST /api/v1/detective/analyze - Run detective analysis
@@ -6,10 +6,10 @@ import { cuidSchema } from, '$lib/server/z-schemas';
  * POST /api/v1/detective/patterns - Detect suspicious patterns
  * POST /api/v1/detective/connections - Generate connection maps
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 // Detective analysis request schemas
 const DetectiveAnalysisSchema = z.object({
   caseId: cuidSchema,

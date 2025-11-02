@@ -1,4 +1,4 @@
-import { OLLAMA_URL } from, '$env/static/private'; // Assumes OLLAMA_URL is defined in .env and exposed via SvelteKit's $env/static/private'
+import { OLLAMA_URL } from '$env/static/private'; // Assumes OLLAMA_URL is defined in .env and exposed via SvelteKit's $env/static/private'
 
 const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma3, adjust if your setup uses: 'gemma3-legal' or similar
 

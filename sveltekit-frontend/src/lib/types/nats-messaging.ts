@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import type { Message } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
 /** * Type definitions for NATS Messaging Service */ // Define the union type for message categories export type MessageType = | 'case_management'
   | 'document_processing'
   | 'ai_analysis'

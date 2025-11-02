@@ -1,6 +1,6 @@
-import type { PageServerLoad, Actions } from, './$types.js';
-import { error, fail } from, '@sveltejs/kit';
-import { redisService } from, '$lib/server/redis-service';
+import type { PageServerLoad, Actions } from './$types.js';
+import { error, fail } from '@sveltejs/kit';
+import { redisService } from '$lib/server/redis-service';
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     throw error(401, 'Authentication required');

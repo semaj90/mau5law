@@ -1,9 +1,9 @@
-import type { RequestEvent } from, '@sveltejs/kit';
-import { json } from, '@sveltejs/kit';
-import { cases, evidence, users } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { db } from, '$lib/server/db/index';
-import { getUser } from, '$lib/server/auth'; // use getUser (getUserId does not exist)
+import type { RequestEvent } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { cases, evidence, users } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
+import { getUser } from '$lib/server/auth'; // use getUser (getUserId does not exist)
 
 // replace previous getUserIdFromLocals implementation with a small type-safe helper
 function isRecord(obj: any): obj is Record<string, unknown> {

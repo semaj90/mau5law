@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // simd-json-wrapper.ts - single, minimal development shim
 // Provides a safe JS fallback while the real WebAssembly module is built.
 

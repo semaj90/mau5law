@@ -2,8 +2,8 @@
  * Logout endpoint - invalidate session and clear cookies
  */
 
-import { json, type RequestHandler, redirect } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
+import { json, type RequestHandler, redirect } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
 
 export const POST: RequestHandler = async (event) => {
   try {

@@ -1,11 +1,11 @@
 // Lightweight LokiJS client-side cache for editor drafts.
 // Uses IndexedDB when available; falls back to memory if not.
-import Loki from, 'lokijs';
+import Loki from 'lokijs';
 // NOTE: If you;, installed: "loki-indexed-adapter":
 //   npm i lokijs loki-indexed-adapter
 // …then uncomment the next two lines and use `adapter` below.
 // // @ts-ignore - package has no bundled types
-// import LokiIndexedAdapter from, 'loki-indexed-adapter'
+// import LokiIndexedAdapter from 'loki-indexed-adapter'
 // const adapter = new LokiIndexedAdapter('deeds_local_cache')
 // Interface for documents stored in the editorCache collection
 export interface EditorCacheDocument { reportId: string;, caseId: string;

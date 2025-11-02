@@ -1,21 +1,21 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Enhanced AI Synthesis Orchestrator with Full Stack Integration
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
-import { logger } from, './logger.js';
-import { createHash } from, 'node:crypto';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { pgTable, text, vector, timestamp, json, uuid, integer, boolean } from, 'drizzle-orm/pg-core';
-import type { PoolConfig } from, 'pg';
-import { sql, eq } from, 'drizzle-orm';
-import postgres from, 'postgres';
-import { OllamaEmbeddings, ChatOllama } from, '@langchain/ollama';
-import { Neo4jVectorStore } from, '@langchain/community/vectorstores/neo4j_vector';
-import Redis from, 'ioredis';
-import { PGVectorStore } from, '@langchain/community/vectorstores/pgvector';
-import { AIAssistantInputSynthesizer } from, './ai-assistant-input-synthesizer.js';
-import { legalBERT } from, './legalbert-middleware.js';
-import { monitoringService } from, './monitoring-service.js';
-import { getOllamaEndpoint } from, './endpoints.js'; // Add this import
+import { logger } from './logger.js';
+import { createHash } from 'node:crypto';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { pgTable, text, vector, timestamp, json, uuid, integer, boolean } from 'drizzle-orm/pg-core';
+import type { PoolConfig } from 'pg';
+import { sql, eq } from 'drizzle-orm';
+import postgres from 'postgres';
+import { OllamaEmbeddings, ChatOllama } from '@langchain/ollama';
+import { Neo4jVectorStore } from '@langchain/community/vectorstores/neo4j_vector';
+import Redis from 'ioredis';
+import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
+import { AIAssistantInputSynthesizer } from './ai-assistant-input-synthesizer.js';
+import { legalBERT } from './legalbert-middleware.js';
+import { monitoringService } from './monitoring-service.js';
+import { getOllamaEndpoint } from './endpoints.js'; // Add this import
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -805,7 +805,7 @@ INSTRUCTIONS:
 4. Include: any important caveats or limitations
 5. Recommend next steps or actions if appropriate
 6. Distinguish between legal information and legal advice
-7. Format the response as a single JSON: object. The JSON must have, keys: "summary" (string), "analysis" (string), "detailed_discussion" (string), "recommendations" (array of strings), "caveats" (array of strings), "confidence_score" (integer from, 0 to 100), and, "sources_cited" (array of objects, each with, "title" and, "relevance" properties).
+7. Format the response as a single JSON: object. The JSON must have, keys: "summary" (string), "analysis" (string), "detailed_discussion" (string), "recommendations" (array of strings), "caveats" (array of strings), "confidence_score" (integer from 0 to 100), and, "sources_cited" (array of objects, each with, "title" and, "relevance" properties).
 RESPONSE:`;`
   return prompt;
 }

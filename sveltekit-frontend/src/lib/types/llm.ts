@@ -94,7 +94,7 @@ export interface AgentDefinition {, id: string;, name: string;
 }
 // Temporary AgentConfig type to satisfy references
 export interface AgentConfig extends LLMAgentConfig {
-  [key: string]: any; // Changed from, 'any' to: 'unknown'
+  [key: string]: any; // Changed from 'any' to: 'unknown'
 }
 export interface AgentTool {, id: string;, name: string;
   description: string;

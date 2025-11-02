@@ -1,8 +1,8 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
-import { enhancedRAGService } from, '$lib/services/enhanced-rag-integration.js';
-import { dev } from, '$app/environment';
+import type { RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
+import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js';
+import { dev } from '$app/environment';
 const QuerySchema = z.object({
   query: z.string().min(1).max(2000),
   options: z

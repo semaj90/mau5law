@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * PHASE 30: TS1005 SURGICAL FIX - Ultra-Targeted Punctuation Correction
- * 
+ *
  * Target: 67,514 TS1005 errors (52.6% of total)
  * Expected Impact: -60,000 to -65,000 errors
  * Approach: Context-aware pattern matching with AST validation
- * 
+ *
  * This is the HIGHEST PRIORITY fix - single biggest impact available
  */
 
@@ -29,7 +29,7 @@ const stats = {
 function applyTS1005Fixes(content, filePath) {
   let fixed = content;
   let changes = 0;
-  
+
   // Pattern 1: Object property commas (most common)
   // Before: { name "John" age 30 }
   // After:  { name, "John", age, 30 }
@@ -41,7 +41,7 @@ function applyTS1005Fixes(content, filePath) {
     stats.objectPropertyCommas += (objPropBefore - objPropAfter);
     changes++;
   }
-  
+
   // Pattern 2: Type annotation colons
   // Before: name string
   // After:  name: string
@@ -53,39 +53,39 @@ function applyTS1005Fixes(content, filePath) {
     stats.typeAnnotationColons += (typesBefore - typesAfter);
     changes++;
   }
-  
+
   // Pattern 3: Interface property semicolons
   // Before: interface { name: string id: number }
   // After:  interface { name: string; id: number }
   const lines = fixed.split('\n');
   const fixedLines = [];
   let inInterface = false;
-  
+
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
     const nextLine = lines[i + 1] || '';
-    
+
     // Detect interface/type context
     if (line.match(/^\s*(interface|type)\s+\w+/)) {
       inInterface = true;
     } else if (line.match(/^\s*}\s*$/) && inInterface) {
       inInterface = false;
     }
-    
+
     // Add semicolons to interface properties
     if (inInterface && line.match(/:\s*[^;,{\n]+$/) && nextLine.match(/^\s+\w+:/)) {
       line = line.trimEnd() + ';';
       stats.interfaceSemicolons++;
       changes++;
     }
-    
+
     fixedLines.push(line);
   }
-  
+
   if (changes > 0) {
     fixed = fixedLines.join('\n');
   }
-  
+
   // Pattern 4: Generic parameter commas
   // Before: Map<string number>
   // After:  Map<string, number>
@@ -96,7 +96,7 @@ function applyTS1005Fixes(content, filePath) {
     stats.genericCommas += (genericBefore - genericAfter);
     changes++;
   }
-  
+
   // Pattern 5: Function parameter commas
   // Before: function(a: string b: number)
   // After:  function(a: string, b: number)
@@ -107,7 +107,7 @@ function applyTS1005Fixes(content, filePath) {
     stats.functionParamCommas += (paramBefore - paramAfter);
     changes++;
   }
-  
+
   // Pattern 6: Array element commas
   // Before: [1 2 3]
   // After:  [1, 2, 3]
@@ -119,7 +119,7 @@ function applyTS1005Fixes(content, filePath) {
     stats.arrayElementCommas += (arrayBefore - arrayAfter);
     changes++;
   }
-  
+
   return { fixed, changes };
 }
 
@@ -127,13 +127,13 @@ function processFile(filePath) {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     const { fixed, changes } = applyTS1005Fixes(content, filePath);
-    
+
     stats.filesProcessed++;
-    
+
     if (changes > 0 && fixed !== content) {
       fs.writeFileSync(filePath, fixed, 'utf8');
       stats.filesModified++;
-      
+
       if (stats.filesModified <= 20) {
         console.log(`✅ ${filePath}`);
       }
@@ -152,7 +152,7 @@ console.log(`📁 Found ${files.length} files to process\n`);
 
 files.forEach(processFile);
 
-const totalFixes = 
+const totalFixes =
   stats.objectPropertyCommas +
   stats.typeAnnotationColons +
   stats.interfaceSemicolons +

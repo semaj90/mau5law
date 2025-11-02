@@ -1,7 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from, '$lib/server/db';
-import crypto from, 'crypto';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from '$lib/server/db';
+import crypto from 'crypto';
+import type { RequestHandler } from './$types.js';
+import { getOllamaEndpoint, getQdrantEndpoint } from '$lib/server/config/endpoints'; // Import new helpers
+import { getEmbedding } from '$lib/server/ai/embeddingService'; // Import the new embedding service
 
 // YoRHa Legal Data Management API - Production Ready
 // Enhanced CRUD operations with AI integration, vector search, and production logging
@@ -59,22 +61,27 @@ export const GET: RequestHandler = async ({ url, request }) => {
     // Vector search with Qdrant integration
     if (vectorSearch && search) {
       try {
-        const vectorResponse = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
+        // Convert search query to vector embedding using Ollama
+        const queryVector = await getEmbedding(search);
+
+        const vectorResponse = await fetch(`${getQdrantEndpoint()}/collections/legal_documents/points/search`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json' },'`
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-           , vector: search, // This would need embedding conversion
+            vector: queryVector, // Use the generated embedding
             limit: limit,
             with_payload: true,
-            with_vector: false
-          })
+            with_vector: false,
+          }),
         });
         if (vectorResponse.ok) {
           const vectorData = await vectorResponse.json();
           console.log('Vector search completed', {
             requestId,
-            resultsCount: vectorData.result?.length || 0
+            resultsCount: vectorData.result?.length || 0,
           });
+          // TODO: Integrate vectorData.result into the main data array or filter existing data
+          // A more advanced implementation would merge/prioritize vector search results.
         }
       } catch (error: any) {
         console.warn('Vector search failed', { requestId, error: error.message });
@@ -192,7 +199,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }));
     return json({
       success: true,
-      results: formattedData, // Changed from, 'data' to: 'results' to match frontend expectations;, totalResults: totalCount,
+      results: formattedData, // Changed from 'data' to: 'results' to match frontend expectations
+;, totalResults: totalCount,
       pagination: {
         page,
         limit,
@@ -220,7 +228,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         vectorSearch: vectorSearch ? 'ENABLED' : `DISABLED' }'`
     });
   } catch (error: any) {
-    console.error('YoRHa legal data fetch error:', error);'
+    console.error('YoRHa legal data fetch error:', error);
+'
     return json(
       {
         success: false,
@@ -298,7 +307,8 @@ export const POST: RequestHandler = async ({ request }) => {
       message: `${dataType} created successfully`,
       service: `yorha-legal-data-api' });'`
   } catch (error: any) {
-    console.error('YoRHa legal data creation error:', error);'
+    console.error('YoRHa legal data creation error:', error);
+'
     return json(
       {
         success: false,
@@ -358,7 +368,8 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: `${dataType} updated successfully`,
       service: `yorha-legal-data-api' });'`
   } catch (error: any) {
-    console.error('YoRHa legal data update error:', error);'
+    console.error('YoRHa legal data update error:', error);
+'
     return json(
       {
         success: false,
@@ -396,7 +407,8 @@ export const DELETE: RequestHandler = async ({ request }) => {
       message: `${dataType} deleted successfully`,
       service: `yorha-legal-data-api' });'`
   } catch (error: any) {
-    console.error('YoRHa legal data deletion error:', error);'
+    console.error('YoRHa legal data deletion error:', error);
+'
     return json(
       {
         success: false,

@@ -3,7 +3,7 @@
 // during migration/triage. These are intentionally permissive (`any`) and
 // meant to be replaced with proper types later.
 declare module, 'drizzle-orm' {
-  // Common helpers some files import directly from, 'drizzle-orm'
+  // Common helpers some files import directly from 'drizzle-orm'
   export const desc: any;
   export const asc: any;
   export const db: any;

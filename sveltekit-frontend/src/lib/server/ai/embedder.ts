@@ -1,8 +1,8 @@
-import { cache } from, '../cache/redis.js';
+import { cache } from '../cache/redis.js';
 // add centralized endpoint helper
-import { getOllamaEndpoint } from, './endpoints.js';
-import { OpenAIEmbeddings } from, 'langchain/embeddings/openai';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import { getOllamaEndpoint } from './endpoints.js';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 const EMBEDDING_CONFIG = {
   // useLocal means use the local Ollama-like endpoint when available

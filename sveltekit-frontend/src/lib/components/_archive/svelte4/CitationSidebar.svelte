@@ -2,13 +2,13 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Replace problematic import/namespace usage with a local type alias
-  import type { Citation } from, '$lib/types/api';
+  import type { Citation } from '$lib/types/api';
   type CitationType = Citation;
 
-  import { Copy, Search, Star, Trash2 } from, 'lucide-svelte';
-  import Input from, '$lib/components/ui/Input.svelte';
+  import { Copy, Search, Star, Trash2 } from 'lucide-svelte';
+  import Input from '$lib/components/ui/Input.svelte';
 
   // Props
   const { citations } = $props<{ citations: CitationType[] }>()

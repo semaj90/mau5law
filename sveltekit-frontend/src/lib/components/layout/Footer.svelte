@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { page } from, '$app/stores';
+  import { page } from '$app/stores';
   interface Props {
     variant?: 'full' | 'minimal' | 'demo';
     showQuickLinks?: boolean;

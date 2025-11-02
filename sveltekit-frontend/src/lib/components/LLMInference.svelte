@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { getAvailableModels, runInference } from, '$lib/llm/tauri-llm';
+  import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
   let selectedModel = $state<string>('');
   let prompt = $state<string>('');

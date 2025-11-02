@@ -1,11 +1,11 @@
-import type { Message } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import amqp from, 'amqplib';
-import type { Connection, Channel } from, 'amqplib';
-import { OllamaEmbeddings } from, '@langchain/community/embeddings/ollama';
-import { EventEmitter } from, 'events';
-import { ollamaConfig } from, '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from, '$lib/config/environment.js';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
+import amqp from 'amqplib';
+import type { Connection, Channel } from 'amqplib';
+import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
+import { EventEmitter } from 'events';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 // Import using module syntax to avoid circular dependencies
 const redisServicePromise = import('../redis-service.js').then(m => m.redisService).catch(() => null);
 const lokiRedisPromise = import('$lib/cache/loki-redis-integration.js').then(m => m.lokiRedisCache).catch(() => null);

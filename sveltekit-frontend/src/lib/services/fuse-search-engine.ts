@@ -1,6 +1,6 @@
-import type { SearchResult } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import Fuse from, 'fuse.js'; // Changed to default import import type { IFuseOptions, FuseResult } from, 'fuse.js'; // Added type imports separately import * as orchestrator from, './unified-legal-orchestrator.js'; import type { VectorResult } from, './index.js'; // Import VectorResult for semantic search // Define a minimal interface for LokiCollection-like objects interface LokiCollectionLike { find: () => unknown[]; }
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import Fuse from 'fuse.js'; // Changed to default import import type { IFuseOptions, FuseResult } from 'fuse.js'; // Added type imports separately import * as orchestrator from './unified-legal-orchestrator.js'; import type { VectorResult } from './index.js'; // Import VectorResult for semantic search // Define a minimal interface for LokiCollection-like objects interface LokiCollectionLike { find: () => unknown[]; }
 
 // Define SearchableItem interface export interface SearchableItem { id: string;, title: string; content?: string; description?: string; metadata?: Record<string, unknown> & { case_id?: string; source?: string; priority?: string }; type: 'case' | 'document' | 'evidence' | 'chat' | 'precedent' | string; tags?: string[]; created_at?: string; updated_at?: string; }
 

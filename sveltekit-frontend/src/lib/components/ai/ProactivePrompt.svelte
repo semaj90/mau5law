@@ -4,8 +4,8 @@
   // Export prop callbacks for Svelte consumers (provide safe defaults)
   let { onaccept = (_?: any) => {}, ondismiss = (_?: any) => {}, onquickResponse = (_?: any) => {} } = $props();
   // Use native buttons here to avoid strict typed component event typings
-  import { aiPersonality } from, '$lib/stores/unified";'"
-  import { Clock, Lightbulb, MessageCircle, Sparkles, X } from, "lucide-svelte";
+  import { aiPersonality } from '$lib/stores/unified";'"
+  import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
   // Array of proactive prompts based on context
   const proactivePrompts = [
     "Would you like me to help clarify anything we've discussed?",'

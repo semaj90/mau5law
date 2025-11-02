@@ -4,7 +4,7 @@
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import  NesAuthModal  from, "./NesAuthModal.svelte";
+  import  NesAuthModal  from "./NesAuthModal.svelte";
   interface Props {
     text?: string;
     variant?: 'primary' | 'warning' | 'success' | 'error';

@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { enhancedRAGService } from, '$lib/services/enhanced-rag-integration.js';
-import { dev } from, '$app/environment';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js';
+import { dev } from '$app/environment';
 export const GET: RequestHandler = async () => {
   try {
     if (dev) {

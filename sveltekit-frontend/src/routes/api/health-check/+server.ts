@@ -1,5 +1,5 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import type { RequestHandler } from, './$types.js';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),

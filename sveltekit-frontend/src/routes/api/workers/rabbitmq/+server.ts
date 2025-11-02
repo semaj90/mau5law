@@ -1,15 +1,15 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * RabbitMQ Service Worker API Endpoint
  * Manages the RabbitMQ background processing worker
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import {
   rabbitmqServiceWorker,
   startRabbitMQWorker,
   stopRabbitMQWorker
-} from, '$lib/workers/rabbitmq-service-worker.js';
+} from '$lib/workers/rabbitmq-service-worker.js';
 // The worker module does not export QUEUES in some builds; provide a safe local fallback.
 // Keep keys in sync with other parts of the codebase that expect these names.
 const QUEUES: Record<string, string> = {

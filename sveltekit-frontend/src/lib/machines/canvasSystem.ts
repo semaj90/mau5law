@@ -1,5 +1,5 @@
-import interpret, { createMachine, assign } from, 'xstate';
-import type { CanvasNode, CanvasConnection, InteractiveCanvasState } from, '$lib/types/canvas';
+import interpret, { createMachine, assign } from 'xstate';
+import type { CanvasNode, CanvasConnection, InteractiveCanvasState } from '$lib/types/canvas';
 export interface CanvasContext { nodes: CanvasNode[];, connections: CanvasConnection[];
   selectedNode: string | null;
   draggedNode: string | null;

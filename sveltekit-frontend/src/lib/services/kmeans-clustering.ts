@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 
 /**
  * K-Means Clustering Implementation for Legal Document Analysis
@@ -9,8 +9,8 @@ import {
   KMeansClusterer,
   type ClusterResult,
   type DocumentCluster
-} from, "$lib/api/enhanced-rest-architecture";
-import type { Redis } from, "redis";
+} from "$lib/api/enhanced-rest-architecture";
+import type { Redis } from "redis";
 export class LegalKMeansClusterer extends KMeansClusterer {
   private redis: Redis;
   private centroids: number[][] = [];

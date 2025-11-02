@@ -1,16 +1,16 @@
 <!-- Smart Document Form with, OCR, Auto-Population -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, createEventDispatcher } from, "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   // keep local Button component
-  import  Button  from, "$lib/components/ui/Button.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
   // removed incorrect bits-ui named imports and unused variables
-  import { ocrService, type FormField, type FieldType } from, '$lib/services/ocrService';
+  import { ocrService, type FormField, type FieldType } from '$lib/services/ocrService';
   // removed enhancedRAG (unused)
-  import { fade, scale } from, 'svelte/transition'; // removed fly (unused)
-  import { writable, get } from, 'svelte/store';
+  import { fade, scale } from 'svelte/transition'; // removed fly (unused)
+  import { writable, get } from 'svelte/store';
   // expose props (including optional ondispatch callback)
   let {
     title = "Smart Document Form",

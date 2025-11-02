@@ -1,7 +1,7 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import Search from, 'lucide-svelte';
-  import X from, 'lucide-svelte'; // use default import for X (TS hint suggested this)
+  import Search from 'lucide-svelte';
+  import X from 'lucide-svelte'; // use default import for X (TS hint suggested this)
   // Convert to Svelte, 5 runes pattern
   let { placeholder = 'Search...', value = $bindable(''), debounceTime = 300, onsearch = undefined } = $props();
   let debounceTimer = $state<number | undefined>(undefined);

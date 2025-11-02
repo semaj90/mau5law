@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import { browser } from, '$app/environment';
-import type { MinIOFile } from, './minio-service.js';
+import type { Document } from '$lib/types';
+import { browser } from '$app/environment';
+import type { MinIOFile } from './minio-service.js';
 
 // Define the expected structure for metadata within MinIOFile
 interface ExpectedMinIOMetadata {

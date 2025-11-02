@@ -1,8 +1,8 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { glyphDiffusionService, type GlyphRequest } from, '$lib/services/glyph-diffusion-service.js'
-import { PNGEmbedExtractor, type LegalAIMetadata } from, '$lib/services/png-embed-extractor.js'
-import { grpmoOrchestrator, type ExtendedThinkingStage } from, '$lib/server/db/vector-operations.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js'
+import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js'
+import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations.js'
 /*
  * Glyph Generation API
  *

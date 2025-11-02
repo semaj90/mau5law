@@ -163,8 +163,8 @@ export const ollamaClient = new OllamaClient();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
-import type { User } from, '$lib/types';
- *   import { ollamaClient } from, '$lib/ai/ollama-client';
+import type { User } from '$lib/types';
+ *   import { ollamaClient } from '$lib/ai/ollama-client';
  *
  *   let response = $state<string>('');
  *

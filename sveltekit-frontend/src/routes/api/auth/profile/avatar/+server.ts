@@ -1,16 +1,16 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Avatar upload endpoint - Upload and optimize user profile pictures to MinIO S3
  * Uses separate: 'user-avatars' bucket for profile images
  * Optimizes, images: max 2MB, JPEG/PNG only, scales to 400x400px
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
-import { db } from, '$lib/server/db';
-import { users } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
-import { Client, as MinioClient } from, 'minio';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+import { Client, as MinioClient } from 'minio';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',

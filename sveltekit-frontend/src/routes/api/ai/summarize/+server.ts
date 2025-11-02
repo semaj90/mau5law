@@ -16,14 +16,14 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 /// <reference, types="vite/client" />
-import { json } from, "@sveltejs/kit"
-import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from, '$lib/server/summarizeCache'
-import type { RequestHandler } from, './$types';
+import { json } from "@sveltejs/kit"
+import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from '$lib/server/summarizeCache'
+import type { RequestHandler } from './$types';
 
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import { getOllamaEndpoint } from, '$lib/server/endpoints';
-import { redis } from, '$lib/server/redis';
-import { CONFIG } from, '$lib/config/env.server';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { getOllamaEndpoint } from '$lib/server/endpoints';
+import { redis } from '$lib/server/redis';
+import { CONFIG } from '$lib/config/env.server';
 
 // Enhanced summarization endpoint now supports: streaming, multi-layer caching (Memory + Redis + client IndexedDB hint), structured summaries.
 // Cache strategy: hash(text + salient options) => LRU/TTL memory; write-through to Redis if available; emit clientCacheHint for IndexedDB persistence.

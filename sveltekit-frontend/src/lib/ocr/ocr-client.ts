@@ -1,4 +1,4 @@
-import crypto from, 'crypto';
+import crypto from 'crypto';
 /**
  * Normalised OCR result shared by browser and server callers.
  */

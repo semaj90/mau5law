@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  	import type { HTMLInputAttributes } from, 'svelte/elements';
+  	import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'class' | 'value'> {
   		label?: string;
   		error?: string;

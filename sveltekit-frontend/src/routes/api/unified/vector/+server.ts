@@ -10,8 +10,8 @@
  * - XState workflows
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { unifiedVectorOrchestrator, type UnifiedVectorRequest } from, '$lib/services/unified-vector-orchestrator';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { unifiedVectorOrchestrator, type UnifiedVectorRequest } from '$lib/services/unified-vector-orchestrator';
 
 /**
  * POST /api/unified/vector

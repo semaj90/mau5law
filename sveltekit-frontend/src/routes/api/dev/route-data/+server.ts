@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit'
-import { exec } from, 'child_process'
-import { promisify } from, 'util'
-import path from, 'path'
-import { fileURLToPath } from, 'url'
-import type { RouteDataInput, RouteConfig, FileRoute, EnhancedAnalyticsResult } from, '$lib/types/route-analytics';
+import { json } from '@sveltejs/kit'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import type { RouteDataInput, RouteConfig, FileRoute, EnhancedAnalyticsResult } from '$lib/types/route-analytics';
 
 const execAsync = promisify(exec)
 export async function GET(): Promise<any> {

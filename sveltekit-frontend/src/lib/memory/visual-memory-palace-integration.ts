@@ -3,8 +3,8 @@
  * Combines Nintendo-inspired optimization with cognitive memory techniques
  * Achieves 127:1 compression ratio for legal AI interactions
  */
-import type { LegalDocumentJSON } from, '$lib/wasm/simd-json-wrapper';
-import type { CHRROMPattern } from, '$lib/cache/chr-rom-pattern-cache';
+import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
+import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache';
 export interface MemoryPalaceRoom { id: string;, name: string;
  , visualAnchor: string; // 7-bit compressed visual description,
   documents: string[]; // Document IDs stored in this room

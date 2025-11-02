@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Simple GPU test endpoint without auth dependencies
 export const GET: RequestHandler = async () => {
   return json({

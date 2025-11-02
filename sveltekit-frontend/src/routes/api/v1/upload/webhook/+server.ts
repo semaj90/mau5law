@@ -1,13 +1,13 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * Upload Completion Webhook - MinIO → Ingestion Pipeline Trigger
  * Triggers document processing workflow after successful upload
  */
-import { json } from, '@sveltejs/kit';
-import { redisService } from, '$lib/server/redis-service';
-import db from, '$lib/server/db/unified-client';
-import { evidence } from, '$lib/db/schema';
-import crypto from, 'crypto';
+import { json } from '@sveltejs/kit';
+import { redisService } from '$lib/server/redis-service';
+import db from '$lib/server/db/unified-client';
+import { evidence } from '$lib/db/schema';
+import crypto from 'crypto';
 
 // --- CHANGES START ---
 type RedisTyped = {

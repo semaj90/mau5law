@@ -1,11 +1,11 @@
-import { loginSchema } from, '$lib/schemas/auth';
-import { db, helpers, users } from, '$lib/server/db';
-import { createUserSession, setSessionCookie, verifyPassword } from, '$lib/server/lucia';
-import { fail, redirect } from, '@sveltejs/kit';
-import { message, superValidate } from, 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from, './$types';
+import { loginSchema } from '$lib/schemas/auth';
+import { db, helpers, users } from '$lib/server/db';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
+import { fail, redirect } from '@sveltejs/kit';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 // add this type import to satisfy the TS overload
-import type { ValidationAdapter } from, 'sveltekit-superforms/server';
+import type { ValidationAdapter } from 'sveltekit-superforms/server';
 
 // Replace load to accept the full event and pass it to superValidate
 export const load: PageServerLoad = async event => {

@@ -1,7 +1,7 @@
 <script, lang="ts">
 
-  import { onMount, onDestroy, createEventDispatcher } from, 'svelte';
-  import { fly } from, 'svelte/transition';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { fly } from 'svelte/transition';
   // replaced prop/runtime handling with standard Svelte exports and dispatcher
   const { align } = $props<{ align: 'left' | 'right' }>()
   const { closeOnSelect } = $props<{ closeOnSelect: boolean }>()

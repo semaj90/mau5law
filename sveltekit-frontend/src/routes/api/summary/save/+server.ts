@@ -1,14 +1,14 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * AI Summary Save Endpoint
  * Saves legal AI analysis results to PostgreSQL with audit trail
  */
-import { json } from, '@sveltejs/kit';
-import { getUser } from, '$lib/server/auth';
-import { db } from, '$lib/server/db';
-import { cases, aiAnalyses } from, '$lib/server/db/schema-unified';
-import { eq } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import { getUser } from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import { cases, aiAnalyses } from '$lib/server/db/schema-unified';
+import { eq } from 'drizzle-orm';
 
 export type SourceReference = {
   id?: string;

@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Document Analyzer - Agentic Function Calling for gemma3-legal:latest
  *
@@ -11,9 +11,9 @@ import type { Document } from, '$lib/types';
  * - Agentic function calling to gemma3-legal:latest
  */
 
-import { runAIAgent } from, './agentic';
-import type { AIResponse } from, '$lib/types/ai-workflows';
-import { getOllamaEndpoint } from, './legalbert-middleware';
+import { runAIAgent } from './agentic';
+import type { AIResponse } from '$lib/types/ai-workflows';
+import { getOllamaEndpoint } from './legalbert-middleware';
 
 // ============================================================================
 // Types for Legal Analysis

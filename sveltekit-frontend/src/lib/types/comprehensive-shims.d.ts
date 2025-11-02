@@ -146,13 +146,13 @@ declare module, '$lib/server/messaging/rabbitmq-service' {
   /**
    * Named export map of queue names
    * Example usage:
-   *   import { QUEUES } from, '$lib/server/messaging/rabbitmq-service';
+   *   import { QUEUES } from '$lib/server/messaging/rabbitmq-service';
    */
   export const QUEUES: Record<string, string>;
 
   /**
    * Default export convenience for some import sites
-   *   import QUEUES from, '$lib/server/messaging/rabbitmq-service';
+   *   import QUEUES from '$lib/server/messaging/rabbitmq-service';
    */
   const _default: Record<string, string>;
   export default _default;

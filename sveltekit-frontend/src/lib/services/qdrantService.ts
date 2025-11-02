@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Qdrant Vector Database Service
  * High-performance vector search and auto-tagging integration for SvelteKit.
@@ -9,8 +9,8 @@ import type { Document } from, '$lib/types';
  * It uses the modern, stable API of the Qdrant client for improved type
  * safety, readability, and reliability.
  */
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { writable, type Writable } from, 'svelte/store';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { writable, type Writable } from 'svelte/store';
 
 // --- Local type definitions to replace non-exported `components` usage ---
 // Minimal shape used by this module. Adjust if you later rely on more Qdrant fields.

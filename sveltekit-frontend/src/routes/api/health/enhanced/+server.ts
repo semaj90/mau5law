@@ -2,10 +2,10 @@
  * Enhanced Health Check API
  * Includes migration status, service health, and system metrics
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { DatabaseMigrator } from, '$lib/database/migrations/migration-system';
-import { env } from, '$env/dynamic/private';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { DatabaseMigrator } from '$lib/database/migrations/migration-system';
+import { env } from '$env/dynamic/private';
 export const GET: RequestHandler = async ({ url }) => {
   const detailed = url.searchParams.get('detailed') === 'true';
   const checkMigrations = url.searchParams.get('migrations') !== 'false';

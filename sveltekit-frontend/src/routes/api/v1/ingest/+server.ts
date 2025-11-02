@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { INGEST_SERVICE_URL } from, '$env/static/private';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { INGEST_SERVICE_URL } from '$env/static/private';
+import type { RequestHandler } from './$types.js';
 /*
  * SvelteKit API proxy to Go Ingest Service (port 8227)
  * Integrates with your 37-service architecture

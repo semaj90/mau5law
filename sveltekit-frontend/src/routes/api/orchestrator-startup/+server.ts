@@ -1,6 +1,6 @@
-import orchestrator from, '$lib/services/comprehensive-database-orchestrator';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import orchestrator from '$lib/services/comprehensive-database-orchestrator';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 // Define a type for orchestrator status
 type OrchestratorStatus = {

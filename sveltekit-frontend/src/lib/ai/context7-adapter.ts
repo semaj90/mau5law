@@ -1,7 +1,7 @@
 // Lightweight adapter to expose safe named helpers backed by the context7-wasm selector shim
 // This file provides performContext7Search, context7AgentOrchestrator, and context7SemanticAuditor
 // as small wrappers that work with the real WASM binding or the mock implementation.
-import context7 from, '$lib/integrations/context7-wasm';
+import context7 from '$lib/integrations/context7-wasm';
 export async function ensureContext7Ready(opts?: any): Promise<any> {
   try {
     const impl = await context7;

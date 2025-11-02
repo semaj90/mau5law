@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Advanced Legal RAG Engine with Custom Reranker
  * Integrates with Context7 MCP, Qdrant, PGVector, and Ollama
  */
-import type { QdrantClient } from, '@qdrant/js-client-rest';
-import { context7Service } from, './context7Service.js';
-import { db } from, '$lib/server/db';
-import { legalDocuments } from, '$lib/server/db/schema';
-import { sql } from, 'drizzle-orm'; // NEW: Import sql for pgvector operations
+import type { QdrantClient } from '@qdrant/js-client-rest';
+import { context7Service } from './context7Service.js';
+import { db } from '$lib/server/db';
+import { legalDocuments } from '$lib/server/db/schema';
+import { sql } from 'drizzle-orm'; // NEW: Import sql for pgvector operations
 
 // NEW: Configuration constants for production readiness
 const QDRANT_COLLECTION_NAME = 'legal_documents';

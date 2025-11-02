@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
-import { db } from, '$lib/server/database';
-import { documents, embeddings } from, '$lib/server/db/schema-postgres';
-import { gpuRAGService } from, '$lib/services/gpu-rag-service';
-import { QdrantVectorService } from, '$lib/server/services';
-import { env } from, '$env/dynamic/private';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
+import { db } from '$lib/server/database';
+import { documents, embeddings } from '$lib/server/db/schema-postgres';
+import { gpuRAGService } from '$lib/services/gpu-rag-service';
+import { QdrantVectorService } from '$lib/server/services';
+import { env } from '$env/dynamic/private';
 
 /**
  * OCR Document Upload API with GPU Embedding + Qdrant Integration

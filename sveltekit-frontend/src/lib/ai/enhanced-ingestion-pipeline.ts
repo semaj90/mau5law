@@ -1,21 +1,21 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Enhanced Ingestion Pipeline for Legal AI System
 // Processes legal documents, creates embeddings, and stores in vector database
 // Production Stack: PostgreSQL + pgvector, LangChain, Qdrant, GraphQL, Neo4j, Redis, RabbitMQ
-import { QdrantVectorStore } from, '@langchain/community/vectorstores/qdrant';
-import { PGVectorStore } from, '@langchain/community/vectorstores/pgvector';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import type { Schemas } from, '@qdrant/js-client-rest/dist/types';
-import { cache, cacheSearchResults } from, '$lib/server/cache/redis';
-import neo4j, { type Driver } from, 'neo4j-driver';
-// import { errorHandler } from, "$lib/utils/errorHandler"
+import { QdrantVectorStore } from '@langchain/community/vectorstores/qdrant';
+import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import type { Schemas } from '@qdrant/js-client-rest/dist/types';
+import { cache, cacheSearchResults } from '$lib/server/cache/redis';
+import neo4j, { type Driver } from 'neo4j-driver';
+// import { errorHandler } from "$lib/utils/errorHandler"
 // Fallback error handler for when the module is not available
 const errorHandler = {
   system: (message: string, data?: any) => console.error(`[SYSTEM] ${message}`, data),
   analysis: (message: string, data?: any) => console.error(`[ANALYSIS] ${message}`, data)
 };
-import { resolveLibraryId, getLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
-// import { copilotOrchestrator } from, "$lib/utils/mcp-helpers"
+import { resolveLibraryId, getLibraryDocs } from '$lib/mcp-context72-get-library-docs';
+// import { copilotOrchestrator } from "$lib/utils/mcp-helpers"
 // Mock copilot orchestrator function
 const copilotOrchestrator = async (
   _prompt: string,
@@ -23,11 +23,11 @@ const copilotOrchestrator = async (
 ): Promise<{ selfPrompt: string }> => ({
  , selfPrompt: 'Mock copilot analysis completed'
 });
-import type { DocumentEmbedding } from, './som-rag-system.js';
-import { SelfOrganizingMapRAG } from, './som-rag-system.js';
-import { qdrantService, QdrantService, type SearchResult } from, '$lib/server/services/qdrant-service';
-import pgClient, { poolShim } from, '$lib/server/db-shim';
-import { defaultQuantizer, quantizedToBase64 } from, '$lib/server/optimize/vector-quantization';
+import type { DocumentEmbedding } from './som-rag-system.js';
+import { SelfOrganizingMapRAG } from './som-rag-system.js';
+import { qdrantService, QdrantService, type SearchResult } from '$lib/server/services/qdrant-service';
+import pgClient, { poolShim } from '$lib/server/db-shim';
+import { defaultQuantizer, quantizedToBase64 } from '$lib/server/optimize/vector-quantization';
 // Multimodal Evidence Processing
 export interface MultimodalEvidence { id: string;, type: 'image' | 'video' | 'audio' | 'document' | 'forensic';
   file_path: string;

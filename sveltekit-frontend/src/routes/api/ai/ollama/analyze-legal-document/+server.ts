@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -19,12 +19,12 @@ import type { Document } from, '$lib/types';
  */
 // Production API endpoints for Enhanced Legal Upload Analytics
 // Integrates with Ollama, Drizzle ORM, Lucia Auth, and pgvector
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { db } from, '$lib/server/database';
-import * as auth from, '$lib/server/auth';
-import { nanoid } from, 'nanoid';
-import { createHash } from, 'crypto';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/database';
+import * as auth from '$lib/server/auth';
+import { nanoid } from 'nanoid';
+import { createHash } from 'crypto';
 
 // Minimal local types to satisfy TypeScript (adjust if you have shared auth types to import)
 type AuthSession = {

@@ -5,15 +5,15 @@
  * processes LLM outputs into SVG summaries and vector metadata for enhanced RAG retrieval.
  * Integrates topology-aware predictive analytics for intelligent content prefetching.
  */
-import { simdTextTilingEngine } from, './simd-text-tiling-engine';
-import type { TextEmbeddingResult, CompressedTextTile } from, './simd-text-tiling-engine';
+import { simdTextTilingEngine } from './simd-text-tiling-engine';
+import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine';
 // Import hybrid GPU context for acceleration
-import type { HybridGPUContext } from, '../gpu/hybrid-gpu-context';
+import type { HybridGPUContext } from '../gpu/hybrid-gpu-context';
 // Import advanced GPU context provider and environment configuration
-import { gpuContextProvider, type GPUBackendType, type ShaderResources } from, '../gpu/gpu-context-provider';
-import { gpuVectorProcessor } from, '$lib/gpu/gpu-vector-processor';
-import { telemetryBus } from, '$lib/telemetry/telemetry-bus';
-import { GPU_CONFIG, CLIENT_ENV } from, '../config/env';
+import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../gpu/gpu-context-provider';
+import { gpuVectorProcessor } from '$lib/gpu/gpu-vector-processor';
+import { telemetryBus } from '$lib/telemetry/telemetry-bus';
+import { GPU_CONFIG, CLIENT_ENV } from '../config/env';
 // ================= Additional Explicit Types =================
 // Narrow previously: 'any' usages into explicit interfaces
 interface LODProcessingContext {

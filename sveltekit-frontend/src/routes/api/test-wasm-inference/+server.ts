@@ -1,12 +1,12 @@
-import type { Message } from, '$lib/types';
-import type { RequestHandler } from, './$types';
+import type { Message } from '$lib/types';
+import type { RequestHandler } from './$types';
 /*
  * WebAssembly Inference Test API Endpoint
  * Tests the complete WebAssembly RAG inference pipeline
  */
-import { json } from, '@sveltejs/kit';
-import { wasmInferenceMachine, WASMInferenceRAGService } from, '$lib/services/webasm-inference-rag.js';
-import { RabbitMQXStateIntegration } from, '$lib/messaging/rabbitmq-xstate-integration.js';
+import { json } from '@sveltejs/kit';
+import { wasmInferenceMachine, WASMInferenceRAGService } from '$lib/services/webasm-inference-rag.js';
+import { RabbitMQXStateIntegration } from '$lib/messaging/rabbitmq-xstate-integration.js';
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   console.log('🧠 WebAssembly inference test request received');

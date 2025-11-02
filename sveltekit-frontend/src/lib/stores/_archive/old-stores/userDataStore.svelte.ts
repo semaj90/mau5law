@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * User-Owned Data Store (Svelte 5)
  * Manages all user-specific data: AI assistant history, reports, citations, cases, evidence, etc.
  * Integrates with session store and provides drizzle-orm ready structure
  */
 // Session data is now passed from server via SvelteKit data flow
-import { browser } from, '$app/environment';
-import { formatRelativeTime, formatDetailedTimestamp } from, '$lib/utils/formatting';
+import { browser } from '$app/environment';
+import { formatRelativeTime, formatDetailedTimestamp } from '$lib/utils/formatting';
 // ===== TYPES =====
 export interface UserCase { id: string;, title: string;
   description?: string;

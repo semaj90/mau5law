@@ -21,7 +21,7 @@ declare module, '$lib/schemas/evidence-upload' {
   };
 }
 
-// Also provide a root-level path shim in case some files import from, 'src/lib/schemas/evidence-upload'
+// Also provide a root-level path shim in case some files import from 'src/lib/schemas/evidence-upload'
 declare module, 'src/lib/schemas/evidence-upload' {
   export type VideoMetadata = {
     filename?: string;

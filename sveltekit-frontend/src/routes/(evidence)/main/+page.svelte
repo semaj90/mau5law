@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-  import { page } from, '$app/stores';
+import type { Case } from '$lib/types';
+  import { page } from '$app/stores';
 
   let caseId = $derived($page.url.searchParams.get('caseId') || '');
   let uploadFile = $state<File | null>(null);

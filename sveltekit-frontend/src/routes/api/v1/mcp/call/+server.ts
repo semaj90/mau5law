@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Import MCP Tools
-import * as casesMCP from, '../../../../../lib/mcp/cases.mcp.js';
+import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
 
 // MCP Tool Registry
 const MCP_TOOLS = {

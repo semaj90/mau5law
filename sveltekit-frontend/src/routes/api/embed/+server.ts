@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/db';
-import { documents } from, '$lib/db/schema';
-import crypto from, 'crypto';
-import { getUserId } from, '$lib/server/auth/utils';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/db';
+import { documents } from '$lib/db/schema';
+import crypto from 'crypto';
+import { getUserId } from '$lib/server/auth/utils';
 async function getEmbedding(text: string): Promise<number[]> {
   const response = await fetch('http://localhost:11434/api/embeddings', {
     method: 'POST',

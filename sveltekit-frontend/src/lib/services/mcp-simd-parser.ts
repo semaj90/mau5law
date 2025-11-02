@@ -14,7 +14,7 @@
  * @module mcp-simd-parser
  */
 
-import type { MCPConfig } from, '$lib/types/mcp-config';
+import type { MCPConfig } from '$lib/types/mcp-config';
 
 /**
  * Structured error metadata extracted from diagnostics

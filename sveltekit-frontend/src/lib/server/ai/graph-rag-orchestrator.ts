@@ -1,12 +1,12 @@
 // src/lib/server/ai/graph-rag-orchestrator.ts
-import embed from, '$lib/server/ai/embedder';
-import * as env from, '$env/static/private';
-import { Pool } from, 'pg';
+import embed from '$lib/server/ai/embedder';
+import * as env from '$env/static/private';
+import { Pool } from 'pg';
 // replace fragile import-type with a stable import and derived Driver type
-import neo4j from, 'neo4j-driver';
+import neo4j from 'neo4j-driver';
 import {
   qdrant, // Import the actual qdrant client instance
-} from, '$lib/server/services/qdrant-client';
+} from '$lib/server/services/qdrant-client';
 // --- Environment variables ---
 const NEO4J_URI = env.NEO4J_URI;
 const NEO4J_USER = env.NEO4J_USER;

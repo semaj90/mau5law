@@ -3,15 +3,15 @@
  * Implements intelligent caching for both retrieval results and embeddings
  * Integrates with Nintendo-style memory management and existing infrastructure
  */
-import { Redis } from, 'ioredis';
-import { Pool } from, 'pg';
-import { createHash } from, 'crypto';
-import { NintendoMemoryManager, Priority } from, './nintendo-memory-manager.js';
-import type { LegalDocument, APIResponse } from, '$lib/types';
-// REMOVE: import { getEmbeddingFromOllama } from, '$lib/server/services/ollama-api';
+import { Redis } from 'ioredis';
+import { Pool } from 'pg';
+import { createHash } from 'crypto';
+import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
+import type { LegalDocument, APIResponse } from '$lib/types';
+// REMOVE: import { getEmbeddingFromOllama } from '$lib/server/services/ollama-api';
 
 // ADD: Imports for server-side integration helpers and their types
-import { ollamaEmbed } from, './cached-rag-service.js';
+import { ollamaEmbed } from './cached-rag-service.js';
 
 // Local type matching the shape returned by cached-rag-service's ollamaEmbed'
 // (module does not export this type, so define it locally for compilation)
@@ -20,7 +20,7 @@ type EmbeddingResult = {
 };
 
 // ADD: Imports for external service types from chr-rom-precomputation-service.ts
-import type { UltraJSONParser, WasmClusteringService, NESGPUBridge } from, './chr-rom-precomputation-service.js';
+import type { UltraJSONParser, WasmClusteringService, NESGPUBridge } from './chr-rom-precomputation-service.js';
 
 // Minimal typed adapters for external services referenced by the orchestrator.
 // Fill with concrete implementations / imports when integrating.

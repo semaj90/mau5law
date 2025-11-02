@@ -1,6 +1,6 @@
 /** Performance Monitoring and Metrics Collection Service */
-import { writable, derived } from, 'svelte/store'
-import { browser } from, '$app/environment'
+import { writable, derived } from 'svelte/store'
+import { browser } from '$app/environment'
 
 type Alert = { id: string; severity: 'low'|'medium'|'high'|'critical'; message: string; timestamp: number; component: string }
 

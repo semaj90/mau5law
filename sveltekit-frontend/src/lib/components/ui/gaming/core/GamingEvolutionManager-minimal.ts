@@ -1,7 +1,7 @@
 /**
  * Gaming Evolution Manager - Minimal Working Version
  */
-import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from, '../types/gaming-types-minimal.js';
+import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types-minimal.js';
 export class GamingEvolutionManager {
   private static instance: GamingEvolutionManager | null = null;
   private config: ProgressiveGamingConfig;

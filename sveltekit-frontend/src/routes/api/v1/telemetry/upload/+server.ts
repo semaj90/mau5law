@@ -2,9 +2,9 @@
  * Telemetry Upload API Endpoint
  * Receives and processes structured upload telemetry events
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import type { TelemetryEvent } from, '$lib/services/upload-telemetry-service';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
 interface TelemetryBatch { sessionId: string;, events: TelemetryEvent[];
 }
 interface ProcessedTelemetryStats {, sessionId: string;, eventCount: number;

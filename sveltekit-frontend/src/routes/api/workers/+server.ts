@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Define interfaces for the worker and service
 interface DocumentProcessingWorker { getStats: () => { isRunning: boolean; processedCount: number; failedCount: number; successRate: number };

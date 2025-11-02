@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🤖 AI Assistant for Recommendations
  * Integrates Gemma3 Legal model with recommendation engine
  */
-import type { RequestHandler } from, './$types'
-import { json } from, '@sveltejs/kit'
-import { multiLayerCache } from, '$lib/cache/MultiLayerCacheSystem'
+import type { RequestHandler } from './$types'
+import { json } from '@sveltejs/kit'
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
 interface AIRecommendationRequest {
   context: {
     recentCases?: string[]

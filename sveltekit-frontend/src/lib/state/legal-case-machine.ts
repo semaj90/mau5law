@@ -2,11 +2,11 @@
  * Legal Case Management State Machine
  * Comprehensive XState v5 machine for managing legal case workflows
  */
-import { setup, assign, createActor, fromPromise } from, 'xstate';
-import type { Case, Evidence, NewCase, NewEvidence } from, '../server/db/schema-types.js';
-import { aiSummarizationService } from, '../services/ai-summarization-service.js';
-import { vectorSearchService } from, '../services/vector-search-service.js';
-import { embedText } from, '../server/ai/embedder.js';
+import { setup, assign, createActor, fromPromise } from 'xstate';
+import type { Case, Evidence, NewCase, NewEvidence } from '../server/db/schema-types.js';
+import { aiSummarizationService } from '../services/ai-summarization-service.js';
+import { vectorSearchService } from '../services/vector-search-service.js';
+import { embedText } from '../server/ai/embedder.js';
 // Context types
 export interface LegalCaseContext {
   // Case data

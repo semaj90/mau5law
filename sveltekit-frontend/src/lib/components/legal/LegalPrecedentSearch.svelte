@@ -3,8 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { writable } from, 'svelte/store';
+  import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
   interface LegalPrecedent {
     id: string;
     caseTitle: string;

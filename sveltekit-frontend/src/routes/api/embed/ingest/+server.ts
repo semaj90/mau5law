@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js'
-import { db } from, '$lib/server/database'
-import { vectors, document_chunks } from, '$lib/server/db/schema-postgres'
-import { json, error } from, '@sveltejs/kit'
-import { eq } from, 'drizzle-orm'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/database'
+import { vectors, document_chunks } from '$lib/server/db/schema-postgres'
+import { json, error } from '@sveltejs/kit'
+import { eq } from 'drizzle-orm'
 // Ollama embedding service
 async function generateEmbedding(text: string): Promise<number[]> {
   try {

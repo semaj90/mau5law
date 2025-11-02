@@ -1,10 +1,10 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import type { Snippet } from, 'svelte';
-  import { afterNavigate } from, '$app/navigation';
-  import { browser } from, '$app/environment';
-  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import type { Snippet } from 'svelte';
+  import { afterNavigate } from '$app/navigation';
+  import { browser } from '$app/environment';
+  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
     data?: any;

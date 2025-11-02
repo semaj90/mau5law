@@ -1,9 +1,9 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Analytics Store - User Activity Tracking (Svelte 5)
  * Handles frontend analytics events and backend reporting
  */
-import { browser } from, "$app/environment";
+import { browser } from "$app/environment";
 export interface AnalyticsEvent { id: string;, type: 'page_view' | 'user_action' | 'ai_interaction' | 'document_upload' | 'search' | 'error' | 'performance';
   action: string;
   metadata?: { [key: string]: any }

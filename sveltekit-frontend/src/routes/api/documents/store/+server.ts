@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import type { Document } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Enhanced Document Storage API with MinIO + PostgreSQL + Cognitive Cache
-import { db, getDatabaseHealth } from, '$lib/server/db';
-import { legal_documents } from, '$lib/server/db/schema-postgres';
-import { cognitiveCacheManager } from, '$lib/services/cognitive-cache-integration';
-import { sql } from, 'drizzle-orm';
+import { db, getDatabaseHealth } from '$lib/server/db';
+import { legal_documents } from '$lib/server/db/schema-postgres';
+import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
+import { sql } from 'drizzle-orm';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('[Storage] Processing document storage request...');

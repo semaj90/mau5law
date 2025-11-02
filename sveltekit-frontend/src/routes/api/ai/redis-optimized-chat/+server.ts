@@ -1,13 +1,13 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Redis-Optimized AI Chat Endpoint
  * Example integration showing how to apply Redis orchestrator to existing endpoints
  * This demonstrates the pattern for all other AI endpoints
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import { callOllamaApi } from, '$lib/services/ollama-client';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { callOllamaApi } from '$lib/services/ollama-client';
 /**
  * Original AI Chat Handler (without Redis optimization)
  */

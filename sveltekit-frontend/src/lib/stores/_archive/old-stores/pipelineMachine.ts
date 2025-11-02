@@ -1,6 +1,6 @@
-import { createMachine, assign, type ActorRefFrom } from, 'xstate';
-import { chunkTextByBytes } from, '$lib/utils/chunk';
-import type { PipelineRequest, EmbedResult } from, '$lib/types/pipeline';
+import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { chunkTextByBytes } from '$lib/utils/chunk';
+import type { PipelineRequest, EmbedResult } from '$lib/types/pipeline';
 interface Ctx { docId: string;, model: string;
   total: number;
   completed: number;

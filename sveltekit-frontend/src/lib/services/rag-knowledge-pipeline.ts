@@ -1,4 +1,4 @@
-// import type { Document } from, '$lib/types';
+// import type { Document } from '$lib/types';
 /**
  * 🧠 RAG Knowledge Base Pipeline
  *
@@ -12,12 +12,12 @@
  * - Multi-stage processing: embed → summarize → index → rank
  */
 
-import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
-import { cache } from, '$lib/server/cache/redis';
-import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
-import Fuse from, 'fuse.js';
-import { getOllamaEndpoint } from, '$lib/utils/endpoints';
-// import type { StreamingResult } from, './advanced-simd-pipeline';
+import { vectorService } from '$lib/server/vector/EnhancedVectorService';
+import { cache } from '$lib/server/cache/redis';
+import { LokiEvidenceService } from '$lib/utils/loki-evidence';
+import Fuse from 'fuse.js';
+import { getOllamaEndpoint } from '$lib/utils/endpoints';
+// import type { StreamingResult } from './advanced-simd-pipeline';
 
 // ============================================================================
 // Types & Interfaces
@@ -535,11 +535,11 @@ export class RAGKnowledgePipeline {
     return Math.max(0, Math.min(1, score));
   }
 
-  // =================================================================import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
-import { cache } from, '$lib/server/cache/redis';
-import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
-import Fuse from, 'fuse.js';
-import { getOllamaEndpoint } from, '$lib/utils/endpoints';
+  // =================================================================import { vectorService } from '$lib/server/vector/EnhancedVectorService';
+import { cache } from '$lib/server/cache/redis';
+import { LokiEvidenceService } from '$lib/utils/loki-evidence';
+import Fuse from 'fuse.js';
+import { getOllamaEndpoint } from '$lib/utils/endpoints';
 
 // ============================================================================
 // Types & Interfaces

@@ -1,9 +1,9 @@
 // MinIO Health Check API Endpoint
 // Verifies MinIO connectivity and bucket status
-import { json } from, '@sveltejs/kit';
-import { env } from, '$env/dynamic/private';
-import { Client, as MinIOClient } from, 'minio';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { Client, as MinIOClient } from 'minio';
+import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async () => {
   try {
     const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000';

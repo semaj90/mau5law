@@ -13,9 +13,9 @@
  * PATCH /api/ai/cuda-indexing - Search GPU index
  * PUT /api/ai/cuda-indexing - Batch index operations
  */
-import { json } from, '@sveltejs/kit'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types';
 const CUDA_SERVICE_URL = 'http://localhost:8097'
 const INDEXING_TIMEOUT = 300000; // 5 minutes for large index builds
 interface IndexBuildRequest {, vectors: number[][];, index_type: 'hnsw' | 'ivfpq' | 'flat';

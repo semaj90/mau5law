@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /*
  * Enhanced API Route Example for Bits UI SSR
  * Demonstrates proper data extraction and serialization patterns
  */
-import type { RequestHandler } from, './$types.js'
-import { createSSRResponse, withSSRHandler, batchSSRRequests } from, '$lib/server/api-ssr-helpers'
-import type { DashboardStats, SystemHealth, RecentActivity } from, '$lib/types/api-schemas'
+import type { RequestHandler } from './$types.js'
+import { createSSRResponse, withSSRHandler, batchSSRRequests } from '$lib/server/api-ssr-helpers'
+import type { DashboardStats, SystemHealth, RecentActivity } from '$lib/types/api-schemas'
 export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
   const dataType = url.searchParams.get('type') || 'dashboard'
   switch (dataType) {

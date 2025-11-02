@@ -7,10 +7,10 @@
     Tag,
     Video,
     Search
-  } from, "lucide-svelte";
-  import { quintOut } from, "svelte/easing";
-  import { scale } from, "svelte/transition";
-  import type { Evidence } from, '$lib/types/evidence';
+  } from "lucide-svelte";
+  import { quintOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
+  import type { Evidence } from '$lib/types/evidence';
   // Props
   const { evidence } = $props<{ evidence: Evidence }>()
   const { draggable = true } = $props()

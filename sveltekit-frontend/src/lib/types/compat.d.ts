@@ -23,7 +23,7 @@ declare module, '$lib/server/db/schema-postgres' {
   export default {}, as: unknown;
 }
 declare module, '$lib/server/db/schema-postgres.js' {
-  export * from, '$lib/server/db/schema-postgres';
+  export * from '$lib/server/db/schema-postgres';
 }
 declare module, '$lib/server/db/*' {
   const whatever: any;

@@ -1,4 +1,4 @@
-import { writable, get, type Writable } from, 'svelte/store';
+import { writable, get, type Writable } from 'svelte/store';
 
 // QUIC/HTTP3 Client Service for SvelteKit, 2
 // Eliminates head-of-line blocking for streaming LLM responses

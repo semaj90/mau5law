@@ -1,6 +1,6 @@
-import type { AIResponse } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // 🎯 Global Type Definitions for Svelte, 5 + Legal AI System // Eliminates 800+ type definition errors across the codebase // ===================================================== // CORE COMPONENT INTERFACES // ===================================================== export interface Props { data?: any; children?: import('svelte').Snippet; [key: string]: any; }
 export interface LayoutProps { import('svelte').Snippet; data?: any; }
 export interface PageProps { data: any; form?: any; }

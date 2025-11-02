@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { generateCHRPatterns, type PrecomputeContext } from, '$lib/server/chrrom/patterns';
-import { addClient, removeClient, broadcastPatterns } from, '$lib/server/chrrom/bus';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { generateCHRPatterns, type PrecomputeContext } from '$lib/server/chrrom/patterns';
+import { addClient, removeClient, broadcastPatterns } from '$lib/server/chrrom/bus';
 export const GET: RequestHandler = async () => {
   let client: any;
   const stream = new ReadableStream({

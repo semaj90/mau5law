@@ -1,8 +1,8 @@
 <!-- Public Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import NavBar from, '$lib/components/layout/NavBar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
+  import type { Snippet } from 'svelte';
+  import NavBar from '$lib/components/layout/NavBar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
     data?: any;

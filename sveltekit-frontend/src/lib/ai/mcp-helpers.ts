@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // Context7 MCP Helpers: Production implementation with VS Code Extension Integration
 // Library ID resolution using Context7 MCP server
 // ============================================================================

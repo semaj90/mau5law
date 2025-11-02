@@ -1,16 +1,16 @@
-import type { SearchResult } from, '$lib/types';
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Unified Store Barrel Export with Type Compatibility
  *
  * This file re-exports everything from ./unified/index.ts
  * allowing imports like:
- *   import { aiAssistant } from, '$lib/stores/unified'
+ *   import { aiAssistant } from '$lib/stores/unified'
  */
 
-export * from, './unified/index';
+export * from './unified/index';
 
 /**
  * Compatibility type aliases
@@ -68,10 +68,10 @@ export type POINetwork = Record<string, unknown>;
 export type POIAnalysis = Record<string, unknown>;
 
 // Svelte store utilities
-import { writable, type Readable, get } from, 'svelte/store';
+import { writable, type Readable, get } from 'svelte/store';
 
 // xstate integration (used by helper functions below)
-import xstateIntegration from, '$lib/services/xstate-integration';
+import xstateIntegration from '$lib/services/xstate-integration';
 
 // --- User Store Types and Store ---
 export interface UserStoreState { isLoggedIn: boolean;, id: string | null; // Added: 'id' property to resolve compilation error; name: string | null;

@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
 // Svelte store for real-time AI pipeline updates via WebSocket fan-out
-import { writable, derived } from, "svelte/store";
-import { EventEmitter } from, "events";
+import { writable, derived } from "svelte/store";
+import { EventEmitter } from "events";
 // Local base event interface used throughout pipeline events
 export interface PipelineEventBase { type: string; ts: number; raw: any; [k: string]: any }
 export interface EvidenceUploadEvent extends PipelineEventBase { type: 'evidence.upload' }

@@ -1,14 +1,14 @@
-import { Worker } from, 'worker_threads';
-import { cpus } from, 'os';
-import { EventEmitter } from, 'events';
-import path from, 'path';
-import { generateEmbeddings } from, '$lib/server/services/embedding-service';
+import { Worker } from 'worker_threads';
+import { cpus } from 'os';
+import { EventEmitter } from 'events';
+import path from 'path';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 export type JobType = 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json' | 'other';
 export type Job = { id: string;, type: JobType;
-  payload?: any; // Changed from, 'any' to: 'unknown'
-  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: any }; // Changed from, 'any' to: 'unknown'
+  payload?: any; // Changed from 'any' to: 'unknown'
+  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: any }; // Changed from 'any' to: 'unknown'
 };
-export type JobResult = {, success: boolean; data?: any; error?: string; processingTimeMs?: number }; // Changed from, 'any' to: 'unknown'
+export type JobResult = {, success: boolean; data?: any; error?: string; processingTimeMs?: number }; // Changed from 'any' to: 'unknown'
 // Interface for embedding job payload
 export interface EmbeddingJobPayload {
   texts?: string[];

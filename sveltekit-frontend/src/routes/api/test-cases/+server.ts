@@ -1,20 +1,20 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { db } from, '$lib/server/db';
-import { cases, caseActivities } from, '$lib/server/db/schema';
-import { eq, and, or, desc, count, sql } from, 'drizzle-orm';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { db } from '$lib/server/db';
+import { cases, caseActivities } from '$lib/server/db/schema';
+import { eq, and, or, desc, count, sql } from 'drizzle-orm';
 
 // Provide local aliases to satisfy the rest of the file without relying on specific drizzle exports.
 // Use `unknown` to avoid `any` and keep runtime casts explicit where needed.
 type AnyTable = unknown;
 type AnyColumn = unknown;
 
-import { z } from, 'zod';
-import { getEmbedding } from, '$lib/server/services/embeddingService';
-import type { RequestHandler } from, './$types';
-import { randomUUID, createHash } from, 'crypto';
+import { z } from 'zod';
+import { getEmbedding } from '$lib/server/services/embeddingService';
+import type { RequestHandler } from './$types';
+import { randomUUID, createHash } from 'crypto';
 
 // Remove local: any-typed alias and add a small type-guard helper instead
 // const dbAny = db as: unknown, as: any

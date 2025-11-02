@@ -1,4 +1,4 @@
-import bcrypt from, "bcryptjs";
+import bcrypt from "bcryptjs";
 // Password hashing utilities using bcrypt
 // Salt rounds for bcrypt (higher = more secure but slower)
 const SALT_ROUNDS = 12;

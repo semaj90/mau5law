@@ -1,11 +1,11 @@
 /// <reference, types="vite/client" />
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { z } from, 'zod';
-import { db } from, '$lib/server/db';
-import { getOllamaEndpoint } from, '$lib/server/ollama-utils'; // Import the new utility
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { z } from 'zod';
+import { db } from '$lib/server/db';
+import { getOllamaEndpoint } from '$lib/server/ollama-utils'; // Import the new utility
 // Use concrete type exports from the search types file
-import type { VectorSearchQueryResult, SearchResult } from, '$lib/types/search';
+import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
 
 // Local endpoint-only response types (keeps this handler self-contained)
 type ErrorResponse = { success: false;, error: { message: string; details?: any };

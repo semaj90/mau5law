@@ -1,12 +1,12 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 import {
   cacheService,
   getCachedEmbedding,
   setCachedEmbedding,
   getCachedSearchResults,
   cacheSearchResults
-} from, '$lib/api/services/cache-service';
+} from '$lib/api/services/cache-service';
 /*
  * Cache Test API - Tests Redis compression and functionality
  * GET /api/cache/test - Get cache info and run basic tests

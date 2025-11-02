@@ -1,4 +1,4 @@
-import type { SvelteComponentTyped } from, 'svelte';
+import type { SvelteComponentTyped } from 'svelte';
 
 /**
  * A single dashboard card entry.

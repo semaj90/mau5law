@@ -1,18 +1,18 @@
-import type { Case } from, '$lib/types';
-import { cuidSchema } from, '$lib/server/z-schemas';
-import { redis } from, '$lib/server/redis-client';
-import type { RequestHandler } from, './$types';
+import type { Case } from '$lib/types';
+import { cuidSchema } from '$lib/server/z-schemas';
+import { redis } from '$lib/server/redis-client';
+import type { RequestHandler } from './$types';
 /*
  * JSONB Legal API Endpoints
  *
  * RESTful API for legal metadata operations using optimized JSONB schema.
  */
-import { json, type RequestEvent } from, '@sveltejs/kit';
-import { jsonbLegalService } from, '$lib/services/jsonb-legal-service.js';
-import { logger } from, '$lib/logging/structured-logger.js';
-import { z } from, 'zod';
-import { randomUUID } from, 'crypto';
-import { getRedis } from, '$lib/server/redis.js';
+import { json, type RequestEvent } from '@sveltejs/kit';
+import { jsonbLegalService } from '$lib/services/jsonb-legal-service.js';
+import { logger } from '$lib/logging/structured-logger.js';
+import { z } from 'zod';
+import { randomUUID } from 'crypto';
+import { getRedis } from '$lib/server/redis.js';
 
 // Define interface for the result of evidence chain verification
 interface EvidenceVerificationResult { isValid: boolean;, evidence: {, caseId: string | null;, id: string;

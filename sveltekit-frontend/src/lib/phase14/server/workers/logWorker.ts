@@ -1,8 +1,8 @@
 
-import { Worker } from, 'bullmq';
+import { Worker } from 'bullmq';
 // Orphaned content: // import { logQueue // Missing module
-import { getEmbedding } from, '$lib/server/services/embeddingService'; // You'll create this'
-import { storeLogInVectorDB } from, '$lib/server/services/vectorDBService'; // You'll create this'
+import { getEmbedding } from '$lib/server/services/embeddingService'; // You'll create this'
+import { storeLogInVectorDB } from '$lib/server/services/vectorDBService'; // You'll create this'
 console.log(' Log worker process started.');
 // The worker listens for jobs on the: 'logQueue'
 const worker = new Worker('logQueue', async (job) => {

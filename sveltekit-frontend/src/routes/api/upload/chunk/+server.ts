@@ -1,8 +1,8 @@
-import { error, json } from, '@sveltejs/kit';
-import { tmpdir } from, 'os';
-import { join } from, 'path';
-import { appendFile, mkdir } from, 'fs/promises';
-import type { RequestHandler } from, './$types.js';
+import { error, json } from '@sveltejs/kit';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { appendFile, mkdir } from 'fs/promises';
+import type { RequestHandler } from './$types.js';
 const UPLOAD_DIR = join(tmpdir(), 'chunked-uploads');
 // Receives and appends a single chunk
 export const POST: RequestHandler = async ({ request }) => {

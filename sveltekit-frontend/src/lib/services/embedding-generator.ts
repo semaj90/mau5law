@@ -3,12 +3,12 @@
  * Uses Gemma embeddings with Redis caching for optimal performance
  * Integrates with your Ollama service and CHR-ROM caching architecture
  */
-import { redis } from, '$lib/server/database/redis-client';
-import { callOllamaApi } from, '$lib/services/ollama-client';
-import { chrRomCacheReader } from, '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
-import { createHash } from, 'crypto';
-import type Redis from, 'ioredis'; // added typed Redis import
+import { redis } from '$lib/server/database/redis-client';
+import { callOllamaApi } from '$lib/services/ollama-client';
+import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
+import { createHash } from 'crypto';
+import type Redis from 'ioredis'; // added typed Redis import
 
 const PRIMARY_MODEL = 'embeddinggemma:latest';
 const FALLBACK_MODEL = 'embeddinggemma';

@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import createRedisInstance from, '$lib/server/redis';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import createRedisInstance from '$lib/server/redis';
 
 // Minimal typed shape for the redis client we need here (avoid `any`)
 type RedisClientLike = {

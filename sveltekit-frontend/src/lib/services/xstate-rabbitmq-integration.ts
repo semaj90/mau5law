@@ -13,9 +13,9 @@
  * - Multi-step evidence processing
  */
 
-import { createMachine, createActor, fromPromise, assign } from, 'xstate';
-import { rabbitMQService, type DocumentProcessingJob } from, './rabbitmq-service';
-import type { Connection } from, 'amqplib';
+import { createMachine, createActor, fromPromise, assign } from 'xstate';
+import { rabbitMQService, type DocumentProcessingJob } from './rabbitmq-service';
+import type { Connection } from 'amqplib';
 
 // ============================================================================
 // Types

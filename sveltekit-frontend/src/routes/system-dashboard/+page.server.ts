@@ -1,9 +1,9 @@
-import type { Case } from, '$lib/types';
-import type { ServerLoad, Actions } from, '@sveltejs/kit';
-import { redirect } from, '@sveltejs/kit';
-import { getUserId } from, '$lib/server/auth/utils';
-import pool from, '$lib/server/db/client';
-import { sql } from, 'drizzle-orm';
+import type { Case } from '$lib/types';
+import type { ServerLoad, Actions } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
+import { getUserId } from '$lib/server/auth/utils';
+import pool from '$lib/server/db/client';
+import { sql } from 'drizzle-orm';
 
 // Row types returned by the DB queries
 type CaseRow = { id: string;, title: string;

@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import { browser } from, "$app/environment";
+import type { Case } from '$lib/types';
+import { browser } from "$app/environment";
 /**
  * Advanced data export/utilities for the Detective Mode app
  * Provides secure, comprehensive data management with multiple formats

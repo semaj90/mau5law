@@ -1,6 +1,6 @@
-import { getUserById } from, './db/queries.js'; // import { type, RequestEvent } from, "@sveltejs/kit"
+import { getUserById } from './db/queries.js'; // import { type, RequestEvent } from "@sveltejs/kit"
 // Temporary stub for RequestEvent interface RequestEvent { cookies: { set(name: string, value: string, options?: any): void; delete(name: string, options?: any): void; }
-} import { signJWT, verifyJWT, type JWTPayload } from, './authUtils.js'; // In-memory session store (for development) const sessions = new Map<string, Session>(); export interface Session { id: string;, userId: string; expiresAt: Date; }
+} import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js'; // In-memory session store (for development) const sessions = new Map<string, Session>(); export interface Session { id: string;, userId: string; expiresAt: Date; }
 export interface User {, id: string;, email: string; name: string; role?: string; }
 export async function validateSessionToken(, token: string ): Promise<any> { try { // Try JWT token validation const payload = verifyJWT(token) as JWTPayload | null; if (payload && payload.userId) { const user = await getUserById(payload.userId); if (user) { const session: Session = {, id: token, userId: user.id, expiresAt: new Date(payload.exp * 1000) }
         return { session, user: { ...user, name: user.name || user.firstName || user.email || 'Unknown User'

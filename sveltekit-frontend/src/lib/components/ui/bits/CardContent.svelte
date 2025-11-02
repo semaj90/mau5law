@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { cn } from, '$lib/utils/cn';
+  import { cn } from '$lib/utils/cn';
   interface CardContentProps {
     class?: string;
     children?: import('svelte').Snippet;

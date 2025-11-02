@@ -1,6 +1,6 @@
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // src/lib/types/index.ts
 export interface CanvasState {
   id: string;
@@ -89,7 +89,7 @@ export type {
   // Batch operations
   BatchQueryResult,
   Transaction
-} from, './database';
+} from './database';
 
 // ============================================================================
 // ENDPOINT 2: ADMIN API RESPONSE TYPES
@@ -150,7 +150,7 @@ export type {
   DatabaseMaintenanceResponse,
   CacheClearResponse,
   ServiceRestartResponse
-} from, './admin';
+} from './admin';
 
 // ============================================================================
 // ENDPOINT 3: WORKER/CLUSTER STATE TYPES
@@ -207,15 +207,15 @@ export type {
   ClusterCommandResponse,
   ClusterRestartResponse,
   WorkerScaleResponse
-} from, './cluster';
+} from './cluster';
 
 // Replace wildcard re-export of: './search' (causes duplicate top-level symbols)
-// and keep top-level re-exports from, './api'.
-export * from, './api';
+// and keep top-level re-exports from './api'.
+export * from './api';
 
 // Export the search module as a namespaced export to avoid duplicate top-level exports
-// Usage elsewhere: import type { search } from, '$lib/types'; or `import type { LegalDocument } from, '$lib/types/search'`
-export * as search from, './search';
+// Usage elsewhere: import type { search } from '$lib/types'; or `import type { LegalDocument } from '$lib/types/search'`
+export * as search from './search';
 
 export interface Case {
   // core

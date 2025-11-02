@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * Enhanced RAG API - Direct Integration with Go Microservices
  * Provides seamless integration with Enhanced RAG Go service (port 8094)
  */
-import { json, error } from, '@sveltejs/kit';
-import { ensureError } from, '$lib/utils/ensure-error';
-import { testVectorOperations, hybridSearch, generateSampleEmbedding } from, '$lib/server/db/vector-operations.js';
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
+import { testVectorOperations, hybridSearch, generateSampleEmbedding } from '$lib/server/db/vector-operations.js';
 
 const ENHANCED_RAG_CONFIG = {
   baseUrl: import.meta.env.ENHANCED_RAG_URL || 'http://localhost:8094',

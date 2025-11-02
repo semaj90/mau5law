@@ -12,10 +12,10 @@
 // src/routes/cases/[id]/+page.svelte
 /*
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import { generate } from, '$lib/ai/unified-llama';
-  import { page } from, '$app/stores';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import { generate } from '$lib/ai/unified-llama';
+  import { page } from '$app/stores';
 
   let caseAnalysis = $state<string>('');
   let isAnalyzing = $state<boolean>(false);
@@ -49,9 +49,9 @@ import type { Document } from, '$lib/types';
 
 // src/routes/api/evidence/analyze/+server.ts
 /*
-import { json } from, '@sveltejs/kit';
-import { generate } from, '$lib/ai/unified-llama';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { generate } from '$lib/ai/unified-llama';
+import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
   const { evidenceText, evidenceType } = await request.json();
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
 // src/lib/components/SmartTextEditor.svelte
 /*
 <script, lang="ts">
-  import { generate } from, '$lib/ai/unified-llama';
+  import { generate } from '$lib/ai/unified-llama';
 
   let editorContent = $state<string>('');
   let suggestions = $state<string[]>([]);
@@ -147,9 +147,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // scripts/batch-analyze-documents.ts
 /*
-import { generate } from, '$lib/ai/unified-llama';
-import { promises, as fs } from, 'fs';
-import path from, 'path';
+import { generate } from '$lib/ai/unified-llama';
+import { promises, as fs } from 'fs';
+import path from 'path';
 
 interface DocumentAnalysis { filename: string;, summary: string;
   keyTerms: string[];
@@ -203,7 +203,7 @@ async function batchAnalyzeDocuments(documentsDir: string): Promise<DocumentAnal
 
 // src/lib/utils/citation-extractor.ts
 /*
-import { generate } from, '$lib/ai/unified-llama';
+import { generate } from '$lib/ai/unified-llama';
 
 export interface LegalCitation {
   source: string;
@@ -246,7 +246,7 @@ export async function extractCitations(documentText: string): Promise<LegalCitat
 
 // src/lib/search/query-expander.ts
 /*
-import { generate } from, '$lib/ai/unified-llama';
+import { generate } from '$lib/ai/unified-llama';
 
 export async function expandSearchQuery(originalQuery: string): Promise<string[]> {
   const result = await generate(
@@ -280,7 +280,7 @@ Alternatives (one per line): ','
 
 // src/lib/services/timeline-generator.ts
 /*
-import { generate } from, '$lib/ai/unified-llama';
+import { generate } from '$lib/ai/unified-llama';
 
 interface TimelineEvent { date: string;, description: string;
   significance: string;
@@ -324,7 +324,7 @@ Create a JSON array of timeline events.<|end|>
 
 // src/lib/analysis/evidence-clusterer.ts
 /*
-import { generate } from, '$lib/ai/unified-llama';
+import { generate } from '$lib/ai/unified-llama';
 
 interface EvidenceCluster { theme: string;, evidenceIds: string[];
   description: string;
@@ -382,7 +382,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
 // src/lib/components/SmartForm.svelte
 /*
 <script, lang="ts">
-  import { generate, getCapabilities } from, '$lib/ai/unified-llama';
+  import { generate, getCapabilities } from '$lib/ai/unified-llama';
 
   let fieldValue = $state<string>('');
   let aiSuggestion = $state<string>('');
@@ -428,7 +428,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
 
 // src/lib/utils/reliable-inference.ts
 /*
-import { generate, type GenerateOptions } from, '$lib/ai/unified-llama';
+import { generate, type GenerateOptions } from '$lib/ai/unified-llama';
 
 export async function reliableGenerate(
   prompt: string,

@@ -1,5 +1,5 @@
-import { createClient } from, 'redis';
-import type { RedisClientType } from, 'redis';
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 
 // Derive the client options type from the createClient function parameters.
 // This avoids importing a type that may not be exported across redis package versions.

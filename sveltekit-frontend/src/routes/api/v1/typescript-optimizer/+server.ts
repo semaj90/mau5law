@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // TypeScript Error Optimizer API - Production Integration
 // Integrates with enhanced Go service for GPU-accelerated TypeScript error processing
-import type { AutoSolveRequest, AutoSolveResponse } from, '$lib/types/typescript-optimizer';
+import type { AutoSolveRequest, AutoSolveResponse } from '$lib/types/typescript-optimizer';
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 /* POST /api/v1/typescript-optimizer - Auto-solve TypeScript errors */
 export const, POST: RequestHandler = async ({ request }) => {

@@ -2,12 +2,12 @@
  * @endpoint  POST /api/vector/search
  * @desc      Semantic vector search using Qdrant (with optional Ollama embedding)
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { generateEmbedding, searchSimilarDocuments as findSimilarDocuments } from, '$lib/server/services';
-import { mapErrorToHttp } from, '$lib/server/utils/http-error-mapper';
-import { SearchPayload } from, '$lib/server/utils/vector-schemas';
-import { withValidationAndRate, schemaFor } from, '$lib/server/middleware/validate-and-rate';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { generateEmbedding, searchSimilarDocuments as findSimilarDocuments } from '$lib/server/services';
+import { mapErrorToHttp } from '$lib/server/utils/http-error-mapper';
+import { SearchPayload } from '$lib/server/utils/vector-schemas';
+import { withValidationAndRate, schemaFor } from '$lib/server/middleware/validate-and-rate';
 
 const handler: RequestHandler = async ({ request }) => {
   try {

@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async () => {
   try {
     const { db } = await import('$lib/server/db/drizzle')

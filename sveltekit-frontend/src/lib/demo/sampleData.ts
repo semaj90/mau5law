@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 
 /**
  * Demo Data Generator for Legal AI System Testing

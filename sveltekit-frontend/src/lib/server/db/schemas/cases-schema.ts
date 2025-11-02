@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Cases Database Schema
  *
@@ -8,9 +8,9 @@ import type { Case } from, '$lib/types';
  * - Detective mode state persistence
  * - Citation and reference management
  */
-import { pgTable, text, timestamp, integer, boolean, jsonb, uuid, index, uniqueIndex } from, 'drizzle-orm/pg-core';
-import { relations } from, 'drizzle-orm';
-import { sql } from, 'drizzle-orm';
+import { pgTable, text, timestamp, integer, boolean, jsonb, uuid, index, uniqueIndex } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 // Case Management Tables
 export const cases = pgTable(
   'cases',

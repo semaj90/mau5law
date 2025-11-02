@@ -1,6 +1,6 @@
-import { resolve, dirname } from, 'path';
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from, 'fs';
-import type { ViteDevServer } from, 'vite';
+import { resolve, dirname } from 'path';
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import type { ViteDevServer } from 'vite';
 /**
  * Simple VS Code Error Logger plugin for Vite
  * - Writes a JSON log to .vscode/vite-errors.json

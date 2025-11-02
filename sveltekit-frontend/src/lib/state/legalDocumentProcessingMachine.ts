@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 
 /**
  * Legal Document Processing State Machine
  * XState workflow for comprehensive legal document analysis pipeline
  */
-import { createMachine, assign, type ActorRefFrom } from, 'xstate';
+import { createMachine, assign, type ActorRefFrom } from 'xstate';
 // Orphaned content: import type { LegalDocument, LegalEntities, LegalRAGOptions
-import type { EnhancedContext7Service } from, '$lib/services/enhancedContext7Service';
+import type { EnhancedContext7Service } from '$lib/services/enhancedContext7Service';
 // Orphaned content: import type { QdrantService
 // Context interface for the state machine
 export interface LegalDocumentContext {

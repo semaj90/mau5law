@@ -4,8 +4,8 @@
  * Inspired by llama.cpp architecture with QLoRA adapter support
  * Optimized for legal domain fine-tuned models
  */
-import { qloraTrainer } from, '$lib/services/qlora-reinforcement-learning-trainer';
-import type { Gemma3LegalConfig } from, '$lib/config/gemma3-legal-config';
+import { qloraTrainer } from '$lib/services/qlora-reinforcement-learning-trainer';
+import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
 // WebAssembly Module Interface
 interface QLoRAWasmModule {
   // Model loading

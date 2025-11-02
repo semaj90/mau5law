@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Legal Case Management Types
 
 export interface LegalCase { id: string;, title: string;

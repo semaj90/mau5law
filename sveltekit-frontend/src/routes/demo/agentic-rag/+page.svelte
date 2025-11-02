@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
   /**
    * 🤖 Agentic RAG Demo
    *
@@ -12,8 +12,8 @@ import type { Message } from, '$lib/types';
    * - Tool orchestration
    */
 
-  import Button from, '$lib/components/ui/Button.svelte';
-  import { Bot, Zap, Tool, Database, Search, Upload } from, 'lucide-svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import { Bot, Zap, Tool, Database, Search, Upload } from 'lucide-svelte';
 
   // State using Svelte, 5 runes
   let query = $state<string>('');

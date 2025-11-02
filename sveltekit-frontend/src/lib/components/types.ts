@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 export interface EditableNode { id: string;, x: number;
   y: number;
   width: number;

@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 // Simple env helper
 function getEnv(...keys: string[]): string | undefined {

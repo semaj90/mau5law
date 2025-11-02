@@ -1,4 +1,4 @@
-import { createMachine, assign, interpret } from, 'xstate';
+import { createMachine, assign, interpret } from 'xstate';
 
 export interface SystemMonitorContext {
   // timestamp ms of last user activity

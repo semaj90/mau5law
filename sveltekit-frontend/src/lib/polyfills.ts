@@ -1,6 +1,6 @@
 /// <reference, types="vite/client" />
-import crypto from, "crypto";
-import { URL } from, "url";
+import crypto from "crypto";
+import { URL } from "url";
 // Browser polyfills for Node.js modules and enhanced compatibility
 // This ensures Bits UI, and other dependencies work properly in browser context
 // Global polyfills for Node.js globals

@@ -2,8 +2,8 @@
  * Redis Orchestrator Management API
  * Provides control and monitoring for the Redis-based legal AI optimization system
  */
-import { json, error } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 import {
   RedisLLMCache,
   RedisAgentMemory,
@@ -12,8 +12,8 @@ import {
   type LLMCacheStats,
   type AgentMemoryStats,
   type TaskQueueStats
-} from, '$lib/services/redis-orchestrator'; // Import all necessary components and types
-import { createRedisInstance } from, '$lib/server/redis.js'; // Assuming this exists for general Redis info
+} from '$lib/services/redis-orchestrator'; // Import all necessary components and types
+import { createRedisInstance } from '$lib/server/redis.js'; // Assuming this exists for general Redis info
 
 // Global Redis client for general info, if not already available via the classes
 const redisClient = createRedisInstance({

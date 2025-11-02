@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types.js';
-import { error } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { error } from '@sveltejs/kit';
 // Environment variable for Go GPU server URL (updated to use new inference endpoint)
 const GO_GPU_SERVER_URL = process.env.GO_GPU_SERVER_URL || 'http://localhost:8080/api/v1/inference';
 // Streaming proxy to Go GPU server

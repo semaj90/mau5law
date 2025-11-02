@@ -1,10 +1,10 @@
-import type { SearchResult } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers
  */
-import { dev } from, '$app/environment';
+import { dev } from '$app/environment';
 
 export interface VectorSearchRequest {
   query?: {

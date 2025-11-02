@@ -1,5 +1,5 @@
-import type { AIResponse } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,10 +17,10 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
-import { ollamaService } from, '$lib/server/ai/ollama-service.js'; // Added import
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
+import { ollamaService } from '$lib/server/ai/ollama-service.js'; // Added import
 
 // --- New Interfaces for AI Response ---
 interface Action { type: string;, text: string;

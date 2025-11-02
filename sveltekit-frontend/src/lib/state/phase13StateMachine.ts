@@ -3,8 +3,8 @@
  * Integrates stateless API coordination, real-time PageRank feedback,
  * and Context7 MCP orchestration for advanced legal AI workflows
  */
-// Replace problematic named imports from, 'xstate' with a runtime-safe extraction
-import * as xstate from, 'xstate';
+// Replace problematic named imports from 'xstate' with a runtime-safe extraction
+import * as xstate from 'xstate';
 
 // Safer runtime extraction types (avoid `any`)
 type CreateMachineRuntimeType = (config: any, options?: any) => unknown;
@@ -37,8 +37,8 @@ type CreateMachineFn = <$TContext, $TEvent, extends, EventObject = EventObject>(
 const createMachineTyped = createMachineRuntime as: unknown as CreateMachineFn;
 const assign = assignRuntime, as: unknown as (<$TContext, $TEvent, extends, EventObject = EventObject>(fn: any) => unknown);
 
-import { writable, derived, type Writable, readable, type Readable } from, 'svelte/store';
-import { NeuralSpriteEngine } from, '$lib/engines/neural-sprite-engine';
+import { writable, derived, type Writable, readable, type Readable } from 'svelte/store';
+import { NeuralSpriteEngine } from '$lib/engines/neural-sprite-engine';
 // Enhanced context for Phase, 13 with WebGL vertex streaming
 export interface Phase13Context {
   // Legacy legal form fields

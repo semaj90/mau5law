@@ -1,17 +1,17 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence API Routes with Lucia v3 Authentication
  * GET /api/v1/evidence - List user's evidence (with pagination)'
  * POST /api/v1/evidence - Create new evidence
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
 import {
   EvidenceCRUDService,
   CreateEvidenceSchema,
   type CreateEvidenceData
-} from, '$lib/server/services/user-scoped-crud';
-import { queueEvidenceAnalysis } from, '$lib/server/services/background-job-queue';
-import { z } from, 'zod';
+} from '$lib/server/services/user-scoped-crud';
+import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
+import { z } from 'zod';
 // Query parameters schema for GET requests
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),

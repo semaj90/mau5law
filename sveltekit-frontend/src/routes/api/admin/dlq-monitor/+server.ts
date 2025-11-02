@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { dlqMonitor, JobPriorityManager } from, '$lib/services/rabbitmq-dlq-monitor';
-import { rabbitMQService } from, '$lib/services/rabbitmq-service';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { dlqMonitor, JobPriorityManager } from '$lib/services/rabbitmq-dlq-monitor';
+import { rabbitMQService } from '$lib/services/rabbitmq-service';
 
 /**
  * GET /api/admin/dlq-monitor

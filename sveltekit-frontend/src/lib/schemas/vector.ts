@@ -1,5 +1,5 @@
 // Zod schemas for vector search & RAG endpoints
-import { z } from, 'zod';
+import { z } from 'zod';
 export const vectorSearchRequestSchema = z.object({
   query: z.string().min(1),
   userId: z.string().min(1),

@@ -4,10 +4,10 @@
  * - Falls back to a configured HTTP transcription service (e.g. Ollama or other local API)
  * - Finally falls back to a deterministic, test-friendly stub for CI/Vitest
  */
-import { promises, as fs } from, 'fs';
-import path from, 'path';
-import os from, 'os';
-import { spawnSync } from, 'child_process';
+import { promises, as fs } from 'fs';
+import path from 'path';
+import os from 'os';
+import { spawnSync } from 'child_process';
 
 function getTranscribeApiUrl() {
   return process.env.TRANSCRIBE_API_URL || process.env.OLLAMA_TRANSCRIBE_URL || '';

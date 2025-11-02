@@ -1,10 +1,10 @@
 // Unified Service Orchestrator - Complete Integration Layer
 // Manages all GPU/WASM services, QUIC communication, and system coordination
-import { UnifiedWASMGPUOrchestrator } from, './unified-wasm-gpu-orchestrator.js';
-import { QUICGatewayClient } from, './quic-gateway-client.js';
-import { LlamaCppOllamaService } from, './llamacpp-ollama-integration.js';
-import { NESStyleGPUBridge } from, './nes-gpu-bridge.js';
-// import { dev } from, '$app/environment'; // Commented out due to module resolution issues
+import { UnifiedWASMGPUOrchestrator } from './unified-wasm-gpu-orchestrator.js';
+import { QUICGatewayClient } from './quic-gateway-client.js';
+import { LlamaCppOllamaService } from './llamacpp-ollama-integration.js';
+import { NESStyleGPUBridge } from './nes-gpu-bridge.js';
+// import { dev } from '$app/environment'; // Commented out due to module resolution issues
 const dev = true;
 // Define CanvasState interface locally if not exported
 export interface CanvasState { width: number;, height: number;

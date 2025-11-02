@@ -1,7 +1,7 @@
 // Loki.js based local memory and sync service for enhanced performance
 // Browser environment check
 const browser = typeof window !== 'undefined';
-import Loki from, 'lokijs';
+import Loki from 'lokijs';
 
 // Replace external type imports (which caused namespace/type issues) with local minimal types
 // Minimal Collection<T> shape used by this module

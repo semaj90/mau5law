@@ -2,7 +2,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import  CommandMenu  from, "./CommandMenu.svelte";
+  import  CommandMenu  from "./CommandMenu.svelte";
   interface Props {
     value?: string;
     placeholder?: string;

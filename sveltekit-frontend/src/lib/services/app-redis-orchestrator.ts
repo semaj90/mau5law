@@ -3,9 +3,9 @@
  * Extends the Redis Legal Orchestrator for complete platform integration
  * Implements Nintendo-inspired memory optimization across all legal AI components
  */
-import * as RedisModule from, '$lib/services/redis-orchestrator';
-import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
-import { chrROMCacheReader } from, '$lib/services/chr-rom-cache-reader';
+import * as RedisModule from '$lib/services/redis-orchestrator';
+import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
+import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader';
 
 // Define a small, explicit result shape used by the Redis orchestrator to avoid `any`
 type OrchestratorQueryResult = {

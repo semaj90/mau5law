@@ -8,13 +8,13 @@
  * - Node.js APIs in browser
  * - Legal AI optimizations
  */
-import { browser, dev } from, '$app/environment';
-import { webgpuPolyfill } from, '$lib/webgpu/webgpu-polyfill';
-import { llvmWasmBridge } from, '$lib/wasm/llvm-wasm-bridge';
-import { lokiRedisCache } from, '$lib/cache/loki-redis-integration';
-import type { SvelteKitWASMPolyfill } from, '$lib/types/wasm-types';
-import crypto from, "crypto";
-import { EventEmitter } from, "events";
+import { browser, dev } from '$app/environment';
+import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+import { llvmWasmBridge } from '$lib/wasm/llvm-wasm-bridge';
+import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
+import type { SvelteKitWASMPolyfill } from '$lib/types/wasm-types';
+import crypto from "crypto";
+import { EventEmitter } from "events";
 ;
 // Browser polyfills for Node.js APIs
 export interface NodePolyfills { Buffer: typeof Buffer;, process: typeof process;

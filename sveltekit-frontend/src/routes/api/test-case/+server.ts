@@ -1,9 +1,9 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { cases } from, '$lib/db/schema';
-import type { RequestHandler } from, './$types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { cases } from '$lib/db/schema';
+import type { RequestHandler } from './$types';
 
 // Helper to derive user id from locals (keeps behavior for tests)
 function getUserId(locals: any): string | undefined {

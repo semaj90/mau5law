@@ -2,11 +2,11 @@
  * Full-Text Search API - PostgreSQL + Drizzle ORM + Loki.js
  * Traditional text search with advanced PostgreSQL features
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/db/connection';
-import { legalDocuments } from, '$lib/server/db/schema';
-import { sql, and, or } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/connection';
+import { legalDocuments } from '$lib/server/db/schema';
+import { sql, and, or } from 'drizzle-orm';
 interface FullTextSearchQuery {
   query: string;
   limit?: number;

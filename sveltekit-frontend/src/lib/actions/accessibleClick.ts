@@ -1,4 +1,4 @@
-import type { Action } from, 'svelte/action';
+import type { Action } from 'svelte/action';
 /**
  * Accessible Click Action
  * Makes: any element accessible by adding proper ARIA attributes and keyboard support

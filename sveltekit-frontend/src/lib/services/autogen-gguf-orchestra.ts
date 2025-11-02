@@ -1,13 +1,13 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * AutoGen Orchestra with GGUF Model Integration
  * Multi-agent orchestration using Gemma3-Legal GGUF with GPU acceleration
  */
-import { writable, derived } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { createGGUFRuntime, type GGUFInferenceRequest, type GGUFInferenceResponse } from, './gguf-runtime.js';
-import { flashAttentionMulticoreBridge } from, '$lib/integrations/flashattention-multicore-bridge.js';
+import { writable, derived } from 'svelte/store';
+import { browser } from '$app/environment';
+import { createGGUFRuntime, type GGUFInferenceRequest, type GGUFInferenceResponse } from './gguf-runtime.js';
+import { flashAttentionMulticoreBridge } from '$lib/integrations/flashattention-multicore-bridge.js';
 // Integrates FlashAttention2 for GPU-accelerated attention mechanism in GGUF inference
 export type AgentType =
   | 'USER_PROXY'

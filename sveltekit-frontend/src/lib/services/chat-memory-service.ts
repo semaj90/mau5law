@@ -3,12 +3,12 @@
  * Redis List-based chat history management with CHR-ROM pattern caching
  * Integrates with your Gemma embedding service and NES memory architecture
  */
-import { redis } from, '$lib/server/database/redis-client';
-import { chrRomCacheReader } from, '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
-import { generateEmbedding } from, '$lib/services/embedding-generator';
-import { calculateDocumentPriority, selectMemoryBank, type LegalCategory } from, '$lib/config/legal-priorities';
-import { createHash } from, 'crypto';
+import { redis } from '$lib/server/database/redis-client';
+import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
+import { generateEmbedding } from '$lib/services/embedding-generator';
+import { calculateDocumentPriority, selectMemoryBank, type LegalCategory } from '$lib/config/legal-priorities';
+import { createHash } from 'crypto';
 
 // Chat configuration constants
 const HISTORY_KEY_PREFIX = 'legal_chat_history:';

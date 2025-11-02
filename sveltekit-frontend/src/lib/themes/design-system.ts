@@ -2,8 +2,8 @@
  * 🎨 Enhanced-Bits Design System
  * Gaming-inspired design tokens and theme utilities for Legal AI Platform
  */
-import type { ConsolePalette } from, './retro-console-palettes';
-import { CONSOLE_PALETTES, applyConsolePalette } from, './retro-console-palettes';
+import type { ConsolePalette } from './retro-console-palettes';
+import { CONSOLE_PALETTES, applyConsolePalette } from './retro-console-palettes';
 export interface DesignTokens { spacing: {, xs: string;
     sm: string;
     md: string;

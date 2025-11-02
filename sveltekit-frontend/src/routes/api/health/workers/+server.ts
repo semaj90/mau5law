@@ -2,11 +2,11 @@
  * Worker Health Check API
  * Monitors status of background workers: OCR, Embedding, Legal Analysis
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { createRedisConnection } from, '$lib/server/redis';
-import type { RedisClientType } from, 'redis';
-import amqp from, 'amqplib';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { createRedisConnection } from '$lib/server/redis';
+import type { RedisClientType } from 'redis';
+import amqp from 'amqplib';
 
 interface WorkerStatus { name: string;, status: 'online' | 'offline' | 'degraded';
  , healthy: boolean;

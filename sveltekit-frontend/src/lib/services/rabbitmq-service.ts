@@ -1,6 +1,6 @@
-import { browser } from, '$app/environment'; // keep import safe for client bundling
-import { RABBITMQ_URL } from, '$env/static/private';
-import type { Connection, Channel, Replies, ConsumeMessage } from, 'amqplib';
+import { browser } from '$app/environment'; // keep import safe for client bundling
+import { RABBITMQ_URL } from '$env/static/private';
+import type { Connection, Channel, Replies, ConsumeMessage } from 'amqplib';
 
 // --- TYPES ---
 export interface DocumentProcessingJob { documentId: string;, s3Key: string;

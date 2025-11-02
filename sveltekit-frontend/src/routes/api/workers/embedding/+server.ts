@@ -2,11 +2,11 @@
  * Embedding Worker Management API
  * Controls RabbitMQ embedding workers and job queuing
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { rabbitmqEmbeddingWorker } from, '$lib/workers/rabbitmq-embedding-worker';
-import { rabbitMQService } from, '$lib/services/rabbitmq-connection';
-import { QUEUES } from, '$lib/config/rabbitmq-config';
-import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from, '$lib/workers/rabbitmq-embedding-worker';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { rabbitmqEmbeddingWorker } from '$lib/workers/rabbitmq-embedding-worker';
+import { rabbitMQService } from '$lib/services/rabbitmq-connection';
+import { QUEUES } from '$lib/config/rabbitmq-config';
+import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from '$lib/workers/rabbitmq-embedding-worker';
 // Worker status and control endpoints
 export const GET: RequestHandler = async ({ url }) => {
   try {

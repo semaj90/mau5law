@@ -1,7 +1,7 @@
-import type { InterpreterFrom, StateFrom } from, 'xstate';
-import { set, get as idbGet, keys as idbKeys } from, 'idb-keyval';
-import { systemMonitorMachine } from, '$lib/machines/system-monitor';
-import { interpret } from, 'xstate';
+import type { Interpreterfrom StateFrom } from 'xstate';
+import { set, get as idbGet, keys as idbKeys } from 'idb-keyval';
+import { systemMonitorMachine } from '$lib/machines/system-monitor';
+import { interpret } from 'xstate';
 
 export type LatencyEntry = { ts: number;, latency: number;
   frameDelta?: number;

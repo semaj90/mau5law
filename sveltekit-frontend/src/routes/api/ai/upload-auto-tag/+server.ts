@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,8 +16,8 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 /**
  * Minimal, dependency-safe implementation:
  * - Tries optional $lib/services/aiAutoTagging if present, otherwise falls back to a heuristic tagger

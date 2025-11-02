@@ -1,5 +1,5 @@
-import { db, sql } from, '$lib/server/db';
-import { getEmbeddingViaGate } from, '$lib/server/embedding-gateway';
+import { db, sql } from '$lib/server/db';
+import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 // In-memory cache for embeddings to avoid regenerating
 const embeddingCache = new Map<string, number[]>();
 const cacheMaxSize = 1000;

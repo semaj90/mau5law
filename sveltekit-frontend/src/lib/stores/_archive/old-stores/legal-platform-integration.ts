@@ -1,14 +1,14 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { writable, derived, get } from, 'svelte/store';
-import { createMachine, assign, createActor, fromPromise } from, 'xstate';
-import type { StateFrom } from, 'xstate';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { writable, derived, get } from 'svelte/store';
+import { createMachine, assign, createActor, fromPromise } from 'xstate';
+import type { StateFrom } from 'xstate';
 // Import all three systems
-import { citationsStore, type LegalCitation } from, './legal-citations.js';
-import { reportsStore, type LegalReport } from, './legal-reports.js';
-import { poiStore, type PersonOfInterest } from, './legal-poi.js';
-import { uploadStore } from, './upload-machine.js';
-import { enhancedSavedNotesStore } from, './enhanced-saved-notes.js';
+import { citationsStore, type LegalCitation } from './legal-citations.js';
+import { reportsStore, type LegalReport } from './legal-reports.js';
+import { poiStore, type PersonOfInterest } from './legal-poi.js';
+import { uploadStore } from './upload-machine.js';
+import { enhancedSavedNotesStore } from './enhanced-saved-notes.js';
 // Unified Legal Platform Types
 export interface LegalCase { id: string;, caseNumber: string;
   title: string;

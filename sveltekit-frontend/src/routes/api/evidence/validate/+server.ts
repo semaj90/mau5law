@@ -1,8 +1,8 @@
-import { evidence } from, '$lib/server/db/schema-postgres';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import type { RequestHandler } from, './$types';
-import { eq } from, 'drizzle-orm';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import type { RequestHandler } from './$types';
+import { eq } from 'drizzle-orm';
 
 // Add small type definitions to remove implicit anys and tighten parsing
 type Validation = {

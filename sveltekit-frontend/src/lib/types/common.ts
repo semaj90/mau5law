@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Common TypeScript utility types for the Legal AI platform
  * Reduces need for type assertions and improves type safety

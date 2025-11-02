@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * RAG Document Processing API - Production Ready with MinIO
  *
@@ -21,16 +21,16 @@ import type { Document } from, '$lib/types';
  * - Dual vector indexing (Qdrant + pgvector)
  * - MinIO S3 storage with presigned URLs
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { randomUUID } from, 'node:crypto';
-import pdf from, 'pdf-parse';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { randomUUID } from 'node:crypto';
+import pdf from 'pdf-parse';
 import {
   services,
   generateEmbedding,
   indexDocument,
   generateChatResponse
-} from, '$lib/server/services';
+} from '$lib/server/services';
 
 // MinIO configuration from centralized services
 const getMinIOClient = () => services.minio;

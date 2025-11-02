@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import  Label  from, "$lib/components/ui/Label.svelte";
-  import type { HTMLAttributes } from, 'svelte/elements';
+  import  Label  from "$lib/components/ui/Label.svelte";
+  import type { HTMLAttributes } from 'svelte/elements';
   // Svelte, 5 props pattern - Accept legacy props and map to base Label
   interface Props extends HTMLAttributes<HTMLLabelElement> {
     for?: string;

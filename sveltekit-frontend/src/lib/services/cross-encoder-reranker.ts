@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import type { LegalDocument } from, './types/legal.js';
+import type { SearchResult } from '$lib/types';
+import type { LegalDocument } from './types/legal.js';
 
 export interface SearchResult { document: LegalDocument;, score: number;
   metadata?: { [key: string]: any };

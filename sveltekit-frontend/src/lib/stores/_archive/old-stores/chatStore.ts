@@ -3,7 +3,7 @@
  * Enhanced for Gemma3 Legal AI Integration
  * Optimized for legal document analysis and precedent search
  */
-import { writable, derived, readonly, readable } from, "svelte/store";
+import { writable, derived, readonly, readable } from "svelte/store";
 // === TYPE DEFINITIONS ===
 export interface ChatMessage { id: string;, content: string;
   role: "user" | "assistant" | "system";

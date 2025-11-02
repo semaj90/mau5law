@@ -2,9 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
-  import { onMount, onDestroy } from, 'svelte';
-  import { writable } from, 'svelte/store';
+import type { Document } from '$lib/types';
+  import { onMount, onDestroy } from 'svelte';
+  import { writable } from 'svelte/store';
 
   // Dashboard data store - initialize with safe defaults
   const dashboardData = writable({

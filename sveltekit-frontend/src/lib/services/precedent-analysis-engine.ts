@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Advanced Case Law Precedent Analysis Engine
  *
@@ -17,10 +17,10 @@ import type { Document } from, '$lib/types';
  * - gRPC services for high-performance operations
  * - CUDA acceleration for large-scale analysis
  */
-import { EnhancedAIAnalysisService, as enhancedAIAnalysis } from, './enhanced-ai-analysis.js';
+import { EnhancedAIAnalysisService, as enhancedAIAnalysis } from './enhanced-ai-analysis.js';
 // import type {
 //   LegalDocument
-// } from, './enhanced-ai-analysis.js';
+// } from './enhanced-ai-analysis.js';
 
 // Local definition for LegalDocument as a workaround for missing export
 export interface LegalDocument { id: string;, content: string;

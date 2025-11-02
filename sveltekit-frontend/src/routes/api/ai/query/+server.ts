@@ -1,6 +1,6 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
-import { z } from, 'zod';
-import { json, type RequestHandler } from, '@sveltejs/kit';
+import { cuidSchema } from '$lib/server/z-schemas';
+import { z } from 'zod';
+import { json, type RequestHandler } from '@sveltejs/kit';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -18,9 +18,9 @@ import { json, type RequestHandler } from, '@sveltejs/kit';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from, '$lib/server/services/ai-service.js';
+import { aiService } from '$lib/server/services/ai-service.js';
 
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Define a type for the AI query result to avoid using: 'any'
 type ProcessQueryResult = {

@@ -8,9 +8,9 @@
  *
  * Run: npx tsx src/lib/server/optimize/benchmark.ts
  */
-import { VectorQuantizer, BatchVectorQuantizer } from, './vector-quantization';
-import { defaultQueryCache, vectorSearchCache, ragQueryCache } from, './query-cache';
-import { performance } from, 'perf_hooks';
+import { VectorQuantizer, BatchVectorQuantizer } from './vector-quantization';
+import { defaultQueryCache, vectorSearchCache, ragQueryCache } from './query-cache';
+import { performance } from 'perf_hooks';
 interface BenchmarkResult { name: string;, before: number;
   after: number;
   improvement: number;

@@ -3,8 +3,8 @@
  *
  * Provides detailed statistics about queue performance and message flow
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 /* Helpers: runtime detection and fetch-with-timeout */
 const RABBITMQ_MGMT_HOST = process.env.RABBITMQ_MGMT_HOST ?? 'http://localhost:15672';

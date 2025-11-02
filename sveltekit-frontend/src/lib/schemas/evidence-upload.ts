@@ -2,8 +2,8 @@
  * Evidence Upload Schema with Zod Validation
  * Integrates with Superforms for type-safe file uploads
  */
-import { z } from, 'zod';
-// import type { EvidenceMetadata } from, '$lib/server/db/schema-unified-postgres.js'
+import { z } from 'zod';
+// import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js'
 // Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist'
 export type EvidenceMetadata = {
   source?: string;
@@ -21,7 +21,7 @@ export type EvidenceMetadata = {
   pageCount?: number;
   isEncrypted?: boolean;
   resolution?: { width: number;, height: number };
-  format?: 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown'; // Changed from, 'any'
+  format?: 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown'; // Changed from 'any'
   hasAlphaChannel?: boolean;
   durationSeconds?: number;
   codec?: string;

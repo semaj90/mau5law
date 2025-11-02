@@ -2,12 +2,12 @@
  * WebASM-GPU Bridge for Vector Search
  * Connects WebAssembly inference with GPU acceleration through WebGL/WebGPU
  */
-import type { WebASMInferenceMetrics } from, '$lib/stores/gpu-summary-store';
-import { gpuSummaryStore } from, '$lib/stores/gpu-summary-store';
-import { webASMInferenceService } from, './webasm-inference-service';
+import type { WebASMInferenceMetrics } from '$lib/stores/gpu-summary-store';
+import { gpuSummaryStore } from '$lib/stores/gpu-summary-store';
+import { webASMInferenceService } from './webasm-inference-service';
 
 // use extension-less import so TypeScript/module resolver is not confused
-// import { webASMInferenceService } from, './webasm-inference-service.js';
+// import { webASMInferenceService } from './webasm-inference-service.js';
 
 export interface GPUComputeCapabilities { webgl2: boolean;, webgpu: boolean;
   maxTextureSize: number;

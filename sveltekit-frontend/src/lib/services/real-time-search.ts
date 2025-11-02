@@ -1,7 +1,7 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 // Real-time Legal Search with WebSocket/NATS Integration
 // Optimized for Svelte, 5 and SvelteKit, 2 with bits-ui components
-import { writable, derived, type Writable } from, 'svelte/store';
+import { writable, derived, type Writable } from 'svelte/store';
 
 // WebSocket Service Registry Interface
 interface WSRegistryEntry { name: string;, uuid: string;

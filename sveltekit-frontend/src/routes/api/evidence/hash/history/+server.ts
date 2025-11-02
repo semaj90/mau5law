@@ -1,8 +1,8 @@
-import { evidence, hashVerifications, users } from, '$lib/server/db/schema-postgres';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import type { RequestHandler } from, './$types';
-import { eq, desc } from, 'drizzle-orm';
+import { evidence, hashVerifications, users } from '$lib/server/db/schema-postgres';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import type { RequestHandler } from './$types';
+import { eq, desc } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const auth = (locals as { user?: { id?: string } | null }) ?? {};

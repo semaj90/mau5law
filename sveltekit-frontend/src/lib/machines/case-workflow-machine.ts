@@ -1,10 +1,10 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { createMachine, assign } from, 'xstate';
-import type { DoneInvokeEvent, ActorRefFrom } from, 'xstate';
-import { caseMemoryEngine } from, '../services/case-memory-engine.js';
-import { UnifiedLegalOrchestrator } from, '../services/unified-legal-orchestrator.js';
-// import { rabbitmq } from, '../server/queue/rabbitmq-manager.js'
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { createMachine, assign } from 'xstate';
+import type { DoneInvokeEvent, ActorRefFrom } from 'xstate';
+import { caseMemoryEngine } from '../services/case-memory-engine.js';
+import { UnifiedLegalOrchestrator } from '../services/unified-legal-orchestrator.js';
+// import { rabbitmq } from '../server/queue/rabbitmq-manager.js'
 // --- Small typed adapter so TS knows: 'handle' exists on the orchestrator instance ---
 type OrchestratorHandleInput = {
  , type: string;

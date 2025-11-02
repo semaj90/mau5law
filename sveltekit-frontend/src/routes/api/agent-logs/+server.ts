@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import { librarySyncService } from, '$lib/services/library-sync-service';
-import type { RequestHandler } from, './$types.js';
-import crypto from, 'crypto';
+import { json } from '@sveltejs/kit';
+import { librarySyncService } from '$lib/services/library-sync-service';
+import type { RequestHandler } from './$types.js';
+import crypto from 'crypto';
 
 // helper to safely stringify: unknown errors
 function getErrorMessage(error: any): string {

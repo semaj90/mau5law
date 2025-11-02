@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified Vector Orchestrator - Complete Integration Hub
  * Wires together all vector systems: WebGPU SOM, WebAssembly RAG, PageRank,
@@ -7,20 +7,20 @@ import type { Document } from, '$lib/types';
  *
  * NEW: 512-dim;, embeddinggemma:latest with Hybrid Vector Search (Qdrant + PostgreSQL)
  */
-import { vectorService } from, '$lib/server/vector/vectorService';
-import { webgpuSOMCache } from, './webgpu-som-enhanced-cache.js';
-import { glyphDiffusionService } from, './glyph-diffusion-service.js';
-import { createEnhancedRAGEngine, type RAGResult } from, './enhanced-rag-pagerank.js';
-import { LegalRecommendationEngine, as RecommendationEngine } from, './recommendation-engine.js';
-import * as neo4jServiceImport from, './neo4jGraphService.js';
-import { db } from, '$lib/server/db';
-import { redis } from, '$lib/server/redis';
-import type { MinIOUploadResult } from, '$lib/types/minio';
-import { hybridVectorSearch } from, './hybrid-vector-search';
-import { ragIngestionService } from, './rag-ingestion-pipeline';
-import { publishToQueue } from, '$lib/server/rabbitmq';
-import Fuse from, 'fuse.js';
-import Loki from, 'lokijs';
+import { vectorService } from '$lib/server/vector/vectorService';
+import { webgpuSOMCache } from './webgpu-som-enhanced-cache.js';
+import { glyphDiffusionService } from './glyph-diffusion-service.js';
+import { createEnhancedRAGEngine, type RAGResult } from './enhanced-rag-pagerank.js';
+import { LegalRecommendationEngine, as RecommendationEngine } from './recommendation-engine.js';
+import * as neo4jServiceImport from './neo4jGraphService.js';
+import { db } from '$lib/server/db';
+import { redis } from '$lib/server/redis';
+import type { MinIOUploadResult } from '$lib/types/minio';
+import { hybridVectorSearch } from './hybrid-vector-search';
+import { ragIngestionService } from './rag-ingestion-pipeline';
+import { publishToQueue } from '$lib/server/rabbitmq';
+import Fuse from 'fuse.js';
+import Loki from 'lokijs';
 
 /* Added: lightweight typed interfaces for external services (server-side helpers) */
 type JsonObject = Record<string, unknown>;

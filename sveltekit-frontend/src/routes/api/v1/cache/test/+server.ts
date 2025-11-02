@@ -1,10 +1,10 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * SSR Cache Test API - Verify cache system functionality
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { ssrLegalAPICache } from, '$lib/cache/ssr-legal-api-cache.js';
-import { parallelCacheOrchestrator } from, '$lib/cache/parallel-cache-orchestrator.js';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { ssrLegalAPICache } from '$lib/cache/ssr-legal-api-cache.js';
+import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 
 type CacheResultItem = { source?: string; data?: any };
 type BasicCacheResult = {

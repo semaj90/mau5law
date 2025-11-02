@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import Fuse from, 'fuse.js';
-import { get, as idbGet, set as idbSet } from, 'idb-keyval';
+import type { Document } from '$lib/types';
+import Fuse from 'fuse.js';
+import { get, as idbGet, set as idbSet } from 'idb-keyval';
 export interface LocalLegalDoc { id: string;, title: string;
   content?: string;
   type?: string;

@@ -1,10 +1,10 @@
-import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from, './comprehensive-agent-orchestration.js';
+import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration.js';
 /*
  * FlashAttention2 + Context7 Multicore Bridge Integration
  * Optimized for RTX, 3060 Ti with legal AI processing
  */
-import { getContext7MulticoreService } from, './context7-multicore.js';
-import { flashAttention2Service, type LegalContextAnalysis } from, '$lib/services/flashattention2-rtx3060.js';
+import { getContext7MulticoreService } from './context7-multicore.js';
+import { flashAttention2Service, type LegalContextAnalysis } from '$lib/services/flashattention2-rtx3060.js';
 // Define MulticoreSystemStatus locally as it's not exported from its module'
 interface MulticoreSystemStatus { workers: Array<{ id: string; status: string;, tasks: number }>; // Minimal definition based on usage
   // Add other properties if known from context7-multicore.js

@@ -1,7 +1,7 @@
 declare module, 'bits-ui' {
   // Minimal ambient declarations for bits-ui used during development.
   // Use Svelte's SvelteComponentTyped constructor shape to avoid `any` ESLint/TS warnings.'
-  import type { SvelteComponentTyped } from, 'svelte';
+  import type { SvelteComponentTyped } from 'svelte';
   type ComponentCtor = new (...args: any[]) => SvelteComponentTyped<unknown, unknown, unknown>;
   export const Dialog: ComponentCtor;
   export const Button: ComponentCtor;

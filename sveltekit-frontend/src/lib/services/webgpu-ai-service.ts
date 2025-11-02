@@ -4,7 +4,7 @@
  * Manages WebGPU-CUDA bridge service worker for AI processing tasks
  * Provides high-level interface for legal AI operations
  */
-import type { Case, Evidence, Citation } from, '$lib/server/db/schemas/cases-schema.js';
+import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
 
 interface AIProcessingTask { id: string;, type: 'legal-analysis' | 'evidence-review' | 'citation-verification' | 'pattern-detection' | 'document-processing';
   data: any;

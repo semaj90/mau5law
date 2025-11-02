@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * @file Defines a data structure for routing cognitive tasks based on multiple dimensions.
  * This is a server-only module with: '.server.ts' extension.

@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { LegalAIApiClient } from, '$lib/services/api-client';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { LegalAIApiClient } from '$lib/services/api-client';
 interface PipelineTestResult { step: string;, status: 'success' | 'error' | 'skipped';
   message: string;
   data?: any;

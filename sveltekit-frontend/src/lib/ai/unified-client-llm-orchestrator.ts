@@ -10,8 +10,8 @@
  *
  * Optimizes GPU memory switching, DDR RAM caching, and parallel inference
  */
-import { parallelCacheOrchestrator } from, '$lib/cache/parallel-cache-orchestrator.js';
-import { browser } from, '$app/environment';
+import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
+import { browser } from '$app/environment';
 export interface ClientLLMRequest { id: string;, prompt: string;
   task: 'chat' | 'legal_analysis' | 'context_switch' | 'embedding' | 'rl_training';
   priority: 'low' | 'normal' | 'high' | 'realtime';

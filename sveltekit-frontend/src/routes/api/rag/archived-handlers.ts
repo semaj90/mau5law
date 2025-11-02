@@ -1,11 +1,11 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /// <reference, types="vite/client" />
-import crypto from, 'crypto';
-import { json, error } from, '@sveltejs/kit';
+import crypto from 'crypto';
+import { json, error } from '@sveltejs/kit';
 // Archived non-essential handlers preserved for reference/reuse
 // Moved out of +server.ts to keep the active endpoint lean and focused.
-import { librarySyncService } from, '$lib/services/library-sync-service';
+import { librarySyncService } from '$lib/services/library-sync-service';
 // TODO: Fix import - // Orphaned;, content: import { error, json  // Local copy of backend config and forwarder to keep this module self-contained
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:8000';
 const RAG_TIMEOUT = 30000;

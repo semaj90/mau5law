@@ -1,6 +1,6 @@
-import { describe, it, expect } from, 'vitest';
-import { POST, as handleCacheGet } from, '../../../routes/api/cache/redis/get/+server';
-import { POST, as handleCacheSet } from, '../../../routes/api/cache/redis/set/+server';
+import { describe, it, expect } from 'vitest';
+import { POST, as handleCacheGet } from '../../../routes/api/cache/redis/get/+server';
+import { POST, as handleCacheSet } from '../../../routes/api/cache/redis/set/+server';
 
 function makeReq(body: any, headers: Record<string,string> = {}) {
   return { request: {, json: async () => body,

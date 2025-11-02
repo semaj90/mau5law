@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import type { User } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async ({ locals }) => {
   try {
     // Lucia put user into locals in hooks.server.ts

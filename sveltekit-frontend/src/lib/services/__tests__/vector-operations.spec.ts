@@ -1,5 +1,5 @@
-import { describe, it, expect } from, 'vitest';
-import { mapErrorToServiceError, mapResponseToServiceError } from, '$lib/utils/http-error-mapper';
+import { describe, it, expect } from 'vitest';
+import { mapErrorToServiceError, mapResponseToServiceError } from '$lib/utils/http-error-mapper';
 
 describe('vector-operations - validation and ServiceError mapping', () => {
   it('maps a network TypeError to network_error', () => {

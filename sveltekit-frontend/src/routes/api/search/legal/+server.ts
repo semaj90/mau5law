@@ -1,10 +1,10 @@
-import type { SearchResult } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { z } from, 'zod';
-import type { RequestHandler } from, './$types.js';
-import { legalDocumentAnalyzer } from, '$lib/server/ai/legal-document-analyzer';
-import { searchQdrant } from, '$lib/server/vector/qdrant';
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import { z } from 'zod';
+import type { RequestHandler } from './$types.js';
+import { legalDocumentAnalyzer } from '$lib/server/ai/legal-document-analyzer';
+import { searchQdrant } from '$lib/server/vector/qdrant';
 
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_URL = 'http://localhost:8094';

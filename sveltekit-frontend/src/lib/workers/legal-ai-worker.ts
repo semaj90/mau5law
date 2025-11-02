@@ -1,17 +1,17 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /// <reference, types="node" />
 /**
  * 🧠 RabbitMQ Worker for Legal AI Document Processing
  * Integrates SvelteKit with Go Legal AI Server + shared Redis
  */
 
-import * as amqp from, 'amqplib';
-import type { ConsumeMessage } from, 'amqplib';
-import { randomUUID } from, 'crypto';
-import { db } from, '$lib/server/db/client';
-import { evidence } from, '$lib/server/db/schema-postgres';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import { cuidSchema } from, '$lib/server/z-schemas';
+import * as amqp from 'amqplib';
+import type { ConsumeMessage } from 'amqplib';
+import { randomUUID } from 'crypto';
+import { db } from '$lib/server/db/client';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { cuidSchema } from '$lib/server/z-schemas';
 
 const GO_SERVER_URL = process.env.GO_SERVER_URL || 'http://localhost:8080';
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672';

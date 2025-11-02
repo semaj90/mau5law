@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // RoleGuard component - Role-based access control - Svelte, 5 compatible
-  import { auth  } from, '$lib/stores/unified';
+  import { auth  } from '$lib/stores/unified';
   interface Props {
     children?: import('svelte').Snippet;
     roles: string | string[];

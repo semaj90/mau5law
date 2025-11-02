@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Legal RAG Embedding Orchestrator
 // Handles case-specific law retrieval with optimized embedding strategies
 // Integrates multiple embedding models for different legal content types
-import { multiEmbeddingVectorService } from, './multi-embedding-vector-service.js';
-import type { SearchQuery } from, './multi-embedding-vector-service.js';
-import { redis } from, '$lib/server/cache/redis'; // Import Redis client
-import { db } from, '$lib/server/db/client'; // Import Drizzle client
-import * as schema from, '$lib/server/db/schema'; // Import Drizzle schema
-import { eq } from, 'drizzle-orm'; // Import Drizzle utility for equality checks
+import { multiEmbeddingVectorService } from './multi-embedding-vector-service.js';
+import type { SearchQuery } from './multi-embedding-vector-service.js';
+import { redis } from '$lib/server/cache/redis'; // Import Redis client
+import { db } from '$lib/server/db/client'; // Import Drizzle client
+import * as schema from '$lib/server/db/schema'; // Import Drizzle schema
+import { eq } from 'drizzle-orm'; // Import Drizzle utility for equality checks
 
 // Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js'
 // This is a common pattern for vector search services.

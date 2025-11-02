@@ -1,8 +1,8 @@
 <!-- Criminal Profile Component for Legal, AI, App -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Removed invalid runes import and problematic lucide-svelte named imports
-  import { cn } from, '$lib/utils';
+  import { cn } from '$lib/utils';
   // --- CHANGED: Add minimal TS interfaces to avoid: "undefined" property access errors ---
   interface CriminalRecord {
     id?: string;

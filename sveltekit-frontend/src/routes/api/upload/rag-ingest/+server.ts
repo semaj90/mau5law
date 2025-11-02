@@ -3,11 +3,11 @@
  * Handles file uploads, generates embeddings with embeddinggemma:latest,
  * stores in pgvector, and caches in Redis
  */
-import type { RequestHandler } from, '@sveltejs/kit';
-import { json } from, '@sveltejs/kit';
-import { writeFile, mkdir } from, 'fs/promises';
-import { join } from, 'path';
-import { nanoid } from, 'nanoid';
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { writeFile, mkdir } from 'fs/promises';
+import { join } from 'path';
+import { nanoid } from 'nanoid';
 
 const UPLOAD_DIR = join(process.cwd(), 'uploads', 'rag-ingest');
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB

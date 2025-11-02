@@ -1,9 +1,9 @@
 // MinIO Download API Endpoint
 // Handles file downloads from MinIO Docker container
-import { json } from, '@sveltejs/kit';
-import { env } from, '$env/dynamic/private';
-import { Client, as MinIOClient } from, 'minio';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { Client, as MinIOClient } from 'minio';
+import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const objectPath = url.searchParams.get('path');

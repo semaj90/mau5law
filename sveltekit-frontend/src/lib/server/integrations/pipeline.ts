@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified Production Pipeline Orchestrator
  *
@@ -7,11 +7,11 @@ import type { Document } from, '$lib/types';
  * into a cohesive RAG + Vector Search + Document Processing pipeline
  * for the Legal AI platform.
  */
-import { getOllamaService, OllamaService } from, './ollama';
-import { getRedisCache, RedisCacheService } from, './redis';
-import { getQdrantService, QdrantVectorService } from, './qdrant';
-import { getMinIOStorage, MinIOStorageService } from, './minio';
-import type { ChatMessage } from, '$lib/types/external-services';
+import { getOllamaService, OllamaService } from './ollama';
+import { getRedisCache, RedisCacheService } from './redis';
+import { getQdrantService, QdrantVectorService } from './qdrant';
+import { getMinIOStorage, MinIOStorageService } from './minio';
+import type { ChatMessage } from '$lib/types/external-services';
 interface PipelineConfig {
   ollama?: { baseUrl?: string; embeddingModel?: string; chatModel?: string };
   redis?: { url?: string; password?: string };

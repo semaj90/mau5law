@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * System Integration Service
  * Orchestrates MinIO storage, PostgreSQL + pgvector, Redis cache, and Context7 semantic search
  */
-import { globalGPUCache } from, './rag-minio-gpu-som-cache.js';
+import { globalGPUCache } from './rag-minio-gpu-som-cache.js';
 
 // Integration interfaces
 interface MinIOConfig { endpoint: string;, port: number;

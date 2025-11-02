@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // src/lib/services/types.ts export interface AuthCredentials { email: string;, password: string; }
 
 export interface AuthResult {, valid: boolean;, userId: string; token: string; role: string; }

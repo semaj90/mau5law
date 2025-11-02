@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_URL = 'http://localhost:8094'

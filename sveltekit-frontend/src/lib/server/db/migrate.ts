@@ -1,13 +1,13 @@
 // @ts-nocheck
 import, 'dotenv/config';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
-import { migrate } from, 'drizzle-orm/postgres-js/migrator';
-import pgClient, { poolShim } from, '$lib/server/db-shim';
-import postgres from, 'postgres'; // derive runtime client type
-import { readFileSync, readdirSync, existsSync } from, 'fs';
-import { join } from, 'path';
-import { sql } from, 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import pgClient, { poolShim } from '$lib/server/db-shim';
+import postgres from 'postgres'; // derive runtime client type
+import { readFileSync, readdirSync, existsSync } from 'fs';
+import { join } from 'path';
+import { sql } from 'drizzle-orm';
 // Minimal pool shape used by this script
 type PoolLike = {
   end?: () => Promise<void> | void;

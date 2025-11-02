@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import  SearchInput  from, "./SearchInput.svelte";
-  import Filter from, 'lucide-svelte';
+  import  SearchInput  from "./SearchInput.svelte";
+  import Filter from 'lucide-svelte';
   interface Props {
     placeholder?: string;
     value?: string;
@@ -29,7 +29,7 @@
   // Filter state
   let selectedFileTypes: string[] = $state([]);
   let dateRange = $state({
-    from, ','
+    from ','
     to: ''
   });
   function handleSearch(_event: CustomEvent) {
@@ -175,7 +175,7 @@
         class="clear-filters-btn"
         onclick={() => {
           selectedFileTypes = [];
-          dateRange = { from, ', to: '' };'
+          dateRange = { from ', to: '' };'
           dispatchFilters();
         }}
       >

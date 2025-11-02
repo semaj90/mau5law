@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Browser-based Qwen 0.5B LLM using Transformer.js v3
  *
@@ -21,7 +21,7 @@ import type { Document } from, '$lib/types';
  *   await qwen.initialize();
  *   const response = await qwen.generate('Summarize this contract...');
  */
-import { pipeline, env } from, '@huggingface/transformers';
+import { pipeline, env } from '@huggingface/transformers';
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;

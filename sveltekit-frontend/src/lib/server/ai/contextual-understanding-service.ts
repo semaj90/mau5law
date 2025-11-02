@@ -7,15 +7,15 @@
  * - Redis for state persistence and caching
  * - Gemma3 LLM for agentic reasoning
  */
-import { hmmStateMachine } from, './hmm-state-machine';
-import { getRedisClient, cognitiveCache } from, '$lib/server/cache';
+import { hmmStateMachine } from './hmm-state-machine';
+import { getRedisClient, cognitiveCache } from '$lib/server/cache';
 import type {
   ContextualState,
   ConversationTurn,
   NextStepPrediction,
   LegalEntity,
   HMMState
-} from, '$lib/types/sharedTypes';
+} from '$lib/types/sharedTypes';
 const CONTEXT_TTL_SECONDS = 3600; // 1 hour
 const MAX_HISTORY_LENGTH = 50; // Keep last, 50 conversation turns
 /**

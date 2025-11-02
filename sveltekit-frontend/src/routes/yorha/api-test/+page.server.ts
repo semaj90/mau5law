@@ -1,4 +1,4 @@
-import type { PageServerLoad } from, './$types.js';
+import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({, url: _url, fetch: _fetch }) => {
   try {
     // Define API endpoints for testing

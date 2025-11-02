@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
+  import type { Snippet } from 'svelte';
   interface GridColumn {
     key: string;
    , title: string;

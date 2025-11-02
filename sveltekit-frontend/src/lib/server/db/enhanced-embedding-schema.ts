@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Enhanced Embedding Pipeline Schema for Production Legal AI
 // Comprehensive schema supporting: document ingestion, chunking, embeddings, search, Neo4j sync
 import {
@@ -13,9 +13,9 @@ import {
   boolean,
   varchar,
   bigint
-} from, "drizzle-orm/pg-core";
-import { vector } from, "pgvector/drizzle-orm";
-import { relations } from, "drizzle-orm";
+} from "drizzle-orm/pg-core";
+import { vector } from "pgvector/drizzle-orm";
+import { relations } from "drizzle-orm";
 // Documents table - source documents from MinIO
 export const documents = pgTable(
   'documents',

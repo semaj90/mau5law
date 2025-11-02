@@ -1,5 +1,5 @@
 // API Client utility for centralized API calls
-import { error } from, '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 export interface ApiConfig {
   baseUrl?: string;
   timeout?: number;

@@ -1,8 +1,8 @@
 <script, lang="ts">
 
-  import { onMount } from, 'svelte';
-  import { getBitsNamespace } from, '$lib/utils/bits-ui-adapter';
-  import { cn } from, '$lib/utils';
+  import { onMount } from 'svelte';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  import { cn } from '$lib/utils';
   // Use slot instead of a: 'children' prop; avoid, exporting: 'class' (reserved) — use className
   const { className = '' } = $props()
   const { side } = $props<{ side: 'top' | 'right' | 'bottom' | 'left' }>()

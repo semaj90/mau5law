@@ -1,6 +1,6 @@
-import * as nativeServiceManagerRaw from, './native-windows-service-manager.js';
-import * as flashAttentionProcessorRaw from, './flashattention-gpu-error-processor.js';
-import * as concurrentSearchRaw from, './concurrent-indexeddb-search.js';
+import * as nativeServiceManagerRaw from './native-windows-service-manager.js';
+import * as flashAttentionProcessorRaw from './flashattention-gpu-error-processor.js';
+import * as concurrentSearchRaw from './concurrent-indexeddb-search.js';
 
 // --- New: safer shared types & module interfaces ---
 type JsonObject = Record<string, unknown>;

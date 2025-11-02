@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 async function generateSummary(content: string): Promise<string> {
   const response = await fetch(getOllamaEndpoint('api/generate'), {

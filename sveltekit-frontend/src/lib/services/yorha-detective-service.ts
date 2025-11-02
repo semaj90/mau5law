@@ -16,7 +16,7 @@ export interface Evidence {, id: string;, caseId: string;
   // ... other relevant evidence properties
 }
 
-// import type { Case, Evidence } from, '$lib/types/legal-document'; // Original import, now replaced by local definitions
+// import type { Case, Evidence } from '$lib/types/legal-document'; // Original import, now replaced by local definitions
 export interface SystemMetrics { cpu: number;, gpu: number;
   memory: number;
   network: number;
@@ -65,7 +65,7 @@ export interface HealthCheckResults {, enhancedRAG: boolean;, uploadService: bo
 }
 
 // Import for gRPC health check
-import { lookupSemanticCache } from, '$lib/server/grpc/vector-cache-client';
+import { lookupSemanticCache } from '$lib/server/grpc/vector-cache-client';
 
 export class YoRHaDetectiveService {
   private readonly enhancedRAGUrl = 'http://localhost:8094'

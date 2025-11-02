@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // WebGPU Legal Similarity Compute Engine
 // Optimized for legal embedding similarity with NES memory integration
-import { nesMemory } from, '../memory/nes-memory-architecture';
+import { nesMemory } from '../memory/nes-memory-architecture';
 
 // Define an interface for nesMemory to avoid using: 'any'
 interface NESMemoryWithWebGPU {, prepareForWebGPU: (, queryEmbeddings: Float32Array[],

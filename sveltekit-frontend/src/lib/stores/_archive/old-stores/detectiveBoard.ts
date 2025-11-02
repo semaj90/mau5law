@@ -1,5 +1,5 @@
 // Detective Board AI Assistant Store - Svelte, 5 pattern
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 // Add a concrete metadata type to avoid `any`
 export type EvidenceMetadata = Record<string, unknown>;

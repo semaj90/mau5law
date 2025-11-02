@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { User } from, '$lib/types';
-  import { onMount } from, 'svelte';
+import type { User } from '$lib/types';
+  import { onMount } from 'svelte';
 
   type PerformanceStats = {
     webgpuAvailable: boolean;

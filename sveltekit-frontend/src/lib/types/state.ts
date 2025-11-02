@@ -1,8 +1,8 @@
-import type { AIResponse } from, '$lib/types';
-import type { User } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
 // 🔧 Svelte, 5 State Management Type Fixes
 // Fixes $state(), $derived(), and runes syntax errors
-import type { Readable, Writable } from, 'svelte/store';
+import type { Readable, Writable } from 'svelte/store';
 import type {
   User,
   ChatSession,
@@ -17,7 +17,7 @@ import type {
   AIModel,
   SearchFilters,
   SearchFacets
-} from, '$lib/types';
+} from '$lib/types';
 
 // =====================================================
 // SVELTE, 5 RUNES TYPES
@@ -186,10 +186,10 @@ export interface Breadcrumb {, label: string;, path: string;
 // IMPORT TYPE FIXES
 // =====================================================
 // Fix common type errors / re-exports (adjust as needed for your codebase)
-export type { User } from, './global.js';
-export type { UploadedFile } from, './global.js';
-export type { SearchResults } from, './global.js';
-export type { AIResponse } from, './global.js';
+export type { User } from './global.js';
+export type { UploadedFile } from './global.js';
+export type { SearchResults } from './global.js';
+export type { AIResponse } from './global.js';
 
 // Fix Svelte component types
 export type SvelteComponent = import('svelte').SvelteComponent;

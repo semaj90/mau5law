@@ -1,7 +1,7 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import { createClient } from, 'redis';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { createClient } from 'redis';
 // Add a module augmentation so consumers that try to import
-// `RedisClientType` from, 'redis' will find the type. This resolves
+// `RedisClientType` from 'redis' will find the type. This resolves
 // errors like: "Module, 'redis' has no exported; member: 'RedisClientType'."
 declare module, 'redis' {
   // export type using the runtime createClient return type

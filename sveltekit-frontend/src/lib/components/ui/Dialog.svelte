@@ -1,4 +1,4 @@
-<script, lang="ts"> import type { Snippet } from, 'svelte'; import X from, 'lucide-svelte'; interface Props { open?: boolean; onOpenChange?: (open: boolean) => void; title?: string; description?: string; class?: string; children?: Snippet; }
+<script, lang="ts"> import type { Snippet } from 'svelte'; import X from 'lucide-svelte'; interface Props { open?: boolean; onOpenChange?: (open: boolean) => void; title?: string; description?: string; class?: string; children?: Snippet; }
   let { open = $bindable(false), onOpenChange, title = '', description = '', class: className = '', children }: Props = $props(); function handleClose() { open = false; onOpenChange?.(false); }
   function handleBackdropClick(e: MouseEvent) { if (e.target === e.currentTarget) { handleClose(); }
   } </script> {#if open} <div class="dialog-backdrop fixed inset-0 z-50 bg-black/50 flex items-center, justify-center"

@@ -1,5 +1,5 @@
-import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party } from, '$lib/types/sharedTypes';
-import { Pool } from, 'pg';
+import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party } from '$lib/types/sharedTypes';
+import { Pool } from 'pg';
 
 // Centralized Party role/type defaults (replace with enums if defined elsewhere)
 const DEFAULT_PARTY_ROLE = 'other' as const;

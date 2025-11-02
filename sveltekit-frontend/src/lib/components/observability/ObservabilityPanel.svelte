@@ -4,8 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Observability Panel: Real-time alerts + sustained, monitoring, dashboard -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import type { ObservabilityState } from, '$lib/services/observability-persistence';
+  import { onMount, onDestroy } from 'svelte';
+  import type { ObservabilityState } from '$lib/services/observability-persistence';
   interface Alert {
     id: string;
     type: 'p99_breach' | 'error_spike' | 'anomaly_spike' | 'baseline_drift';

@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
-import { EnhancedNATSMessagingService } from, '$lib/services/enhanced-nats-messaging';
+import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging';
 import type {
   CaseEventData,
   DocumentEventData,
@@ -10,7 +10,7 @@ import type {
   ChatEventData,
   SearchEventData,
   // SystemEventData removed - not exported from $lib/types/nats-messaging
-} from, '$lib/types/nats-messaging';
+} from '$lib/types/nats-messaging';
 
 // Add a local alias for system events (matches getSystemEventSchema used below)
 type SystemEventData = { component: string;, status: 'healthy' | 'degraded' | 'critical';

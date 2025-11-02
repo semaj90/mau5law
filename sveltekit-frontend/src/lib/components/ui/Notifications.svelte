@@ -1,9 +1,9 @@
 <script, lang="ts">
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
-  import { quintOut } from, 'svelte/easing';
-  import { fly } from, 'svelte/transition';
-  import { notifications, type Notification } from, '../../stores/notification';
-  import { onDestroy } from, 'svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import { quintOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
+  import { notifications, type Notification } from '../../stores/notification';
+  import { onDestroy } from 'svelte';
 
   const icons = {
     success: 'ph:check-circle',

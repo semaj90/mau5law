@@ -2,9 +2,9 @@
  * Matrix Operations API - CUDA Parallel Processing for WebAssembly
  * Handles matrix computations, batch operations, and parallel processing
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getCudaServiceUrl } from, '$lib/config/pgvector-gpu-config.js';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
 interface MatrixOperation { operation: 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky';, matrixA: number[][];
   matrixB?: number[][];
   options?: {

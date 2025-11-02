@@ -1,4 +1,4 @@
-import type { Redis as IORedisClient } from, 'ioredis';
+import type { Redis as IORedisClient } from 'ioredis';
 
 // Re-export the ioredis client type for consistent usage across the application.
 export type RedisClient = IORedisClient;

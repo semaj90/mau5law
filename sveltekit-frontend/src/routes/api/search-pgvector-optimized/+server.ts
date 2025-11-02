@@ -1,12 +1,12 @@
-import type { SearchResult } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { requireAuth } from, '$lib/server/auth-helpers';
-import { getDb } from, '$lib/server/db';
-import { sql } from, 'drizzle-orm';
-import { legalDocumentsJsonb } from, '../../../drizzle/schema';
-import { z } from, 'zod';
-import { generateEmbedding } from, '$lib/services/gemma-embedding-service';
+import type { SearchResult } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { requireAuth } from '$lib/server/auth-helpers';
+import { getDb } from '$lib/server/db';
+import { sql } from 'drizzle-orm';
+import { legalDocumentsJsonb } from '../../../drizzle/schema';
+import { z } from 'zod';
+import { generateEmbedding } from '$lib/services/gemma-embedding-service';
 
 // Request validation schema
 const pgvectorSearchSchema = z.object({

@@ -1,9 +1,9 @@
 // MinIO Upload API Endpoint
 // Connects SvelteKit frontend to MinIO Docker container
-import { json } from, '@sveltejs/kit';
-import { env } from, '$env/dynamic/private';
-import { Client, as MinIOClient } from, 'minio';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { Client, as MinIOClient } from 'minio';
+import type { RequestHandler } from './$types';
 interface MinIOUploadResult { success: boolean;, document_id: string;
   object_path: string;
   size: number;

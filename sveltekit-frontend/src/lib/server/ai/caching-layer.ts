@@ -1,6 +1,6 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import LRU from, "lru-cache";
-import * as crypto from, "crypto";
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import LRU from "lru-cache";
+import * as crypto from "crypto";
 // Fix LRUCache import for CommonJS compatibility
 const LRUCache = LRU;
 // Define Redis interface since we don't have the actual Redis client'
@@ -21,7 +21,7 @@ export interface Redis {
 }
 // lib/server/ai/caching-layer.ts
 // Advanced caching layer for AI synthesis results with Redis and LRU fallback
-import { logger } from, './logger.js';
+import { logger } from './logger.js';
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
   tags?: string[]; // Tags for cache invalidation

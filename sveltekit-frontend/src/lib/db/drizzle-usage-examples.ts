@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Drizzle ORM Usage Examples - Legal AI Platform
  *
@@ -9,7 +9,7 @@ import type { Document } from, '$lib/types';
  * - Transactions
  * - Joins and relationships
  */
-import { db } from, './index'; // Your database connection
+import { db } from './index'; // Your database connection
 import {
   legalDocuments,
   legalCases,
@@ -17,8 +17,8 @@ import {
   aiProcessingQueue,
   type NewLegalDocument,
   type LegalMetadata
-} from, './schema-example-legal';
-import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from, 'drizzle-orm';
+} from './schema-example-legal';
+import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from 'drizzle-orm';
 // ==================================================
 // 1. Basic CRUD Operations
 // ==================================================

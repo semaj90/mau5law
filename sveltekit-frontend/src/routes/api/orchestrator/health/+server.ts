@@ -1,7 +1,7 @@
 // Legal AI Orchestrator Health Check API
 // Nintendo-Style Service Health Monitoring
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 interface ServiceHealth { service: string, status: 'healthy' | 'degraded' | 'down'
   response_time_ms?: number
   details?: string

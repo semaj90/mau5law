@@ -2,9 +2,9 @@
  * Enhanced RAG API Endpoint
  * GPU-accelerated RAG queries with semantic embeddings
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { gpuEmbeddingService } from, '$lib/services/gpu-semantic-embedding-service';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
 
 interface RAGRequest { query: string;, documents: string[];
   options?: {

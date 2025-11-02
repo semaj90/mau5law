@@ -5,9 +5,9 @@
  * achieving 7-byte compressed representations for instantaneous UI component generation.
  * Integrates with LangChain Ollama service and existing OCR/LangExtract infrastructure.
  */
-import { simdGPUTilingEngine } from, '$lib/evidence/simd-gpu-tiling-engine.js';
-import { langChainOllamaService } from, './langchain-ollama-service.js';
-import { webgpuLangChainBridge } from, '$lib/server/webgpu-langchain-bridge.js';
+import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
+import { langChainOllamaService } from './langchain-ollama-service.js';
+import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js';
 export interface TextTileConfig {
   compressionRatio: number; // Target compression (e.g., 109:1 for 7-bit representation),
   tileSize: number;

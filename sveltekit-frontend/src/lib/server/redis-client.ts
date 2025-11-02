@@ -3,8 +3,8 @@
  * Centralizes configuration + connection reuse across services rabbitmq, workers, caches, etc.)
  * Handles Docker defaults, password injection, and safe reconnect helpers.
  */
-import Redis, { type RedisOptions, type Redis as IORedis } from, 'ioredis';
-import { CONFIG } from, '$lib/config/env.server';
+import Redis, { type RedisOptions, type Redis as IORedis } from 'ioredis';
+import { CONFIG } from '$lib/config/env.server';
 
 const metaEnv =
   typeof import.meta !== 'undefined'

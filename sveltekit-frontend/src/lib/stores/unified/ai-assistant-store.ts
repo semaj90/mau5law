@@ -8,13 +8,13 @@
  * - aiHistoryStore.ts
  *
  *, Usage:
- *   import { aiAssistantStore } from, '$lib/stores/unified';
+ *   import { aiAssistantStore } from '$lib/stores/unified';
  *
  *   await aiAssistantStore.sendMessage('Analyze this case');
  *   $: messages = $aiAssistantStore.messages;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -573,10 +573,10 @@ export const conversations = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { sendMessage, messages  } from, '$lib/stores/unified'
- *   import { chatStore  } from, '$lib/stores/unified'
- *   import { aiUnified } from, '$lib/stores/ai-unified'
+ *   import { sendMessage, messages  } from '$lib/stores/unified'
+ *   import { chatStore  } from '$lib/stores/unified'
+ *   import { aiUnified } from '$lib/stores/ai-unified'
  *
  * New imports:
- *   import { aiAssistantStore, messages, isProcessing } from, '$lib/stores/unified'
+ *   import { aiAssistantStore, messages, isProcessing } from '$lib/stores/unified'
  */

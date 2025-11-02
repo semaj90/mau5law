@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // @ts-nocheck - Complex experimental service with external dependencies
 /**
  * WebAssembly GPU Initialization System
  * Browser-native GPU access without Node.js overhead
  * Optimized for RTX, 3060 with legal AI applications
  */
-import { writable, derived, type Writable } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived, type Writable } from 'svelte/store';
+import { browser } from '$app/environment';
 // WebAssembly GPU Configuration
 export interface WasmGpuConfig {
   // GPU settings

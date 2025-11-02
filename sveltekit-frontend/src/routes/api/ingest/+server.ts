@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import type { User } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 // Clean, minimal ingestion route. Supports multipart upload (file) and JSON { minioUrl }.
 
@@ -159,9 +159,9 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 /* Follow-ups: POST /api/ingest/claim, presigned URL generation, virus-scan, rate-limits */
-import { json, error } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
-import { fetchMinioObject } from, '$lib/server/services/minio';
+import { json, error } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
+import { fetchMinioObject } from '$lib/server/services/minio';
 
 export const POST = auth.handle(async ({ locals, request }) => {
   if (!locals.user) throw error(401, 'Unauthorized');

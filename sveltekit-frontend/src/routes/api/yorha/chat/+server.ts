@@ -1,5 +1,5 @@
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * YoRHa Legal AI Chat - Production Ready with SSE Streaming
  *
@@ -20,10 +20,10 @@ import type { User } from, '$lib/types';
  * - Test mode for anonymous usage
  * - Message history and context
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { randomUUID } from, 'node:crypto';
-import { services } from, '$lib/server/services';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { randomUUID } from 'node:crypto';
+import { services } from '$lib/server/services';
 
 // YoRHa system prompt
 const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.`

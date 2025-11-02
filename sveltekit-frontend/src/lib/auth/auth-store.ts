@@ -1,10 +1,10 @@
 // Enhanced Authentication Store with Role-Based Access Control
 // Manages user authentication state, permissions, and session management
-import { writable, derived, get } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived, get } from 'svelte/store';
+import { browser } from '$app/environment';
 /* Replace static import (may not exist at build time) with dynamic public env */
-import { env, as PUBLIC_ENV } from, '$env/dynamic/public';
-import type { UserRole, Permission } from, './roles.js';
+import { env, as PUBLIC_ENV } from '$env/dynamic/public';
+import type { UserRole, Permission } from './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
 interface ServerUser { id: string;, email: string;

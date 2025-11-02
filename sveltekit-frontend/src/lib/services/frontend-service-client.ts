@@ -1,10 +1,10 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Frontend Service Client
  * Production-ready client for communicating with backend services
  */
-import { writable, derived, get as getStore } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived, get as getStore } from 'svelte/store';
+import { browser } from '$app/environment';
 
 // Configuration
 const CONFIG = {

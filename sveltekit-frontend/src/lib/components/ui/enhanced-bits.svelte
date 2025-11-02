@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { createEventDispatcher } from, 'svelte';
+  import { createEventDispatcher } from 'svelte';
   const { onclick } = $props<{ onclick: ((...args: any[]) }>()
   const { disabled } = $props<{ disabled: boolean }>()
   const { variant } = $props<{ variant: string | undefined }>()

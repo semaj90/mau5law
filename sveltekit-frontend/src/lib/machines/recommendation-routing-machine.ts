@@ -1,6 +1,6 @@
-import { setup, assign, fromPromise } from, 'xstate';
-import { writable } from, 'svelte/store';
-import type { Actor, StateFrom } from, 'xstate';
+import { setup, assign, fromPromise } from 'xstate';
+import { writable } from 'svelte/store';
+import type { Actor, StateFrom } from 'xstate';
 // Recommendation Engine Context with RabbitMQ routing
 export interface RecommendationContext { sessionId: string;, userId: string;
   caseId?: string;
@@ -570,7 +570,7 @@ function generateCacheKeys(context: RecommendationContext): string[] {
 export type RecommendationState = StateFrom<typeof, recommendationRoutingMachine>;
 export type RecommendationActor = Actor<typeof, recommendationRoutingMachine>;
 // Store integration
-import { createActor } from, 'xstate';
+import { createActor } from 'xstate';
 function createRecommendationStore() {
   const actor = createActor(recommendationRoutingMachine);
   const { subscribe } = writable(actor.getSnapshot(), set => {

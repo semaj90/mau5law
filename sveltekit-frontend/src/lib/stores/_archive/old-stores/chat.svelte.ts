@@ -10,7 +10,7 @@ import type {
   Recommendation,
   UserActivity,
   RAGContext
-} from, "$lib/types/ai-chat";
+} from "$lib/types/ai-chat";
 // Internal shapes
 // Map of sessionId -> messages
 export type SessionMap = Map<string, ChatMessage[]>;

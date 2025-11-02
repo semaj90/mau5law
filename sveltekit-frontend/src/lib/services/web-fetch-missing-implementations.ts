@@ -8,7 +8,7 @@
  * - Stack Overflow solutions
  * - TypeScript definition files
  */
-import type { ImplementationResult, WebFetchConfig, WebFetchSource } from, '$lib/types/automated-resolution';
+import type { ImplementationResult, WebFetchConfig, WebFetchSource } from '$lib/types/automated-resolution';
 
 export class WebFetchMissingImplementations {
   private config: WebFetchConfig;
@@ -89,8 +89,8 @@ export const machine = createMachine({
     running: {, on: {, STOP: 'idle' } }
   }
 });`,`
-        types: 'import { createMachine } from, 'xstate';\nexport declare const machine: any;`,'`
-        usage: 'import { createMachine } from, 'xstate';\nconst m = createMachine({...});`,'`
+        types: 'import { createMachine } from 'xstate';\nexport declare const machine: any;`,'`
+        usage: 'import { createMachine } from 'xstate';\nconst m = createMachine({...});`,'`
         source: 'XState Documentation',
         confidence: 0.9
       },
@@ -102,7 +102,7 @@ export function createActorFromService(service: any) {
   return service;
 }`,`
         types: `export declare function createActorFromService(service: any): any;`,
-        usage: 'import { createActorFromService } from, './helpers';`,'`
+        usage: 'import { createActorFromService } from './helpers';`,'`
         source: 'XState Documentation',
         confidence: 0.9
       }
@@ -147,7 +147,7 @@ export const ${item} = (...args: any[]): any => {
   return: undefined;
 };`,`
       types: `export declare const ${item}: (...args: any[]) => any;`,
-      usage: 'import { ${item} } from, 'your-fallbacks';`,'`
+      usage: 'import { ${item} } from 'your-fallbacks';`,'`
       source: 'fallback',
       confidence: 0.2,
       warning: 'Fallback implementation - consider providing a proper implementation for ${item}' }, as: unknown as ImplementationResult;'`'`

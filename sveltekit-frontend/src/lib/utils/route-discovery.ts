@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Dynamic Route Discovery System
  * Automatically discovers all SvelteKit routes in the application

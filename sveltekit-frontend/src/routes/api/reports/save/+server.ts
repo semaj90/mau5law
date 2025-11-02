@@ -1,10 +1,10 @@
-import type { Case } from, '$lib/types';
-import { aiReports } from, '$lib/server/db/schema-postgres';
-import db from, '$lib/server/db/index';
-import { and, eq } from, 'drizzle-orm';
-import { randomUUID } from, 'node:crypto';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { Case } from '$lib/types';
+import { aiReports } from '$lib/server/db/schema-postgres';
+import db from '$lib/server/db/index';
+import { and, eq } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -88,14 +88,14 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-import type { RequestHandler } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/drizzle';
-import { reports } from, '$lib/server/db/schema';
-import { CONFIG } from, '$lib/config/env.server';
-import { S3Client, PutObjectCommand } from, '@aws-sdk/client-s3';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { eq } from, '$lib/server/db/utils';
-import { embeddingFunction } from, '$lib/server/ai/embedder'; // from LangChain.js
+import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db/drizzle';
+import { reports } from '$lib/server/db/schema';
+import { CONFIG } from '$lib/config/env.server';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { eq } from '$lib/server/db/utils';
+import { embeddingFunction } from '$lib/server/ai/embedder'; // from LangChain.js
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const user = locals.user;

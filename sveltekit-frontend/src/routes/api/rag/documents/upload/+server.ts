@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Document Upload Endpoint - Upload documents with OCR and embedding generation
  * POST /api/rag/documents/upload
@@ -12,13 +12,13 @@ import type { Document } from, '$lib/types';
  * - Database storage with metadata
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
-import { db } from, '$lib/server/db';
-import { documents, documentChunks } from, '$lib/server/db/enhanced-embedding-schema';
-import { eq } from, 'drizzle-orm';
-import { Client, as MinioClient } from, 'minio';
-import { v4, as uuidv4 } from, 'uuid';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
+import { eq } from 'drizzle-orm';
+import { Client, as MinioClient } from 'minio';
+import { v4, as uuidv4 } from 'uuid';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',

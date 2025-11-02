@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * MinIO Integration Service for Legal Document Processing
  * Handles file uploads, downloads, and metadata management
  * Integrates with NES-GPU pipeline for high-performance processing
  * Auto-indexes documents in vector search system with Gemma embeddings
  */
-import { vectorSearchIndex } from, './vector-search-index.js';
+import { vectorSearchIndex } from './vector-search-index.js';
 
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 

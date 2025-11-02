@@ -1,13 +1,13 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching
  * Provides RAG operations with edge caching, metrics, and JSON optimization
  * Port: 8451 (QUIC), 8452 (HTTP/2 fallback)
  * Backend: Upload Service (8093), Enhanced RAG (8094)
  */
-import { json, error } from, '@sveltejs/kit';
-import { ensureError } from, '$lib/utils/ensure-error';
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
 const RAG_QUIC_CONFIG = {
   primaryPort: 8451, // QUIC HTTP/3
   fallbackPort: 8452, // HTTP/2
@@ -64,8 +64,8 @@ export interface RAGProxyHealthResponse {
   [key: string]: any; // Allow for additional properties if the health check response is dynamic
 }
 
-//, Removed: import { goServiceManager } from, '$lib/services/goMicroservice';
-import crypto from, 'crypto';
+//, Removed: import { goServiceManager } from '$lib/services/goMicroservice';
+import crypto from 'crypto';
 
 /*
  * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics

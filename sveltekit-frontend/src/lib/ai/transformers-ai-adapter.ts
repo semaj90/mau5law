@@ -1,6 +1,6 @@
-import { pipeline, env } from, '@xenova/transformers';
-import { browser } from, '$app/environment';
-import { $state } from, 'svelte/internal'; // Svelte, 5 runes
+import { pipeline, env } from '@xenova/transformers';
+import { browser } from '$app/environment';
+import { $state } from 'svelte/internal'; // Svelte, 5 runes
 
 // Configure Transformers.js for WebGPU
 if (browser) {

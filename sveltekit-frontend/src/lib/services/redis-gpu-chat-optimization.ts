@@ -8,9 +8,9 @@
  * potential GPU acceleration. All browser-specific code has been removed.
  * It now uses a proper Redis client and strong typing, eliminating all `any` types.
  */
-import { dev } from, '$app/environment';
+import { dev } from '$app/environment';
 // Import only the Redis runtime class; remove unused RedisOptions type to fix linter/TS error
-import Redis from, 'ioredis';
+import Redis from 'ioredis';
 
 // --- Minimal runtime Redis surface used by this service ---
 // Keep this small so we don't depend on: any specific vendor type definitions'

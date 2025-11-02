@@ -3,9 +3,9 @@
  *
  * Specialized endpoint for processing evidence canvas data with detective analysis
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { unifiedLegalOrchestrationService } from, '$lib/services/unified-legal-orchestration-service.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();

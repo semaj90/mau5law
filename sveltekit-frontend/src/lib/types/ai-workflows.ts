@@ -1,7 +1,7 @@
-import type { AIResponse } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Document } from '$lib/types';
 // AI Workflow Types - Ollama Gemma3-Legal + TensorRT-LLM Triton Integration
-import type { Actor } from, 'xstate';
+import type { Actor } from 'xstate';
 
 // ============================================================================
 // Document & Content Types

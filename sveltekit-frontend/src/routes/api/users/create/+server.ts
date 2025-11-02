@@ -1,8 +1,8 @@
-import type { User } from, '$lib/types';
-import { db } from, '$lib/server/db';
-import { users } from, '$lib/server/db/schema-postgres';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import type { User } from '$lib/types';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema-postgres';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Add a narrow local type for the insert payload to avoid relying on a missing export
 type NewUserInsert = { email: string;, name: string;

@@ -1,15 +1,15 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /// <reference, types="vite/client" />
 /**
  * XState Svelte Store Integration
  * Provides reactive Svelte stores for XState machines with persistence and devtools
  */
-import { readable, derived, type Readable } from, 'svelte/store';
-import type { ActorRefFrom } from, 'xstate';
-import { createCompatibleActor } from, '$lib/services/xstate-utils';
-import { browser } from, '$app/environment';
-import { appMachine, appSelectors, type AppEvents } from, './app-machine.js';
-import { legalCaseMachine, legalCaseSelectors } from, './legal-case-machine.js';
+import { readable, derived, type Readable } from 'svelte/store';
+import type { ActorRefFrom } from 'xstate';
+import { createCompatibleActor } from '$lib/services/xstate-utils';
+import { browser } from '$app/environment';
+import { appMachine, appSelectors, type AppEvents } from './app-machine.js';
+import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
 // --- Added minimal types to satisfy TS and lint checks ---
 // Represents the snapshot shape we log/use from XState actors.
 type MachineSnapshot = {

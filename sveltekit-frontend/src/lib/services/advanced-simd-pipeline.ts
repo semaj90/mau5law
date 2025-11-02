@@ -2,11 +2,11 @@
  * 🚀 Advanced SIMD JSON + Tensor Streaming Pipeline
  * (corrected, embeddinggemma:latest usage)
  */
-import { cache } from, '$lib/server/cache/redis';
-import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
-import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
-import Fuse from, 'fuse.js';
-import { gzipSync, gunzipSync } from, 'zlib';
+import { cache } from '$lib/server/cache/redis';
+import { vectorService } from '$lib/server/vector/EnhancedVectorService';
+import { LokiEvidenceService } from '$lib/utils/loki-evidence';
+import Fuse from 'fuse.js';
+import { gzipSync, gunzipSync } from 'zlib';
 // Simulated SIMD JSON parser (would use actual simdjson binding in production)
 class SIMDJSONParser {
   static parse(data: string): any {

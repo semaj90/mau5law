@@ -9,7 +9,7 @@ import type {
   Context7Integration,
   MissingImportAnalysis,
   CodeSnippet
-} from, '$lib/types/automated-resolution';
+} from '$lib/types/automated-resolution';
 
 type LibraryDocs = {
   library: string;

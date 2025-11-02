@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Document Upload State Machine - XState v5 compatible
 // Manages file upload workflow with progress tracking and AI processing
-import { createMachine, assign, fromPromise } from, 'xstate';
+import { createMachine, assign, fromPromise } from 'xstate';
 // New small, permissive types for uploaded files and AI results
 type UploadedFile = { id: string;, name: string;
   size?: number;

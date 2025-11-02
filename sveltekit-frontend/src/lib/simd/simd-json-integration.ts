@@ -1,10 +1,10 @@
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * SIMD JSON Integration for WebAssembly Architecture
  * Maps SIMD JSON parsing to all critical performance bottlenecks
  */
-import { dev } from, '$app/environment';
+import { dev } from '$app/environment';
 // Environment toggle for SIMD JSON usage
 const USE_SIMDJSON = process.env.USE_SIMDJSON_NODE === '1' || dev;
 // SIMD JSON parsing function (Node.js addon wrapper)

@@ -1,7 +1,7 @@
 /**
  * TensorRT-LLM + Triton Inference Client - Phase, 3
  */
-import type { AIProvider, InferenceRequest, InferenceResponse } from, '../../types/ai-provider';
+import type { AIProvider, InferenceRequest, InferenceResponse } from '../../types/ai-provider';
 
 export interface TritonConfig {
   httpUrl: string;

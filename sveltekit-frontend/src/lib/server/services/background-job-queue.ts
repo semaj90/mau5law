@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal AI Background Processing Service Worker
  * Handles evidence analysis, case synthesis, report generation, and vector embeddings
  */
-import { z } from, 'zod';
-import { db } from, '$lib/server/db';
-import { evidence, cases, reports, personsOfInterest, userEmbeddings } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
-import { createId } from, '@paralleldrive/cuid2';
-import { CONFIG } from, '$lib/config/env.server';
+import { z } from 'zod';
+import { db } from '$lib/server/db';
+import { evidence, cases, reports, personsOfInterest, userEmbeddings } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+import { createId } from '@paralleldrive/cuid2';
+import { CONFIG } from '$lib/config/env.server';
 // Job queue schemas
 export const JobSchema = z.object({
   id: z.string(),

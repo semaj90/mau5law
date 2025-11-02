@@ -1,6 +1,6 @@
 // src/lib/services/health-monitor.ts
 
-import type { AIProvider } from, './types/ai-provider';
+import type { AIProvider } from './types/ai-provider';
 
 export class HealthMonitor {
   private providers: Map<string, AIProvider>;

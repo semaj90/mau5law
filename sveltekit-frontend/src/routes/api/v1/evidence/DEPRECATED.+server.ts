@@ -20,7 +20,7 @@
  * This route will be removed in, 30 days.
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   return json({

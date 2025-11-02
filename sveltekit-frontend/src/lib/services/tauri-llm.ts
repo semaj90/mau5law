@@ -1,12 +1,12 @@
 // Enhanced Tauri LLM Service with Gemma3 Integration
 // Extends the existing RAG system with local Rust-based LLM capabilities
-import type { Gemma3ModelConfig } from, '$lib/config/gemma3-config';
+import type { Gemma3ModelConfig } from '$lib/config/gemma3-config';
 import {
 	formatGemmaPrompt,
 	getInferenceSettings,
 	getSystemPromptForContext,
 	selectOptimalGemmaModel
-} from, '$lib/config/gemma3-config';
+} from '$lib/config/gemma3-config';
 
 declare global {
 	interface Window {

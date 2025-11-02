@@ -10,7 +10,7 @@ import {
   adaptiveQuantization,
   type QuantizationConfig,
   type ArrayConversionResult
-} from, '$lib/utils/webgpu-array-utils';
+} from '$lib/utils/webgpu-array-utils';
 
 export interface EvidenceFile { id: string;, name: string;
   type: string;

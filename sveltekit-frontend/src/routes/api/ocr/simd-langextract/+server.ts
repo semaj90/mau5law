@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { simdTextTilingEngine, type TextTileConfig } from, '$lib/ai/simd-text-tiling-engine.js';
-import { cache, cacheEmbedding, cacheSearchResults } from, '$lib/server/cache/redis';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { simdTextTilingEngine, type TextTileConfig } from '$lib/ai/simd-text-tiling-engine.js';
+import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
 /**
  * SIMD-Enhanced OCR LangExtract API
  *

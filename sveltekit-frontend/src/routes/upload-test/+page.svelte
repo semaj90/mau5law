@@ -1,8 +1,8 @@
 <!-- Test page for Simple File Upload with, RAG, integration -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import SimpleFileUpload from, '$lib/components/ai/SimpleFileUpload.svelte';
+  import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   interface ServiceStatus { healthy: boolean; [key: string]: any }
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: any }
   interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: any }

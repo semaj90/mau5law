@@ -1,20 +1,20 @@
 <!-- Enhanced File Upload Component with Full, Stack, Integration -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import { createMachine, interpret } from, 'xstate';
+  import { onMount, onDestroy } from 'svelte';
+  import { createMachine, interpret } from 'xstate';
 
-  import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from, 'lucide-svelte';
+  import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from 'lucide-svelte';
   // Store imports with TypeScript barrel exports
   import {
     notificationStore,
     evidenceStore
-  } from, '$lib/stores';
+  } from '$lib/stores';
   // Service imports
   // Use a namespace import and resolve the actual export at runtime.
   // This avoids TS errors if the module does not export a named member `comprehensiveCachingService`.
-  import * as comprehensiveCachingModule from, '$lib/services/comprehensive-caching-service';
+  import * as comprehensiveCachingModule from '$lib/services/comprehensive-caching-service';
   const comprehensiveCachingService: {
    , set: (key: string, value: any, ttlSeconds?: number) => Promise<void>;
   } = (comprehensiveCachingModule as: any)?.comprehensiveCachingService

@@ -1,7 +1,7 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { browser } from, '$app/environment';
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   let systemStatus = $state<any>(null);
   let memoryPrediction = $state<any>(null);
   let isLoading = $state<boolean>(true);

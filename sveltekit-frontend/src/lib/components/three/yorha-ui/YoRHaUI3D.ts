@@ -3,7 +3,7 @@
  * Low-poly Three.js UI components with Square Enix NieR: Automata gothic aesthetic
  * Advanced CSS-like styling capabilities for 3D interfaces
  */
-import * as THREE from, 'three';
+import * as THREE from 'three';
 // YoRHa Color Scheme (NieR: Automata inspired)
 export const YORHA_COLORS = {
   // Primary gothic palette

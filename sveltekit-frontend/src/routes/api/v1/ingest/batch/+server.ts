@@ -1,8 +1,8 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { INGEST_SERVICE_URL } from, '$env/static/private';
-import { env } from, '$env/dynamic/private';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { INGEST_SERVICE_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 // Configurable service URL and batch size with safe defaults
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';

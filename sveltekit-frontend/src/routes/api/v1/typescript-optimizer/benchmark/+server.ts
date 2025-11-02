@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // TypeScript Optimizer Benchmark Suite
 // Performance testing and comparison across different processing strategies
-import type { BenchmarkRequest, BenchmarkResult, PerformanceComparison } from, '$lib/types/typescript-optimizer';
-import { json } from, '@sveltejs/kit';
+import type { BenchmarkRequest, BenchmarkResult, PerformanceComparison } from '$lib/types/typescript-optimizer';
+import { json } from '@sveltejs/kit';
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 /* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */
 export const, POST: RequestHandler = async ({ request }) => {

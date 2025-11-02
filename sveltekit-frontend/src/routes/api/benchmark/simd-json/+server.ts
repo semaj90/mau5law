@@ -1,17 +1,17 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * SIMD JSON Benchmarking API Endpoint
  * Provides comprehensive performance testing for SIMD vs standard JSON parsing
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 import {
   benchmarkJSONParsing,
   getSIMDStatus,
   simdMetrics,
   readBodyFastWithMetrics
-} from, '$lib/simd/simd-json-integration.js'
+} from '$lib/simd/simd-json-integration.js'
 
 // Type definitions for non-standard browser APIs
 interface PerformanceWithMemory extends Performance {

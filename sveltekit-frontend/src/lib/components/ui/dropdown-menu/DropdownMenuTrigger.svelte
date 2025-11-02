@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import { getBitsNamespace } from, '$lib/utils/bits-ui-adapter';
-  import type { Snippet } from, 'svelte';
-  import { cn } from, '$lib/utils';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  import type { Snippet } from 'svelte';
+  import { cn } from '$lib/utils';
   // Resolve factory at runtime via adapter
   // make Trigger reactive so updates inside the async loader trigger component updates
   let Trigger: any = null;

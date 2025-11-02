@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { dev } from, '$app/environment';
-import { db } from, '$lib/server/db';
-import { embeddingCache, as embeddingTable } from, '$lib/server/db/schema-postgres-enhanced';
-import { sql } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { dev } from '$app/environment';
+import { db } from '$lib/server/db';
+import { embeddingCache, as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
+import { sql } from 'drizzle-orm';
 
 const QDRANT_URL = process.env.QDRANT_URL || import.meta.env.QDRANT_URL || '';
 const COLLECTION = 'legal_evidence';

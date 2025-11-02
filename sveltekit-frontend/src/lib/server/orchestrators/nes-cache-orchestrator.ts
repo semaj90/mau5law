@@ -1,5 +1,5 @@
 // src/lib/server/orchestrators/nes-cache-orchestrator.ts
-import type { MultiDimArray } from, '$lib/workers/gpu-tensor-worker';
+import type { MultiDimArray } from '$lib/workers/gpu-tensor-worker';
 class NesCacheOrchestrator {
   private store = new Map<string, MultiDimArray>();
   private paused = $state(false);

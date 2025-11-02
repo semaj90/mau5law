@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { browser } from, '$app/environment';
+  import { browser } from '$app/environment';
   interface Route {
     name: string;
    , href: string;

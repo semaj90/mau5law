@@ -19,8 +19,8 @@ export interface SearchCacheOptions extends CacheOptions {
 }
 
 // Add narrow interfaces to match runtime usage from external cache modules
-import type { AdvancedCacheManager as AdvancedCacheManagerType } from, '../../lib/caching/advanced-cache-manager';
-import type { NESCacheOrchestrator as NESCacheOrchestratorType } from, './nes-cache-orchestrator';
+import type { AdvancedCacheManager as AdvancedCacheManagerType } from '../../lib/caching/advanced-cache-manager';
+import type { NESCacheOrchestrator as NESCacheOrchestratorType } from './nes-cache-orchestrator';
 
 type AdvancedCacheManagerLike =
   | AdvancedCacheManagerType

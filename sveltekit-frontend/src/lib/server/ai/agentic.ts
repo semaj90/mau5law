@@ -1,4 +1,4 @@
-import type { AIResponse } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
 // AI Agentic System - Ollama Gemma3-Legal + TensorRT-LLM Triton Fallback
 import type {
   AIResponse,
@@ -9,7 +9,7 @@ import type {
   LegalAnalysisResult,
   VectorSearchQuery,
   VectorSearchResult
-} from, '$lib/types/ai-workflows';
+} from '$lib/types/ai-workflows';
 // ============================================================================
 // Configuration
 // ============================================================================

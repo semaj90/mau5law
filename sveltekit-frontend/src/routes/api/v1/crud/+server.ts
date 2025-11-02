@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltejs/kit';
-import { ensureError } from, '$lib/utils/ensure-error';
-import { db } from, '$lib/server/db';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
+import { db } from '$lib/server/db';
 import {
   users,
   cases,
@@ -12,9 +12,9 @@ import {
   personsOfInterest,
   ragMessages,
   ragSessions
-} from, '$lib/server/db/schema-postgres';
-import { sql, or, like } from, 'drizzle-orm';
-import { z } from, 'zod';
+} from '$lib/server/db/schema-postgres';
+import { sql, or, like } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Feature flags (env) and Docker host defaults
 const ENABLE_MCP = process.env.ENABLE_MCP === 'true';

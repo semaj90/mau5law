@@ -4,8 +4,8 @@ NES-styled label with legal AI theming
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-	import type { Snippet } from, 'svelte';
-  import { cn } from, '$lib/utils';
+	import type { Snippet } from 'svelte';
+  import { cn } from '$lib/utils';
   interface LabelProps {
     for?: string;
     required?: boolean;

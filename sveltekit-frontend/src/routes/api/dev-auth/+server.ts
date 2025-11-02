@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { dev } from, '$app/environment';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming
-import { db } from, '$lib/server/db/drizzle';
-import { users, sessions, cases } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { logger } from, '$lib/server/logger';
+import { db } from '$lib/server/db/drizzle';
+import { users, sessions, cases } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { logger } from '$lib/server/logger';
 /*
  * Development Authentication Endpoint
  * GET  -> create / ensure dev session (optional ?seed=true)

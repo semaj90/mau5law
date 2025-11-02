@@ -1,7 +1,7 @@
 // GRPO (Guided Reasoning and Policy Optimization) Thinking Response API v3
 // Advanced search and recommendation engine for legal reasoning chains with timestamp analysis
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 import {
   storeGrpoThinkingResponse,
   searchGrpoThinkingResponses,
@@ -13,10 +13,10 @@ import {
   type GrpoThinkingResponse,
   type ThinkingRecommendation,
   type GrpoBatchJob
-} from, '$lib/server/services/grpoThinkingService';
-import { generateEmbedding } from, '$lib/server/services/vectorDBService';
-import { grpoRateLimiter } from, '$lib/server/middleware/rate-limiter';
-import { createHash } from, 'node:crypto';
+} from '$lib/server/services/grpoThinkingService';
+import { generateEmbedding } from '$lib/server/services/vectorDBService';
+import { grpoRateLimiter } from '$lib/server/middleware/rate-limiter';
+import { createHash } from 'node:crypto';
 
 // Define an interface for the rate limiter result
 interface GrpoRateLimitResult {, allowed: boolean;, resetTime: number; // Unix timestamp in ms

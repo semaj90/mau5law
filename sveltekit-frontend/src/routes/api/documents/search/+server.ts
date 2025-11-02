@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import type { Document } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Enhanced Document Search API with PostgreSQL + pgvector + Cognitive Cache
-import { db, getDatabaseHealth } from, '$lib/server/db';
-import { legal_documents, evidence, cases } from, '$lib/server/db/schema-postgres';
-import { cognitiveCacheManager } from, '$lib/services/cognitive-cache-integration';
-import { sql, eq, and, or, gte, lte } from, 'drizzle-orm';
-import { generateEmbedding } from, '$lib/server/services/embedding-service';
+import { db, getDatabaseHealth } from '$lib/server/db';
+import { legal_documents, evidence, cases } from '$lib/server/db/schema-postgres';
+import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
+import { sql, eq, and, or, gte, lte } from 'drizzle-orm';
+import { generateEmbedding } from '$lib/server/services/embedding-service';
 // Ensure database is initialized
 const dbInitialized = false;
 export const POST: RequestHandler = async ({ request }) => {

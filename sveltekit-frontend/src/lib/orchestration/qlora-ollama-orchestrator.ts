@@ -3,9 +3,9 @@
  * Uses AutoGen/CrewAI patterns for multi-agent coordination
  * Integrates with Ollama for distilled model management
  */
-import { qloraWasmLoader } from, '$lib/wasm/qlora-wasm-loader';
-import { predictiveAssetEngine } from, '$lib/services/predictive-asset-engine';
-import type { Gemma3LegalConfig } from, '$lib/config/gemma3-legal-config';
+import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
+import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
+import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
 // Agent Types for AutoGen-style orchestration
 interface LegalAgent { id: string;, role: 'router' | 'contract' | 'litigation' | 'compliance' | 'research' | 'synthesis';
   name: string;

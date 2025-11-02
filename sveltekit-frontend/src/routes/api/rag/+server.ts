@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types.js'
+import type { RequestHandler } from './$types.js'
 /*
  * Enhanced RAG API Endpoints - Backend Integration
  * Integrates with Enhanced RAG Backend (localhost:8000)
@@ -12,9 +12,9 @@ import type { RequestHandler } from, './$types.js'
  * /api/rag/workflow - Multi-agent workflows
  * /api/rag/status - Service health check
  */
-import { summarizeWithQueue } from, "$lib/server/pgai"
-import { error, json } from, '@sveltejs/kit';
-import { URL } from, 'url';
+import { summarizeWithQueue } from "$lib/server/pgai"
+import { error, json } from '@sveltejs/kit';
+import { URL } from 'url';
 // Enhanced RAG Backend Configuration
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:8000';
 const RAG_TIMEOUT = 30000;

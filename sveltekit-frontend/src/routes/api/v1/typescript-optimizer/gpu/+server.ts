@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // GPU-Accelerated TypeScript Error Processing
 // NVIDIA RTX, 3060 Ti optimized processing for high-performance TypeScript error fixing
-import type { OptimizedFixRequest, OptimizedFixResponse, GPUProcessingStats } from, '$lib/types/typescript-optimizer';
+import type { OptimizedFixRequest, OptimizedFixResponse, GPUProcessingStats } from '$lib/types/typescript-optimizer';
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 /* POST /api/v1/typescript-optimizer/gpu - GPU-accelerated error processing */
 export const, POST: RequestHandler = async ({ request }) => {

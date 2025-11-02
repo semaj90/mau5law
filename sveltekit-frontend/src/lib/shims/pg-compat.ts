@@ -1,4 +1,4 @@
-import postgres from, 'postgres';
+import postgres from 'postgres';
 
 type PoolConfig = { connectionString?: string; max?: number };
 type ListenerCallback = (...args: any[]) => void;

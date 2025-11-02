@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
+import type { User } from '$lib/types';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 /*
  * Module Management API
  * Hot-swappable AI modules with zero-downtime updates
  * Supports A/B testing and user preference adaptation
  */
-import { productionServiceClient } from, '$lib/services/productionServiceClient'
+import { productionServiceClient } from '$lib/services/productionServiceClient'
 
 interface AIModule { id: string, name: string; version: string; capabilities: string[];, status: 'loaded' | 'unloaded' | 'loading' | 'error',
   metadata: {

@@ -4,9 +4,9 @@
  * Integrates with Lucia v3 authentication
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { authService, auth } from, '$lib/server/auth';
-import { isAuthError, formatErrorResponse } from, '$lib/server/errors';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { authService, auth } from '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from '$lib/server/errors';
 
 interface LoginRequest { email: string;, password: string;
 }

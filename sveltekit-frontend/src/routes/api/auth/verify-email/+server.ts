@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db/connection';
-import { emailVerificationCodes, users } from, '../../../../../drizzle/schema';
-import { eq, and, sql } from, 'drizzle-orm';
-import { z } from, 'zod';
+import type { User } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db/connection';
+import { emailVerificationCodes, users } from '../../../../../drizzle/schema';
+import { eq, and, sql } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Email verification request schema
 const VerifyEmailSchema = z.object({

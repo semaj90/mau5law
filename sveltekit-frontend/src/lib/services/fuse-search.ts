@@ -1,4 +1,4 @@
-import type { ButtonVariant, ButtonSize } from, '$lib/types/Button';
+import type { ButtonVariant, ButtonSize } from '$lib/types/Button';
 
 // Fuse.js search service for Button indexing
 export type ButtonInfo = { id: string;, keywords: string[]; // Add this line

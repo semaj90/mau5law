@@ -13,10 +13,10 @@
  *   await rag.initialize();
  *   const answer = await rag.query('What is the legal precedent for...?');
  */
-import { BrowserGemma } from, './browser-gemma';
-import { BrowserEmbeddings } from, './browser-embeddings';
-import type { Document } from, '@langchain/core/documents';
-import { PromptTemplate } from, '@langchain/core/prompts';
+import { BrowserGemma } from './browser-gemma';
+import { BrowserEmbeddings } from './browser-embeddings';
+import type { Document } from '@langchain/core/documents';
+import { PromptTemplate } from '@langchain/core/prompts';
 export interface RAGDocument { id: string;, content: string;
   metadata?: Record<string, any>;
   embedding?: number[];
@@ -261,8 +261,8 @@ export const browserRAG = new BrowserRAGChain();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserRAG } from, '$lib/ai/browser-rag-chain';
- *   import { onMount } from, 'svelte';
+ *   import { browserRAG } from '$lib/ai/browser-rag-chain';
+ *   import { onMount } from 'svelte';
  *
  *   let answer = $state<string>('');
  *   let isReady = $state<boolean>(false);

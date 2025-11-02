@@ -1,7 +1,7 @@
-import type { AIResponse } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Evidence AI Analysis Type
 export interface EvidenceAIAnalysis {
   // Core analysis metrics (required by the user)
@@ -874,7 +874,7 @@ export interface LegalDocument { id: string;, title: string;
  , type: string;
 }
 // Export User type for components (type-only for isolatedModules)
-export type { User } from, './user.js';
+export type { User } from './user.js';
 
 // New file: src/lib/types/api.ts
 

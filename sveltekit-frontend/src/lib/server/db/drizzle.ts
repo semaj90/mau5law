@@ -3,13 +3,13 @@
  * Generates a small integration layer over the existing db client, qdrant and minio helpers
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { db, as lazyDb } from, './client.js';
-import * as schema from, './schema-unified.js';
-import { sql } from, 'drizzle-orm/sql';
+import { db, as lazyDb } from './client.js';
+import * as schema from './schema-unified.js';
+import { sql } from 'drizzle-orm/sql';
 // intentionally not importing pgvector helper type here
-import { qdrantClient } from, '$lib/services/qdrant-client';
-import { Client, as MinioClient } from, 'minio';
-import { eq } from, './utils.js';
+import { qdrantClient } from '$lib/services/qdrant-client';
+import { Client, as MinioClient } from 'minio';
+import { eq } from './utils.js';
 // Safe runtime config placeholder (falls back to: undefined so calls like _CFG?.X work)
 const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis, as: any)._CFG) || undefined;
 // Lazy-load project's cache/redis helper at runtime.'

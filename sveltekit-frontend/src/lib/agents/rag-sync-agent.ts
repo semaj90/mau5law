@@ -1,5 +1,5 @@
-import { browser } from, '$app/environment'
-import { indexedDBService } from, '$lib/services/indexeddb-service'
+import { browser } from '$app/environment'
+import { indexedDBService } from '$lib/services/indexeddb-service'
 /**
  * Client-side background agent that periodically finds pending documents
  * in IndexedDB and sends them to the server sync endpoint for embedding & storage.

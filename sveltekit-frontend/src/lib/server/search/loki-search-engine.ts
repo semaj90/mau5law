@@ -1,5 +1,5 @@
-import loki, { Collection } from, 'lokijs';
-import type { SearchResult } from, './nats-quic-search-service';
+import loki, { Collection } from 'lokijs';
+import type { SearchResult } from './nats-quic-search-service';
 type LokiDoc = { id: string;, content: string;
   metadata?: Record<string, unknown>;
   embedding?: number[];

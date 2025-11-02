@@ -8,11 +8,11 @@
   - Advanced filtering capabilities
 -->
 <script, lang="ts">
-import type { SearchResult } from, '$lib/types';
-  import { onMount } from, "svelte";
-  import { Search, FileText, Scale, Shield, Users, Zap, Clock } from, 'lucide-svelte';
-  import { debounce } from, 'lodash-es';
-  import { cn } from, '$lib/utils/cn';
+import type { SearchResult } from '$lib/types';
+  import { onMount } from "svelte";
+  import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
+  import { debounce } from 'lodash-es';
+  import { cn } from '$lib/utils/cn';
   // Root element reference to dispatch DOM CustomEvents (parent can listen with onselect)
   let rootEl: HTMLElement | null = null;
 

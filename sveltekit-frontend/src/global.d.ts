@@ -21,7 +21,7 @@ declare module, '$lib/schemas/evidence-upload' {
 
 // Also support direct source path imports
 declare module, 'src/lib/schemas/evidence-upload' {
-  export * from, '$lib/schemas/evidence-upload';
+  export * from '$lib/schemas/evidence-upload';
 }
 
 // Minimal amqplib fallback typing for dynamic import sites

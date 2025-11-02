@@ -1,5 +1,5 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import { serverRerank } from, '$lib/server/ai/reranker';
+import type { RequestHandler } from '@sveltejs/kit';
+import { serverRerank } from '$lib/server/ai/reranker';
 
 export const POST: RequestHandler = async ({ request, headers }) => {
   const input = (await request.json()) as { query?: string; candidates?: { id: string;, text: string }[] };
@@ -19,10 +19,10 @@ export const POST: RequestHandler = async ({ request, headers }) => {
     return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
   }
 };
-import type { RequestHandler } from, '@sveltejs/kit';
-import { serverRerank, webgpuRerankFallback } from, '$lib/server/ai/ai-assistant-input-synthesizer';
-import type { RerankRequest, Candidate } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { serverRerank, webgpuRerankFallback } from '$lib/server/ai/ai-assistant-input-synthesizer';
+import type { RerankRequest, Candidate } from '$lib/types';
+import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\routes\api\rerank\+server.ts

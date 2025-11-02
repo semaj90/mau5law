@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, "@sveltejs/kit"
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from "@sveltejs/kit"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from '@sveltejs/kit';
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {

@@ -1,4 +1,4 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Worker Thread Script for CPU-Intensive Operations
  *
@@ -9,7 +9,7 @@ import type { Message } from, '$lib/types';
  * - Image processing (Sharp)
  * - Embedding requests
  */
-import { parentPort, workerData } from, 'worker_threads';
+import { parentPort, workerData } from 'worker_threads';
 import {
   extractTextFromImage,
   extractTextFromPDF,
@@ -17,13 +17,13 @@ import {
   sampleFramesFromVideo,
   parseJsonWithSimd,
   extractContent
-} from, './extractors.js';
+} from './extractors.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath,
   embedContent
-} from, './embed.js';
+} from './embed.js';
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');
 }

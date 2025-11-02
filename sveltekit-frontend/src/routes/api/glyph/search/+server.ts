@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { glyphDiffusionService } from, '$lib/services/glyph-diffusion-service.js'
-import { embeddingService } from, '$lib/services/embedding-service.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { glyphDiffusionService } from '$lib/services/glyph-diffusion-service.js'
+import { embeddingService } from '$lib/services/embedding-service.js'
 
 // Define the structure of metadata within a glyph manifest
 interface GlyphManifestMetadata {

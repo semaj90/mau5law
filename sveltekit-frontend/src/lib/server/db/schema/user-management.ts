@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * User Management Schema - Complete CRUD Operations
  * PostgreSQL + pgvector + Drizzle ORM
  */
-import { pgTable, text, timestamp, boolean, serial, varchar, jsonb, index, uniqueIndex } from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-// import { createInsertSchema, createSelectSchema } from, 'drizzle-zod'
-import { z } from, 'zod';
+import { pgTable, text, timestamp, boolean, serial, varchar, jsonb, index, uniqueIndex } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+// import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod';
 // ============================================================================
 // ZOD VALIDATION SCHEMAS
 // ============================================================================
@@ -211,7 +211,7 @@ export type FullUserProfile = User & {
 // ============================================================================
 // DATABASE RELATIONS (for Drizzle Relational Queries)
 // ============================================================================
-import { relations } from, 'drizzle-orm/relations';
+import { relations } from 'drizzle-orm/relations';
 export const usersRelations = relations(users, ({ one, many }) => ({
   profile: one(userProfiles, {
     fields: [users.id],

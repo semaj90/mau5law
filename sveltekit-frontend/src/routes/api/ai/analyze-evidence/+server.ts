@@ -1,5 +1,5 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
-import { redis } from, '$lib/server/redis-client';
+import { cuidSchema } from '$lib/server/z-schemas';
+import { redis } from '$lib/server/redis-client';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,14 +17,14 @@ import { redis } from, '$lib/server/redis-client';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from, '$lib/server/services/ai-service.js';
-import { evidence } from, '$lib/server/db/schema.js';
-import { z } from, 'zod';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { eq } from, 'drizzle-orm';
+import { aiService } from '$lib/server/services/ai-service.js';
+import { evidence } from '$lib/server/db/schema.js';
+import { z } from 'zod';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { eq } from 'drizzle-orm';
 
 const analysisSchema = z.object({
   evidenceId: cuidSchema,

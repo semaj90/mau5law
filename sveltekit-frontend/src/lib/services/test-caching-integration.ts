@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Test file for Enhanced Caching Integration
  * Validates embedding cache, query cache, and pgvector integration
  */
-import { enhancedCachingService } from, './enhanced-caching-service.js';
-import { cachedRAGService } from, './cached-rag-service.js';
-import { enhancedRAGQueryWithCache } from, './enhanced-rag-semantic-analyzer.js';
-import type { RAGQuery } from, './enhanced-rag-semantic-analyzer.js';
+import { enhancedCachingService } from './enhanced-caching-service.js';
+import { cachedRAGService } from './cached-rag-service.js';
+import { enhancedRAGQueryWithCache } from './enhanced-rag-semantic-analyzer.js';
+import type { RAGQuery } from './enhanced-rag-semantic-analyzer.js';
 
 export interface CacheTestResult { test: string;, success: boolean;
   duration: number;

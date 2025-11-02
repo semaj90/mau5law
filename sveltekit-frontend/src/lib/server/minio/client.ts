@@ -1,5 +1,5 @@
-import { Client, as MinioClient } from, 'minio';
-import { env } from, '$env/dynamic/private';
+import { Client, as MinioClient } from 'minio';
+import { env } from '$env/dynamic/private';
 // Parse MINIO_ENDPOINT which may be: 'host', 'host:port', or: 'http(s)://host:port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';
 let _host = _raw;

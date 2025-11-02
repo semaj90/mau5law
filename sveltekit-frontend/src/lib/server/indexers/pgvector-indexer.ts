@@ -1,5 +1,5 @@
 // Minimal pgvector indexer using Drizzle (safe no-op if db not configured)
-import type { InferInsertModel } from, 'drizzle-orm/table';
+import type { InferInsertModel } from 'drizzle-orm/table';
 // Lazy imports to avoid build failure when not configured
 export async function indexPgVector(doc: {, id: string;, text: string;, embedding: number[] }): Promise<any> {
   try {

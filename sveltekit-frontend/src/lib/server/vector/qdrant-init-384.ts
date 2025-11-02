@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Qdrant Collection Initialization for 384-Dimension Vectors
  *
@@ -7,8 +7,8 @@ import type { Case } from, '$lib/types';
  *, Date: 2025-10-17
  */
 
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { VECTOR_CONFIG } from, '../config/vector-config';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { VECTOR_CONFIG } from '../config/vector-config';
 
 export interface CollectionConfig { name: string;, description: string;
  , onDisk: boolean;

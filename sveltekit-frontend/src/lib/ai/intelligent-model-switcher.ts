@@ -3,9 +3,9 @@
  * Automatically switches between models based on user intent, learning patterns, and performance
  * Integrates CUDA cache optimizer, parallel cache, and user learning for optimal UX
  */
-// import { cudaCacheMemoryOptimizer } from, './cuda-cache-memory-optimizer.js'; // Temporarily disabled due to syntax errors
-import { unifiedClientLLMOrchestrator } from, './unified-client-llm-orchestrator.js';
-import { parallelCacheOrchestrator } from, '$lib/cache/parallel-cache-orchestrator.js';
+// import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js'; // Temporarily disabled due to syntax errors
+import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
+import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 // New: explicit types to avoid `any` and clarify shapes
 type UserIntentPrediction = {, intentCategory: string;, domainSpecificity: number;
   complexity: number;

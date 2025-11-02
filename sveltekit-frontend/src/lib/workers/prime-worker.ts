@@ -1,6 +1,6 @@
 // Prime computation worker (ESM)
 // Receives { start: number, end: number, mode: 'list' | 'count' }
-import { parentPort, workerData } from, 'node:worker_threads';
+import { parentPort, workerData } from 'node:worker_threads';
 interface WorkerInput {, start: number;, end: number;
   mode?: 'list' | 'count';
 }

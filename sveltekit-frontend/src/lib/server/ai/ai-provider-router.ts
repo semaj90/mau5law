@@ -19,8 +19,8 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-import Redis from, 'ioredis';
-import { createHash } from, 'crypto';
+import Redis from 'ioredis';
+import { createHash } from 'crypto';
 /**
  * LLM Provider Configuration
  */

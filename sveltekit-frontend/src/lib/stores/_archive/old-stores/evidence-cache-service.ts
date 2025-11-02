@@ -2,8 +2,8 @@
  * Evidence Analysis Result Caching Service
  * Optimized caching for Legal AI analysis results with Redis backend
  */
-import { redisComponentStore, type CacheOptions } from, './redis-component-store.js';
-import type { Evidence, AnalysisResult, CaseData } from, '$lib/types/legal-types.js';
+import { redisComponentStore, type CacheOptions } from './redis-component-store.js';
+import type { Evidence, AnalysisResult, CaseData } from '$lib/types/legal-types.js';
 export interface EvidenceAnalysisCache { evidenceId: string;, analysisType: 'similarity' | 'classification' | 'extraction' | 'correlation' | 'summary';
   result: AnalysisResult;
   confidence: number;

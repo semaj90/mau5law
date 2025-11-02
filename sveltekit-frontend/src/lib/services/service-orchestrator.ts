@@ -10,8 +10,8 @@ import type {
   PerformanceMetrics,
   ServiceCapabilities,
   EmergencyRecoveryContext
-} from, '$lib/types/orchestration';
-import os from, 'os';
+} from '$lib/types/orchestration';
+import os from 'os';
 
 // --- ADDED: local lightweight types to avoid missing exports and unsafe `any` usage ---
 type HealthState = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';

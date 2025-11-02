@@ -1,13 +1,13 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 // Simplified and type-safe evidence processing endpoint with an in-memory processing service
 // POST: start processing -> returns sessionId and jobId
 // GET:  ?jobId=... -> returns processing status
 //, DELETE: ?jobId=... -> cancels job
-import { db } from, '$lib/server/db';
-import { evidence } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { randomUUID } from, 'crypto';
+import { db } from '$lib/server/db';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
 // Type definitions for evidence processing
 export type StepName =

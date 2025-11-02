@@ -1,7 +1,7 @@
 <!-- Portal component for rendering modals outside the, component, tree -->
 <script, lang="ts">
-  import { onMount, onDestroy } from, 'svelte';
-  import type { Snippet } from, 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet;
   }

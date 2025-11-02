@@ -5,9 +5,9 @@
  * Unified setup and teardown for all test suites
  * Import this file in your test configuration (vitest.config.ts)
  */
-import { beforeAll, afterAll, beforeEach, afterEach } from, 'vitest';
-import { TEST_CONFIG, getTestConfig, TestConfigHelpers } from, './test-config.js';
-import { UnifiedTestUtils } from, './unified-test-utilities.js';
+import { beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import { TEST_CONFIG, getTestConfig, TestConfigHelpers } from './test-config.js';
+import { UnifiedTestUtils } from './unified-test-utilities.js';
 // ============================================================================
 // GLOBAL TEST ENVIRONMENT SETUP
 // ============================================================================

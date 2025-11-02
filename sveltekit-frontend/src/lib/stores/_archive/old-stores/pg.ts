@@ -1,5 +1,5 @@
 /// <reference, types="vite/client" />
-import pgClient, { poolShim } from, '$lib/server/db-shim';
+import pgClient, { poolShim } from '$lib/server/db-shim';
 
 const pool = poolShim;
 

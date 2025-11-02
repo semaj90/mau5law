@@ -2,10 +2,10 @@
  * Database Connection with Drizzle ORM + pgvector Integration
  * PostgreSQL + pgvector support for YoRHa Legal AI Platform
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import postgres from, 'postgres';
-import * as schema from, './schema-jsonb.js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema-jsonb.js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Environment configuration with fallbacks for legal_ai_db
 const DATABASE_URL = import.meta.env.DATABASE_URL ||
   `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5434'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db` }`'`
@@ -170,7 +170,7 @@ export async function closeConnection(): Promise<void> {
 // Default export for convenience
 export default db;
 // Type exports for external use
-export type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+export type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 export type Database = typeof db;
 // Re-export schema for convenience
-export * from, './schema.js';
+export * from './schema.js';

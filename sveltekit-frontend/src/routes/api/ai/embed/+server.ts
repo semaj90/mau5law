@@ -15,10 +15,10 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { OPENAI_API_KEY, NOMIC_API_KEY } from, '$env/static/private'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { OPENAI_API_KEY, NOMIC_API_KEY } from '$env/static/private'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 interface EmbedRequest {
   text: string
   model?: 'openai' | 'nomic' | 'mock'
@@ -66,7 +66,7 @@ async function getNomicEmbedding(text: string): Promise<any> {
      , model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',
-      dimensionality_reduction: 768 // Reduce from, 8192 to, 768 for better performance
+      dimensionality_reduction: 768 // Reduce from 8192 to, 768 for better performance
     })
   })
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {

@@ -1,4 +1,4 @@
-import type { RequestHandler } from, '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 // Simple proxy endpoint to fetch current runtime metrics and top signatures
 export const GET: RequestHandler = async () => {
   try {

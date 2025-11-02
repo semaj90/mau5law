@@ -2,9 +2,9 @@
  * API Endpoint: Legal Precedent Discovery
  * Phase, 4 - Auto-Discovery Engine Integration
  */
-import type { RequestHandler } from, '@sveltejs/kit';
-import type { PrecedentDiscovery } from, '$lib/services/legal-precedent-discovery';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import type { PrecedentDiscovery } from '$lib/services/legal-precedent-discovery';
+import { json } from '@sveltejs/kit';
 
 // Add: typed shape for the runtime module (constructor-based export)
 type PrecedentDiscoveryModule = {

@@ -9,9 +9,9 @@
  * - RTX, 3060 Ti optimizations with FlashAttention2 integration
  * - Thread-safe multi-core parallelism with SIMD acceleration
  */
-import { cache } from, './cache/redis.js';
-import { gpuCoordinator } from, './gpu-thread-coordinator.js';
-import { textureStreamer } from, '../gpu/texture-streaming-service.js';
+import { cache } from './cache/redis.js';
+import { gpuCoordinator } from './gpu-thread-coordinator.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js';
 interface GPUMetrics { gpuUtilization: number;, memoryUsage: number;
   tensorCoreLoad: number;
   thermalStatus: 'cool' | 'warm' | 'hot';

@@ -1,4 +1,4 @@
-<script, lang="ts"> import type { Snippet } from, 'svelte'; import Button from, '$lib/components/ui/Button.svelte'; import { Dialog, as BitsDialog } from, "bits-ui"; // Event callbacks via props - Svelte, 5 pattern import { superForm } from, "sveltekit-superforms"; interface Props { data: any; open?: boolean; onsuccess?: () => void; onclose?: () => void; }
+<script, lang="ts"> import type { Snippet } from 'svelte'; import Button from '$lib/components/ui/Button.svelte'; import { Dialog, as BitsDialog } from "bits-ui"; // Event callbacks via props - Svelte, 5 pattern import { superForm } from "sveltekit-superforms"; interface Props { data: any; open?: boolean; onsuccess?: () => void; onclose?: () => void; }
   let { data, open = $bindable(false), onsuccess, onclose } = $props<Props>(); // Using callback props instead of event dispatching const { form, errors, submitting, message, enhance } = superForm( data.loginForm, {
       onUpdated: ({ form }) => { if (form.valid) onsuccess?.(); }
   } ); function handleOpenChange(isOpen: boolean) { open = isOpe; if (!open) { onclose?.(); }

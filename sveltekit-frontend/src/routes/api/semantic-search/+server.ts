@@ -18,15 +18,15 @@
  * - Intelligent caching with TTL
  * - Multi-table search (evidence, cases, documents)
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { searchSimilarDocuments, services } from, '$lib/server/services';
-import { db } from, '$lib/server/db/unified-client';
-import { sql } from, 'drizzle-orm';
-import { fastStringify } from, '$lib/utils/fast-json';
-import { getOllamaEndpoint } from, '$lib/server/ollama';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { searchSimilarDocuments, services } from '$lib/server/services';
+import { db } from '$lib/server/db/unified-client';
+import { sql } from 'drizzle-orm';
+import { fastStringify } from '$lib/utils/fast-json';
+import { getOllamaEndpoint } from '$lib/server/ollama';
 
 // New/relocated constants and typed cache (moved before handlers)
 const PREFERRED_EMBEDDING_MODEL = 'embeddinggemma:latest';

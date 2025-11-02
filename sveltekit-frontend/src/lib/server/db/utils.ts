@@ -1,8 +1,8 @@
 // Centralized Drizzle ORM helpers and DB exports for the project
 // Tailored for Drizzle ORM v0.44.7 (modular imports)
-import db, { testRuntimeConnection, closeConnections } from, '../db/client.js';
+import db, { testRuntimeConnection, closeConnections } from '../db/client.js';
 // add Node createRequire import for TypeScript (server-side helper)
-import { createRequire } from, 'module';
+import { createRequire } from 'module';
 
 // Assuming adminDb is the same as the primary db connection if not exported separately.
 const adminDb = db;
@@ -62,7 +62,7 @@ try {
   sqlTag = sqlStub;
 }
 // pg-core exports for schemas/types
-export * from, 'drizzle-orm/pg-core';
+export * from 'drizzle-orm/pg-core';
 // Re-exports (friendly names)
 export const eq = eqExpr;
 export const and = andExpr;

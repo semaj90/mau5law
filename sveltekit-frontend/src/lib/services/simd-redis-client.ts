@@ -1,7 +1,7 @@
 // SIMD Redis Client - Bridge between SvelteKit and Go SIMD GPU Parser
 // Connects to go-microservice/simd_gpu_parser.go and simd_parser.go
-import { browser } from, '$app/environment';
-// import { dev } from, '$app/environment'
+import { browser } from '$app/environment';
+// import { dev } from '$app/environment'
 interface SIMDParseResult { parser: string;, size: number;
   parse_time_ns: number;
   throughput_mbps?: number;

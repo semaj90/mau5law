@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Replaced melt with bits-ui components
-  import { setContext } from, 'svelte';
+  import { setContext } from 'svelte';
   interface Props {
     children?: import('svelte').Snippet;
   }

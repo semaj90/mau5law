@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /* Server helper: adapter-ranking
 
 Provides small helpers to pick the top adapter from Redis and record
 adapter usage/feedback into Neo4j. This file intentionally keeps I/O
 side-effects optional and defensive so importing it won't crash in tests.'
 */
-import type { RedisClientType } from, 'redis';
-import type { Driver } from, 'neo4j-driver';
+import type { RedisClientType } from 'redis';
+import type { Driver } from 'neo4j-driver';
 
 export type AdapterRank = { id: string;, score: number };
 

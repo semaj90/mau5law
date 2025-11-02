@@ -2,10 +2,10 @@
  * NES-Style GPU Bridge - Integrates NES caching architecture with GPU acceleration
  * Provides 8-bit efficiency optimizations for modern GPU computing
  */
-import type { CanvasState } from, '$lib/types';
-import type { MultiDimArray, GPUProcessingStats } from, '$lib/workers/gpu-tensor-worker';
-import { createActor } from, 'xstate';
-import { systemMonitorMachine } from, '$lib/machines/system-monitor';
+import type { CanvasState } from '$lib/types';
+import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker';
+import { createActor } from 'xstate';
+import { systemMonitorMachine } from '$lib/machines/system-monitor';
 
 // NES-style memory hierarchy mapping to modern GPU
 export interface NESGPUMemoryHierarchy { prgRom: Float32Array;      // Global Memory (VRAM), chrRom: Uint8ClampedArray; // L2 Cache (pattern tables)

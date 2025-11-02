@@ -1,5 +1,5 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import { createClient, type RedisClientType } from, 'redis';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { createClient, type RedisClientType } from 'redis';
 // Prefer an explicit REDIS_URL from env, but keep a sensible default.
 const REDIS_URL = process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
 let, redisClient: RedisClientType | null = null;

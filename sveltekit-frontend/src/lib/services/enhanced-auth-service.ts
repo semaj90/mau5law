@@ -1,14 +1,14 @@
-import { lucia } from, '$lib/auth/session';
-import { db } from, '$lib/server/db';
-import { users, sessions, userAuditLogs, type User } from, '$lib/database/schema';
+import { lucia } from '$lib/auth/session';
+import { db } from '$lib/server/db';
+import { users, sessions, userAuditLogs, type User } from '$lib/database/schema';
 // replaced gte with sql usage; import sql helper
-import { eq, and, sql } from, '$lib/server/db/utils';
+import { eq, and, sql } from '$lib/server/db/utils';
 // use bcryptjs to avoid missing type issues
 // Note: Using: 'bcryptjs' for browser compatibility. For Node.js-only environments, consider: 'bcrypt' for better performance.
-import bcrypt from, 'bcryptjs';
-import crypto from, 'crypto';
-import type { RequestEvent } from, '@sveltejs/kit';
-import type { Session } from, 'lucia';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import type { RequestEvent } from '@sveltejs/kit';
+import type { Session } from 'lucia';
 
 export interface AuthResult {
   success: boolean;

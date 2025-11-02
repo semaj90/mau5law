@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Loki.js + Redis High-Performance Caching - Phase, 14
  *
@@ -8,11 +8,11 @@ import type { SearchResult } from, '$lib/types';
  * - Legal AI context awareness with document type optimization
  * - NES memory architecture integration for overflow management
  */
-import Loki from, 'lokijs';
-// import { redisService } from, '$lib/server/redis-service.js';
-// import { nesMemory, type, LegalDocument } from, '../memory/nes-memory-architecture.js';
-import { EventEmitter } from, 'events';
-import crypto from, 'crypto';
+import Loki from 'lokijs';
+// import { redisService } from '$lib/server/redis-service.js';
+// import { nesMemory, type, LegalDocument } from '../memory/nes-memory-architecture.js';
+import { EventEmitter } from 'events';
+import crypto from 'crypto';
 // Conditional imports to avoid circular dependencies
 const redisServicePromise = import('$lib/server/redis-service.js')
 	.then((m) => m.redisService)

@@ -3,11 +3,11 @@
  * Demonstrates SSR data loading for the database sync integration test
  * Extends the main legal-ai page loader with testing-specific data
  */
-import type { PageServerLoad } from, './$types.js';
-import { db } from, '$lib/server/db/index.js';
-import { legalDocuments, ragSessions } from, '$lib/server/db/schema-postgres.js';
-import { desc, eq, count, sql } from, 'drizzle-orm';
-import { langExtractService } from, '$lib/services/langextract-ollama-service.js';
+import type { PageServerLoad } from './$types.js';
+import { db } from '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
+import { desc, eq, count, sql } from 'drizzle-orm';
+import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 // Enhanced types for testing page
 export interface DatabaseSyncTestData { initialState: {, langchainService: {, isAvailable: boolean;, models: string[];
       error: string | null;

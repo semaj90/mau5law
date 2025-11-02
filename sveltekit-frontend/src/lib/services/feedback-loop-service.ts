@@ -1,15 +1,15 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Enhanced Feedback Loop Service with PostgreSQL + pgvector
  * Collects user ratings, trains on interactions, and provides adaptive AI responses with semantic analysis
  */
-import { db, as untypedDb } from, '$lib/server/db/drizzle'; // Import as untypedDb
-import { NodePgDatabase } from, 'drizzle-orm/node-postgres'; // For typing Drizzle DB
-import * as mainSchema from, '$lib/server/db/schema'; // Import main schema as a namespace
-import { feedbackSchema } from, '$lib/server/db/schema-feedback'; // Import feedback schema as a named export
-import { eq, desc, sql, and, gte, lt } from, 'drizzle-orm';
-import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Ensure this import exists
-import { OllamaEmbeddingService, type EmbeddingService } from, './ollama-embedding-client'; // NEW: Import centralized service
+import { db, as untypedDb } from '$lib/server/db/drizzle'; // Import as untypedDb
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
+import * as mainSchema from '$lib/server/db/schema'; // Import main schema as a namespace
+import { feedbackSchema } from '$lib/server/db/schema-feedback'; // Import feedback schema as a named export
+import { eq, desc, sql, and, gte, lt } from 'drizzle-orm';
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Ensure this import exists
+import { OllamaEmbeddingService, type EmbeddingService } from './ollama-embedding-client'; // NEW: Import centralized service
 
 // Define the combined schema type
 type AppSchema = typeof mainSchema & typeof feedbackSchema;

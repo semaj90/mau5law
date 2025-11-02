@@ -1,13 +1,13 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 3D Asset Search API with Neural Topology Integration
  * Connects enhanced reinforcement learning cache with brain graph topology
  * Implements AI-driven predictive asset discovery for legal 3D visualizations
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { reinforcementLearningCache } from, '$lib/caching/reinforcement-learning-cache';
-import { reinforcementLearningCache, as serverCache } from, '$lib/caching/reinforcement-learning-cache.server';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
+import { reinforcementLearningCache, as serverCache } from '$lib/caching/reinforcement-learning-cache.server';
 // 3D Asset Categories for Legal AI Platform
 interface Asset3DSearchRequest { query: string;, context: {
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';

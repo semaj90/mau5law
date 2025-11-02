@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import { Select } from, 'bits-ui';
+  import type { Snippet } from 'svelte';
+  import { Select } from 'bits-ui';
   interface Props {
     children?: import('svelte').Snippet;
     class?: string;

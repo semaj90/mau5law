@@ -1,11 +1,11 @@
-import type { User } from, '$lib/types';
-import type { PageServerLoad, Actions } from, './$types.js';
-import { fail, redirect } from, '@sveltejs/kit';
-import { auth } from, '$lib/server/auth';
-import { Argon2id } from, 'oslo/password';
-import { db } from, '$lib/server/db/drizzle';
-import { users } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
+import type { User } from '$lib/types';
+import type { PageServerLoad, Actions } from './$types.js';
+import { fail, redirect } from '@sveltejs/kit';
+import { auth } from '$lib/server/auth';
+import { Argon2id } from 'oslo/password';
+import { db } from '$lib/server/db/drizzle';
+import { users } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
   // Redirect if already logged in

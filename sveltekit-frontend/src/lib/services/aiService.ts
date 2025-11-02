@@ -1,4 +1,4 @@
-import { writable } from, "svelte/store"; export interface AIState { isLoading: boolean;, summary: string | null; error: string | null; lastSummarizedContent: string | null; model: string; }
+import { writable } from "svelte/store"; export interface AIState { isLoading: boolean;, summary: string | null; error: string | null; lastSummarizedContent: string | null; model: string; }
 export interface SummarizeRequest { content: string; type?: 'report' | 'evidence' | 'poi' | 'general'; caseId?: string; sourceId?: string; }
 export interface SummarizeResponse {, summary: string;, model: string;, processingTime: number; confidence?: number; }
 function createAIService() { const { subscribe, set, update } = writable<AIState>({ isLoading: false, summary: null, error: null, lastSummarizedContent: null; , model: 'gemma3-legal:latest'

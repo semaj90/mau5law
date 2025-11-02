@@ -6,7 +6,7 @@
  * -;, SVG: Clean, scalable UI elements (16-bit SNES aesthetic)
  * - PNG: Authentic 8-bit pixel art (NES aesthetic)
  */
-// Removed: import type { CHRROMPattern } from, './chr-rom-precomputation.js';
+// Removed: import type { CHRROMPattern } from './chr-rom-precomputation.js';
 
 // Define CHRROMPattern interface based on usage in this file
 export interface CHRROMPattern { type: 'icon' | 'indicator' | 'gauge' | 'heatmap' | 'badge' | 'graph' | 'color' | 'default';, size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'scalable';

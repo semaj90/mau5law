@@ -10,7 +10,7 @@
  *
  * Implements the: "tricubic tensor" model on GPU for maximum performance
  */
-import type { GraphVisualizationData, LegalEntity, DocumentCache } from, '$lib/db/client-db';
+import type { GraphVisualizationData, LegalEntity, DocumentCache } from '$lib/db/client-db';
 
 export interface WebGPUGraphConfig { maxNodes: number;, maxEdges: number;
   canvasWidth: number;

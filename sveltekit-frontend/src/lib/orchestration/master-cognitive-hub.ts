@@ -3,13 +3,13 @@
  * Integrates all cognitive systems into a unified, intelligent platform
  * Features: Secret passages, Easter eggs, advanced developer tools, and emergent intelligence
  */
-import { writable } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { cognitiveRoutingOrchestrator } from, './cognitive-routing-orchestrator.js';
-import { reinforcementLearningCache } from, '../caching/reinforcement-learning-cache.js';
-import { multiDimensionalRoutingMatrix } from, '../routing/multidimensional-routing-matrix.js';
-import { physicsAwareGPUOrchestrator } from, '../gpu/physics-aware-gpu-orchestrator.js';
-import { webgpuRAGService } from, '../webgpu/webgpu-rag-service.js';
+import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { cognitiveRoutingOrchestrator } from './cognitive-routing-orchestrator.js';
+import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.js';
+import { multiDimensionalRoutingMatrix } from '../routing/multidimensional-routing-matrix.js';
+import { physicsAwareGPUOrchestrator } from '../gpu/physics-aware-gpu-orchestrator.js';
+import { webgpuRAGService } from '../webgpu/webgpu-rag-service.js';
 // 🎮 Master cognitive state with secret developer modes
 export interface MasterCognitiveState {
   // Core systems status

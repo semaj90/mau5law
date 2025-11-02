@@ -2,10 +2,10 @@
  * SSR QLoRA Chat API Endpoint
  * Integrates with Ollama, WASM bridge, XState machines, and AI components
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { ssrChatAssistant } from, '$lib/server/chat/ssr-qlora-gpu-chat-assistant';
-import { qloraRLOrchestrator } from, '$lib/services/qlora-rl-langextract-integration';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { ssrChatAssistant } from '$lib/server/chat/ssr-qlora-gpu-chat-assistant';
+import { qloraRLOrchestrator } from '$lib/services/qlora-rl-langextract-integration';
 // SSR Chat Response for initial page load
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const userId = url.searchParams.get('userId');

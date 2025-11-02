@@ -2,7 +2,7 @@
  * Vector Search Store - PostgreSQL pgvector + Ollama Integration
  * Enhanced RAG with semantic search capabilities
  */
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
 type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
 

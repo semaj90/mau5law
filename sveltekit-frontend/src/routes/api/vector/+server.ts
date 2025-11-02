@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Minimal Vector API - Simplified for error reduction
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Simple request schema
 const VectorRequestSchema = z.object({
   query: z.string().min(1),

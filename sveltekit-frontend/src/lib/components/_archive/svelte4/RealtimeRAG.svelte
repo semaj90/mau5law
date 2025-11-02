@@ -1,11 +1,11 @@
 <!-- Real-time RAG, Interface, Component -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import { useMachine } from, '@xstate/svelte';
-  import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from, '$lib/stores/realtime-rag.svelte.js';
+  import { onMount, onDestroy } from 'svelte';
+  import { useMachine } from '@xstate/svelte';
+  import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from '$lib/stores/realtime-rag.svelte.js';
   // Props for integration with existing components
   let {
     selectedCaseId = $bindable(),

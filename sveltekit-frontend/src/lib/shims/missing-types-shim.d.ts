@@ -1,12 +1,12 @@
-import type { AIResponse } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
 // Missing type definitions shim for common global types
 // Progressive replacement: Using proper Svelte, 5 TypeScript patterns
 import type {
   AITask as ProperAITask,
   AIResponse as ProperAIResponse,
   WorkerStatus as ProperWorkerStatus
-} from, '../types/svelte5-patterns';
+} from '../types/svelte5-patterns';
 // AI/LLM Types - Using proper definitions
 declare global {
   type LLMProvider = 'ollama' | 'openai' | 'anthropic' | 'huggingface';
@@ -54,7 +54,7 @@ import type {
   EvidenceSearchRequest as ProperEvidenceSearchRequest,
   BulkOperationResponse as ProperBulkOperationResponse,
   FormSubmissionResult as ProperFormSubmissionResult
-} from, '../types/svelte5-patterns';
+} from '../types/svelte5-patterns';
 declare global {
   type CaseCreateRequest = ProperCaseCreateRequest;
   type CaseUpdateRequest = ProperCaseUpdateRequest;
@@ -78,7 +78,7 @@ import type {
   EvidenceState,
   VectorSearchResult as ProperVectorSearchResult,
   VectorSearchOptions as ProperVectorSearchOptions
-} from, '../types/svelte5-patterns';
+} from '../types/svelte5-patterns';
 declare module, '$lib/types/database' {
   export type LegalDocument = { id: string;, title: string;
     content: string;

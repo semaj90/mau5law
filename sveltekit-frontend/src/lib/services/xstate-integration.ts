@@ -1,20 +1,20 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * XState Integration Service - Complete Component Wiring
  * Connects all XState machines with Svelte components for comprehensive state management
  * Includes WebTransport for ultra-low latency client-server communication
  */
-import { createActor, type ActorRefFrom } from, 'xstate';
-import { writable, derived, type Writable, type Readable } from, 'svelte/store';
+import { createActor, type ActorRefFrom } from 'xstate';
+import { writable, derived, type Writable, type Readable } from 'svelte/store';
 // Import all XState machines
-import { authMachine } from, '../machines/auth-machine.js';
-import { sessionMachine, sessionActions } from, '../machines/sessionMachine.js';
-import { aiAssistantMachine } from, '../machines/aiAssistantMachine.js';
-import { agentShellMachine } from, '../machines/agentShellMachine.js';
+import { authMachine } from '../machines/auth-machine.js';
+import { sessionMachine, sessionActions } from '../machines/sessionMachine.js';
+import { aiAssistantMachine } from '../machines/aiAssistantMachine.js';
+import { agentShellMachine } from '../machines/agentShellMachine.js';
 // Import transport and messaging services (relative to services folder)
-import { WebTransportService } from, './webtransport-service.js';
-import { rabbitmqXStateBridge } from, './rabbitmq-xstate-bridge.js';
+import { WebTransportService } from './webtransport-service.js';
+import { rabbitmqXStateBridge } from './rabbitmq-xstate-bridge.js';
 
 /*
  Temporarily allow explicit `any` in this file as part of the migration

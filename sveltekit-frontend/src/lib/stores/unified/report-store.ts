@@ -8,13 +8,13 @@
  * - report-export.ts
  *
  *, Usage:
- *   import { reportStore } from, '$lib/stores/unified';
+ *   import { reportStore } from '$lib/stores/unified';
  *
  *   await reportStore.createReport('legal_memo');
  *   $: reports = $reportStore.reports;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -492,9 +492,9 @@ export const editorContent = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { reports, createReport } from, '$lib/stores/reports'
- *   import { reportStore } from, '$lib/stores/reportStore'
+ *   import { reports, createReport } from '$lib/stores/reports'
+ *   import { reportStore } from '$lib/stores/reportStore'
  *
  * New imports:
- *   import { reportStore, reports, activeReport } from, '$lib/stores/unified'
+ *   import { reportStore, reports, activeReport } from '$lib/stores/unified'
  */

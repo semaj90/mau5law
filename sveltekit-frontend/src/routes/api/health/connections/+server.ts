@@ -12,8 +12,8 @@
  * - No connection recreation per request
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { healthCheckAll } from, '$lib/server/connections/connection-pool';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { healthCheckAll } from '$lib/server/connections/connection-pool';
 
 /**
  * GET /api/health/connections

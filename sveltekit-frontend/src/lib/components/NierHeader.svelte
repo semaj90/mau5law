@@ -4,9 +4,9 @@
     user: User | null;
   }
   let { user = null }: Props = $props();
-  import { goto } from, '$app/navigation';
-  import  SearchInput  from, "./SearchInput.svelte";
-  import type { User } from, '$lib/types/user';
+  import { goto } from '$app/navigation';
+  import  SearchInput  from "./SearchInput.svelte";
+  import type { User } from '$lib/types/user';
   // Svelte, 5 reactive state
   let searchQuery = $state<string>('');
   let userMenuOpen = $state<boolean>(false);

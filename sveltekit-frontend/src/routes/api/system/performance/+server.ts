@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit'
-import { productionLogger } from, '$lib/server/production-logger'
-import os from, "os"
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import { productionLogger } from '$lib/server/production-logger'
+import os from "os"
+import type { RequestHandler } from './$types.js'
 
 export interface LegalAiPlatformMetrics { services: {, healthy: number;
     total: number;

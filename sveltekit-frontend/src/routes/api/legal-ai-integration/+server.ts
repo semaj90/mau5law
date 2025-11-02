@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit'
-import { legalAIIntegration } from, '$lib/services/quic-legal-ai-integration.js'
-import type { RequestHandler } from, './$types.js'
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit'
+import { legalAIIntegration } from '$lib/services/quic-legal-ai-integration.js'
+import type { RequestHandler } from './$types.js'
 
 // GET: System status and health
 export const, GET: RequestHandler = async ({ url }) => {

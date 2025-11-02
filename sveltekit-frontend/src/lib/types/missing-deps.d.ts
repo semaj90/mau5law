@@ -28,7 +28,7 @@ declare module, 'fuse.js' {
   export = Fuse;
 }
 declare module, '@tiptap/extension-table-row' {
-  import { Node } from, '@tiptap/core';
+  import { Node } from '@tiptap/core';
   export interface TableRowOptions {
     HTMLAttributes?: { [key: string]: any };
   }
@@ -36,7 +36,7 @@ declare module, '@tiptap/extension-table-row' {
   export default TableRow;
 }
 declare module, '@tiptap/extension-table-cell' {
-  import { Node } from, '@tiptap/core';
+  import { Node } from '@tiptap/core';
   export interface TableCellOptions {
     HTMLAttributes?: { [key: string]: any };
     resizable?: boolean;
@@ -45,7 +45,7 @@ declare module, '@tiptap/extension-table-cell' {
   export default TableCell;
 }
 declare module, '@tiptap/extension-table-header' {
-  import { Node } from, '@tiptap/core';
+  import { Node } from '@tiptap/core';
   export interface TableHeaderOptions {
     HTMLAttributes?: { [key: string]: any };
     resizable?: boolean;
@@ -54,7 +54,7 @@ declare module, '@tiptap/extension-table-header' {
   export default TableHeader;
 }
 declare module, '@tiptap/extension-table' {
-  import { Node } from, '@tiptap/core';
+  import { Node } from '@tiptap/core';
   export interface TableOptions {
     HTMLAttributes?: { [key: string]: any };
     resizable?: boolean;

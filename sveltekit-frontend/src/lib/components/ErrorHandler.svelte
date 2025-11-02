@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { toasts, removeToast } from, '$lib/stores/errorStore';
+  import { toasts, removeToast } from '$lib/stores/errorStore';
   // Using store directly in template via $toasts
 </script>
 <style>

@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { unifiedLegalProcessor } from, '$lib/services/unified-legal-simd-pgvector'
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector'
 /*
  * Full Stack Demo: SIMD + PGVector + Redis + GPU Integration
  * Tests all components of the YoRHa Legal AI system

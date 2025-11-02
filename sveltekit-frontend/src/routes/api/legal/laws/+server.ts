@@ -10,11 +10,11 @@
  * Routes to enhanced-rag-service.exe for statute analysis
  * Database, Tables: statutes, legalPrecedents, legalDocuments
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/db';
-import { statutes, legalPrecedents } from, '$lib/server/db/schema-postgres';
-import { eq, like, and, desc } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db';
+import { statutes, legalPrecedents } from '$lib/server/db/schema-postgres';
+import { eq, like, and, desc } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

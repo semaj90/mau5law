@@ -4,8 +4,8 @@
  * GET /api/admin/service-graph
  */
 
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 interface Service { id: string;, label: string;
   type: string;

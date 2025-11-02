@@ -1,14 +1,14 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 import {
   analyzeLegalDocument,
   compareWithRAGDocuments,
   type LegalDocumentMetadata,
   type ComparisonResult
-} from, '$lib/server/ai/legal-document-analyzer';
-import { minioService } from, '$lib/server/storage/minio-service';
-import { unifiedOCRService } from, '$lib/services/unified-ocr-service';
+} from '$lib/server/ai/legal-document-analyzer';
+import { minioService } from '$lib/server/storage/minio-service';
+import { unifiedOCRService } from '$lib/services/unified-ocr-service';
 
 /**
  * POST /api/legal-report/analyze

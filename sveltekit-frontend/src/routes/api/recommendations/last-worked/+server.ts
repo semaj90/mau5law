@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 💼 Last Worked On Items API
  * Returns user's recent work activity with time tracking'
  */
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { multiLayerCache } from, '$lib/cache/MultiLayerCacheSystem';
-import { calculateDocumentPriority } from, '$lib/config/legal-priorities';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
+import { calculateDocumentPriority } from '$lib/config/legal-priorities';
 interface WorkItem { id: string;, type: 'case' | 'document' | 'evidence' | 'contract' | 'research';
   title: string;
   lastWorked: string;

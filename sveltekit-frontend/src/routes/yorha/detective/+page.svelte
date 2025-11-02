@@ -4,12 +4,12 @@
 </svelte:head>
 
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 
-  import { browser } from, '$app/environment';
-  import { goto } from, '$app/navigation';
-  import YoRHaCommandCenter from, '$lib/components/yorha/YoRHaCommandCenter.svelte';
-  import { onMount } from, 'svelte';
+  import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
+  import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
+  import { onMount } from 'svelte';
   import {
     Activity,
     BarChart3,
@@ -21,7 +21,7 @@ import type { Case } from, '$lib/types';
     Search,
     Terminal,
     Users
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
 
   type SectionId =
     | 'command-center'

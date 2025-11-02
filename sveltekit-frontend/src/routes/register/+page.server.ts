@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
-import { registerSchema } from, '$lib/schemas/auth';
-import { db, users, helpers } from, '$lib/server/db';
-import { hashPassword } from, '$lib/server/lucia';
-import { fail, redirect } from, '@sveltejs/kit';
-import type { JSONSchema7 } from, 'json-schema';
-import { message, superValidate } from, 'sveltekit-superforms';
-import { zod } from, 'sveltekit-superforms/adapters';
-import type { Actions, PageServerLoad } from, './$types.js';
+import type { User } from '$lib/types';
+import { registerSchema } from '$lib/schemas/auth';
+import { db, users, helpers } from '$lib/server/db';
+import { hashPassword } from '$lib/server/lucia';
+import { fail, redirect } from '@sveltejs/kit';
+import type { JSONSchema7 } from 'json-schema';
+import { message, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { Actions, PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
   if (locals.user) {
   throw redirect(303, '/(ai)/dashboard');

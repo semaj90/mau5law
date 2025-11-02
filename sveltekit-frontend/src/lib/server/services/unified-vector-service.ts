@@ -19,9 +19,9 @@
  * - EMBEDDING_DIMENSION: Vector dimension (default: 768 for Gemma)
  */
 
-import { db } from, '../db/drizzle';
-import { sql } from, 'drizzle-orm';
-import Redis from, 'ioredis';
+import { db } from '../db/drizzle';
+import { sql } from 'drizzle-orm';
+import Redis from 'ioredis';
 
 // ============================================================================
 // TYPE DEFINITIONS

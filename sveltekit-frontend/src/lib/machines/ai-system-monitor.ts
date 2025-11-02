@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import { createMachine, assign } from, 'xstate';
+import type { User } from '$lib/types';
+import { createMachine, assign } from 'xstate';
 export interface SystemContext { lastActivity: number;, latency: number;
 }
 export type SystemEvent =

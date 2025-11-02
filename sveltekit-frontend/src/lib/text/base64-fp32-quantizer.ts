@@ -3,7 +3,7 @@
  * Quantizes Base64 encoded text to FP32 with upscale/downscale caching
  * Optimized for CUDA thread processing and legal AI model outputs
  */
-import { enhancedCachingRevolutionaryBridge } from, '../services/enhanced-caching-revolutionary-bridge.js';
+import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
 export interface QuantizationOptions {
   quantizationBits: 4 | 8 | 16 | 32; // Quantization precision,
   scalingMethod: 'linear' | 'logarithmic' | 'exponential' | 'sigmoid';

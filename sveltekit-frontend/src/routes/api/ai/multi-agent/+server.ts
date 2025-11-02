@@ -15,10 +15,10 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { envHelper } from, '$lib/types/env-helper'; // use centralized env helper
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from '@sveltejs/kit';
+import { envHelper } from '$lib/types/env-helper'; // use centralized env helper
 
 // Multi-Agent AI Orchestration API
 // Unified endpoint for Autogen, CrewAI, and vLLM integration

@@ -1,13 +1,13 @@
 <!-- NES-Style Texture Streaming Component for Legal, Document, Visualization -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onDestroy } from, 'svelte';
-  import { N64LODManager } from, '$lib/services/n64-lod-manager';
-  import  SSRWebGPULoader_  from, "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
+  import { onDestroy } from 'svelte';
+  import { N64LODManager } from '$lib/services/n64-lod-manager';
+  import  SSRWebGPULoader_  from "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
   const SSRWebGPULoader = SSRWebGPULoader_ as: any;
-  import { fade, scale, slide } from, 'svelte/transition';
+  import { fade, scale, slide } from 'svelte/transition';
   // Svelte, 5 props
   let {
     documentId,
@@ -250,7 +250,7 @@ import type { Document } from, '$lib/types';
     return canvas.toDataURL();
   }
 </script>
-<!-- Use slot binding to receive hasWebGPU, from, SSRWebGPULoader -->
+<!-- Use slot binding to receive hasWebGPU, from SSRWebGPULoader -->
 <SSRWebGPULoader, requireWebGPU={false} let:hasWebGPU>
   <div, class="nes-texture-streamer">
     <!-- Header, with, controls -->

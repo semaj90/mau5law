@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { ollamaService } from, '$lib/server/services/OllamaService'
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
+import { ollamaService } from '$lib/server/services/OllamaService'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 /*
  * Production-ready GPU config endpoint
  * - Configurable timeouts/retries via env

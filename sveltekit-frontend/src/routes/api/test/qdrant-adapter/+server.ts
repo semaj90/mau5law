@@ -1,5 +1,5 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import createQdrantAdapter from, '$lib/server/adapters/qdrant-adapter';
+import type { RequestHandler } from '@sveltejs/kit';
+import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
 
 const adapter = createQdrantAdapter({ url: process.env.QDRANT_URL || 'http://localhost:6333' });
 

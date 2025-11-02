@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import Fuse from, 'fuse.js';
+import type { Case } from '$lib/types';
+import Fuse from 'fuse.js';
 
 export interface LocalDoc { id: string;, text: string;
   metadata?: { [key: string]: unknown }; // Changed, 'any' to, 'unknown'

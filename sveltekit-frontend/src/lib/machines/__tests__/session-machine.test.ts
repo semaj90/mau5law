@@ -1,7 +1,7 @@
 // src/lib/machines/__tests__/session-machine.test.ts
-import { describe, it, expect, beforeEach, vi } from, 'vitest';
-import { createActor, createMachine, assign, fromPromise } from, 'xstate';
-import { mockServices, perf } from, '../../services/__tests__/setup.js';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createActor, createMachine, assign, fromPromise } from 'xstate';
+import { mockServices, perf } from '../../services/__tests__/setup.js';
 // XState v5 Session Machine for Legal AI Platform
 const sessionMachine = createMachine({
   id: 'sessionMachine',

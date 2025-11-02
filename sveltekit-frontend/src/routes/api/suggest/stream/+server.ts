@@ -1,10 +1,10 @@
-import type { RequestHandler } from, './$types';
-import { console, as _console } from, 'node:console';
-import { searchDatabase, searchWithFuzzy, type Suggestion } from, '$routes/api/suggest/+server';
-import { redis } from, '$lib/server/cache/redis.js';
+import type { RequestHandler } from './$types';
+import { console, as _console } from 'node:console';
+import { searchDatabase, searchWithFuzzy, type Suggestion } from '$routes/api/suggest/+server';
+import { redis } from '$lib/server/cache/redis.js';
 
 // Helper: generator-based rerank stream using existing agentic reranker
-import { gemma3AgenticRerank } from, '$lib/server/ai/gemma3-agentic-functions';
+import { gemma3AgenticRerank } from '$lib/server/ai/gemma3-agentic-functions';
 
 async function* rerankSuggestionsStream(
   query: string,

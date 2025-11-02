@@ -3,10 +3,10 @@
  * Enhanced for Windows native deployment with memory-efficient vector operations
  * Integrated with NES-style cache orchestrator and production logging
  */
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { generateEmbedding } from, '../ai/embeddings-simple';
-import logger from, '../production-logger';
-import type { LogContext } from, '../production-logger.js';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { generateEmbedding } from '../ai/embeddings-simple';
+import logger from '../production-logger';
+import type { LogContext } from '../production-logger.js';
 
 // Simple caching fallback if service not available
 const cachingService = {

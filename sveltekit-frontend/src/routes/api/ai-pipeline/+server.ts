@@ -1,12 +1,12 @@
-import type { SearchResult } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types'; // Changed from, './$types.js'
+import type { SearchResult } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types'; // Changed from './$types.js'
 // Remove direct imports of embedDocument, embedVision as they will be dynamically loaded
-// import { embedDocument, embedVision } from, '$lib/server/ai/embedding';
-import { parallelVectorSearch } from, '$lib/utils/fastSearch';
-import { synthesizeNextSteps } from, '$lib/server/ai/synthesizer';
-import { recommendNextSteps } from, '$lib/server/recommendations';
-import type { DocumentItem, VisionItem } from, '$lib/types/sharedTypes'; // Import DocumentItem and VisionItem
+// import { embedDocument, embedVision } from '$lib/server/ai/embedding';
+import { parallelVectorSearch } from '$lib/utils/fastSearch';
+import { synthesizeNextSteps } from '$lib/server/ai/synthesizer';
+import { recommendNextSteps } from '$lib/server/recommendations';
+import type { DocumentItem, VisionItem } from '$lib/types/sharedTypes'; // Import DocumentItem and VisionItem
 
 // Define the interface for a single search result item, aligning with what synthesizeNextSteps expects
 interface SearchResult { // Renamed from SearchResultItem

@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types';
-import { json, error } from, '@sveltejs/kit';
-import { ensureError } from, '$lib/utils/ensure-error';
+import type { RequestHandler } from './$types';
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
 
 /**
  * Language Extraction API

@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * Unified Document Processing API
  * Endpoint for complete document processing pipeline
@@ -9,8 +9,8 @@ import {
   unifiedDocumentProcessor,
   type DocumentProcessingConfig,
   type ProcessingResult
-} from, '$lib/services/unified-document-processor.js';
-import { json, error } from, '@sveltejs/kit';
+} from '$lib/services/unified-document-processor.js';
+import { json, error } from '@sveltejs/kit';
 
 // small helper to safely extract error info from: unknown
 function extractErrorInfo(err: any) {
@@ -46,7 +46,7 @@ function extractErrorInfo(err: any) {
   return {, message: String(err), stack: undefined, status: undefined };
 }
 
-// Helper to safely compute processingTime from, an: unknown ProcessingResult item
+// Helper to safely compute processingTime from an: unknown ProcessingResult item
 const getProcessingTimeFromUnknown = (item: any): number => {
   // Ensure item is an: object
   if (!item || typeof item !== 'object') return 0;

@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Cached RAG Service for Legal AI Platform
  * Integrates enhanced caching with RAG operations
  * Uses embeddinggemma for embeddings and gemma3:legal-latest for responses
  */
-import { enhancedCachingService } from, './enhanced-caching-service.js';
-import type { RAGQuery, RAGResponse } from, './enhanced-rag-semantic-analyzer.js';
+import { enhancedCachingService } from './enhanced-caching-service.js';
+import type { RAGQuery, RAGResponse } from './enhanced-rag-semantic-analyzer.js';
 
 export interface CachedRAGResult { response: RAGResponse;, cacheStats: {, embeddingCacheHit: boolean;, queryCacheHit: boolean;
     responseCacheHit: boolean;

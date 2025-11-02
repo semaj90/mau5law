@@ -1,4 +1,4 @@
-<script, lang="ts"> import { onMount } from, 'svelte'; import { indexedDBService } from, '$lib/services/indexeddb-service'; let status = $state<string>('idle'); let docId = 'test-' + Date.now(); let syncedDoc: any = null; async function createPendingDoc(): Promise<any> { await, indexedDBService.cacheDocument({ id: docId, type: 'document', title: 'RAG Sync Test', content: 'The quick brown fox jumps over the lazy dog', syncStatus: 'pending'
+<script, lang="ts"> import { onMount } from 'svelte'; import { indexedDBService } from '$lib/services/indexeddb-service'; let status = $state<string>('idle'); let docId = 'test-' + Date.now(); let syncedDoc: any = null; async function createPendingDoc(): Promise<any> { await, indexedDBService.cacheDocument({ id: docId, type: 'document', title: 'RAG Sync Test', content: 'The quick brown fox jumps over the lazy dog', syncStatus: 'pending'
     }, as: any); status = 'pending'; }
 
   async function check(): Promise<any> { const doc = await indexedDBService.getDocument(docId); if (doc) { syncedDoc = doc; status = (doc as: any).syncStatus ?? 'unknown'; }

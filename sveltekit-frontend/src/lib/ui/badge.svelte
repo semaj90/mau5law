@@ -1,4 +1,4 @@
-<script, lang="ts"> import { cn } from, '$lib/utils'; // Assuming a utility for class merging exists /** * @typedef {'default' | 'secondary' | 'destructive' | 'outline' | 'info' | 'success' | 'warning'} BadgeVariant */ let { variant = 'default' as | 'default'
+<script, lang="ts"> import { cn } from '$lib/utils'; // Assuming a utility for class merging exists /** * @typedef {'default' | 'secondary' | 'destructive' | 'outline' | 'info' | 'success' | 'warning'} BadgeVariant */ let { variant = 'default' as | 'default'
       | 'secondary'
       | 'destructive'
       | 'outline'

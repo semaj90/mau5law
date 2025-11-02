@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * QUIC Gateway API - HTTP/3 Gateway Proxy
  * Provides high-performance HTTP/3 connectivity to SvelteKit frontend
  * Port: 8443 (QUIC), 8444 (HTTP/2 fallback)
  */
-import { json, error } from, '@sveltejs/kit';
-import { ensureError } from, '$lib/utils/ensure-error';
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
 
 const QUIC_GATEWAY_CONFIG = {
   primaryPort: 8443, // QUIC HTTP/3

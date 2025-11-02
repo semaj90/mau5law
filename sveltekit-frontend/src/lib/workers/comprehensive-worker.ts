@@ -1,17 +1,17 @@
 import, 'dotenv/config';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import pgClient from, '$lib/server/db-shim';
-import { document_chunks } from, '$lib/db/schema';
-import { CacheService } from, '$lib/server/cache/redis'; // Changed import to CacheService
-import { getEmbeddingViaGate } from, '$lib/server/embedding-gateway';
-import { consumeFromQueue } from, '$lib/server/rabbitmq';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import pgClient from '$lib/server/db-shim';
+import { document_chunks } from '$lib/db/schema';
+import { CacheService } from '$lib/server/cache/redis'; // Changed import to CacheService
+import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
+import { consumeFromQueue } from '$lib/server/rabbitmq';
 
 // For typing postgres-js client
-import type { Sql } from, 'postgres';
+import type { Sql } from 'postgres';
 // For typing drizzle client
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // For typing Redis client
-import type { Redis } from, 'ioredis';
+import type { Redis } from 'ioredis';
 
 // Use postgres-js client from db-shim (drizzle adapter expects postgres-js client)
 const db: PostgresJsDatabase = drizzle(pgClient as Sql);

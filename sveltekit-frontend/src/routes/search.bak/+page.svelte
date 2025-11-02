@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { User } from, '$lib/types';
-  import { onMount } from, 'svelte';
-  import { goto } from, '$app/navigation';
-  import { page } from, '$app/stores';
-  import PgvectorSearchInterface from, '$lib/components/search/PgvectorSearchInterface.svelte';
+import type { User } from '$lib/types';
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import PgvectorSearchInterface from '$lib/components/search/PgvectorSearchInterface.svelte';
 
   let isAuthenticated = $state<boolean>(false);
   let userName = $state<string>('');

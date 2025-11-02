@@ -1,7 +1,7 @@
-import type { SearchResult } from, '$lib/types';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import type { Schemas } from, '@qdrant/js-client-rest';
-import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from, '$env/static/private';
+import type { SearchResult } from '$lib/types';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import type { Schemas } from '@qdrant/js-client-rest';
+import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from '$env/static/private';
 // Production Qdrant Service - Fixed vector dimensions and stub implementations
 export interface QdrantPoint { id: string;, vector: number[];
   payload: {, content: string;, type: 'evidence' | 'case' | 'chat' | 'precedent';

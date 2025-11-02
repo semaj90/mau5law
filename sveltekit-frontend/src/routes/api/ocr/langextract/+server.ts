@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
-import { cache, cacheEmbedding, cacheSearchResults } from, '$lib/server/cache/redis'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis'
 // Accept text and return embedding tensor with caching and indexing hooks
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {

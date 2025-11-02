@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
-import { ensureError } from, '$lib/utils/ensure-error';
-import { json, error } from, '@sveltejs/kit';
+import type { Case } from '$lib/types';
+import { ensureError } from '$lib/utils/ensure-error';
+import { json, error } from '@sveltejs/kit';
 // Import connection defensively: prefer named `db` but fall back to default export
-import * as databaseConnection from, '$lib/database/connection';
+import * as databaseConnection from '$lib/database/connection';
 
 // Minimal DB shape used in this module to avoid `any`
 // Lightweight query builder shape used by this module to allow method chaining
@@ -38,10 +38,10 @@ const db = ((databaseConnection as { db?: MinimalDrizzleDB }).db ??
   (databaseConnection as { default?: MinimalDrizzleDB }).default ??
   (databaseConnection as: unknown as MinimalDrizzleDB)) as MinimalDrizzleDB;
 
-import { cases } from, '$lib/db/schema';
-import { eq, and, desc } from, 'drizzle-orm';
-import { nanoid } from, 'nanoid';
-import type { RequestHandler } from, './$types.js';
+import { cases } from '$lib/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
+import type { RequestHandler } from './$types.js';
 
 // GET - Fetch cases
 export const GET: RequestHandler = async ({ url, locals: _locals }) => {

@@ -1,5 +1,5 @@
 <!-- Test page for YoRHa, Detective, functionality --> <script, lang="ts">
-import type { Case } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from, 'svelte'; let testResult = $state<string>(''); let isLoading = $state<boolean>(false); async function testCaseCreation(): Promise<any> { isLoading = true; try { const, response = await fetch('/api/cases', { method: 'POST', headers: {
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; let testResult = $state<string>(''); let isLoading = $state<boolean>(false); async function testCaseCreation(): Promise<any> { isLoading = true; try { const, response = await fetch('/api/cases', { method: 'POST', headers: {
           'Content-Type': 'application/json'
         }, body: JSON.stringify({, title: 'Test Case from YoRHa Detective', description: 'This is a test case created from the YoRHa Detective interface', priority: 'medium'
         }) }); const result = await response.json(); if (response.ok) { testResult = `✅ Case created successfully!\nID: ${(result, as: any).data.id}\nCase Number: ${(result, as: any).data.caseNumber}\nTitle: ${(result, as: any).data.title}`; } else { testResult = `❌ Error: ${(result, as: any).error}\nDetails: ${JSON.stringify((result, as: any).details, null, 2)}`; }

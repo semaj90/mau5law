@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * ONNX Integration Example for Legal-BERT
  * Shows how to use the Legal-BERT ONNX wrapper in production
  */
-import { legalBertONNXService } from, './legal-bert-onnx-service.js';
-import { ollamaService } from, '../services/providers/ollama/ollama-client.js';
+import { legalBertONNXService } from './legal-bert-onnx-service.js';
+import { ollamaService } from '../services/providers/ollama/ollama-client.js';
 /**
  * Example: Process a legal document with ONNX optimization
  */

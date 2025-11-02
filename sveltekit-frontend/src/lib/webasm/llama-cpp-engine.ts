@@ -4,7 +4,7 @@
  * Eliminates server round-trips for 2-5 second response times
  */
 // Remove triple-slash reference and use an import-style include for local type file
-import type {} from, '../types/webgpu'; // keeps: any local ambient webgpu declarations included
+import type {} from '../types/webgpu'; // keeps: any local ambient webgpu declarations included
 
 export interface LlamaCppConfig {, modelPath: string;, contextSize: number;
  , gpuLayers: number; // RTX, 3060 Ti can handle 32-40 layers,

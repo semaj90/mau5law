@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 db; // Your Drizzle ORM client
-import { indexedFiles } from, '$lib/db/schema/aiHistory'; // The new schema for indexed files
+import { indexedFiles } from '$lib/db/schema/aiHistory'; // The new schema for indexed files
 export async function POST({ request }): Promise<any> {
   try {
     const processedFiles = await request.json();

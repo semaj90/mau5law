@@ -1,4 +1,4 @@
-import { cognitiveCache } from, '$lib/server/cache';
+import { cognitiveCache } from '$lib/server/cache';
 
 export interface Candidate { id: string;, text: string;
 }

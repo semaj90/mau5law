@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltejs/kit';
-import Fuse from, 'fuse.js';
-import { db } from, '$lib/server/db/index.js';
-import { users, cases, evidence } from, '$lib/server/db/schema-unified.js';
-import { or, ilike } from, 'drizzle-orm';
-import { redis } from, '$lib/server/cache/redis.js';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import Fuse from 'fuse.js';
+import { db } from '$lib/server/db/index.js';
+import { users, cases, evidence } from '$lib/server/db/schema-unified.js';
+import { or, ilike } from 'drizzle-orm';
+import { redis } from '$lib/server/cache/redis.js';
 
 // ---------------------------------------------------------------------------
 // Types

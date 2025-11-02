@@ -1,4 +1,4 @@
-import Fuse from, '$lib/utils/fuse-import';
+import Fuse from '$lib/utils/fuse-import';
 
 export interface SearchableDocument { id: string;, content: string;
   path: string;

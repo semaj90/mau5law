@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues
  * Proper fromPromise usage with typed context and error handling
  */
-import { fromPromise, createActor, type ActorRefFrom } from, 'xstate';
-import { fetchWithTimeout } from, '$lib/utils';
+import { fromPromise, createActor, type ActorRefFrom } from 'xstate';
+import { fetchWithTimeout } from '$lib/utils';
 // ===== EMBEDDING ACTOR =====
 export interface EmbeddingActorInput {
   text: string;

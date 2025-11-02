@@ -1,25 +1,25 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { Buffer } from, 'node:buffer';
-import { createHash } from, 'node:crypto';
-import { logger } from, '../logger.js';
-import xstateIntegration from, '$lib/services/xstate-integration';
-import type { McpServerRecord } from, '$lib/services/mcp-registry';
-import { createMachine } from, 'xstate';
-import { getFromCache, setCache } from, '$lib/server/redis';
-import type { SOMBitmapOptions, SOMBitmapResult, SOMBitmapPalette } from, './som-bitmap-visualizer';
-import { bitmapToDataUrl } from, './som-bitmap-visualizer';
-import type { TransitionObservation, TransitionPrediction } from, './hmm-transition-predictor';
-import { emitClusterEvent } from, './cluster-stream';
-import type { ClusterCentroid } from, './cluster-service';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+import { Buffer } from 'node:buffer';
+import { createHash } from 'node:crypto';
+import { logger } from '../logger.js';
+import xstateIntegration from '$lib/services/xstate-integration';
+import type { McpServerRecord } from '$lib/services/mcp-registry';
+import { createMachine } from 'xstate';
+import { getFromCache, setCache } from '$lib/server/redis';
+import type { SOMBitmapOptions, SOMBitmapResult, SOMBitmapPalette } from './som-bitmap-visualizer';
+import { bitmapToDataUrl } from './som-bitmap-visualizer';
+import type { TransitionObservation, TransitionPrediction } from './hmm-transition-predictor';
+import { emitClusterEvent } from './cluster-stream';
+import type { ClusterCentroid } from './cluster-service';
 import {
   addClusterMember,
   getClusterMembers,
   getClusterModelSnapshot,
   selectNearestCentroid,
   euclidean
-} from, './cluster-service';
-import { getOllamaEndpoint } from, './endpoints.js'; // Import the centralized Ollama endpoint helper
+} from './cluster-service';
+import { getOllamaEndpoint } from './endpoints.js'; // Import the centralized Ollama endpoint helper
 // --- TYPE DEFINITIONS ---
 type Document = { id?: string; title?: string; excerpt?: string; [key: string]: any };
 type OllamaMessage = {, role: 'user' | 'system' | 'assistant';, content: string;

@@ -2,7 +2,7 @@
 /**
  * Simple test for the compiled WASM vector operations module
  */
-import { vectorWasm } from, './vector-wasm-wrapper.js';
+import { vectorWasm } from './vector-wasm-wrapper.js';
 export async function testWasmModule(): Promise<boolean> {
   try {
     console.log('[WASM Test] Starting WebAssembly module tests...');

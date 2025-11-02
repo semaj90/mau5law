@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { tryEmbedOllama, embeddingDims } from, '$lib/server/embeddings/ollama';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { tryEmbedOllama, embeddingDims } from '$lib/server/embeddings/ollama';
 
 // GET /api/test/ollama-embed?q=hello
 export const GET: RequestHandler = async ({ url }) => {

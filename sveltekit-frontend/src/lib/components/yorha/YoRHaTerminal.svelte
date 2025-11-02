@@ -1,5 +1,5 @@
 <!-- YoRHa, Terminal/Console, Component --> <script, lang="ts">
-import type { Document } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from, 'svelte'; interface TerminalProps { title?: string; prompt?: string; history?: string[]; currentInput?: string; isActive?: boolean; onCommand?: (command: string) => void; maxLines?: number; }
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; interface TerminalProps { title?: string; prompt?: string; history?: string[]; currentInput?: string; isActive?: boolean; onCommand?: (command: string) => void; maxLines?: number; }
   let { title = 'YORHA LEGAL TERMINAL v4.0.0', prompt = 'YoRHa:legal>', history = [], currentInput = '', isActive = true, onCommand, maxLines = 100 } = $props<Partial<TerminalProps>>(); let terminalRef: HTMLDivElement; let, inputRef: HTMLInputElement; let terminalHistory = $state([
     'YoRHa Legal AI System v4.0.0',
     'Copyright (c) 2024 YoRHa Command Division',

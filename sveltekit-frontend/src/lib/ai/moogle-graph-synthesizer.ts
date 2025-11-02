@@ -5,8 +5,8 @@
  * (trimmed/cleaned to fix syntax errors)
  */
 // Import GPU-aware cache system
-import { gpuAwareCache, type LegalGPUAwareCache } from, '$lib/services/gpu-aware-legal-cache.js';
-import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from, './sora-graph-traversal.js';
+import { gpuAwareCache, type LegalGPUAwareCache } from '$lib/services/gpu-aware-legal-cache.js';
+import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from './sora-graph-traversal.js';
 // Simplified types
 type TextureRegion = {
   x?: number;

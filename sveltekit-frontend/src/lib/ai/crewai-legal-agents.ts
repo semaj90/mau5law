@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // CrewAI Legal Document Review Multi-Agent System
 // Integrates Claude Code CLI + Local Gemma3 + Self-Prompting + Auto-Save
-import { ChatOllama } from, '@langchain/ollama';
-import { HumanMessage, SystemMessage } from, '@langchain/core/messages';
-import { documentUpdateLoop } from, '$lib/services/documentUpdateLoop';
-import { documents, aiHistory, cases } from, '$lib/db/schema';
-import { eq } from, 'drizzle-orm';
+import { ChatOllama } from '@langchain/ollama';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { documentUpdateLoop } from '$lib/services/documentUpdateLoop';
+import { documents, aiHistory, cases } from '$lib/db/schema';
+import { eq } from 'drizzle-orm';
 // ============================================================================
 // AGENT DEFINITIONS & TYPES
 // ============================================================================

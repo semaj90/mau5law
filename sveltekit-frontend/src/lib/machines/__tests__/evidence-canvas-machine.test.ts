@@ -1,7 +1,7 @@
 // src/lib/machines/__tests__/evidence-canvas-machine.test.ts
-import { describe, it, expect, beforeEach, vi } from, 'vitest';
-import { createActor, createMachine, assign, fromPromise } from, 'xstate';
-import { mockServices, perf } from, '../../services/__tests__/setup.js';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createActor, createMachine, assign, fromPromise } from 'xstate';
+import { mockServices, perf } from '../../services/__tests__/setup.js';
 
 // --- ADDED: explicit types and helper to avoid `any` and allow: number for lastUpdate ---
 type EvidenceCanvasContext = {
@@ -357,7 +357,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'CREATE_CONNECTION',
         connection: {
-          from, 'evidence-1',
+          from 'evidence-1',
           to: 'evidence-2',
           type: 'temporal',
           strength: 0.8,

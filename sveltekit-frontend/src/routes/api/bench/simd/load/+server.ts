@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js'
-import { json, error } from, '@sveltejs/kit'
-import { simdBodyParser } from, '$lib/server/simd-body-parser'
+import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit'
+import { simdBodyParser } from '$lib/server/simd-body-parser'
 type LoadTestBody = {
   endpoint: string; // e.g. "/api/v1/rag",
   payload: any;

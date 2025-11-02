@@ -1,18 +1,18 @@
-import type { User } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { User } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * Enhanced Vector Intelligence Recommendations API
  * Integrates GPU caching, reinforcement learning, and multi-protocol optimization
  * Provides intelligent recommendations using vector analysis and machine learning
  */
-import { json, error } from, '@sveltejs/kit';
-import { vectorIntelligenceService } from, '$lib/services/vector-intelligence-service.js';
-import { gpuIntegrationBridge } from, '$lib/services/gpu-integration-bridge';
-import { reinforcementLearningCacheOptimizer } from, '$lib/services/reinforcement-learning-cache-optimizer';
-import { legalAIResultCache } from, '$lib/services/advanced-result-cache';
-import { legalAIGPUQueue } from, '$lib/services/gpu-job-queue';
-import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
-import { enhancedSearchWithNeo4j } from, '$lib/ai/custom-reranker';
+import { json, error } from '@sveltejs/kit';
+import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
+import { gpuIntegrationBridge } from '$lib/services/gpu-integration-bridge';
+import { reinforcementLearningCacheOptimizer } from '$lib/services/reinforcement-learning-cache-optimizer';
+import { legalAIResultCache } from '$lib/services/advanced-result-cache';
+import { legalAIGPUQueue } from '$lib/services/gpu-job-queue';
+import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
+import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
 
 // Add a concrete cache state type to replace `any`
 type CacheState = { cacheUtilization: number;, hitRatio: number;

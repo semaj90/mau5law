@@ -1,7 +1,7 @@
 // XState Machine for AI Agent Shell with Production Go Services Integration
-import { createMachine, assign } from, 'xstate';
-import { goServiceClient, type RAGResponse, type UploadResponse } from, '../services/goServiceClient.js';
-import productionServiceClient from, '../services/production-service-client.js';
+import { createMachine, assign } from 'xstate';
+import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
+import productionServiceClient from '../services/production-service-client.js';
 // Define context and event types
 export interface AgentShellContext { input: string;, response: string;
   jobId?: string;

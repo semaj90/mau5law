@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { DiffPatchApplicator } from, '$lib/services/diff-patch-applicator';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { DiffPatchApplicator } from '$lib/services/diff-patch-applicator';
 
 // Global patch applicator instance (shared with apply-patch)
 const patchApplicator = new DiffPatchApplicator();

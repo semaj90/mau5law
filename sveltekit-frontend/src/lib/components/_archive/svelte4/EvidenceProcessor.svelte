@@ -1,9 +1,9 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import { createActor } from, 'xstate';
-  import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from, '$lib/machines/uploadMachine';
-  import type { ProgressMsg } from, '$lib/types/progress';
+  import { onMount, onDestroy } from 'svelte';
+  import { createActor } from 'xstate';
+  import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
+  import type { ProgressMsg } from '$lib/types/progress';
   interface Props {
     evidenceId: string;
     steps?: string[];

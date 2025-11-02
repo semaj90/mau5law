@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte, 5 runes are auto-imported import { getContext } from, 'svelte'; import { writable } from, 'svelte/store'; import type { SelectContext } from, './types'; interface Props { value: any; class_?: string; children?: import('svelte').Snippet; }
+<script, lang="ts"> // Svelte, 5 runes are auto-imported import { getContext } from 'svelte'; import { writable } from 'svelte/store'; import type { SelectContext } from './types'; interface Props { value: any; class_?: string; children?: import('svelte').Snippet; }
   let { value, class_ = '', children }: Props = $props(); const context = getContext<SelectContext>('select') || ({ selected: writable(null), open: writable(false), onSelect: () => {}, onToggle: () => {} } as SelectContext); const { selected, open, onSelect, onToggle } = context; let isSelected = $derived($selected === value); function handleClick() { onSelect(value); open.set(false); }
 </script> <div, class="space-y-4 { class_ }"
   role="option"

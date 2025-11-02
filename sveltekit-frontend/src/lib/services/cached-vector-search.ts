@@ -3,15 +3,15 @@
  * Accelerates RAG retrieval by caching vector search results in Redis
  * Integrates with your PostgreSQL + pgvector + CHR-ROM caching architecture
  */
-import { redis } from, '$lib/server/database/redis-client';
-import { db } from, '$lib/server/database/drizzle';
-import { evidenceVectors, legalDocuments } from, '$lib/server/db/drizzle/schema';
-import { generateEmbedding } from, '$lib/services/embedding-generator';
-import { chrRomCacheReader } from, '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
-import { calculateDocumentPriority, selectMemoryBank } from, '$lib/config/legal-priorities';
-import { createHash } from, 'crypto';
-import { sql } from, 'drizzle-orm';
+import { redis } from '$lib/server/database/redis-client';
+import { db } from '$lib/server/database/drizzle';
+import { evidenceVectors, legalDocuments } from '$lib/server/db/drizzle/schema';
+import { generateEmbedding } from '$lib/services/embedding-generator';
+import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
+import { calculateDocumentPriority, selectMemoryBank } from '$lib/config/legal-priorities';
+import { createHash } from 'crypto';
+import { sql } from 'drizzle-orm';
 
 const QUERY_CACHE_TTL = 3600; // 1 hour for legal search results
 const SIMILARITY_THRESHOLD = 0.8; // Minimum similarity for relevant results

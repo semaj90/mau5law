@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types';
+import type { RequestHandler } from './$types';
 
 // Local placeholder implementations (replace with real module imports when available)
 export interface Alert { message: string;, timestamp: string;

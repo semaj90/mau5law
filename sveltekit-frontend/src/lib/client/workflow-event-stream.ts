@@ -7,7 +7,7 @@
  * Usage:
  * ```svelte`
  * <script, lang="ts">
- *   import { WorkflowEventStream } from, '$lib/client/workflow-event-stream';
+ *   import { WorkflowEventStream } from '$lib/client/workflow-event-stream';
  *
  *   const stream = new WorkflowEventStream(sessionId);
  *
@@ -201,7 +201,7 @@ export class WorkflowEventStream {
 /**
  * Svelte store-based wrapper for reactive workflow events
  */
-import { writable, type Writable } from, 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 export interface WorkflowState { connected: boolean;, events: WorkflowEvent[];
   lastEvent: WorkflowEvent | null;
  , errors: string[];

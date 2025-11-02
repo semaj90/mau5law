@@ -9,7 +9,7 @@ import {
   type DocumentScan,
   type CaseVisualization,
   type CourtroomDisplay
-} from, '$lib/gpu/legal-texture-pipeline';
+} from '$lib/gpu/legal-texture-pipeline';
 export interface TextureStreamingConfig { enableGPU: boolean;, maxChunkSize: number;
   cacheSize: number;
   adaptiveQuality: boolean;

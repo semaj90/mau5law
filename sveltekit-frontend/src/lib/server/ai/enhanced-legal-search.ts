@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Enhanced Legal AI Search Service with LangChain.js, Nomic Embed, and pgvector
 // Implements RAG pattern with vector similarity search and semantic enhancement
-import { MemoryVectorStore } from, "@langchain/community/vectorstores/memory";
-import { PGVectorStore } from, "@langchain/community/vectorstores/pgvector";
-import { Embeddings } from, "@langchain/core/embeddings";
-import { OllamaEmbeddings } from, "@langchain/ollama";
+import { MemoryVectorStore } from "@langchain/community/vectorstores/memory";
+import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
+import { Embeddings } from "@langchain/core/embeddings";
+import { OllamaEmbeddings } from "@langchain/ollama";
 
 // Define the Ollama URL based on environment variable with a localhost fallback
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -34,7 +34,7 @@ const initializeLegalDocuments = loadLegalDocuments();
 // Embedding generation helper
 async function generateEmbedding(text: string, options?: { model?: string }): Promise<number[]> {
   const embeddings = new OllamaEmbeddings({
-    model: 'embeddinggemma:latest', // Changed from, 'nomic-embed-text'
+    model: 'embeddinggemma:latest', // Changed from 'nomic-embed-text'
     baseUrl: OLLAMA_URL // Use the environment-aware constant
   });
   try {
@@ -467,7 +467,7 @@ export class EnhancedLegalSearchService {
   }
   private normalizeScore(score: number): number {
     // Normalize different scoring systems to 0-1 range
-    return Math.max(0, Math.min(1, score)); // Changed from, 1 - score, as similaritySearch returns similarity
+    return Math.max(0, Math.min(1, score)); // Changed from 1 - score, as similaritySearch returns similarity
   }
   private deduplicateAndRankResults(
     results: LegalSearchResult[],

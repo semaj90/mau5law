@@ -3,9 +3,9 @@
  * Single endpoint to access all vector systems: WebGPU SOM, WebAssembly RAG,
  * PageRank, Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { unifiedVectorOrchestrator } from, '$lib/services/unified-vector-orchestrator';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { unifiedVectorOrchestrator } from '$lib/services/unified-vector-orchestrator';
 
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'info';

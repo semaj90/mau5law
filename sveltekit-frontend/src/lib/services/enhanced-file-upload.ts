@@ -2,7 +2,7 @@
  * Enhanced File Upload Service
  * Handles file uploads with server fallback to localStorage
  */
-import localStorageFiles from, './localStorage-file-fallback.js';
+import localStorageFiles from './localStorage-file-fallback.js';
 
 export interface UploadResponse { success: boolean;, fileName: string;
   size: number;

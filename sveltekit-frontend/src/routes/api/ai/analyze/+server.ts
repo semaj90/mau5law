@@ -3,8 +3,8 @@
  * Routes: /api/ai/analyze → QUIC /legal/analyze → Go GPU /inference
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Legal analysis schema per architecture docs
 const LegalAnalysisSchema = z.object({
   content: z.string().min(1),

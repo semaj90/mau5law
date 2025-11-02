@@ -10,9 +10,9 @@ import {
   type LangChainConfig,
   type ProcessingResult,
   type QueryResult
-} from, './langchain-ollama-service.js';
-import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from, './simd-text-tiling-engine.js';
-import { webgpuTextTileRenderer, type InstantUIComponent } from, '$lib/webgpu/text-tile-renderer.js';
+} from './langchain-ollama-service.js';
+import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js';
+import { webgpuTextTileRenderer, type InstantUIComponent } from '$lib/webgpu/text-tile-renderer.js';
 // Add narrowly-scoped helper types (insert near top of file)
 type WebGPURendererLike = {
   initialize?: () => Promise<boolean>;

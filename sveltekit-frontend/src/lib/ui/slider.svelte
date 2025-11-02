@@ -4,7 +4,7 @@
     SliderRange,
     SliderThumb,
     SliderTrack
-  } from, 'bits-ui';
+  } from 'bits-ui';
 
   type $$Props = Slider.Props;
   type $$Events = Slider.Events;

@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import type { Meta, StoryObj } from, '@storybook/svelte';
-import Card from, './Card.svelte.js';
+import type { Case } from '$lib/types';
+import type { Meta, StoryObj } from '@storybook/svelte';
+import Card from './Card.svelte.js';
 const meta = {
   title: 'UI/Enhanced/Card',
   component: Card,

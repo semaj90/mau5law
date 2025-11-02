@@ -3,8 +3,8 @@
  * Clean, minimal and typesafe implementation that matches the bridge expectations.
  * Note: this implementation focuses on correctness and a compatible API surface.
  */
-import { browser } from, '$app/environment';
-import type { RedisCache } from, '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
+import { browser } from '$app/environment';
+import type { RedisCache } from '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
 
 interface CacheEntry<T> {, value: T;, timestamp: number;
  , ttl: number; // Time-to-live in milliseconds

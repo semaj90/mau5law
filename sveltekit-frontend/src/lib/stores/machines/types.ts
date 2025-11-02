@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { StateValue, AnyEventObject } from, 'xstate';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { StateValue, AnyEventObject } from 'xstate';
 /**
  * XState Types for Go Microservice Integration
  */

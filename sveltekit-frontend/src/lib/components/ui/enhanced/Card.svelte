@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  	import type { HTMLAttributes } from, 'svelte/elements';
+  	import type { HTMLAttributes } from 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLDivElement> {
   		elevated?: boolean;
   		interactive?: boolean;

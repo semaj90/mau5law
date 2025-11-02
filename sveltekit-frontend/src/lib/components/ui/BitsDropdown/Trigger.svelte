@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
+  import type { Snippet } from 'svelte';
   // Accept an optional children snippet in Svelte, 5
   export let  Snippet | undefined = undefined;
   // No-op snippet fallback - use a Snippet-compatible function via: unknown cast

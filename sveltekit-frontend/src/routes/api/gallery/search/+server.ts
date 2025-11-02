@@ -1,15 +1,15 @@
-import type { SearchResult } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /*
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/database';
-import { evidence, cases } from, '$lib/server/db/schema'; // removed unused: 'users'
-import { eq, desc, asc, and, or, gte, lte, inArray, sql } from, 'drizzle-orm';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/database';
+import { evidence, cases } from '$lib/server/db/schema'; // removed unused: 'users'
+import { eq, desc, asc, and, or, gte, lte, inArray, sql } from 'drizzle-orm';
 
 interface SearchFilters {
   query?: string;

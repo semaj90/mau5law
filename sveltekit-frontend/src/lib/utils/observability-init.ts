@@ -2,11 +2,11 @@
  * Observability system initialization
  * Automatically integrates with SvelteKit lifecycle and server-side metrics
  */
-import { browser } from, '$app/environment';
-import { page } from, '$app/stores';
-import { observabilityClient, trackPageLoad } from, './observability-client.js';
-import { timingMetrics } from, './timing-metrics.js';
-import type { Readable } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { page } from '$app/stores';
+import { observabilityClient, trackPageLoad } from './observability-client.js';
+import { timingMetrics } from './timing-metrics.js';
+import type { Readable } from 'svelte/store';
 // Global observability state
 let isInitialized = $state<boolean>(false);
 let currentRouteId: string | null = null;

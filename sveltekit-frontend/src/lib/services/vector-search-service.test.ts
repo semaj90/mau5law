@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import { describe, it, expect, beforeEach } from, 'vitest';
+import type { SearchResult } from '$lib/types';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 // Mock VectorSearchService for testing - actual service has @ts-nocheck
 interface SearchResult { documentId: string;, similarity: number;

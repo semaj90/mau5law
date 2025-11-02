@@ -1,11 +1,11 @@
-import type { Message } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Database API Bridge - Connects PostgreSQL schema with API endpoints
  * Provides type-safe database operations for the legal AI platform
  * Integrates with existing SSR helpers and GPU acceleration
  */
-import { queryLegalDocumentsSSR, type SSRResponse } from, './api-ssr-helpers.js';
+import { queryLegalDocumentsSSR, type SSRResponse } from './api-ssr-helpers.js';
 // Type definitions based on database schema
 export interface LegalDocument { id: string;, title: string;
   content: string;

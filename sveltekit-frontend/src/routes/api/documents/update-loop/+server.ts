@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Document Update Loop API
 // Handles document changes with automatic re-embedding and re-ranking
-import { DocumentUpdateLoop } from, '$lib/services/documentUpdateLoop'; // Changed import to DocumentUpdateLoop
-import { documents } from, '$lib/db/schema';
-import { json, error } from, '@sveltejs/kit'; // Added json and error imports
-import { db } from, '$lib/server/db/drizzle-client'; // Assuming db is imported from here
-import { eq } from, 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
+import { DocumentUpdateLoop } from '$lib/services/documentUpdateLoop'; // Changed import to DocumentUpdateLoop
+import { documents } from '$lib/db/schema';
+import { json, error } from '@sveltejs/kit'; // Added json and error imports
+import { db } from '$lib/server/db/drizzle-client'; // Assuming db is imported from here
+import { eq } from 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
 
 // Instantiate the DocumentUpdateLoop service
 const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {

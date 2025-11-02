@@ -4,8 +4,8 @@
  * Ultra-fast legal document ranking using WebGPU compute shaders
  * Stores 4x4 ranking matrices per document in GPU textures for blazing performance
  */
-import type { LegalDocument } from, '$lib/types';
-import { webgpuPolyfill } from, '$lib/webgpu/webgpu-polyfill';
+import type { LegalDocument } from '$lib/types';
+import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
 // Ranking matrix dimensions (4x4 = 16 values per document)
 export const RANKING_MATRIX_SIZE = 4;
 export const RANKING_VALUES_PER_DOCUMENT = RANKING_MATRIX_SIZE * RANKING_MATRIX_SIZE;

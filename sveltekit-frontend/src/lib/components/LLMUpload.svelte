@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { invoke } from, '@tauri-apps/api/tauri';
+  import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = $state<string>('');
   let error = $state<string>('');
   let loading = $state<boolean>(false);

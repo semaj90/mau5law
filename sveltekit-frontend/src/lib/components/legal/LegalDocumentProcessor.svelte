@@ -3,11 +3,11 @@
   Demonstrates XState integration with Svelte, 5 for legal document processing
 -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { useMachine } from, '@xstate/svelte';
-  import { legalDocumentProcessingMachine, selectors } from, '$lib/state/legalDocumentProcessingMachine';
-  import type { LegalDocument } from, '$lib/services/legalRAGEngine';
+  import { useMachine } from '@xstate/svelte';
+  import { legalDocumentProcessingMachine, selectors } from '$lib/state/legalDocumentProcessingMachine';
+  import type { LegalDocument } from '$lib/services/legalRAGEngine';
   // Props
   let {
     document = $bindable(),

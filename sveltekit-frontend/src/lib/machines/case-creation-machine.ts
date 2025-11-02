@@ -1,7 +1,7 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Case Creation State Machine - XState v5 compatible
 // Orchestrates legal case creation workflow with validation and API calls
-import { createMachine, assign, fromPromise } from, 'xstate';
+import { createMachine, assign, fromPromise } from 'xstate';
 export interface CaseCreationContext { formData: {, title: string;
     description: string;
     priority: 'low' | 'medium' | 'high' | 'critical';

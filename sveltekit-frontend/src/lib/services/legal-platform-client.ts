@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal AI Platform Client Service
  * TypeScript client for interacting with the centralized Legal Platform API v2
  * Provides type-safe CRUD operations for cases, evidence, criminals, and documents
  * Includes comprehensive error handling and logging
  */
-import { errorHandler, handleApiError, handleNetworkError, handleValidationError, type ErrorContext } from, './error-handler.js';
+import { errorHandler, handleApiError, handleNetworkError, handleValidationError, type ErrorContext } from './error-handler.js';
 
 // Types
 export interface ApiResponse<T = unknown> {

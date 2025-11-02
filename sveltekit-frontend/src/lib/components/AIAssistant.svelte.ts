@@ -1,5 +1,5 @@
-import { writable } from, 'svelte/store';
-import { getOllamaEndpoint } from, '$lib/server/clients/ollama';
+import { writable } from 'svelte/store';
+import { getOllamaEndpoint } from '$lib/server/clients/ollama';
 export class AIAssistant {
   private isLoading = writable(false);
   private response = writable('');

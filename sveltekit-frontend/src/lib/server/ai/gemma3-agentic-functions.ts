@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { caseScoringService } from, '../services/CaseScoringService';
-import { cognitiveCache } from, './cache'; // Keep this import
-import { embeddingGemma } from, './embeddinggemma-service'; // Direct embeddingGemma import
-import { VectorSearchService } from, '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
-import { getOllamaEndpoint } from, '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+import { caseScoringService } from '../services/CaseScoringService';
+import { cognitiveCache } from './cache'; // Keep this import
+import { embeddingGemma } from './embeddinggemma-service'; // Direct embeddingGemma import
+import { VectorSearchService } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
+import { getOllamaEndpoint } from '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
 
 // Helper for structured logging
 function logError(context: string, error: unknown, details?: Record<string, unknown>) {
@@ -28,7 +28,7 @@ export async function embed(text: string): Promise<number[]> {
 }
 
 // Import the canonical CaseScoringRequest type
-import type { CaseScoringRequest as BaseCaseScoringRequest } from, '$lib/types/scoring';
+import type { CaseScoringRequest as BaseCaseScoringRequest } from '$lib/types/scoring';
 
 // Define an extended type for specific scoring requests in this agent
 export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
@@ -126,7 +126,7 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
   await cognitiveCache.set(cacheKey, out, { ttl: 3600 });
   return out;
 }
-// removed unused import import { transcribeBuffer } from, './voice/recognizer';
+// removed unused import import { transcribeBuffer } from './voice/recognizer';
 
 /**
  * 🤖 Gemma3 Multimodal Agentic Functions Orchestrator
@@ -146,8 +146,8 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
  * - Next-step predictions
  */
 
-import { contextualUnderstanding } from, './contextual-understanding-service';
-import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from, '$lib/types/sharedTypes';
+import { contextualUnderstanding } from './contextual-understanding-service';
+import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from '$lib/types/sharedTypes';
 
 /**
  * Define the expected structure of an item returned by enhancedVectorSearchService.hybridSearch

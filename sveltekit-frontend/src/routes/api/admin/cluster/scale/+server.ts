@@ -1,6 +1,6 @@
-import cluster from, 'node:cluster';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import cluster from 'node:cluster';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 /*
  * Cluster Scaling API Endpoint
  * Handles dynamic scaling of worker processes

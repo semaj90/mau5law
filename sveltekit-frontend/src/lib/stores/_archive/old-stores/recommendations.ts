@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Recommendations Store - AI-Powered User Analytics & Suggestions
  * Integrates with NVIDIA go-llama and multi-core Ollama cluster
  */
-import { writable, derived } from, 'svelte/store';
-import { productionServiceClient } from, '$lib/services/production-service-client';
+import { writable, derived } from 'svelte/store';
+import { productionServiceClient } from '$lib/services/production-service-client';
 
 export interface Recommendation { id: string;, type: 'case_action' | 'document_analysis' | 'evidence_review' | 'legal_precedent' | 'workflow_optimization';
   title: string;

@@ -1,6 +1,6 @@
 <!-- Case Timeline Component for Legal, AI, App -->
 <script, context="module" lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Move interface here so modifiers are allowed
   export interface TimelineEvent {
     id: string;
@@ -19,10 +19,10 @@ import type { Case } from, '$lib/types';
 <script, lang="ts">
   // Replace problematic named imports with a default import and destructure.
   // This avoids the TS error when certain named exports are not present in the typings.
-  import LucideDefault from, 'lucide-svelte';
+  import LucideDefault from 'lucide-svelte';
   // cast to: any to satisfy typings and extract icons
   const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as: any);
-  import { cn } from, '$lib/utils';
+  import { cn } from '$lib/utils';
   // Use explicit Svelte props
   const { caseId } = $props<{ caseId: string }>()
   const { caseName } = $props<{ caseName: string }>()

@@ -1,23 +1,23 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced Recommendation Integration Service
  * Connects RecommendationContainer UI with enhanced recommendation worker
  * and all QLoRA/AI components for comprehensive legal recommendation system
  */
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 // Remove unused imports: QLoRAIntegrationAnalyzer, PredictiveAssetEngine, AutoencoderContextSwitcher
 // import type {
 //   QLoRAIntegrationAnalyzer,
 //   PredictiveAssetEngine,
 //   AutoencoderContextSwitcher
-// } from, '$lib/ai/qlora-integration-analyzer';
+// } from '$lib/ai/qlora-integration-analyzer';
 
 // Import existing AI components
 // Change to default import for SoraMoogleProductionIntegration
-import type SoraMoogleProductionIntegration from, '$lib/ai/sora-moogle-production-integration';
-import type { SoraGraphTraversal } from, '$lib/graph/sora-graph-traversal';
-import type { QLoRATopologyPredictor } from, '$lib/ai/qlora-topology-predictor';
-import type { QLoRAWasmLoader } from, '$lib/wasm/qlora-wasm-loader';
+import type SoraMoogleProductionIntegration from '$lib/ai/sora-moogle-production-integration';
+import type { SoraGraphTraversal } from '$lib/graph/sora-graph-traversal';
+import type { QLoRATopologyPredictor } from '$lib/ai/qlora-topology-predictor';
+import type { QLoRAWasmLoader } from '$lib/wasm/qlora-wasm-loader';
 
 // New interface for QLoRATopologyPredictor constructor options
 export interface QLoRATopologyPredictorOptions {

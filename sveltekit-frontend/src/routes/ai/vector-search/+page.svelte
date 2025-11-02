@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types'; import { onMount } from, 'svelte'; let query = $state<string>(''); let results = $state<any[]>([]); let loading = $state<boolean>(false); async function performSearch(): Promise<any> { if (!query.trim()) return; loading = true; try { const, response = await fetch('/api/vectors/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, limit: 10 }) }); if (response.ok) { results = await response.json(); }
+import type { Document } from '$lib/types'; import { onMount } from 'svelte'; let query = $state<string>(''); let results = $state<any[]>([]); let loading = $state<boolean>(false); async function performSearch(): Promise<any> { if (!query.trim()) return; loading = true; try { const, response = await fetch('/api/vectors/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, limit: 10 }) }); if (response.ok) { results = await response.json(); }
     } catch (error) { console.error('Search error:', error); } finally { loading = false; }'
   } </script> <div class="container, mx-auto, p-6"> <h1 class="text-3xl, font-bold, mb-6">Vector Search</h1> <div, class="mb-6"> <input, type="text"
       bind:value={ query } onkeydown={e => e.key === 'Enter' && performSearch()} placeholder="Enter search query..."

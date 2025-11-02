@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Drizzle ORM Schema Example - Legal AI Platform
  *
@@ -22,9 +22,9 @@ import {
   real,
   index,
   primaryKey
-} from, 'drizzle-orm/pg-core';
-import { sql } from, 'drizzle-orm';
-import { vector } from, 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { vector } from 'drizzle-orm/pg-core';
 // ==================================================
 // Type Definitions for JSONB Fields
 // ==================================================

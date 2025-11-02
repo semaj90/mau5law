@@ -19,10 +19,10 @@
  * @author Legal AI Platform Team
  * @version 2.0.0
  */
-import Redis from, 'ioredis';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js/driver';
-import { GemmaEmbeddingService, type EmbeddingRequest, type BatchEmbeddingResponse } from, './gemma-embedding-service';
-import { PgVectorIndexingService, type VectorDocument, type VectorSearchResult } from, './pgvector-indexing-service';
+import Redis from 'ioredis';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { GemmaEmbeddingService, type EmbeddingRequest, type BatchEmbeddingResponse } from './gemma-embedding-service';
+import { PgVectorIndexingService, type VectorDocument, type VectorSearchResult } from './pgvector-indexing-service';
 /**
  * AI Orchestrator Configuration
  */

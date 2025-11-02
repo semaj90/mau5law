@@ -2,7 +2,7 @@
 <script, lang="ts">
 
   // Svelte, 5 runes are auto-imported
-  import { page } from, '$app/stores';
+  import { page } from '$app/stores';
   type Link = { href: string; label: string; icon?: string };
   // Exported props with proper types
   const { brand } = $props<{, brand: string }>()

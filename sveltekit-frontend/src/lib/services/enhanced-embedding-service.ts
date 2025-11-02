@@ -7,9 +7,9 @@
  * - RAG API for semantic search
  */
 // Removed server-side imports that cause client-side compilation errors
-// import { generateBatchEmbeddings } from, '$lib/server/ai/embeddings.js';
-// import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings, LegalEmbeddingQuery } from, '$lib/server/embedding-cache-middleware.js';
-import { EmbeddingAdapter, cosineSimilarity, type EmbeddingResult } from, '$lib/embedding/embedding-adapter.js';
+// import { generateBatchEmbeddings } from '$lib/server/ai/embeddings.js';
+// import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings, LegalEmbeddingQuery } from '$lib/server/embedding-cache-middleware.js';
+import { EmbeddingAdapter, cosineSimilarity, type EmbeddingResult } from '$lib/embedding/embedding-adapter.js';
 
 export interface EmbeddedDocument { id: string;, content: string;
   embedding: Float32Array;

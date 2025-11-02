@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Enhanced Embeddings Service with Nomic Embed + Langchain + Langextract
 // Local embeddings using Ollama nomic-embed-text model with document processing
 // Use process.env for server-side environment variables
-import { cacheEmbedding, getCachedEmbedding } from, '$lib/server/cache/redis';
-import { getOllamaEndpoint } from, '$lib/server/utils/endpoints'; // Import the new utility
+import { cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis';
+import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Import the new utility
 
 // New interface for extracted document structure
 export interface ExtractedDocumentStructure { parties: string[];, dates: string[];

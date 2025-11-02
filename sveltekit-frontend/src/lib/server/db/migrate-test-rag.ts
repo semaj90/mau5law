@@ -3,9 +3,9 @@
  * Creates test_rag_documents, test_rag_embeddings, test_rag_search_sessions tables
  * Run: npx tsx src/lib/server/db/migrate-test-rag.ts
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import postgres from, 'postgres';
-import { sql } from, 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { sql } from 'drizzle-orm';
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 const migrationClient = postgres(connectionString, { max: 1 });
 const db = drizzle(migrationClient);

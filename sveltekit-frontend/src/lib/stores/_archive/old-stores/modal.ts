@@ -1,5 +1,5 @@
-import { writable } from, 'svelte/store';
-import type { SvelteComponent } from, 'svelte';
+import { writable } from 'svelte/store';
+import type { SvelteComponent } from 'svelte';
 
 type Props = Record<string, unknown>;
 

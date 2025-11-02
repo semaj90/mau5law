@@ -1,7 +1,7 @@
-import type { PageServerLoad, Actions } from, './$types.js';
-import { fail, redirect } from, '@sveltejs/kit';
-import { z } from, 'zod';
-import bcrypt from, 'bcryptjs';
+import type { PageServerLoad, Actions } from './$types.js';
+import { fail, redirect } from '@sveltejs/kit';
+import { z } from 'zod';
+import bcrypt from 'bcryptjs';
 // Simple validation schemas
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),

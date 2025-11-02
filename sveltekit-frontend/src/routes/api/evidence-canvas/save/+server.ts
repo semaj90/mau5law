@@ -1,4 +1,4 @@
-import { json } from, '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 
 /**
  * POST /api/evidence-canvas/save

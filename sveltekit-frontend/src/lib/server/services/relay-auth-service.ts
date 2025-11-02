@@ -1,6 +1,6 @@
 // src/lib/server/services/relay-auth-service.ts
 // Auth service that uses PG:RELAY + Lucia, not direct Drizzle hooks.
-import bcrypt from, 'bcryptjs';
+import bcrypt from 'bcryptjs';
 // This is the contract that your PG:RELAY (Go or Node relay) must expose.
 // For now we'll use mock data, but this can be extended to call actual relay'
 const RELAY_BASE = import.meta.env.RELAY_BASE ?? "http://localhost:8095"

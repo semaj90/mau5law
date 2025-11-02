@@ -2,14 +2,14 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte, code: Event attribute must be a JavaScript expression, not, a, string -->
 <script, lang="ts">
-  import { onMount, onDestroy } from, 'svelte';
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
-  import  Tooltip  from, "$lib/components/ui/Tooltip.svelte";
-  import  Accessibility  from, "lucide-svelte/icons/accessibility.svelte";
-  import  Keyboard  from, "lucide-svelte/icons/keyboard.svelte";
-  import  Maximize2  from, "lucide-svelte/icons/maximize-2.svelte";
-  import  Minimize2  from, "lucide-svelte/icons/minimize-2.svelte";
-  import  AccessibilityPanel  from, "./AccessibilityPanel.svelte";
+  import { onMount, onDestroy } from 'svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
+  import  Accessibility  from "lucide-svelte/icons/accessibility.svelte";
+  import  Keyboard  from "lucide-svelte/icons/keyboard.svelte";
+  import  Maximize2  from "lucide-svelte/icons/maximize-2.svelte";
+  import  Minimize2  from "lucide-svelte/icons/minimize-2.svelte";
+  import  AccessibilityPanel  from "./AccessibilityPanel.svelte";
   // local state (simple, compatible with Svelte, 5 migration)
   let showShortcuts = $state<boolean>(false);
   let showAccessibilityPanel = $state<boolean>(false);

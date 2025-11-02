@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import type { HTMLInputAttributes } from, 'svelte/elements';
+  import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'size' | 'disabled' | 'required' | 'readonly'> {
     label?: string;
     error?: string | null;

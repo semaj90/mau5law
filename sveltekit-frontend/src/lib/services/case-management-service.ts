@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🧠 Comprehensive Case Management Service
  *
@@ -10,13 +10,13 @@ import type { Case } from, '$lib/types';
  * - Gemma embeddings for entity extraction
  * - Qdrant for vector search
  */
-import { createHash } from, 'crypto';
-import db from, '$lib/server/db/client';
-import { cases, evidence, caseTimeline, caseNotes, citations } from, '$lib/server/db/schema-postgres';
-import { cache } from, '$lib/server/cache/redis.js';
-import { globalLoki } from, '$lib/stores/global-loki-store.js';
-import { rabbitmq } from, '$lib/server/messaging/rabbitmq.js';
-import { eq, and, desc, sql } from, 'drizzle-orm';
+import { createHash } from 'crypto';
+import db from '$lib/server/db/client';
+import { cases, evidence, caseTimeline, caseNotes, citations } from '$lib/server/db/schema-postgres';
+import { cache } from '$lib/server/cache/redis.js';
+import { globalLoki } from '$lib/stores/global-loki-store.js';
+import { rabbitmq } from '$lib/server/messaging/rabbitmq.js';
+import { eq, and, desc, sql } from 'drizzle-orm';
 
 // Add typed global extensions to avoid `any`
 type GlobalLoki = {
@@ -1452,7 +1452,7 @@ export class CaseManagementService {
         // shallow clone to avoid mutating original objects
         map.set(key, {
           type: r.type,
-          from r.from,
+          from r.from 
           to: r.to,
           entity: r.entity,
           confidence: r.confidence ?? 0,

@@ -1,10 +1,10 @@
 /// <reference, types="vite/client" />
-import { writable, derived, get } from, "svelte/store";
+import { writable, derived, get } from "svelte/store";
 /**
  * FIXED Evidence Unified Store - Phase, 2 Integration
  * Addresses critical and compatibility issues
  */
-import { browser } from, "$app/environment";
+import { browser } from "$app/environment";
 // Safe import with fallback
 let selectedCase: any;
 try {

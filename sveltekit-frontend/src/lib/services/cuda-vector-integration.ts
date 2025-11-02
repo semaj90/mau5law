@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * CUDA Vector Integration Service
  *
  * Connects SvelteKit frontend with RTX, 3060 Ti GPU-accelerated vector search
  * Optimized for legal AI document processing with NES memory architecture
  */
-import { dev } from, '$app/environment';
-import { error, type RequestEvent } from, '@sveltejs/kit';
+import { dev } from '$app/environment';
+import { error, type RequestEvent } from '@sveltejs/kit';
 
 // CUDA Vector Service Configuration
 const CUDA_SERVICE_URL = dev ? 'http://localhost:8095' : 'http://cuda-vector-service:8095';

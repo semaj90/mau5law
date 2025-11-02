@@ -1,5 +1,5 @@
-import type { LegalDocument, Evidence } from, '$lib/types/legal-types';
-import crypto from, 'crypto';
+import type { LegalDocument, Evidence } from '$lib/types/legal-types';
+import crypto from 'crypto';
 // SIMD-optimized JSON parser for legal document processing
 // Achieves 4-6 GB/s parsing speed for large legal documents
 /**

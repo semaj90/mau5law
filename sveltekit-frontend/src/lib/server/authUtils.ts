@@ -1,6 +1,6 @@
-import * as bcrypt from, "bcryptjs";
-import * as jwt from, "jsonwebtoken";
-import * as crypto from, "crypto";
+import * as bcrypt from "bcryptjs";
+import * as jwt from "jsonwebtoken";
+import * as crypto from "crypto";
 // JWT Payload type definition
 export interface JWTPayload { userId: string;, exp: number;
   iat?: number;

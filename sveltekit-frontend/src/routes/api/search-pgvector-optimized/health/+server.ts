@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getDb } from, '$lib/server/db';
-import { getRedisHealth } from, '$lib/server/redis-cache';
-import { sql } from, 'drizzle-orm';
-import { legalDocumentsJsonb } from, '../../../../drizzle/schema';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getDb } from '$lib/server/db';
+import { getRedisHealth } from '$lib/server/redis-cache';
+import { sql } from 'drizzle-orm';
+import { legalDocumentsJsonb } from '../../../../drizzle/schema';
 
 /**
  * GET /api/search-pgvector-optimized/health

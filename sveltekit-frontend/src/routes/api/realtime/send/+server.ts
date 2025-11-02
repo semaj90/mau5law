@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 // Proxy endpoint used as the final fallback when WebTransport/WebSocket are unavailable.
 // This preserves common headers (Authorization, Cookie) and forwards the raw JSON body to the GPU chat API.

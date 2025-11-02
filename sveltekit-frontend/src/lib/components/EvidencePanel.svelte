@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Evidence } from, "$lib/types";
+  import type { Evidence } from "$lib/types";
   // add a local view type to include optional UI properties
   interface LocalEvidence extends Evidence {
     id: string; // ensure an id for keyed each block

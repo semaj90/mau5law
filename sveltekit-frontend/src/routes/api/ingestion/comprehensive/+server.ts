@@ -2,9 +2,9 @@
  * Comprehensive Ingestion API
  * Integrates XState workflow + LokiJS tracking + RabbitMQ + Drizzle ORM
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { ingestionService } from, '$lib/server/workflows/ingestion-service.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { ingestionService } from '$lib/server/workflows/ingestion-service.js'
 
 // Define types for job details
 interface JobDetails { id: string;, status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'retrying' | 'paused';

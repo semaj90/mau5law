@@ -1,10 +1,10 @@
 <!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
-  import { page } from, '$app/stores';
-  import type { Snippet } from, 'svelte';
-  import NavBar from, '$lib/components/layout/NavBar.svelte';
-  import Sidebar from, '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
+  import { page } from '$app/stores';
+  import type { Snippet } from 'svelte';
+  import NavBar from '$lib/components/layout/NavBar.svelte';
+  import Sidebar from '$lib/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
     data: any;

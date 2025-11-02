@@ -1,5 +1,5 @@
-import Loki from, '$lib/compat/lokijs';
-import type Redis from, 'ioredis';
+import Loki from '$lib/compat/lokijs';
+import type Redis from 'ioredis';
 // Lightweight global Loki store for job lifecycle sync across workers via Redis pub/sub
 export class GlobalLokiStore {
   private db: Loki;

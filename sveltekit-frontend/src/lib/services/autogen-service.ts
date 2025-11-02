@@ -1,11 +1,11 @@
-import type { AIResponse } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * AutoGen Multi-Agent Service
  * Handles conversational AI agents with role-based interactions
  */
-import crypto from, 'crypto';
-import { env } from, '$env/dynamic/private'; // ADDED: Import SvelteKit environment variables
+import crypto from 'crypto';
+import { env } from '$env/dynamic/private'; // ADDED: Import SvelteKit environment variables
 // Removed problematic external type import (some TS configs/parsers choke on .js type imports)
 export interface AIResponse { id: string;, content: string;
   providerId?: string;

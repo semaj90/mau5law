@@ -1,21 +1,21 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Unified SIMD JSON Parser - Combines all SIMD backends
 // Nintendo-Style Performance with Legal Document Optimization + Redis Integration
 // Normalize/import paths to relative locations and avoid duplicate/ambiguous named imports
-import { SIMDJSONParser, as WASMParser, benchmarkSIMDParsing } from, '$lib/wasm/simd-json-parser';
-import { SIMDJSONParserV2 } from, '$lib/services/simd-json-parser-v2';
-import { simdJSONParser } from, '$lib/services/simd-json-parser';
-import { UltraJSONParser, ultraJSONParser } from, '$lib/wasm/ultra-json-parser';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { SIMDJSONParser, as WASMParser, benchmarkSIMDParsing } from '$lib/wasm/simd-json-parser';
+import { SIMDJSONParserV2 } from '$lib/services/simd-json-parser-v2';
+import { simdJSONParser } from '$lib/services/simd-json-parser';
+import { UltraJSONParser, ultraJSONParser } from '$lib/wasm/ultra-json-parser';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Optional integrations (guarded usage)
-import { localDB } from, '$lib/client/db/loki-client';
-import { QdrantVectorService } from, '$lib/server/services/qdrant-vector';
-import { Neo4jClient } from, '$lib/server/services/neo4j-client';
-import { OllamaEmbeddingService } from, '$lib/server/services/ollama-embed-service';
+import { localDB } from '$lib/client/db/loki-client';
+import { QdrantVectorService } from '$lib/server/services/qdrant-vector';
+import { Neo4jClient } from '$lib/server/services/neo4j-client';
+import { OllamaEmbeddingService } from '$lib/server/services/ollama-embed-service';
 
 // Shared typed output for WASM legal doc parser
-import type { LegalDocWASMOutput } from, '$lib/shared/types/parser';
+import type { LegalDocWASMOutput } from '$lib/shared/types/parser';
 
 export enum ParseMode {
   LEGAL_DOCUMENT = 'legal_document',

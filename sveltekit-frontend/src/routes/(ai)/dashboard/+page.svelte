@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import  Card, CardContent, CardHeader, CardTitle  from, "$lib/components/ui/Card.svelte";
-  import  Badge  from, "$lib/components/ui/badge.svelte";
-  import  Button  from, "$lib/components/ui/core.svelte";
-  import type { PageData } from, './$types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Button  from "$lib/components/ui/core.svelte";
+  import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
 

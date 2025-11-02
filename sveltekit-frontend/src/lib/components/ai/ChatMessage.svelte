@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   interface Props {
     message: any;
@@ -7,10 +7,10 @@ import type { Message } from, '$lib/types';
   // receive props via Svelte, 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
-  import { chatActions } from, '$lib/stores/chat'; // adjusted store path
-  import { notifications } from, '$lib/stores/unified';
-  import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from, 'lucide-svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import { chatActions } from '$lib/stores/chat'; // adjusted store path
+  import { notifications } from '$lib/stores/unified';
+  import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';
   import, '../chat/chat-message.css';
   // reactive derived values - correct Svelte, 5 usage
   let isUser = $derived.by(() => message?.role === 'user' || message?.type === 'user');

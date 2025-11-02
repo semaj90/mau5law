@@ -5,9 +5,9 @@ https: //svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onDestroy } from, 'svelte';
-  import { dndzone } from, 'svelte-dnd-action';
-  import Masonry from, 'masonry-layout';
+  import { onDestroy } from 'svelte';
+  import { dndzone } from 'svelte-dnd-action';
+  import Masonry from 'masonry-layout';
   interface Props {
     items: any[];
     columnWidth?: number;

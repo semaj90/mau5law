@@ -15,16 +15,16 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import * as pako from, 'pako';
-import { createHash } from, 'crypto';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import { tritonClient } from, '$lib/server/triton-client';
-import { qdrantClient } from, '$lib/server/qdrant-client';
-import { db } from, '$lib/server/db';
-import { npmSolvedErrors, as solvedErrors } from, '$lib/server/schema';
-import { sql } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import * as pako from 'pako';
+import { createHash } from 'crypto';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { tritonClient } from '$lib/server/triton-client';
+import { qdrantClient } from '$lib/server/qdrant-client';
+import { db } from '$lib/server/db';
+import { npmSolvedErrors, as solvedErrors } from '$lib/server/schema';
+import { sql } from 'drizzle-orm';
 
 // --- Interfaces for Request, Response, and Cache ---
 

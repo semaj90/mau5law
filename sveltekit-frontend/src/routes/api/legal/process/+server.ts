@@ -3,10 +3,10 @@
  *
  * Provides endpoints for legal document processing through the unified orchestration service
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { unifiedLegalOrchestrationService } from, '$lib/services/unified-legal-orchestration-service.js';
-import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Use SIMD-accelerated JSON parsing for legal document payloads

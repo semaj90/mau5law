@@ -2,8 +2,8 @@
  * YoRHa 3D Input Component
  * Text input field with advanced styling and YoRHa aesthetic
  */
-import * as THREE from, 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
+import * as THREE from 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
 export interface YoRHaInput3DOptions extends Omit<YoRHaStyle, 'variant'> {
   value?: string;
   placeholder?: string;

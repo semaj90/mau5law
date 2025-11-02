@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { createEventDispatcher } from, 'svelte';
+  import { createEventDispatcher } from 'svelte';
 
   // Props
   let { type = 'button', variant = 'default', size = 'default', disabled = false, href = undefined, ...rest } = $props<{

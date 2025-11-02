@@ -2,9 +2,9 @@
  * Test Context7 MCP Helper Functions
  * Tests the utility functions from mcp-context72-get-library-docs
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { getSvelte5Docs, getXStateDocs } from, '$lib/mcp-context72-get-library-docs';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { getSvelte5Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
 
 type DocSnippet = {
   content?: string;

@@ -1,12 +1,12 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { useMachine } from, '@xstate/svelte';
-  import { aiAssistantMachine, type AIAssistantContext } from, './aiAssistantMachine.js';
-  import  DidYouMeanSuggestions  from, "$lib/components/recommendations/DidYouMeanSuggestions.svelte";
-  import { IntelligentModelSwitcher } from, '$lib/ai/intelligent-model-switcher';
-  import { UserIntentPredictionSystem } from, '$lib/ai/user-intent-prediction-system';
-  import { Brain, Zap, Target, Cpu, Activity } from, 'lucide-svelte';
+  import { useMachine } from '@xstate/svelte';
+  import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
+  import  DidYouMeanSuggestions  from "$lib/components/recommendations/DidYouMeanSuggestions.svelte";
+  import { IntelligentModelSwitcher } from '$lib/ai/intelligent-model-switcher';
+  import { UserIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system';
+  import { Brain, Zap, Target, Cpu, Activity } from 'lucide-svelte';
   interface Props {
     initialContext?: Partial<AIAssistantContext>;
     enableStreamingMode?: boolean;

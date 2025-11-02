@@ -2,7 +2,7 @@
  * Fuse.js Integration for RAG Search
  * Provides client-side fuzzy search capabilities with tag filtering
  */
-import Fuse from, 'fuse.js';
+import Fuse from 'fuse.js';
 export interface RAGDocument { id: number | string;, filename: string;
   content: string;
   tags: string[];

@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // @ts-nocheck
 import {
   pgTable,
@@ -11,8 +11,8 @@ import {
   decimal,
   serial,
   uuid
-} from, "drizzle-orm/pg-core";
-import { relations } from, "drizzle-orm";
+} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 // === AUTHENTICATION & USER MANAGEMENT ===
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),

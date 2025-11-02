@@ -2,7 +2,7 @@
  * Canvas Editor State Machine (XState v5)
  * Manages canvas editor state with collaboration, history, and auto-save
  */
-import { createMachine, assign } from, 'xstate';
+import { createMachine, assign } from 'xstate';
 export interface CanvasEditorContext { reportId: string;, canvasState: any | null;
   selectedObjects: any[];
   history: string[];

@@ -4,11 +4,11 @@
  * Complex experimental service with external dependencies
  * Optimized for legal AI document processing and RTX, 3060 Ti WebGPU acceleration
  */
-import { browser } from, '$app/environment';
-import { nesGPUBridge } from, '../gpu/nes-gpu-memory-bridge';
-import type { LegalDocument } from, '../memory/nes-memory-architecture.js';
-import { wasmClusteringService } from, './clustering-wasm.js';
-import { createWasmGpuService } from, './gpu-wasm-init.js';
+import { browser } from '$app/environment';
+import { nesGPUBridge } from '../gpu/nes-gpu-memory-bridge';
+import type { LegalDocument } from '../memory/nes-memory-architecture.js';
+import { wasmClusteringService } from './clustering-wasm.js';
+import { createWasmGpuService } from './gpu-wasm-init.js';
 // Browser SIMD detection and capabilities
 export interface BrowserSIMDCapabilities { wasmSIMD: boolean;, webgpuCompute: boolean;
   sharedArrayBuffer: boolean;

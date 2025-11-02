@@ -1,7 +1,7 @@
-import type { SearchResult } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Search result interface
 interface SearchResult { id: string;, title: string;
   type: string;

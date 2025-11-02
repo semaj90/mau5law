@@ -1,4 +1,4 @@
-import { EventEmitter } from, "events";
+import { EventEmitter } from "events";
 /**
  * Redis-Compatible Self-Organizing Map Cache System
  * Advanced memory management with machine learning clustering

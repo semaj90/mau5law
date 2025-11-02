@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Vector Search API - pgvector with CUDA acceleration for legal document search
  * Handles semantic search, similarity queries, and parallel processing
@@ -6,13 +6,13 @@ import type { SearchResult } from, '$lib/types';
  * MIGRATION NOTE: Now uses the canonical database connection from $lib/server/db
  * This ensures we use the same connection pool (node-postgres adapter) as the rest of the app
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 // getCudaServiceUrl was removed in favor of centralized embedding service
-import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
-import { generateEmbeddings } from, '$lib/server/services/embedding-service';
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 // Use canonical database connection (node-postgres adapter with connection pooling)
-import { db, sql } from, '$lib/server/db'; // Add concrete types to avoid `any`
+import { db, sql } from '$lib/server/db'; // Add concrete types to avoid `any`
 type SearchFilters = {
   documentType?: string[];
   jurisdiction?: string[];
@@ -58,7 +58,7 @@ interface SearchResponse {, results: SearchResult[];, totalCount: number;
 }
 
 // NOTE: Removed postgres-js client initialization - now using shared db connection from $lib/server/db
-// The: 'db';, and: 'sql' are already imported from, '$lib/server/db' above
+// The: 'db';, and: 'sql' are already imported from '$lib/server/db' above
 
 const handler: RequestHandler = async event => {
   const { request } = event;

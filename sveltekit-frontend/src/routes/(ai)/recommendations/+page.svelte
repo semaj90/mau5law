@@ -3,7 +3,7 @@
   Testing the RecommendationEngine with Enhanced-Bits UI components
 -->
 <script, lang="ts">
-  import RecommendationEngine from, '$lib/components/ai/RecommendationEngine.svelte';
+  import RecommendationEngine from '$lib/components/ai/RecommendationEngine.svelte';
 </script>
 <svelte: head>
   <title>AI Recommendations - Legal AI Platform</title>

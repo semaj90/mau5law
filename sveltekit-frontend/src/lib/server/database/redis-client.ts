@@ -2,9 +2,9 @@
  * Redis Client Configuration
  * Provides connection management for Redis caching and orchestration
  */
-import Redis from, 'ioredis';
-import dotenv from, 'dotenv';
-import createRedisConnection from, '$lib/server/redis'; // Fix: createRedisConnection is the default export
+import Redis from 'ioredis';
+import dotenv from 'dotenv';
+import createRedisConnection from '$lib/server/redis'; // Fix: createRedisConnection is the default export
 dotenv.config();
 export interface RedisConfig { host: string;, port: number;
   password?: string;

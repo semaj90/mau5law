@@ -1,11 +1,11 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * MCP GPU Orchestrator - Advanced Multi-Protocol AI Task Dispatcher
  * Coordinates GPU processing, RAG analysis, and autosolve remediation
  * Integrates with existing, 37 Go services and Ollama cluster
  */
-import { productionServiceClient } from, './production-service-client';
-import type { ServiceResponse } from, './production-service-client';
+import { productionServiceClient } from './production-service-client';
+import type { ServiceResponse } from './production-service-client';
 
 export interface GPUTask { id: string;, type:
     | 'legal_analysis'

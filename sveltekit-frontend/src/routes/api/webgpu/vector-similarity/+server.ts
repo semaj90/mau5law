@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { webgpuPolyfill } from, '$lib/webgpu/webgpu-polyfill';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
 
 // Add explicit types for the polyfill surface and init result
 type PerformanceStats = Record<string, unknown>;

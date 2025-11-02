@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,12 +16,12 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // AI Document Processing API - Summarization, Entity Extraction, Embeddings
 // Production-ready endpoint with LangChain + Ollama integration + CUDA acceleration
-import { json } from, '@sveltejs/kit';
-import { URL } from, 'url';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit';
+import { URL } from 'url';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 const CUDA_SERVICE_URL = 'http://localhost:8097';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 interface DocumentProcessingRequest {

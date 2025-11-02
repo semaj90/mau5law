@@ -3,7 +3,7 @@
   Testing the CaseScoringDashboard with Enhanced-Bits UI components
 -->
 <script, lang="ts">
-  import CaseScoringDashboard from, '$lib/components/ai/CaseScoringDashboard.svelte';
+  import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
 </script>
 
 <svelte:head>
