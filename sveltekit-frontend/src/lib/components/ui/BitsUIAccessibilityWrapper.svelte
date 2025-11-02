@@ -31,7 +31,7 @@
   } function enhanceGeneric(element: HTMLElement) { // Add general accessibility enhancements if (!element.getAttribute('tabindex') && element.tagName !== 'BUTTON' && element.tagName !== 'INPUT') { element.setAttribute('tabindex', '0'); }
     // Add focus indicators element.addEventListener('focus', () => { element.classList.add('accessibility-focused'); }); element.addEventListener('blur', () => { element.classList.remove('accessibility-focused'); }); }
   // React to route configuration changes $effect(() => { if (currentRouteConfig && containerElement) { enhanceComponentAccessibility(); }
-  }); </script> <div bind:this={ containerElement } class="bits-ui-accessibility-wrapper"
+  }); </script> <div, bind:this={ containerElement } class="bits-ui-accessibility-wrapper"
   data-component={ component } data-route-type={currentRouteConfig?.routeType} >
   {#if children} {@render children()} {/if} {#if contextualHelp} <div, id="contextual-help" class="sr-only"> { contextualHelp } {/if} </div> <style> .bits-ui-accessibility-wrapper { position: relative; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0, margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0 }

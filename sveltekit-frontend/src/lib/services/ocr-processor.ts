@@ -252,10 +252,9 @@ export class EnhancedOCRProcessor {
         creator: creatorMatch ? creatorMatch[1] : undefined,
         page_count: pageCount,
         file_size: buffer.length,
-        content_type: 'application/pdf'
-      };
+        content_type: `application/pdf` };
     } catch (error: any) {
-      console.warn('⚠️ Could not extract PDF metadata:', error);
+      console.warn('⚠️ Could not extract PDF metadata: `, error);'`
       return {
         page_count: 1,
         file_size: buffer.length,

@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED` }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED' }));'`
     }
     // Parse request body
     const body = await request.json();
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId);
     if (!caseData) {
-      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND' }));'`
     }
     // Get evidence data for pattern analysis
     let evidence;
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       meta: {
         userId: getUserId(locals),
         timestamp: new Date().toISOString(),
-        action: `pattern_detection_completed` }
+        action: `pattern_detection_completed' }'`
     });
   } catch (err: any) {
     console.error('Error in pattern detection:', err);
@@ -163,7 +163,7 @@ async function detectSuspiciousPatterns(
     anomalies: [],
     insights: [],
     confidence: 0,
-    summary: `` };
+    summary: `' };'`
   try {
     const detectionTypes = patternTypes || [
       'temporal',
@@ -264,7 +264,7 @@ async function detectTemporalPatterns(
       confidence: 0.78,
       timestamp: '2024-01-03T03:30:00Z',
       severity: 'medium',
-      context: `Activity at unusual hour` } as Anomaly);
+      context: `Activity at unusual hour' } as Anomaly);'`
   }
   return {
     patterns,
@@ -290,11 +290,11 @@ async function detectLocationPatterns(
         description: 'Evidence concentrated in specific geographic areas',
         confidence: 0.76,
         locations: [
-          { lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District` },'`
-          { lat: 40.7589, lon: -73.9851, count: 3, name: `Upper West Side` }
+          { lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District' },'`'`
+          { lat: 40.7589, lon: -73.9851, count: 3, name: `Upper West Side' }'`
         ],
         radius: '2.5 km',
-        significance: `high` } as Pattern
+        significance: `high' } as Pattern'`
     ],
     anomalies: [
       {,
@@ -303,9 +303,9 @@ async function detectLocationPatterns(
         subtype: 'geographic_outlier',
         description: 'Single evidence item far from cluster',
         confidence: 0.69,
-        location: { lat: 40.6892, lon: -74.0445, name: `Brooklyn` },
+        location: { lat: 40.6892, lon: -74.0445, name: `Brooklyn' },'`
         distance: '15.2 km from cluster center',
-        severity: `low` } as Anomaly
+        severity: `low' } as Anomaly'`
     ],
     confidence: 0.73
   };
@@ -329,7 +329,7 @@ async function detectBehavioralPatterns(
         confidence: 0.91,
         characteristics: ['Similar approach patterns', 'Consistent tool usage', 'Repeated sequence of actions'],
         occurrences: Math.max(2, Math.floor((evidence || []).length * 0.4)),
-        significance: `very_high` } as Pattern
+        significance: `very_high' } as Pattern'`
     ],
     anomalies: [
       {,
@@ -339,7 +339,7 @@ async function detectBehavioralPatterns(
         description: 'Unusual deviation from established pattern',
         confidence: 0.74,
         context: 'Different methodology used in one instance',
-        severity: `medium` } as Anomaly
+        severity: `medium' } as Anomaly'`
     ],
     confidence: 0.88
   };
@@ -363,7 +363,7 @@ async function detectCommunicationPatterns(
         confidence: 0.67,
         intervals: ['Every 2 hours', 'Daily at 9 AM', 'Weekly on Fridays'],
         channels: ['Email', 'Phone', 'Messaging'],
-        significance: `medium` } as Pattern
+        significance: `medium' } as Pattern'`
     ],
     anomalies: [
       {,
@@ -374,7 +374,7 @@ async function detectCommunicationPatterns(
         confidence: 0.71,
         duration: '48 hours',
         context: 'Expected communication did not occur',
-        severity: `medium` } as Anomaly
+        severity: `medium' } as Anomaly'`
     ],
     confidence: 0.69
   };
@@ -399,7 +399,7 @@ async function detectFinancialPatterns(
         amounts: ['$500.00', '$1,000.00', '$250.00'],
         frequency: 'Weekly',
         accounts: ['Account A', 'Account B'],
-        significance: `high` } as Pattern
+        significance: `high' } as Pattern'`
     ],
     anomalies: [
       {,
@@ -410,7 +410,7 @@ async function detectFinancialPatterns(
         confidence: 0.83,
         amount: '$5,000.00',
         context: 'Amount 10x larger than typical pattern',
-        severity: `high` } as Anomaly
+        severity: `high' } as Anomaly'`
     ],
     confidence: 0.81
   };
@@ -435,7 +435,7 @@ async function detectDigitalPatterns(
         systems: ['System A', 'Database B', 'Application C'],
         times: ['Business hours', 'After hours access'],
         methods: ['Standard login', 'API access'],
-        significance: `high` } as Pattern
+        significance: `high' } as Pattern'`
     ],
     anomalies: [
       {,
@@ -447,7 +447,7 @@ async function detectDigitalPatterns(
         system: 'Restricted Database',
         time: '2024-01-01T02:30:00Z',
         method: 'Direct database connection',
-        severity: `very_high` } as Anomaly
+        severity: `very_high' } as Anomaly'`
     ],
     confidence: 0.89
   };
@@ -518,7 +518,7 @@ type DetectiveLocals = {
 /* Add small GET health/placeholder handler (keeps endpoint available for simple checks) */
 export const GET: RequestHandler = async () => {
   // lightweight endpoint: the POST remains the full implementation above
-  return json({ success: true, message: `Detective patterns endpoint (ready)` });
+  return json({ success: true, message: `Detective patterns endpoint (ready)' });'`
 };
 
 /**

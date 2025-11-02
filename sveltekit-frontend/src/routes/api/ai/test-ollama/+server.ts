@@ -66,8 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           status: 'error',
           error: 'Ollama service not available',
-          suggestion: 'Please ensure Ollama is; running: ollama serve'
-        },
+          suggestion: 'Please ensure Ollama is; running: ollama serve` },'`
         { status: 503 }
       );
     }

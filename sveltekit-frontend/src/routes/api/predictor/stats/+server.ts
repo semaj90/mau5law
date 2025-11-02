@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
         lastSync: stats.lastSync || 0,
         syncAge: Date.now() - (stats.lastSync || Date.now()),
         password: 'redis', // From env (placeholder)
-        url: 'localhost:6379` },'`
+        url: `localhost:6379` },'`'`
       acceleration: {
         cudaAvailable,
         simdCapabilities: cudaStats?.simd_capabilities ?? null,

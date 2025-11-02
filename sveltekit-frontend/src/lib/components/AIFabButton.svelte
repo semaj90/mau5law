@@ -1,6 +1,6 @@
 <script, lang="ts">
 	import * as CanvasStore from '../stores/canvas';
-	import { Dialog } from './Dialog.svelte';
+	import  Dialog  from "./Dialog.svelte";
 	import { onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	// robust aiStore fallback if the module doesn't export aiStore exactly'
@@ -26,7 +26,7 @@
 		aiStore.update((state: any) => ({ ...state, lastRequest: payload }));
 	}
 </script>
-<!-- Floating Action, Button -->
+<!-- Floating, Action, Button -->
 <button
 	class="ai-fab-button"
 	class:generating={isGenerating}
@@ -37,7 +37,7 @@
 	<span, class="fab-glow" aria-hidden="true"></span>
 	<span, class="fab-icon" aria-hidden="true">
 		{#if isGenerating}
-			<!-- simple spinner that uses the existing @keyframes, spin -->
+			<!-- simple spinner that uses the, existing @keyframes, spin -->
 			<svg
 				class="spinner"
 				width="24"
@@ -48,12 +48,12 @@
 				stroke-width="2"
 			>
 				<circle, cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
-				<path d="M22 12a10 10 0, 00-10-10" stroke-linecap="round"></path>
+				<path d="M22 12a10 10, 0, 00-10-10" stroke-linecap="round"></path>
 			</svg>
 		{:else}
-			<!-- inline fallback sparkles icon to avoid lucide export, issues -->
-			<svg width="24" height="24" viewBox="0 0 24, 24" fill="none" aria-hidden="true">
-				<path d="M12 2l1.9 4.3L18 8l-4.1 1.6L12 14l-1.9-4.4L6 8l4.1-1.7L12, 2z" fill="currentColor" />
+			<!-- inline fallback sparkles icon to avoid lucide, export, issues -->
+			<svg width="24" height="24" viewBox="0 0, 24, 24" fill="none" aria-hidden="true">
+				<path d="M12 2l1.9 4.3L18 8l-4.1 1.6L12 14l-1.9-4.4L6, 8l4.1-1.7L12, 2z" fill="currentColor" />
 				<circle, cx="19" cy="5" r="1.5" fill="currentColor" />
 			</svg>
 		{/if}
@@ -61,8 +61,8 @@
 </button>
 <!-- AI, Dialog -->
 {#if dialogOpen}
-	<!-- wrap toggleDialog to avoid signature mismatch when Svelte passes an, event -->
-	<Dialog title="AI, Assistant" open={dialogOpen} onairequest={handleAIRequest} onclose={() => toggleDialog()} />
+	<!-- wrap toggleDialog to avoid signature mismatch when Svelte passes, an, event -->
+	<Dialog, title="AI, Assistant" open={dialogOpen} onairequest={handleAIRequest} onclose={() => toggleDialog()} />
 {/if}
 <style>
 	.ai-fab-button {

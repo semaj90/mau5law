@@ -184,7 +184,6 @@ function mockCitations(): Citation[] {
       isFavorite: true,
       notes: 'Key precedent for evidence admissibility',
       savedAt: new Date('2024-01-15').toISOString(),
-      contextData: { reportId: 'report-123', caseId: 'case-456` }'`
-    },
+      contextData: { reportId: 'report-123', caseId: 'case-456' }'' }
   ];
 }

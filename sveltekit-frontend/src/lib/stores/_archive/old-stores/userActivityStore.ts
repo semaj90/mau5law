@@ -220,8 +220,7 @@ class UserActivityDetector {
       ...metrics,
       recentEventCount: recentActivity.length,
       recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
-      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected` }'`
-  }
+      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected' }'` }'`
   public destroy(): void {
     // Clean up event listeners
     this.TRACKED_EVENTS.forEach(eventType => {

@@ -198,7 +198,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
   private async setupCacheEventListeners() {
     // create a dedicated subscriber client instead of using duplicate()
-    const subscriber = createClient({ url: this.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379' });
+    const subscriber = createClient({ url: this.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379` });'`
     await subscriber.connect();
 
     // subscribe to simple channels; handlers parse JSON safely
@@ -329,7 +329,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       evidence: 'high',
       search: 'medium',
       report: 'medium',
-      embedding: 'high' };
+      embedding: 'high` };'`
     return priorityMap[type] ?? 'medium';
   }
 
@@ -483,7 +483,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     try {
       const res = await fetch('/api/search/execute', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ query })
       });
       if (!res.ok) {
@@ -520,8 +520,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       const qs = new URLSearchParams({ type: docType, limit: String(effectiveLimit) });
       const res = await fetch(`/api/documents/recent?${qs.toString()}`, {
         method: 'GET',
-        headers: { Accept: `application/json' }'`
-      });
+        headers: { Accept: 'application/json' }'` });'`
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Documents API error: ${text}`);
@@ -550,8 +549,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       return Array.from({ length: Math.min(effectiveLimit, 10) }, (_, i) => ({
         id: `${docType}_${i}`,
         type: docType,
-        content: `Sample ${docType} content ${i}' }));'`
-    }
+        content: 'Sample ${docType} content ${i}' }));'` }'`
   }
 
   // call backend to warm user-patterns (server will do DB work)
@@ -559,7 +557,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     try {
       await fetch('/api/cache/preload/user-pattern', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ pattern })
       });
       console.log(`👤 Requested preload for user pattern: ${pattern}`);
@@ -573,7 +571,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     try {
       await fetch('/api/cache/proactive-load', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ query })
       });
       console.log(`🔍 Proactive load requested for: ${query}`);
@@ -632,8 +630,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
       this.emit('ttls_optimized', { count: this.ttlStrategies.size });
     } catch (err: any) {
-      console.warn('optimizeTTLStrategies failed: `, String(err));'`
-    }
+      console.warn('optimizeTTLStrategies failed: ', String(err));'` }'`
   }
 
   // Lightweight Redis helpers used in other methods (redisExists, redisSetEx)
@@ -774,8 +771,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
       this.emit('stale_cleanup', { removed: toRemove.length });
     } catch (err: any) {
-      console.warn('cleanupStaleEntries failed: `, String(err));'`
-    }
+      console.warn('cleanupStaleEntries failed: ', String(err));'` }'`
   }
 }
 

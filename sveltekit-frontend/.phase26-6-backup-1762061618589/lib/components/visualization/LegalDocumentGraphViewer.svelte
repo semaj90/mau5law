@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   import { WebGPULegalDocumentGraph } from '$lib/webgpu/legal-document-graph';
   import { DimensionalTensorStore } from '$lib/webgpu/dimensional-tensor-store';
   import { legalDB, type GraphVisualizationData } from '$lib/db/client-db';
-  import { DocumentDetails } from '$lib/components/legal/DocumentDetails.svelte';
+  import  DocumentDetails  from "$lib/components/legal/DocumentDetails.svelte";
   // ============================================================================
   // COMPONENT PROPS
   // ============================================================================

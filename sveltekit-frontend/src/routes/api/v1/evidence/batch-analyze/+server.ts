@@ -160,10 +160,10 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
 }
 
 async function analyzeSingleDocument(file: EvidenceFile, model: string): Promise<AnalysisResult> {
-  const analysisPrompt = `Analyze this legal evidence document and provide comprehensive analysis:`
+  const analysisPrompt = `Analyze this legal evidence document and provide comprehensive analysis: '`
 ; DOCUMENT: ${file.filename}
 TYPE: ${file.type}
-CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `' }'`
+CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `` }'`'`
 
 Provide analysis in this exact JSON format:
 {
@@ -186,7 +186,7 @@ Provide analysis in this exact JSON format:
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
         model,
         prompt: analysisPrompt,
@@ -374,8 +374,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication (allow test mode)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
     if (!isTestMode && (!locals.session || !locals.user)) {
-      return json({ message: `Authentication required' }, { status: 401 });'`
-    }
+      return json({ message: 'Authentication required' }, { status: 401 });'` }'`
 
     const body = await request.json();
     const { caseId, files, analysisOptions } = BatchAnalysisSchema.parse(body);
@@ -438,7 +437,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         message: 'Batch analysis failed',
-        details: message || 'Unknown error' },
+        details: message || 'Unknown error` },'`
       { status: 500 }
     );
   }

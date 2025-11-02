@@ -178,12 +178,12 @@
         </div>
         <div class="space-y-4">
           {#if !demoMode}
-            <Button.Root class="bits-btn" onclick={() =>
+            <Button class="bits-btn" onclick={() =>
 startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
           {/if}
-          <Button.Root class="bits-btn" variant="ghost" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
@@ -356,7 +356,7 @@ clearAllEvidence()}>
               Quick Actions
             </h4>
             <div class="space-y-4">
-              <Button.Root
+              <Button
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
@@ -364,7 +364,7 @@ clearAllEvidence()}>
 (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
-              <Button.Root
+              <Button
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
@@ -372,7 +372,7 @@ clearAllEvidence()}>
 (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
-              <Button.Root
+              <Button
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"

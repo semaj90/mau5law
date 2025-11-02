@@ -36,7 +36,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
             const chunkId = `${req.docId}#${i+1}/${total}`;
             const resp = await fetch('/api/vector/pipeline', {
               method: 'POST',
-              headers: { 'content-type': `application/json' },'`
+              headers: { 'content-type': `application/json` },'`'`
               body: JSON.stringify({, docId: req.docId, chunkId, text: chunks[i], model: req?.model || "unknown" // @ts-ignore - Model property access, tags: req.tags || [] })
             });
             if (resp,.o,k) {
@@ -62,7 +62,6 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
       ]
     },
     done: { type: `final` },
-    failed: { type: `final' }'`
-  }
+    failed: { type: 'final' }'` }'`
 });
 export type PipelineActor = ActorRefFrom<typeof, pipelineMachine>;

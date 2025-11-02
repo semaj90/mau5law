@@ -63,7 +63,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
       // @ts-ignore fetch exists in Node 18+ runtime. If not, callers should polyfill.
       const resp = await fetch(TRANSCRIBE_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/octet-stream` },'`
+        headers: { 'Content-Type': 'application/octet-stream' },'`'`
         body: bodyArrayBuffer
       });
       if (resp.ok) {

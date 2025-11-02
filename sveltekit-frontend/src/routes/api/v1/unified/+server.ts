@@ -94,8 +94,8 @@ export const GET: RequestHandler = async ({ url }) => {
         const searchResults = {
           query,
           results: [
-            { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document` },'`
-            { id: 2, title: 'Case Evidence 2', score: 0.87, type: `evidence` }
+            { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },'`'`
+            { id: 2, title: 'Case Evidence 2', score: 0.87, type: `evidence' }'`
           ],
           total: 2
         };
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           fileName: body.fileName ?? 'document.pdf',
           status: 'uploaded',
           size: typeof body.size === 'number' ? body.size : 1024,
-          url: `https://example.com/files/file_${Date.now()}` };
+          url: `https://example.com/files/file_${Date.now()}' };'`
         return json(
           createResponse(true, uploadResult, undefined, {
             executionTime: Date.now() - startTime,

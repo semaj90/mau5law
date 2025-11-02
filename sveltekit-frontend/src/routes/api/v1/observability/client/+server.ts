@@ -72,8 +72,7 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
             fid: metric.webVitals.fid ? `${Math.round(metric.webVitals.fid)}ms` : 'N/A',
             cls: metric.webVitals.cls != null ? Math.round(metric.webVitals.cls * 1000) / 1000 : 'N/A',
             fcp: metric.webVitals.fcp ? `${Math.round(metric.webVitals.fcp)}ms` : `N/A` }
-        : `N/A' });'`
-  });
+        : 'N/A' });'` });'`
 }
 export const POST: RequestHandler = async ({ request, getClientAddress: _getClientAddress, locals }) => {
   const requestStart = performance.now();
@@ -116,8 +115,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress: _getClie
       {
         headers: {
           'X-Request-ID': requestId,
-          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}' }'`
-      }
+          'Server-Timing': 'client-metrics-processing;dur=${processingTime.toFixed(2)}' }'` }'`
     );
   } catch (error) {
     const processingTime = performance.now() - requestStart;
@@ -132,8 +130,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress: _getClie
         status: 500,
         headers: {
           'X-Request-ID': requestId,
-          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}' }'`
-      }
+          'Server-Timing': 'client-metrics-processing;dur=${processingTime.toFixed(2)}' }'` }'`
     );
   }
 };

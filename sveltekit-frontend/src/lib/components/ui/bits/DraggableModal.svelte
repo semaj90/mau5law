@@ -20,26 +20,26 @@
   function closeModal() { open = false; dispatch('close'); }
   // Ensure modal stays within bounds when window resizes $effect(() => { if (typeof window !== 'undefined') { const handleResize = () => { position = { x: Math.max(0, Math.min(window.innerWidth - dimensions.width, position.x)), y: Math.max(0, Math.min(window.innerHeight - 60, position.y)); }
       } window.addEventListener('resize', handleResize); return () => window.removeEventListener('resize', handleResize); }
-  }); </script> {#if open} <!-- Modal, Backdrop --> <div class="fixed inset-0 bg-black/20 backdrop-blur-sm"
+  }); </script> {#if open} <!-- Modal, Backdrop --> <div class="fixed inset-0 bg-black/20, backdrop-blur-sm"
     style="z-index: {zIndex - 1}"
-    transitionfade={{ duration 200 }} ></div> <!-- Draggable, Modal --> <div bind:this={ modalElement } class={` fixed rounded-lg border shadow-2xl overflow-hidden ${themeClasses[theme].modal} ${isDragging ? 'cursor-grabbing': ''} ${isMinimized ? 'h-12': ''} ${theme === 'yorha' ? 'font-mono': ''} `} style="; left: {position.x}px; top: {position.y}px; width: {dimensions.width}px; height: {isMinimized ? '48px': dimensions.height + 'px'} z-index: { zIndex }"
+    transitionfade={{ duration 200 }} ></div> <!-- Draggable, Modal --> <div bind:this={ modalElement } class={` fixed rounded-lg border shadow-2xl, overflow-hidden ${themeClasses[theme].modal} ${isDragging ? 'cursor-grabbing': ''} ${isMinimized ? 'h-12': ''} ${theme === 'yorha' ? 'font-mono': ''} `} style="; left: {position.x}px; top: {position.y}px; width: {dimensions.width}px; height: {isMinimized ? '48px': dimensions.height + 'px'} z-index: { zIndex }"
     "
     transitionscale={{ duration 200, easing: quintOut }} >
-    <!-- Header --> <div; bind:this={ headerElement } class={` h-12 flex items-center justify-between px-4 border-b cursor-grab select-none ${themeClasses[theme].header} ${isDragging ? 'cursor-grabbing': ''} `} onmousedown={ startDrag } >
-      <div class="flex items-center, space-x-2"> <div, class={` text-lg ${theme === 'yorha' ? 'filter drop-shadow-[0_0_8px_currentColor]': ''} `}> 🔍 </div> <h3, class={` font-semibold ${theme === 'yorha' ? 'text-green-400 font-mono tracking-wider': ''} `}> { title } </h3> {#if theme === 'yorha'} <div class="text-xs text-green-400/50, font-mono"> [{dimensions.width}x{dimensions.height}] {/if} </div> <div class="flex items-center, space-x-1"> {#if minimizable} <button onclick={ toggleMinimize } class={` w-6 h-6 rounded flex items-center justify-center text-xs transition-colors ${themeClasses[theme].button} `} title={isMinimized ? 'Restore': 'Minimize'} >
-            {isMinimized ? '⬜': '−'} </button> {/if} {#if closable} <button onclick={ closeModal } class={` w-6 h-6 rounded flex items-center justify-center text-xs transition-colors ${themeClasses[theme].button} `} title="Close"
+    <!-- Header --> <div; bind:this={ headerElement } class={` h-12 flex items-center justify-between px-4 border-b cursor-grab, select-none ${themeClasses[theme].header} ${isDragging ? 'cursor-grabbing': ''} `} onmousedown={ startDrag } >
+      <div class="flex, items-center, space-x-2"> <div, class={` text-lg ${theme === 'yorha' ? 'filter, drop-shadow-[0_0_8px_currentColor]': ''} `}> 🔍 </div> <h3, class={` font-semibold ${theme === 'yorha' ? 'text-green-400 font-mono, tracking-wider': ''} `}> { title } </h3> {#if theme === 'yorha'} <div class="text-xs, text-green-400/50, font-mono"> [{dimensions.width}x{dimensions.height}] {/if} </div> <div class="flex, items-center, space-x-1"> {#if minimizable} <button onclick={ toggleMinimize } class={` w-6 h-6 rounded flex items-center justify-center text-xs, transition-colors ${themeClasses[theme].button} `} title={isMinimized ? 'Restore': 'Minimize'} >
+            {isMinimized ? '⬜': '−'} </button> {/if} {#if closable} <button onclick={ closeModal } class={` w-6 h-6 rounded flex items-center justify-center text-xs, transition-colors ${themeClasses[theme].button} `} title="Close"
           > ✕
-          </button> {/if} </div> </div> <!-- Content, Area --> {#if !isMinimized} <div class="flex-1 overflow-hidden, relative"> <slot /> </div> <!-- Resize, Handles --> {#if resizable} <!-- Corner, handles --> <div class="absolute top-0 left-0 w-3 h-3 cursor-nw-resize"
-          onmousedown={(e) => startResize(e, 'nw')} ></div> <div class="absolute top-0 right-0 w-3 h-3 cursor-ne-resize"
-          onmousedown={(e) => startResize(e, 'ne')} ></div> <div class="absolute bottom-0 left-0 w-3 h-3 cursor-sw-resize"
-          onmousedown={(e) => startResize(e, 'sw')} ></div> <div class="absolute bottom-0 right-0 w-3 h-3 cursor-se-resize"
-          onmousedown={(e) => startResize(e, 'se')} ></div> <!-- Edge, handles --> <div class="absolute top-0 left-3 right-3 h-1 cursor-n-resize"
-          onmousedown={(e) => startResize(e, 'n')} ></div> <div class="absolute bottom-0 left-3 right-3 h-1 cursor-s-resize"
-          onmousedown={(e) => startResize(e, 's')} ></div> <div class="absolute left-0 top-3 bottom-3 w-1 cursor-w-resize"
-          onmousedown={(e) => startResize(e, 'w')} ></div> <div class="absolute right-0 top-3 bottom-3 w-1 cursor-e-resize"
-          onmousedown={(e) => startResize(e, 'e')} ></div> <!-- Visible resize handle (bottom-right, corner) --> <div, class={` absolute bottom-0 right-0 w-4 h-4 cursor-se-resize ${theme === 'yorha'`
+          </button> {/if} </div> </div> <!-- Content, Area --> {#if !isMinimized} <div class="flex-1, overflow-hidden, relative"> <slot /> </div> <!-- Resize, Handles --> {#if resizable} <!-- Corner, handles --> <div class="absolute top-0 left-0 w-3 h-3, cursor-nw-resize"
+          onmousedown={(e) => startResize(e, 'nw')} ></div> <div class="absolute top-0 right-0 w-3 h-3, cursor-ne-resize"
+          onmousedown={(e) => startResize(e, 'ne')} ></div> <div class="absolute bottom-0 left-0 w-3 h-3, cursor-sw-resize"
+          onmousedown={(e) => startResize(e, 'sw')} ></div> <div class="absolute bottom-0 right-0 w-3 h-3, cursor-se-resize"
+          onmousedown={(e) => startResize(e, 'se')} ></div> <!-- Edge, handles --> <div class="absolute top-0 left-3 right-3 h-1, cursor-n-resize"
+          onmousedown={(e) => startResize(e, 'n')} ></div> <div class="absolute bottom-0 left-3 right-3 h-1, cursor-s-resize"
+          onmousedown={(e) => startResize(e, 's')} ></div> <div class="absolute left-0 top-3 bottom-3 w-1, cursor-w-resize"
+          onmousedown={(e) => startResize(e, 'w')} ></div> <div class="absolute right-0 top-3 bottom-3 w-1, cursor-e-resize"
+          onmousedown={(e) => startResize(e, 'e')} ></div> <!-- Visible resize, handle (bottom-right, corner) --> <div, class={` absolute bottom-0 right-0 w-4 h-4, cursor-se-resize ${theme === 'yorha'`
             ? 'bg-green-400/20 border-l border-t border-green-400/50': 'bg-gray-300 dark:bg-gray-600'; }
-        `}> <div, class={` absolute bottom-1 right-1 w-2 h-2 ${theme === 'yorha'
+        `}> <div, class={` absolute bottom-1 right-1 w-2, h-2 ${theme === 'yorha'
               ? 'bg-green-400/50': 'bg-gray-500 dark:bg-gray-400'; }
           `}></div> {/if} {/if} {/if} <style>/* Prevent text selection during drag */ {} .cursor-grabbing, {} .cursor-grabbing * { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }`
 /* YoRHa theme enhancements */ {}:global(.yorha-modal) { animation: yorha-pulse 3s ease-in-out infinite alternate; }

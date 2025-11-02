@@ -148,8 +148,7 @@ Generate 3 different search queries that would help find relevant legal, informa
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
-Only return the queries, one per line.`)`
-  };
+Only return the queries, one per line.`)` };
   constructor(config: LegalRAGConfig) {
     this.config = config;
     this.llm = new ChatOpenAI({
@@ -805,8 +804,7 @@ Only return the queries, one per line.`)`
           pdfjs.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js';
         }
       } catch {
-        // Non-fatal if worker configuration isn't possible in the runtime.'
-      }
+        // Non-fatal if worker configuration isn't possible in the runtime.` }'`
       const arrayBuffer = await file.arrayBuffer();
       if (typeof pdfjs.getDocument !== 'function') {
         throw new Error('pdfjs.getDocument is not a function. PDF.js module may be corrupt or incompatible.');
@@ -1078,7 +1076,7 @@ Only return the queries, one per line.`)`
       md: 'text/markdown',
       html: 'text/html',
       htm: 'text/html',
-      rtf: 'application/rtf` };'`
+      rtf: `application/rtf` };'`'`
     return mimeTypes[extension || ''] || 'application/octet-stream';
   }
   /**

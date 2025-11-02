@@ -189,8 +189,8 @@
                 Case Filter (Optional)
               </label>
               <div class="space-y-4">
-                <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => selectAllCases()}>Select All</Button.Root>
-                <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => clearCaseSelection()}>Clear</Button.Root>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectAllCases()}>Select All</Button>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearCaseSelection()}>Clear</Button>
               </div>
             </div>
             {#if availableCases.length > 0}
@@ -243,7 +243,7 @@
           <!-- Export Button -->
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button.Root
+              <Button
                 class="bits-btn space-y-4"
                 onclick={() => exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
@@ -255,7 +255,7 @@
                   <Download class="space-y-4" />
                   Export Data
                 {/if}
-              </Button.Root>
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Download the configured data export</p>

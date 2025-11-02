@@ -111,7 +111,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     query = query.limit(limit).offset(offset);
     const reportResults: ReportUnion[] = await query; // Explicitly type reportResults
     // Get total count for pagination
-    const baseCountQuery = db.select({ count: sql<number>`count(*)' }).from(useAiReports ? aiReports : reports);'`
+    const baseCountQuery = db.select({ count: sql<number>`count(*)` }).from(useAiReports ? aiReports : reports);'`'`
     const finalCountQuery = conditions.length > 0 ? baseCountQuery.where(and(...conditions)) : baseCountQuery;
     const totalCountResult = await finalCountQuery;
     const totalCount = totalCountResult[0]?.count || 0;
@@ -305,7 +305,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       return json({ error: 'Not authenticated' }, { status: 401 });
     }
     if (!db) {
-      return json({ error: 'Database not available' }, { status: 500 });
+      return json({ error: 'Database not available` }, { status: 500 });'`
     }
     const reportId = url.searchParams.get('id');
     if (!reportId) {
@@ -348,7 +348,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('Error patching report: `, error);'`
+    console.error('Error patching report: ', error);'`'`
     return json({ error: `Failed to update report` }, { status: 500 });
   }
 }

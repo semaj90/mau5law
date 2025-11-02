@@ -127,7 +127,7 @@ function createCaseStore() {
       try {
         const query = filters ? `?filters=${JSON.stringify(filters)}` : '';
         const response = await fetch(`/api/cases${query}`, {
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
@@ -267,7 +267,7 @@ function createCaseStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(caseData),
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
@@ -305,7 +305,7 @@ function createCaseStore() {
           method: 'PUT',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(updates),
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const updated = await response.json();
@@ -334,7 +334,7 @@ function createCaseStore() {
       try {
         const response = await fetch(`/api/cases/${id}`, {
           method: 'DELETE',
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           update(s => ({

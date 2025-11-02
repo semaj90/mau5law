@@ -146,8 +146,7 @@ export const uploadMachine = createMachine(
               onError: {
                 target: '#upload.error',
                 actions: assign({
-                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
-              }
+                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error` }' })'` }'`
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'extraction',
                 actions: assign({
@@ -178,8 +177,7 @@ export const uploadMachine = createMachine(
               onError: {
                 target: '#upload.error',
                 actions: assign({
-                  error: ({ event }) => `Embedding failed: ${(event.error as Error)?.message || 'Unknown error` }` })'`
-              }
+                  error: ({ event }) => `Embedding failed: ${(event.error as Error)?.message || 'Unknown error` }' })'` }'`
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'embedding',
                 actions: assign({
@@ -211,8 +209,7 @@ export const uploadMachine = createMachine(
                 target: '#upload.error',
                 actions: assign({
                   error: ({ event }) =>
-                    `Tensor processing failed: ${(event.error as Error)?.message || 'Unknown error` }` })'`
-              }
+                    `Tensor processing failed: ${(event.error as Error)?.message || 'Unknown error` }' })'` }'`
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'tensor',
                 actions: assign({
@@ -244,8 +241,7 @@ export const uploadMachine = createMachine(
               onError: {
                 target: '#upload.error',
                 actions: assign({
-                  error: ({ event }) => `Indexing failed: ${(event.error as Error)?.message || 'Unknown error' }' })'`
-              }
+                  error: ({ event }) => `Indexing failed: ${(event.error as Error)?.message || 'Unknown error' }' })'' }'`
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'indexing',
                 actions: assign({
@@ -255,7 +251,7 @@ export const uploadMachine = createMachine(
             }
           },
           complete: {
-            type: 'final` }'`
+            type: `final` }'`'`
         },
         onDone: {
           target: `completed` }
@@ -321,7 +317,7 @@ export const uploadMachine = createMachine(
       }),
       // Chunk upload actor
       uploadFileChunks: fromPromise(
-        async ({ input }: { input: { files: File[]; presignedUrls: string[];, uploadId: string } }) => {
+        async ({ input }: { input: {, files: File[]; presignedUrls: string[];, uploadId: string } }) => {
           const { files, presignedUrls, uploadId } = input;
           const file = files[0];
           const chunkSize = 10 * 1024 * 1024; // 10MB chunks
@@ -360,7 +356,7 @@ export const uploadMachine = createMachine(
       ),
       // Document extraction actor
       startDocumentExtraction: fromPromise(
-        async ({ input }: { input: { uploadId: string; caseId: string;, metadata: UploadContext['metadata'] } }) => {
+        async ({ input }: { input: {, uploadId: string; caseId: string;, metadata: UploadContext['metadata'] } }) => {
           const { uploadId, caseId, metadata } = input;
           const response = await fetch('/api/processing/extract', {
             method: 'POST',

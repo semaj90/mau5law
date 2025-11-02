@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'evidence_id and prompt are required` },'`
+          error: 'evidence_id and prompt are required' },''
         { status: 400 }
       );
     }
@@ -340,7 +340,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'SIMD glyph generation failed` },'`
+        error: error instanceof Error ? error.message : `SIMD glyph generation failed` },'`'`
       { status: 500 }
     );
   }
@@ -453,7 +453,7 @@ type Tile = { patternId: string;, frequency: number;
 // Type for tiling result to fix TypeScript errors
 interface TilingResult { compressedData: Float32Array;, compressionStats: { achievedRatio: number;, processingTime: number;
   };
-  tileMap: Tile[]; // <- typed instead of, Array<any>
+  tileMap: Tile[]; // <- typed instead, of, Array<any>
   processingTime: number;
   tileSize: number;
 }
@@ -512,7 +512,7 @@ void main() {
 }`;`
     case 'svg':
       return `
-<!-- SIMD-Optimized SVG, Pattern - ${tier.toUpperCase()} Quality -->
+<!-- SIMD-Optimized, SVG, Pattern - ${tier.toUpperCase()} Quality -->
 <!-- ${tileCount} tiles, ${compressionRatio.toFixed(1)}:1, compression -->
 <defs>
   <pattern, id="simdTilePattern" patternUnits="userSpaceOnUse" width="${tilingResult.tileSize}" height="${tilingResult.tileSize}">
@@ -567,7 +567,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'SIMD glyph service unavailable` },'`
+        error: 'SIMD glyph service unavailable' },''
       { status: 503 }
     );
   }

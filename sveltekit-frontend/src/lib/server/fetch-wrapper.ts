@@ -35,5 +35,4 @@ export async function safeFetchJson<T=any>(url: string, options: FetchOptions = 
     }
     attempt++;
   }
-  return { ok: false, status: 0, error: lastError?.message || 'fetch failed` }'`
-}
+  return { ok: false, status: 0, error: lastError?.message || 'fetch failed' }'' }

@@ -89,7 +89,7 @@ async function generateLocalEmbedding(
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         model: model,
         // Ollama uses: "prompt" for embeddings with recent versions; prompt: text
@@ -186,7 +186,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
       throw new Error('Case not found');
     }
     const case_ = caseData[0];
-    const fullText = `${case_.title} ${case_.description || '' }`.trim();
+    const fullText = `${case_.title} ${case_.description || '` }`.trim();'`
     // Generate embeddings
     await generateBatchEmbeddings([case_.title, case_.description || '', fullText]);
     // TODO: Re-enable when titleEmbedding field is added to schema

@@ -174,7 +174,7 @@ class TensorRTLLMService {
     const response = await fetch(`${TENSORRT_ENDPOINT}/v1/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify(payload),
       signal: this.getAbortSignalTimeout(30000), // Replaced timeout with signal
     });
@@ -186,8 +186,7 @@ class TensorRTLLMService {
       success: true,
       response: data.text || data.response,
       tokens: data.tokens_generated || data.tokens,
-      model: data.model || 'tensorrt-llm` };'`
-  }
+      model: data.model || 'tensorrt-llm' };'' }
   /**
    * Generate inference using Ollama with legal optimization
    */
@@ -214,7 +213,7 @@ class TensorRTLLMService {
     const response = await fetch(`${OLLAMA_ENDPOINT}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify(payload),
       signal: this.getAbortSignalTimeout(60000), // Replaced timeout with signal
     });
@@ -300,8 +299,7 @@ class TensorRTLLMService {
         this.modelCache.set(model.name, model);
         console.log(`Warmed up model ${model.name} (${model.backend}) in ${warmupTime}ms`);
       } catch (error) {
-        console.warn(`Failed to warm up model ${model.name}: ', error);'`
-      }
+        console.warn(`Failed to warm up model ${model.name}: ', error);'' }'`
     }
   }
   /**
@@ -349,7 +347,7 @@ class TensorRTLLMService {
    * Generate cache key for requests
    */
   private getCacheKey(request: InferenceRequest): string {
-    const key = `${request.prompt}:${request.model || 'default` }:${request.max_tokens || 512}:${request.temperature || 0.1}`;'`
+    const key = `${request.prompt}:${request.model || 'default' }:${request.max_tokens || 512}:${request.temperature || 0.1}`;'`'`
     return Buffer.from(key).toString('base64').substring(0, 64);
   }
   /**
@@ -400,7 +398,7 @@ class TensorRTLLMService {
       evidenceIds,
       summary:
         evidenceIds.length > 0
-          ? `Analyzing evidence: ${evidenceIds.join(', ')}${caseId ? ` in case ${caseId}` : `` }`
+          ? `Analyzing evidence: ${evidenceIds.join(', ')}${caseId ? ` in case ${caseId}` : `' }`'`
           : hasLegalTerms
             ? 'Legal analysis request detected'
             : '',
@@ -418,7 +416,7 @@ class TensorRTLLMService {
   ): Promise<InferenceResponse> {
     const enhancedPrompt =
       evidenceIds && evidenceIds.length > 0
-        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown` }\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`'`
+        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown' }\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`'`'`
         : prompt;
     return this.generateInference({
       prompt: enhancedPrompt,

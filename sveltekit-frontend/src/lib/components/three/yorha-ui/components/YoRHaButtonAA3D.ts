@@ -228,7 +228,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
           vec2 pixelSmooth = smoothstep(0.0, 1.0, pixelFract);
           gl_FragColor = vec4(color, 1.0);
         }
-      ` });`
+      ' });`'`
     // Replace material if we have enhanced material
     if (this.enhancedMaterial) {
       this.enhancedMaterial.dispose();

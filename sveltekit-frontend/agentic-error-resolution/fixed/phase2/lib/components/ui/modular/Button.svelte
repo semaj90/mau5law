@@ -62,7 +62,7 @@
   let isDisabled = $derived(disabled || loading)
 </script>
 <!-- Wrap in Bits-UI if desired:
-<Button.Root class="bits-btn"Primitive.Root asChild>
+<Button class="bits-btn"Primitive.Root asChild>
 -->
 <button
   class={buttonClass}

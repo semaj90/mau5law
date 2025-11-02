@@ -359,8 +359,7 @@ export const POST: RequestHandler = async ({ request }) => {
             semanticSearchPayload.options
           );
         } else {
-          error(400, ensureError({ message: `Unknown endpoint for enhancedRag, service: ${endpoint}' }));'`
-        }
+          error(400, ensureError({ message: 'Unknown endpoint for enhancedRag, service: ${endpoint}' }));'' }
         break;
       }
       case 'uploadService': {
@@ -369,7 +368,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Health endpoint typically doesn't require a specific payload, or it's ignored
           testResult = await uploadClient.health();
         } else {
-          error(400, ensureError({ message: 'Unknown endpoint for, uploadService: ${endpoint}' }));
+          error(400, ensureError({ message: 'Unknown endpoint for, uploadService: ${endpoint}` }));'`
         }
         break;
       }

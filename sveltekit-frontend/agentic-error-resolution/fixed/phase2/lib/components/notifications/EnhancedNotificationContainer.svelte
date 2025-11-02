@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 mcp<script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { notifications, type Notification  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
@@ -171,7 +171,7 @@ mcp<script lang="ts">
 >
   {#if hiddenCount > 0}
     <div class="container mx-auto px-4">
-      <Button.Root
+      <Button
         class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
@@ -179,7 +179,7 @@ mcp<script lang="ts">
 (maxVisible += 5)}
       >
         +{hiddenCount} more notifications
-</Button.Root>
+</Button>
     {/if}
   <div
     class="container mx-auto px-4"
@@ -239,7 +239,7 @@ mcp<script lang="ts">
                   {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions && (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions.length > 0}
                     <div class="container mx-auto px-4">
                       {#each (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions as action}
-                        <Button.Root class="bits-btn"
+                        <Button class="bits-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default"
@@ -249,13 +249,13 @@ handleNotificationAction(notification, action)}
                           class="container mx-auto px-4"
                         >
                           {action.label}
-</Button.Root>
+</Button>
                       {/each}
                     {/if}
                 </div>
                 <!-- Dismiss button -->
                 <div class="container mx-auto px-4">
-                  <Button.Root class="bits-btn"
+                  <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() =>
@@ -264,7 +264,7 @@ dismissNotification((notification as { type?: any; title?: any; message?: any; i
                     aria-label="Dismiss notification"
                   >
                     <X class="container mx-auto px-4" />
-</Button.Root>
+</Button>
                 </div>
               </div>
             </div>
@@ -276,7 +276,7 @@ dismissNotification((notification as { type?: any; title?: any; message?: any; i
   <!-- Dismiss all button for multiple notifications -->
   {#if visibleNotifications.length > 1}
     <div class="container mx-auto px-4">
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={() =>
@@ -284,7 +284,7 @@ dismissAll()}
         class="container mx-auto px-4"
       >
         Clear all ({$notifications.notifications.length})
-</Button.Root>
+</Button>
     {/if}
 </div>
 <!-- Notification settings (can be toggled via settings page) -->

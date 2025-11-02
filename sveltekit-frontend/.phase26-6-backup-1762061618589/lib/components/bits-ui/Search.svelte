@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { VectorCard } from './VectorCard.svelte';
+  import  VectorCard  from "./VectorCard.svelte";
   export let searchUrl: string = '/api/vector/search';
   export let onSelect: (item: any) => void = () => {};
   let query = '';

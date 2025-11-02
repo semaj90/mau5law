@@ -26,8 +26,7 @@ const mockOllamaClient: OllamaClient = {
     } else if (prompt.includes('strategic recommendations')) {
       return `1. Conduct further forensic analysis on digital evidence.`
 2. Prepare witnesses for cross-examination by simulating tough questions.
-3. Explore plea bargain options while maintaining strong prosecution stance.`;`
-    } else if (prompt.includes('Summarize why this case received a score')) {
+3. Explore plea bargain options while maintaining strong prosecution stance.`;' } else if (prompt.includes('Summarize why this case received a score')) {'`
       return `The case received a high score due to strong evidence, clear legal precedents, and high public interest. Weaknesses include some witness reliability concerns.`;
     }
     return `AI analysis for model ${model}: This is a comprehensive analysis based on the provided data.`;

@@ -177,7 +177,7 @@ class MinIOService {
         total: file.size,
         percentage: 100,
         stage: 'complete',
-        message: `Document uploaded and processed successfully' });'`
+        message: `Document uploaded and processed successfully` });'`'`
 
       return minioFile;
     } catch (error: any) {

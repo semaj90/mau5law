@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'content-type': contentType,
         'x-encoding-format': format,
         'x-compression-ratio': String(metrics?.compressionRatio ?? ''),
-        'x-encode-time': '${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms' }
+        'x-encode-time': '${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms` }'`
     });
   } catch (error: any) {
     console.error('Binary shader cache GET error:', getErrorMessage(error));'

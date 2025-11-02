@@ -101,7 +101,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
             anonId,
             processingTime: Math.round(processingTime)
           },
-          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local' } }'`
+          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local` } }'`'`
         );
       }
 
@@ -311,13 +311,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Prepare headers; set anon cookie when we created one
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'X-Processing-Time': `${Math.round(processingTime)}ms' };'`
+      'X-Processing-Time': `${Math.round(processingTime)}ms` };'`'`
     if (setAnonCookie && anonId) {
       // short TTL cookie (3600s). Only set Secure if request appears to be HTTPS (x-forwarded-proto)
       const isHttps = (request.headers.get('x-forwarded-proto') || '').toLowerCase() === 'https';
       headers['Set-Cookie'] = `anon_id=${encodeURIComponent(anonId)}; Path=/; HttpOnly; Max-Age=3600; SameSite=Lax${`
-        isHttps ? '; Secure' : `` }`;`
-    }
+        isHttps ? '; Secure' : `` }`;` }
 
     // when returning response, include claim info if present
     return json(
@@ -330,7 +329,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
               claimToken,
               claimUrl,
               expiresInHours: 24,
-              message: `Temporary upload — claim this evidence after signing in.' }'`
+              message: `Temporary upload — claim this evidence after signing in.` }'`'`
           : undefined,
         ocrProcessing: {
          , method: processingMethod,
@@ -369,8 +368,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': `true' }'`
-    });
+        'X-Error': 'true' }'` });'`
   }
 };
 

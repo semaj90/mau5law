@@ -22,7 +22,7 @@ export const legalCaseManagementMachine = createMachine({
   id: 'legalCaseManagement',
   initial: 'idle',
   context: {
-    caseId: '',
+   , caseId: '',
     title: '',
     description: '',
     caseType: '',

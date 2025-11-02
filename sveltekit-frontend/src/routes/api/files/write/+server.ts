@@ -31,8 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const allowedExtensions = ['.ts', '.js', '.svelte', '.json', '.md', '.css'];
     const fileExt = extname(file);
     if (!allowedExtensions.includes(fileExt)) {
-      return json({ error: `File type ${fileExt} not allowed' }, { status: 403 });'`
-    }
+      return json({ error: `File type ${fileExt} not allowed` }, { status: 403 });`` }
 
     // Create backup if requested
     if (backup && existsSync(file)) {

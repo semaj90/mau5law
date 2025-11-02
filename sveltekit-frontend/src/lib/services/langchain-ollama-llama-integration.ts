@@ -555,8 +555,7 @@ export class LangChainOllamaIntegration {
       initialized: this.isInitialized,
       models: {
         chat: this.chatModel ? 'ready' : 'not_initialized',
-        embedding: this.embeddingModel ? 'ready' : 'not_initialized'
-      },
+        embedding: this.embeddingModel ? 'ready' : 'not_initialized` },'`
       vectorStore: {
         ready: !!this.vectorStore,
         documentCount: this.vectorStore ? 'unknown' : 0

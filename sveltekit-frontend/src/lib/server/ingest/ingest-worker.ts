@@ -145,8 +145,7 @@ parentPort.on("message", async (job: Job) => {
           embedding = pooled;
           processingMetadata.videoEmbedding = {
             frameCount: embeddings.length,
-            poolingMethod: 'mean` }'`
-        }
+            poolingMethod: 'mean' }'' }
       }
     } else if (["json"].includes(ext)) {
       // Large JSON processing with simdjson-wasm
@@ -209,6 +208,5 @@ parentPort.on("message", async (job: Job) => {
     parentPort!.postMessage({
       jobId: job.id,
       error: String(err),
-      filename: job.filename || 'unknown` });'`
-  }
+      filename: job.filename || 'unknown' });'' }
 });

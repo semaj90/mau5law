@@ -56,12 +56,12 @@
     .join(' ');
 </script>
 {#if to}
-  <a class={classes} data-button-root, href={to} {...anchorProps}>
+  <a, class={classes} data-button-root, href={to} {...anchorProps}>
     {#if icon && iconPosition === 'left'}
       <i, class={icon} aria-hidden="true"></i>
     {/if}
     {#if loading}
-      <span class="loader, mr-2"></span>
+      <span, class="loader, mr-2"></span>
     {/if}
     {#if children}
       {@render children()}
@@ -76,7 +76,7 @@
       <i, class={icon} aria-hidden="true"></i>
     {/if}
     {#if loading}
-      <span class="loader, mr-2"></span>
+      <span, class="loader, mr-2"></span>
     {/if}
     {#if children}
       {@render children()}

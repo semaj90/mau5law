@@ -7,14 +7,14 @@ https://svelte.dev/e/attribute_duplicate -->
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
   // Import QLorA training service
   import {
     qloraTrainingService,
@@ -192,9 +192,9 @@ https://svelte.dev/e/attribute_duplicate -->
           <p class="text-gray-400">or click to select files for training</p>
         </div>
         <label for="file-input" class="inline-block">
-          <Button.Root class="bg-cyan-600 hover:bg-cyan-700 bits-btn bits-btn">
+          <Button class="bg-cyan-600 hover:bg-cyan-700 bits-btn bits-btn">
 Select Files
-</Button.Root>
+</Button>
         </label>
         <input
           id="file-input"
@@ -225,7 +225,7 @@ Select Files
                 class="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/20 transition-colors"
               >
                 ✕
-</Button.Root>
+</Button>
             </div>
           {/each}
         </div>
@@ -317,21 +317,21 @@ Select Files
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button.Root class="bits-btn" onclick={pauseTraining} variant="ghost" size="sm">
+            <Button class="bits-btn" onclick={pauseTraining} variant="ghost" size="sm">
 ⏸️ Pause
-</Button.Root>
-            <Button.Root class="bits-btn" onclick={stopTraining} variant="error" size="sm">
+</Button>
+            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
 ⏹️ Stop
-</Button.Root>
+</Button>
           {:else if currentJob.status === 'paused'}
-            <Button.Root class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
+            <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
 ▶️ Resume
-</Button.Root>
-            <Button.Root class="bits-btn" onclick={stopTraining} variant="error" size="sm">
+</Button>
+            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
 ⏹️ Stop
-</Button.Root>
+</Button>
           {/if}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             onclick={() =>
 showAdvancedConfig = !showAdvancedConfig}
             variant="ghost"

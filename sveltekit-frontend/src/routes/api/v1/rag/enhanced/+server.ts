@@ -22,7 +22,6 @@ export const POST: RequestHandler = async ({ request }) => {
   }
   const validated = ragResponseSchema.safeParse(upstream.data);
   if (!validated.success) {
-    return json({ error: 'Invalid upstream response` }, { status: 502 });'`
-  }
+    return json({ error: 'Invalid upstream response' }, { status: 502 });'` }'`
   return json(validated.data);
 };

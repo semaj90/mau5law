@@ -76,8 +76,7 @@ Please provide a comprehensive legal analysis with structured reasoning.`,`
       }
     }
   } catch (error) {
-    console.error('AI response error:', error)'
-  }
+    console.error('AI response error:', error)` }`'
   return {
     thinking: 'Unable to generate thinking content',
     response: 'I apologize, but I encountered an issue processing your request.',
@@ -185,7 +184,7 @@ async function saveEnhancedResponse(data: {, query: string, response: string; 
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning)},
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.premises.concat((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.inferences, (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.conclusions))},
         ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')}]` }:: vector
-        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]' }:: vector'`
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]` }:: vector'`'`
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).confidence},
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general` },'`
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).userId || null},

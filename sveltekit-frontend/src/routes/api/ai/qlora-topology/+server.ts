@@ -81,8 +81,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { errors, useCache = true, binaryResponse = false } = body;
 
     if (!errors || !Array.isArray(errors) || errors.length === 0) {
-      return json({ error: 'Request body must be a non-empty array of NPMError objects.` }, { status: 400 });'`
-    }
+      return json({ error: 'Request body must be a non-empty array of NPMError objects.' }, { status: 400 });'` }'`
 
     const intelligentTodos = await Promise.all(
       errors.map(async (error): Promise<IntelligentTodo> => {

@@ -100,8 +100,7 @@ class EnhancedBitsUIOrchestrator {
       // Simulate WebGPU-accelerated component rendering
       if (webgpuAcceleration && browser) {
         const webgpuResult = await webgpuRAGService.initializeWebGPU();
-        console.log(`🎮 Enhanced Bits UI rendering ${componentName} with WebGPU: ', webgpuResult.device !== 'null');'`
-      }
+        console.log(`🎮 Enhanced Bits UI rendering ${componentName} with WebGPU: ', webgpuResult.device !== 'null');'' }'`
       // Cache the result
       await headlessUICache.set(cacheKey, { componentName, props, rendered: true });
       return { rendered: true;, performance: {
@@ -263,8 +262,7 @@ class MultipassCoordinatorOrchestrator {
     try {
       const response = await fetch(`${this.serviceUrl}/health`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json` }'`
-      });
+        headers: { 'Content-Type': 'application/json' }'' });
       this.isHealthy = response.ok;
       return this.isHealthy;
     } catch (error) {
@@ -284,7 +282,7 @@ class MultipassCoordinatorOrchestrator {
       if (this.isHealthy) {
         const response = await fetch(`${this.serviceUrl}/api/v1/extract`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify({,
             document_id: document.id,
             document_content: document.content,
@@ -417,7 +415,7 @@ class Neo4jRerankerOrchestrator {
         },
         audit_trail: []
       },
-      explanation: `Fallback reranking for ${query}` });
+      explanation: `Fallback reranking for ${query}' });'`
   }
 }
 // 🧠 CHR-ROM Memory System (127:1 Compression)

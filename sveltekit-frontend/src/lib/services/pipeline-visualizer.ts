@@ -88,7 +88,7 @@ export const PERFORMANCE_METRICS = { simdJsonParsing: {, speedup: '10x faster t
   streamingArrayLoop: {
     batchSize: 50,
     nonBlocking: 'Incremental UI updates',
-    errorRecovery: 'Graceful degradation` },'`
+    errorRecovery: `Graceful degradation` },'`'`
   caching: {
     redis: 'Hot cache (15min TTL, gzip compressed)',
     lokijs: 'Client IndexedDB (offline-first)',
@@ -130,8 +130,7 @@ export class PipelineVisualizer {
 │ [\${'█'.repeat(Math.floor(progress / 5))}\${'░'.repeat(20 - Math.floor(progress / 5))}] \${progress}%        │
 │                                                           │
 └───────────────────────────────────────────────────────────┘
-  `;`
-  }
+  `;` }
   static logPipelineMetrics(metrics: any): void {
     console.log('📊 Pipeline Performance Metrics:');
     console.log(`⏱️  Total processing time: ${metrics.processingTime.toFixed(2)}ms`);
@@ -197,7 +196,7 @@ const results = await advancedPipeline.searchProcessedTensors("legal contract)")
 ## Performance Characteristics
 - **Throughput**: 10,000+ documents/minute with RTX 3060
 - **Memory**: Streaming processing, low memory footprint
-- **Latency**: <50ms for cached, results, <2s for fresh, embeddings>>
+- **Latency**: <50ms for, cached, results, <2s for, fresh, embeddings>>
 - **Concurrency**: 4 CUDA streams + async service worker routing
 - **Reliability**: Error recovery, graceful degradation
 ## Monitoring
@@ -206,8 +205,7 @@ const results = await advancedPipeline.searchProcessedTensors("legal contract)")
 - Processing time metrics
 - Error rate tracking
 - Queue depth monitoring
-  `;`
-  }
+  `;` }
 }
 // Export for documentation and debugging
 export { PipelineVisualizer };

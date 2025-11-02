@@ -67,7 +67,7 @@ const _ollamaStub = {
   endpoint: 'http://localhost:11434',
   models: [] as string[],
   capabilities: [] as string[],
-  status: 'online' } as unknown as Partial<LLMProvider>;
+  status: 'online` } as unknown as Partial<LLMProvider>;'`
 
 export const enhancedRAG = new EnhancedRAGSystem(_ollamaStub);
 

@@ -42,7 +42,7 @@ async function loadPatternOptimizer(): Promise<PatternOptimizer> {
   return candidate;
 }
 
-// <-- NEW: module-level type for precompute documents (moved out of, class)
+// <-- NEW: module-level type for precompute documents (moved out, of, class)
 export type PrecomputeDocument = Partial<LegalDocument> & {
   analysis?: { confidence: number;, riskLevel: number;
     entities: string[];
@@ -181,8 +181,7 @@ export class CHRROMPrecomputationService {
       });
       console.log(`🎮 Generated CHR-ROM pattern: ${cacheKey}`);
     } catch (error) {
-      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);'`
-    }
+      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);'' }'`
   }
 
   /**
@@ -250,7 +249,7 @@ export class CHRROMPrecomputationService {
       badge: '<span, style="width:8px;height:8px;background:#e5e7eb;border-radius:2px"></span>',
       summary: '',
       gauge: '<div, style="width:40px;height:4px;background:#e5e7eb;border-radius:2px"></div>',
-      graph: '<svg viewBox="0 0 40, 20" style="width:40px;height:20px"></svg>',
+      graph: '<svg viewBox="0 0, 40, 20" style="width:40px;height:20px"></svg>',
       heatmap: '<div, style="width:32px;height:32px;background:#f3f4f6"></div>'
     };
     return {
@@ -284,7 +283,7 @@ export class CHRROMPrecomputationService {
         id: 'doc_002',
         metadata: { type: 'brief', category: 'litigation' },
         analysis: { confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
-        processingStatus: 'processing` },'`
+        processingStatus: `processing` },'`'`
       {
         id: 'doc_003',
         metadata: { type: 'agreement', category: `agreement` },

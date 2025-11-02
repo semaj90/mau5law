@@ -131,8 +131,7 @@ const originalGETHandler: RequestHandler = async () => {
     };
     return json(status);
   } catch (error: any) {
-    return json({ error: error instanceof Error ? error.message : 'Unknown error` }, { status: 500 });'`
-  }
+    return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });'' }
 };
 export const POST = redisOptimized.aiChat(originalPOSTHandler);
 export const GET = redisOptimized.aiChat(originalGETHandler);

@@ -4,13 +4,13 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   let isProcessing = $state(false);
   let results = $state([]);
   let selectedMode = $state('langchain-simd');
@@ -307,7 +307,7 @@ https://svelte.dev/e/expected_token -->
           </div>
         </div>
         <div class="flex items-end">
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             onclick={() =>
 processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             disabled={isProcessing}
@@ -318,11 +318,11 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
       </div>
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <Button.Root class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
+        <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
 📦 Batch Process ({sampleTexts.length})
-        <Button.Root class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
+        <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
 🧪 Compression Benchmark
-        <Button.Root class="bits-btn" onclick={clearAll} variant="ghost" size="sm">
+        <Button class="bits-btn" onclick={clearAll} variant="ghost" size="sm">
 🗑️ Clear All
       </div>
       <!-- System Statistics -->
@@ -478,7 +478,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
         <div class="text-6xl mb-4">🧬</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={() =>
 processSingleText(0)}
           disabled={isProcessing}
@@ -492,7 +492,7 @@ processSingleText(0)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 Processing Logs
-          <Button.Root class="bits-btn" onclick={() =>
+          <Button class="bits-btn" onclick={() =>
 processingLogs = []} variant="ghost" size="sm">
             Clear Logs
         </h3>

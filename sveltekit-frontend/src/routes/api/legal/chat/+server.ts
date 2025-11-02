@@ -135,15 +135,14 @@ async function findRelevantLegalSources(prompt: string, caseId?: string): Promis
           : like(legalDocuments.content, `%${prompt}%`)
       )
       .limit(5);
-    sources.push(...(documents as unknown as Source[]).map(doc => ({ ...doc, type: 'document` })));'`
+    sources.push(...(documents as unknown as Source[]).map(doc => ({ ...doc, type: 'document' })));'`'`
     // Search legal precedents (vector similarity would be ideal here)
     const precedents = await db
       .select()
       .from(legalPrecedents)
       .where(like(legalPrecedents.summary, `%${prompt}%`))
       .limit(3);
-    sources.push(...(precedents as unknown as Source[]).map(prec => ({ ...prec, type: 'precedent` })));'`
-  } catch (error: any) {
+    sources.push(...(precedents as unknown as Source[]).map(prec => ({ ...prec, type: 'precedent' })));'' } catch (error: any) {
     console.warn('Error searching legal sources:', error);
   }
   return sources;
@@ -164,7 +163,7 @@ ${sources
   )
   .join('\n')}
 CASE CONTEXT:
-${context ? JSON.stringify(context, null, 2) : 'No additional context provided` }'`
+${context ? JSON.stringify(context, null, 2) : 'No additional context provided' }'`'`
 Please provide:
 1. Legal Analysis (comprehensive analysis of the query)
 2. Confidence Level (0.0-1.0)

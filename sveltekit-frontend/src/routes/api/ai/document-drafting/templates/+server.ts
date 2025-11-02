@@ -60,7 +60,7 @@ Respectfully submitted,
           { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case number' },
           { name: 'DEFENDANT_NAME', type: 'text', required: true, description: 'Defendant name' },
           { name: 'CASE_CONTEXT', type: 'textarea', required: true, description: 'Case context and summary' },
-          { name: 'FACTUAL_BACKGROUND', type: 'textarea', required: true, description: 'Factual background' },
+          { name: 'FACTUAL_BACKGROUND', type: 'textarea', required: true, description: 'Factual background` },'`
           { name: 'LEGAL_STANDARD', type: 'textarea', required: false, description: `Applicable legal standard` },
           { name: 'ARGUMENT_SECTIONS', type: 'textarea', required: true, description: `Legal arguments` },
           { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: `Attorney signature block` }
@@ -96,7 +96,7 @@ AGREED TO AND ACCEPTED:
           { name: 'DEFENSE_ATTORNEY', type: 'text', required: true, description: 'Defense attorney name' },
           { name: 'CHARGES_SECTION', type: 'textarea', required: true, description: 'Charges and plea details' },
           { name: 'GUIDELINES_SECTION', type: 'textarea', required: false, description: 'Sentencing guidelines' },
-          { name: 'COOPERATION_TERMS', type: 'textarea', required: false, description: 'Cooperation agreement' },
+          { name: 'COOPERATION_TERMS', type: 'textarea', required: false, description: 'Cooperation agreement` },'`
           { name: 'WAIVER_PROVISIONS', type: 'textarea', required: true, description: `Rights waived` },
           { name: 'BREACH_TERMS', type: 'textarea', required: false, description: `Breach consequences` },
           { name: 'SIGNATURE_BLOCK', type: 'text', required: true, description: `Signature block` }
@@ -135,7 +135,7 @@ Respectfully submitted,
           { name: 'DATE', type: 'date', required: true, description: 'Request date' },
           { name: 'RULE_16_REQUESTS', type: 'textarea', required: true, description: 'Rule 16 discovery requests' },
           { name: 'BRADY_REQUESTS', type: 'textarea', required: true, description: 'Brady material requests' },
-          { name: 'GIGLIO_REQUESTS', type: 'textarea', required: false, description: 'Giglio material requests' },
+          { name: 'GIGLIO_REQUESTS', type: 'textarea', required: false, description: 'Giglio material requests` },'`
           { name: 'EXPERT_REQUESTS', type: 'textarea', required: false, description: `Expert witness materials` },
           { name: 'ELECTRONIC_REQUESTS', type: 'textarea', required: false, description: `Electronic evidence requests` },
           { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: `Attorney signature block` }
@@ -169,7 +169,7 @@ Thank you for your attention.`,`
           { name: 'DEFENDANT_NAME', type: 'text', required: true, description: 'Defendant name' },
           { name: 'INTRODUCTION', type: 'textarea', required: true, description: 'Opening introduction' },
           { name: 'CASE_THEME', type: 'textarea', required: true, description: 'Central case theme' },
-          { name: 'EVIDENCE_PREVIEW', type: 'textarea', required: true, description: 'Evidence preview' },
+          { name: 'EVIDENCE_PREVIEW', type: 'textarea', required: true, description: 'Evidence preview` },'`
           { name: 'BURDEN_DISCUSSION', type: 'textarea', required: true, description: `Burden of proof discussion` },
           { name: 'KEY_FACTS', type: 'textarea', required: true, description: `Key facts presentation` },
           { name: 'CONCLUSION', type: 'textarea', required: true, description: `Opening conclusion` }
@@ -211,7 +211,7 @@ Respectfully submitted,
           { name: 'PERSONAL_HISTORY', type: 'textarea', required: true, description: 'Personal history and characteristics' },
           { name: 'MITIGATION_FACTORS', type: 'textarea', required: true, description: 'Mitigation factors' },
           { name: 'SENTENCING_FACTORS', type: 'textarea', required: true, description: '3553(a) factors analysis' },
-          { name: 'DEPARTURE_REQUEST', type: 'textarea', required: false, description: 'Departure request if applicable' },
+          { name: 'DEPARTURE_REQUEST', type: 'textarea', required: false, description: 'Departure request if applicable` },'`
           { name: 'CONCLUSION', type: 'textarea', required: true, description: `Conclusion and sentence request` },
           { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: `Attorney signature block` }
         ],
@@ -236,7 +236,7 @@ Respectfully submitted,
       }
     })
   } catch (error) {
-    console.error('Error fetching document templates: `, error)'`
+    console.error('Error fetching document templates: ', error)'`'`
     return json(
       { success: false, message: `Failed to fetch document templates` },)
       { status: 500 }

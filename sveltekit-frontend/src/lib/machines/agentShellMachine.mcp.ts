@@ -132,7 +132,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         MCP_FIND_SIMILAR_CASES: {
           target: 'mcpFindingSimilarCases',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_FIND_SIMILAR_CASES` }>) =>'`
+            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_FIND_SIMILAR_CASES` }>) =>'`'`
               event.caseId
           })
         },
@@ -174,9 +174,9 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           })
         }
       },
-      on: { ACCEPT_PATCH: {, actions: 'acceptPatchAction` },'`
+      on: { ACCEPT_PATCH: {, actions: `acceptPatchAction` },'`'`
         RATE_SUGGESTION: {
-          actions: `rateSuggestionAction` }
+          actions: `rateSuggestionAction' }'`
       }
     },
     searching: { invoke: {, src: 'performSemanticSearchWithMCP',
@@ -188,8 +188,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            // fixed: explicitly expect RAGResponse (don't use typeof e); searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null'
-          })
+            // fixed: explicitly expect RAGResponse (don't use typeof e); searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null` })'`
         },
         onError: {
           target: 'idle',

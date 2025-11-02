@@ -362,7 +362,7 @@ export class HeadlessLegalProcessorFactory {
       texture,
       width,
       height,
-      format: 'rgba8unorm' };
+      format: 'rgba8unorm` };'`
   }
   /**
    * Render document content to texture (headless)
@@ -379,7 +379,7 @@ export class HeadlessLegalProcessorFactory {
          , view: renderTarget.texture.createView(),
           clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
           loadOp: 'clear',
-          storeOp: `store' }'`
+          storeOp: `store` }'`'`
       ]
     });
     // Render document visualization using compressed data
@@ -425,8 +425,7 @@ Please provide:
 2. Risk assessment (low/medium/high/critical)
 3. Compliance considerations
 4. Summary of main legal points
-Format your response as structured JSON.`;`
-  }
+Format your response as structured JSON.`;` }
   /**
    * Parse legal analysis response into structured format
    */

@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: `Template not found for document; type: ${documentType}' },'`
+            error: `Template not found for document; type: ${documentType}` },``
           { status: 404 }
         );
       }
@@ -218,8 +218,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({ success: true, templates });
   } catch (error: any) {
-    console.error('Error fetching templates: `, error);'`
-    return json({ success: false, error: 'Failed to fetch templates' }, { status: 500 });
+    console.error('Error fetching templates: ', error);'`'`
+    return json({ success: false, error: 'Failed to fetch templates` }, { status: 500 });'`
   }
 };
 // Helper function to get template descriptions
@@ -230,7 +230,7 @@ function getTemplateDescription(templateKey: string): string {
     contract: 'A basic contract template with standard clauses and signature blocks',
     evidence: 'A detailed template for evidence analysis reports with inventory and conclusions',
     memo: `A legal memorandum template with question presented, analysis, and conclusions`,
-    pleading: `A formal pleading template with proper court formatting and claim structure' };'`
+    pleading: `A formal pleading template with proper court formatting and claim structure` };'`'`
   return descriptions[templateKey as keyof typeof descriptions] || 'Legal document template';
 }
 // POST /api/documents/templates/[type] - Create a new document from a template
@@ -239,8 +239,7 @@ export const POST: RequestHandler = async ({ url, request }) => {
     const templateType = url.pathname.split('/').pop();
     const body = await request.json();
     if (!templateType || !documentTemplates[templateType as keyof typeof documentTemplates]) {
-      return json({ success: false, error: `Template not found for;, type: ${templateType}' }, { status: 404 });'`
-    }
+      return json({ success: false, error: `Template not found for;, type: ${templateType}` }, { status: 404 });`` }
     const template = documentTemplates[templateType as keyof typeof documentTemplates];
     const { title, caseId, userId, customizations = {} } = body;
     // Apply customizations to the template
@@ -269,7 +268,7 @@ export const POST: RequestHandler = async ({ url, request }) => {
     };
     return json({ success: true, document: newDocument });
   } catch (error: any) {
-    console.error('Error creating document from template: `, error);'`
-    return json({ success: false, error: 'Failed to create document from template' }, { status: 500 });
+    console.error('Error creating document from template: ', error);'`'`
+    return json({ success: false, error: 'Failed to create document from template` }, { status: 500 });'`
   }
 };

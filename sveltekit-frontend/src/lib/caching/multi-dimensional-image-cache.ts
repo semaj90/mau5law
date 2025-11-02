@@ -623,8 +623,7 @@ export class MultiDimensionalImageCache {
           }
         }
       } catch (error) {
-        console.error(`Failed to retrieve from layer ${layer.name}: ', error);'`
-      }
+        console.error(`Failed to retrieve from layer ${layer.name}: ', error);'` }
     }
     return null;
   }
@@ -927,8 +926,7 @@ export class MultiDimensionalImageCache {
         await this.multiLayerCache.cleanup();
       }
     } catch (err) {
-      console.debug('Ignored multiLayerCache cleanup error:', err);'
-    }
+      console.debug('Ignored multiLayerCache cleanup error:', err);` }`'
 
     // Clear maps
     this.imageEntries.clear();
@@ -1000,8 +998,7 @@ function safeDestroyTexture(obj: any): void {
       t.gpuBuffer.destroy();
     }
   } catch (err) {
-    console.debug('Ignored error destroying texture.gpuBuffer: `, err);'`
-  }
+    console.debug('Ignored error destroying texture.gpuBuffer: ', err);'` }'`
 }
 
 // ----------------- ADDED: small helpers to avoid `any` and provide defaults -----------------

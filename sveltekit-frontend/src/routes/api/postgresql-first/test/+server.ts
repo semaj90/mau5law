@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       steps: [],
       postgresql: { status: 'pending' },
       redis: { status: 'pending' },
-      ingestService: { status: 'pending` },'`
+      ingestService: { status: `pending` },'`'`
       qdrantSync: { status: `pending` },
       summary: { success: false, errors: [] }
     };
@@ -168,8 +168,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: msg
             };
             results.summary.errors.push(`Redis event publishing failed: ${msg}`);
-            console.error(`❌ Step 2 failed: ', error);'`
-          }
+            console.error(`❌ Step 2 failed: ', error);'` }
         }
         // Step 3: Test Go Ingest Service Integration
         if ((testType === 'full' || testType === 'ingest_only') && enableIngestService) {
@@ -222,8 +221,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             const msg = getErrorMessage(error);
             results.ingestService = { status: 'error', error: msg };
             results.summary.errors.push(`Ingest service failed: ${msg}`);
-            console.error(`❌ Step 3 failed: ', msg);'`
-          }
+            console.error(`❌ Step 3 failed: ', msg);'` }
         }
         // Step 4: Test Qdrant Sync Service
         if ((testType === 'full' || testType === 'sync_only') && enableQdrantSync) {
@@ -253,8 +251,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             const msg = getErrorMessage(error);
             results.qdrantSync = { status: 'error', error: msg };
             results.summary.errors.push(`Qdrant sync failed: ${msg}`);
-            console.error(`❌ Step 4 failed: ', msg);'`
-          }
+            console.error(`❌ Step 4 failed: ', msg);'` }
         }
       } catch (error: any) {
         const msg = getErrorMessage(error);
@@ -269,8 +266,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     if (results.summary.success) {
       console.log(`🎉 PostgreSQL-first workflow test completed successfully!`);
     } else {
-      console.log(`⚠️  PostgreSQL-first workflow test completed with errors: ', results.summary.errors);'`
-    }
+      console.log(`⚠️  PostgreSQL-first workflow test completed with errors: ', results.summary.errors);'' }'`
     return json({
       success: results.summary.success,
       message: results.summary.success
@@ -309,7 +305,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'sync-stats': {
         // Get Qdrant sync statistics (guard optional method)
         const statsFn = (postgresqlQdrantSync as unknown as { getStats?: () => Promise<unknown> }).getStats;
-        const syncStats = statsFn ? await statsFn() : { message: 'getStats not available on postgresqlQdrantSync` };'`
+        const syncStats = statsFn ? await statsFn() : { message: `getStats not available on postgresqlQdrantSync` };'`'`
         return json({ success: true, message: 'Qdrant sync statistics retrieved', data: syncStats });
       }
       default: return json({

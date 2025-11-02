@@ -174,7 +174,7 @@ export class Context7MissingImportsFetcher {
       // Simulate MCP Context7 server call
       const response = await fetch(`${this.mcpServerUrl}/context7/get-library-docs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , context7CompatibleLibraryID: libraryId,
           topics: topics.join('|'),

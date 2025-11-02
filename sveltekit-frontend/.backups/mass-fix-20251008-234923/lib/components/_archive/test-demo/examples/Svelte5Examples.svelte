@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
-  import { useIsMobile, useIsTablet, useIsDesktop, useIsDark } from '$lib/utils/media-query.svelte';
+  import  useIsMobile, useIsTablet, useIsDesktop, useIsDark  from "$lib/utils/media-query.svelte";
   // Props using Svelte 5 children pattern
   interface Props {
     title?: string;

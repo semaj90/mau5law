@@ -194,8 +194,7 @@ export const GET: RequestHandler = async () => {
        , model: 'NVIDIA GeForce RTX 3060 Ti',
         memory: '8GB',
         utilization: '87%',
-        temperature: '72°C'
-      },
+        temperature: '72°C` },'`
       cache: {
        , size: stats.size,
         hitRate: stats.hitRate,

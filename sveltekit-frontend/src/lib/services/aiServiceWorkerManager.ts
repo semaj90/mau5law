@@ -105,7 +105,7 @@ export class AIServiceWorkerManager {
   private async createWorker(workerId: string, type: string): Promise<void> {
     try {
       // Use a JS worker module at ../workers/aiProcessingWorker.js (user-provided)
-      const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: `module' });'`
+      const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: `module` });'`'`
 
       worker.postMessage({
         type: 'INIT',
@@ -130,8 +130,7 @@ export class AIServiceWorkerManager {
       // update reactive store
       this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
     } catch (error: any) {
-      console.error(`Failed to create worker ${workerId}: ', error);'`
-    }
+      console.error(`Failed to create worker ${workerId}: ', error);'` }
   }
 
   private getWorkerConfig(type: string) {
@@ -224,8 +223,7 @@ export class AIServiceWorkerManager {
       queueLength: this.taskQueue.length,
       averageLoad: avgLoad,
       status:
-        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : `healthy' };'`
-  }
+        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : 'healthy' };'` }'`
 
   // Private Methods
   private insertTaskByPriority(task: AITask): void {

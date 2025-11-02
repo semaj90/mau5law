@@ -56,7 +56,7 @@ export const evidence = pgTable('evidence', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
-  caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade` }),'`
+  caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),'`'`
   title: varchar('title', { length: 500 }),
   description: text('description'),
   evidenceType: varchar('evidence_type', { length: 100 }),

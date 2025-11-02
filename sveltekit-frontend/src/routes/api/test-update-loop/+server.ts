@@ -48,11 +48,11 @@ type DocumentInsert = {
   filename?: string;
   filePath?: string;
   content_text: string;
-  user_id: number; // <-- changed: use number to match Drizzle/postgres column, type
+  user_id: number; // <-- changed: use number to match Drizzle/postgres, column, type
 };
 
 type QueryVectorInsert = { userId: string;, query: string;
-  embedding: number[]; // <-- changed: plain number[] for, Drizzle; resultCount: number;
+  embedding: number[]; // <-- changed: plain, number[] for, Drizzle; resultCount: number;
   clickedResults: Array<{ id: string | number; score: number }>;
 };
 
@@ -283,8 +283,7 @@ class UpdateLoopTester {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
         error: err instanceof Error ? err.message : `Scenario failed` };
-      console.error(`❌ Scenario ${scenario.name} failed: ', err);'`
-    }
+      console.error(`❌ Scenario ${scenario.name} failed: ', err);'` }
   }
   private generateTestQuery(content: string): string {
     // Extract key terms for realistic query
@@ -464,8 +463,7 @@ export const GET: RequestHandler = async ({ url }) => {
           description: 'Tests the full re-embed + re-rank loop with various document change scenarios',
           endpoints: {
             'POST /': 'Run full test suite or specific scenario',
-            'GET /?action=scenarios': 'List available test scenarios` }'`
-        }
+            'GET /?action=scenarios': 'List available test scenarios' }'` }'`
       });
     }
     if (action === 'scenarios') {

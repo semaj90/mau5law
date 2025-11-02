@@ -183,7 +183,7 @@ export const createEnhancedLayoutLoad = () => {
         systemStatus: { apiHealthy: false, pgvectorEnabled: false, aiServicesOnline: false },
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics,
-        _error: error instanceof Error ? error.message : 'Unknown error' };
+        _error: error instanceof Error ? error.message : 'Unknown error` };'`
     }
   };
 };

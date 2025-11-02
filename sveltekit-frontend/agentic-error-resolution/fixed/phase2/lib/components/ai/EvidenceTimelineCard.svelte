@@ -2,15 +2,15 @@
   // Svelte 5 runes are auto-imported
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
   // runes-mode: props accessed via $props()
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
   // Access props via Svelte runes $props()
   let _props = $props();
   const timelineEvents: Array = [];
@@ -99,12 +99,12 @@
         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{timelineEvents.length} events</span>
       </h3>
       <div class="flex gap-2">
-        <Button.Root class="bits-btn" variant="ghost" size="sm">
+        <Button class="bits-btn" variant="ghost" size="sm">
 📊 Timeline Analysis
-</Button.Root>
-        <Button.Root class="bits-btn" variant="ghost" size="sm">
+</Button>
+        <Button class="bits-btn" variant="ghost" size="sm">
 🗂️ Export Timeline
-</Button.Root>
+</Button>
       </div>
     </div>
     {#if caseId}
@@ -143,7 +143,7 @@
                     <div class="text-gray-400">
                       {expandedDates.has(date) ? '▼' : '▶'}
                     </div>
-</Button.Root>
+</Button>
                 </div>
               </div>
               <!-- Events for this date -->
@@ -207,13 +207,13 @@
           {timelineEvents.length} events across {Object.keys(errors).length} day{Object.keys(errors).length !== 1 ? 's' : ''}
         </div>
         <div class="flex gap-2">
-          <Button.Root class="bits-btn" variant="ghost" size="sm">
+          <Button class="bits-btn" variant="ghost" size="sm">
 🔍 Find Gaps
-</Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" size="sm">
+</Button>
+          <Button class="bits-btn" variant="ghost" size="sm">
 🕸️ Show Connections
-</Button.Root>
-          <Button.Root class="bits-btn" size="sm">
+</Button>
+          <Button class="bits-btn" size="sm">
 📝 Generate Report
 </Button>
         </div>

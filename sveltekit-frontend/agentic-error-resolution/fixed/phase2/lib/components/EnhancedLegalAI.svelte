@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Label } from '$lib/components/ui/label.svelte';
-  import { Textarea } from '$lib/components/ui/textarea.svelte';
+  import  Button  from "$lib/components/ui/button.svelte";
+  import  Label  from "$lib/components/ui/label.svelte";
+  import  Textarea  from "$lib/components/ui/textarea.svelte";
   // lucide-svelte exports some icons as default; import Loader2 as the default export
   import Loader2 from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -361,7 +361,7 @@
           />
         </div>
         <!-- Process Button -->
-        <Button.Root
+        <Button
           onclick={processDocument}
           disabled={processing || !serviceStatus.healthy}
           class="w-full mt-4"
@@ -372,7 +372,7 @@
           {:else}
             Process Document
           {/if}
-        </Button.Root>
+        </Button>
       </div>
       <!-- Vector Search -->
       <div class="bg-white rounded-xl shadow-lg p-6">
@@ -405,7 +405,7 @@
           </div>
         </div>
         <!-- Search Button -->
-        <Button.Root
+        <Button
           onclick={performVectorSearch}
           disabled={searching || !serviceStatus.healthy}
           class="w-full mt-4"
@@ -416,7 +416,7 @@
           {:else}
             Perform Vector Search
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </div>
   </div>

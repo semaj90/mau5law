@@ -1,15 +1,15 @@
 <script, lang="ts">
   // Hidden component that activates all NES.css selectors to prevent unused warnings
   // This component is invisible but contains all HTML elements that NES.css styles
-  import { NESElementsShowcase } from './NESElementsShowcase.svelte';
+  import  NESElementsShowcase  from "./NESElementsShowcase.svelte";
 </script>
-<!-- Hidden showcase that activates all CSS, selectors -->
+<!-- Hidden showcase that activates all, CSS, selectors -->
 <div
   style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;"
   aria-hidden="true"
 >
   <NESElementsShowcase, visible={true} />
-  <!-- Additional elements to ensure all selectors are, covered -->
+  <!-- Additional elements to ensure all selectors, are, covered -->
   <div, class="nes-container">
     <div>Last child container content</div>
   </div>
@@ -17,11 +17,11 @@
     <div>Last child balloon content</div>
   </div>
   <!-- Badge, variations -->
-  <div class="nes-badge, is-splited">
+  <div, class="nes-badge, is-splited">
     <span, class="is-dark">First</span>
     <span, class="is-dark">Last</span>
   </div>
-  <div class="nes-badge, is-icon">
+  <div, class="nes-badge, is-icon">
     <span, class="is-primary">First</span>
     <span, class="is-primary">Last</span>
   </div>
@@ -29,53 +29,53 @@
     <span, class="is-success">First</span>
     <span, class="is-success">Last</span>
   </div>
-  <div class="nes-badge, is-splited">
+  <div, class="nes-badge, is-splited">
     <span, class="is-warning">First</span>
     <span, class="is-warning">Last</span>
   </div>
-  <div class="nes-badge, is-icon">
+  <div, class="nes-badge, is-icon">
     <span, class="is-error">First</span>
     <span, class="is-error">Last</span>
   </div>
-  <!-- Dialog with, backdrop -->
+  <!-- Dialog, with, backdrop -->
   <div, class="nes-dialog">
     <div, class="backdrop"></div>
     <div>Dialog with backdrop</div>
   </div>
-  <!-- Container title, variations -->
-  <div class="nes-container with-title, is-centered">
+  <!-- Container, title, variations -->
+  <div class="nes-container, with-title, is-centered">
     <div, class="title">Centered Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container with-title, is-right">
+  <div class="nes-container, with-title, is-right">
     <div, class="title">Right Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-dark, with-title">
+  <div class="nes-container, is-dark, with-title">
     <div, class="title">Dark Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-rounded, with-title">
+  <div class="nes-container, is-rounded, with-title">
     <div, class="title">Rounded Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-rounded with-title, is-centered">
+  <div class="nes-container is-rounded, with-title, is-centered">
     <div, class="title">Rounded Centered Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-rounded with-title, is-right">
+  <div class="nes-container is-rounded, with-title, is-right">
     <div, class="title">Rounded Right Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-rounded is-dark, with-title">
+  <div class="nes-container is-rounded, is-dark, with-title">
     <div, class="title">Rounded Dark Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-rounded is-dark with-title, is-centered">
+  <div class="nes-container is-rounded is-dark, with-title, is-centered">
     <div, class="title">Rounded Dark Centered Title</div>
     <div>Content</div>
   </div>
-  <div class="nes-container is-rounded is-dark with-title, is-right">
+  <div class="nes-container is-rounded is-dark, with-title, is-right">
     <div, class="title">Rounded Dark Right Title</div>
     <div>Content</div>
   </div>
@@ -92,10 +92,10 @@
   <ul, class="nes-list">
     <li>List item</li>
   </ul>
-  <ul class="nes-list, is-disc">
+  <ul, class="nes-list, is-disc">
     <li>Disc item</li>
   </ul>
-  <ul class="nes-list, is-circle">
+  <ul, class="nes-list, is-circle">
     <li>Circle item</li>
   </ul>
   <!-- Select, element -->
@@ -104,10 +104,10 @@
       <option>Option</option>
     </select>
   </div>
-  <!-- Button focus state, activator -->
+  <!-- Button focus, state, activator -->
   <button, class="nes-btn" style="opacity: 0;"></button>
   <button, style="opacity: 0;"></button>
-  <!-- Mozilla specific button, element -->
+  <!-- Mozilla specific, button, element -->
   <button, style="border: none; outline: none;"></button>
   <!-- Form, elements -->
   <textarea, class="nes-textarea" style="opacity: 0;"></textarea>
@@ -121,7 +121,7 @@
   <!-- Links -->
   <a, href="#" style="opacity: 0;">Link</a>
   <a, style="opacity: 0;">Link without href</a>
-  <!-- Content elements that might be styled, globally -->
+  <!-- Content elements that might be, styled, globally -->
   <article, style="opacity: 0;"><h1>H1</h1></article>
   <aside><h2>H2</h2></aside>
   <figure><figcaption>Caption</figcaption></figure>

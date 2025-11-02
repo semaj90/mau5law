@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
       max_concurrency: Math.min(errorCount, 16), // Higher concurrency for GPU
       target_latency: 2, // Aggressive 2ms target per error
       quality_threshold: body.quality_threshold ?? 0.85,
-      strategy: `gpu_first' };'`
+      strategy: `gpu_first` };'`'`
     // Check GPU availability first
     const gpuStatusResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/gpu/status`);
     if (!gpuStatusResponse.ok) {
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'GPU acceleration not available',
           details: 'NVIDIA GPU service is not responding',
-          fallback: 'Use /api/v1/typescript-optimizer for CPU processing' },
+          fallback: 'Use /api/v1/typescript-optimizer for CPU processing` },'`
         { status: 503 }
       );
     }
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'GPU not available for processing',
           gpu_status: gpuStatus, // Added comma
-          fallback: `Use /api/v1/typescript-optimizer for CPU processing' },'`
+          fallback: `Use /api/v1/typescript-optimizer for CPU processing` },'`'`
         { status: 503 }
       );
     }
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         memory_pooling: true,
         template_matching: true,
         concurrent_processing: gpuOptimizedRequest.max_concurrency,
-        endpoint_used: `/api/gpu/batch-process' },'`
+        endpoint_used: `/api/gpu/batch-process` },'`'`
       performance: {
         grade: calculatePerformanceGrade(gpuStats.gpu_efficiency_score),
         tier: 'gpu_accelerated',
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
         gpu_processing: true, // Added comma
         fallback_available: true, // Added comma
-        fallback_endpoint: `/api/v1/typescript-optimizer' },'`
+        fallback_endpoint: `/api/v1/typescript-optimizer` },'`'`
       { status: 500 }
     );
   }

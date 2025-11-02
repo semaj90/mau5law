@@ -4,25 +4,25 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
   }: Props = $props(); // Component state let rating: number = $state(0); let feedback: string = $state(''); let isSubmitting: boolean = false; let isSubmitted: boolean = false; // Auto-generate IDs using $effect for side effects $effect(() => { if (!interactionId) { interactionId = `interaction_${Date.now()}_${Math.random.toString-substr(2, 9)}`; }
   }); $effect(() => { if (!sessionId) { sessionId = `session_${Date.now()}_${ userId }`; }
   }); function setRating(score: number) { rating = scor; }
-  async function submitFeedback(): Promise<any> { if (rating === 0) return; isSubmitting = true; try { const response = await fetch('/api/v1/feedback?action=rate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, sessionId, interactionId, ratingType, score: rating; feedback: feedback.trim() || undefined, context: { ...context, page: $page.url.pathname, timestamp: new Date().toISOString(), userAgent: navigator.userAgent, viewport: { width: window.innerWidth, height: window.innerHeight } }, metadata: { platform: navigator.platform, language: navigator.language, featureUsed: ratingType deviceType: window.innerWidth < 768 ? 'mobile': window.innerWidth < 1024 ? 'tablet': 'desktop'; }
+  async function submitFeedback(): Promise<any> { if (rating === 0) return; isSubmitting = true; try { const response = await fetch('/api/v1/feedback?action=rate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, sessionId, interactionId, ratingType, score: rating;, feedback: feedback.trim() || undefined, context: { ...context, page: $page.url.pathname, timestamp: new Date().toISOString(), userAgent: navigator.userAgent, viewport: {, width: window.innerWidth, height: window.innerHeight } }, metadata: {, platform: navigator.platform, language: navigator.language, featureUsed: ratingType, deviceType: window.innerWidth < 768 ? 'mobile': window.innerWidth < 1024 ? 'tablet': 'desktop'; }
         }) }); if (response.ok) { isSubmitted = true; ondispatch?.({ rating, feedback, interactionId }); // Auto-hide after 2 seconds setTimeout(() => { show = false; isSubmitted = false; rating = 0; feedback = ''; }, 2000); } else { throw new Error('Failed to submit feedback'); }
     } catch (error) { console.error('❌ Failed to submit feedback:', error); ondispatch?.({ error }); } finally { isSubmitting = false; }
   } function close() { show = false; rating = 0; feedback = ''; isSubmitted = false; }
   // Rating type labels const ratingTypeLabels = { response_quality: 'Response Quality', search_relevance: 'Search Relevance', ui_experience: 'User Experience', ai_accuracy: 'AI Accuracy', performance: 'Performance'
-  } </script> {#if show} <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of onclick, etc. --> <div class="feedback-overlay"
+  } </script> {#if show} <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of, onclick, etc. --> <div, class="feedback-overlay"
     role="button"
     tabindex="0"
     onclick={ close } onkeydown={e => e.key === 'Enter' && close()} >
-    <div class="feedback-widget"
+    <div, class="feedback-widget"
       role="dialog"
       tabindex="0"
       aria-labelledby="feedback-title"
       onclick={e => e.stopPropagation()} onkeydown={e => e.key === 'Enter' && e.stopPropagation()} >
-      {#if !isSubmitted} <div, class="feedback-header"> <h3, id="feedback-title" class="feedback-title"> Rate {ratingTypeLabels[ratingType]} </h3> <button class="close-button" onclick={ close } aria-label="Close, feedback" type="button">×</button> </div> <div, class="feedback-content"> <div, class="rating-section"> <p, class="rating-label">How would you rate this interaction?</p> <div, class="star-rating"> {#each Array.isArray([1, 2, 3, 4, 5]) ? [1, 2, 3, 4, 5]: [] as star} <button class="star {rating >= star ? 'active': ''}"
+      {#if !isSubmitted} <div, class="feedback-header"> <h3, id="feedback-title" class="feedback-title"> Rate {ratingTypeLabels[ratingType]} </h3> <button, class="close-button" onclick={ close } aria-label="Close, feedback" type="button">×</button> </div> <div, class="feedback-content"> <div, class="rating-section"> <p, class="rating-label">How would you rate this interaction?</p> <div, class="star-rating"> {#each Array.isArray([1, 2, 3, 4, 5]) ? [1, 2, 3, 4, 5]: [] as star} <button, class="star {rating >= star ? 'active': ''}"
                   onclick={() => setRating(star)} aria-label="Rate { star } stars"
                   type="button"
                 > ★
-                </button> {/each} </div> </div> {#if rating > 0} <div, class="feedback-section"> <label, for="feedback-text" class="feedback-textarea-label"> Additional feedback (optional): </label> <textarea id="feedback-text"
+                </button> {/each} </div> </div> {#if rating > 0} <div, class="feedback-section"> <label, for="feedback-text" class="feedback-textarea-label"> Additional feedback (optional): </label> <textarea, id="feedback-text"
                 bind:value={ feedback } class="feedback-textarea"
                 placeholder="Tell us more about your experience..."
                 rows="3"

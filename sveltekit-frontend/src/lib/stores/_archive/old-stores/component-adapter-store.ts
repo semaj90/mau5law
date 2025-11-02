@@ -263,7 +263,7 @@ export function createUploadAdapter(
  * Form Component Adapter
  * Simplifies complex form component state
  */
-export interface FormData<TFormValues extends, Record<string, unknown>> {
+export interface FormData<TFormValues, extends, Record<string, unknown>> {
   // Use Record<string, unknown>
   // Use generic TFormValues
   values: TFormValues; // Type values with TFormValues
@@ -272,7 +272,7 @@ export interface FormData<TFormValues extends, Record<string, unknown>> {
   isSubmitting: boolean;
   isValid: boolean;
 }
-export function createFormAdapter<TFormValues extends, Record<string, unknown>>( // Use Record<string, unknown>
+export function createFormAdapter<TFormValues, extends, Record<string, unknown>>( // Use Record<string, unknown>
   initialValues: TFormValues, // Type initialValues with TFormValues
   validationRules: { [K in keyof TFormValues]?: (value: TFormValues[K]) => string | null } = {} // Type validationRules
 ): ComponentAdapter<FormData<TFormValues>> {
@@ -280,7 +280,7 @@ export function createFormAdapter<TFormValues extends, Record<string, unknown>>(
   const adapter = createComponentAdapter<FormData<TFormValues>>({
     // Pass TFormValues to FormData
     values: initialValues,
-    errors: {} as Partial<Record<keyof, TFormValues, string>>, // <- explicit typing to satisfy conditional, types
+    errors: {} as Partial<Record<keyof, TFormValues, string>>, // <- explicit typing to satisfy, conditional, types
     touched: Object.keys(initialValues).reduce(
       (acc, key) => ({ ...acc, [key]: false }),
       {} as Record<keyof, TFormValues, boolean>
@@ -290,7 +290,7 @@ export function createFormAdapter<TFormValues extends, Record<string, unknown>>(
   });
   const formActions = {
     ...adapter.actions,
-    setValue: <Field extends keyof, TFormValues>(field: Field, value: TFormValues[Field]) => {
+    setValue: <Field extends, keyof, TFormValues>(field: Field, value: TFormValues[Field]) => {
       // Type field and value
       const current = get(adapter.state).data;
       if (!current) return;
@@ -365,7 +365,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
  * Utility functions for Svelte 5 component migration
  */ export const svelte5Utils = {
   // Safe prop access for Svelte 5 components
-  safeProps: <T extends, Record<string, unknown>>(props: T, defaults: Partial<T>): T => {
+  safeProps: <T, extends, Record<string, unknown>>(props: T, defaults: Partial<T>): T => {
     return { ...defaults, ...props };
   },
   // Convert complex state to simple props

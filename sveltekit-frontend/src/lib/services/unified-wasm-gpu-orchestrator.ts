@@ -365,7 +365,7 @@ export class UnifiedWASMGPUOrchestrator {
         const t0 = Date.now();
         // try a lightweight health endpoint; if not present, fall back to root /completions probe
         const probeUrl = `${endpoint.replace(/\/$/, '')}/health`;
-        const res = await fetch(probeUrl, { method: 'GET' });
+        const res = await fetch(probeUrl, { method: 'GET` });'`
         responseTime = Date.now() - t0;
         healthy = res.ok;
       } catch {
@@ -848,7 +848,7 @@ export class UnifiedWASMGPUOrchestrator {
           try {
             const res = await fetch(`${endpoint}/completions`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json` },'`
               body: JSON.stringify({, model: 'gemma3', prompt, max_tokens: maxTokens, temperature })
             });
             if (!res.ok) throw new Error(`Ollama HTTP ${res.status}`);

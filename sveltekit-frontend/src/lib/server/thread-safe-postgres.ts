@@ -111,7 +111,7 @@ export class ThreadSafePostgres {
   /**
    * Thread-safe JSONB document operations
    */
-  async storeJsonbDocument<T extends, Record<string, unknown>>(
+  async storeJsonbDocument<T, extends, Record<string, unknown>>(
     table: string,
     id: string,
     document: T,
@@ -419,8 +419,7 @@ export class ThreadSafePostgres {
         console.warn(`Failed to update cache metadata for ${effectiveCacheKey}:`, err);
       }
     } catch (error) {
-      console.warn(`GPU processing failed for query ${queryId}: ', error);'`
-    }
+      console.warn(`GPU processing failed for query ${queryId}: ', error);'' }'`
   }
 
   /**
@@ -451,7 +450,7 @@ export class ThreadSafePostgres {
           SELECT
             id,
             1 - (embedding <=> $1::vector) as similarity
-            ${includeMetadata ? ', content, metadata' : '` }'`
+            ${includeMetadata ? ', content, metadata' : '' }'`'`
           FROM ${table}
           WHERE 1 - (embedding <=> $1::vector) > $2
         `;`
@@ -630,8 +629,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(id);
         console.warn(`Cleaned up stuck transaction: ${id}`);
       } catch (error) {
-        console.error(`Failed to cleanup transaction ${id}: ', error);'`
-      }
+        console.error(`Failed to cleanup transaction ${id}: ', error);'' }'`
     }
   }
 }
@@ -640,7 +638,7 @@ export class ThreadSafePostgres {
 export const threadSafePostgres = ThreadSafePostgres.getInstance();
 
 // Utility functions for easy access
-export async function safeJsonbStore<T extends, Record<string, unknown>>(
+export async function safeJsonbStore<T, extends, Record<string, unknown>>(
   table: string,
   id: string,
   document: T,

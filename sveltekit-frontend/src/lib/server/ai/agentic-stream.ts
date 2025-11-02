@@ -59,7 +59,7 @@ async function streamFromOllama(
     // Use HTTP streaming endpoint (Ollama doesn't support WS for chat)'
     fetch(`${getOllamaEndpoint()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
         model: options?.model || MODEL_NAME,
         prompt: options?.systemPrompt ? `${options.systemPrompt}\n\nUser: ${prompt}` : prompt,
@@ -103,8 +103,7 @@ async function streamFromOllama(
                 await onChunk(parsed.response, fullText);
               }
             } catch (error) {
-              console.error('[AI] ❌ Parse error:', error);'
-            }
+              console.error('[AI] ❌ Parse error: `, error);` }'
           }
           return processChunk();
         };
@@ -128,7 +127,7 @@ async function streamFromTensorRT(
   // TensorRT doesn't natively support streaming - simulate it'
   const response = await fetch(`${TENSORRT_BASE}/v2/models/legal-llm/infer`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({
      , inputs: [
         {,
@@ -138,8 +137,7 @@ async function streamFromTensorRT(
           data: [options?.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt]
         },
       ],
-      outputs: [{, name: 'output_text` }]'`
-    } as TensorRTRequest)
+      outputs: [{, name: 'output_text' }]'` } as TensorRTRequest)'`
   });
   if (!response.ok) {
     throw new Error(`TensorRT HTTP error: ${response.status}`);
@@ -184,7 +182,7 @@ async function webSearch(query: string): Promise<{ results: string[] }> {
 }
 // Stub: Legal citation lookup
 async function legalCitationLookup(citation: string): Promise<{ case, string; summary: string }> {
-  console.log('[AI] ⚖️ Legal citation lookup:', citation);
+  console.log('[AI] ⚖️ Legal citation lookup: `, citation);'`
   // TODO: Integrate with legal database (CourtListener, Justia, etc.)
   return {
     case citation,
@@ -201,7 +199,7 @@ async function extractEntities(text: string): Promise<{ entities: string[] }> {
 export async function generateEmbedding(text: string): Promise<number[]> {
   const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({
       model: 'nomic-embed-text',
       prompt: text
@@ -221,7 +219,7 @@ export async function chatCompletion(
   const startTime = Date.now();
   const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({
       model: options?.model || MODEL_NAME,
       messages: messages.map(msg => ({

@@ -139,7 +139,7 @@ export class WebGPUTextTileRenderer {
           {,
             arrayStride: 32,
             attributes: [
-              { shaderLocation: 0, offset: 0, format: 'float32x2' }, // position
+              {, shaderLocation: 0, offset: 0, format: 'float32x2' }, // position
               { shaderLocation: 1, offset: 8, format: 'float32x2' }, // texCoord
               { shaderLocation: 2, offset: 16, format: 'float32x4' }, // tileData
             ]
@@ -309,8 +309,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       tile.metadata.x
     )
   );
-}`;`
-  }
+}`;' }'`
 
   /**
    * Render compressed text tiles to instant UI components
@@ -473,8 +472,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 @keyframes nes-flicker-${tile.id} {
   0%, 100% { opacity: 1; }
   50% { opacity: ${(tile.tileMetadata.semanticDensity * 0.3 + 0.7).toFixed(2)}; }
-}`;`
-  }
+}`;' }'`
 
   /**
    * Generate DOM structure for component
@@ -494,8 +492,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       default: // text-display
         return `<span, class="${className} text-display" title="Compression: ${tile.compressionRatio.toFixed(1)}:1">`
           ${tile.tileMetadata.categories.join(' ')}
-        </span>`;`
-    }
+        </span>`;' }'`
   }
 
   /**
@@ -512,12 +509,11 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
     id: '${tile.id}',
     compression: ${tile.compressionRatio},
     semanticHash: '${tile.semanticHash}',
-    patternId: '${tile.tileMetadata.patternId}` });'`
+    patternId: '${tile.tileMetadata.patternId}' });'`'`
   // Trigger NES-style click animation
   this.style.transform = 'scale(0.95)';
   setTimeout(() => this.style.transform = 'scale(1)', 100);
-});`;`
-  }
+});`;' }'`
 
   /**
    * Calculate current GPU utilization

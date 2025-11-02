@@ -126,8 +126,7 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
     // convert Date to ISO string to satisfy drizzle insert typings
     createdAt: (result.scoringDate ?? new Date()).toISOString(),
     riskLevel: riskLevel,
-    // updatedAt left optional; if present elsewhere ensure it's set as ISO string'
-  };
+    // updatedAt left optional; if present elsewhere ensure it's set as ISO string` };'`
 }
 
 // Export singleton instance
@@ -238,7 +237,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           max_tokens: 1000,
           use_cached_embeddings: true,
           enable_streaming: false,
-          compression: 'GZIP' },
+          compression: 'GZIP` },'`
         request_time: { seconds: Math.floor(Date.now() / 1000) },
         requester_id: 'system',
         priority: this.getPriority(request)
@@ -441,7 +440,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
             max_tokens: 1000,
             use_cached_embeddings: true,
             enable_streaming: false,
-            compression: 'GZIP' }
+            compression: 'GZIP` }'`
         };
         call.write(req);
       }
@@ -591,7 +590,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       logger.info('Performance Comparison:', {
         jsonAvg: `${comparison.json.toFixed(2)}ms`,
         grpcAvg: `${comparison.grpc.toFixed(2)}ms`,
-        improvement: `${comparison.improvement.toFixed(1)}%' });'`
+        improvement: `${comparison.improvement.toFixed(1)}%` });'`'`
       // Emit performance metrics for monitoring
       this.emit('performance-metrics', comparison);
     }
@@ -707,10 +706,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     } else {
       recommendations.push('Weak case - recommend further investigation or declining prosecution');
     }
-    if (scores.evidence_strength < 0.6) recommendations.push('Strengthen evidence collection and chain of, custody');
+    if (scores.evidence_strength < 0.6) recommendations.push('Strengthen evidence collection and chain, of, custody');
     if (scores.witness_reliability < 0.6)
       recommendations.push('Assess witness credibility and consider additional witnesses');
-    if (scores.legal_precedent < 0.6) recommendations.push('Research additional supporting case law and, precedents');
+    if (scores.legal_precedent < 0.6) recommendations.push('Research additional supporting case law, and, precedents');
     return recommendations;
   }
   private calculateConfidence(scores: ScoringCriteria): number {

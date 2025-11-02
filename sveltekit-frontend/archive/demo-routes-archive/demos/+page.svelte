@@ -368,13 +368,13 @@ https://svelte.dev/e/js_parse_error -->
     <div class="yorha-header-content">
       <!-- Navigation Bar -->
       <div class="yorha-nav-bar">
-        <Button.Root
+        <Button
           class="yorha-nav-btn bits-btn bits-btn"
           onclick={goHome}
         >
 <Home size={16} />
           HOME
-        </Button.Root>
+        </Button>
 
         <div class="yorha-breadcrumb">
           <span class="yorha-breadcrumb-item">YoRHa Legal AI</span>
@@ -495,7 +495,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="yorha-demo-footer">
                   <span class="yorha-demo-path">{demo.path}</span>
                   <div class="yorha-demo-actions">
-                    <Button.Root
+                    <Button
                       class="yorha-demo-btn bits-btn bits-btn"
                       onclick={(e) => {
                         e.stopPropagation();
@@ -504,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
                     >
                       <Play size={14} />
                       LAUNCH
-                    </Button.Root>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -542,13 +542,13 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="yorha-footer-actions">
-            <Button.Root
+            <Button
               class="yorha-btn yorha-nes-btn is-primary bits-btn bits-btn"
               onclick={goHome}
             >
               <ArrowLeft size={16} />
               RETURN TO HOMEPAGE
-            </Button.Root>
+            </Button>
           </div>
         </div>
       </section>

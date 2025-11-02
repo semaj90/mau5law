@@ -17,8 +17,8 @@ https://svelte.dev/e/js_parse_error -->
     aiEvent = null,
     onvalidated
   }: Props = $props();
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
   import {
     AlertTriangle,
     CheckCircle,
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
           </DialogPrimitive.Description>
         </div>
         <Dialog.RootPrimitive.Close let:builder>
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             {...builder}
             variant="ghost"
             size="sm"
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
 closeModal()}
           >
             ×
-</Button.Root>
+</Button>
         </DialogPrimitive.Close>
       </div>
       {#if evidence}
@@ -189,7 +189,7 @@ closeModal()}
           <div class="space-y-4">
             <h4 class="space-y-4">Is this AI analysis accurate?</h4>
             <div class="space-y-4">
-              <Button.Root
+              <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
                 onclick={() =>
@@ -197,8 +197,8 @@ handleValidationChoice("approve")}
               >
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
-</Button.Root>
-              <Button.Root
+</Button>
+              <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
                 onclick={() =>
@@ -206,7 +206,7 @@ handleValidationChoice("reject")}
               >
                 <XCircle class="space-y-4" />
                 No, needs correction
-</Button.Root>
+</Button>
             </div>
           </div>
           <!-- Feedback Section -->
@@ -290,7 +290,7 @@ handleValidationChoice("reject")}
                           class="space-y-4"
                         >
                           ×
-</Button.Root>
+</Button>
                       </span>
                     {/each}
                   {/if}
@@ -304,7 +304,7 @@ handleValidationChoice("reject")}
                     keydown={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())}
                   />
-                  <Button.Root class="bits-btn"
+                  <Button class="bits-btn"
                     type="button"
                     variant="secondary"
                     size="sm"
@@ -312,22 +312,22 @@ handleValidationChoice("reject")}
 addTag()}
                   >
                     <Tag class="space-y-4" />
-</Button.Root>
+</Button>
                 </div>
               </div>
             {/if}
         </div>
         <!-- Footer -->
         <div class="space-y-4">
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
 closeModal()}
             disabled={isSubmitting}
           >
             Cancel
-</Button.Root>
-          <Button.Root
+</Button>
+          <Button
             class="bits-btn"
             onclick={() =>
 submitValidation()}

@@ -33,7 +33,7 @@ type SelectChain = {
   from (table: any) => FromResult;
 };
 
-type DB = { query: {; users: { findFirst: (opts: {;, columns: {
+type DB = { query: {; users: {; findFirst: (opts: {;, columns: {
           id?: boolean;
           email?: boolean;
           name?: boolean;
@@ -87,15 +87,15 @@ export const load: PageServerLoad = async ({ locals }) => {
   const [totalCasesRow, openCasesRow, closedCasesRow, evidenceRow, poiRow] = await Promise.all([
     _db.select({ value: sql<number>`count(*)::int` }).from(_cases),
     _db
-      .select({ value: sql<number>`count(*)::int' })'`
+      .select({ value: sql<number>`count(*)::int` })'`'`
       .from(_cases)
       .where(sql`status NOT IN ('closed', 'archived')`),
     _db
-      .select({ value: sql<number>`count(*)::int' })'`
+      .select({ value: sql<number>`count(*)::int` })'`'`
       .from(_cases)
       .where(sql`status = 'closed'`),
     _db.select({ value: sql<number>`count(*)::int` }).from(_evidence),
-    _db.select({ value: sql<number>`count(*)::int' }).from(_criminals)'`
+    _db.select({ value: sql<number>`count(*)::int` }).from(_criminals)'`'`
   ]);
 
   return {

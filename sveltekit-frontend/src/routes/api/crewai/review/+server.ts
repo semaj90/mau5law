@@ -59,8 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caseContext = {
           caseType: (caseData.metadata as any)?.type || 'general',
           jurisdiction: (caseData.metadata as any)?.jurisdiction || 'federal',
-          priority: caseData.priority || 'medium` }'`
-      }
+          priority: caseData.priority || 'medium' }'` }'`
     }
     // Create review task
     const reviewTask: DocumentReviewTask = {
@@ -235,7 +234,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error` },'`
+        error: err instanceof Error ? err.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }
@@ -295,8 +294,7 @@ function calculateEstimatedTime(agentIds: string[], contentLength: number): stri
   if (totalTime < 60) {
     return `${Math.round(totalTime)} seconds` } else {
     const minutes = Math.round(totalTime / 60)
-    return `${minutes} minute${minutes > 1 ? 's' : ''}' }'`
-}
+    return `${minutes} minute${minutes > 1 ? 's' : ''}' }'' }'`
 function calculateProgress(review: DocumentReviewTask): number {
   // This would be implemented to track actual progress
   // For now, return a placeholder

@@ -263,7 +263,7 @@ export class LegalBERTMiddleware {
       };
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
-      logger.error('[LegalBERT] Similarity calculation failed: `, err);'`
+      logger.error('[LegalBERT] Similarity calculation failed: ', err);'`'`
       return {
         similarity: 0.5,
         confidence: 0.3,

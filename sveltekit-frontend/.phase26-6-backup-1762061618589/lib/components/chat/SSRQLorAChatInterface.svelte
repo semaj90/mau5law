@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   import { useMachine } from '@xstate/svelte';
   import { chatMachine } from '$lib/machines/chat-machine';
   // Neural sprite rendering
-  import { NeuralSpriteRenderer } from '$lib/components/three/NeuralSpriteRenderer.svelte';
+  import  NeuralSpriteRenderer  from "$lib/components/three/NeuralSpriteRenderer.svelte";
   // YoRHa UI components
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {

@@ -156,8 +156,7 @@ export const documentUploadMachine = createMachineCompat({
           actions: assign({
             // use extractor for invoked validation errors
             validationErrors: ({ event }) => extractValidationErrorsFromInvoke(event) ?? {},
-            error: () => 'File validation failed` })'`
-        }
+            error: () => 'File validation failed' })'` }'`
       }
     },
     validated: { on: {, SUBMIT: 'uploading',
@@ -231,8 +230,7 @@ export const documentUploadMachine = createMachineCompat({
           {
             target: 'failed',
             actions: assign({
-              error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed after retries` })'`
-          },
+              error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed after retries' })'` }'`
         ]
       }
     },

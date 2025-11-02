@@ -23,7 +23,7 @@ export const GET: RequestHandler = async () => {
         database: row?.current_database ?? 'unknown',
         version: row?.version ?? 'unknown',
         timestamp: row?.current_timestamp ?? new Date().toISOString(),
-        message: 'PostgreSQL connection successful' },
+        message: 'PostgreSQL connection successful` },'`
       { status: 200 }
     );
   } catch (error) {

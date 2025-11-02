@@ -477,7 +477,7 @@
     </div>
 
     <!-- System Status Card -->
-    <Card.Root class="mb-6 p-6 nes-container">
+    <Card class="mb-6 p-6 nes-container">
       <CardHeader>
         <CardTitle class="text-xl font-semibold flex items-center gap-2">
           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -506,16 +506,16 @@
           {/each}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
     <!-- Quick Actions -->
-    <Card.Root class="mb-6 p-6 nes-container">
+    <Card class="mb-6 p-6 nes-container">
       <CardHeader>
         <CardTitle class="text-xl font-semibold mb-4">Quick Legal Queries</CardTitle>
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button.Root
+          <Button
             class="bits-btn justify-start"
             variant="secondary"
             onclick={() => handleQuickQuery('Explain contract formation requirements')}
@@ -523,8 +523,8 @@
             aria-label="Explain contract formation requirements"
           >
             Contract Law
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             class="bits-btn justify-start"
             variant="secondary"
             onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
@@ -532,8 +532,8 @@
             aria-label="What is the chain of custody for evidence?"
           >
             Evidence Rules
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             class="bits-btn justify-start"
             variant="secondary"
             onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
@@ -541,8 +541,8 @@
             aria-label="Explain liability limitations in contracts"
           >
             Liability
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             class="bits-btn justify-start"
             variant="secondary"
             onclick={() => handleQuickQuery('What are the elements of negligence?')}
@@ -550,16 +550,16 @@
             aria-label="What are the elements of negligence?"
           >
             Tort Law
-          </Button.Root>
+          </Button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
     <!-- Chat Interface -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Chat Messages -->
       <div class="xl:col-span-2">
-        <Card.Root class="flex flex-col h-[70vh] nes-container">
+        <Card class="flex flex-col h-[70vh] nes-container">
           <CardHeader>
             <div class="flex justify-between items-center">
               <span
@@ -569,7 +569,7 @@
               >
                 {isStreaming ? 'Streaming...' : 'Ready'}
               </span>
-              <Button.Root
+              <Button
                 variant="secondary"
                 class="bits-btn bits-nes-btn"
                 onclick={clearChat}
@@ -577,7 +577,7 @@
                 aria-label="Clear chat"
               >
                 Clear
-              </Button.Root>
+              </Button>
             </div>
           </CardHeader>
           <CardContent class="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 border rounded-lg p-4">
@@ -632,7 +632,7 @@
                 placeholder="Ask a legal question..."
                 aria-label="Legal question input"
               />
-              <Button.Root
+              <Button
                 onclick={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn"
@@ -650,14 +650,14 @@
                 {:else}
                   Send
                 {/if}
-              </Button.Root>
+              </Button>
             </div>
           </div>
-        </Card.Root>
+        </Card>
 
         <!-- POI Timeline Visualization -->
         {#if showTimeline && poiTimelineData.length > 0}
-          <Card.Root class="mt-6 p-6 nes-container">
+          <Card class="mt-6 p-6 nes-container">
             <CardHeader class="mb-4 flex justify-between items-center">
               <CardTitle class="text-xl font-semibold flex items-center gap-2">
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -679,7 +679,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-              </Button.Root>
+              </Button>
             </CardHeader>
             <CardContent class="space-y-4">
               {#each Array.isArray(poiTimelineData) ? poiTimelineData : [] as poi}
@@ -700,7 +700,7 @@
                       aria-label={`View details for ${poi.name}`}
                     >
                       View Details
-                    </Button.Root>
+                    </Button>
                   </div>
 
                   {#if poi.activities && poi.activities.length > 0}
@@ -746,12 +746,12 @@
                 </div>
               {/each}
             </CardContent>
-          </Card.Root>
+          </Card>
         {/if}
 
         <!-- User Activity Timeline -->
         {#if userActivityTimeline.length > 0}
-          <Card.Root class="mt-6 p-6 nes-container">
+          <Card class="mt-6 p-6 nes-container">
             <CardHeader>
               <CardTitle class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -783,7 +783,7 @@
                 </div>
               {/each}
             </CardContent>
-          </Card.Root>
+          </Card>
         {/if}
       </div>
 
@@ -791,7 +791,7 @@
       <div class="xl:col-span-1">
         <div class="space-y-6">
           <!-- Model Information -->
-          <Card.Root class="p-6 nes-container">
+          <Card class="p-6 nes-container">
             <CardHeader>
               <CardTitle class="font-semibold mb-3">AI Model</CardTitle>
             </CardHeader>
@@ -803,10 +803,10 @@
                 </p>
               </div>
             </CardContent>
-          </Card.Root>
+          </Card>
 
           <!-- Features -->
-          <Card.Root class="p-6 nes-container">
+          <Card class="p-6 nes-container">
             <CardHeader>
               <CardTitle class="font-semibold mb-3">Features</CardTitle>
             </CardHeader>
@@ -838,15 +838,15 @@
                 </div>
               </div>
             </CardContent>
-          </Card.Root>
+          </Card>
 
           <!-- Controls -->
-          <Card.Root class="p-6 nes-container">
+          <Card class="p-6 nes-container">
             <CardHeader>
               <CardTitle class="font-semibold mb-3">Controls</CardTitle>
             </CardHeader>
             <CardContent class="space-y-3">
-              <Button.Root
+              <Button
                 variant="secondary"
                 onclick={checkSystemStatus}
                 class="w-full justify-start bits-btn"
@@ -861,9 +861,9 @@
                   ></path>
                 </svg>
                 Refresh Status
-              </Button.Root>
+              </Button>
 
-              <Button.Root
+              <Button
                 class="bits-btn w-full justify-start"
                 variant="secondary"
                 onclick={() => window.open('/api/v1/cluster/health', '_blank')}
@@ -878,9 +878,9 @@
                   ></path>
                 </svg>
                 Health Report
-              </Button.Root>
+              </Button>
 
-              <Button.Root
+              <Button
                 variant="secondary"
                 class="w-full justify-start bits-btn"
                 onclick={analyzePersonsOfInterest}
@@ -907,9 +907,9 @@
                   </svg>
                 {/if}
                 Analyze Evidence
-              </Button.Root>
+              </Button>
 
-              <Button.Root
+              <Button
                 variant="secondary"
                 onclick={generateUserActivityTimeline}
                 disabled={activityLoading}
@@ -936,13 +936,13 @@
                   </svg>
                 {/if}
                 User Activity
-              </Button.Root>
+              </Button>
             </CardContent>
-          </Card.Root>
+          </Card>
 
           <!-- Focus Metrics -->
           {#if userActivityTimeline.length > 0}
-            <Card.Root class="p-6 nes-container">
+            <Card class="p-6 nes-container">
               <CardHeader>
                 <CardTitle class="font-semibold mb-3">Focus Metrics</CardTitle>
               </CardHeader>
@@ -964,7 +964,7 @@
                   <span class="font-medium">{focusMetrics.evidenceReviewed}</span>
                 </div>
               </CardContent>
-            </Card.Root>
+            </Card>
           {/if}
         </div>
       </div>
@@ -1000,7 +1000,7 @@
             {/if}
           </div>
         </div>
-        <Button.Root variant="secondary" size="sm" onclick={closePOIDetails} class="bits-btn" aria-label="Close">
+        <Button variant="secondary" size="sm" onclick={closePOIDetails} class="bits-btn" aria-label="Close">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -1103,7 +1103,7 @@
 
       <!-- Modal Footer -->
       <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-        <Button.Root variant="secondary" onclick={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
+        <Button variant="secondary" onclick={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
         <Button
           onclick={() => {
             handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);

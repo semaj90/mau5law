@@ -4,7 +4,7 @@
   // @ts-nocheck - Service import compatibility (requires external service definitions for full type safety)
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
-  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import { toastService } from '$lib/services/toast-service';
   import { gpuAccelerationService } from '$lib/services/gpu-acceleration-service';
   import { postgresqlVectorService } from '$lib/services/postgresql-vector-service';

@@ -53,7 +53,7 @@ class QdrantVectorService {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, vectors: {, size: collectionConfig.vectorSize,
             distance: collectionConfig.distance,
             // Scalar quantization configuration (4x-8x compression)
@@ -107,7 +107,7 @@ class QdrantVectorService {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, points: points.map(point => ({, id: point.id,
             vector: point.vector,
             payload: {
@@ -145,7 +145,7 @@ class QdrantVectorService {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , vector: queryVector,
           limit,
@@ -201,7 +201,7 @@ class QdrantVectorService {
     try {
       const collectionToDelete = name || this.collectionName;
       const response = await fetch(`${this.baseUrl}/collections/${collectionToDelete}`, {
-        method: `DELETE` });
+        method: `DELETE' });'`
       return response.ok;
     } catch (error) {
       console.error('Failed to delete collection:', error);

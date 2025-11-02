@@ -33,53 +33,53 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
     if (event.key === 'Escape') { selectedItems.clear(); connectionStart = null; isConnecting = false; }
   } function handleItemKeyDown(event: KeyboardEvent, item: EvidenceItem) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (isConnecting) { completeConnection(item.id); } else { selectItem(item.id, event); }
     } }
-</script> <svelte:window, onkeydown={ handleKeyDown } /> <div bind:this={ boardElement } class={` relative overflow-hidden border-2 rounded-lg ${themeStyles[theme].background} ${theme === 'yorha' ? 'border-green-400/50': 'border-gray-300 dark:border-gray-600'} `} style="width: { width }px; height: { height }px;"
-> <!-- Grid, Pattern --> {#if snapToGrid} <svg class="absolute inset-0, pointer-events-none" width={ width } height={ height }> <defs> <pattern, id="grid" width={ gridSize } height={ gridSize } patternUnits="userSpaceOnUse"> <path d="M { gridSize } 0 L 0 0 0 { gridSize }"
+</script> <svelte:window, onkeydown={ handleKeyDown } /> <div bind:this={ boardElement } class={` relative overflow-hidden border-2 rounded-lg ${themeStyles[theme].background} ${theme === 'yorha' ? 'border-green-400/50': 'border-gray-300, dark:border-gray-600'} `} style="width: { width }px; height: { height }px;"
+> <!-- Grid, Pattern --> {#if snapToGrid} <svg class="absolute, inset-0, pointer-events-none" width={ width } height={ height }> <defs> <pattern, id="grid" width={ gridSize } height={ gridSize } patternUnits="userSpaceOnUse"> <path d="M { gridSize } 0 L 0 0, 0 { gridSize }"
             fill="none"
             class={`${themeStyles[theme].grid}`} stroke="currentColor"
             stroke-width="1"
-          /> </pattern> </defs> <rect, width="100%" height="100%" fill="url(#grid)" /> </svg> {/if} <!-- Connection, Lines --> {#if showConnections} <svg class="absolute inset-0, pointer-events-none" width={ width } height={ height }> {#each Array.isArray(items) ? items: [] as item} {#if item.connections} {#each Array.isArray(item.connections) ? item.connections: [] as connectionId} <path d={getConnectionPath(item.id, connectionId)} fill="none"
+          /> </pattern> </defs> <rect, width="100%" height="100%" fill="url(#grid)" /> </svg> {/if} <!-- Connection, Lines --> {#if showConnections} <svg class="absolute, inset-0, pointer-events-none" width={ width } height={ height }> {#each Array.isArray(items) ? items: [] as item} {#if item.connections} {#each Array.isArray(item.connections) ? item.connections: [] as connectionId} <path, d={getConnectionPath(item.id, connectionId)} fill="none"
               class={themeStyles[theme].connection} stroke-width="2"
               marker-end="url(#arrowhead)"
               opacity="0.7"
-            /> {/each} {/if} {/each} <!-- Arrow, marker --> <defs> <marker id="arrowhead"
+            /> {/each} {/if} {/each} <!-- Arrow, marker --> <defs> <marker, id="arrowhead"
           markerWidth="10"
           markerHeight="7"
           refX="9"
           refY="3.5"
           orient="auto"
-        > <polygon points="0 0, 10 3.5, 0 7"
+        > <polygon points="0 0, 10 3.5, 0, 7"
             class={themeStyles[theme].connection} fill="currentColor"
-          /> </marker> </defs> </svg> {/if} <!-- Evidence, Items --> {#each items as item (item.id)} <div role="button"
+          /> </marker> </defs> </svg> {/if} <!-- Evidence, Items --> {#each items as item (item.id)} <div, role="button"
       tabindex="0"
       class={` absolute border rounded-lg p-3 cursor-move select-none transition-all duration-200 ${themeStyles[theme].item} ${selectedItems.has(item.id) ? 'ring-2 ring-blue-500 ring-opacity-60': ''} ${draggedItem?.id === item.id ? 'z-50 shadow-2xl scale-105': 'z-10'} ${isConnecting && connectionStart !== item.id ? 'cursor-crosshair': ''} ${theme === 'yorha' ? 'backdrop-blur-sm': ''} `} style="
         left: {item.position.x}px; top: {item.position.y}px; width: {item.size.width}px; height: {item.size.height}px; border-color: {item.color || ''}
       "
       onmousedown={(e) => startDrag(e, item)} onclick={(e) => { if (isConnecting) { completeConnection(item.id); } else { selectItem(item.id, e); }
       }} onkeydown={(e) => handleItemKeyDown(e, item)} oncontextmenu={(e) => { e.preventDefault(); startConnection(item.id); }} transitionscale={{ duration: 200, easing: quintOut }} >
-      <!-- Item, Header --> <div class="flex items-center justify-between, mb-2"> <div class="flex items-center, space-x-2"> <div, class={` text-lg ${theme === 'yorha' ? 'filter drop-shadow-[0_0_6px_currentColor]': ''} `}> {getItemIcon(item.type)} </div> <h4, class={` font-semibold text-sm truncate ${theme === 'yorha' ? 'font-mono tracking-wide': ''} `}> {item.title} </h4> </div> {#if !readonly} <button onclick={(e) => { e.stopPropagation(); items = items.filter(i => i.id !== item.id); }} class={` w-5 h-5 rounded text-xs opacity-50 hover:opacity-100 transition-opacity ${theme === 'yorha' ? 'hover:bg-green-400/20 text-green-400': 'hover:bg-gray-200 dark:hover:bg-gray-700'} `} title="Delete item"
+      <!-- Item, Header --> <div class="flex items-center, justify-between, mb-2"> <div class="flex, items-center, space-x-2"> <div, class={` text-lg ${theme === 'yorha' ? 'filter, drop-shadow-[0_0_6px_currentColor]': ''} `}> {getItemIcon(item.type)} </div> <h4, class={` font-semibold text-sm truncate ${theme === 'yorha' ? 'font-mono, tracking-wide': ''} `}> {item.title} </h4> </div> {#if !readonly} <button, onclick={(e) => { e.stopPropagation(); items = items.filter(i => i.id !== item.id); }} class={` w-5 h-5 rounded text-xs opacity-50 hover:opacity-100 transition-opacity ${theme === 'yorha' ? 'hover:bg-green-400/20 text-green-400': 'hover:bg-gray-200 dark:hover:bg-gray-700'} `} title="Delete item"
           > ✕
-          </button> {/if} </div> <!-- Item, Content --> {#if item.content} <div, class={` text-xs leading-tight overflow-hidden ${theme === 'yorha' ? 'text-green-400/80 font-mono': 'text-gray-600 dark:text-gray-400'} `}> {item.content} {/if} <!-- Item, Metadata --> {#if item.metadata} <div class="mt-2 flex flex-wrap, gap-1"> {#each Object.entries(item.metadata) as [key, value]} <span, class={` px-1.5 py-0.5 text-xs rounded ${theme === 'yorha'`
+          </button> {/if} </div> <!-- Item, Content --> {#if item.content} <div, class={` text-xs leading-tight overflow-hidden ${theme === 'yorha' ? 'text-green-400/80 font-mono': 'text-gray-600, dark:text-gray-400'} `}> {item.content} {/if} <!-- Item, Metadata --> {#if item.metadata} <div class="mt-2 flex, flex-wrap, gap-1"> {#each Object.entries(item.metadata) as [key, value]} <span, class={` px-1.5 py-0.5 text-xs, rounded ${theme === 'yorha'`
                 ? 'bg-green-400/10 text-green-400 border border-green-400/30': 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
               } `}> { key }: { value } </span> {/each} {/if} <!-- Connection, indicators --> {#if item.connections && item.connections.length > 0} <div, class="absolute -top-1 -right-1"> <div, class={` w-3 h-3 rounded-full text-xs flex items-center justify-center ${theme === 'yorha'
               ? 'bg-green-400 text-black shadow-[0_0_8px_rgba(0,255,65,0.6)]': 'bg-blue-500 text-white'
-            } `}> {item.connections.length} </div> {/if} </div> {/each} <!-- Toolbar --> {#if !readonly} <div, class={` absolute bottom-4 left-4 flex space-x-2 p-2 rounded-lg ${theme === 'yorha'
+            } `}> {item.connections.length} </div> {/if} </div> {/each} <!-- Toolbar --> {#if !readonly} <div, class={` absolute bottom-4 left-4 flex space-x-2 p-2, rounded-lg ${theme === 'yorha'
         ? 'bg-black/80 border border-green-400/30 backdrop-blur-sm': 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 shadow-lg'
-      } `}> <button onclick={() => addNewItem('note')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'
+      } `}> <button, onclick={() => addNewItem('note')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30': 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           } `} title="Add Note"`
-      > 📝 Note </button> <button onclick={() => addNewItem('document')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'`
+      > 📝 Note </button> <button, onclick={() => addNewItem('document')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'`
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30': 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           } `} title="Add Document"`
-      > 📄 Doc </button> <button onclick={() => addNewItem('link')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'`
+      > 📄 Doc </button> <button, onclick={() => addNewItem('link')} class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'`
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30': 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           } `} title="Add Link"`
-      > 🔗 Link </button> {#if selectedItems.size > 0} <button onclick={ deleteSelected } class={` px-3 py-1 rounded text-sm transition-colors ${theme === 'yorha'`
+      > 🔗 Link </button> {#if selectedItems.size > 0} <button onclick={ deleteSelected } class={` px-3 py-1 rounded text-sm, transition-colors ${theme === 'yorha'`
               ? 'hover:bg-red-400/20 text-red-400 border border-red-400/30': 'hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400'
             } `} title="Delete Selected"`
-        > 🗑️ Delete ({selectedItems.size}) </button> {/if} {/if} <!-- Instructions --> {#if items.length === 0} <div class="absolute inset-0 flex items-center, justify-center"> <div, class={` text-center p-8 rounded-lg border-2 border-dashed ${theme === 'yorha'`
+        > 🗑️ Delete ({selectedItems.size}) </button> {/if} {/if} <!-- Instructions --> {#if items.length === 0} <div class="absolute inset-0 flex, items-center, justify-center"> <div, class={` text-center p-8 rounded-lg border-2, border-dashed ${theme === 'yorha'`
           ? 'border-green-400/30 text-green-400/70 font-mono': 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
-        } `}> <div class="text-4xl, mb-4">🔍</div> <h3 class="text-lg font-semibold, mb-2">Evidence Board</h3> <p, class="text-sm"> Click toolbar buttons to add evidence items<br> Drag items to reposition • Right-click to connect </p> </div> {/if} </div> <style> /* Smooth animations for YoRHa theme */:global(.yorha-evidence-item) { animation: yorha-item-glow 2s ease-in-out infinite alternate; }`
+        } `}> <div, class="text-4xl, mb-4">🔍</div> <h3 class="text-lg, font-semibold, mb-2">Evidence Board</h3> <p, class="text-sm"> Click toolbar buttons to add evidence items<br> Drag items to reposition • Right-click to connect </p> </div> {/if} </div> <style> /* Smooth animations for YoRHa theme */:global(.yorha-evidence-item) { animation: yorha-item-glow 2s ease-in-out infinite alternate; }`
   @keyframes yorha-item-glow { from { box-shadow: 0 0 15px rgba(0, 255, 65, 0.3); }
     to { box-shadow: 0 0 25px rgba(0, 255, 65, 0.5), 0 0 35px rgba(0, 255, 65, 0.2); }
   } </style>

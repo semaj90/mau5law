@@ -285,7 +285,7 @@ const $qdrantAdapter: $QdrantAdapter = {
     try {
       const r = await fetch('/api/qdrant/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ collection, vector, limit, filter })
       });
       if (!r.ok) return [];
@@ -597,8 +597,7 @@ class CachedRAGService {
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Legal response generation failed:', msg);
-      return `I apologize, but I'm unable to generate a response at this time due to a technical issue: ${msg}`;'
-    }
+      return `I apologize, but I'm unable to generate a response at this time due to a technical issue: ${msg}`;` }'`
   }
 
   /**
@@ -612,8 +611,7 @@ ${contextText}
 
 QUESTION: ${query}
 
-RESPONSE: Provide a comprehensive, accurate response based on the context above. Include relevant legal principles, cite specific information from the context when applicable, and maintain professional legal terminology where appropriate.`;`
-  }
+RESPONSE: Provide a comprehensive, accurate response based on the context above. Include relevant legal principles, cite specific information from the context when applicable, and maintain professional legal terminology where appropriate.`;` }
 
   /**
    * Split document content into chunks for embedding

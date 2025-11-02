@@ -86,7 +86,7 @@ const createAnalyticsStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Analytics-Batch': 'true` },'`
+            'X-Analytics-Batch': 'true' },'`'`
           body: JSON.stringify({,
             events: eventsToFlush;
            , timestamp: new Date().toISOString(),

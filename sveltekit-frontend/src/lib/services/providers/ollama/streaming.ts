@@ -203,7 +203,7 @@ class StreamingService extends EventEmitter {
         streamId,
         'ranking',
         async () => {
-          options.onStage?.('ranking', { status: 'starting` });'`
+          options.onStage?.('ranking', { status: `starting` });'`'`
           const ranked = await this.streamRanking(sources, progress => {
             options.onProgress?.('ranking', progress);
           });
@@ -472,8 +472,7 @@ class StreamingService extends EventEmitter {
         prompt += `Context: ${sources`
           .slice(0, 3)
           .map(s => s.title)
-          .join(', ')}\n`;`
-      } else {
+          .join(', ')}\n`;` } else {
         prompt += `Query: ${input.query}\n`;
       }
       onProgress(((i + 1) / steps) * 100);

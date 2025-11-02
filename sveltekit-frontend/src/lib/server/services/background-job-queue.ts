@@ -140,8 +140,7 @@ export class LegalAIJobQueue {
       try {
         await this.processNextJob();
       } catch (err) {
-        console.error('[JobQueue] processing loop error:', err);'
-      }
+        console.error('[JobQueue] processing loop error: `, err);` }'
     }, 5000); // Process every 5 seconds
   }
   /**
@@ -327,7 +326,7 @@ export class LegalAIJobQueue {
       const rawEntityType = data?.entityType;
       const rawEntityId = data?.entityId;
       if (typeof rawEntityType !== 'string' || typeof rawEntityId !== 'string') {
-        return { success: false, error: 'Invalid entityType or entityId` };'`
+        return { success: false, error: 'Invalid entityType or entityId' };''
       }
       const entityType = rawEntityType;
       const entityId = rawEntityId;

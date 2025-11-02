@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte code: Unexpected, token --> <script, lang="ts"> // Svelte 5 runes are auto-imported // @ts-nocheck import { onMount } from 'svelte'; import { browser } from "$app/environment"; import { Button } from '$lib/components/ui/enhanced-bits.svelte'; import { ArrowLeft, ArrowRight, Check, Lightbulb, MousePointer, Pause, Play, SkipForward, Target, X
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script, lang="ts"> // Svelte 5 runes are auto-imported // @ts-nocheck import { onMount } from 'svelte'; import { browser } from "$app/environment"; import  Button  from "$lib/components/ui/enhanced-bits.svelte"; import { ArrowLeft, ArrowRight, Check, Lightbulb, MousePointer, Pause, Play, SkipForward, Target, X
   } from 'lucide-svelte'; interface OnboardingStep { id: string; title: string; description string; target?: string; targetSelector?: string; position?: 'top' | 'bottom' | 'left' | 'right' | 'center'; action?: () => void; validate?: () => boolean; type?: 'info' | 'action' | 'input' | 'success'; content?: string; image?: string; video?: string; }
   interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]; autoProgress?: boolean; progressDelay?: number; showMinimap?: boolean; allowSkip?: boolean; onclose?: (event?: any) => void; oncomplete?: (event?: any) => void; }
   // Props interface interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]; autoProgress?: boolean; progressDelay?: number; showMinimap?: boolean; allowSkip?: boolean; onclose?: ((event?: any) => void) | undefined; oncomplete?: ((event?: any) => void) | undefined; }
@@ -26,32 +26,32 @@
     aria-modal="true"
     aria-labelledby="onboarding-title"
     aria-describedby="onboarding-description"
-  > <!-- Darkened, background --> <div class="w-4 h-4"
+  > <!-- Darkened, background --> <div class="w-4, h-4"
       role="button"
       tabindex={ 0 } onclick={() => closeOnboarding()} keydown={(e: KeyboardEvent) => { if (e.key === "Escape") { closeOnboarding(); }
-      }} ></div> <!-- Highlight box for target, element --> {#if highlightBox} <div class="w-4 h-4"
+      }} ></div> <!-- Highlight box for, target, element --> {#if highlightBox} <div class="w-4, h-4"
         style="
           top: {highlightBox.top}px; left: {highlightBox.left}px; width: {highlightBox.width}px; height: {highlightBox.height}px;
         "
-      >{/if} <!-- Tooltip/Content, card --> <div class="w-4 h-4"
+      >{/if} <!-- Tooltip/Content, card --> <div class="w-4, h-4"
       style={highlightBox ? Object.entries(getTooltipPosition()) .map(([key, value]) => `${ key }: ${ value }`) .join("; "): "top: 50%; left: 50%; transform: translate(-50%, -50%);"} >
-      <!-- Header --> <div class="w-4, h-4"> <div class="w-4, h-4"> <span class="w-4, h-4">{currentStep + 1}</span> <span class="w-4, h-4">of {steps.length}</span> </div> <div class="w-4, h-4"> {#if autoProgress} <Button.Root class="bits-btn w-4 h-4"
+      <!-- Header --> <div, class="w-4, h-4"> <div, class="w-4, h-4"> <span, class="w-4, h-4">{currentStep + 1}</span> <span, class="w-4, h-4">of {steps.length}</span> </div> <div, class="w-4, h-4"> {#if autoProgress} <Button class="bits-btn w-4, h-4"
               variant="ghost"
               size="sm"
               onclick={() => toggleAutoProgress()} aria-label={isPlaying ? "Pause auto-progress": "Play auto-progress"} >
-              {#if isPlaying} <Pause class="w-4, h-4" /> {:else} <Play class="w-4, h-4" /> {/if} </Button.Root> {/if} <Button.Root, class="bits-btn"
+              {#if isPlaying} <Pause, class="w-4, h-4" /> {:else} <Play, class="w-4, h-4" /> {/if} </Button> {/if} <Button.Root, class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() => closeOnboarding()} aria-label="Close onboarding"
-          > <X class="w-4, h-4" /> </Button.Root> </div> </div> <!-- Content --> <div class="w-4, h-4"> <div class="w-4, h-4"> {#if currentStepData.type === "action"} <MousePointer class="w-4, h-4" /> {:else if currentStepData.type === "success"} <Check class="w-4, h-4" /> {:else if currentStepData.type === "input"} <Target class="w-4, h-4" /> {:else} <Lightbulb class="w-4, h-4" /> {/if} </div> <h3 id="onboarding-title" class="w-4, h-4"> {currentStepData.title} </h3> <p id="onboarding-description" class="w-4, h-4"> {currentStepData.description} </p> {#if currentStepData.content} <div class="w-4, h-4"> {@html currentStepData.content} {/if} {#if currentStepData.image} <div class="w-4, h-4"> <img, src={currentStepData.image} alt={currentStepData.title} /> {/if} {#if currentStepData.video} <div class="w-4, h-4"> <video controls, src={currentStepData.video}> <track, kind="captions" src="" srclang="en" label="English" /> Your browser does not support the video tag. </video> {/if} </div> <!-- Progress, bar --> <div class="w-4, h-4"> <div class="w-4, h-4"> <div class="w-4 h-4"
+          > <X, class="w-4, h-4" /> </Button> </div> </div> <!-- Content --> <div, class="w-4, h-4"> <div, class="w-4, h-4"> {#if currentStepData.type === "action"} <MousePointer, class="w-4, h-4" /> {:else if currentStepData.type === "success"} <Check, class="w-4, h-4" /> {:else if currentStepData.type === "input"} <Target, class="w-4, h-4" /> {:else} <Lightbulb, class="w-4, h-4" /> {/if} </div> <h3, id="onboarding-title" class="w-4, h-4"> {currentStepData.title} </h3> <p, id="onboarding-description" class="w-4, h-4"> {currentStepData.description} </p> {#if currentStepData.content} <div, class="w-4, h-4"> {@html currentStepData.content} {/if} {#if currentStepData.image} <div, class="w-4, h-4"> <img, src={currentStepData.image} alt={currentStepData.title} /> {/if} {#if currentStepData.video} <div, class="w-4, h-4"> <video, controls, src={currentStepData.video}> <track, kind="captions" src="" srclang="en" label="English" /> Your browser does not support the video tag. </video> {/if} </div> <!-- Progress, bar --> <div, class="w-4, h-4"> <div, class="w-4, h-4"> <div class="w-4, h-4"
             style="width: {((currentStep + 1) / steps.length) * 100}%"
-          ></div> </div> <span class="w-4, h-4"> {currentStep + 1} / {steps.length} </span> </div> <!-- Navigation --> <div class="w-4, h-4"> <div class="w-4, h-4"> {#if allowSkip} <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}> <SkipForward class="w-4, h-4" /> Skip Tour </Button.Root> {/if} </div> <div class="w-4, h-4"> {#if showMinimap && steps.length > 1} <div class="w-4, h-4"> {#each steps as step, index} <button class="w-4 h-4"
+          ></div> </div> <span class="w-4, h-4"> {currentStep + 1} / {steps.length} </span> </div> <!-- Navigation --> <div class="w-4, h-4"> <div class="w-4, h-4"> {#if allowSkip} <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}> <SkipForward class="w-4, h-4" /> Skip Tour </Button> {/if} </div> <div class="w-4, h-4"> {#if showMinimap && steps.length > 1} <div class="w-4, h-4"> {#each steps as step, index} <button class="w-4 h-4"
                   class:active={index === currentStep} class:completed={index < currentStep} onclick={() => goToStep(index)} aria-label={"Go to step: " + (index + 1) + ": " + step.title} >
-                  {#if index < currentStep} <Check class="w-4, h-4" /> {:else} <span class="w-4, h-4">{index + 1}</span> {/if} </Button.Root> {/each} {/if} </div> <div class="w-4, h-4"> <Button.Root, class="bits-btn"
+                  {#if index < currentStep} <Check, class="w-4, h-4" /> {:else} <span, class="w-4, h-4">{index + 1}</span> {/if} </Button> {/each} {/if} </div> <div, class="w-4, h-4"> <Button.Root, class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() => previousStep()} disabled={currentStep === 0} >
-            <ArrowLeft class="w-4, h-4" /> Back </Button.Root> <Button.Root, class="bits-btn" onclick={() => nextStep()} size="sm"> {#if currentStep === steps.length - 1} <Check class="w-4, h-4" /> Complete {:else} Next <ArrowRight class="w-4, h-4" /> {/if} </Button> </div> </div> </div> {/if} <style> /* @unocss-include */ .onboarding-overlay { position: fixed; d; top: 0, left: 0; right: 0, bottom: 0; z-index: 10000; pointer-events: auto; }
+            <ArrowLeft, class="w-4, h-4" /> Back </Button> <Button.Root, class="bits-btn" onclick={() => nextStep()} size="sm"> {#if currentStep === steps.length - 1} <Check, class="w-4, h-4" /> Complete {:else} Next <ArrowRight, class="w-4, h-4" /> {/if} </Button> </div> </div> </div> {/if} <style> /* @unocss-include */ .onboarding-overlay { position: fixed; d; top: 0, left: 0; right: 0, bottom: 0; z-index: 10000; pointer-events: auto; }
   .overlay-backdrop { position: absolute; top: 0, left: 0; right: 0, bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
   .highlight-box { position: absolute; border: 3px solid #3b82f6; border-radius: 8px; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.3); background: rgba(255, 255, 255, 0.1); pointer-events: none; animation: highlight-pulse 2s infinite; z-index: 10001 }
   @keyframes highlight-pulse { 0%, 100% { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.3); }

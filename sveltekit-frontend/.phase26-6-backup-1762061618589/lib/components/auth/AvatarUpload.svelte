@@ -1,6 +1,6 @@
 <script lang="ts">
   import { updateUserProfile } from '$lib/stores/user';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   import { Upload, Camera } from 'lucide-svelte';
   interface Props {
     userId?: string;

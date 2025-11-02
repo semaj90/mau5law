@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { filename, fileSize, caseId, contentType, chunkCount = 1 }: PresignRequest = await request.json();
     // Validate input
     if (!filename || !caseId || fileSize <= 0) {
-      return json({ error: `Invalid upload parameters` }, { status: 400 });
+      return json({ error: 'Invalid upload parameters' }, { status: 400 });
     }
     // Generate unique upload ID
     const uploadId = randomUUID();
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(response);
   } catch (error: any) {
     console.error('❌ Presign error:', error);'
-    return json({ error: `Failed to generate presigned URLs` }, { status: 500 });
+    return json({ error: 'Failed to generate presigned URLs' }, { status: 500 });
   }
 };
 // Complete multipart upload
@@ -105,7 +105,7 @@ async function triggerProcessingPipeline(uploadId: string): Promise<any> {
     const jobData = {
       uploadId,
       timestamp: new Date().toISOString(),
-      priority: `normal` };
+      priority: `normal' };'`
     // TODO: Send to Redis/BullMQ
     // await jobQueue.add('process-document', jobData)
     console.log(`🚀 Triggered processing for upload ${uploadId}`);

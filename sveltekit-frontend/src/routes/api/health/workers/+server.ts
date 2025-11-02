@@ -160,8 +160,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
         name: 'OCR Worker',
         status: 'offline',
         healthy: false,
-        details: redisState.reason || 'Redis unavailable for OCR worker check` };'`
-    }
+        details: redisState.reason || 'Redis unavailable for OCR worker check' };'` }'`
 
     const { heartbeat, stats } = redisState;
 
@@ -175,7 +174,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
 
     const lastHeartbeat = new Date(heartbeat);
     const timeSinceHeartbeat = Date.now() - lastHeartbeat.getTime();
-    const isHealthy = timeSinceHeartbeat < 60000; // 60 seconds, threshold
+    const isHealthy = timeSinceHeartbeat < 60000; // 60, seconds, threshold
 
     const parsedStats = safeParseJson(stats);
 
@@ -222,8 +221,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         const queueInfo = await channel.checkQueue(queueName);
         totalQueueDepth += queueInfo.messageCount;
       } catch (error) {
-        // Queue doesn't exist yet'
-      }
+        // Queue doesn't exist yet` }'`
     }
 
     await channel.close();

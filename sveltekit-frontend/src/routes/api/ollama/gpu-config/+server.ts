@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
           ok: false,
           source: 'cache',
           config: cached.payload.config,
-          reason: 'upstream_unreachable` };'`
+          reason: `upstream_unreachable` };'`'`
         // refresh timestamp to avoid tight loops
         cached = { ts: Date.now(), payload };
         return json(payload, { status: 200 });

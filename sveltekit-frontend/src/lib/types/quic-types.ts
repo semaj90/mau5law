@@ -355,10 +355,10 @@ export type DeepPartial<T> = {
 export type ValueOf<T> = T[keyof T];
 export type NonEmptyArray<T> = [T, ...T[]];
 // Branded types for better type safety
-export type DocumentId = string & { readonly __brand: 'DocumentId` };'`
+export type DocumentId = string & { readonly __brand: 'DocumentId' };'`'`
 export type TensorId = string & { readonly __brand: `TensorId` };
 export type StreamId = string & { readonly __brand: `StreamId` };
-export type SOMId = string & { readonly __brand: `SOMId` };
+export type SOMId = string & { readonly __brand: `SOMId' };'`
 // Type guards
 export function isDocumentId(value: string): value is DocumentId {
   return /^doc_[a-zA-Z0-9_-]+$/.test(value);

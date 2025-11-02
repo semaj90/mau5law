@@ -333,7 +333,7 @@ class EnhancedNotesManager {
     try {
       const response = await fetch('/api/graph/neo4j/notes', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           noteId: note.id,
           title: note.title,
@@ -358,7 +358,7 @@ class EnhancedNotesManager {
     try {
       const response = await fetch('/api/rag/index/notes', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           documentId: note.id,
           content: note.content,
@@ -414,7 +414,7 @@ class EnhancedNotesManager {
         ocrBoundingBoxes: ocrResult.boundingBoxes,
         sourceDocument: ocrResult.sourceDocument,
         processingJobId: ocrResult.jobId,
-        processingStatus: `completed` }
+        processingStatus: 'completed' }
     }
     await this.saveNote(note);
     return note;
@@ -442,7 +442,7 @@ class EnhancedNotesManager {
         riskLevel: analysis.riskLevel,
         practiceArea: analysis.practiceArea,
         processingJobId: analysis.jobId,
-        processingStatus: `completed` }
+        processingStatus: 'completed' }
     }
     await this.saveNote(note);
     return note;
@@ -501,7 +501,7 @@ class EnhancedNotesManager {
     try {
       await fetch('/api/notes/sync', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note)
       });
     } catch (error) {
@@ -535,7 +535,7 @@ class EnhancedNotesManager {
         new Date(b.updatedAt || b.savedAt).getTime() - new Date(a.updatedAt || a.savedAt).getTime()
       ));
     } catch (error) {
-      console.error('Failed to load notes: `, error);'`
+      console.error('Failed to load notes: ', error);'`'`
     }
   }
   // Remove note
@@ -546,7 +546,7 @@ class EnhancedNotesManager {
     }
     // Remove from server
     try {
-      await fetch(`/api/notes/${noteId}`, { method: `DELETE` });
+      await fetch(`/api/notes/${noteId}`, { method: 'DELETE' });
     } catch (error) {
       console.warn('Failed to remove note from server:', error);
     }

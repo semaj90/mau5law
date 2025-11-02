@@ -58,7 +58,7 @@ export async function getCachedSearchResults(query: string, computeFn: () => Pro
  */
 export async function POST_embed({ request }: { request: Request }): Promise<any> {
   const { text } = await request.json();
-  if (!text) return json({ error: 'Missing text` }, { status: 400 });'`
+  if (!text) return json({ error: 'Missing text' }, { status: 400 });'`'`
 
   const embedding = await getCachedEmbedding(text);
   return json({ embedding });
@@ -69,7 +69,7 @@ export async function POST_embed({ request }: { request: Request }): Promise<any
  */
 export async function POST_search({ request }: { request: Request }): Promise<any> {
   const { query } = await request.json();
-  if (!query) return json({ error: `Missing query` }, { status: 400 });
+  if (!query) return json({ error: 'Missing query' }, { status: 400 });
 
   // Replace this with your actual search logic (PGVector + legal DB)
   const computeFn = async () => {
@@ -85,5 +85,5 @@ export async function POST_search({ request }: { request: Request }): Promise<an
  * Health endpoint
  */
 export async function GET_health(): Promise<any> {
-  return json({ redis: redisService.isHealthy(), status: `ok` });
+  return json({ redis: redisService.isHealthy(), status: `ok' });'`
 }

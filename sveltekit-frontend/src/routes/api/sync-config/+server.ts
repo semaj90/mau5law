@@ -36,8 +36,7 @@ try {
   // cast getInstance result to our shape
   minioService = (minioModule?.MinIOService?.getInstance?.() ?? null) as unknown as MinIOServiceShape | null;
 } catch (error) {
-  console.warn('MinIO module not available: `, error);'`
-}
+  console.warn('MinIO module not available: ', error);'` }'`
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = performance.now();
   // Replace loose `any` with explicit small types to satisfy the linter/type-checker
@@ -82,13 +81,12 @@ export const GET: RequestHandler = async ({ url }) => {
             database: result[0]?.database_name,
             user: result[0]?.connected_user,
             pgvectorInstalled: result[0]?.pgvector_installed,
-            connectionString: import.meta.env.DATABASE_URL ? '[REDACTED]' : 'Using default fallback'
-          }
+            connectionString: import.meta.env.DATABASE_URL ? '[REDACTED]' : 'Using default fallback` }'`
         };
       } else {
         testResults.postgresql = {
           status: 'error',
-          message: `PostgreSQL connection failed` };
+          message: 'PostgreSQL connection failed' };
       }
     } else {
       testResults.postgresql = {
@@ -143,16 +141,14 @@ export const GET: RequestHandler = async ({ url }) => {
             endpoint: '${import.meta.env.MINIO_HOST || 'localhost'}:${import.meta.env.MINIO_PORT || '9000` }`,
             useSSL: import.meta.env.MINIO_USE_SSL === 'true',
             buckets: buckets?.length || 0,
-            accessKey: import.meta.env.MINIO_ACCESS_KEY || 'minioadmin` }'`
-        };
+            accessKey: import.meta.env.MINIO_ACCESS_KEY || 'minioadmin' }'` };'`
       } catch (minioError) {
         testResults.minio = {
           status: 'error',
           message: `MinIO connection; failed: ${minioError}`,
           details: {
             endpoint: '${import.meta.env.MINIO_HOST || 'localhost'}:${import.meta.env.MINIO_PORT || '9000` }`,
-            useSSL: import.meta.env.MINIO_USE_SSL === 'true` }'`
-        };
+            useSSL: import.meta.env.MINIO_USE_SSL === 'true' }'' };
       }
     } else {
       testResults.minio = {
@@ -179,8 +175,7 @@ export const GET: RequestHandler = async ({ url }) => {
     summary: {
       database: import.meta.env.DATABASE_URL || import.meta.env.DEV_DATABASE_URL || 'Using fallback',
       user: import.meta.env.POSTGRES_USER || 'postgres',
-      database_name: import.meta.env.POSTGRES_DB || 'legal_ai_db` }'`
-  };
+      database_name: import.meta.env.POSTGRES_DB || 'legal_ai_db' }'` };'`
   const endTime = performance.now();
   const responseTime = Math.round(endTime - startTime);
   // Calculate overall health

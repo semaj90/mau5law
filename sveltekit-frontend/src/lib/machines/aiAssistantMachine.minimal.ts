@@ -56,8 +56,7 @@ export const aiAssistantMachine = createMachine({
           target: 'processing'
         },
         CLEAR_CONVERSATION: { actions: assign({, conversation: [],
-            response: ''
-          })
+            response: '` })'`
         }
       }
     },

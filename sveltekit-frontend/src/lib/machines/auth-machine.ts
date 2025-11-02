@@ -346,8 +346,7 @@ export const authMachine = setup({
         },
         onError: {
           target: 'idle',
-          actions: 'setError'
-        }
+          actions: 'setError` }'`
       }
     },
     passwordResetSent: {

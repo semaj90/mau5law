@@ -1,16 +1,16 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   let messages = $state([]);
   let input = $state('');
   let isLoading = $state(false);
@@ -60,7 +60,7 @@
     </div>
     <div class="flex space-x-2">
       <Input bind:value={input} placeholder="Legal question..." keydown={(e) => e.key === 'Enter' && sendMessage()} />
-      <Button.Root class="bits-btn" onclick={sendMessage} disabled={isLoading}>
+      <Button class="bits-btn" onclick={sendMessage} disabled={isLoading}>
 Send
     </div>
   </div>

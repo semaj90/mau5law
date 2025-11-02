@@ -261,9 +261,8 @@ async function generateResearchAnalysis(
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
  ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` }
- This research provides a foundation for further legal analysis and case preparation.`;`
-  } catch (error: any) {
-    console.warn('AI analysis generation failed: `, error instanceof Error ? error.message : String(error));'`
+ This research provides a foundation for further legal analysis and case preparation.`;' } catch (error: any) {'`
+    console.warn('AI analysis generation failed: ', error instanceof Error ? error.message : String(error));'`'`
     return `Research Analysis for ${topic}:`
  Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
  • Review of relevant precedents and their current validity
@@ -271,8 +270,7 @@ async function generateResearchAnalysis(
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
  ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` }
- This research provides a foundation for further legal analysis and case preparation.`;`
-  }
+ This research provides a foundation for further legal analysis and case preparation.`;' }'`
 }
 function generateResearchRecommendations(_topic: string, results: LegalResearchResult[], userRole?: string): string[] {
   const recommendations: string[] = [];

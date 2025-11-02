@@ -10,7 +10,7 @@ import Redis from 'ioredis'; // Import the Redis constructor
 import type RedisType from 'ioredis';
 // Use centralized factory for Redis connections (singleton for producers/read, fresh for blocking consumers)
 import { redis } from '$lib/server/redis';
-import redisConnection from '$lib/server/redis'; // <-- fixed: default import for connection, options
+import redisConnection from '$lib/server/redis'; // <-- fixed: default import for, connection, options
 
 let client: RedisType | null = null;
 try {
@@ -266,7 +266,7 @@ export class QdrantIndexer {
   ) {
     const response = await fetch(`http://localhost:6333/collections/${collection}/points`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ points })
     });
     if (!response.ok) {

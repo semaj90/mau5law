@@ -339,11 +339,11 @@ export class IntelligentWebAnalyzer {
             // Generate new embedding via API
             const response = await fetch('/api/embeddings', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json` },'`
+              headers: { 'Content-Type': 'application/json' },'`'`
               body: JSON.stringify({
                , text: chunk.content,
                 model: 'nomic-text',
-                source: `web-analysis` })
+                source: `web-analysis' })'`
             });
             if (response.ok) {
               const data = await response.json();
@@ -400,7 +400,7 @@ export class IntelligentWebAnalyzer {
       const cacheKey = `web_analysis:${this.userAnalytics.userId}:${window.location.pathname}`;
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , results: qloraData.chunks.map((chunk, index) => {
             const embeddings = chunk.embeddings ?? [];

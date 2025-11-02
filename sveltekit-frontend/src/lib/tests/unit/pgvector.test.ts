@@ -24,7 +24,7 @@ describe('pgvector adapter', () => {
 
     mockQuery.mockResolvedValue({});
 
-    const item = { id: 'doc1', embeddings: [0.1, 0.2, 0.3], source: 'test` };'`
+    const item = { id: 'doc1', embeddings: [0.1, 0.2, 0.3], source: 'test' };'`'`
     const res = await pgvector.upsertToPGVector(item as any);
 
     expect(res.ok).toBe(true);
@@ -38,7 +38,7 @@ describe('pgvector adapter', () => {
     const pgvector = await import('$lib/server/vector/pgvector');
 
     const fakeRows = [
-      { id: 'doc1', doc: { source: 'test', meta: { snippet: `hello` } }, vector: [0.1, 0.2], score: 0.9 }
+      { id: 'doc1', doc: { source: 'test', meta: { snippet: `hello' } }, vector: [0.1, 0.2], score: 0.9 }'`
     ];
     mockQuery.mockResolvedValue({ rows: fakeRows });
 

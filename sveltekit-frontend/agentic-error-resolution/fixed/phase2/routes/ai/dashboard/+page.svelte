@@ -136,10 +136,10 @@
 						<div role="alert" class="error">{error}</div>
 					{/if}
 				</CardContent>
-			</Card.Root>
+			</Card>
 
 			<!-- Future: metrics, recent jobs, ingestion status -->
-			<Card.Root class="mt">
+			<Card class="mt">
 				<CardHeader>
 					<CardTitle>Quick Insights</CardTitle>
 				</CardHeader>
@@ -150,7 +150,7 @@
 						<li>Pending OCR jobs: 1 · GPU queue depth: low</li>
 					</ul>
 				</CardContent>
-			</Card.Root>
+			</Card>
 		</section>
 
 		<aside>
@@ -174,7 +174,7 @@
 				</CardContent>
 			</Card>
 
-			<Card.Root class="mt">
+			<Card class="mt">
 				<CardHeader>
 					<CardTitle>Support</CardTitle>
 				</CardHeader>

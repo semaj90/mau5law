@@ -181,7 +181,7 @@ class RAGIngestionWorker {
 
   // safe entity extraction
   private extractEntity(item: any): { name: string; type?: string | null } {
-    if (!item) return { name: 'unknown', type: 'unknown` };'`
+    if (!item) return { name: 'unknown', type: `unknown` };'`'`
     if (typeof item === 'string') return { name: item, type: `unknown` };
     if (typeof item === 'object') {
       const obj = item as Record<string, unknown>;
@@ -325,7 +325,7 @@ class RAGIngestionWorker {
         try {
           await fetch(VECTOR_INDEX_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json` },'`
+            headers: { 'Content-Type': `application/json` },'`'`
             body: JSON.stringify({ id, embedding: Array.from(emb) })
           });
         } catch (e: any) {

@@ -258,7 +258,7 @@ await runInitialTests();
         </div>
       </div>
       <div class="flex gap-2">
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={runInitialTests}
           disabled={testRunning}
           variant="ghost"
@@ -296,7 +296,7 @@ await runInitialTests();
             </div.Description>
           </div.Header>
           <CardContent class="space-y-4">
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               onclick={() => populateTestData('login')}
               variant="ghost"
               size="sm"
@@ -321,7 +321,7 @@ await runInitialTests();
             </div.Description>
           </div.Header>
           <CardContent class="space-y-4">
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               onclick={() => populateTestData('register')}
               variant="ghost"
               size="sm"

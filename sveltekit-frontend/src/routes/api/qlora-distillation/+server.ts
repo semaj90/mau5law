@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ params }) => {
     }
     const status = activeDistillations.get(jobId);
     if (!status) {
-      return json({ error: 'Distillation job not found' }, { status: 404 });
+      return json({ error: 'Distillation job not found` }, { status: 404 });'`
     }
     return json(status);
   } catch (error) {

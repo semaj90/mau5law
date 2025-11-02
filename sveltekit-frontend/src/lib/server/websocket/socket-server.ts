@@ -19,8 +19,7 @@ class RealTimeServer { private wss: WebSocketServer; private redisClient: any; p
         break; case 'unsubscribe': const { channels: unsubChannels } = message; if (Array.isArray(unsubChannels)) { unsubChannels.forEach((channel) => client.subscriptions.delete(channel); }
         break; case 'publish': // Allow clients to publish updates this.publishUpdate(message.channel, message.data, message.userId); break; }
   } private broadcastToSubscribers(channel: string, message: string) { let parsedMessage; try { parsedMessage = JSON.parse(message); } catch { parsedMessage = { data: message } }
-    const payload = JSON.stringify({ type: 'update', channel, data: parsedMessage; , timestamp: new Date().toISOString() }); this.clients.forEach((client, clientId) => { if (client.subscriptions.has(channel) && client.ws.readyState === client.ws.OPEN) { try { client.ws.send(payload); } catch (error: any) { console.error(`Failed to send to client ${ clientId }: ', error); this.clients.delete(clientId); }'`
-      } }); }
+    const payload = JSON.stringify({ type: 'update', channel, data: parsedMessage; , timestamp: new Date().toISOString() }); this.clients.forEach((client, clientId) => { if (client.subscriptions.has(channel) && client.ws.readyState === client.ws.OPEN) { try { client.ws.send(payload); } catch (error: any) { console.error(`Failed to send to client ${ clientId }: ', error); this.clients.delete(clientId); }'' } }); }'`
   public async publishUpdate(channel: string, data: any, userId?: string) { if (!this.isInitialized) return; const message = JSON.stringify({ data, userId, timestamp: new Date().toISOString() }); try { await this.redisClient.publish(channel, message); } catch (error: any) { console.error('Failed to publish to Redis:', error); }
   } // Utility methods for specific updates public async publishEvidenceUpdate( evidenceId: string, action: string; , data: any, userId?: string; ) { await this.publishUpdate(
       'evidence_update'); {

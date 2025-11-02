@@ -73,8 +73,7 @@ function createNotificationStore() {
       ...options,
       type: 'system',
       persistent: options.persistent ?? true,
-      position: options.position || 'center` });'`
-  }
+      position: options.position || 'center' });'` }'`
   // Legal AI specific notifications
   function caseUpdate(message: string, caseId?: string): string {
     const title = caseId ? `Case ${caseId}` : 'Case Update';

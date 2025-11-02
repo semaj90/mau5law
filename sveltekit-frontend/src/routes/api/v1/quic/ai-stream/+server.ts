@@ -159,8 +159,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       meta: {
         requestId: crypto.randomUUID(),
         timestamp: Date.now(),
-        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2` }'`
-    };
+        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2' }'` };'`
     let response: Response;
     let protocol: string;
     try {
@@ -282,7 +281,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.maxTokens && (config.maxTokens < 1 || config.maxTokens > 8192)) {
-      throw error(400, ensureError({ message: 'Max tokens must be between 1 and 8192` }));'`
+      throw error(400, ensureError({ message: `Max tokens must be between 1 and 8192` }));'`'`
     }
     if (config.timeout && (config.timeout < 5000 || config.timeout > 300000)) {
       throw error(400, ensureError({ message: `Timeout must be between 5000 and 300000ms` }));

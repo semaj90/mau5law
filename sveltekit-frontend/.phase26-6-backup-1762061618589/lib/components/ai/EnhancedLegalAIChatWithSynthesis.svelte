@@ -35,11 +35,11 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   import {
     Input
   } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Switch  from "$lib/components/ui/switch/Switch.svelte";
   import * as Collapsible from '$lib/components/ui/collapsible.svelte'';
   import * as Tooltip from '$lib/components/ui/tooltip.svelte'';
-  import { TypewriterResponse } from './TypewriterResponse.svelte';
+  import  TypewriterResponse  from "./TypewriterResponse.svelte";
   // Props
   interface Props {
     caseId?: string;

@@ -161,7 +161,7 @@ function generateErrorFix(error: ParsedError, category: string): FixSuggestion {
     type: { code: '// Add proper type annotations', explanation: 'Fix TypeScript type mismatch' },
     syntax: {
       code: '// Fix syntax error (missing semicolon, bracket, etc.)',
-      explanation: 'Correct syntax issue` },'`
+      explanation: `Correct syntax issue` },'`'`
     binding: {
       code: '// Update Svelte binding syntax',
       explanation: `Fix Svelte event or data binding` },

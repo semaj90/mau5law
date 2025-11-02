@@ -339,8 +339,7 @@ async function handleMetrics(): Promise<Response> {
   // For now, return basic metrics structure
   const data = { performance: {, averageResponseTime: '< 50ms',
       uptime: '99.9%',
-      throughput: '1000 req/min'
-    },
+      throughput: '1000 req/min` },'`
     resources: {
       cpu: '45%',
       memory: '6.2GB / 16GB',

@@ -63,7 +63,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model,
         prompt: text,
@@ -85,7 +85,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     console.error('Embedding error:', err);'
     throw error(503, {
       message: 'Failed to generate query embedding',
-      detail: err instanceof Error ? err.message : `Unknown error` });
+      detail: err instanceof Error ? err.message : `Unknown error' });'`
   }
 }
 
@@ -135,7 +135,7 @@ async function searchEvidenceWithDrizzle(
     console.error('Evidence search error:', err);'
     throw error(500, {
       message: 'Evidence search failed',
-      detail: err instanceof Error ? err.message : `Database error` });
+      detail: err instanceof Error ? err.message : `Database error' });'`
   }
 }
 
@@ -170,8 +170,7 @@ async function searchDocumentsWithDrizzle(
     console.error('Documents search error:', err);'
     throw error(500, {
       message: 'Documents search failed',
-      detail: err instanceof Error ? err.message : 'Database error` });'`
-  }
+      detail: err instanceof Error ? err.message : 'Database error' });'' }
 }
 
 // ===== MAIN HANDLER =====
@@ -219,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         table: searchTable,
         modelUsed: 'embeddinggemma:latest',
-        indexType: `pgvector (cosine distance)` }
+        indexType: `pgvector (cosine distance)' }'`
     };
 
     return json(response);
@@ -238,7 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return error(500, {
       message: 'Search failed',
-      detail: err instanceof Error ? err.message : `Unknown error` });
+      detail: err instanceof Error ? err.message : `Unknown error' });'`
   }
 };
 
@@ -252,7 +251,7 @@ export const GET: RequestHandler = async () => {
     );
 
     if (!vectorTest || vectorTest.length === 0) {
-      return error(503, { message: `pgvector not available` });
+      return error(503, { message: `pgvector not available' });'`
     }
 
     // Check Ollama
@@ -265,14 +264,14 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       services: {
        , pgvector: 'available',
-        ollama: ollamaCheck?.ok ? 'available' : 'unreachable` },'`
+        ollama: ollamaCheck?.ok ? 'available' : 'unreachable' },'`'`
       endpoints: {
        , search: 'POST /api/search-drizzle-pgvector',
-        health: `GET /api/search-drizzle-pgvector` }
+        health: `GET /api/search-drizzle-pgvector' }'`
     });
   } catch (err) {
     return error(503, {
       message: 'Health check failed',
-      detail: err instanceof Error ? err.message : `Unknown error` });
+      detail: err instanceof Error ? err.message : `Unknown error' });'`
   }
 };

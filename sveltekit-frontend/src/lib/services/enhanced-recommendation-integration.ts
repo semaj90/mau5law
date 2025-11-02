@@ -56,7 +56,7 @@ declare module '$lib/ai/qlora-topology-predictor' {
 
 declare module '$lib/wasm/qlora-wasm-loader' {
   export interface QLoRAWasmLoader {
-    load(config: { modelPath: string; enableSIMDOptimization: boolean;, enableGPUOffloading: boolean }): Promise<void>;
+    load(config: {, modelPath: string; enableSIMDOptimization: boolean;, enableGPUOffloading: boolean }): Promise<void>;
     enhanceRecommendations(
       recommendations: RecommendationRaw[],
       options: { query: string; context: RecommendationContext; enhancementType: string; maxEnhancements: number }
@@ -360,7 +360,7 @@ export class EnhancedRecommendationIntegration {
     (console[level] as (...args: any[]) => void)?.('[EnhancedRecommendationIntegration]', ...args);
   }
 
-  private async sendWorkerMessage<T extends, WorkerMessage>(type: string, data: Record<string, unknown>): Promise<T> {
+  private async sendWorkerMessage<T, extends, WorkerMessage>(type: string, data: Record<string, unknown>): Promise<T> {
     if (!this.worker || !this.isInitialized) {
       throw new Error('Recommendation worker not initialized');
     }
@@ -466,7 +466,7 @@ export class EnhancedRecommendationIntegration {
       // Submit to RL feedback API
       const response = await fetch('/api/rl-feedback', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
           recommendationId,
           feedback,
@@ -563,7 +563,7 @@ export class EnhancedRecommendationIntegration {
         query,
         context,
         userProfile,
-        predictionType: `recommendation_needs' });'`
+        predictionType: `recommendation_needs` });'`'`
 
       return {
         predictedAssets: result.predictedAssets || [],

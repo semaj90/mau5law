@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/core.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/core.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   import { onMount } from 'svelte';
 
   interface VectorResult {
@@ -82,7 +82,7 @@
   </div>
 
   <!-- Search Interface -->
-  <Card.Root class="search-card">
+  <Card class="search-card">
     <CardHeader>
       <CardTitle>🔍 Semantic Search Query</CardTitle>
     </CardHeader>
@@ -121,17 +121,17 @@
         </div>
 
         <div class="search-actions">
-          <Button.Root onclick={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
+          <Button onclick={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
             {#if loading}
               🔄 Searching...
             {:else}
               🎯 Vector Search
             {/if}
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
 
   <!-- Search Results -->
   {#if loading}
@@ -156,7 +156,7 @@
 
       <div class="results-grid">
         {#each Array.isArray(results) ? results : [] as result}
-          <Card.Root class="result-card">
+          <Card class="result-card">
             <CardHeader>
               <CardTitle class="result-title">
                 {#if result.contentType}
@@ -188,16 +188,16 @@
                 </div>
                 <div class="result-actions">
                   {#if result.caseId}
-                    <Button size="sm" href="/cases/{result.caseId}">📁 View Case</Button.Root>
+                    <Button size="sm" href="/cases/{result.caseId}">📁 View Case</Button>
                   {/if}
                   {#if result.evidenceId}
                     <Button size="sm" href="/evidence/{result.evidenceId}">🔍 View Evidence</Button>
                   {/if}
-                  <Button.Root size="sm" class="analyze-button">🧠 AI Analysis</Button>
+                  <Button size="sm" class="analyze-button">🧠 AI Analysis</Button>
                 </div>
               </div>
             </CardContent>
-          </Card.Root>
+          </Card>
         {/each}
       </div>
     </div>
@@ -205,7 +205,7 @@
 
   <!-- Search Tips -->
   {#if !query}
-    <Card.Root class="tips-card">
+    <Card class="tips-card">
       <CardHeader>
         <CardTitle>💡 Vector Search Tips</CardTitle>
       </CardHeader>
@@ -218,7 +218,7 @@
           <li>The AI understands legal concepts and relationships between terms</li>
         </ul>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
 </div>
 

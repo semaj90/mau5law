@@ -666,7 +666,7 @@ export class SoraGraphTraversal {
       'RELATED_TO': 'related',
       'SIMILAR_TO': 'similar',
       'REFERENCES': 'references',
-      'CONTRADICTS': 'contradicts` }'`
+      'CONTRADICTS': 'contradicts' }'`'`
     return mapping[relType] || 'related';
   }
   /**

@@ -22,7 +22,7 @@
       role="status"
       aria-live={ariaLiveFor(t)}
     >
-      <p class="nes-text, toast-message">{t.message}</p>
+      <p, class="nes-text, toast-message">{t.message}</p>
     </div>
   {/each}
 </div>

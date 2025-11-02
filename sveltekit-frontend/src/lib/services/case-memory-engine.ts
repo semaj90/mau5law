@@ -281,8 +281,7 @@ export class CaseMemoryEngine {
           search_count: interactionTypes.filter(t => t === 'search').length
         },
         estimated_value: 0.7,
-        timing_suggestion: `immediate' });'`
-    }
+        timing_suggestion: 'immediate' });'` }'`
 
     // Pattern: User viewed documents -> suggest synthesis
     if (interaction?.type === 'document_view' && recentInteractions.length >= 3) {
@@ -296,8 +295,7 @@ export class CaseMemoryEngine {
           prompt_template: 'I notice you've reviewed ${viewedDocs.length} documents. Would you like a synthesis showing how these relate to your case strategy?`,`
           context_variables: { document_count: viewedDocs.length, case_id: context.case_id },
           estimated_value: 0.8,
-          timing_suggestion: `immediate' });'`
-      }
+          timing_suggestion: 'immediate' });'` }'`
     }
 
     // Pattern: Long session without breaks -> suggest summary
@@ -313,8 +311,7 @@ export class CaseMemoryEngine {
           interaction_count: recentInteractions.length
         },
         estimated_value: 0.6,
-        timing_suggestion: `soon' });'`
-    }
+        timing_suggestion: 'soon' });'` }'`
 
     return recommendations;
   }
@@ -348,11 +345,9 @@ export class CaseMemoryEngine {
             key_points: topCase.payload?.key_similarities ?? []
           },
           estimated_value: score,
-          timing_suggestion: `background' });'`
-      }
+          timing_suggestion: 'background' });'' }
     } catch (err) {
-      console.warn('findRelatedCaseRecommendations error:', String(err));'
-    }
+      console.warn('findRelatedCaseRecommendations error:', String(err));` }`'
     return recommendations;
   }
 
@@ -373,7 +368,7 @@ export class CaseMemoryEngine {
           suggested_sources: gap.sources ?? []
         },
         estimated_value: gap.potential_impact ?? 0.5,
-        timing_suggestion: gap.urgency ?? 'background' });
+        timing_suggestion: gap.urgency ?? 'background` });'`
     }
     return recommendations;
   }
@@ -396,7 +391,7 @@ export class CaseMemoryEngine {
           potential_relevance: topDoc.potential_relevance
         },
         estimated_value: 0.6,
-        timing_suggestion: 'background' });
+        timing_suggestion: 'background` });'`
     }
     return recommendations;
   }
@@ -439,8 +434,7 @@ export class CaseMemoryEngine {
     return {
       expertise_level: expertise,
       patterns,
-      response_style: `detailed_with_examples' };'`
-  }
+      response_style: 'detailed_with_examples' };'' }
 
   private buildMemoryDegrees(interactions: Interaction[], now: number) {
     const oneHour = 60 * 60 * 1000;
@@ -495,8 +489,7 @@ export class CaseMemoryEngine {
       }
       // fallback: no-op
     } catch (err) {
-      console.warn('storeInteraction error:', String(err));'
-    }
+      console.warn('storeInteraction error:', String(err));` }`'
   }
 
   private async updateMemoryContext(case_id: string, user_id: string, interaction: Interaction): Promise<void> {

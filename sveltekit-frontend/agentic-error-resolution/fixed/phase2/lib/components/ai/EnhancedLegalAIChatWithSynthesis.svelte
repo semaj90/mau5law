@@ -25,21 +25,21 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     Settings,
     Zap,
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Switch  from "$lib/components/ui/switch/Switch.svelte";
   import * as Collapsible from '$lib/components/ui/collapsible.svelte';
   import * as Tooltip from '$lib/components/ui/tooltip.svelte';
-  import { TypewriterResponse } from './TypewriterResponse.svelte';
+  import  TypewriterResponse  from "./TypewriterResponse.svelte";
   // Props
   interface Props {
     caseId?: string;
@@ -1065,10 +1065,10 @@ if (browser) {
             {/each}
           </div>
           <!-- Settings Toggle -->
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
-</Button.Root>
+</Button>
         </div>
       </div>
     </div>
@@ -1289,10 +1289,10 @@ if (browser) {
           </div>
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
-</Button.Root>
+</Button>
           </div>
         </div>
       </div>
@@ -1314,13 +1314,13 @@ copyToClipboard(message.content)}>
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button.Root class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+    <Button class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
 {#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
         <Send class="w-4 h-4" />
       {/if}
-</Button.Root>
+</Button>
   </div>
   <!-- Analysis Panel -->
   {#if currentAnalysis && showAdvancedAnalysis}
@@ -1328,10 +1328,10 @@ copyToClipboard(message.content)}>
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           Detailed Analysis
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 (showAdvancedAnalysis = false)}>
             ×
-</Button.Root>
+</Button>
         </h3>
       </div>
       <div class="yorha-panel-content">

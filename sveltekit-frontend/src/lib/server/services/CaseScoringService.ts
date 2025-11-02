@@ -94,7 +94,7 @@ export class CaseScoringService {
       request.scoring_criteria != null
         ? request.scoring_criteria
         : (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria || {};
-    const prompt = `Analyze this legal case for prosecution viability:`
+    const prompt = `Analyze this legal case for prosecution viability: '`
 Case; Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
 Evidence Count: ${evidenceCount}
@@ -251,15 +251,15 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     const pubInterest = scores.public_interest ?? 0;
     const complexity = scores.case_complexity ?? 0;
     const resources = scores.resource_requirements ?? 0;
-    if (evidence < 0.6) recommendations.push('Strengthen evidence collection and chain of, custody');
-    if (witness < 0.6) recommendations.push('Assess witness credibility and consider additional, witnesses');
-    if (precedent < 0.6) recommendations.push('Research additional supporting case law and, precedents');
-    if (pubInterest < 0.5) recommendations.push('Consider public interest factors and potential community, impact');
+    if (evidence < 0.6) recommendations.push('Strengthen evidence collection and chain, of, custody');
+    if (witness < 0.6) recommendations.push('Assess witness credibility and consider, additional, witnesses');
+    if (precedent < 0.6) recommendations.push('Research additional supporting case law, and, precedents');
+    if (pubInterest < 0.5) recommendations.push('Consider public interest factors and potential, community, impact');
     if (complexity > 0.7) recommendations.push('Case complexity is manageable - allocate appropriate resources');
     if (resources > 0.7)
       recommendations.push('Resource requirements are reasonable - proceed with standard allocation');
     const caseData = request.metadata || {};
-    const strategyPrompt = `Based on a case score of ${finalScore}/100 and the following analysis:`
+    const strategyPrompt = `Based on a case score of ${finalScore}/100 and the following analysis: '`
 ${caseData.description || 'No description provided` }'`
 Provide 2-3 specific strategic recommendations for the prosecution team.`;`
     try {

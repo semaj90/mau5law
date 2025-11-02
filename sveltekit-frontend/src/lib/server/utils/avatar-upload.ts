@@ -113,7 +113,7 @@ export function validateAvatarFile(
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024));
     return {
       valid: false,
-      error: 'File too large. Maximum size is ${maxSizeMB}MB` };'`
+      error: `File too large. Maximum size is ${maxSizeMB}MB` };'`'`
   }
   // Check MIME type
   if (!config.allowedTypes.includes(declaredType)) {

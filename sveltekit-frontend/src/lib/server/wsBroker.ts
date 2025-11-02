@@ -66,8 +66,7 @@ export async function initializeWsBroker(): Promise<void> {
 
     if (redis) {
       redis.on('error', (err: any) => {
-        console.error('❌ Redis publisher error:', err);'
-      });
+        console.error('❌ Redis publisher error:', err);` });`'
     }
 
     console.log('✅ WebSocket broker initialized with Redis pub/sub');
@@ -97,8 +96,7 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
     }
   });
   ws.on('error', error => {
-    console.error(`❌ WebSocket error for session ${sessionId}: ', error);'`
-  });
+    console.error(`❌ WebSocket error for session ${sessionId}: ', error);'` });
   // Send initial connection confirmation
   try {
     ws.send(
@@ -229,7 +227,7 @@ export function wsHealthCheck(): { local: number; redis: boolean } {
   const localConnections = Array.from(sessions.values()).reduce((total, set) => total + set.size, 0);
   return {
     local: localConnections,
-    redis: redis?.status === 'ready' };
+    redis: redis?.status === 'ready` };'`
 }
 
 // Graceful shutdown

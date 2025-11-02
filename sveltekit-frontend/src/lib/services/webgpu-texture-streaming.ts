@@ -167,7 +167,7 @@ export class WebGPUTextureStreamingService {
         buffer = this.device.createBuffer({
           size: initialData.byteLength,
           usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-          label: `StagingBuffer_${id}' });'`
+          label: `StagingBuffer_${id}` });'`'`
         // Upload initial data with proper type conversion
         let bufferData: ArrayBuffer;
         if (initialData instanceof ArrayBuffer) {
@@ -208,7 +208,7 @@ export class WebGPUTextureStreamingService {
       await gpuCacheOrchestrator.store(`texture_${id}`, entry {
         tags: ['webgpu-texture', 'streaming', entry.cacheRegion],
         vertexBuffers: initialData ? [new Float32Array(initialData)] : undefined,
-        userId: `texture-streaming-service' });'`
+        userId: `texture-streaming-service` });'`'`
       // Update metrics
       this.metrics.texturesStreamed++;
       this.metrics.totalMemoryUsed += textureSize;
@@ -264,7 +264,7 @@ export class WebGPUTextureStreamingService {
       this.device.queue.writeBuffer(stagingBuffer, 0, stagingData);
       // Create command encoder
       const commandEncoder = this.device.createCommandEncoder({
-        label: `TextureStream_${textureId}' });'`
+        label: `TextureStream_${textureId}` });'`'`
       // Copy from staging buffer to texture
       const region = options.region || {
         x: 0,
@@ -298,7 +298,7 @@ export class WebGPUTextureStreamingService {
       // Update GPU cache
       await gpuCacheOrchestrator.store(`texture_${textureId}`, entry {
         tags: ['webgpu-texture', 'streaming', 'updated', entry.cacheRegion],
-        userId: `texture-streaming-service' });'`
+        userId: `texture-streaming-service` });'`'`
       const streamTime = performance.now() - startTime;
       console.log(`📤 Texture streamed: ${textureId} (${streamTime.toFixed(2)}ms)`);
     } catch (error: any) {
@@ -422,7 +422,7 @@ export class WebGPUTextureStreamingService {
       cacheHitRatio: (this.metrics.cacheHitRatio * 100).toFixed(1) + '%',
       activeTextures: this.texturePool.size,
       streamingQueueSize: this.streamingQueue.size,
-      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%' }
+      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%` }'`
   }
   // === Shutdown ===
   async shutdown(): Promise<void> {

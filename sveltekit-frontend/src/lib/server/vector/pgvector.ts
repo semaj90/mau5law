@@ -150,7 +150,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a string
       parties,
       datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty'
-      courtLevel: courtLevel ?? 'district' };
+      courtLevel: courtLevel ?? 'district` };'`
 
     // Corrected classification parsing with type guard and defaults
     let classification: LegalMetadata['classification'] = {

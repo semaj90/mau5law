@@ -220,7 +220,7 @@ class EnhancedAISynthesisOrchestrator {
     let responseText = 'Unable to generate response.';
     try {
       const data = await this.callOllama([
-        { role: 'system', content: `You are a meticulous legal analyst.' },'`
+        { role: 'system', content: `You are a meticulous legal analyst.` },'`'`
         { role: 'user', content: prompt }
       ]);
       responseText = data?.message?.content ?? data?.choices?.[0]?.message?.content ?? responseText;
@@ -253,8 +253,7 @@ class EnhancedAISynthesisOrchestrator {
     const record = options.mcpRecord ?? this.lastMcpRecord;
     yield { type: 'stage', stage: 'initializing', detail: 'Preparing synthesis pipeline' };
     if (record) {
-      yield { type: 'stage', stage: 'mcp-context', detail: 'Using MCP server ${record.name}` };'`
-    }
+      yield { type: 'stage', stage: 'mcp-context', detail: 'Using MCP server ${record.name}' };'` }'`
     yield { type: 'stage', stage: 'generating', detail: `Generating response with Gemma3` };
     const result = await this.process(query, { ...options, streamId: options.streamId });
     const chunks = result.synthesis.split(/(?<=\.)\s+/);
@@ -784,8 +783,7 @@ type OrchestrationEvent =
   | { type: 'MCP_ERROR'; message: string; context?: any; timestamp?: string };
 export const orchestrationMachine = createMachine({
   types: {} as { context: OrchestrationContext;, events: OrchestrationEvent;
-    actions: { type: 'logProcessing` };'`
-  },
+    actions: { type: 'logProcessing' };'` },'`
   id: 'aiSynthesisOrchestration',
   initial: 'idle',
   context: {

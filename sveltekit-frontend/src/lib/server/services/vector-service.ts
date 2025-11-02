@@ -78,7 +78,7 @@ export class VectorService {
       const model = options.model || this.embeddingModel;
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           model,
           prompt: content
@@ -239,7 +239,7 @@ export class VectorService {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: 'gemma3-legal',
           prompt: `Analyze this document for ${analysisType}:\n\n${text}\n\nProvide a structured, analysis:`,

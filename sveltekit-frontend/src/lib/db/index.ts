@@ -108,7 +108,7 @@ export async function getDatabaseHealth(): Promise<DatabaseHealth> {
       uptime: uptime?.toString()
     };
   } catch (error) {
-    console.error('Database health check failed: `, error);'`
+    console.error('Database health check failed: ', error);'`'`
     return {
       connected: false,
       pgvectorEnabled: false,

@@ -116,8 +116,7 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
         }
         return;
       }
-      console.error('Redis connection error:', err);'
-    });
+      console.error('Redis connection error:', err);` });`'
   }
   return conn;
 }

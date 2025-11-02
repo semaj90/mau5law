@@ -504,7 +504,7 @@ class LegalCitationsManager {
       // Use external validation service
       const response = await fetch('/api/citations/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({, citation: citation.citation, type: citation.type })
       });
       if (response.ok) {
@@ -517,7 +517,7 @@ class LegalCitationsManager {
       }
       return { valid: false, error: `Validation service unavailable` }
     } catch (error) {
-      console.error('Citation validation failed: `, error);'`
+      console.error('Citation validation failed: ', error);'`'`
       return { valid: false, error: error instanceof Error ? error.message : `Unknown error` }
     }
   }
@@ -555,7 +555,7 @@ class LegalCitationsManager {
         body: JSON.stringify(citation)
       });
     } catch (error) {
-      console.warn('Failed to sync citation to server: `, error);'`
+      console.warn('Failed to sync citation to server: ', error);'`'`
     }
   }
   // Remove citation

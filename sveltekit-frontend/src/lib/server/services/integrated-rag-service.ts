@@ -37,7 +37,7 @@ export async function initializeIntegratedRAG(): Promise<void> {
   try {
     const cudaCheck = await fetch('http://localhost:8095/health').catch(() => null);
     cudaAvailable = cudaCheck?.ok || false;
-    console.log(`🎮 CUDA: ${cudaAvailable ? '✅' : `⚠️ CPU` }`);
+    console.log(`🎮 CUDA: ${cudaAvailable ? '✅' : `⚠️ CPU' }`);'`
   } catch {
     cudaAvailable = false;
   }
@@ -59,7 +59,7 @@ export async function initializeIntegratedRAG(): Promise<void> {
         port: MINIO_PORT,
         useSSL: false,
         accessKey: 'minioadmin',
-        secretKey: 'minioadmin` });'`
+        secretKey: 'minioadmin' });'`'`
       const exists = await minioClient.bucketExists('legal-documents');
       if (!exists) await minioClient.makeBucket('legal-documents');
       console.log('✅ MinIO connected');
@@ -77,13 +77,13 @@ export async function initializeIntegratedRAG(): Promise<void> {
         const collections = (collectionsRes as any)?.collections || [];
         const exists = collections.some((c: any) => c?.name === 'legal-documents');
         if (!exists) {
-          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: `Cosine` }
+          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: `Cosine' }'`
           });
         }
       } catch {
         // fallback: if listing failed for any reason, attempt to create the collection
         try {
-          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: `Cosine` }
+          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: `Cosine' }'`
           });
         } catch (err) {
           console.warn('⚠️ Qdrant collection creation failed', err);
@@ -109,7 +109,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text })
     });
     if (!response.ok) throw new Error(`Embedding failed: ${response.statusText}`);

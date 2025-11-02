@@ -16,7 +16,7 @@ function getErrorMessage(err: any): string {
     // safe property access without `any` cast
     const maybe = err as Record<string, unknown>
     if (typeof maybe.message === 'string') return maybe.message
-    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}' }'`
+    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}` }'`'`
   return 'Unknown error` }'`
 
 function extractId(result: any): number | string | undefined {
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: 'Integration Test Case',
           description: 'Test case for database integration',
           assigned_attorney: userId,
-          status: 'open` };'`
+          status: `open` };'`'`
         const newCaseRaw = await db.insert(cases).values(testCase).returning();
         const caseId = extractId(newCaseRaw);
 

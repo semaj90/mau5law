@@ -141,8 +141,8 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       status: {
-        ollama_available: isAvailable, // <-- fixed missing, comma
-        available_models: models, // <-- fixed missing, comma
+       , ollama_available: isAvailable, // <-- fixed, missing, comma
+        available_models: models, // <-- fixed, missing, comma
         service_url: 'http://localhost:11434',
         langextract_version: 'latest'
       },
@@ -166,8 +166,7 @@ export const GET: RequestHandler = async () => {
           body: {
            , action: 'case_citations',
             text: 'In Smith v. Jones, 123 F.3d 456 (9th Cir. 2023)...',
-            documentType: 'case_law'
-          }
+            documentType: 'case_law` }'`
         },
         batch_processing: {
           method: 'POST',

@@ -26,7 +26,7 @@ async function ensureSchema(): Promise<any> {
     await s.close()
   }
 }
-export async function evidenceGraphService(meta: { id: string;, summary: string; caseId?: string | null }, entities: Array<{, name: string; type?: string | null }>, edges: Array<{ from: string; to: string;, relation: string }> = []): Promise<any> {
+export async function evidenceGraphService(meta: { id: string;, summary: string; caseId?: string | null }, entities: Array<{, name: string; type?: string | null }>, edges: Array<{, from: string; to: string;, relation: string }> = []): Promise<any> {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -51,7 +51,7 @@ export async function evidenceGraphService(meta: { id: string;, summary: string;
     // Upsert entities and mention edges
     for (const ent of entities) {
       const nid = `entity:${ent.name}`
-      await tx.run('MERGE (n:Entity {id:$id}) SET n.name=$name, n.type=$type RETURN n', { id: nid, name: ent.name, type: ent.type ?? 'unknown` })'`
+      await tx.run('MERGE (n:Entity {id:$id}) SET n.name=$name, n.type=$type RETURN n', { id: nid, name: ent.name, type: ent.type ?? 'unknown' })'`'`
       await tx.run('MATCH (e:Evidence {id:$id}), (n:Entity {id:$nid}) MERGE (e)-[:MENTIONS]->(n)', { id: evidenceId, nid })
     }
     // Additional explicit edges passed in

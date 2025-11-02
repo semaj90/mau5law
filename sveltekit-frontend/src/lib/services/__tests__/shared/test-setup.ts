@@ -53,8 +53,7 @@ let testSpecificMocks: any = {}
 // Before each test
 beforeEach(async (context) => {
   if (TEST_CONFIG.logging.verbose) {
-    console.log(`🧪 Starting test: ${context?.task?.name || 'Unknown` }`);'`
-  }
+    console.log(`🧪 Starting test: ${context?.task?.name || 'Unknown' }`);'' }
   // Reset all mocks
   testSpecificMocks = {}
   // Set up fresh database transaction if enabled
@@ -90,8 +89,7 @@ afterEach(async (context) => {
     // Implementation would clean up test-specific data
   }
   if (TEST_CONFIG.logging.verbose) {
-    console.log(`✅ Completed test: ${context?.task?.name || 'Unknown` }`);'`
-  }
+    console.log(`✅ Completed test: ${context?.task?.name || 'Unknown' }`);'' }
 });
 // ============================================================================
 // UTILITY FUNCTIONS FOR TESTS

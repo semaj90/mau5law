@@ -242,8 +242,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         uploadedAt: evidenceRecord.uploadedAt,
         hasEmbedding: embeddingVector.length > 0
       },
-      message: 'Evidence uploaded and indexed successfully` });'`
-  } catch (err: any) {
+      message: 'Evidence uploaded and indexed successfully' });'` } catch (err: any) {'`
     console.error('[Evidence Upload] Error:', err);
     console.error('[Evidence Upload] Stack:', err.stack);
     return json(

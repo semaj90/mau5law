@@ -91,8 +91,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     console.error('[Demo Login] Error:', err);
     return error(500, {
       message: err instanceof Error ? err.message : 'Failed to create demo session',
-      code: 'DEMO_LOGIN_ERROR` });'`
-  }
+      code: 'DEMO_LOGIN_ERROR' });'' }
 };
 
 /**

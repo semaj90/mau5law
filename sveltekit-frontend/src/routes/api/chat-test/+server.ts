@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const submitResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/submit`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , type: 'inference',
         priority: 5,
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       message: 'Task is still processing',
       taskId,
-      status: 'processing' });
+      status: 'processing` });'`
   } catch (error: any) {
     console.error('❌ Chat test API error:', error);'
     return json(

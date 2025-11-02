@@ -239,8 +239,7 @@ function createPOIStore() {
           }));
         }
       } catch (error) {
-        console.error('Delete error:', error);'
-      }
+        console.error('Delete error:', error);` }`'
     },
 
     // ========== SELECTION ==========
@@ -278,7 +277,7 @@ function createPOIStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ poiId1, poiId2, type, strength }),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -296,8 +295,7 @@ function createPOIStore() {
           return relationship;
         }
       } catch (error) {
-        console.error('Relationship creation error:', error);'
-      }
+        console.error('Relationship creation error:', error);` }`'
     },
 
     /**
@@ -388,7 +386,7 @@ function createPOIStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(event),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -406,8 +404,7 @@ function createPOIStore() {
           return newEvent;
         }
       } catch (error) {
-        console.error('Timeline event error:', error);'
-      }
+        console.error('Timeline event error:', error);` }`'
     },
 
     // ========== RISK ANALYSIS ==========

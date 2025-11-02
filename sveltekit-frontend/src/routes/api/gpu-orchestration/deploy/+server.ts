@@ -247,8 +247,7 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<void> {
       device: 'RTX3060Ti',
       flashAttentionEnabled: config.enableFlashAttention,
       memoryOptimization: 'balanced',
-      errorProcessing: 'active` }'`
-  };
+      errorProcessing: 'active' }'` };'`
   try {
     await writeFile(reportPath, JSON.stringify(report, null, 2));
     console.log('✅ Deployment report updated');

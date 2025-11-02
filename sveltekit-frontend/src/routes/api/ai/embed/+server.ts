@@ -128,7 +128,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         break
       }
       default: return json(
-          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: 'mock`' },)'`
+          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: `mock`` },)'`
           { status: 400 }
         )
     }
@@ -143,7 +143,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (error instanceof Error) {
       if (error.message.includes('API key')) {
         return json(
-          { error: 'Embedding service configuration error` },)'`
+          { error: 'Embedding service configuration error' },)''
           { status: 500 }
         )
       }

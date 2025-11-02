@@ -138,9 +138,8 @@ export class FeedbackLoopService {
       return ratingId;
     } catch (error: any) {
       // Changed from any to unknown
-      console.error('❌ Error collecting rating: `, error);'`
-      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error' }`);'`
-    }
+      console.error('❌ Error collecting rating: ', error);'`'`
+      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error` }`);'` }'`
   }
   /**
    * Process interactions that received low quality ratings
@@ -341,8 +340,7 @@ export class FeedbackLoopService {
       console.log(`📚 Scheduled personalized training for user ${userId}: ${this.trainingQueue.length} scenarios`);
     } catch (error: any) {
       // Changed from any to unknown
-      console.error('❌ Error scheduling personalized training: `, error);'`
-    }
+      console.error('❌ Error scheduling personalized training: ', error);'` }'`
   }
   /**
    * Escalate critical feedback for immediate attention
@@ -482,8 +480,7 @@ export class FeedbackLoopService {
       personalizedSettings: {
         responseTimeThreshold: pattern.responseTimeThreshold,
         qualityExpectations: pattern.qualityExpectations,
-        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : `beginner' }'`
-    };
+        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner' }'` };'`
   }
   /**
    * Get service-wide feedback metrics

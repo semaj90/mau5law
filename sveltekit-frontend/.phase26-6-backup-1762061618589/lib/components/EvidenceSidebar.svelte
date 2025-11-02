@@ -6,10 +6,10 @@
 <script lang="ts">
   // keep only what we actually use
   import { goto } from '$app/navigation';
-  import {
+  import 
     user as currentUser,
     isAuthenticated
-  } from "$lib/stores/sessionStore.svelte";
+   from "$lib/stores/sessionStore.svelte";
   import { cn } from '$lib/utils';
   // prefer named exports from the UI barrel to avoid duplicate-prop/import mismatches
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';

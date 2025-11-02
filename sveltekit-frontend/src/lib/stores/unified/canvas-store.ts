@@ -488,8 +488,7 @@ function createCanvasStore() {
           URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Export error:', error);'
-      }
+        console.error('Export error:', error);` }`'
     },
 
     /**
@@ -508,10 +507,9 @@ function createCanvasStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ userIds }),
-          credentials: `include` });
+          credentials: `include' });'`
       } catch (error) {
-        console.error('Share error:', error);'
-      }
+        console.error('Share error:', error);` }`'
     },
 
     // ========== PRIVATE HELPERS ==========

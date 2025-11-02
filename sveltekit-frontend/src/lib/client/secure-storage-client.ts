@@ -150,8 +150,7 @@ export class SecureStorageClient {
       } else {
         failed.push({
           file,
-          error: result.error || 'Unknown error` });'`
-      }
+          error: result.error || 'Unknown error' });'` }'`
       if (onProgress) {
         onProgress(i + 1, files.length);
       }

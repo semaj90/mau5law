@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // Standardized Button import for bits-ui
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // Standardized Button import for bits-ui
   import * as Card from '$lib/components/ui/card.svelte';
   import Input from '$lib/components/ui/input/Input.svelte';
   // Svelte 5 Runes - Evidence Board State
@@ -224,20 +224,20 @@
           <span class="text-sm font-medium text-gray-700">Case:</span>
           <span class="px-3 py-1 bg-gray-800 text-white text-sm rounded">{caseData.id}</span>
         </div>
-        <Button.Root class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">📚 LIBRARY</Button.Root>
-        <Button.Root class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">📊 ANALYSIS</Button.Root>
+        <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">📚 LIBRARY</Button>
+        <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">📊 ANALYSIS</Button>
       </div>
     </div>
     <!-- Main Canvas and Controls -->
     <div class="flex-1 flex">
       <!-- Canvas Controls -->
       <div class="absolute top-4 left-4 flex items-center space-x-2 z-10">
-        <Button.Root class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>🔒 100%</Button.Root>
-        <Button.Root class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📎 CONNECT</Button.Root>
-        <Button.Root onclick={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>🔒 100%</Button>
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📎 CONNECT</Button>
+        <Button onclick={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
           + ADD EVIDENCE
-        </Button.Root>
-        <Button.Root class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📚 LIBRARY (0)</Button.Root>
+        </Button>
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📚 LIBRARY (0)</Button>
       </div>
       <!-- Connection Status -->
       <div class="absolute bottom-4 left-4 z-10">
@@ -287,7 +287,7 @@
               }
             }}
           >
-            <Card.Root
+            <Card
               class="w-60 bg-white border-2 {selectedItem?.id === item.id
                 ? 'border-blue-500'
                 : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"
@@ -330,7 +330,7 @@
                   </div>
                 {/if}
               </Card.Content>
-            </Card.Root>
+            </Card>
           </div>
         {/each}
         <!-- Connection Mode Overlay -->
@@ -343,9 +343,9 @@
                   Selected: {selectedItem?.title}<br />
                   Click another evidence item to create connection
                 </div>
-                <Button.Root onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
+                <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
                   Cancel Connection
-                </Button.Root>
+                </Button>
               </div>
             </div>
           </div>
@@ -415,9 +415,9 @@
         </div>
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button.Root onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button.Root>
-          <Button.Root class="w-full bg-green-600 hover:bg-green-700 text-white">🔍 Analyze All</Button.Root>
-          <Button.Root class="w-full bg-purple-600 hover:bg-purple-700 text-white">📊 Generate Report</Button.Root>
+          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
+          <Button class="w-full bg-green-600 hover:bg-green-700 text-white">🔍 Analyze All</Button>
+          <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">📊 Generate Report</Button>
         </div>
       </div>
     </div>

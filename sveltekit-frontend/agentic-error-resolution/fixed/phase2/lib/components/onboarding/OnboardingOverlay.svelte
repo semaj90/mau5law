@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // @ts-nocheck
   import { onMount } from 'svelte';
   import { browser } from "$app/environment";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import {
   ArrowLeft,
   ArrowRight,
@@ -280,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button.Root
+            <Button
               class="bits-btn w-4 h-4"
               variant="ghost"
               size="sm"
@@ -295,9 +295,9 @@ toggleAutoProgress()}
               {:else}
                 <Play class="w-4 h-4" />
               {/if}
-</Button.Root>
+</Button>
           {/if}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() =>
@@ -305,7 +305,7 @@ closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
-</Button.Root>
+</Button>
         </div>
       </div>
       <!-- Content -->
@@ -359,11 +359,11 @@ closeOnboarding()}
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
-</Button.Root>
+</Button>
           {/if}
         </div>
         <div class="w-4 h-4">
@@ -382,12 +382,12 @@ skipOnboarding()}>
                   {:else}
                     <span class="w-4 h-4">{index + 1}</span>
                   {/if}
-</Button.Root>
+</Button>
               {/each}
             {/if}
         </div>
         <div class="w-4 h-4">
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() =>
@@ -396,8 +396,8 @@ previousStep()}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
-</Button.Root>
-          <Button.Root class="bits-btn" onclick={() =>
+</Button>
+          <Button class="bits-btn" onclick={() =>
 nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />

@@ -140,8 +140,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
     // Parse query parameters
     const caseId = url.searchParams.get('caseId');
     if (!caseId) {

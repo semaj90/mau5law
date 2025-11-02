@@ -44,8 +44,7 @@ if (redisClient) {
     if (msg.includes('NOAUTH') || msg.includes('Authentication required')) {
       console.warn('⚠️ Redis authentication failed - continuing without Redis cache:', msg);
     } else {
-      console.warn('⚠️ Redis client error:', msg);'
-    }
+      console.warn('⚠️ Redis client error: `, msg);` }'
   });
 
   redisClient.on('connect', () => {
@@ -71,9 +70,9 @@ async function initializeQdrantCollection(): Promise<void> {
       // Create collection with 384 dimensions for embeddinggemma
       await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({, vectors: {, size: 384,
-            distance: `Cosine` }
+            distance: `Cosine' }'`
         })
       });
       console.log('✅ Created Qdrant collection');
@@ -123,8 +122,7 @@ async function initializeRAGServices(): Promise<void> {
     console.log('✅ RAG services initialized (with fallbacks)');
   } catch (error) {
     console.error('❌ Service initialization failed:', error);
-    // Don't throw - allow graceful degradation with localStorage'
-  }
+    // Don't throw - allow graceful degradation with localStorage` }'`
 }
 
 import { generateEmbedding, as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
@@ -299,7 +297,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const customTags = formData.get('tags') as string | null;
 
     if (!file) {
-      return json({ error: 'No file provided` }, { status: 400 });'`
+      return json({ error: 'No file provided' }, { status: 400 });''
     }
 
     // Validate file

@@ -134,7 +134,7 @@ Automatically handles server upload with localStorage fallback
   }
 </script>
 <div, class="file-upload-container">
-  <!-- Storage Usage, Indicator -->
+  <!-- Storage, Usage, Indicator -->
   {#if forceLocalStorage || storageStats.percentage > 0}
     <div, class="storage-indicator">
       <div, class="storage-bar">
@@ -188,7 +188,7 @@ Automatically handles server upload with localStorage fallback
         {/if}
     </div>
   </div>
-  <!-- Hidden file, input -->
+  <!-- Hidden, file, input -->
   <input
     bind:this={fileInput}
     type="file"

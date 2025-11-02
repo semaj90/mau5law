@@ -4,7 +4,7 @@
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   let showWebGPUDemo = $state(false);
   let webGPUSupported = $state(false);
   // Sample analysis for WebGPU demo
@@ -137,7 +137,7 @@
           <li>Timeline reconstruction and pattern detection</li>
         </ul>
       </CardContent>
-    </Card.Root>
+    </Card>
     <Card>
       <CardHeader>
         <CardTitle>📊 Advanced Visualizations</CardTitle>
@@ -150,7 +150,7 @@
           <li>Evidence timeline visualization</li>
         </ul>
       </CardContent>
-    </Card.Root>
+    </Card>
     <Card>
       <CardHeader>
         <CardTitle>🔗 Evidence Correlation</CardTitle>
@@ -170,7 +170,7 @@
     <EvidenceAnalysisDashboard />
   </div>
   <!-- WebGPU Demo Section -->
-  <Card.Root class="webgpu-demo-section">
+  <Card class="webgpu-demo-section">
     <CardHeader>
       <div class="demo-header">
         <CardTitle>🚀 WebGPU 3D Evidence Graph</CardTitle>
@@ -217,7 +217,7 @@
     </CardContent>
   </Card>
   <!-- Technical Specifications -->
-  <Card.Root class="tech-specs">
+  <Card class="tech-specs">
     <CardHeader>
       <CardTitle>⚙️ Technical Specifications</CardTitle>
     </CardHeader>

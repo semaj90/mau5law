@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte';
+  import  Button  from "$lib/components/ui/button.svelte";
   import * as Dialog from '$lib/components/ui/dialog.svelte';
   import { uploadStore } from '$lib/stores/unified';
   import { formatFileSize } from '$lib/utils/file-utils';
@@ -80,7 +80,7 @@
         <p id="evidence-dropzone-instructions" class="mt-1 text-sm text-gray-500">
           Support for images, documents, audio, and video files
         </p>
-        <Button.Root
+        <Button
           class="bits-btn mt-4"
           variant="outline"
           onclick={(e) => {
@@ -146,14 +146,14 @@
                     </div>
                   </div>
                   <div class="ml-4 flex-shrink-0">
-                    <Button.Root
+                    <Button
                       class="bits-btn"
                       variant="ghost"
                       size="icon"
                       onclick={() => removeFile(file.id)}
                     >
                       <X class="h-4 w-4" />
-                    </Button.Root>
+                    </Button>
                   </div>
                 {/if}
             {/each}
@@ -172,11 +172,11 @@
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button.Root class="bits-btn" variant="outline" onclick={() => closeModal()}>
+        <Button class="bits-btn" variant="outline" onclick={() => closeModal()}>
           {activeUploads.length > 0 ? 'Continue in Background' : 'Close'}
-        </Button.Root>
+        </Button>
         {#if completedUploads.length > 0}
-          <Button.Root class="bits-btn" onclick={() => onViewEvidence(completedUploads)}
+          <Button class="bits-btn" onclick={() => onViewEvidence(completedUploads)}
             >View Evidence</Button
           >
         {/if}

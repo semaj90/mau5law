@@ -443,8 +443,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
         return {
           key,
           error: 'Failed to get metadata',
-          prefix: key.split(':')[0] || 'no-prefix` } as KeyMetadata;'`
-      }
+          prefix: key.split(':')[0] || 'no-prefix' } as KeyMetadata;'' }
     })
   );
 
@@ -479,8 +478,7 @@ async function getMemoryAnalysis(): Promise<MemoryAnalysisResponse> {
         memoryByPrefix[prefix].keys++;
         memoryByPrefix[prefix].totalMemory += memory || 0;
       } catch {
-        // Skip keys that can't be analyzed'
-      }
+        // Skip keys that can't be analyzed` }'`
     }
   }
 

@@ -261,14 +261,13 @@ export function createCaseService() {
       }
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to update ${type} position: ', msg);'`
-    }
+      console.error(`Failed to update ${type} position: ', msg);'` }
   }
   // Delete item
   async function deleteItem(type: 'report' | 'evidence' | 'poi', id: string): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}`, {
-        method: 'DELETE' });
+        method: 'DELETE` });'`
       // Update local state
       // Generic filter preserving the original item type
       const filterOut = <T, extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
@@ -286,8 +285,7 @@ export function createCaseService() {
       }
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to delete ${type}: ', msg);'`
-    }
+      console.error(`Failed to delete ${type}: ', msg);'` }
   }
   // Save all changes
   async function saveAll(): Promise<void> {

@@ -163,12 +163,12 @@
   }
 </script>
 
-<div class="p-4 max-w-4xl, mx-auto">
+<div class="p-4, max-w-4xl, mx-auto">
   <h1 class="text-xl font-bold mb-4">Dev: Qdrant & pgvector Sanity Check</h1>
   <div, class="mb-4">
-    <div class="flex flex-wrap gap-2, items-center">
-      <label, class="text-sm">Limit <input type="number" min="1" bind:value={limit} class="ml-1, w-20" /></label>
-      <label, class="text-sm">Page <input type="number" min="1" bind:value={page} class="ml-1, w-20" /></label>
+    <div class="flex flex-wrap, gap-2, items-center">
+      <label, class="text-sm">Limit <input, type="number" min="1" bind:value={limit} class="ml-1, w-20" /></label>
+      <label, class="text-sm">Page <input, type="number" min="1" bind:value={page} class="ml-1, w-20" /></label>
       <label, class="text-sm">CaseId <input, type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label
       >
       <label, class="text-sm">Tag <input, type="text" bind:value={tag} placeholder="contract" class="ml-1" /></label>
@@ -176,28 +176,28 @@
     </div>
   </div>
   {#if error}
-    <div class="bg-red-100 text-red-700 p-3, rounded">{error}</div>
+    <div class="bg-red-100 text-red-700, p-3, rounded">{error}</div>
   {:else if !result}
     <div, class="text-muted">No result yet.</div>
   {:else}
-    <section class="grid, gap-4">
+    <section, class="grid, gap-4">
       <div>
         <h2, class="font-semibold">Qdrant Neighbors</h2>
         {#if result.qdrant?.result?.length}
           <ul, class="divide-y">
             {#each Array.isArray(result.qdrant.result) ? result.qdrant.result : [] as item}
-              <li class="py-2 flex justify-between, items-start">
+              <li class="py-2 flex, justify-between, items-start">
                 <div, class="min-w-0">
                   <div class="font-medium truncate">{extractTitle(item.payload) || 'Untitled'}</div>
-                  <div class="text-xs text-muted, truncate">ID: {item.id}</div>
-                  <div class="text-sm, text-muted">Score: {item.score}</div>
+                  <div class="text-xs, text-muted, truncate">ID: {item.id}</div>
+                  <div, class="text-sm, text-muted">Score: {item.score}</div>
                   {#if extractSnippet(item.payload)}
-                    <div class="text-xs text-muted, truncate">
+                    <div class="text-xs, text-muted, truncate">
                       {extractSnippet(item.payload)}{extractSnippet(item.payload).length === 400 ? '…' : ''}
                     </div>
                   {/if}
                 </div>
-                <div class="flex flex-col items-end, gap-2">
+                <div class="flex flex-col, items-end, gap-2">
                   <div, class="relative">
                     <button
                       class="bits-btn bits-ghost text-xs px-2 py-1"
@@ -216,13 +216,13 @@
                     href={`/api/evidence-files?download=${item.id}`}
                     target="_blank">Download</a
                   >
-                  <a class="text-primary hover:underline, text-xs" href={`/evidence/${item.id}`} target="_blank">Open</a>
+                  <a class="text-primary, hover:underline, text-xs" href={`/evidence/${item.id}`} target="_blank">Open</a>
                 </div>
               </li>
             {/each}
           </ul>
         {:else}
-          <pre class="bg-black/5 p-3 rounded, overflow-auto">{JSON.stringify(result.qdrant, null, 2)}</pre>
+          <pre class="bg-black/5 p-3, rounded, overflow-auto">{JSON.stringify(result.qdrant, null, 2)}</pre>
         {/if}
       </div>
       <div>
@@ -230,15 +230,15 @@
         {#if result.pgvector?.rows?.length}
           <ul, class="divide-y">
             {#each Array.isArray(result.pgvector.rows) ? result.pgvector.rows : [] as row}
-              <li class="py-2 flex justify-between, items-start">
+              <li class="py-2 flex, justify-between, items-start">
                 <div, class="min-w-0">
-                  <div class="font-medium, truncate">
+                  <div, class="font-medium, truncate">
                     {row.title || row.payload?.title || row.metadata?.title || 'ID: ' + row.id}
                   </div>
-                  <div class="text-xs text-muted, truncate">ID: {row.id}</div>
-                  <div class="text-sm, text-muted">Similarity: {row.similarity}</div>
+                  <div class="text-xs, text-muted, truncate">ID: {row.id}</div>
+                  <div, class="text-sm, text-muted">Similarity: {row.similarity}</div>
                   {#if row.payload || row.metadata}
-                    <div class="text-xs text-muted, truncate">
+                    <div class="text-xs, text-muted, truncate">
                       {(row.payload?.snippet || row.metadata?.snippet || row.snippet || '')?.slice?.(0, 400)}{(
                         row.payload?.snippet ||
                         row.metadata?.snippet ||
@@ -250,8 +250,8 @@
                     </div>
                   {/if}
                 </div>
-                <div class="flex flex-col items-end, gap-2">
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy, ID" onclick={() => copyId(row.id)}
+                <div class="flex flex-col, items-end, gap-2">
+                  <button class="bits-btn bits-ghost text-xs px-2, py-1" title="Copy, ID" onclick={() => copyId(row.id)}
                     >{copiedId === row.id ? 'Copied' : 'Copy ID'}</button
                   >
                   <button
@@ -263,13 +263,13 @@
                         row.payload?.snippet || row.metadata?.snippet || row.snippet || ''
                       )}>Preview</button
                   >
-                  <a class="text-primary hover:underline, text-xs" href={`/evidence/${row.id}`} target="_blank">Open</a>
+                  <a class="text-primary, hover:underline, text-xs" href={`/evidence/${row.id}`} target="_blank">Open</a>
                 </div>
               </li>
             {/each}
           </ul>
           {#if result.pgvector?.page}
-            <div class="mt-2 flex items-center, gap-2">
+            <div class="mt-2 flex, items-center, gap-2">
               <button
                 class="bits-btn bits-ghost"
                 onclick={() => {
@@ -291,7 +291,7 @@
             </div>
           {/if}
         {:else}
-          <pre class="bg-black/5 p-3 rounded, overflow-auto">{JSON.stringify(result.pgvector, null, 2)}</pre>
+          <pre class="bg-black/5 p-3, rounded, overflow-auto">{JSON.stringify(result.pgvector, null, 2)}</pre>
         {/if}
       </div>
       {#if previewOpen}
@@ -311,7 +311,7 @@
           }}
           aria-hidden={!previewOpen}
         >
-          <div in:fade out:fade class="absolute, inset-0"></div>
+          <div in:fade out:fade, class="absolute, inset-0"></div>
           <div
             role="dialog"
             aria-modal="true"
@@ -331,10 +331,10 @@
               }}
               aria-label="Close">✕</button
             >
-            <div class="flex items-center justify-between, mb-3">
+            <div class="flex items-center, justify-between, mb-3">
               <h3 class="text-lg font-bold">{previewTitle || 'Preview'}</h3>
-              <div class="flex items-center, gap-2">
-                <label class="text-xs text-muted flex items-center, gap-1"
+              <div class="flex, items-center, gap-2">
+                <label class="text-xs text-muted flex, items-center, gap-1"
                   ><input, type="checkbox" bind:checked={previewRenderMarkdown} /> Render Markdown</label
                 >
                 <button class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => copyId(previewTitle || '')}
@@ -343,7 +343,7 @@
               </div>
             </div>
             {#if previewRenderMarkdown}
-              <div class="text-sm whitespace-pre-wrap, text-muted">
+              <div class="text-sm, whitespace-pre-wrap, text-muted">
                 {@html sanitizeHtml(renderMarkdownToHtmlAsync(previewSnippet))}
               </div>
             {:else}

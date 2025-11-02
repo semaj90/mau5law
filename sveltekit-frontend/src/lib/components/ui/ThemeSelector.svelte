@@ -55,7 +55,7 @@
     return;
   });
 </script>
-<div class="theme-selector" role="group" aria-label="Theme, selector">
+<div, class="theme-selector" role="group" aria-label="Theme, selector">
   <button
     type="button"
     class="btn"

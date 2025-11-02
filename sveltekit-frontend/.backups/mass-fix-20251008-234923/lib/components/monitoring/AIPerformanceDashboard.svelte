@@ -5,7 +5,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
+  import  aiAssistant  from "$lib/stores/ai-assistant.svelte";
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
   import type { Backend, PerformanceMetrics } from '$lib/types/ai-assistant';
   import { Activity, Database, Cpu, Zap, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-svelte';

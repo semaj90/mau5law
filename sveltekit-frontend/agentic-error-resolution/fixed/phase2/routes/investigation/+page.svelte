@@ -307,7 +307,7 @@
       <TabsContent value="evidence" class="tab-content">
         <div class="evidence-layout grid grid-cols-1 lg:grid-cols-3 gap-4 h-full p-4">
           <div class="evidence-canvas-section lg:col-span-2 min-h-0">
-            <Card.Root class="h-full">
+            <Card class="h-full">
               <CardHeader>
                 <CardTitle>Enhanced Evidence Canvas</CardTitle>
                 <CardDescription>
@@ -326,7 +326,7 @@
                   ondetectiveinsights={handleDetectiveInsights}
                 />
               </CardContent>
-            </Card.Root>
+            </Card>
            </div>
            <div class="evidence-sidebar lg:col-span-1 max-h-[300px] lg:max-h-full overflow-y-auto">
             <Card>
@@ -375,14 +375,14 @@
                    {/if}
                  </div>
               </CardContent>
-            </Card.Root>
+            </Card>
            </div>
          </div>
        </TabsContent>
 
        <!-- Investigation Notes Tab -->
        <TabsContent value="investigation" class="tab-content p-4">
-        <Card.Root class="h-full">
+        <Card class="h-full">
           <CardHeader>
             <CardTitle>Investigation Notes</CardTitle>
             <CardDescription>
@@ -395,12 +395,12 @@
                placeholder="Document your investigation findings, observations, and analysis..."
              />
           </CardContent>
-        </Card.Root>
+        </Card>
        </TabsContent>
 
        <!-- AI Assistant Tab -->
        <TabsContent value="chat" class="tab-content p-4">
-        <Card.Root class="h-full">
+        <Card class="h-full">
           <CardHeader>
             <CardTitle>Unified AI Legal Assistant</CardTitle>
             <CardDescription>
@@ -418,12 +418,12 @@
                oncitation={() => console.log('Citation requested')}
              />
           </CardContent>
-        </Card.Root>
+        </Card>
        </TabsContent>
 
        <!-- Citations Tab -->
        <TabsContent value="citations" class="tab-content p-4">
-        <Card.Root class="h-full">
+        <Card class="h-full">
           <CardHeader>
             <CardTitle>Legal Citations & References</CardTitle>
             <CardDescription>

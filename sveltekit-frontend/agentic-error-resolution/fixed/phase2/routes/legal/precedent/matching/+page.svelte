@@ -588,13 +588,13 @@
           class="w-full"
         />
       </div>
-      <Button.Root
+      <Button
         onclick={searchPrecedents}
         disabled={analysisInProgress}
         class="bg-blue-600 hover:bg-blue-700 w-full"
       >
         {analysisInProgress ? 'Analyzing Precedents...' : 'Search Precedents'}
-      </Button.Root>
+      </Button>
     </NesCardContent>
   </NesCard>
 </div>

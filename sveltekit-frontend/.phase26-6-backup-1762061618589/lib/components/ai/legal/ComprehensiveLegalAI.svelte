@@ -6,7 +6,7 @@
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
   import { Badge } from '$lib/components/ui/badge.svelte''; // Changed from default import to named import from directory
-  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import {
     Brain,
     Database,

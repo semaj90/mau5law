@@ -1,4 +1,4 @@
-<!-- Authenticated Layout - Gaming-Inspired Legal AI, Platform -->
+<!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
   import { page } from '$app/stores';
   import type { Snippet } from 'svelte';
@@ -46,7 +46,7 @@
   <!-- Sidebar -->
   <Sidebar, open={sidebarOpen} {user} theme={selectedTheme} />
 
-  <!-- Main Content, Area -->
+  <!-- Main, Content, Area -->
   <main, class="main-content" class:sidebar-open={sidebarOpen}>
     <div, class="content-container">
       {#if children}

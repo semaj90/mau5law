@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const limit = Number(url.searchParams.get('limit')) || 10;
   const context = url.searchParams.get('context') ?? 'GENERAL';
 
-  if (query.length < 2) return new Response('Query too, short', { status: 400 });
+  if (query.length < 2) return new Response('Query, too, short', { status: 400 });
 
   const cacheKey = `stream-rerank:${context}:${query}`;
   try {
@@ -50,8 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          'X-Cache-Hit': 'true` }'`
-      });
+          'X-Cache-Hit': 'true' }'' });
     }
   } catch (e) {
     console.warn('Redis fetch failed (continuing):', e);
@@ -107,6 +106,5 @@ export const GET: RequestHandler = async ({ url }) => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive` }'`
-  });
+      Connection: 'keep-alive' }'' });
 };

@@ -197,7 +197,7 @@ export class EnhancedAIPipeline {
         '  "keywords": ["Keyword 1", "Keyword 2"],',
         '  "confidenceLevel": 0.85,',
         '  "recommendations": ["Recommendation 1", "Recommendation 2"]',
-        ` }','`
+        ' }','`'`
         'Focus on legal implications, potential risks, and actionable insights.'
       ].join('\n');
       const response: string = await this.llm.invoke(analysisPrompt); // llm.invoke returns string

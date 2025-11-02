@@ -175,7 +175,7 @@ export async function initQdrantIndexes(): Promise<void> {
     const exists = cols?.collections?.some((c: {, name: string }) => c.name === COLLECTION);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrantCreateCollection(COLLECTION, { vectors: {, size: vectorSize, distance: `Cosine' } });'`
+      await qdrantCreateCollection(COLLECTION, { vectors: {, size: vectorSize, distance: `Cosine` } });'`'`
       console.log(`✅ Created Qdrant collection: ${COLLECTION}`);
     }
     // Payload indexes
@@ -231,7 +231,7 @@ async function queryPostgresGraph(
     return (res.rows as PostgresEdgeRow[]).map(r => ({
       id: String(r.target_node_id ?? ''),
       weight: Number(r.weight ?? 0),
-      content: r.relation ?? '' }));
+      content: r.relation ?? '` }));'`
   } catch (error) {
     console.error('[graph-rag] Postgres query failed:', error);
     return [];

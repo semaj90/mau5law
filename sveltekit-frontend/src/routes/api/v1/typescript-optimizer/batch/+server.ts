@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response: Response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json' },'`
+        'Content-Type': `application/json` },'`'`
       body: JSON.stringify(optimizedRequest)
     });
     if (!response.ok) {
@@ -163,6 +163,5 @@ function formatUnknownError(error: any): { message: string; stack?: string } {
   try {
     return { message: String(error) };
   } catch {
-    return { message: `Unknown error' };'`
-  }
+    return { message: 'Unknown error' };'` }'`
 }

@@ -57,9 +57,9 @@
   <div, class="loading-button__content">
     {#if loading}
       <span, class="loading-button__spinner {spinnerClass}" aria-hidden="true">
-        <svg viewBox="0 0 24, 24" class="spinner-icon" fill="none">
+        <svg viewBox="0 0, 24, 24" class="spinner-icon" fill="none">
           <circle, class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
-          <path class="spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0, 12h4z" />
+          <path class="spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4, 0, 12h4z" />
         </svg>
       </span>
     {/if}

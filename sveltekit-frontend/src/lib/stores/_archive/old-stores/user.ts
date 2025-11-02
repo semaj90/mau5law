@@ -35,8 +35,7 @@ export class User implements Partial<UserType> {
 
   // Get display name
   get displayName() {
-    return this.name || `${this.firstName || ''} ${this.lastName || '` }`.trim() || 'User';'`
-  }
+    return this.name || `${this.firstName || ''} ${this.lastName || '` }`.trim() || 'User';'` }
 }
 
 // 2. User Store (Svelte Writable)

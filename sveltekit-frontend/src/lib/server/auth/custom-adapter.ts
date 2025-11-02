@@ -215,7 +215,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   }
   async deleteExpiredSessions(): Promise<void> {
     try {
-      // use sql helper to perform <= comparison (lte isn't exported from, utils)'
+      // use sql helper to perform <= comparison (lte isn't exported, from, utils)'
       await db.delete(sessions).where(sql`${sessions.expires_at} <= ${new, Date()}`);
     } catch (error) {
       console.error('[AUTH] Error deleting expired sessions:', error);

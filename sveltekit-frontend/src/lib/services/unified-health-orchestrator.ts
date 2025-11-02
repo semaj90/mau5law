@@ -172,7 +172,7 @@ export const healthOrchestratorMachine = createMachine({
     metrics: null,
     healthStatus: null,
     jobQueue: {
-      pending: 0,
+     , pending: 0,
       processing: 0,
       completed: 0,
       failed: 0
@@ -403,8 +403,7 @@ export const healthOrchestratorMachine = createMachine({
         input: ({ context }) => {
           // Find first degraded service to recover
           const degradedService = Object.entries(context.services).find(([_, status]) => status === 'error')?.[0];
-          return { service: degradedService || 'webgpu` };'`
-        },
+          return { service: degradedService || 'webgpu' };'` },'`
         onDone: {
           target: 'monitoring',
           actions: [

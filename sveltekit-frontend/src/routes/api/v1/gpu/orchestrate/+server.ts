@@ -278,7 +278,7 @@ function extractLegalEntities(doc: string) {
   };
 
   // Use a mutable typed Record so the RegExp arrays are seen as RegExp[] (not readonly tuples)
-  const patterns: Record<keyof typeof, entities, RegExp[]> = {
+  const patterns: Record<keyof, typeof, entities, RegExp[]> = {
     parties: [
       /\b(plaintiff|defendant|appellant|appellee|petitioner|respondent)\b/gi,
       /\b([A-Z][a-z]+ (?:v\.|vs\.|versus) [A-Z][a-z]+)\b/g,
@@ -291,7 +291,7 @@ function extractLegalEntities(doc: string) {
   };
 
   // Iterate keys in a typed way to avoid unsafe casts
-  for (const category of Object.keys(patterns) as Array<keyof typeof, patterns>) {
+  for (const category of Object.keys(patterns) as Array<keyof, typeof, patterns>) {
     const categoryPatterns = patterns[category];
     for (const pattern of categoryPatterns) {
       const matches = doc.match(pattern) || [];

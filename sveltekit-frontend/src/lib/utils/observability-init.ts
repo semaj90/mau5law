@@ -132,7 +132,7 @@ function setupPerformanceMonitoring() {
             size:
               typeof r.transferSize === 'number' && r.transferSize > 0
                 ? `${Math.round(r.transferSize / 1024)}KB`
-                : 'unknown' }))
+                : 'unknown` }))'`
         );
       }
     }, 2000);

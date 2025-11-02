@@ -156,7 +156,7 @@ const initialState: WebsocketState = {
   dashboardData: { cases: [], evidence: [], stats: {} },
   processingJobs: [],
   recentActivity: [],
-  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown` },'`
+  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },'`'`
   activeEditors: {}
 };
 

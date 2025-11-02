@@ -24,7 +24,7 @@ export interface DBClient {
 
 // Fallback ensureProperties in case barrelStore.database.ensureProperties is not present.
 // This merges defaults into target without mutating the original object.
-const fallbackEnsureProperties = <T extends, DBRow>(target: any, defaults: T): T => {
+const fallbackEnsureProperties = <T, extends, DBRow>(target: any, defaults: T): T => {
   const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } : {};
   for (const [k, v] of Object.entries(defaults)) {
     if (!(k in base) || base[k] === undefined || base[k] === null) {
@@ -45,7 +45,7 @@ export const getBarrelStore = (): any => {
 };
 
 // Safe accessor for optional runtime-provided ensureProperties
-export const safeEnsureProperties = <T extends, DBRow>(obj: any, defaults: T): T => {
+export const safeEnsureProperties = <T, extends, DBRow>(obj: any, defaults: T): T => {
   try {
     const barrelStore = getBarrelStore();
     const fn = barrelStore?.database?.ensureProperties;
@@ -81,7 +81,7 @@ const defaultRowShape: DBRow = {
 };
 
 // Robust handler that normalizes many driver result shapes into an array of rows
-export const handleQueryResult = <T extends, DBRow = DBRow>(result: any): T[] => {
+export const handleQueryResult = <T, extends, DBRow = DBRow>(result: any): T[] => {
   if (result == null) return [];
 
   if (Array.isArray(result)) {
@@ -168,7 +168,7 @@ export const ensureConnection = async (client: DBClient | Sql | unknown): Promis
 };
 
 // Small helper to enforce result typing by merging defaults
-export const enhanceResultWithTypes = <T extends, DBRow>(result: any, defaults: T): T =>
+export const enhanceResultWithTypes = <T, extends, DBRow>(result: any, defaults: T): T =>
   safeEnsureProperties(result, defaults);
 
 // Common entity enhancers with sensible defaults
@@ -227,7 +227,7 @@ export const entityEnhancers = {
 };
 
 // Lightweight query wrapper that normalizes execute/all/get to return typed rows
-export const createTypeSafeQuery = <Q extends, Record<string, unknown>>(base: Q) => ({
+export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q) => ({
   ...base,
   async execute(...args: any[]): Promise<DBRow[]> {
     try {

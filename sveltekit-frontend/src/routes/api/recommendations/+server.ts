@@ -216,7 +216,7 @@ export const quickRecommend: RequestHandler = async ({ request }) => {
     const data = await getLegalRecommendations(query, { caseId, jurisdiction, practiceArea, topK });
     return json(data, { status: 200 });
   } catch (error) {
-    console.error('Error in /api/recommendations:`, error);'`
+    console.error('Error in /api/recommendations: ', error);'`'`
     return json({ error: `Failed to get legal recommendations` }, { status: 500 });
   }
 };

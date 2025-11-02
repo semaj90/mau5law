@@ -1,16 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Label } from '$lib/components/ui/label/Label.svelte';
-  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
-  import { Checkbox } from '$lib/components/ui/checkbox/Checkbox.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Label  from "$lib/components/ui/label/Label.svelte";
+  import  Alert  from "$lib/components/ui/alert/Alert.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
+  import  Checkbox  from "$lib/components/ui/checkbox/Checkbox.svelte";
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
   import { scale, fade } from 'svelte/transition';
   import { quartOut } from 'svelte/easing';
@@ -479,7 +479,7 @@
             {/if}
         </div>
         <!-- Submit Button -->
-        <Button.Root
+        <Button
           type="submit"
           class="w-full bits-btn bits-btn"
           disabled={formState.loading || !validation.isValid}
@@ -494,7 +494,7 @@
           {/if}
         <!-- Guest Mode -->
         {#if allowGuestMode && mode === 'login'}
-          <Button.Root
+          <Button
             type="button"
             variant="ghost"
             class="w-full bits-btn bits-btn"

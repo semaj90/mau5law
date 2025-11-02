@@ -196,6 +196,6 @@ export type DeepPartial<T> = {
 export type RequireKeys<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 /** Async function type */
-export type AsyncFunction<T = unknown, Args extends, unknown[] = unknown[]> = (
+export type AsyncFunction<T = unknown, Args, extends, unknown[] = unknown[]> = (
   ...args: Args
 ) => Promise<T>;

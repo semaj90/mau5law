@@ -443,7 +443,7 @@ export async function vectorSearch(
         const semanticResponse = await fetch('/api/rag/semantic-search', {
           method: 'POST',
           headers: {
-            'Content-Type': `application/json` },
+            'Content-Type': `application/json' },'`
           body: JSON.stringify({
             query,
             limit,
@@ -473,7 +473,7 @@ export async function vectorSearch(
                 document_type: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).document_type,
                 distance: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
                 semantic_score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score,
-                source: `enhanced_semantic_search` },
+                source: `enhanced_semantic_search' },'`
               similarity: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
               created_at: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).created_at,
               url: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata?.url
@@ -625,9 +625,9 @@ async function searchWithPgVector(
         title: row.title || '',
         content: row.content || row.description || '',
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
-        metadata: { type: 'case` },'`
+        metadata: { type: 'case' },'`'`
         source: 'pgvector',
-        type: `case` });
+        type: `case' });'`
     });
     // Also search evidence table
     const evidenceSqlQuery = sql`
@@ -650,9 +650,9 @@ async function searchWithPgVector(
         title: row.title || '',
         content: row.content || '',
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
-        metadata: { type: 'evidence` },'`
+        metadata: { type: 'evidence' },'`'`
         source: 'pgvector',
-        type: `evidence` });
+        type: `evidence' });'`
     });
     // Sort by score descending
     results.sort((a, b) => b.score - a.score);

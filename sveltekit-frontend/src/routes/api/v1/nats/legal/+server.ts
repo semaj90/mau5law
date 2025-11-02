@@ -428,8 +428,7 @@ function getSearchEventSchema() {
       query_text: { type: 'string' },
       search_type: { type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
       filters: { type: 'object' },
-      results: { type: 'array` }'`
-    },
+      results: { type: 'array' }'` },'`
     required: ['query_id', 'user_id', 'query_text', 'search_type']
   };
 }

@@ -7,7 +7,7 @@ import type { Message } from '$lib/types';
   // receive props via Svelte 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { chatActions } from '$lib/stores/chat'; // adjusted store path
   import { notifications } from '$lib/stores/unified';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';
@@ -62,50 +62,50 @@ import type { Message } from '$lib/types';
     }
   }
 </script>
-<div class="chat-message-container flex gap-2, mb-4" class:justify-end={isUser}>
+<div class="chat-message-container flex, gap-2, mb-4" class:justify-end={isUser}>
   {#if !isUser}
     <!-- Bot, Avatar -->
-    <div class="avatar, flex-shrink-0">
-      <Bot class="w-8 h-8 nes-text, is-primary" />
+    <div, class="avatar, flex-shrink-0">
+      <Bot class="w-8 h-8, nes-text, is-primary" />
     {/if}
-  <div class="message-content-wrapper flex flex-col, max-w-[70%]">
-    <div class="message-bubble nes-container, p-3" class:is-dark={isUser} class:is-rounded={isUser}>
+  <div class="message-content-wrapper flex, flex-col, max-w-[70%]">
+    <div class="message-bubble, nes-container, p-3" class:is-dark={isUser} class:is-rounded={isUser}>
       <!-- Proactive, Indicator -->
       {#if isProactive}
-        <div class="flex items-center gap-1 text-xs text-gray-400, mb-1">
-          <Clock class="w-3, h-3" />
+        <div class="flex items-center gap-1 text-xs, text-gray-400, mb-1">
+          <Clock, class="w-3, h-3" />
           <span>Proactive suggestion</span>
         {/if}
       <!-- Message, Text -->
-      <div class="message-text, message-content">
+      <div, class="message-text, message-content">
         {@html message.content}
       </div>
-      <!-- Emotional Tone Indicator for AI, Messages -->
+      <!-- Emotional Tone Indicator for, AI, Messages -->
       {#if isAssistant && emotionalTone && emotionalTone !== 'neutral'}
         {@const ToneIcon = getEmotionalToneIcon(emotionalTone)}
-        <div class="flex items-center gap-1 text-xs, mt-2" class={getEmotionalToneColor(emotionalTone)}>
+        <div class="flex items-center gap-1, text-xs, mt-2" class={getEmotionalToneColor(emotionalTone)}>
           {#if ToneIcon}
-            <svelte:component this={ToneIcon} class="w-3, h-3" />
+            <svelte:component, this={ToneIcon} class="w-3, h-3" />
           {/if}
           <span>{emotionalTone}</span>
         {/if}
     </div>
-    <!-- Message Actions and, Timestamp -->
-    <div class="flex items-center gap-2 mt-1 text-xs, text-gray-500" class:justify-end={isUser} class:justify-start={!isUser}>
+    <!-- Message Actions, and, Timestamp -->
+    <div class="flex items-center gap-2 mt-1, text-xs, text-gray-500" class:justify-end={isUser} class:justify-start={!isUser}>
       <span, class="timestamp">
         {formatTime(message.timestamp)}
       </span>
-      <div class="actions flex, gap-1">
-        <Button.Root
+      <div class="actions, flex, gap-1">
+        <Button
           variant="ghost"
           size="sm"
           class="p-1 h-auto w-auto"
           onclick={() => copyToClipboard()}
           title="Copy message"
         >
-          <Copy class="w-4, h-4" />
-        </Button.Root>
-        <Button.Root
+          <Copy, class="w-4, h-4" />
+        </Button>
+        <Button
           variant="ghost"
           size="sm"
           class="p-1 h-auto w-auto"
@@ -113,21 +113,21 @@ import type { Message } from '$lib/types';
           title={message.saved ? 'Remove from saved' : 'Save message'}
         >
           {#if message.saved}
-            <Star class="w-4, h-4" />
+            <Star, class="w-4, h-4" />
           {:else}
-            <StarOff class="w-4, h-4" />
+            <StarOff, class="w-4, h-4" />
           {/if}
-        </Button.Root>
-        <Button.Root variant="ghost" size="sm" class="p-1 h-auto w-auto" title="More, options">
-          <MoreVertical class="w-4, h-4" />
-        </Button.Root>
+        </Button>
+        <Button variant="ghost" size="sm" class="p-1 h-auto, w-auto" title="More, options">
+          <MoreVertical, class="w-4, h-4" />
+        </Button>
       </div>
     </div>
-    <!-- Metadata (for AI, messages) -->
+    <!-- Metadata (for, AI, messages) -->
     {#if isAssistant && message.metadata}
-      <div class="message-metadata text-xs text-gray-500, mt-1" class:text-right={isUser} class:text-left={!isUser}>
+      <div class="message-metadata text-xs, text-gray-500, mt-1" class:text-right={isUser} class:text-left={!isUser}>
         {#if message.metadata.model}
-          <div class="flex items-center, gap-1" class:justify-end={isUser} class:justify-start={!isUser}>
+          <div class="flex, items-center, gap-1" class:justify-end={isUser} class:justify-start={!isUser}>
             <span>Model: {message.metadata.model}</span>
             {#if message.metadata.latency}
               <span>• {message.metadata.latency}ms</span>
@@ -139,8 +139,8 @@ import type { Message } from '$lib/types';
   </div>
   {#if isUser}
     <!-- User, Avatar -->
-    <div class="avatar, flex-shrink-0">
-      <Users class="w-8 h-8 nes-text, is-success" />
+    <div, class="avatar, flex-shrink-0">
+      <Users class="w-8 h-8, nes-text, is-success" />
     {/if}
 </div>
 <style>

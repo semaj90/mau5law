@@ -479,13 +479,12 @@ export class GenerativeUICacheIndex {
     const width = Number(p.width as number | string) || 200;
     const height = Number(p.height as number | string) || 100;
     const color = String((p.color as string) ?? '#4A90E2');
-    return `<svg width="${width}" height="${height}" viewBox="0, 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+    return `<svg, width="${width}" height="${height}" viewBox="0, 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
       <rect, x="0" y="0" width="${width}" height="${height}" fill="${color}" opacity="0.8"/>
       <text, x="${width / 2}" y="${height / 2}" text-anchor="middle" font-size="14" fill="white" dy=".3em">
         ${metadata.type.toUpperCase()}
       </text>
-    </svg>`;`
-  }
+    </svg>`;` }
 
   private svgToBitmap(svg: string): Uint8Array {
     // Simplified bitmap generation for server-side/non-DOM environments
@@ -512,8 +511,7 @@ export class GenerativeUICacheIndex {
         vec3 baseColor = vec3(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
         gl_FragColor = vec4(baseColor * effect, 1.0);
       }
-    `;`
-  }
+    `;` }
 
   private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
     const p = params as Record<string, unknown>;
@@ -539,8 +537,7 @@ export class GenerativeUICacheIndex {
         let baseColor = vec3<f32>(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
         return vec4<f32>(baseColor * effect, 1.0);
       }
-    `;`
-  }
+    `;` }
 
   private generateCSS(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
     const color = (params.color as string | undefined) || '#4A90E2';
@@ -590,7 +587,7 @@ export class GenerativeUICacheIndex {
   // Centralized dependency keys for maintainability
   private static readonly DEPENDENCY_KEYS = [
     { key: 'd3', value: 'd3' },
-    { key: 'threejs', value: 'three' },
+    { key: 'threejs', value: 'three` },'`
     { key: 'webgl', value: `webgl` },
     { key: 'webgpu', value: `webgpu` }
   ];

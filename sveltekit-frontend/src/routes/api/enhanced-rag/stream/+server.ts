@@ -71,8 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
             metadata: {
              , timestamp: new Date().toISOString(),
               queryId: ragResponse.queryId,
-              systemVersion: '2.0.0-enhanced-rag-stream` }'`
-          });
+              systemVersion: '2.0.0-enhanced-rag-stream' }'' });
 
           // Completion event
           sendEvent({
@@ -104,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': `Content-Type` }
+        'Access-Control-Allow-Headers': `Content-Type' }'`
     });
   } catch (error: any) {
     console.error('❌ Enhanced RAG Stream Setup Error:', error);
@@ -116,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       }
     );
   }

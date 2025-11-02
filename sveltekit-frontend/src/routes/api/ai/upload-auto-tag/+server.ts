@@ -35,7 +35,7 @@ const memoryStore = new Map<
     updatedAt: string;
   }
 >();
-type AutoTagDocument = (params: { documentId: string; content: string;, documentType: string }) => Promise<{
+type AutoTagDocument = (params: {, documentId: string; content: string;, documentType: string }) => Promise<{
   tags?: string[];
   entities?: (string | { text?: string })[];
   summary?: string;

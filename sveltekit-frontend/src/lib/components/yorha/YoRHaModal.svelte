@@ -8,7 +8,7 @@
   // Focus management $effect(() => { if (open) { focusedElementBeforeModal = document.activeElement as HTMLElement; modalElement?.focus(); } else { focusedElementBeforeModal?.focus(); }
   }); // Body scroll lock $effect(() => { if (open) { document.body.style.overflow = "hidden"; } else { document.body.style.overflow = ""; }
     return () => { document.body.style.overflow = ""; }
-  }); </script> {#if open} <div class="yorha-modal-backdrop { type }"
+  }); </script> {#if open} <div, class="yorha-modal-backdrop { type }"
     onclick={ handleBackdropClick } onkeydown={ handleKeydown } transitionfade={{ duration 200 }} role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "modal-title": undefined} aria-describedby={subtitle ? "modal-subtitle": undefined} tabindex="-1"

@@ -177,8 +177,7 @@ export const searchMachine = setup({
           target: 'idle',
           actions: assign({
             validationErrors: (context, event) => (event as any).error as Record<string, string[]>,
-            error: () => 'Search input is invalid.` })'`
-        }
+            error: () => 'Search input is invalid.' })'` }'`
       }
     },
     searching: {

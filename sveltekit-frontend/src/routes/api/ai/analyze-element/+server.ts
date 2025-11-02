@@ -53,8 +53,7 @@ Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|pro
     if (!response.ok) {
       const text = await response.text().catch(() => '');
       console.error('Remote analyze service returned non-OK:', response.status, text);
-      return json({ error: 'Remote analyze service failed` }, { status: 502 });'`
-    }
+      return json({ error: 'Remote analyze service failed' }, { status: 502 });'' }
 
     const result: any = await response.json().catch(() => null);
 
@@ -96,7 +95,6 @@ Format as, JSON: {"relevance": "...", "legalContext": "evidence|case|statute|pro
   } catch (error: any) {
     // avoid using `any` for error; log safely
     console.error('Element analysis failed:', error instanceof Error ? error.message : String(error));
-    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable` }, { status: 500 });'`
-  }
+    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });'' }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

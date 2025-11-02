@@ -124,8 +124,7 @@ const evidenceProcessingMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed` })'`
-        }
+            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed' })'` }'`
       }
     },
     uploading: { invoke: {, id: 'uploadArtifact',
@@ -169,8 +168,7 @@ const evidenceProcessingMachine = createMachine({
         }
       }
     },
-    completed: { on: {, RESET: 'idle'
-      }
+    completed: { on: {, RESET: 'idle` }'`
     },
     error: { on: {, RETRY: 'validating',
         RESET: `idle` }

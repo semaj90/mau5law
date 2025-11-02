@@ -123,8 +123,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors }, { status: 400 });
     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
-      return json({ message: err.message, code: 'ACCESS_DENIED` }, { status: 403 });'`
-    }
+      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });'` }'`
     return json(
       { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },
       { status: 500 }

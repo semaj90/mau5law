@@ -172,7 +172,7 @@ async function handleStartServices(serviceNames: string[], _options?: any): Prom
     if (!service) {
       results[serviceName] = {
         success: false,
-        message: 'Service not found in registry` };'`
+        message: `Service not found in registry` };'`'`
       continue;
     }
     try {

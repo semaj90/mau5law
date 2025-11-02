@@ -45,5 +45,4 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: `Use GET /api/v2/evidence?action=search instead' }, { status: 410 });'`
-};
+    message: 'Use GET /api/v2/evidence?action=search instead' }, { status: 410 });'` };'`

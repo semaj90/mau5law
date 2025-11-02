@@ -287,7 +287,7 @@
               }
             }}
           >
-            <Card.Root
+            <Card
               class="w-60 bg-white border-2 {selectedItem?.id === item.id
                 ? 'border-blue-500'
                 : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"
@@ -330,7 +330,7 @@
                   </div>
                 {/if}
               </Card.Content>
-            </Card.Root>
+            </Card>
           </div>
         {/each}
         <!-- Connection Mode Overlay -->

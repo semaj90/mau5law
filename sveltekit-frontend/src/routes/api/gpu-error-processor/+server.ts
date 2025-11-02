@@ -353,5 +353,4 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   }
-  return json({ error: 'Invalid action` }, { status: 400 });'`
-};
+  return json({ error: 'Invalid action' }, { status: 400 });'` };'`

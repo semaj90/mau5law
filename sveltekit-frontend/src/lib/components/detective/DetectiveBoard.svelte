@@ -5,8 +5,8 @@ import type { Case } from '$lib/types';
 	import { onMount } from 'svelte';
 
 	// UI libraries
-	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte';
-	import { Badge } from '$lib/components/ui/Badge.svelte';
+	import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
+	import  Badge  from "$lib/components/ui/Badge.svelte";
 	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
@@ -19,9 +19,9 @@ import type { Case } from '$lib/types';
 	// App stores & AI
 	import { evidenceStore  } from '$lib/stores/unified';
 	import { aiAssistant  } from '$lib/stores/unified';
-	import { AIAssistantPanel } from '../ai/AIAssistantPanel.svelte';
-	import { EvidenceCard } from './EvidenceCard.svelte';
-	import { UploadZone } from './UploadZone.svelte';
+	import  AIAssistantPanel  from "../ai/AIAssistantPanel.svelte";
+	import  EvidenceCard  from "./EvidenceCard.svelte";
+	import  UploadZone  from "./UploadZone.svelte";
 	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
 	import { rabbitMQService } from '$lib/services/rabbitmq-service';
 	import { VectorService } from '$lib/services/vector-service';
@@ -370,12 +370,12 @@ import type { Case } from '$lib/types';
 
 <svelte:window, onkeydown={handleGlobalKeydown} />
 
-<div class="w-full h-full min-h-screen bg-background detective-board, p-4">
+<div class="w-full h-full min-h-screen bg-background, detective-board, p-4">
 	<Card.Root, class="mb-6">
 		<CardHeader>
-			<div class="flex justify-between, items-center">
-				<div class="flex items-center, gap-4">
-					<div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center, justify-center">
+			<div class="flex, justify-between, items-center">
+				<div class="flex, items-center, gap-4">
+					<div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex, items-center, justify-center">
 						<span, class="text-2xl">🕵️</span>
 					</div>
 					<div>
@@ -383,10 +383,10 @@ import type { Case } from '$lib/types';
 						<p, class="text-muted-foreground">Case Evidence Management System</p>
 					</div>
 				</div>
-				<div class="flex items-center, gap-4">
-					<div class="flex, gap-2">
-						<!-- Replaced ToggleGroup with two accessible toggle, buttons -->
-						<div role="tablist" class="inline-flex rounded-md overflow-hidden, border">
+				<div class="flex, items-center, gap-4">
+					<div, class="flex, gap-2">
+						<!-- Replaced ToggleGroup with two accessible, toggle, buttons -->
+						<div role="tablist" class="inline-flex rounded-md, overflow-hidden, border">
 							<Tooltip.Root>
 								<Tooltip.Trigger, asChild>
 									<button
@@ -434,23 +434,23 @@ import type { Case } from '$lib/types';
 					</div>
 
 					{#if activeUsers.length > 0}
-						<div class="flex items-center, gap-2">
+						<div class="flex, items-center, gap-2">
 							<div, class="flex -space-x-2">
 								{#each Array.isArray(activeUsers.slice(0, 3)) ? activeUsers.slice(0, 3) : [] as user}
-									<div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium border-2, border-background">
+									<div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium, border-2, border-background">
 										{user.name?.charAt(0) || user.email?.charAt(0) || '?'}
 									</div>
 								{/each}
 								{#if activeUsers.length > 3}
-									<div class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm border-2, border-background">
+									<div class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm, border-2, border-background">
 										+{activeUsers.length - 3}
 									{/if}
 							</div>
-							<!-- Badge: remove variant prop (type mismatch). Use class for, styling -->
+							<!-- Badge: remove variant prop (type mismatch). Use class, for, styling -->
 							<Badge, class="nes-badge">{activeUsers.length} online</Badge>
 						{/if}
 
-					<!-- Replace New Case with tooltip, wrapper -->
+					<!-- Replace New Case with, tooltip, wrapper -->
 					<Tooltip.Root>
 						<Tooltip.Trigger, asChild>
 							<Button, size="sm" onclick={() => { /* new case */ }}>
@@ -464,25 +464,25 @@ import type { Case } from '$lib/types';
 		</CardHeader>
 	</Card.Root>
 
-	<main class="flex-1 flex, gap-6">
-		<div class="flex-1, min-w-0">
+	<main class="flex-1, flex, gap-6">
+		<div, class="flex-1, min-w-0">
 			{#if viewMode === 'columns'}
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-6, h-full">
+				<div class="grid grid-cols-1 md:grid-cols-3, gap-6, h-full">
 					{#each columns as column (column.id)}
-						<Card.Root class="h-fit nes-container, is-rounded">
-							<div class="yorha-panel-header, pb-3">
-								<div class="flex justify-between, items-center">
-									<h3 class="nes-text is-primary text-lg flex items-center, gap-2">
-										<div class="w-3 h-3 bg-primary, rounded-full"></div>
+						<Card.Root class="h-fit, nes-container, is-rounded">
+							<div, class="yorha-panel-header, pb-3">
+								<div class="flex, justify-between, items-center">
+									<h3 class="nes-text is-primary text-lg flex, items-center, gap-2">
+										<div class="w-3 h-3, bg-primary, rounded-full"></div>
 										{column.title}
 									</h3>
 									<Badge, class="nes-badge">{column.items.length}</Badge>
 								</div>
 							</div>
 
-							<div class="yorha-panel-content, space-y-4">
+							<div, class="yorha-panel-content, space-y-4">
 								{#if column.id === 'new'}
-									<!-- typed event handlers to satisfy TS for custom, events -->
+									<!-- typed event handlers to satisfy TS for, custom, events -->
 									<UploadZone
 										onupload={(e: CustomEvent<any>) => handleFileUpload((e as CustomEvent).detail, column.id)}
 										onuploadError={(e: CustomEvent<string>) => handleUploadError((e as CustomEvent).detail, column.id)}
@@ -497,7 +497,7 @@ import type { Case } from '$lib/types';
 									onfinalize={(e: CustomEvent<{, items: any[] }>) => handleDndFinalize(e, column.id)}
 								>
 									{#each column.items as item (item.id)}
-										<!-- Lightweight context menu: toggle per-item, dropdown -->
+										<!-- Lightweight context menu: toggle, per-item, dropdown -->
 										<div, class="relative">
 											<div
 												class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
@@ -508,7 +508,7 @@ import type { Case } from '$lib/types';
 												role="button"
 												tabindex="0"
 											>
-												<!-- Render EvidenceCard via svelte:component to avoid TS attribute checking on, events -->
+												<!-- Render EvidenceCard via svelte:component to avoid TS attribute checking, on, events -->
 												<svelte:component, this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}} />
 											</div>
 
@@ -528,13 +528,13 @@ import type { Case } from '$lib/types';
 											</Tooltip.Root>
 
 											{#if openContextMenuId === item.id}
-												<ul class="absolute right-2 mt-8 w-56 bg-background border border-border rounded shadow-md, z-50">
-													<li class="px-3 py-2 hover:bg-muted, cursor-pointer" onclick={() => { handleViewEvidence(item); openContextMenuId = null; }} title="View details">View Details</li>
-													<li class="px-3 py-2 hover:bg-muted, cursor-pointer" onclick={() => { window.location.href = `/evidence/${item.id}/edit`; openContextMenuId = null; }} title="Edit">Edit</li>
-													<li class="px-3 py-2 hover:bg-muted, cursor-pointer" onclick={() => { saveTo('savedcitations', item); openContextMenuId = null; }} title="Save to your citations">Saved Citations</li>
-													<li class="px-3 py-2 hover:bg-muted, cursor-pointer" onclick={() => { saveTo('mcpcontext', item); openContextMenuId = null; }} title="Add to MCP context">MCP Context (LLM)</li>
-													<li class="px-3 py-2 hover:bg-muted, cursor-pointer" onclick={() => { openFindModal(item); openContextMenuId = null; }} title="Find related evidence">Find Related...</li>
-													<li class="px-3 py-2 hover:bg-muted, cursor-pointer" onclick={() => { analyzeSelectedEvidence(); openContextMenuId = null; }} title="Ask AI about this">🤖 Ask AI About This</li>
+												<ul class="absolute right-2 mt-8 w-56 bg-background border border-border rounded, shadow-md, z-50">
+													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { handleViewEvidence(item); openContextMenuId = null; }} title="View details">View Details</li>
+													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { window.location.href = `/evidence/${item.id}/edit`; openContextMenuId = null; }} title="Edit">Edit</li>
+													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { saveTo('savedcitations', item); openContextMenuId = null; }} title="Save to your citations">Saved Citations</li>
+													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { saveTo('mcpcontext', item); openContextMenuId = null; }} title="Add to MCP context">MCP Context (LLM)</li>
+													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { openFindModal(item); openContextMenuId = null; }} title="Find related evidence">Find Related...</li>
+													<li class="px-3 py-2, hover:bg-muted, cursor-pointer" onclick={() => { analyzeSelectedEvidence(); openContextMenuId = null; }} title="Ask AI about this">🤖 Ask AI About This</li>
 												</ul>
 											{/if}
 										</div>
@@ -545,8 +545,8 @@ import type { Case } from '$lib/types';
 					{/each}
 				</div>
 			{:else}
-				<Card.Root class="h-[calc(100vh-200px)] nes-container is-rounded bits-card p-0, uno-stack">
-					<div class="yorha-panel-content p-0, h-full">
+				<Card.Root class="h-[calc(100vh-200px)] nes-container is-rounded bits-card, p-0, uno-stack">
+					<div class="yorha-panel-content, p-0, h-full">
 						<div
 							bind:this={canvasContainer}
 							class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto p-4"
@@ -555,7 +555,7 @@ import type { Case } from '$lib/types';
 							ondrop={handleCanvasDrop}
 							ondragover={(e) => e.preventDefault()}
 						>
-							<div class="absolute inset-0 bg-grid-pattern opacity-5, pointer-events-none"></div>
+							<div class="absolute inset-0 bg-grid-pattern, opacity-5, pointer-events-none"></div>
 
 							{#each canvasEvidence as item (item.id)}
 								<div, class="relative">
@@ -574,21 +574,21 @@ import type { Case } from '$lib/types';
 										tabindex="0"
 									>
 										<svelte:component, this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}}>
-											<Card.Root class="nes-container is-rounded p-2 w-full, mt-2">
-												<CardHeader class="flex items-center, justify-between">
-													<div class="flex items-center, gap-2">
-														<div class="w-3 h-3 bg-primary, rounded-full"></div>
+											<Card.Root class="nes-container is-rounded p-2, w-full, mt-2">
+												<CardHeader class="flex, items-center, justify-between">
+													<div class="flex, items-center, gap-2">
+														<div class="w-3 h-3, bg-primary, rounded-full"></div>
 														<CardTitle class="nes-text text-sm">{item.title || item.fileName || 'Evidence'}</CardTitle>
 													</div>
-													<!-- Badge: no variant prop, style via, class -->
+													<!-- Badge: no variant prop, style, via, class -->
 													<Badge class="nes-badge">{item.evidenceType || 'doc'}</Badge>
 												</CardHeader>
 												<CardContent, class="p-2">
-													<div class="mt-2 flex items-center, justify-between">
-														<div class="flex items-center gap-2 text-xs text-muted-foreground, nes-text">
-															<span class="nes-text, is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
+													<div class="mt-2 flex, items-center, justify-between">
+														<div class="flex items-center gap-2 text-xs, text-muted-foreground, nes-text">
+															<span, class="nes-text, is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
 														</div>
-														<div class="flex, gap-2">
+														<div, class="flex, gap-2">
 															<Tooltip.Root>
 																<Tooltip.Trigger, asChild>
 																	<Button, size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span, class="mr-1">🔍</span> View</Button>
@@ -609,7 +609,7 @@ import type { Case } from '$lib/types';
 										</svelte:component>
 									</div>
 
-									<!-- menu trigger for canvas, items -->
+									<!-- menu trigger for, canvas, items -->
 									<Tooltip.Root>
 										<Tooltip.Trigger, asChild>
 											<button
@@ -627,16 +627,16 @@ import type { Case } from '$lib/types';
 								</div>
 							{/each}
 
-							<svg class="absolute inset-0, pointer-events-none" style="width: 100%; height: 100%;">
+							<svg class="absolute, inset-0, pointer-events-none" style="width: 100%; height: 100%;">
 								{#each Array.isArray(getConnections()) ? getConnections() : [] as connection}
 									<line, x1={connection.x1} y1={connection.y1} x2={connection.x2} y2={connection.y2} stroke="currentColor" stroke-width="2" stroke-dasharray="5,5" opacity="0.3" />
 								{/each}
 							</svg>
 
 							{#if canvasEvidence.length === 0}
-								<div class="absolute inset-0 flex items-center, justify-center">
-									<div class="text-center nes-text, is-disabled">
-										<p class="text-lg, mb-2">No evidence on canvas</p>
+								<div class="absolute inset-0 flex, items-center, justify-center">
+									<div class="text-center, nes-text, is-disabled">
+										<p, class="text-lg, mb-2">No evidence on canvas</p>
 										<p, class="text-sm">Drag evidence here or switch to column view to add items</p>
 									</div>
 								{/if}
@@ -647,8 +647,8 @@ import type { Case } from '$lib/types';
 		</div>
 
 		{#if showAIAssistant}
-			<div class="w-80, flex-shrink-0">
-				<!-- typed CustomEvent handlers to avoid TS: 'never' event, issues -->
+			<div, class="w-80, flex-shrink-0">
+				<!-- typed CustomEvent handlers to avoid, TS: 'never' event, issues -->
 				<AIAssistantPanel
 					{caseId}
 					{selectedEvidenceIds}
@@ -661,17 +661,17 @@ import type { Case } from '$lib/types';
 </div>
 
 {#if findModal.show}
-	<div class="fixed inset-0 z-50 flex items-center, justify-center">
-		<div class="absolute inset-0, bg-black/50" role="presentation" onclick={closeFindModal}></div>
-		<div class="relative z-10 w-full max-w-2xl bg-background border border-border rounded p-6, shadow-lg">
+	<div class="fixed inset-0 z-50 flex, items-center, justify-center">
+		<div class="absolute, inset-0, bg-black/50" role="presentation" onclick={closeFindModal}></div>
+		<div class="relative z-10 w-full max-w-2xl bg-background border border-border rounded, p-6, shadow-lg">
 			<header, class="mb-4">
-				<h2 class="text-lg, font-semibold">Find Related Evidence</h2>
-				<p class="text-sm, text-muted-foreground">Search for evidence related to: "{findModal.query}" using local and vector search.</p>
+				<h2, class="text-lg, font-semibold">Find Related Evidence</h2>
+				<p, class="text-sm, text-muted-foreground">Search for evidence related to: "{findModal.query}" using local and vector search.</p>
 			</header>
 
-			<div class="flex flex-col, gap-4">
-				<Input type="text" bind:value={findModal.query} placeholder="Enter keywords or, question..." onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') void runFindSearch(null); }} />
-				<div class="flex, gap-2">
+			<div class="flex, flex-col, gap-4">
+				<Input type="text" bind:value={findModal.query} placeholder="Enter keywords, or, question..." onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') void runFindSearch(null); }} />
+				<div, class="flex, gap-2">
 					<Button, onclick={() => void runFindSearch(null)} disabled={findModal.loading}>
 						{#if findModal.loading}
 							Searching...
@@ -686,11 +686,11 @@ import type { Case } from '$lib/types';
 					<div, class="text-red-500">{findModal.error}{/if}
 
 				{#if findModal.results.length > 0}
-					<div class="border-t, pt-4">
-						<h3 class="font-semibold, mb-2">Results:</h3>
-						<ul class="space-y-2 max-h-60, overflow-y-auto">
+					<div, class="border-t, pt-4">
+						<h3, class="font-semibold, mb-2">Results:</h3>
+						<ul class="space-y-2, max-h-60, overflow-y-auto">
 							{#each Array.isArray(findModal.results) ? findModal.results : [] as result}
-								<li class="p-2 rounded hover:bg-muted cursor-pointer border-b, border-muted-foreground/10">
+								<li class="p-2 rounded hover:bg-muted cursor-pointer, border-b, border-muted-foreground/10">
 									{result?.title ?? result?.text ?? JSON.stringify(result)}
 								</li>
 							{/each}
@@ -701,11 +701,11 @@ import type { Case } from '$lib/types';
 	{/if}
 
 {#if miniModal.show}
-	<div class="fixed, z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
-		<div class="bg-background border border-border rounded-md shadow px-3 py-2, text-sm">
+	<div, class="fixed, z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
+		<div class="bg-background border border-border rounded-md shadow px-3, py-2, text-sm">
 {#if miniModal.show}
-	<div class="fixed, z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
-		<div class="bg-background border border-border rounded-md shadow px-3 py-2, text-sm">
+	<div, class="fixed, z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
+		<div class="bg-background border border-border rounded-md shadow px-3, py-2, text-sm">
 			{miniModal.type}
 		</div>
 	{/if}ort url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');

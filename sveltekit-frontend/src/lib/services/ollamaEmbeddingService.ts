@@ -18,7 +18,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
       const ollamaUrl = getOllamaEndpoint();
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: 'embeddinggemma:latest',
           prompt: text

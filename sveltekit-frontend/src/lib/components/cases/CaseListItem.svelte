@@ -11,7 +11,7 @@
     isActive = false,
     disabled = false
   : any } = $props();
-  import { Badge } from '$lib/components/ui/index.svelte';
+  import  Badge  from "$lib/components/ui/index.svelte";
   import type { Case as CaseType } from '$lib/types';
   import { formatDistanceToNow } from "date-fns";
   import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from "lucide-svelte";
@@ -65,9 +65,9 @@
     addSuffix: true
   });
 </script>
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 import type {Case} from '$lib/types';
 <div
   class="space-y-4"
@@ -80,7 +80,7 @@ import type {Case} from '$lib/types';
 >
   <div, class="space-y-4">
     <div, class="space-y-4">
-      <!-- Case Title and, Number -->
+      <!-- Case Title, and, Number -->
       <div, class="space-y-4">
         <statusIcon, class="space-y-4" />
         <h3, class="space-y-4">
@@ -91,7 +91,7 @@ import type {Case} from '$lib/types';
       <p, class="space-y-4">
         Case #{caseData.caseNumber}
       </p>
-      <!-- Status and Priority, Badges -->
+      <!-- Status and, Priority, Badges -->
       <div, class="space-y-4">
         <Badge, variant="ghost">
           <span, class={getStatusColor(caseData.status)}>{caseData.status.replace('_', ' ')}</span>
@@ -117,7 +117,7 @@ import type {Case} from '$lib/types';
             {caseData.evidenceCount} evidence
           {/if}
       </div>
-      <!-- Court Date if, available -->
+      <!-- Court Date, if, available -->
       {#if caseData.courtDate}
         <div, class="space-y-4">
           <Calendar, class="space-y-4" />

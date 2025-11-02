@@ -1,9 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, keyword: 'class';
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, keyword: 'class' -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
-  import { CommandMenu } from "./CommandMenu.svelte";
+  import  CommandMenu  from "./CommandMenu.svelte";
   interface Props {
     value?: string;
     placeholder?: string;
@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
     className?: string; // renamed from `class`
     triggerChar?: string;
     // onCommandSelect was unused — removed
-    onInput?: (data: { value: string;, target: HTMLTextAreaElement }) => void;
+    onInput?: (data: {, value: string;, target: HTMLTextAreaElement }) => void;
     onKeydown?: (e: KeyboardEvent) => void;
     onCommandInsert?: (data: {, text: string }) => void;
     onBlur?: (e: FocusEvent) => void;
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
       style="position: absolute; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index:9999;"
       role="listbox"
     >
-      <!-- CommandMenu API may vary; provide a callback prop that CommandMenu can, call -->
+      <!-- CommandMenu API may vary; provide a callback prop that CommandMenu, can, call -->
       <CommandMenu {triggerChar} onselect={(e) => insertCommandText(e.detail?.text ?? e.detail ?? '')} onclose={closeCommandMenu} />
     {/if}
 </div>

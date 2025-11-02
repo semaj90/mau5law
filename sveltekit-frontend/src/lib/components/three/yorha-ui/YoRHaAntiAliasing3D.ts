@@ -441,7 +441,7 @@ const EnhancedAAShader = { uniforms: {, baseColor: { value: new THREE.Color(YOR
       color = pow(color, vec3(1.0 / 2.2));
       gl_FragColor = vec4(color, 1.0);
     }
-  ' }'
+  ` }'`
 // TAA (Temporal Anti-Aliasing) Manager
 class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];

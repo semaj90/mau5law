@@ -314,8 +314,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
       case 'predict': {
         if (!context.workflowStep) {
-          return json({ error: 'Workflow step required for prediction` }, { status: 400 });'`
-        }
+          return json({ error: 'Workflow step required for prediction' }, { status: 400 });'` }'`
         // Generate workflow predictions
         const predictions = {
           nextSteps: ['evidence-view', 'timeline-analysis', 'report-generation'],

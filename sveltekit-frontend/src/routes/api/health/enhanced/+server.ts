@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
           database: 'unknown',
           migrations: 'unknown',
           backgroundJobs: 'unknown',
-          aiServices: 'unknown' }
+          aiServices: 'unknown` }'`
       },
       { status: 500 }
     );

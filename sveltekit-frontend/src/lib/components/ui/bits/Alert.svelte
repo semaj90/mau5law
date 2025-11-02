@@ -18,7 +18,7 @@
 </script>
 
 {#if visible}
-  <div class="alert, alert-{variant}" role="alert">
+  <div, class="alert, alert-{variant}" role="alert">
     <div, class="alert-content">
       {#if icon}
         <div, class="alert-icon">

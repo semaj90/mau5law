@@ -635,10 +635,9 @@ export class MasterServiceCoordinator {
             target: service.id,
             parameters: {
               maxRetries: service.maxRetries,
-              backoff: 'exponential` }'`
-          }
+              backoff: 'exponential' }'' }
         ],
-        priority: service.critical ? 'critical' : `high` };
+        priority: service.critical ? 'critical' : `high' };'`
 
       this.activeErrors.update(errors => [...errors, resolution]);
 
@@ -673,8 +672,7 @@ export class MasterServiceCoordinator {
             console.warn('Unknown recovery action', action);
         }
       } catch (error: any) {
-        console.error(`Failed to execute recovery action ${action.type}: ', error);'`
-      }
+        console.error(`Failed to execute recovery action ${action.type}: ', error);'' }'`
     }
   }
 
@@ -715,7 +713,7 @@ export class MasterServiceCoordinator {
       const tierServices = this.services.filter(s => s.tier === tier);
       console.log(`Stopping Tier ${tier} services: ${tierServices.map(s => s.name).join(', ')}`);
       tierServices.forEach(service => {
-        this.updateServiceStatus(service.id, { status: `unknown` });
+        this.updateServiceStatus(service.id, { status: `unknown' });'`
       });
       await this.sleep(1000);
     }

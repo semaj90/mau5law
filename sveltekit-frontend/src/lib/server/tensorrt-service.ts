@@ -234,8 +234,7 @@ except Exception as e:
           resolve({ text: `Legal, Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
             tokens: 15,
             inference_time: 0.05,
-            model_used: 'Emergency-Fallback` });'`
-        }
+            model_used: 'Emergency-Fallback' });'' }
       });
       // Timeout after 60 seconds
       setTimeout(() => {

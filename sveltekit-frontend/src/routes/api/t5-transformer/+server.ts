@@ -260,7 +260,7 @@ export const GET: RequestHandler = async ({ url }) => {
             name: 'paraphrase',
             description: 'Rephrase legal text for clarity',
             inputRange: '10-2000 tokens',
-            outputRange: '10-2500 tokens` },'`
+            outputRange: `10-2500 tokens` },'`'`
           {
             name: 'translate',
             description: 'Translate legal documents (if supported)',

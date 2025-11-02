@@ -225,7 +225,7 @@ export class LegalAIClientDB extends Dexie {
       legalEntities: '++id, name, type, lastUpdated, confidence',
       graphVisualizationData: '++id, graphId, graphType, lastAccessed, createdAt',
       aiAnalysisCache: '++id, contentHash, analysisType, timestamp, expiresAt',
-      userPreferences: '++id, userId, lastUpdated' });
+      userPreferences: '++id, userId, lastUpdated` });'`
     // Hooks for data management
     // Dexie passes (primaryKey, obj, transaction). We prefix unused args with: "_" to satisfy linting.
     this.chatHistory.hook('creating', (_primaryKey, obj: Partial<ChatMessage>, _trans) => {

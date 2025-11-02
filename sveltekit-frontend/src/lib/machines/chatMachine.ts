@@ -53,7 +53,7 @@ const streamChatService = fromPromise(
 export const chatMachine = createMachine({
   id: 'chat',
   types: {
-    context: {} as ChatContext,
+   , context: {} as ChatContext,
     events: {} as ChatEvent
   },
   context: {
@@ -75,7 +75,7 @@ export const chatMachine = createMachine({
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }, // Placeholder for streaming
             ],
             error: null,
-            status: 'loading` })'`
+            status: `loading` })'`'`
         },
         RESET: { actions: assign({, messages: [],
             error: null,
@@ -135,8 +135,7 @@ export const chatMachine = createMachine({
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }
             ],
             error: null,
-            status: 'loading` })'`
-        },
+            status: 'loading' })'` },'`
         RETRY: {
           target: 'loading',
           actions: assign({

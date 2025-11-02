@@ -59,8 +59,7 @@ class SemanticSearchService {
       }
     } catch (error) {
       console.error('Semantic search error:', error);'
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
+      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
   }
   /**
    * Generate embedding for query text

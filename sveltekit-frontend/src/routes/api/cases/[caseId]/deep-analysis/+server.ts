@@ -224,7 +224,7 @@ ws ::= ([ \t\n]*)
     promises.push(
       fetch(`${getOllamaEndpoint()}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
           prompt: basePrompt + '\n\nReturn JSON with "summary" and "recommendations".',
@@ -244,7 +244,7 @@ ws ::= ([ \t\n]*)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ${OPENAI_API_KEY}' },
+            Authorization: 'Bearer ${OPENAI_API_KEY}` },'`
           body: JSON.stringify({
            , model: 'gpt-3.5-turbo',
             messages: [{, role: 'user', content: basePrompt }],
@@ -322,7 +322,7 @@ ws ::= ([ \t\n]*)
 
     return json({ success: true, analysisResults });
   } catch (error: any) {
-    console.error('Error in deep analysis endpoint: `, error);'`
+    console.error('Error in deep analysis endpoint: ', error);'`'`
     return json({ error: `Failed to perform deep analysis` }, { status: 500 });
   }
 };

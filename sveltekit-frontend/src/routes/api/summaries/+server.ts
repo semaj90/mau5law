@@ -249,7 +249,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       sourceContent = '';
   }
   // Prepare prompt based on depth
-  const depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of: `,'`
+  const depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of: ','`'`
     comprehensive: `Provide a detailed analysis and comprehensive summary; of: `,
     forensic: `Conduct a thorough forensic analysis with legal implications; for:` };
   const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
@@ -259,7 +259,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
   let combinedResponse = '';
   let totalTokens = 0;
   for (const chunk of chunks) {
-    const promptText = chunk.length < sourceContent.length ? `${prompt} (Part of larger, document): ${chunk}` : prompt;
+    const promptText = chunk.length < sourceContent.length ? `${prompt} (Part of, larger, document): ${chunk}` : prompt;
     const response = await ollamaService.generateResponse(promptText, {
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.3,

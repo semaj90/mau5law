@@ -19,10 +19,10 @@
   <!-- Header -->
   <header class="mb-8">
     <a href="/ai/dashboard" class="inline-flex items-center mb-4">
-      <Button.Root class="bits-btn" variant="ghost" size="sm">
+      <Button class="bits-btn" variant="ghost" size="sm">
         <span class="mr-2">⬅️</span>
         Back to Dashboard
-      </Button.Root>
+      </Button>
     </a>
     <div class="p-6 rounded-lg bg-black/20 border border-gray-700/50 shadow-lg">
       <h1 class="text-2xl sm:text-3xl font-bold mb-2 flex items-center">

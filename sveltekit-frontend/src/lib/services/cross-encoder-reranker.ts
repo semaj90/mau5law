@@ -321,8 +321,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc1',
           title: 'Contract Formation Requirements',
           documentType: 'contract',
-          content: 'A valid contract requires offer, acceptance, and consideration.` }'`
-      },
+          content: 'A valid contract requires offer, acceptance, and consideration.' }'` },'`
       {
         id: 'doc2',
         title: 'Employment Termination',

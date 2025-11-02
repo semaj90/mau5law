@@ -274,14 +274,14 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
     // Test WebGPU service
     const webgpuResponse = await fetch('/api/webgpu/test', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , operation: 'generate_text',
         input: testText,
         fallback: true
       })
     });
-    let webgpuResult: { success: boolean; device: string } = { success: false, device: `none` };
+    let webgpuResult: { success: boolean; device: string } = { success: false, device: `none' };'`
     if (webgpuResponse.ok) {
       webgpuResult = await webgpuResponse.json();
     }
@@ -324,7 +324,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
 
         const response = await fetch('http://localhost:5173/api/compute', {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
            , ownerType: 'evidence',
             ownerId: testEvidence.id,

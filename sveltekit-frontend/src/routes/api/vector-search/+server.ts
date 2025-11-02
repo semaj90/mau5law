@@ -300,8 +300,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query');
     if (!query) {
-      return json({ error: 'Query;, parameter: "q", or: "query" is required` }, { status: 400 });'`
-    }
+      return json({ error: 'Query;, parameter: "q", or: "query" is required' }, { status: 400 });'' }
     // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {
       query,

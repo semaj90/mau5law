@@ -221,7 +221,7 @@ class AIServiceWorker {
     const ollamaTask = task as OllamaTask;
     const response = await fetch(`${provider.endpoint}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , model: ollamaTask.model ?? 'unknown',
         prompt: task.prompt,
@@ -260,7 +260,7 @@ class AIServiceWorker {
     const autoGenTask = task as AutoGenTask;
     const response = await fetch(`${provider.endpoint}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , agents: autoGenTask.agents ?? ['assistant'],
         message: task.prompt,
@@ -293,7 +293,7 @@ class AIServiceWorker {
     const crewAITask = task as CrewAITask;
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , crew_id: crewAITask.crewId ?? 'legal-analysis-crew',
         task: task.prompt,

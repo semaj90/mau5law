@@ -194,8 +194,7 @@ class CachingLayer {
               keys.push(...(Array.isArray(result) ? result : [result].filter(Boolean));
             }
           } catch (e: any) {
-            // Fallback to empty keys if method doesn't exist'
-          }
+            // Fallback to empty keys if method doesn't exist` }'`
           if (keys && keys.length > 0) {
             // Remove from Redis - handle array properly
             if (keys.length > 0) {

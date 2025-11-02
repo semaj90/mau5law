@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Create citation error: ', error);'
     return json(
       {
-        error: 'Failed to create citation' },
+        error: 'Failed to create citation` },'`
       { status: 500 }
     );
   }

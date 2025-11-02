@@ -185,7 +185,7 @@ export class EnhancedVectorEmbeddingService {
     try {
       const res = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, model: this.embeddingModel, input: text })
       });
 

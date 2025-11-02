@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   items: {
                     type: 'object',
                     properties: { id: {, type: 'string' },
-                      url: { type: 'string` },'`
+                      url: { type: `string` },'`'`
                       protocol: { type: `string` }
                     }
                   }

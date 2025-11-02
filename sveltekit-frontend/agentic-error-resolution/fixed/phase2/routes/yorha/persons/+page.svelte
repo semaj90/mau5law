@@ -247,10 +247,10 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <Button.Root class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
+        <Button class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
           <Plus class="w-4 h-4" />
           ADD PERSON
-        </Button.Root>
+        </Button>
       </div>
     </header>
     <!-- Search and Filters -->
@@ -305,7 +305,7 @@
       {:else}
         {#each filteredPersons as person (person.id)}
           <!-- use direct component tags (Svelte 5 supports dynamic component variables) -->
-          <Card.Root class="person-nier-bits-card nes-container">
+          <Card class="person-nier-bits-card nes-container">
             <div class="person-header nes-container">
               <div class="person-photo">
                 {#if person.photo}
@@ -358,20 +358,20 @@
             </div>
 
             <div class="person-actions nes-container card-footer">
-              <Button.Root class="bits-btn" size="sm" variant="ghost">
+              <Button class="bits-btn" size="sm" variant="ghost">
                 <Eye class="w-4 h-4" />
                 View
-              </Button.Root>
-              <Button.Root class="bits-btn" size="sm" variant="ghost">
+              </Button>
+              <Button class="bits-btn" size="sm" variant="ghost">
                 <Edit class="w-4 h-4" />
                 Edit
-              </Button.Root>
-              <Button.Root class="bits-btn" size="sm" variant="destructive">
+              </Button>
+              <Button class="bits-btn" size="sm" variant="destructive">
                 <Trash2 class="w-4 h-4" />
                 Remove
-              </Button.Root>
+              </Button>
             </div>
-          </Card.Root>
+          </Card>
         {/each}
       {/if}
     </div>
@@ -487,7 +487,7 @@
       </div>
 
       <footer class="dialog-footer">
-        <Button.Root
+        <Button
           class="bits-btn"
           variant="ghost"
           onclick={() => {
@@ -504,9 +504,9 @@
           }}
         >
           CANCEL
-        </Button.Root>
+        </Button>
 
-        <Button.Root class="bits-btn" onclick={handleAddPerson}>ADD PERSON</Button.Root>
+        <Button class="bits-btn" onclick={handleAddPerson}>ADD PERSON</Button>
       </footer>
     </div>
   </div>

@@ -87,8 +87,7 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
   // Check for potential issues
   const deprecatedCount = statusBreakdown['deprecated'] || 0;
   if (deprecatedCount > 0) {
-    recommendations.push(`Consider migrating ${deprecatedCount} deprecated route${deprecatedCount > 1 ? 's' : '` }`);'`
-  }
+    recommendations.push(`Consider migrating ${deprecatedCount} deprecated route${deprecatedCount > 1 ? 's' : '' }`);'' }
   const experimentalCount = statusBreakdown['experimental'] || 0;
   if (experimentalCount > 5) {
     recommendations.push(
@@ -108,13 +107,12 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
   const missingConfig = routeData.counts?.issues?.filesMissingConfig || 0;
   if (missingConfig > 0) {
     recommendations.push(
-      `${missingConfig} file route${missingConfig > 1 ? 's' : '` } missing configuration - add to routes-config.ts for better organization`'`
+      `${missingConfig} file route${missingConfig > 1 ? 's' : '' } missing configuration - add to routes-config.ts for better organization`'`'`
     );
   }
   const missingFiles = routeData.counts?.issues?.configMissingFiles || 0;
   if (missingFiles > 0) {
-    recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : '` } missing implementation files`);'`
-  }
+    recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : '' } missing implementation files`);'' }
   // Performance recommendations
   if (apiRoutes > 20) {
     recommendations.push('Consider implementing API route caching and rate limiting for better performance');

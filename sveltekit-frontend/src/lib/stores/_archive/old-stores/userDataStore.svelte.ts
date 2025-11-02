@@ -158,8 +158,7 @@ const createUserDataStore = () => {
           userDataState.lastSyncAt = Date.now();
         }
       } catch (error) {
-        console.error('Failed to sync cases: `, error);'`
-      }
+        console.error('Failed to sync cases: ', error);'' }
     },
     syncEvidence: async (userId: string, caseId?: string) => {
       try {

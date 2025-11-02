@@ -129,7 +129,7 @@ export class LokiClientStorage {
   }
 
   // Insert document into collection
-  async insert<T extends, LokiDocument>(collectionName: string, document: T): Promise<T> {
+  async insert<T, extends, LokiDocument>(collectionName: string, document: T): Promise<T> {
     // Use generic T
     await this.ensureInitialized();
     const collection = this.getCollection<T>(collectionName); // Use generic T
@@ -151,7 +151,7 @@ export class LokiClientStorage {
   }
 
   // Update document in collection
-  async update<T extends, LokiDocument>(collectionName: string, document: T): Promise<T> {
+  async update<T, extends, LokiDocument>(collectionName: string, document: T): Promise<T> {
     // Use generic T
     await this.ensureInitialized();
     const collection = this.getCollection<T>(collectionName); // Use generic T
@@ -189,7 +189,7 @@ export class LokiClientStorage {
   }
 
   // Find documents with query
-  find<T extends, LokiDocument>(collectionName: string, query: Loki.Query<T> = {}): T[] {
+  find<T, extends, LokiDocument>(collectionName: string, query: Loki.Query<T> = {}): T[] {
     // Use explicit import for Query
     const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) return [];
@@ -205,7 +205,7 @@ export class LokiClientStorage {
   }
 
   // Advanced querying with chaining
-  chain<T extends, LokiDocument>(collectionName: string): Loki.Chain<T> {
+  chain<T, extends, LokiDocument>(collectionName: string): Loki.Chain<T> {
     // Use explicit import for Chain
     const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) throw new Error(`Collection ${collectionName} not found`);
@@ -220,7 +220,7 @@ export class LokiClientStorage {
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , operations: operationsToSend
         })
@@ -282,7 +282,7 @@ export class LokiClientStorage {
   }
 
   // Queue operation for server sync
-  private queueForSync<T extends, LokiDocument>(
+  private queueForSync<T, extends, LokiDocument>(
     operation: SyncOperation['operation'],
     collectionName: string,
     document: T
@@ -354,7 +354,7 @@ export class LokiClientStorage {
       if (useFullText && typeof collection.fullTextSearch === 'function') {
         // Use Loki's built-in full-text search if available and indexed'
         const ftsResults = collection.fullTextSearch(query);
-        matches = ftsResults.map((r: {, doc: LokiDocument }) => r.doc); // Explicitly type: `r` } else {
+        matches = ftsResults.map((r: {, doc: LokiDocument }) => r.doc); // Explicitly type: `r' } else {'`
         // Fallback to regex search
         matches = collection.find({
           $or: [

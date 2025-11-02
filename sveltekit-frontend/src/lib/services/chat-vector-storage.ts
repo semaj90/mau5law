@@ -227,7 +227,7 @@ export class ChatVectorStorage {
       // Use the enhanced caching bridge to get Gemma embeddings
       const result: CachedEmbeddingResult = await enhancedCachingRevolutionaryBridge.getCachedEmbeddingUnified(text, {
         enableSIMDAcceleration: true,
-        compressionLevel: 'medium' });
+        compressionLevel: 'medium` });'`
       // Check if result has the expected structure for embeddings with explicit checks
       if (result && result.embeddings && result.embeddings.embedding) {
         return result.embeddings.embedding;
@@ -486,8 +486,7 @@ export class ChatVectorStorage {
             // but the returned object's property should match the interface.'
             quantizedEmbedding: row.embedding.quantizedEmbedding
           },
-          reasonForMatch: `Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}' };'`
-      })
+          reasonForMatch: 'Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}' };'` })'`
       .sort((a, b) => b.combinedScore - a.combinedScore); // Sort by combined score
   }
   private analyzeIntentPatterns(
@@ -725,7 +724,7 @@ export class ChatVectorStorage {
       : eq(chatMessages.userId, userId);
 
     const totalMessages = await db
-      .select({ count: sql<number>`count(*)' })'`
+      .select({ count: sql<number>`count(*)` })'`'`
       .from(chatMessages)
       .where(whereClause);
 
@@ -734,7 +733,7 @@ export class ChatVectorStorage {
     const mostCommonIntents = await db
       .select({
         intent: sql<string>`${chatMessages.metadata} ->> 'intent'`, // Corrected Drizzle JSONB access
-        count: sql<number>`count(*)' })'`
+        count: sql<number>`count(*)` })'`'`
       .from(chatMessages)
       .where(and(whereClause, sql`${chatMessages.metadata} ->> 'intent'`.isNotNull())) // Corrected Drizzle JSONB access
       .groupBy(sql`${chatMessages.metadata} ->> 'intent'`) // Corrected Drizzle JSONB access

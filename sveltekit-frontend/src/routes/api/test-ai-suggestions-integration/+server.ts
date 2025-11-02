@@ -262,8 +262,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Enhanced RAG test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error` };'`
-  }
+      error: error instanceof Error ? error.message : 'Unknown error' };'` }'`
 }
 async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
   const startTime = Date.now();
@@ -376,8 +375,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Streaming API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error` };'`
-  }
+      error: error instanceof Error ? error.message : 'Unknown error' };'` }'`
 }
 async function testRatingAPI(): Promise<IntegrationTestResult> {
   const startTime = Date.now();

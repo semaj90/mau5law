@@ -147,10 +147,9 @@ function makeSvg(heatmap: Float32Array, width: number, height: number, palette: 
   }
   const svgWidth = width * (cellWidth + pad);
   const svgHeight = height * (cellHeight + pad);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0, 0 ${svgWidth} ${svgHeight}" shape-rendering="crispEdges">${cells.join(`
+  return `<svg, xmlns="http://www.w3.org/2000/svg" viewBox="0, 0 ${svgWidth} ${svgHeight}" shape-rendering="crispEdges">${cells.join(`
     ''
-  )}</svg>`;`
-}
+  )}</svg>`;' }'`
 export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapOptions = {}): SOMBitmapResult {
   const computedWidth = Math.ceil(Math.sqrt(embedding.length));
   const baseWidth = (options.width !== undefined && options.width !== null) ? options.width : computedWidth;

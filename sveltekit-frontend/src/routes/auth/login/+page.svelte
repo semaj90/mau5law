@@ -41,13 +41,13 @@
 <svelte:head>
   <title>Login - Legal AI Platform</title>
 </svelte:head>
-<div class="min-h-screen flex items-center justify-center bg-gray-900 px-4, py-8">
-  <div class="w-full, max-w-md">
-    <div class="bg-gray-800 p-8 rounded-lg border border-gray-700 max-h-none, overflow-visible">
-      <h1 class="text-3xl font-bold text-center text-yellow-400, mb-8">Legal AI Platform</h1>
-      <h2 class="text-xl text-center text-white, mb-6">Sign In</h2>
+<div class="min-h-screen flex items-center justify-center bg-gray-900, px-4, py-8">
+  <div, class="w-full, max-w-md">
+    <div class="bg-gray-800 p-8 rounded-lg border border-gray-700, max-h-none, overflow-visible">
+      <h1 class="text-3xl font-bold text-center, text-yellow-400, mb-8">Legal AI Platform</h1>
+      <h2 class="text-xl text-center, text-white, mb-6">Sign In</h2>
       {#if formError}
-        <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded, mb-4">
+        <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3, rounded, mb-4">
           {formError}
         </div>
       {/if}
@@ -67,7 +67,7 @@
       >
         <!-- Email -->
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-300, mb-1"> Email Address </label>
+          <label for="email" class="block text-sm font-medium, text-gray-300, mb-1"> Email Address </label>
           <input
             type="email"
             name="email"
@@ -80,7 +80,7 @@
         </div>
         <!-- Password -->
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300, mb-1"> Password </label>
+          <label for="password" class="block text-sm font-medium, text-gray-300, mb-1"> Password </label>
           <input
             type={showPassword ? 'text' : 'password'}
             name="password"
@@ -92,14 +92,14 @@
           />
         </div>
         <!-- Options -->
-        <div class="flex items-center, justify-between">
-          <div class="flex, items-center">
+        <div class="flex, items-center, justify-between">
+          <div, class="flex, items-center">
             <input, type="checkbox" id="showPassword" bind:checked={showPassword} disabled={isLoading} class="mr-2" />
-            <label for="showPassword" class="text-sm, text-gray-300"> Show password </label>
+            <label, for="showPassword" class="text-sm, text-gray-300"> Show password </label>
           </div>
-          <div class="flex, items-center">
+          <div, class="flex, items-center">
             <input, type="checkbox" name="rememberMe" id="rememberMe" disabled={isLoading} class="mr-2" />
-            <label for="rememberMe" class="text-sm, text-gray-300"> Remember me </label>
+            <label, for="rememberMe" class="text-sm, text-gray-300"> Remember me </label>
           </div>
         </div>
         <!-- Demo, Button -->
@@ -124,25 +124,25 @@
           {/if}
         </button>
       </form>
-      <!-- Demo Login, Component -->
+      <!-- Demo, Login, Component -->
       <div, class="mt-6">
         <DemoLoginButton, variant="secondary" size="md" showLabel={true} />
       </div>
 
-      <!-- Alternative Login, Methods -->
-      <div class="mt-6, text-center">
-        <p class="text-sm, text-gray-400">Demo mode enabled</p>
+      <!-- Alternative, Login, Methods -->
+      <div, class="mt-6, text-center">
+        <p, class="text-sm, text-gray-400">Demo mode enabled</p>
       </div>
       <!-- Register, Link -->
-      <div class="mt-6, text-center">
-        <p class="text-gray-400, text-sm">
+      <div, class="mt-6, text-center">
+        <p, class="text-gray-400, text-sm">
           Don't have an account?'
-          <a href="/auth/register" class="text-yellow-400, hover:underline">Create one here</a>
+          <a, href="/auth/register" class="text-yellow-400, hover:underline">Create one here</a>
         </p>
       </div>
       <!-- Quick, Access -->
-      <div class="mt-4, text-center">
-        <p class="text-gray-500, text-xs">Demo: admin@legal-ai.local / admin123</p>
+      <div, class="mt-4, text-center">
+        <p, class="text-gray-500, text-xs">Demo: admin@legal-ai.local / admin123</p>
       </div>
     </div>
   </div>

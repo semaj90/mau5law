@@ -133,8 +133,7 @@ export class QueryCacheManager {
   }
   async invalidate(pattern: string) {
     // Invalidate cache entries matching pattern
-    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%' }`);'`
-  }
+    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%` }`);'` }'`
 }
 // Analytics tracking
 export class AnalyticsManager {

@@ -7,6 +7,6 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-<div class={cn('p-4, overflow-y-auto', className)}>
+<div, class={cn('p-4, overflow-y-auto', className)}>
   <slot />
 </div>

@@ -52,7 +52,7 @@ export function formatLegalTimestamp(date: Date | string): string {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZoneName: 'short' });
+    timeZoneName: 'short` });'`
 }
 // ===== TEXT TRUNCATION =====
 /**

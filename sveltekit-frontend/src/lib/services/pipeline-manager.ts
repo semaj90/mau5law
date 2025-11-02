@@ -141,7 +141,7 @@ export class PipelineManager {
     enableMemoryOptimization: true,
     maxMemoryMB: 512,
     workerThreads: 4,
-    cacheStrategy: 'hybrid` };'`
+    cacheStrategy: 'hybrid' };'`'`
 
   /**
    * 🚀 Auto-Route to Best Pipeline Based on Data Size and Requirements
@@ -224,8 +224,7 @@ export class PipelineManager {
         results: [],
         metrics: this.getEmptyMetrics(),
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown pipeline error` };'`
-    } finally {
+        error: error instanceof Error ? error.message : 'Unknown pipeline error' };'' } finally {
       this.activeOperations.delete(operationId);
     }
   }

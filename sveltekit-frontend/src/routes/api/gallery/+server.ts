@@ -153,8 +153,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     });
   } catch (err) {
     console.error('Gallery API error:', err);'
-    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
-  }
+    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
 };
 async function getEvidenceItems(
   filters: GalleryFilters,
@@ -464,8 +463,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     throw error(400, 'Invalid action');
   } catch (err) {
     console.error('Gallery POST error:', err);'
-    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
-  }
+    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
 };
 async function handleBulkDelete(ids: string[]): Promise<void> {
   // TODO: Implement bulk delete across different item types

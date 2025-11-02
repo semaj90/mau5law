@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const response = await fetch(`${GEMMA3_SUMMARIZATION_SERVICE_URL}${backendEndpoint}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify(body)
     });
     if (!response.ok) {

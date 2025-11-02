@@ -110,7 +110,7 @@ export class LegalAIApiClient {
         }
 
         if (!response.ok) {
-          const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}' };'`
+          const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}` };'`'`
           const ed = errorData as Record<string, unknown>;
           const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as string) : 'API_ERROR';
           const errMessage =
@@ -189,7 +189,7 @@ export class LegalAIApiClient {
    */
   async updateCase(
     id: string,
-    caseData: Partial<{ title: string;, description: string;
+    caseData: Partial<{, title: string;, description: string;
      , caseNumber: string;
      , status: 'open' | 'closed' | 'pending' | 'archived';
      , priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -275,7 +275,7 @@ export class LegalAIApiClient {
       fileSize: number;
       mimeType: string;
       hash: string;
-      tags: string[];
+     , tags: string[];
      , chainOfCustody: any[];
      , aiSummary: string;
      , summary: string;
@@ -348,7 +348,7 @@ export class LegalAIApiClient {
    */
   async updateReport(
     id: string,
-    reportData: Partial<{ title: string;, description: string;
+    reportData: Partial<{, title: string;, description: string;
      , reportType: string;
      , caseId: string;
      , content: string;

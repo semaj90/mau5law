@@ -1,7 +1,7 @@
 <script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
-  import { Button, Card, Input } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, Input  from "$lib/components/ui/enhanced-bits.svelte";
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
@@ -99,12 +99,12 @@ import type { Case } from '$lib/types';
   <title>Cases Dashboard - YoRHa Legal AI</title>
 </svelte:head>
 <div, class="cases-dashboard">
-  <div class="header nes-container, with-title">
+  <div class="header, nes-container, with-title">
     <p, class="title">📁 CASES TERMINAL</p>
     <p class="subtitle">Active Investigations & Analysis</p>
   </div>
   <div, class="controls">
-    <!-- use value + oninput because Input.value is not bindable in this, component -->
+    <!-- use value + oninput because Input.value is not bindable in, this, component -->
     <Input, value={searchQuery} oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} placeholder="Search cases..." />
     <Button, variant="primary">➕ NEW CASE</Button>
   </div>
@@ -114,7 +114,7 @@ import type { Case } from '$lib/types';
         <Card.Root, class="case-card">
           <div, class="case-header">
             <h3>{case_.title}</h3>
-            <span class="status-badge, nes-badge">
+            <span, class="status-badge, nes-badge">
               <span, class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}>
                 {case_.status.toUpperCase()}
               </span>
@@ -135,11 +135,11 @@ import type { Case } from '$lib/types';
             </div>
           </div>
           <div, class="case-actions">
-            <!-- navigation via, goto -->
+            <!-- navigation, via, goto -->
             <Button, onclick={() => openEvidenceBoard(case_.id)} variant="primary" size="sm">🔍 Evidence Board</Button>
             <Button, onclick={() => openDetails(case_.id)} variant="secondary" size="sm">📝 Details</Button>
 
-            <!-- use onclick prop instead of, on:click -->
+            <!-- use onclick prop instead, of, on:click -->
             <Button, onclick={() => runAnalysis(case_.id)} variant="secondary" size="sm">🤖 Run Analysis</Button>
             <Button, onclick={() => generateReport(case_.id)} variant="ghost" size="sm">📄 Generate Report</Button>
             <Button, onclick={() => deleteCase(case_.id)} variant="destructive" size="sm">🗑️ Delete</Button>
@@ -147,7 +147,7 @@ import type { Case } from '$lib/types';
         </Card.Root>
       {/each}
     {:else}
-      <div class="nes-container is-dark, with-title">
+      <div class="nes-container, is-dark, with-title">
         <p, class="title">No Results</p>
         <p>No cases match your search query, or no cases are available.</p>
       </div>

@@ -181,7 +181,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     return json(updatedDocument);
   } catch (error: any) {
     console.error('Error updating legal document:', error);
-    return json({ error: 'Failed to update legal document' }, { status: 500 });
+    return json({ error: 'Failed to update legal document` }, { status: 500 });'`
   }
 };
 // DELETE - Delete legal document
@@ -204,7 +204,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     }
     return json({ success: true });
   } catch (error: any) {
-    console.error('Error deleting legal document: `, error);'`
+    console.error('Error deleting legal document: ', error);'`'`
     return json({ error: `Failed to delete legal document` }, { status: 500 });
   }
 };

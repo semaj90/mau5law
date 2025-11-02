@@ -56,7 +56,7 @@ async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
     };
     const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify(request),
       signal: AbortSignal.timeout(AI_CONFIG.timeout)
     });
@@ -112,14 +112,14 @@ async function callTensorRT(prompt: string): Promise<AIResponse> {
       ],
       outputs: [
         {,
-          name: `OUTPUT_TEXT' }'`
+          name: `OUTPUT_TEXT` }'`'`
       ]
     };
     const response = await fetch(
       `${AI_CONFIG.tensorrtUrl}/v2/models/${AI_CONFIG.tensorrtModel}/infer`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(request),
         signal: AbortSignal.timeout(AI_CONFIG.timeout)
       }
@@ -304,7 +304,7 @@ async function invokeVectorSearch(query: string): Promise<ToolInvocation> {
 export async function* streamAIResponse(prompt: string): AsyncGenerator<string> {
   const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
     method: 'POST',
-    headers: { 'Content-Type': `application/json' },'`
+    headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({
      , model: AI_CONFIG.ollamaModel,
       prompt,

@@ -602,8 +602,7 @@ export class EnhancedIngestionPipeline {
       Transcription: ${evidence.extracted_content.transcription || 'N/A'}
       Scene Summary: ${evidence.extracted_content.scene_summary || 'N/A` }'`
       Processing Content: ${processingResult.content}
-    `;`
-  }
+    `;` }
   /**
    * Determine legal category based on evidence analysis
    */ private determineLegalCategory(evidence: MultimodalEvidence): string {

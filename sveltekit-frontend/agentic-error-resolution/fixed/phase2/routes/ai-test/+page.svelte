@@ -3,12 +3,12 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import EnhancedAIChatTest from '$lib/components/ai/EnhancedAIChatTest.svelte';
   import {
@@ -269,7 +269,7 @@
     </div>
     <!-- Refresh Button -->
     <div class="text-center mt-8">
-  <Button.Root variant="ghost" onclick={checkSystemStatus} disabled={isLoading} class="gap-2 bits-btn bits-btn">
+  <Button variant="ghost" onclick={checkSystemStatus} disabled={isLoading} class="gap-2 bits-btn bits-btn">
 {#if isLoading}
           <Loader2 class="h-4 w-4 animate-spin" />
         {:else}

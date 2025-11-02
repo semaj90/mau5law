@@ -1,4 +1,4 @@
-<!-- Consolidated Navigation - Shows ALL functionality, preserved -->
+<!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
 <script, lang="ts">
   import { routeGroups } from '$lib/data/route-groups-config';
   import { page } from '$app/stores';
@@ -59,7 +59,7 @@
           </div>
         </div>
       {/each}
-      <!-- Preserved standalone, routes -->
+      <!-- Preserved, standalone, routes -->
       <div, class="standalone-routes">
         <div, class="group-header">
           <span, class="group-icon">🔗</span>

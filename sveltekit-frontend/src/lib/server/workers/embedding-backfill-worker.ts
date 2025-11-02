@@ -140,8 +140,7 @@ export class EmbeddingBackfillWorker {
           const fileText = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).text();
           textContent += '\n\n' + fileText;
         } catch (error) {
-          console.warn(`Failed to extract text from ${file.object_name}: ', error);'`
-        }
+          console.warn(`Failed to extract text from ${file.object_name}: ', error);'' }'`
         break;
       case 'application/json':
         try {
@@ -166,7 +165,7 @@ export class EmbeddingBackfillWorker {
     // Call our embedding API endpoint
     const response = await fetch('http://localhost:5174/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({,
         text: text.substring(0, 50000), // Limit text length
         model: 'mock', // Use mock for testing - change to: 'openai'; or: 'nomic' when ready;

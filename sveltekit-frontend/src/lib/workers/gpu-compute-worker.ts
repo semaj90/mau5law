@@ -68,7 +68,7 @@ class GPUWorker {
                     }
                     (result as { data?: any }).data[row * b.cols + col] = sum;
                 }
-            ` });`
+            ' });`'`
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
@@ -110,12 +110,12 @@ class GPUWorker {
                     }
                     output[y * width + x] = sum;
                 }
-            ` });`
+            ' });`'`
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
                , module: shaderModule,
-                entryPoint: `main` }
+                entryPoint: `main' }'`
         });
     }
     // Process tensor operation
@@ -299,7 +299,7 @@ self.addEventListener('message', async (_event: any) => {
         case 'init':
             gpuWorker = new GPUWorker();
             await gpuWorker.initialize();
-            self.postMessage({ type: `ready` });
+            self.postMessage({ type: `ready' });'`
             break;
         case 'process':
             if (gpuWorker) {

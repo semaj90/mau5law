@@ -35,7 +35,7 @@ import type { Document } from '$lib/types';
 </script>
 
 <button, onclick={analyzeCaseWithAI} disabled={isAnalyzing}>
-  {isAnalyzing ? '⏳ Analyzing...' : '🤖 Analyze Case` }'`
+  {isAnalyzing ? '⏳ Analyzing...' : '🤖 Analyze Case' }'`'`
 </button>
 
 {#if caseAnalysis}
@@ -250,7 +250,7 @@ import { generate } from '$lib/ai/unified-llama';
 
 export async function expandSearchQuery(originalQuery: string): Promise<string[]> {
   const result = await generate(
-    `Generate 3 alternative search queries for legal research:`
+    `Generate 3 alternative search queries for legal research: '`
 ; Original: "${originalQuery}"
 
 Alternatives (one per line): ','
@@ -409,7 +409,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
   }
 </script>
 
-<input bind:value={fieldValue} placeholder="Enter, address..." />
+<input, bind:value={fieldValue} placeholder="Enter, address..." />
 
 {#if capabilities?.wasm || capabilities?.remote}
   <button, onclick={() => suggestValue('address')}>
@@ -456,7 +456,7 @@ export async function reliableGenerate(
 }
 
 // Usage:
-// const safeResult = await reliableGenerate('Important query', { mode: 'auto` });'`
+// const safeResult = await reliableGenerate('Important query', { mode: 'auto' });'`'`
 */
 
 export {};

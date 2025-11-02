@@ -415,7 +415,7 @@ export const GET: RequestHandler = async () => {
         successRate: Math.round(metrics.successRate * 100) / 100
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2' });
+      version: '2.0.0-phase2` });'`
   } catch (err) {
     console.error('❌ Health check failed:', err);
     return json(

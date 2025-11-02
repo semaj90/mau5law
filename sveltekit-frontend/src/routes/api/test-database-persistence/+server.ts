@@ -253,8 +253,7 @@ async function testStoreMessage(
         content,
         metadata: {
          , testMessage: true,
-          embeddingStatus: 'not_available'
-        }
+          embeddingStatus: 'not_available` }'`
       });
     }
     return {

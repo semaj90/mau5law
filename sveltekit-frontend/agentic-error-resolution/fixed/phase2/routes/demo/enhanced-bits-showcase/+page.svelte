@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {
+  import 
     Button,
     LinkButton,
     YoRHaSearchBar,
@@ -16,7 +16,7 @@
     DraggableModal,
     EvidenceBoard,
     Toolbar,
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   let activeDemo = $state('overview');
   let searchQuery = $state('');
   let showYoRHaModal = $state(false);
@@ -73,7 +73,7 @@
     {#if activeDemo === 'overview'}
       <!-- Overview Section -->
       <div class="overview-section">
-        <Card.Root class="overview-card">
+        <Card class="overview-card">
           <CardHeader>
             <CardTitle>Enhanced-Bits UI Library</CardTitle>
           </CardHeader>
@@ -105,12 +105,12 @@
               </div>
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
       </div>
     {:else if activeDemo === 'buttons'}
       <!-- Buttons Demo -->
       <div class="buttons-demo">
-        <Card.Root title="Standard Buttons" class="demo-card">
+        <Card title="Standard Buttons" class="demo-card">
           <div class="button-grid">
             <Button variant="default">Default</Button>
             <Button variant="primary">Primary</Button>
@@ -119,21 +119,21 @@
             <Button variant="outline">Outline</Button>
             <Button variant="destructive">Destructive</Button>
           </div>
-        </Card.Root>
-        <Card.Root title="Button Sizes" class="demo-card">
+        </Card>
+        <Card title="Button Sizes" class="demo-card">
           <div class="button-grid">
             <Button size="sm">Small</Button>
             <Button size="md">Medium</Button>
             <Button size="lg">Large</Button>
           </div>
-        </Card.Root>
-        <Card.Root title="Link Buttons" class="demo-card">
+        </Card>
+        <Card title="Link Buttons" class="demo-card">
           <div class="button-grid">
             <LinkButton href="/demo">Demo Link</LinkButton>
             <LinkButton href="/about" variant="primary">Primary Link</LinkButton>
             <LinkButton href="/contact" variant="outline">Outline Link</LinkButton>
           </div>
-        </Card.Root>
+        </Card>
       </div>
     {:else if activeDemo === 'cards'}
       <!-- Cards Demo -->
@@ -146,16 +146,16 @@
             <CardContent>
               <p>This is a basic card component with header and content.</p>
             </CardContent>
-          </Card.Root>
-          <Card.Root class="elevated-card">
+          </Card>
+          <Card class="elevated-card">
             <CardHeader>
               <CardTitle>Elevated Card</CardTitle>
             </CardHeader>
             <CardContent>
               <p>This card has elevated styling with enhanced shadows.</p>
             </CardContent>
-          </Card.Root>
-          <Card.Root class="interactive-card">
+          </Card>
+          <Card class="interactive-card">
             <CardHeader>
               <CardTitle>Interactive Card</CardTitle>
             </CardHeader>
@@ -163,13 +163,13 @@
               <p>This card responds to hover and click interactions.</p>
               <Button variant="primary" size="sm">Action</Button>
             </CardContent>
-          </Card.Root>
+          </Card>
         </div>
       </div>
     {:else if activeDemo === 'search'}
       <!-- Search Demo -->
       <div class="search-demo">
-        <Card.Root title="YoRHa Search Bar" class="demo-card">
+        <Card title="YoRHa Search Bar" class="demo-card">
           <div class="search-container">
             <YoRHaSearchBar
               bind:value={searchQuery}
@@ -179,17 +179,17 @@
               maxSuggestions={6}
             />
           </div>
-        </Card.Root>
-        <Card.Root title="Legal Theme Search" class="demo-card">
+        </Card>
+        <Card title="Legal Theme Search" class="demo-card">
           <div class="search-container">
             <YoRHaSearchBar theme="legal" placeholder="Professional legal search..." onsearch={handleSearchDemo} />
           </div>
-        </Card.Root>
+        </Card>
       </div>
     {:else if activeDemo === 'nes-gaming'}
       <!-- NES Gaming Demo -->
       <div class="nes-demo">
-        <Card.Root title="NES Gaming Components" class="demo-card nes-themed">
+        <Card title="NES Gaming Components" class="demo-card nes-themed">
           <div class="nes-buttons-grid">
             <NESButton variant="default">Default</NESButton>
             <NESButton variant="primary">Primary</NESButton>
@@ -214,16 +214,16 @@
             </NESCard>
           </div>
           <NESButton onclick={() => (showNESModal = true)}>Open NES Modal</NESButton>
-        </Card.Root>
+        </Card>
         <!-- Full NES Gaming Showcase -->
-        <Card.Root title="Complete NES Gaming Interface" class="demo-card">
+        <Card title="Complete NES Gaming Interface" class="demo-card">
           <NESGamingShowcase />
-        </Card.Root>
+        </Card>
       </div>
     {:else if activeDemo === 'yorha'}
       <!-- YoRHa Theme Demo -->
       <div class="yorha-demo">
-        <Card.Root title="YoRHa Cyberpunk Interface" class="demo-card yorha-themed">
+        <Card title="YoRHa Cyberpunk Interface" class="demo-card yorha-themed">
           <div class="yorha-content">
             <p>Experience the cyberpunk aesthetic inspired by NieR: Automata</p>
             <div class="yorha-features">
@@ -246,20 +246,20 @@
             </div>
             <Button onclick={() => (showYoRHaModal = true)}>Open YoRHa Modal</Button>
           </div>
-        </Card.Root>
+        </Card>
       </div>
     {:else if activeDemo === 'evidence'}
       <!-- Evidence Board Demo -->
       <div class="evidence-demo">
-        <Card.Root title="Interactive Evidence Board" class="demo-card">
+        <Card title="Interactive Evidence Board" class="demo-card">
           <p>Drag-and-drop evidence management system with YoRHa styling</p>
           <Button onclick={() => (showEvidenceBoard = true)}>Open Evidence Board</Button>
-        </Card.Root>
+        </Card>
       </div>
     {:else if activeDemo === 'integration'}
       <!-- Integration Demo -->
       <div class="integration-demo">
-        <Card.Root title="Component Integration Examples" class="demo-card">
+        <Card title="Component Integration Examples" class="demo-card">
           <div class="integration-examples">
             <div class="example-section">
               <h4>Toolbar Integration</h4>
@@ -274,7 +274,7 @@
             <div class="example-section">
               <h4>Mixed Component Layout</h4>
               <div class="mixed-layout">
-                <Card.Root class="layout-card">
+                <Card class="layout-card">
                   <CardHeader>
                     <CardTitle>Legal Document Analysis</CardTitle>
                   </CardHeader>
@@ -285,7 +285,7 @@
                       <NESButton variant="success">Process</NESButton>
                     </div>
                   </CardContent>
-                </Card.Root>
+                </Card>
               </div>
             </div>
           </div>

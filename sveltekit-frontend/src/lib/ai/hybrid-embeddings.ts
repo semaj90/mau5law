@@ -108,8 +108,7 @@ export class HybridEmbeddings {
           embedding: embedding as number[],
           strategy: 'ollama',
           duration: performance.now() - startTime,
-          model: 'embeddinggemma:latest` };'`
-      } catch (error) {
+          model: 'embeddinggemma:latest' };'' } catch (error) {
         if (strategy === 'ollama') throw error;
       }
     }
@@ -119,7 +118,7 @@ export class HybridEmbeddings {
       embedding: embedding as number[],
       strategy: 'browser',
       duration: performance.now() - startTime,
-      model: `Xenova/all-MiniLM-L6-v2` };
+      model: `Xenova/all-MiniLM-L6-v2' };'`
   }
   /**
    * Embed using Ollama via API proxy
@@ -133,7 +132,7 @@ export class HybridEmbeddings {
     try {
       const response = await fetch(this.ollamaBaseUrl, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ text }),
         signal: controller.signal
       });
@@ -233,7 +232,7 @@ export class HybridEmbeddings {
     return {
       ollama: ollamaAvailable,
       browser: browserAvailable,
-      recommended: ollamaAvailable ? 'ollama' : `browser` };
+      recommended: ollamaAvailable ? 'ollama' : `browser' };'`
   }
   /**
    * Cleanup resources

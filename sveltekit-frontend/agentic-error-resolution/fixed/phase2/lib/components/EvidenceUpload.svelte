@@ -7,9 +7,9 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, fly } from 'svelte/transition';
   // Add named component imports used in the template.
   // Adjust paths if your UI components live elsewhere (e.g. '$lib/components/ui' index).
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Progress } from '$lib/components/ui/progress.svelte';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
+  import  Button  from "$lib/components/ui/button.svelte";
+  import  Progress  from "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
   // dynamic mapping for optional store APIs (avoids compile errors if they don't exist)
   let processEvidenceFn: ((file: File, evidenceId: string, caseId?: string) => Promise<any>) | undefined;
   let retryProcessingFn: (() => void) | undefined;
@@ -205,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
         onchange={handleFileSelect}
         class="hidden"
       />
-      <Button.Root class="bits-btn mt-2" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button.Root>
+      <Button class="bits-btn mt-2" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
     {/if}
   {#if selectedFile && !processing && !completed}
     <div class="file-info bg-gray-50 p-4 rounded-lg mb-6" transition:fade>
@@ -218,8 +218,8 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Change File</Button.Root>
-          <Button.Root onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button.Root>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Change File</Button>
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button>
         </div>
       </div>
     {/if}
@@ -268,14 +268,14 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => window.open(artifactUrl!, '_blank')}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => window.open(artifactUrl!, '_blank')}>
             Download Artifact
-          </Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button.Root>
+          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
         </div>
       {:else}
         <div class="flex gap-2 mt-4">
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button.Root>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
         {/if}
     {/if}
   {#if errorMsg}
@@ -285,8 +285,8 @@ https://svelte.dev/e/js_parse_error -->
         <AlertDescription>
           <div class="mb-2">{errorMsg}</div>
           <div class="flex gap-2">
-            <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button.Root>
-            <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Reset</Button.Root>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Reset</Button>
           </div>
         </AlertDescription>
       </div>

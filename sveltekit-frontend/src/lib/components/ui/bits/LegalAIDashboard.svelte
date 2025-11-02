@@ -1,5 +1,5 @@
-<!-- Enhanced-Bits Legal AI, Dashboard -->
-<!-- Complete integration of Citations, Reports, and POI, systems -->
+<!-- Enhanced-Bits Legal, AI, Dashboard -->
+<!-- Complete integration of Citations, Reports, and, POI, systems -->
 <script, lang="ts">
   import { Input } from '$lib/components/ui/input';
   import { Button } from '$lib/components/ui/button';
@@ -18,7 +18,7 @@ import type { Case } from '$lib/types';
     initializeEnhancedBits,
     LegalDesignTokens
   } from './index';
-  import { LegalPOICard } from './LegalPOICard.svelte';
+  import  LegalPOICard  from "./LegalPOICard.svelte";
   // Import all three legal systems
   import { citationsStore } from '$lib/stores/legal-citations.js';
   import { reportsStore } from '$lib/stores/legal-reports.js';
@@ -265,7 +265,7 @@ import type { Case } from '$lib/types';
               </CardHeader>
               <CardContent>
                 <div, class="stat-value">{dashboardData.totalPOIs}</div>
-                <div class="stat-detail, high-risk">{dashboardData.highRiskPOIs} high risk</div>
+                <div, class="stat-detail, high-risk">{dashboardData.highRiskPOIs} high risk</div>
               </CardContent>
             </Card.Root>
           </div>

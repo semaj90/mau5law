@@ -50,8 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         } catch (error: any) {
           // Changed: 'any'; to: 'unknown'
-          console.warn(`Error generating embedding with ${modelName}: ', error);'`
-        }
+          console.warn(`Error generating embedding with ${modelName}: ', error);'' }'`
       }
 
       // Insert message into database
@@ -90,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to save chat messages',
-        details: error instanceof Error ? error.message : 'Unknown error' },
+        details: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }

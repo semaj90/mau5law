@@ -224,7 +224,7 @@ export class AIErrorFixer {
   private createFixPrompt(error: ErrorAnalysisResult): string {
     const line = error.line || 0;
     const original = error.originalCode ?? '// Code not available';
-    return `You are a TypeScript expert. Fix this error:; Error: ${error.code || 'unknown'} - ${error.message || ''}`
+    return `You are a TypeScript expert. Fix this error:; Error: ${error.code || 'unknown'} - ${error.message || '` }`'`
 File: ${error.file || 'unknown'}
 Line: ${line}
 Category: ${error.category || 'general` }'`
@@ -235,8 +235,7 @@ Context around line ${line}:
 \`\`\`
 Provide ONLY the fixed code for line ${line} with this format:; FIXED_CODE: [your fix here]; REASONING: [brief explanation]; CONFIDENCE: [0.0-1.0]
 Common fixes for ${error.code || 'unknown` }:'`
-${this.getCommonFixes(error.code || '')}`;`
-  }
+${this.getCommonFixes(error.code || '')}`;` }
 
   private getCommonFixes(code: string): string {
     const fixes: Record<string, string> = {
@@ -478,7 +477,7 @@ ${this.getCommonFixes(error.code || '')}`;`
       // Read file via API; the endpoint must exist on the server-side
       const resp = await fetch(`/api/files/read`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({, file: fix.file })
       });
       if (!resp.ok) return { errorId: fix.errorId, success: false, reason: `Could not read file` };

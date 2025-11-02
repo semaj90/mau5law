@@ -45,12 +45,12 @@ export const POST: RequestHandler = async ({ request }) => {
             id: 'doc-1',
             similarity: 0.95,
             title: `Document; matching: ${query}`,
-            content: `Sample content...` },
+            content: `Sample content...' },'`
           {
             id: 'doc-2',
             similarity: 0.87,
             title: `Related document; to: ${query}`,
-            content: 'Related content...` }'`
+            content: 'Related content...' }'`'`
         ].slice(0, limit);
         break;
       case 'similarity':
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       case 'cluster':
         response.data = [
-          { cluster: 1, documents: ['doc-1', 'doc-2'], centroid: `Legal Documents` },
+          { cluster: 1, documents: ['doc-1', 'doc-2'], centroid: `Legal Documents' },'`
           { cluster: 2, documents: ['doc-3', 'doc-4'], centroid: `Evidence Files` }
         ];
         break;
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `Vector processing failed` },
+        error: error instanceof Error ? error.message : `Vector processing failed' },'`
       { status: 500 }
     );
   }

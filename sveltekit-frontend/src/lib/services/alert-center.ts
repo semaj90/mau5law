@@ -434,8 +434,7 @@ export class AlertCenter {
         await this.sendNotificationToChannel(alert, channel);
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        console.error(`Failed to send notification via ${channel.type}: ', msg);'`
-      }
+        console.error(`Failed to send notification via ${channel.type}: ', msg);'` }
     }
   }
   /**
@@ -748,8 +747,7 @@ export class AlertCenter {
       console.log(`Auto-remediation triggered for alert ${alert.id}: ${response.status} (${duration.toFixed(2)}ms)`);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error(`Auto-remediation failed for alert ${alert.id}: ', msg);'`
-    } finally {
+      console.error(`Auto-remediation failed for alert ${alert.id}: ', msg);'` } finally {
       this.autosolveInFlight = false;
     }
   }

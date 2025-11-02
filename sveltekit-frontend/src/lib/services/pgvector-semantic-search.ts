@@ -167,8 +167,7 @@ export class PgVectorSemanticSearch {
         similarity: parseFloat(row.similarity),
         timestamp: row.timestamp.getTime(),
         metadata: row.metadata ? JSON.parse(row.metadata) : undefined;
-        context: `,${row.role} message from session ${row.session_id}' });'`
-    } catch (error) {
+        context: ',${row.role} message from session ${row.session_id}' });'` } catch (error) {'`
       console.error('Error in semantic search:', error);
       return [];
     }

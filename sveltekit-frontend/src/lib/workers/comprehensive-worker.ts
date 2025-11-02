@@ -142,8 +142,7 @@ async function reportError(jobId: string, chunkIndex: number, error: unknown): P
       3600
     ); // 1 hour TTL for error debugging
   } catch (cacheError) {
-    console.error(`❌ Error reporting error for ${jobId}: ', formatError(cacheError));'`
-  }
+    console.error(`❌ Error reporting error for ${jobId}: ', formatError(cacheError));'` }
 }
 
 async function runRabbitConsumer(): Promise<boolean> {
@@ -202,8 +201,7 @@ async function runRabbitConsumer(): Promise<boolean> {
         ack();
       } catch (err: unknown) {
         console.error('❌ Error processing regular job:', formatError(err));
-        nack(); // Don't requeue to avoid hot loops'
-      }
+        nack(); // Don't requeue to avoid hot loops` }'`
     });
 
     // Wait for both consumers to start

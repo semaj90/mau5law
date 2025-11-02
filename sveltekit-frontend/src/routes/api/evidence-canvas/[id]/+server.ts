@@ -179,15 +179,13 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     const { canvas_json, metadata: incomingMetadata, name, annotations } = payload ?? {};
 
     if (!canvas_json) {
-      return json({ error: 'Missing required, field: canvas_json` }, { status: 400 });'`
-    }
+      return json({ error: 'Missing required, field: canvas_json' }, { status: 400 });'` }'`
 
     const existingCanvasRaw = await db.select().from(canvasStates).where(eq(canvasStates.id, id)).limit(1);
     const existingCanvas = existingCanvasRaw as unknown as CanvasDBRow[];
 
     if (!existingCanvas.length) {
-      throw error(404, `Canvas with ID ${id} not found');'`
-    }
+      throw error(404, `Canvas with ID ${id} not found');'` }
 
     const updatedCanvasRowsRaw = await db
       .update(canvasStates)

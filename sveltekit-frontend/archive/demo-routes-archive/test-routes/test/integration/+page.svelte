@@ -256,13 +256,13 @@
     </p>
 
     <div class="flex gap-4 mb-6">
-      <Button.Root
+      <Button
   onclick={runIntegrationTests}
         disabled={isRunningTests}
         class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold bits-btn bits-btn"
       >
         {isRunningTests ? '🔄 Running Tests...' : '🚀 Run All Tests'}
-      </Button.Root>
+      </Button>
 
       <div class="flex items-center gap-2">
         <span class="text-gray-400">PostgreSQL:</span>
@@ -364,9 +364,9 @@
           <div class="component-section">
             <h3 class="text-xl font-semibold text-white mb-4">Modern Bits-UI Integration</h3>
             <div class="flex gap-4 flex-wrap">
-              <Button.Root class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded bits-btn bits-btn">
+              <Button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded bits-btn bits-btn">
                 Bits-UI Button
-              </Button.Root>
+              </Button>
               <ModernButton variant="primary">
                 Modern Button
               </ModernButton>

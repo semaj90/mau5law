@@ -53,7 +53,7 @@ export function prefersReducedMotion(): boolean {
 }
 
 // Wrap params to return motion-safe values (duration = 0 when user prefers reduced motion)
-export function motionSafeParams<T extends, TransitionParams>(params: T): T {
+export function motionSafeParams<T, extends, TransitionParams>(params: T): T {
 	if (prefersReducedMotion()) {
 		return { ...params, duration: 0 } as T;
 	}

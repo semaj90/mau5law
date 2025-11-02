@@ -263,9 +263,9 @@
   export { prefersReducedMotion }
 </script>
 
-<!-- Animation library doesn't render anything, it's a utility, component -->
-<!-- Use a slot for children content instead of expecting, a `children` prop -->
-<!-- Replaced Svelte 5 {@render} (caused parse error) with standard slot for, compatibility -->
+<!-- Animation library doesn't render anything, it's a, utility, component -->
+<!-- Use a slot for children content instead of, expecting, a `children` prop -->
+<!-- Replaced Svelte 5 {@render} (caused parse error) with standard slot, for, compatibility -->
 <slot />
 
 <style>

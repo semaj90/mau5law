@@ -313,9 +313,9 @@
     }
   }
 </script>
-<!-- Minimal DOM container for D3 to attach the, SVG -->
+<!-- Minimal DOM container for D3 to attach, the, SVG -->
 <div, bind:this={containerElement} class="d3-container"></div>
-<!-- Add minimal UI that uses the CSS classes and state variables so selectors are considered, used -->
+<!-- Add minimal UI that uses the CSS classes and state variables so selectors are, considered, used -->
 {#if interactive}
   <div, class="controls-panel">
     <div, class="analysis-controls">

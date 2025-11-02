@@ -31,8 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
           results.results.pgvector = {
             installed: vectorTest.length > 0,
             version: vectorVersion[0]?.extversion || null,
-            status: vectorTest.length > 0 ? 'available' : 'not_installed'
-          };
+            status: vectorTest.length > 0 ? 'available' : 'not_installed` };'`
         } catch (error: any) {
           results.results.pgvector = {
             installed: false,

@@ -298,7 +298,7 @@ export class ProductionMoogleService {
       'evidence': '#FF5722',
       'entity': '#9C27B0',
       'concept': '#FFC107',
-      'relationship': '#607D8B' };
+      'relationship': '#607D8B` };'`
     nodes.forEach(node => {
       const pos = positions.get(node.id);
       if (!pos) return;

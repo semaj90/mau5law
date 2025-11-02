@@ -7,9 +7,9 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button } from '$lib/components/ui/bitsbutton.svelte';
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
-  import { Select } from '$lib/components/ui/MeltSelect.svelte';
+  import  Button  from "$lib/components/ui/bitsbutton.svelte";
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
+  import  Select  from "$lib/components/ui/MeltSelect.svelte";
   // TODO: Replace with bits-ui equivalents when available
   // import {
   //   Badge,
@@ -452,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </button>
         {#if enableFilters}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
 showFilters.update((s) => !s)}
@@ -467,7 +467,7 @@ showFilters.update((s) => !s)}
             {/if}
         {/if}
         {#if enableAnalytics}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
 showAnalytics.update((s) => !s)}
@@ -483,7 +483,7 @@ showAnalytics.update((s) => !s)}
         <p class="history-label">Recent searches:</p>
         <div class="history-tags">
           {#each Array.isArray($searchHistory.slice(0, 5)) ? $searchHistory.slice(0, 5) : [] as historyItem}
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={() =>
@@ -505,7 +505,7 @@ showAnalytics.update((s) => !s)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
 Reset
         </h3>
       </div>
@@ -596,7 +596,7 @@ Reset
             </Select>
           </div>
         </div>
-        <Button.Root onclick={applyFilters} class="w-full bits-btn bits-btn">
+        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">
 Apply Filters
       </div>
     {/if}
@@ -683,13 +683,13 @@ Apply Filters
                 {/if}
               <!-- Result Actions -->
               <div class="result-actions">
-                <Button.Root class="bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Eye class="mr-1" size={14} />
                   View
-                <Button.Root class="bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Download class="mr-1" size={14} />
                   Download
-                <Button.Root class="bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Share2 class="mr-1" size={14} />
                   Share
               </div>
@@ -707,7 +707,7 @@ Apply Filters
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button.Root class="bits-btn" variant="ghost" onclick={resetFilters}>
+        <Button class="bits-btn" variant="ghost" onclick={resetFilters}>
 Reset Filters
       </div>
     {/if}

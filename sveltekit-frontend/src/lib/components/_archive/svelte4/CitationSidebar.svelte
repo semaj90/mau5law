@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
   // Replace problematic import/namespace usage with a local type alias
@@ -80,20 +80,20 @@ import type { Case } from '$lib/types';
   }
 </script>
 
-<div class="container mx-auto, px-4">
-  <div class="container mx-auto, px-4">
-    <h2 class="container mx-auto, px-4">Saved Citations</h2>
-    <p class="container mx-auto, px-4">
+<div class="container, mx-auto, px-4">
+  <div class="container, mx-auto, px-4">
+    <h2 class="container, mx-auto, px-4">Saved Citations</h2>
+    <p class="container, mx-auto, px-4">
       {filteredCitations.length} of {(citations ?? []).length} citations
     </p>
   </div>
-  <!-- Search and, Filters -->
-  <div class="container mx-auto, px-4">
-    <div class="container mx-auto, px-4">
-      <Search class="container mx-auto, px-4" />
-      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="container mx-auto, px-4" />
+  <!-- Search, and, Filters -->
+  <div class="container, mx-auto, px-4">
+    <div class="container, mx-auto, px-4">
+      <Search class="container, mx-auto, px-4" />
+      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="container, mx-auto, px-4" />
     </div>
-    <select bind:value={selectedCategory} class="container mx-auto, px-4">
+    <select bind:value={selectedCategory} class="container, mx-auto, px-4">
       {#each Array.isArray(categories) ? categories : [] as category}
         <option, value={category.value}>{category.label}</option>
       {/each}
@@ -101,14 +101,14 @@ import type { Case } from '$lib/types';
   </div>
 
   <!-- Citations, List -->
-  <div class="container mx-auto, px-4">
+  <div class="container, mx-auto, px-4">
     {#each filteredCitations as citation (citation.id)}
-      <div class="container mx-auto px-4 nes-container, citation-card" onclick={() => selectCitation(citation)}>
-        <div class="container mx-auto px-4, citation-content">
+      <div class="container mx-auto px-4, nes-container, citation-card" onclick={() => selectCitation(citation)}>
+        <div class="container mx-auto, px-4, citation-content">
           <div, class="citation-header">
             <h3, class="citation-title">{citation.title}</h3>
             <div, class="citation-actions" aria-hidden="true">
-              <!-- Favorite: native button (removed invalid, props) -->
+              <!-- Favorite: native button (removed, invalid, props) -->
               <button
                 class="bits-btn favorite-btn"
                 title="Toggle favorite"
@@ -118,7 +118,7 @@ import type { Case } from '$lib/types';
                 <Star />
               </button>
 
-              <!-- Copy: use native button so event modifiers and typings are, DOM-safe.
+              <!-- Copy: use native button so event modifiers and typings, are, DOM-safe.
                    Stop propagation inline to preserve previous behavior. -->
               <button
                 class="bits-btn copy-btn"
@@ -131,7 +131,7 @@ import type { Case } from '$lib/types';
                 <Copy />
               </button>
 
-              <!-- Delete: native button (removed invalid, props) -->
+              <!-- Delete: native button (removed, invalid, props) -->
               <button
                 class="bits-btn delete-btn"
                 title="Delete citation"
@@ -188,14 +188,14 @@ import type { Case } from '$lib/types';
                 Saved {new Date(citation.savedAt).toLocaleDateString()}
               {/if}
             </span>
-            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700">{citation.category}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium, bg-gray-200, text-gray-700">{citation.category}</span>
           </div>
         </div>
       </div>
     {/each}
 
     {#if filteredCitations.length === 0}
-      <div class="container mx-auto px-4, empty-state">
+      <div class="container mx-auto, px-4, empty-state">
         {#if searchQuery || selectedCategory !== 'all'}
           <p, class="empty-message">No citations match your search criteria.</p>
           <button
@@ -219,7 +219,7 @@ import type { Case } from '$lib/types';
   </div>
 </div>
 
-<!-- TODO: migrate export lets to $props(); CommonProps, assumed. -->
+<!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
 
 <style>
   /* @unocss-include */

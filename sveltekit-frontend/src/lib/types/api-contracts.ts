@@ -286,16 +286,16 @@ export type Maintenance = ApiContract<MaintenanceRequest, MaintenanceResponse>;
 
 // ==================== TYPE UTILITY FUNCTIONS ====================
 // Extract request type from API contract
-export type RequestOf<T extends, ApiContract<unknown, unknown>> = T['request'];
+export type RequestOf<T, extends, ApiContract<unknown, unknown>> = T['request'];
 // Extract response type from API contract
-export type ResponseOf<T extends, ApiContract<unknown, unknown>> = T['response'];
+export type ResponseOf<T, extends, ApiContract<unknown, unknown>> = T['response'];
 // Extract data type from API response
-export type DataOf<T extends, ApiContract<unknown, StandardApiResponse<unknown>>> =
+export type DataOf<T, extends, ApiContract<unknown, StandardApiResponse<unknown>>> =
   T['response'] extends StandardApiResponse<infer, U> ? U : never;
 
 // ==================== CLIENT API HELPERS ====================
 // Type-safe API client function generator
-export type ApiClient<T extends, ApiContract<unknown, unknown>> = (request: RequestOf<T>) => Promise<ResponseOf<T>>;
+export type ApiClient<T, extends, ApiContract<unknown, unknown>> = (request: RequestOf<T>) => Promise<ResponseOf<T>>;
 
 // API endpoint configuration
 export interface ApiEndpoint<T extends ApiContract<unknown, unknown>> { method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';, path: string;

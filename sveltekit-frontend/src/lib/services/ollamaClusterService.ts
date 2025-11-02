@@ -85,7 +85,7 @@ const initialConfig: OllamaClusterConfig = {
     legal_analysis: 'gemma3-legal',
     embeddings: 'nomic-embed-text',
     general_chat: 'deeds-web',
-    document_summary: 'gemma3-legal' }
+    document_summary: 'gemma3-legal` }'`
 };
 
 // Core stores
@@ -310,7 +310,7 @@ export class OllamaClusterService {
       const response = await fetch(`${instance.url}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify(payload),
         signal: createTimeoutSignal(60000)
       });

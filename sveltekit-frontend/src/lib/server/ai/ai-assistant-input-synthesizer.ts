@@ -681,7 +681,7 @@ export class AIAssistantInputSynthesizer {
     const checks: Array<{ name: string; check: () => Promise<unknown> }> = [
       { name: 'LegalBERT', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'RAG Pipeline', check: () => Promise.resolve({ status: 'healthy' }) },
-      { name: 'Legal Search', check: () => Promise.resolve({ status: 'healthy` }) },'`
+      { name: 'Legal Search', check: () => Promise.resolve({ status: `healthy` }) },'`'`
       { name: 'Redis', check: () => redis.ping().then(() => ({ status: `healthy` })) },
       {
         name: 'Qdrant',
@@ -916,11 +916,10 @@ export class AIAssistantInputSynthesizer {
 
   private generateRecommendations(metrics: QualityMetrics): string[] {
     const recs: string[] = [];
-    if (metrics.contextRelevance < 0.6) recs.push('Broaden retrieval strategies or increase, maxSources.');
-    if (metrics.sourceAuthority < 0.6) recs.push('Prefer authoritative, sources (statutes, opinions).');
-    if (metrics.conceptCoverage < 0.6) recs.push('Include additional legal concepts or, documents.');
+    if (metrics.contextRelevance < 0.6) recs.push('Broaden retrieval strategies or, increase, maxSources.');
+    if (metrics.sourceAuthority < 0.6) recs.push('Prefer, authoritative, sources (statutes, opinions).');
+    if (metrics.conceptCoverage < 0.6) recs.push('Include additional legal concepts, or, documents.');
     return recs;
   }
 
-  // Removed calculateCosineSimilarity as it's now handled by ai-utils or embedding service'
-} // end of class AIAssistantInputSynthesizer
+  // Removed calculateCosineSimilarity as it's now handled by ai-utils or embedding service` } // end of class AIAssistantInputSynthesizer'`

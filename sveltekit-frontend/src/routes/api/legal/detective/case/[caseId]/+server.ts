@@ -309,8 +309,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       chainOfCustody: ['Paralegal Davis', 'Det. Martinez', 'Evidence Locker 252'],
       analysisStatus: 'COMPLETE',
       findings:
-        "Records show 3-year pattern of legal disputes, escalating financial stakes, and suspect's consistent pattern of non-compliance with court orders."'
-    },
+        "Records show 3-year pattern of legal disputes, escalating financial stakes, and suspect's consistent pattern of non-compliance with court orders."` },'`
     {
       id: 'E007',
       type: 'DIGITAL',
@@ -321,7 +320,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Digital Forensics Unit - Tech. Lee',
       chainOfCustody: ['Tech. Lee', 'Det. Martinez', 'Evidence Locker 253'],
       analysisStatus: 'COMPLETE',
-      findings: `Screenshots captured before suspect deleted posts. Content shows escalating anger and veiled threats toward victim. Some posts were deleted before capture.` },
+      findings: `Screenshots captured before suspect deleted posts. Content shows escalating anger and veiled threats toward victim. Some posts were deleted before capture.' },'`
     {
       id: 'E008',
       type: 'PHYSICAL',
@@ -333,8 +332,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       chainOfCustody: ['Det. Chen', 'Det. Martinez', 'Evidence Locker 254'],
       analysisStatus: 'COMPLETE',
       findings:
-        "High-resolution photos clearly identify suspect conducting surveillance over 3 separate days. Vehicle license plate matches suspect's registered vehicle."'
-    },
+        "High-resolution photos clearly identify suspect conducting surveillance over 3 separate days. Vehicle license plate matches suspect's registered vehicle."` },'`
     {
       id: 'E009',
       type: 'DOCUMENTARY',

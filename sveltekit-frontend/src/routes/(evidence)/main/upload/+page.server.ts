@@ -119,7 +119,7 @@ export const actions: Actions = {
       // Generate file hash for integrity
       const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
       // Generate file URL (relative to static assets)
-      const fileUrl = `/uploads/evidence/${form.data.case_id || 'default' }/${timestamp}-${randomSuffix}${fileExtension}`;
+      const fileUrl = `/uploads/evidence/${form.data.case_id || 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;'`
       // OCR Processing for supported file types
       let ocrResult: any = null;
       if (form.data.enableOcr && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
@@ -300,8 +300,7 @@ export const actions: Actions = {
       } catch (goServiceError) {
         console.warn('⚠️ Go upload service error (non-critical):', goServiceError);
         console.warn('Continuing with local processing only');
-        // Don't fail the upload, just log the warning'
-      }
+        // Don't fail the upload, just log the warning` }'`
     } catch (error: any) {
       console.error('Evidence upload error:', error);'
       return fail(500, {

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
-  import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Card, CardContent, Button, Input  from "$lib/components/ui/enhanced-bits.svelte";
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';
@@ -235,7 +235,7 @@
           <div class="logo-title">YORHA</div>
           <div class="logo-subtitle">DETECTIVE</div>
         </div>
-        <Button.Root class="sidebar-toggle">◀</Button.Root>
+        <Button class="sidebar-toggle">◀</Button>
       </div>
       <div class="interface-subtitle">Investigation Interface</div>
     </div>
@@ -285,11 +285,11 @@
             <option>Evidence</option>
             <option>Persons</option>
           </select>
-          <Button.Root class="search-btn">🔍</Button.Root>
+          <Button class="search-btn">🔍</Button>
         </div>
         <div class="auth-section">
-          <Button.Root class="auth-btn">🔑 LOGIN</Button.Root>
-          <Button.Root class="auth-btn">📝 REGISTER</Button.Root>
+          <Button class="auth-btn">🔑 LOGIN</Button>
+          <Button class="auth-btn">📝 REGISTER</Button>
         </div>
       </div>
     </header>
@@ -301,9 +301,9 @@
           <span class="title-text">AI CHAT INTERFACE</span>
         </div>
         <div class="chat-controls">
-          <Button.Root class="control-btn">⭐ TERMINAL</Button.Root>
-          <Button.Root class="control-btn active">🤖 AI CHAT</Button.Root>
-          <Button.Root class="control-btn" onclick={clearChat}>🗑️ CLEAR</Button.Root>
+          <Button class="control-btn">⭐ TERMINAL</Button>
+          <Button class="control-btn active">🤖 AI CHAT</Button>
+          <Button class="control-btn" onclick={clearChat}>🗑️ CLEAR</Button>
           {#if isTestMode}
             <span class="test-mode-badge">TEST MODE</span>
           {/if}
@@ -360,7 +360,7 @@
               onkeypress={handleKeyPress}
               disabled={isTyping}
             />
-            <Button.Root class="send-btn" onclick={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button.Root>
+            <Button class="send-btn" onclick={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
           </div>
         </div>
       </div>

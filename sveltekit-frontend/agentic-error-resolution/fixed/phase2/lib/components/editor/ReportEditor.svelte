@@ -7,12 +7,12 @@ https://svelte.dev/e/js_parse_error -->
 
   // Removed unused imports: onDestroy, quintOut, Modal, Component
   import { onMount } from 'svelte';
-  import { AdvancedSearch } from "../search/AdvancedSearch.svelte";
-  import { ReportToolbar } from "./ReportToolbar.svelte";
-  import { RichTextEditor } from "./RichTextEditor.svelte";
-  import { EvidenceForm } from "./EvidenceForm.svelte";
-  import { MasonryGrid } from "$lib/components/ui/MasonryGrid.svelte";
-  import { EvidenceCardComponent } from "$lib/components/evidence/EvidenceCard.svelte";
+  import  AdvancedSearch  from "../search/AdvancedSearch.svelte";
+  import  ReportToolbar  from "./ReportToolbar.svelte";
+  import  RichTextEditor  from "./RichTextEditor.svelte";
+  import  EvidenceForm  from "./EvidenceForm.svelte";
+  import  MasonryGrid  from "$lib/components/ui/MasonryGrid.svelte";
+  import  EvidenceCardComponent  from "$lib/components/evidence/EvidenceCard.svelte";
   import { Button as BitsButton } from 'bits-ui';
   // Icons
   import { invalidateAll } from "$app/navigation";
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
                   title="Add new evidence"
                 >
                   <Plus size={16} />
-                </Button.Root>
+                </Button>
               </div>
               <div class="evidence-search-placeholder">
                 <AdvancedSearch on:search={handleEvidenceSearch} />
@@ -405,14 +405,14 @@ https://svelte.dev/e/js_parse_error -->
                   compact={true}
                 >
                   <!-- actions slot content using `item` -->
-                  <Button.Root
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
                     onclick={() => handleViewEvidence(item)}
                     title="View evidence"
                   >
                     <Eye size={14} />
-                  </Button.Root>
-                  <Button.Root
+                  </Button>
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-purple-600"
                     onclick={() => handleCompareEvidence(item)}
                     title="Analyze & Compare with Legal Documents"
@@ -423,30 +423,30 @@ https://svelte.dev/e/js_parse_error -->
                     {:else}
                       <Search size={14} />
                     {/if}
-                  </Button.Root>
+                  </Button>
                   {#if item.url || item.file}
-                    <Button.Root
+                    <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
                       onclick={() => handleDownloadEvidence(item)}
                       title="Download"
                     >
                       <Download size={14} />
-                    </Button.Root>
+                    </Button>
                   {/if}
-                  <Button.Root
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
                     onclick={() => handleEditEvidence(item)}
                     title="Edit evidence"
                   >
                     <PenLine size={14} />
-                  </Button.Root>
-                  <Button.Root
+                  </Button>
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
                     onclick={() => handleDeleteEvidence(item)}
                     title="Delete evidence"
                   >
                     <Trash2 size={14} />
-                  </Button.Root>
+                  </Button>
                 </EvidenceCard>
               </MasonryGridComponent>
             </section>
@@ -458,14 +458,14 @@ https://svelte.dev/e/js_parse_error -->
                   compact={true}
                 >
                   <!-- actions slot content using `evidence` -->
-                  <Button.Root
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
                     onclick={() => handleViewEvidence(evidence)}
                     title="View evidence"
                   >
                     <Eye size={14} />
-                  </Button.Root>
-                  <Button.Root
+                  </Button>
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-purple-600"
                     onclick={() => handleCompareEvidence(evidence)}
                     title="Analyze & Compare with Legal Documents"
@@ -476,30 +476,30 @@ https://svelte.dev/e/js_parse_error -->
                     {:else}
                       <Search size={14} />
                     {/if}
-                  </Button.Root>
+                  </Button>
                   {#if evidence.url || evidence.file}
-                    <Button.Root
+                    <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
                       onclick={() => handleDownloadEvidence(evidence)}
                       title="Download"
                     >
                       <Download size={14} />
-                    </Button.Root>
+                    </Button>
                   {/if}
-                  <Button.Root
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
                     onclick={() => handleEditEvidence(evidence)}
                     title="Edit evidence"
                   >
                     <PenLine size={14} />
-                  </Button.Root>
-                  <Button.Root
+                  </Button>
+                  <Button
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
                     onclick={() => handleDeleteEvidence(evidence)}
                     title="Delete evidence"
                   >
                     <Trash2 size={14} />
-                  </Button.Root>
+                  </Button>
                 </EvidenceCard>
               {/each}
             {/if}
@@ -630,7 +630,7 @@ https://svelte.dev/e/js_parse_error -->
               class="sidebar-toggle"
             >
               <PanelLeftOpen size={20} />
-            </Button.Root>
+            </Button>
           {/if}
           <input
             type="text"
@@ -653,7 +653,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <Grid size={18} />
             {/if}
-          </Button.Root>
+          </Button>
           <Button
             onclick={() => toggleFullscreen()}
             title="Toggle fullscreen"
@@ -664,14 +664,14 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <Maximize2 size={18} />
             {/if}
-          </Button.Root>
+          </Button>
           <Button
             onclick={() => (showSettingsModal = true)}
             title="Settings"
             class="settings-btn"
           >
             <Settings size={18} />
-          </Button.Root>
+          </Button>
         </div>
       </div>
       <RichTextEditor
@@ -687,7 +687,7 @@ https://svelte.dev/e/js_parse_error -->
       >
         <div class="panel-header">
           <h3>Evidence</h3>
-          <Button.Root class="add-evidence-btn" onclick={() => handleAddNewEvidence()}> <!-- Changed Button.Root to Button -->
+          <Button class="add-evidence-btn" onclick={() => handleAddNewEvidence()}> <!-- Changed Button.Root to Button -->
             <Plus size={16} />
           </Button>
         </div>
@@ -704,7 +704,7 @@ https://svelte.dev/e/js_parse_error -->
               compact={true}
             >
               <!-- actions slot content using `item` -->
-              <Button.Root
+              <Button
                 class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
                 onclick={() => handleViewEvidence(item)}
                 title="View evidence"
@@ -712,7 +712,7 @@ https://svelte.dev/e/js_parse_error -->
                 <Eye size={14} />
               </Button>
               {#if item.url || item.file}
-                <Button.Root
+                <Button
                   class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
                   onclick={() => handleDownloadEvidence(item)}
                   title="Download"
@@ -720,14 +720,14 @@ https://svelte.dev/e/js_parse_error -->
                   <Download size={14} />
                 </Button>
               {/if}
-              <Button.Root
+              <Button
                 class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
                 onclick={() => handleEditEvidence(item)}
                 title="Edit evidence"
               >
                 <PenLine size={14} />
               </Button>
-              <Button.Root
+              <Button
                 class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
                 onclick={() => handleDeleteEvidence(item)}
                 title="Delete evidence"

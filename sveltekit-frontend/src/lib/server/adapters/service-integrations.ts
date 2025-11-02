@@ -126,8 +126,8 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 		ollama: env.ollamaConfig.baseUrl,
 		ollamaEmbeddings: `${env.ollamaConfig.baseUrl}/api/embeddings`,
 		// Storage & Processing
-		minio: '${env.minioConfig.useSSL ? 'https' : 'http` }://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
-		minioConsole: '${env.minioConfig.useSSL ? 'https' : 'http` }://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
+		minio: '${env.minioConfig.useSSL ? 'https' : 'http' }://${env.minioConfig.endPoint}:${env.minioConfig.port}`,'`
+		minioConsole: '${env.minioConfig.useSSL ? 'https' : 'http' }://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,'`
 		neo4j: env.neo4jConfig.uri,
 		neo4jBrowser: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
 		rabbitmq: env.rabbitmqConfig.url,
@@ -150,7 +150,7 @@ export class OllamaAdapter implements OllamaClient {
 		const url = `${this.config.baseUrl}/api/embeddings`;
 		const response = await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json` },'`
+			headers: { 'Content-Type': 'application/json' },'`'`
 			body: JSON.stringify({ model, prompt: text }),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
@@ -165,7 +165,7 @@ export class OllamaAdapter implements OllamaClient {
 		const url = `${this.config.baseUrl}/api/generate`;
 		const response = await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json` },'`
+			headers: { 'Content-Type': 'application/json' },'`'`
 			body: JSON.stringify({
 				model,
 				prompt,
@@ -188,7 +188,7 @@ export class OllamaAdapter implements OllamaClient {
 		const url = `${this.config.baseUrl}/api/chat`;
 		const response = await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json` },'`
+			headers: { 'Content-Type': 'application/json' },'`'`
 			body: JSON.stringify({
 				model,
 				messages,
@@ -297,8 +297,7 @@ export class QdrantAdapter implements QdrantClient {
 	}
 	async createCollection(name: string, vectorSize: number): Promise<void> {
 		await this.ensureClient();
-		await this.client.createCollection(name, { vectors: {, size: vectorSize, distance: 'Cosine` }'`
-		});
+		await this.client.createCollection(name, { vectors: {, size: vectorSize, distance: 'Cosine' }'' });
 	}
 	async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
 		await this.ensureClient();
@@ -483,8 +482,7 @@ export class Neo4jAdapter implements Neo4jClient {
 				maxConnectionPoolSize: this.config.maxConnectionPoolSize || 50
 			}
 		);
-		this.session = this.driver.session({ database: this.config.database || 'neo4j` });'`
-	}
+		this.session = this.driver.session({ database: this.config.database || 'neo4j' });'' }
 	async run<T = unknown>(
 		cypher: string,
 		params?: Record<string, unknown>

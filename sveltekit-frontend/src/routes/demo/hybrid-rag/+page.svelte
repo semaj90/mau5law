@@ -187,71 +187,71 @@ import type { Document } from '$lib/types';
   }
 </script>
 
-<div class="hybrid-rag-demo nes-container is-dark min-h-screen, p-8">
+<div class="hybrid-rag-demo nes-container is-dark, min-h-screen, p-8">
   <!-- Header -->
   <header, class="mb-8">
-    <h1 class="text-3xl font-bold text-gold-400, mb-2">🧠 Hybrid RAG Pipeline Demo</h1>
-    <p class="text-sm, text-slate-300">
+    <h1 class="text-3xl font-bold, text-gold-400, mb-2">🧠 Hybrid RAG Pipeline Demo</h1>
+    <p, class="text-sm, text-slate-300">
       embeddinggemma:latest + Gemma Function Calling + Synthesis Ranking
     </p>
   </header>
 
   <!-- Configuration, Panel -->
-  <div class="nes-container is-dark mb-6, p-6">
-    <h2 class="text-xl text-gold-400, mb-4">⚙️ Pipeline Configuration</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4, text-sm">
+  <div class="nes-container is-dark, mb-6, p-6">
+    <h2 class="text-xl, text-gold-400, mb-4">⚙️ Pipeline Configuration</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3, gap-4, text-sm">
       <div>
         <div, class="text-slate-400">Embedding Model</div>
-        <div class="text-white, font-bold">embeddinggemma:latest</div>
+        <div, class="text-white, font-bold">embeddinggemma:latest</div>
       </div>
       <div>
         <div, class="text-slate-400">Synthesis Model</div>
-        <div class="text-white, font-bold">gemma3:legal-latest</div>
+        <div, class="text-white, font-bold">gemma3:legal-latest</div>
       </div>
       <div>
         <div, class="text-slate-400">Ranking Algorithm</div>
-        <div class="text-white, font-bold">Weighted Synthesis</div>
+        <div, class="text-white, font-bold">Weighted Synthesis</div>
       </div>
     </div>
   </div>
 
   <!-- Document, Management -->
-  <div class="nes-container is-dark mb-6, p-6">
-    <h2 class="text-xl text-gold-400, mb-4">📄 Documents ({documents.length})</h2>
+  <div class="nes-container is-dark, mb-6, p-6">
+    <h2 class="text-xl, text-gold-400, mb-4">📄 Documents ({documents.length})</h2>
 
-    <div class="flex gap-2, mb-4">
-      <button class="nes-btn, is-primary" onclick={loadSamples}>
-        <Database class="inline w-4 h-4, mr-2" />
+    <div class="flex, gap-2, mb-4">
+      <button, class="nes-btn, is-primary" onclick={loadSamples}>
+        <Database class="inline w-4, h-4, mr-2" />
         Load Samples
       </button>
-      <button class="nes-btn, is-success" onclick={addDocument}>
-        <Upload class="inline w-4 h-4, mr-2" />
+      <button, class="nes-btn, is-success" onclick={addDocument}>
+        <Upload class="inline w-4, h-4, mr-2" />
         Add Document
       </button>
     </div>
 
     {#if documents.length > 0}
-      <div class="space-y-2 max-h-64, overflow-y-auto">
+      <div class="space-y-2, max-h-64, overflow-y-auto">
         {#each documents as doc, i}
-          <div class="bg-slate-800 p-3 rounded border, border-slate-700">
-            <div class="text-sm font-bold, text-gold-400">{doc.title}</div>
-            <div class="text-xs text-slate-400, mt-1">
+          <div class="bg-slate-800 p-3 rounded, border, border-slate-700">
+            <div class="text-sm, font-bold, text-gold-400">{doc.title}</div>
+            <div class="text-xs, text-slate-400, mt-1">
               {doc.content.substring(0, 100)}...
             </div>
           </div>
         {/each}
       </div>
     {:else}
-      <div class="text-center text-slate-400, py-8">No documents loaded</div>
+      <div class="text-center, text-slate-400, py-8">No documents loaded</div>
     {/if}
   </div>
 
   <!-- Query, Input -->
-  <div class="nes-container is-dark mb-6, p-6">
-    <h2 class="text-xl text-gold-400, mb-4">🔍 Search Query</h2>
+  <div class="nes-container is-dark, mb-6, p-6">
+    <h2 class="text-xl, text-gold-400, mb-4">🔍 Search Query</h2>
 
-    <div class="nes-field, mb-4">
-      <label for="query" class="text-sm text-slate-300 mb-2, block">
+    <div, class="nes-field, mb-4">
+      <label for="query" class="text-sm text-slate-300, mb-2, block">
         Enter your query (e.g., "employment contract termination")
       </label>
       <input
@@ -264,13 +264,13 @@ import type { Document } from '$lib/types';
       />
     </div>
 
-    <div class="flex, gap-2">
+    <div, class="flex, gap-2">
       <button
         class="nes-btn is-success"
         onclick={processDocuments}
         disabled={isProcessing || documents.length === 0 || !query.trim()}
       >
-        <Zap class="inline w-4 h-4, mr-2" />
+        <Zap class="inline w-4, h-4, mr-2" />
         Process & Search
       </button>
 
@@ -279,7 +279,7 @@ import type { Document } from '$lib/types';
         onclick={searchKnowledgeBase}
         disabled={isProcessing || !query.trim()}
       >
-        <Search class="inline w-4 h-4, mr-2" />
+        <Search class="inline w-4, h-4, mr-2" />
         Search Existing
       </button>
     </div>
@@ -287,8 +287,8 @@ import type { Document } from '$lib/types';
 
   <!-- Processing, Status -->
   {#if isProcessing}
-    <div class="nes-container is-dark mb-6, p-6">
-      <div class="flex items-center, gap-3">
+    <div class="nes-container is-dark, mb-6, p-6">
+      <div class="flex, items-center, gap-3">
         <div, class="animate-spin">⚙️</div>
         <div, class="text-yellow-400">{processingStage}</div>
       </div>
@@ -297,16 +297,16 @@ import type { Document } from '$lib/types';
 
   <!-- Error, Display -->
   {#if error}
-    <div class="nes-container is-dark is-error mb-6, p-6">
+    <div class="nes-container is-dark is-error, mb-6, p-6">
       <div, class="text-red-400">❌ Error: {error}</div>
     </div>
   {/if}
 
   <!-- Timing, Results -->
   {#if timing}
-    <div class="nes-container is-dark mb-6, p-6">
-      <h2 class="text-xl text-gold-400, mb-4">⚡ Performance Metrics</h2>
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-4, text-sm">
+    <div class="nes-container is-dark, mb-6, p-6">
+      <h2 class="text-xl, text-gold-400, mb-4">⚡ Performance Metrics</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5, gap-4, text-sm">
         <div>
           <div, class="text-slate-400">Embedding</div>
           <div class="text-white font-bold">{timing.embedding?.toFixed(2) || 0}ms</div>
@@ -333,22 +333,22 @@ import type { Document } from '$lib/types';
 
   <!-- Results, Display -->
   {#if results.length > 0}
-    <div class="nes-container is-dark, p-6">
-      <h2 class="text-xl text-gold-400, mb-4">🎯 Results ({results.length})</h2>
+    <div class="nes-container, is-dark, p-6">
+      <h2 class="text-xl, text-gold-400, mb-4">🎯 Results ({results.length})</h2>
 
       <div, class="space-y-4">
         {#each results as result, i}
-          <div class="bg-slate-800 p-4 rounded border, border-slate-700">
+          <div class="bg-slate-800 p-4 rounded, border, border-slate-700">
             <!-- Ranking, Badge -->
-            <div class="flex items-start justify-between, mb-2">
-              <div class="flex items-center, gap-2">
-                <span class="bg-gold-600 text-black px-2 py-1 rounded text-xs, font-bold">
+            <div class="flex items-start, justify-between, mb-2">
+              <div class="flex, items-center, gap-2">
+                <span class="bg-gold-600 text-black px-2 py-1 rounded, text-xs, font-bold">
                   #{result.ranking || i + 1}
                 </span>
-                <h3 class="text-lg font-bold, text-gold-400">{result.title}</h3>
+                <h3 class="text-lg, font-bold, text-gold-400">{result.title}</h3>
               </div>
               <div, class="text-right">
-                <div class="text-xs, text-slate-400">Combined Score</div>
+                <div, class="text-xs, text-slate-400">Combined Score</div>
                 <div class="text-lg font-bold {getScoreColor(result.combinedScore || 0)}">
                   {formatScore(result.combinedScore || 0)}
                 </div>
@@ -357,29 +357,29 @@ import type { Document } from '$lib/types';
 
             <!-- Summary -->
             {#if result.summary}
-              <div class="bg-slate-900 p-3 rounded, mb-3">
-                <div class="text-xs text-slate-400, mb-1">Summary</div>
-                <div class="text-sm, text-slate-200">{result.summary}</div>
+              <div class="bg-slate-900 p-3, rounded, mb-3">
+                <div class="text-xs, text-slate-400, mb-1">Summary</div>
+                <div, class="text-sm, text-slate-200">{result.summary}</div>
               </div>
             {/if}
 
             <!-- Score, Breakdown -->
-            <div class="grid grid-cols-3 gap-3, mb-3">
+            <div class="grid grid-cols-3, gap-3, mb-3">
               <div>
-                <div class="text-xs, text-slate-400">Relevance</div>
-                <div class="text-sm font-bold, text-blue-400">
+                <div, class="text-xs, text-slate-400">Relevance</div>
+                <div class="text-sm, font-bold, text-blue-400">
                   {formatScore(result.relevanceScore || 0)}
                 </div>
               </div>
               <div>
-                <div class="text-xs, text-slate-400">Keywords</div>
-                <div class="text-sm font-bold, text-purple-400">
+                <div, class="text-xs, text-slate-400">Keywords</div>
+                <div class="text-sm, font-bold, text-purple-400">
                   {formatScore(result.keywordScore || 0)}
                 </div>
               </div>
               <div>
-                <div class="text-xs, text-slate-400">Synthesis</div>
-                <div class="text-sm font-bold, text-green-400">
+                <div, class="text-xs, text-slate-400">Synthesis</div>
+                <div class="text-sm, font-bold, text-green-400">
                   {formatScore(result.synthesisScore || 0)}
                 </div>
               </div>
@@ -388,10 +388,10 @@ import type { Document } from '$lib/types';
             <!-- Keywords -->
             {#if result.keywords && result.keywords.length > 0}
               <div, class="mb-3">
-                <div class="text-xs text-slate-400, mb-1">Keywords</div>
-                <div class="flex flex-wrap, gap-1">
+                <div class="text-xs, text-slate-400, mb-1">Keywords</div>
+                <div class="flex, flex-wrap, gap-1">
                   {#each Array.isArray(result.keywords.slice(0, 10)) ? result.keywords.slice(0, 10) : [] as keyword}
-                    <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded, text-xs">
+                    <span class="bg-slate-700 text-slate-300 px-2 py-1, rounded, text-xs">
                       {keyword}
                     </span>
                   {/each}
@@ -401,8 +401,8 @@ import type { Document } from '$lib/types';
 
             <!-- Content, Preview -->
             <div>
-              <div class="text-xs text-slate-400, mb-1">Content Preview</div>
-              <div class="text-sm, text-slate-300">
+              <div class="text-xs, text-slate-400, mb-1">Content Preview</div>
+              <div, class="text-sm, text-slate-300">
                 {result.content?.substring(0, 200) || 'No content'}...
               </div>
             </div>
@@ -411,9 +411,9 @@ import type { Document } from '$lib/types';
       </div>
     </div>
   {:else if !isProcessing && !error}
-    <div class="nes-container is-dark p-6, text-center">
-      <div class="text-slate-400, py-8">
-        <Search class="w-12 h-12 mx-auto mb-4, opacity-50" />
+    <div class="nes-container is-dark, p-6, text-center">
+      <div, class="text-slate-400, py-8">
+        <Search class="w-12 h-12 mx-auto, mb-4, opacity-50" />
         <div>No results yet. Load documents and run a search.</div>
       </div>
     </div>

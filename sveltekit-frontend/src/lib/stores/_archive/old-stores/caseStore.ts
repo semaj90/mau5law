@@ -208,8 +208,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while creating case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };'`
-    }
+      return { success: false, error: message || 'Network error' };'` }'`
   };
 
   // Update case
@@ -249,8 +248,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while updating case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };'`
-    }
+      return { success: false, error: message || 'Network error' };'` }'`
   };
 
   // Delete case
@@ -290,8 +288,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while deleting case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };'`
-    }
+      return { success: false, error: message || 'Network error' };'` }'`
   };
 
   // Generate AI-powered report for case
@@ -340,8 +337,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while generating report',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };'`
-    }
+      return { success: false, error: message || 'Network error' };'` }'`
   };
 
   // Set active case
@@ -419,8 +415,7 @@ const createCaseStore = (): CaseStoreAPI => {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      return { success: false, error: message || 'Network error during analysis` };'`
-    }
+      return { success: false, error: message || 'Network error during analysis' };'` }'`
   };
 
   // Local fallback for testing when no auth session exists (SvelteKit v2 style)

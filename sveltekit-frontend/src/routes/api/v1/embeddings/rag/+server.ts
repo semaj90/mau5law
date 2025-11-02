@@ -235,8 +235,7 @@ export const GET: RequestHandler = async () => {
             default: 0.7,
             description: 'Response creativity (0.0-1.0)'
           },
-          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold` }'`
-        }
+          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold' }'` }'`
       }
     },
     response: {

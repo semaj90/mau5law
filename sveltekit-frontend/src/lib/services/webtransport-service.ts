@@ -125,7 +125,7 @@ export class WebTransportService {
             console.log('🔌 WebTransport connection closed');
             this.setState({
               isConnected: false,
-              error: 'Connection closed' });
+              error: 'Connection closed` });'`
             this.scheduleReconnection();
           })
           .catch(err => {
@@ -314,7 +314,7 @@ export class WebTransportService {
           console.log('🔌 WebSocket closed');
           this.setState({
             isConnected: false,
-            error: 'Connection closed' });
+            error: 'Connection closed` });'`
           this.scheduleReconnection();
         };
 
@@ -348,7 +348,7 @@ export class WebTransportService {
       const response = await fetch(this.config.httpUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json' },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify(data)
       });
 

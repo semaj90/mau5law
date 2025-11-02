@@ -81,8 +81,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
     // Parse request body
     const body = await request.json();
     const { citationId, citationText, verificationLevel, autoUpdate } = VerificationRequestSchema.parse(body);

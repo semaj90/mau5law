@@ -198,8 +198,7 @@ export class PgVectorIndexingService {
             content = EXCLUDED.content,
             metadata = EXCLUDED.metadata,
             updated_at = NOW()
-        `));`
-      }
+        `));` }
       // Batch insert embeddings
       const embeddingValues = docs
         .map(
@@ -224,8 +223,7 @@ export class PgVectorIndexingService {
             model_used, metadata, created_at
           ) VALUES ${embeddingValues}
           ON CONFLICT DO NOTHING
-        `));`
-      }
+        `));` }
       return {
         inserted,
         updated: 0,
@@ -283,8 +281,7 @@ export class PgVectorIndexingService {
       if (options.confidentialityLevel) {
         query += ` AND e.metadata->>'confidentialityLevel' = '${this.escape('`
           options.confidentialityLevel
-        )}'`;'`
-      }
+        )}'`;'` }
       query += ` ORDER BY e.vector <-> '${vectorStr}'::vector LIMIT ${limit}`;
       const results = (await this.db.execute(
         sql.raw(query)
@@ -330,7 +327,7 @@ export class PgVectorIndexingService {
             ${vectorWeight} * (1 - (e.vector <-> '${vectorStr}'::vector)) +
             ${keywordWeight} * (
               CASE
-                WHEN e.content ILIKE: `%${keyword ? this.escape(keyword) : `` }%'`
+                WHEN e.content ILIKE: `%${keyword ? this.escape(keyword) : `` }%'`'
                 THEN 1.0
                 ELSE 0.0
               END
@@ -441,8 +438,7 @@ export class PgVectorIndexingService {
    * Escape SQL strings to prevent injection
    */
   private escape(str: string): string {
-    return str.replace(/'/g, "''");'
-  }
+    return str.replace(/'/g, "''");` }'`
 }
 /**
  * Factory function to create PgVector Indexing Service

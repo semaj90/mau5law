@@ -188,7 +188,7 @@ export class RecursiveEvidenceChainProcessor {
       // Integration with existing evidence-correlation endpoint
       const response = await fetch(`${this.apiBaseUrl}/evidence/correlate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , evidenceIds: [evidenceId],
           analysisType: 'comprehensive',
@@ -244,8 +244,7 @@ export class RecursiveEvidenceChainProcessor {
         const relationship = await this.determineRelationshipType(evidenceId, related);
         relationships.push(relationship);
       } catch (error) {
-        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}: ', error);'`
-      }
+        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}: ', error);'' }'`
     }
     return relationships;
   }

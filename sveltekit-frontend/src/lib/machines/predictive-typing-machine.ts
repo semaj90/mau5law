@@ -196,7 +196,7 @@ const glyphContextActor = fromPromise(
     } catch (error: any) {
       // Use unknown and normalize for logging to avoid `any`
       const err = error instanceof Error ? error : new Error(String(error));
-      console.warn('Glyph context retrieval failed, using empty context: `, err);'`
+      console.warn('Glyph context retrieval failed, using empty context: ', err);'`'`
       return [];
     }
   }
@@ -328,7 +328,7 @@ const feedbackLearningActor = fromPromise(
       return learningResults;
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.warn('Learning from feedback failed: `, message);'`
+      console.warn('Learning from feedback failed: ', message);'`'`
       return {
         learning_applied: false,
         model_updates: [],
@@ -379,7 +379,7 @@ export const predictiveTypingMachine = setup({
       return context.retryCount < 3 && Date.now() - context.lastErrorTime > 1000; // Wait 1s before retry
     },
     isTypingActivelyCheck: ({ context }) => {
-      return Date.now() - context.lastKeystroke < 2000; // Active if typed within, 2s
+      return Date.now() - context.lastKeystroke < 2000; // Active if typed, within, 2s
     }
   },
   actions: {
@@ -816,10 +816,9 @@ export const predictiveTypingMachine = setup({
             },
             SUBMIT_QUERY: {
               actions: ['submitQuery', 'recordInteractionPattern'],
-              target: 'waiting'
-            },
+              target: 'waiting` },'`
             PROVIDE_FEEDBACK: {
-              target: `learningFromFeedback` }
+              target: 'learningFromFeedback' }
           },
           // Auto-refresh suggestions after some time;
           after: {
@@ -909,8 +908,7 @@ export const predictiveTypingMachine = setup({
         },
         RESET: {
           actions: ['resetState'],
-          target: '.waiting'
-        },
+          target: '.waiting` },'`
         SESSION_END: {
           target: `idle` }
       }

@@ -66,9 +66,9 @@ export async function GET(_event: RequestEvent): Promise<any> {
         timestamp: new Date().toISOString(),
         responseTime: Date.now() - startTime,
         error: error instanceof Error ? error.message : String(error),
-        services: { ollama: {, status: 'unknown', error: 'Health check failed` },'`
-          enhancedRAG: { status: 'unknown', error: `Health check failed` },
-          protobufGRPC: { status: 'unknown', error: `Health check failed` }
+        services: { ollama: {, status: 'unknown', error: 'Health check failed' },'`'`
+          enhancedRAG: { status: 'unknown', error: 'Health check failed' },
+          protobufGRPC: { status: 'unknown', error: 'Health check failed' }
         }
       },
       { status: 500 }

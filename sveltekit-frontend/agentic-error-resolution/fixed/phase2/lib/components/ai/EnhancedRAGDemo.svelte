@@ -11,8 +11,8 @@
     type RAGQuery,
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
   import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';
   // Modern Svelte 5 reactive state using runes
@@ -237,7 +237,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
             placeholder="Paste your legal document here..."
           ></textarea>
           <div class="mt-4">
-            <Button.Root onclick={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
+            <Button onclick={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -256,7 +256,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               {:else}
                 🧠 Analyze Document
               {/if}
-            </Button.Root>
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -377,7 +377,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 </div>
               </div>
             </div>
-            <Button.Root onclick={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
+            <Button onclick={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -396,7 +396,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               {:else}
                 🔍 Execute RAG Query
               {/if}
-            </Button.Root>
+            </Button>
           </div>
         </CardContent>
       </Card>

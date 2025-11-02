@@ -12,20 +12,20 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
-  import { N64ProgressBar } from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
-  import { N64LoadingRing } from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
-  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
+  import  N64ProgressBar  from "$lib/components/ui/gaming/n64/N64ProgressBar.svelte";
+  import  N64LoadingRing  from "$lib/components/ui/gaming/n64/N64LoadingRing.svelte";
+  import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
+  import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
   import { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search } from 'lucide-svelte';
   interface Props {
     caseId?: string;
@@ -495,7 +495,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               }
             }}
           />
-          <Button.Root
+          <Button
             type="submit"
             disabled={$isProcessing || !userInput.trim()}
             class="self-end bits-btn bits-btn"
@@ -505,7 +505,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </Button.Root>
+          </Button>
         </form>
       </div>
     </TabsContent>
@@ -526,14 +526,14 @@ https://svelte.dev/e/attribute_invalid_name -->
               </AlertDescription>
             </Alert>
             <div class="grid grid-cols-2 gap-4">
-              <Button.Root variant="ghost" class="justify-start bits-btn bits-btn">
+              <Button variant="ghost" class="justify-start bits-btn bits-btn">
                 <FileText class="h-4 w-4 mr-2" />
                 Upload Document
-              </Button.Root>
-              <Button.Root variant="ghost" class="justify-start bits-btn bits-btn">
+              </Button>
+              <Button variant="ghost" class="justify-start bits-btn bits-btn">
                 <Search class="h-4 w-4 mr-2" />
                 Search Documents
-              </Button.Root>
+              </Button>
             </div>
           </div>
         </div>

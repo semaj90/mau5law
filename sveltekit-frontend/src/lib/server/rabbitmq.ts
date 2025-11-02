@@ -83,8 +83,7 @@ export async function consumeFromQueue(
         );
       } catch (error: any) {
         console.error(`❌ Error processing message from ${queueName}: ', error);'`
-        ch.nack(msg, false, false); // Don't requeue on parse errors'
-      }
+        ch.nack(msg, false, false); // Don't requeue on parse errors` }'`
     });
   } catch (error: any) {
     console.error(`❌ Failed to consume from queue ${queueName}: ', error);'`
@@ -153,7 +152,7 @@ export async function healthCheck(): Promise<boolean> {
 // Queue constants
 export const QUEUES = { evidence: {, process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
-    response: 'evidence.response.queue` },'`
+    response: `evidence.response.queue` },'`'`
   ai: {
     analysis: 'ai.analysis.queue',
     embedding: 'ai.embedding.queue',

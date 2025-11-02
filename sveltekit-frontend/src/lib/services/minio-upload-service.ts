@@ -92,7 +92,7 @@ export class MinIOUploadService {
           };
           worker.onerror = error => {
             console.error(`Worker ${i} error: `, error);`
-            this.updateProcessor(i, { status: `error` });
+            this.updateProcessor(i, { status: 'error' });
           };
           worker.postMessage({ type: 'init', config: this.config, workerId: i });
           this.workers.push(worker);
@@ -187,7 +187,7 @@ export class MinIOUploadService {
     const random = Math.random().toString(36).substr(2, 9);
     const extension = file.name.split('.').pop() || '';
     const baseName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').substring(0, 100);
-    return `${timestamp}/${random}/${baseName}${extension ? '.' + extension : `` }`;
+    return `${timestamp}/${random}/${baseName}${extension ? '.' + extension : '' }`;
   }
 
   // Start processing upload queue
@@ -263,8 +263,8 @@ export class MinIOUploadService {
         );
       } else {
         // If no worker available, fallback to marking processing (could be extended to direct upload)
-        console.warn('No worker available for upload, marking as processing: `, task.id);'`
-        this.updateTask(task.id, { status: `processing` });
+        console.warn('No worker available for upload, marking as processing: ', task.id);'`'`
+        this.updateTask(task.id, { status: 'processing' });
       }
       // Update concurrent uploads count
       this.uploadStats.update(stats => ({
@@ -397,7 +397,7 @@ export class MinIOUploadService {
   private handleUploadFailed(workerId: number, taskId: string, payload: { error?: string } = {}): void {
     this.updateTask(taskId, {
       status: 'failed',
-      error: payload?.error ?? 'unknown` });'`
+      error: payload?.error ?? 'unknown' });'`'`
     this.updateProcessor(workerId, {
       status: 'idle',
       currentTask: undefined
@@ -580,7 +580,7 @@ export class MinIOUploadService {
   public async pauseUpload(taskId: string): Promise<boolean> {
     const task = this.getTask(taskId);
     if (!task || task.status !== 'uploading') return false;
-    this.updateTask(taskId, { status: 'paused` });'`
+    this.updateTask(taskId, { status: 'paused' });'`'`
     const processor = this.getProcessors().find(p => p.currentTask === taskId);
     if (processor) {
       const worker = this.workers[processor.workerId];
@@ -592,7 +592,7 @@ export class MinIOUploadService {
   public async resumeUpload(taskId: string): Promise<boolean> {
     const task = this.getTask(taskId);
     if (!task || task.status !== 'paused') return false;
-    this.updateTask(taskId, { status: `queued` });
+    this.updateTask(taskId, { status: 'queued' });
     if (!this.isProcessing) void this.startProcessing();
     return true;
   }
@@ -600,7 +600,7 @@ export class MinIOUploadService {
   public async cancelUpload(taskId: string): Promise<boolean> {
     const task = this.getTask(taskId);
     if (!task) return false;
-    this.updateTask(taskId, { status: 'failed', error: `Cancelled by user` });
+    this.updateTask(taskId, { status: 'failed', error: 'Cancelled by user' });
     const processor = this.getProcessors().find(p => p.currentTask === taskId);
     if (processor) {
       const worker = this.workers[processor.workerId];

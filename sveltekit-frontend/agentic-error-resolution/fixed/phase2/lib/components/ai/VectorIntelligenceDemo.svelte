@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/Badge.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/Badge.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
   type SearchResult = {
     id: string;
     title: string;
@@ -169,7 +169,7 @@
           class="flex-1"
           disabled={isSearching}
         />
-        <Button.Root type="submit" disabled={searchButtonDisabled} class="min-w-[100px] bits-btn bits-btn">
+        <Button type="submit" disabled={searchButtonDisabled} class="min-w-[100px] bits-btn bits-btn">
           {#if isSearching}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
             Searching
@@ -177,15 +177,15 @@
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-        </Button.Root>
+        </Button>
       </form>
       <!-- Example queries -->
       <div class="flex flex-wrap gap-2">
         <span class="text-sm nes-text is-disabled">Try:</span>
         {#each Array.isArray(['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights']) ? ['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights'] : [] as example}
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (query = example)} disabled={isSearching}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (query = example)} disabled={isSearching}>
             {example}
-          </Button.Root>
+          </Button>
         {/each}
       </div>
     </div>
@@ -318,7 +318,7 @@
           </p>
         </div>
         <div class="flex justify-center">
-          <Button.Root
+          <Button
             class="bits-btn"
             variant="ghost"
             onclick={() => {
@@ -327,7 +327,7 @@
             }}
           >
             Load Demo Results
-          </Button.Root>
+          </Button>
         </div>
       </div>
     {/if}
@@ -339,7 +339,7 @@
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>×</Button.Root>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>×</Button>
         </h3>
       </div>
       <div class="yorha-panel-content space-y-4">

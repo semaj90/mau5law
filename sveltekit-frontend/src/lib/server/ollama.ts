@@ -89,7 +89,7 @@ async function generate(prompt: string, options: GenerateOptions): Promise<strin
     const response = await fetch(`${endpoint}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: model,
         prompt: prompt,

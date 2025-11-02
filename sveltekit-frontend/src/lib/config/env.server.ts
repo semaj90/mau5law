@@ -23,26 +23,23 @@ export function getRedisPassword(): string {
   return env.REDIS_PASSWORD || 'redis';
 }
 export function getRabbitMQUrl(): string {
-  return env.RABBITMQ_URL || `amqp://legal_admin:123456@${isDocker ? 'rabbitmq' : `localhost' }:5672`;'`
-}
+  return env.RABBITMQ_URL || `amqp://legal_admin:123456@${isDocker ? 'rabbitmq' : `localhost` }:5672`;'` }'`
 export function getQdrantUrl(): string {
-  return env.QDRANT_URL || `http://${isDocker ? 'qdrant' : `localhost' }:6333`;'`
-}
+  return env.QDRANT_URL || `http://${isDocker ? 'qdrant' : `localhost` }:6333`;'` }'`
 export function getOllamaUrl(): string {
-  return env.OLLAMA_URL || `http://${isDocker ? 'ollama' : `localhost' }:11434`;'`
-}
+  return env.OLLAMA_URL || `http://${isDocker ? 'ollama' : `localhost` }:11434`;'' }
 export function getMinioConfig() {
   return {
     endpoint: env.MINIO_ENDPOINT || (isDocker ? 'minio:9000' : 'localhost:9000'),
     accessKey: env.MINIO_ACCESS_KEY || 'minioadmin',
     secretKey: env.MINIO_SECRET_KEY || 'minioadmin',
-    useSSL: env.MINIO_USE_SSL === 'true' };
+    useSSL: env.MINIO_USE_SSL === 'true` };'`
 }
 export function getNeo4jConfig() {
   return {
-    uri: env.NEO4J_URI || `bolt://${isDocker ? 'neo4j' : `localhost' }:7687`,'`
+    uri: env.NEO4J_URI || `bolt://${isDocker ? 'neo4j' : `localhost` }:7687`,'`'`
     user: env.NEO4J_USER || 'neo4j',
-    password: env.NEO4J_PASSWORD || 'legal123456' };
+    password: env.NEO4J_PASSWORD || 'legal123456` };'`
 }
 // Add other environment variables as needed
 export function isProduction(): boolean {
@@ -63,7 +60,7 @@ const ConfigSchema = z.object({
   TRITON_URL: z
     .string()
     .url()
-    .default(`http://${isDocker ? 'triton' : `localhost' }:8001`),'`
+    .default(`http://${isDocker ? 'triton' : `localhost` }:8001`),'`'`
   QDRANT_URL: z.string().url().default(getQdrantUrl()),
   NEO4J_URL: z.string().url().default(getNeo4jConfig().uri),
   NEO4J_USER: z.string().default('neo4j'),

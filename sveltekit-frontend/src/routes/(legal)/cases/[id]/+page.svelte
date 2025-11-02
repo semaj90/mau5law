@@ -65,16 +65,16 @@ import type { Case } from '$lib/types';
 	<title>{caseData?.title || 'Case'} - Legal AI</title>
 </svelte:head>
 
-<div class="min-h-screen bg-slate-900 text-white p-4, md:p-8">
+<div class="min-h-screen bg-slate-900 text-white, p-4, md:p-8">
 	<!-- Header -->
-	<div class="mb-8 flex items-center justify-between, gap-4">
+	<div class="mb-8 flex items-center, justify-between, gap-4">
 		<button
 			onclick={handleBack}
 			class="nes-btn is-primary px-4 py-2 text-sm hover:scale-105 transition-transform"
 		>
 			← Back
 		</button>
-		<h1 class="text-3xl font-bold text-gold-400 flex-1, text-center">
+		<h1 class="text-3xl font-bold text-gold-400, flex-1, text-center">
 			{caseData?.caseNumber || 'Case Not Found'}
 		</h1>
 		<button
@@ -87,27 +87,27 @@ import type { Case } from '$lib/types';
 	</div>
 
 	{#if error}
-		<div class="nes-container is-error p-6, mb-6">
-			<p class="text-lg font-bold, mb-2">❌ Error</p>
+		<div class="nes-container is-error, p-6, mb-6">
+			<p class="text-lg, font-bold, mb-2">❌ Error</p>
 			<p, class="text-sm">{error}</p>
-			<button onclick={handleBack} class="nes-btn is-warning, mt-4">Back to Cases</button>
+			<button onclick={handleBack} class="nes-btn, is-warning, mt-4">Back to Cases</button>
 		</div>
 	{:else if caseData}
-		<!-- Main Case, Card -->
-		<div class="nes-container is-dark p-0 mb-8, overflow-hidden">
+		<!-- Main, Case, Card -->
+		<div class="nes-container is-dark p-0, mb-8, overflow-hidden">
 			<!-- Title, Section -->
-			<div class="bg-slate-800 border-b-4 border-gold-400, p-6">
+			<div class="bg-slate-800 border-b-4, border-gold-400, p-6">
 				<h2 class="text-2xl font-bold text-gold-400 mb-2">{caseData.title || 'Untitled'}</h2>
 				{#if caseData.description}
-					<p class="text-slate-300 text-sm, line-clamp-2">{caseData.description}</p>
+					<p class="text-slate-300, text-sm, line-clamp-2">{caseData.description}</p>
 				{/if}
 			</div>
 
 			<!-- Status & Priority Badges -->
-			<div class="p-6 bg-slate-900 border-b border-slate-700 flex gap-4, flex-wrap">
+			<div class="p-6 bg-slate-900 border-b border-slate-700 flex, gap-4, flex-wrap">
 				<!-- Status, Badge -->
-				<div class="flex flex-col, gap-2">
-					<span class="text-xs text-slate-400 font-bold, uppercase">Status</span>
+				<div class="flex, flex-col, gap-2">
+					<span class="text-xs text-slate-400, font-bold, uppercase">Status</span>
 					<div
 						class="nes-badge px-4 py-2 border-2 font-bold text-sm"
 						style="background-color: {getStatusStyle("
@@ -121,8 +121,8 @@ import type { Case } from '$lib/types';
 				</div>
 
 				<!-- Priority, Badge -->
-				<div class="flex flex-col, gap-2">
-					<span class="text-xs text-slate-400 font-bold, uppercase">Priority</span>
+				<div class="flex, flex-col, gap-2">
+					<span class="text-xs text-slate-400, font-bold, uppercase">Priority</span>
 					<div
 						class="nes-badge px-4 py-2 border-2 font-bold text-sm"
 						style="background-color: {getPriorityStyle("
@@ -137,9 +137,9 @@ import type { Case } from '$lib/types';
 
 				<!-- Type, Badge -->
 				{#if caseData.caseType}
-					<div class="flex flex-col, gap-2">
-						<span class="text-xs text-slate-400 font-bold, uppercase">Type</span>
-						<div class="nes-badge px-4 py-2 border-2 border-gold-400 font-bold text-sm, text-gold-400">
+					<div class="flex, flex-col, gap-2">
+						<span class="text-xs text-slate-400, font-bold, uppercase">Type</span>
+						<div class="nes-badge px-4 py-2 border-2 border-gold-400 font-bold, text-sm, text-gold-400">
 							{caseData.caseType}
 						</div>
 					</div>
@@ -147,81 +147,81 @@ import type { Case } from '$lib/types';
 			</div>
 
 			<!-- Details, Grid -->
-			<div class="p-6 grid grid-cols-1 md:grid-cols-2, gap-6">
+			<div class="p-6 grid grid-cols-1, md:grid-cols-2, gap-6">
 				<!-- Left, Column -->
 				<div, class="space-y-4">
-					<h3 class="text-lg font-bold text-gold-400, mb-4">📋 Case Information</h3>
+					<h3 class="text-lg font-bold, text-gold-400, mb-4">📋 Case Information</h3>
 
 					<!-- Case, Number -->
-					<div class="nes-container is-dark, p-3">
-						<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Case Number</div>
-						<div class="text-lg font-mono font-bold, text-gold-400">{caseData.caseNumber}</div>
+					<div class="nes-container, is-dark, p-3">
+						<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Case Number</div>
+						<div class="text-lg font-mono, font-bold, text-gold-400">{caseData.caseNumber}</div>
 					</div>
 
 					<!-- Jurisdiction -->
 					{#if caseData.jurisdiction}
-						<div class="nes-container is-dark, p-3">
-							<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Jurisdiction</div>
-							<div class="text-sm, text-white">{caseData.jurisdiction}</div>
+						<div class="nes-container, is-dark, p-3">
+							<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Jurisdiction</div>
+							<div, class="text-sm, text-white">{caseData.jurisdiction}</div>
 						</div>
 					{/if}
 
 					<!-- Location -->
 					{#if caseData.location}
-						<div class="nes-container is-dark, p-3">
-							<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Location</div>
-							<div class="text-sm, text-white">{caseData.location}</div>
+						<div class="nes-container, is-dark, p-3">
+							<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Location</div>
+							<div, class="text-sm, text-white">{caseData.location}</div>
 						</div>
 					{/if}
 
 					<!-- Incident, Date -->
 					{#if caseData.incidentDate}
-						<div class="nes-container is-dark, p-3">
-							<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Incident Date</div>
-							<div class="text-sm, text-white">{formatDate(caseData.incidentDate)}</div>
+						<div class="nes-container, is-dark, p-3">
+							<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Incident Date</div>
+							<div, class="text-sm, text-white">{formatDate(caseData.incidentDate)}</div>
 						</div>
 					{/if}
 				</div>
 
 				<!-- Right, Column -->
 				<div, class="space-y-4">
-					<h3 class="text-lg font-bold text-gold-400, mb-4">🔍 Meta Information</h3>
+					<h3 class="text-lg font-bold, text-gold-400, mb-4">🔍 Meta Information</h3>
 
 					<!-- Created, Date -->
-					<div class="nes-container is-dark, p-3">
-						<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Created</div>
-						<div class="text-sm, text-white">{formatDate(caseData.createdAt)}</div>
+					<div class="nes-container, is-dark, p-3">
+						<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Created</div>
+						<div, class="text-sm, text-white">{formatDate(caseData.createdAt)}</div>
 					</div>
 
 					<!-- Updated, Date -->
 					{#if caseData.updatedAt}
-						<div class="nes-container is-dark, p-3">
-							<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Last Updated</div>
-							<div class="text-sm, text-white">{formatDate(caseData.updatedAt)}</div>
+						<div class="nes-container, is-dark, p-3">
+							<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Last Updated</div>
+							<div, class="text-sm, text-white">{formatDate(caseData.updatedAt)}</div>
 						</div>
 					{/if}
 
 					<!-- Created, By -->
 					{#if caseData.createdBy}
-						<div class="nes-container is-dark, p-3">
-							<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Created By</div>
-							<div class="text-sm font-mono, text-gold-400">{caseData.createdBy.substring(0, 8)}...</div>
+						<div class="nes-container, is-dark, p-3">
+							<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Created By</div>
+							<div class="text-sm, font-mono, text-gold-400">{caseData.createdBy.substring(0, 8)}...</div>
 						</div>
 					{/if}
 
 					<!-- Assigned, To -->
 					{#if caseData.assignedTo}
-						<div class="nes-container is-dark, p-3">
-							<div class="text-xs text-slate-400 font-bold uppercase, mb-1">Assigned To</div>
-							<div class="text-sm, text-white">{caseData.assignedTo}</div>
+						<div class="nes-container, is-dark, p-3">
+							<div class="text-xs text-slate-400 font-bold, uppercase, mb-1">Assigned To</div>
+							<div, class="text-sm, text-white">{caseData.assignedTo}</div>
 						</div>
 					{/if}
 				</div>
 			</div>
 
 			<!-- Action, Buttons -->
-			<div class="p-6 bg-slate-800 border-t border-slate-700 flex gap-4, flex-wrap">
-				<button onclick={handleEdit} class="nes-btn is-primary hover:scale-105, transition-transform">
+			<div class="p-6 bg-slate-800 border-t border-slate-700 flex, gap-4, flex-wrap">
+				<button onclick={handleEdit} class="nes-btn is-primary, hover:scale-105, transition-transform">
 					✏️ Edit Case
 				</button>
 				<button
@@ -234,11 +234,11 @@ import type { Case } from '$lib/types';
 		</div>
 	{:else}
 		<!-- Empty, State -->
-		<div class="nes-container is-dark p-8, text-center">
-			<p class="text-2xl, mb-4">📋</p>
-			<p class="text-lg font-bold text-gold-400, mb-4">Case Not Found</p>
-			<p class="text-slate-300, mb-6">The case you're looking for doesn't exist or has been deleted.</p>
-			<button onclick={handleBack} class="nes-btn, is-warning">Back to Cases</button>
+		<div class="nes-container is-dark, p-8, text-center">
+			<p, class="text-2xl, mb-4">📋</p>
+			<p class="text-lg font-bold, text-gold-400, mb-4">Case Not Found</p>
+			<p, class="text-slate-300, mb-6">The case you're looking for doesn't exist or has been deleted.</p>
+			<button, onclick={handleBack} class="nes-btn, is-warning">Back to Cases</button>
 		</div>
 	{/if}
 </div>

@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Case } from '$lib/types/api';
-  import { Input } from '$lib/components/ui/input/Input.svelte';
+  import  Input  from "$lib/components/ui/input/Input.svelte";
   import * as Select from '$lib/components/ui/select.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
   interface Props {
     cases: Case[];
@@ -119,7 +119,7 @@
       </Select.Content>
     </Select.Root>
   </div>
-  <Button.Root
+  <Button
     variant="ghost"
     size="sm"
     class="bits-btn"

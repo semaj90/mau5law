@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Card } from 'bits-ui';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   import type { Snippet } from 'svelte';
   interface Props {
     fallback?: any;
@@ -92,7 +92,7 @@
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
-    <Card.Root class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full nes-container">
+    <Card class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full nes-container">
       <div class="text-center pb-golden-lg nes-container">
         <div class="mb-golden-md">
           <!-- YoRHa Error Icon -->
@@ -144,34 +144,34 @@
         {/if}
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
-          <Button.Root
+          <Button
             onclick={resetError}
             variant="yorha"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
             Try Again
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             onclick={reloadPage}
             variant="ghost"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >
             Reload Page
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             href="/"
             variant="ghost"
             class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
           >
             Go Home
-          </Button.Root>
+          </Button>
         </div>
         <p class="text-xs text-nier-text-muted">
           If this error persists, please contact the YoRHa support team with error ID:
           <code class="text-red-400 font-mono">{errorId}</code>
         </p>
       </div>
-    </Card.Root>
+    </Card>
   </div>
 {:else if fallbackSnippet}
   {@render fallbackSnippet?.()}

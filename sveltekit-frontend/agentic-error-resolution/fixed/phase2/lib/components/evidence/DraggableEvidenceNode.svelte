@@ -4,7 +4,7 @@
   import { draggable } from '$lib/actions/draggable';
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
   import { showSuccess, showError  } from '$lib/stores/unified';
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
   interface EvidenceNode {
@@ -198,7 +198,7 @@
   role="button"
   tabindex="0"
 >
-  <Card.Root class="w-64 shadow-lg hover:shadow-xl transition-all duration-200">
+  <Card class="w-64 shadow-lg hover:shadow-xl transition-all duration-200">
     <!-- Header with drag handle -->
     <CardHeader class="pb-2">
       <div class="flex items-center justify-between">
@@ -213,7 +213,7 @@
                  title="Confidence: {Math.round((evidence.metadata.confidence || 0) * 100)}%">
             {/if}
           <!-- Analysis button -->
-          <Button.Root
+          <Button
             size="sm"
             variant="ghost"
             class="p-1 h-6 w-6"
@@ -225,7 +225,7 @@
             {:else}
               <Bot class="w-3 h-3" />
             {/if}
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </CardHeader>
@@ -295,7 +295,7 @@
           {/if}
         {/if}
     </CardContent>
-  </Card.Root>
+  </Card>
 </div>
 <style>
   .evidence-node {

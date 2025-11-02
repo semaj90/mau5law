@@ -18,10 +18,10 @@ and AI-powered verification features.
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent } from '$lib/state/evidenceCustodyMachine';
-  import { CustodyTimeline } from './CustodyTimeline.svelte';
-  import { IntegrityVerification } from './IntegrityVerification.svelte';
-  import { CollaborationPanel } from './CollaborationPanel.svelte';
-  import { WorkflowProgress } from './WorkflowProgress.svelte';
+  import  CustodyTimeline  from "./CustodyTimeline.svelte";
+  import  IntegrityVerification  from "./IntegrityVerification.svelte";
+  import  CollaborationPanel  from "./CollaborationPanel.svelte";
+  import  WorkflowProgress  from "./WorkflowProgress.svelte";
   // Use named imports for UI kit components
   import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Badge } from '$lib/components/ui/badge.svelte'';

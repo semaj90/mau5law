@@ -130,8 +130,7 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
         return {
           status: 'error',
           type: 'PostgreSQL',
-          error: isDBHealthResult(result) && result.error ? String(result.error) : 'unhealthy'
-        };
+          error: isDBHealthResult(result) && result.error ? String(result.error) : 'unhealthy` };'`
       }
     }
 

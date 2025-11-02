@@ -4,7 +4,7 @@
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { createMachine, assign } from 'xstate';
 	import { useMachine } from '@xstate/svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
 
 	// small classnames helper (optional, replace with your cn)
 	const cn = (...args: Array<string | false | null | undefined>) => args.filter(Boolean).join(' ');
@@ -211,7 +211,7 @@
 			rows="2"
 		></textarea>
 
-		<Button.Root
+		<Button
 			onclick={handleSend}
 			disabled={!messageInput.trim() || $chatState.matches('sending')}
 			class={cn(
@@ -222,7 +222,7 @@
 			)}
 		>
 			Send
-		</Button.Root>
+		</Button>
 	</div>
 </div>
 

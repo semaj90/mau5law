@@ -175,9 +175,9 @@
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button.Root class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
+              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
                 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
-              </Button.Root>
+              </Button>
             </div>
             <p class="nes-text is-disabled">{caseData.summary.overview}</p>
             <h3 class="text-lg font-semibold">Key Findings</h3>
@@ -227,9 +227,9 @@
           <div class="flex flex-col items-center justify-center h-48 nes-text is-disabled">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
-            <Button.Root onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn">
+            <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn">
               <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
-            </Button.Root>
+            </Button>
           </div>
         {/if}
       </div>

@@ -34,8 +34,7 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
           name: '${user.first_name || ''} ${user.last_name || '' }`.trim(),'`
           role: user.role
         },
-        redirectTo: '/dashboard'
-      }),
+        redirectTo: '/dashboard` }),'`
       {
         status: 200,
         headers: { 'Content-Type': `application/json` }

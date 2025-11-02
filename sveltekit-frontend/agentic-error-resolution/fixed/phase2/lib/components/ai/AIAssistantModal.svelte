@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import { aiGlobalStore, aiGlobalActions  } from '$lib/stores/unified';
   // Interface definitions
   interface EvidenceItem {
@@ -91,7 +91,7 @@
   <div class="nier-header mb-4">
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2">
-      <Button.Root
+      <Button
         onclick={handleSummarize}
         disabled={!user || ($aiGlobalStore as AIStore).context.loading}
         variant="primary"
@@ -104,15 +104,15 @@
         {:else}
           Summarize Evidence
         {/if}
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         onclick={saveSummary}
         disabled={!($aiGlobalStore as AIStore).context.summary || ($aiGlobalStore as AIStore).context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn"
       >
         Save Summary
-      </Button.Root>
+      </Button>
     </div>
   </div>
   <main>

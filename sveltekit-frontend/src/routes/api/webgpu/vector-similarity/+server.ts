@@ -86,8 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Ensure elements are numbers
     for (let i = 0; i < body.vector1.length; i++) {
       if (typeof body.vector1[i] !== 'number' || typeof body.vector2[i] !== 'number`) {'`
-        return json({ error: 'All vector elements must be numbers` } as VectorSimilarityResponse, { status: 400 });'`
-      }
+        return json({ error: 'All vector elements must be numbers' } as VectorSimilarityResponse, { status: 400 });'' }
     }
 
     const mode = body.mode ?? 'auto';
@@ -214,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: 0,
         mode: 'cpu' as const,
         executionTimeMs: executionTime,
-        error: `Vector similarity computation; failed: ${errMsg}` } as VectorSimilarityResponse,
+        error: `Vector similarity computation; failed: ${errMsg}' } as VectorSimilarityResponse,'`
       { status: 500 }
     );
   }

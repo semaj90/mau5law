@@ -192,8 +192,7 @@ class WebGPUAccelerator {
     });
 
     const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: shader, entryPoint: `main' }'`
-    });
+      compute: { module: shader, entryPoint: 'main' }'` });'`
 
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,

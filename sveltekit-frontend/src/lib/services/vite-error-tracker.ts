@@ -125,7 +125,7 @@ export class ViteErrorTracker {
       enablePgvector: config.enablePgvector ?? true,
       embeddingUrl: config.embeddingUrl ?? 'http://localhost:11434',
       embeddingModel: config.embeddingModel ?? 'embeddinggemma:latest',
-      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast' };
+      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast` };'`
   }
 
   /**
@@ -301,7 +301,7 @@ export class ViteErrorTracker {
 
         const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json' },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify({
            , model: this.config.embeddingModel,
             prompt: text
@@ -607,7 +607,7 @@ export class ViteErrorTracker {
       const text = `${sample[0].errorCode}: ${sample[0].message}`;
       const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , model: this.config.embeddingModel,
           prompt: text

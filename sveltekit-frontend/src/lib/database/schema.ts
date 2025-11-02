@@ -39,8 +39,8 @@ export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade` }),'`
-  expiresAt: timestamp('expires_at', { withTimezone: true, mode: `date` }).notNull(),
+    .references(() => users.id, { onDelete: 'cascade' }),'`'`
+  expiresAt: timestamp('expires_at', { withTimezone: true, mode: `date' }).notNull(),'`
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
   createdAt: timestamp('created_at').defaultNow()

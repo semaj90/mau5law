@@ -169,8 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json` }'`
-        }
+          headers: { 'Content-Type': 'application/json' }'` }'`
       );
     }
     // Generate presigned URL for download

@@ -367,7 +367,7 @@
           class="w-full h-32 p-3 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         ></textarea>
         <!-- Process Button -->
-        <Button.Root
+        <Button
           onclick={processDocument}
           disabled={processing || !serviceStatus.healthy}
           class="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
@@ -382,7 +382,7 @@
           {:else}
             🚀 Process Document
           {/if}
-        </Button.Root>
+        </Button>
       </div>
       <!-- Vector Search -->
       <div class="bg-white rounded-xl shadow-lg p-6">
@@ -419,7 +419,7 @@
           class="w-full h-32 p-3 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         ></textarea>
         <!-- Search Button -->
-        <Button.Root
+        <Button
           onclick={performVectorSearch}
           disabled={searching || !serviceStatus.healthy}
           class="w-full mt-4 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
@@ -434,7 +434,7 @@
           {:else}
             🔍 Vector Search
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </div>
   </div>

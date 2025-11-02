@@ -153,13 +153,13 @@
   >
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">🤖 Enhanced Legal AI Search</h2>
-      <Button.Root
+      <Button
         class="bits-btn flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
         onclick={() => (showAdvanced = !showAdvanced)}
       >
         <span class="i-tabler-settings w-4 h-4"></span>
         Advanced
-      </Button.Root>
+      </Button>
     </div>
     <!-- Search Input -->
     <div class="flex gap-3">
@@ -179,7 +179,7 @@
             <div class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           {/if}
       </div>
-      <Button.Root
+      <Button
         onclick={performSearch}
         disabled={loading || !query.trim()}
         class="px-6 py-3 bg-blue-600 hover: bg-blue-700 text-white rounded-lg;
@@ -188,7 +188,7 @@
       >
         <span class="i-tabler-search w-4 h-4"></span>
         Search
-      </Button.Root>
+      </Button>
     </div>
     <!-- Advanced Options -->
     {#if showAdvanced}
@@ -418,14 +418,14 @@
             {/if}
           <!-- Actions -->
           <div class="mt-4 flex gap-2">
-            <Button.Root variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
+            <Button variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
               <span class="i-tabler-eye w-4 h-4"></span>
               View Details
-            </Button.Root>
-            <Button.Root variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
+            </Button>
+            <Button variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
               <span class="i-tabler-download w-4 h-4"></span>
               Export
-            </Button.Root>
+            </Button>
           </div>
         </div>
       {/each}

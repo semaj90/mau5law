@@ -17,7 +17,7 @@
   import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import {
     Eye, Layers, RotateCcw, ZoomIn, ZoomOut,
     Users, FileText

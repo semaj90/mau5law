@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from "$app/environment";
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   import { notifications  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
@@ -537,19 +537,19 @@
         </div>
       </div>
       <div class="container mx-auto px-4">
-        <Button.Root class="bits-btn" {disabled}>
+        <Button class="bits-btn" {disabled}>
 <Paperclip class="container mx-auto px-4" />
           Choose Files
-</Button.Root>
+</Button>
         {#if enableCameraCapture}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="secondary"
             onclick={handleCameraCaptureClick}
             {disabled}
           >
 <Camera class="container mx-auto px-4" />
             Camera
-</Button.Root>
+</Button>
         {/if}
         {#if enableAudioRecording}
           <button class="nes-btn"
@@ -559,7 +559,7 @@
           >
             <Mic class="container mx-auto px-4" />
             {isRecording ? "Stop Recording" : "Record Audio"}
-</Button.Root>
+</Button>
         {/if}
       </div>
     </div>
@@ -583,7 +583,7 @@
         </h4>
         <div class="container mx-auto px-4">
           {#if !autoUpload && files.some((f) => f.status === "pending")}
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               size="sm"
               onclick={() =>
 uploadFiles()}
@@ -595,9 +595,9 @@ uploadFiles()}
                 <Upload class="container mx-auto px-4" />
               {/if}
               Upload All
-</Button.Root>
+</Button>
           {/if}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() =>
@@ -605,7 +605,7 @@ uploadFiles()}
             disabled={isUploading}
           >
             Clear All
-</Button.Root>
+</Button>
         </div>
       </div>
       <!-- Total progress -->
@@ -663,7 +663,7 @@ uploadFiles()}
             <!-- Actions -->
             <div class="container mx-auto px-4">
               {#if file.status === "success" && file.url}
-                <Button.Root class="bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() =>
@@ -671,10 +671,10 @@ window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
                   <Eye class="container mx-auto px-4" />
-</Button.Root>
+</Button>
               {/if}
               {#if file.status === "error"}
-                <Button.Root class="bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() =>
@@ -682,9 +682,9 @@ retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
                   <Upload class="container mx-auto px-4" />
-</Button.Root>
+</Button>
               {/if}
-              <Button.Root class="bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() =>

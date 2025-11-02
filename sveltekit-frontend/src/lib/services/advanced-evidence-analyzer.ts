@@ -227,7 +227,7 @@ class AdvancedEvidenceAnalyzer {
                 return {
                   type,
                   confidence: 0.85,
-                  results: { text: existingOcr, embedding, engine: 'upstream` },'`
+                  results: { text: existingOcr, embedding, engine: 'upstream' },'`'`
                   processingTime: Date.now() - startedAt,
                   model: this.inferenceModel,
                   timestamp: new Date()

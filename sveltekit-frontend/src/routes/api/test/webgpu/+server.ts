@@ -80,7 +80,7 @@ export const GET: RequestHandler = async () => {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'success',
-        data: {, imported: true, shaderCount, cacheCreated: typeof createWebGLShaderCache === 'function' }
+        data: {, imported: true, shaderCount, cacheCreated: typeof createWebGLShaderCache === 'function` }'`
       });
     } catch (error: any) {
       results.push({

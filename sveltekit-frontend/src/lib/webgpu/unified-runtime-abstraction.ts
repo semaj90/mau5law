@@ -265,7 +265,7 @@ export class UnifiedRuntimeAbstraction {
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
         }
-        console.log('[Runtime] CHR-ROM cache available: `, {'`
+        console.log('[Runtime] CHR-ROM cache available: ', {'`'`
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
           avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms` });
@@ -428,8 +428,7 @@ export class UnifiedRuntimeAbstraction {
         max_tokens: request.maxTokens || 2048,
         temperature: request.temperature || 0.7,
         use_tensor_cores: true,
-        optimize_for_legal: request.model === 'gemma3-legal:latest` })'`
-    });
+        optimize_for_legal: request.model === 'gemma3-legal:latest' })'` });'`
     if (!response.ok) {
       throw new Error(`TensorRT execution failed: ${response.statusText}`);
     }
@@ -506,7 +505,7 @@ export class UnifiedRuntimeAbstraction {
       const cacheKey = request.cacheKey || this.generateCacheKey(request);
       const response = await fetch('/api/cache', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({,
           action: 'get',
           key: cacheKey,
@@ -568,8 +567,7 @@ export class UnifiedRuntimeAbstraction {
    */
   private generateCacheKey(request: InferenceRequest): string {
     const promptHash = this.simpleHash(request.prompt);
-    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;'`
-  }
+    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;'` }
   /**
    * Simple hash function for cache keys
    */

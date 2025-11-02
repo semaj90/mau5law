@@ -76,7 +76,7 @@ export function normalize(vectorPtr: usize, length: i32): void {
     norm += val * val;
   }
   norm = Mathf.sqrt(norm);
-  if (norm < 1e-12) return; // Avoid division by, zero
+  if (norm < 1e-12) return; // Avoid division, by, zero
   // Normalize in place
   for (let i = 0; i < length; i++) {
     const addr = vectorPtr + (i << 2);

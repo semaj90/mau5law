@@ -196,8 +196,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('Ollama version data:', data);
-    return `Ollama service healthy, version: ${data.version || 'unknown` }`;'`
-  });
+    return `Ollama service healthy, version: ${data.version || 'unknown' }`;'' });
   // Test 2: Model Availability
   await runTest(tests, 'Model Availability Check', async () => {
     const response = await fetch('http://localhost:11434/api/tags', {
@@ -223,7 +222,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'AI Text Generation', async () => {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: 'Test; prompt: What is 2+2?',
@@ -256,7 +255,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     `;`
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , model: 'gemma3-legal:latest',
         prompt,
@@ -325,7 +324,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Basic Find API Request', async () => {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , query: 'test legal document',
         type: 'all',
@@ -350,7 +349,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'AI-Enhanced Search', async () => {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , query: 'contract liability evidence',
         type: 'all',
@@ -381,7 +380,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'MCP Analysis in Find API', async () => {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , query: 'legal precedent analysis',
         type: 'all',
@@ -429,7 +428,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       .map(() =>
         fetch('/api/ai/find', {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
            , query: 'rate limit test',
             type: 'all',
@@ -473,7 +472,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Memory Graph Read', async () => {
     const response = await fetch('/api/mcp/memory/read-graph', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({, filters: {, nodeTypes: ['ai-interaction', 'search'],
           limit: 10
         }
@@ -494,14 +493,14 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Memory Relation Creation', async () => {
     const response = await fetch('/api/mcp/memory/create-relations', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , source: 'test-user',
         target: 'test-search',
         relationType: 'performed-search',
         properties: {
          , timestamp: new Date().toISOString(),
-          query: `test memory relation` }
+          query: `test memory relation' }'`
       })
     });
     if (verbose) console.log('Memory Relation Creation response status:', response.status);
@@ -537,7 +536,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , query: `legal document contract analysis` })
+       , query: `legal document contract analysis' })'`
     });
     if (verbose) console.log('Semantic Search Service response status:', response.status);
     // If endpoint doesn't exist, this is expected for now'
@@ -614,7 +613,7 @@ async function runTest(tests: TestResult[], name: string, testFn: () => Promise<
       status: 'fail',
       duration: Date.now() - startTime,
       details: 'Test failed',
-      error: error instanceof Error ? error.message : `Unknown error` });
+      error: error instanceof Error ? error.message : `Unknown error' });'`
   }
 }
 /*
@@ -665,7 +664,7 @@ export const GET: RequestHandler = async () => {
       // Find API
       fetch('/api/ai/find', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , query: 'health check',
           useAI: false

@@ -249,8 +249,7 @@ export class AdvancedSIMDPipeline {
       // Execute routes concurrently with error handling
       await Promise.all(routingPromises);
     } catch (error) {
-      console.error(`❌ Service worker routing failed for ${result.id}: ', error);'`
-    }
+      console.error(`❌ Service worker routing failed for ${result.id}: ', error);'' }'`
   }
   private async routeTensorToMinIO(result: StreamingResult): Promise<void> {
     await fetch('/api/v1/upload/webhook', {
@@ -262,8 +261,7 @@ export class AdvancedSIMDPipeline {
         content: result.content,
         tensorSlice: Array.from(result.tensorSlice),
         chunkInfo: result.chunkInfo,
-        bucket: 'gpu-tensors` })'`
-    });
+        bucket: 'gpu-tensors' })'` });'`
   }
   private async routeTensorToPgVector(result: StreamingResult): Promise<void> {
     await fetch('/api/v2/vector-pipeline', {

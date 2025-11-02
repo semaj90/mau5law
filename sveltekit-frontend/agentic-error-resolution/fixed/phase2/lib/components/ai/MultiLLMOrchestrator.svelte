@@ -6,15 +6,15 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import {
     Play,
     Pause,
@@ -248,7 +248,7 @@ if (autoStart) {
       </p>
     </div>
     <div class="flex items-center gap-2">
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={refreshStatus}
@@ -256,7 +256,7 @@ if (autoStart) {
       >
 <RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
         Refresh
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={() =>
@@ -264,7 +264,7 @@ showSettings = !showSettings}
       >
         <Settings class="h-4 w-4" />
       {#if !isInitialized}
-        <Button.Root class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
+        <Button class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
 <Play class="h-4 w-4 mr-2" />
           Initialize
       {/if}
@@ -351,7 +351,7 @@ showSettings = !showSettings}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{provider.models.length - 2}</span>
                 {/if}
               </div>
-              <Button.Root
+              <Button
                 variant="ghost"
                 size="sm"
                 class="w-full mt-2 bits-btn bits-btn"
@@ -375,7 +375,7 @@ submitTestTask(provider.id)}
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearCompletedTasks}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearCompletedTasks}>
 Clear Completed
         </h3>
       </div>
@@ -396,7 +396,7 @@ Clear Completed
               </div>
               <div class="flex items-center gap-2">
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{task.priority}</span>
-                <Button.Root class="bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() =>

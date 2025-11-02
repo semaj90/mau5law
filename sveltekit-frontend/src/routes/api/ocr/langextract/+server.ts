@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       try {
         const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
-          headers: { 'content-type': `application/json' },'`
+          headers: { 'content-type': `application/json` },'`'`
           body: JSON.stringify({ text, model, tags })
         });
         if (resp.ok) {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
-        headers: { 'content-type': `application/json` },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify(goReq)
       });
       if (goResp.ok) {
@@ -110,11 +110,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     // If we reached here, no backend produced an embedding
     return json(
-      { error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)' },
+      { error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)` },'`
       { status: 502 }
     );
   } catch (error: any) {
-    // Normalize unknown error into a safe string message without using `any'`
+    // Normalize unknown error into a safe string message without using `any'`'
     let message = 'Tensor error';
     if (error instanceof Error) {
       message = error.message || message;
@@ -140,9 +140,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         // NOTE: adjust endpoint and payload to your Ollama deployment API if different
         await fetch(`${ollamaUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
-          headers: { 'content-type': `application/json' },'`
-          body: JSON.stringify({ text: 'health-check', model: `embeddinggemma:latest' })'`
-        });
+          headers: { 'content-type': `application/json` },'`'`
+          body: JSON.stringify({ text: 'health-check', model: 'embeddinggemma:latest' })'` });'`
       } catch {
         // ignore Ollama probe failures
       }

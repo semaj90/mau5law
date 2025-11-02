@@ -371,12 +371,12 @@ export class ToolRegistry {
         {,
           id: 'doc1',
           score: 0.95,
-          metadata: { title: `Similar Document 1` }
+          metadata: { title: 'Similar Document 1' }
         },
         {
           id: 'doc2',
           score: 0.89,
-          metadata: { title: `Similar Document 2` }
+          metadata: { title: 'Similar Document 2' }
         }
       ],
       topK: args.topK || 10,
@@ -393,7 +393,7 @@ export class ToolRegistry {
     try {
       const response = await fetch(`${mcpUrl}/mcp/tools/${args.tool}`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({, arguments: args.arguments })
       });
 
@@ -483,7 +483,7 @@ export class AgenticRAGOrchestrator {
 
         toolResults.push(result);
 
-        console.log(`      ${result.success ? '✅' : `❌` } ${result.toolName}: ${result.executionTime.toFixed(2)}ms`);
+        console.log(`      ${result.success ? '✅' : '❌' } ${result.toolName}: ${result.executionTime.toFixed(2)}ms`);
       }
 
       // Step 3: Call LLM again with tool results
@@ -544,13 +544,13 @@ export class AgenticRAGOrchestrator {
     try {
       const response = await fetch(`${this.config.ollamaUrl}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
          , model: this.config.model,
           messages: [
             {,
              , role: 'system',
-              content: `You are a legal AI assistant with access to tools. Use tools when needed to answer user queries accurately.` },
+              content: 'You are a legal AI assistant with access to tools. Use tools when needed to answer user queries accurately.' },
             {
               role: 'user',
               content: query
@@ -581,8 +581,8 @@ export class AgenticRAGOrchestrator {
 
       return { content: data.message?.content };
     } catch (error: any) {
-      console.error('❌ LLM call failed: `, error);'`
-      return { content: `Error: LLM unavailable` };
+      console.error('❌ LLM call failed: ', error);'`'`
+      return { content: 'Error: LLM unavailable' };
     }
   }
 
@@ -596,7 +596,7 @@ export class AgenticRAGOrchestrator {
     try {
       const response = await fetch(`${this.config.ollamaUrl}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
          , model: this.config.model,
           messages: messages.map(m => ({
@@ -661,7 +661,7 @@ export const agenticOrchestrator = new AgenticRAGOrchestrator();
  *   parameters: {, type: 'object', properties: {, text: {, type: `string` } } },
  *   execute: async (args) => {
  *     // Custom logic
- *     return { analysis: `Custom analysis result` };
+ *     return { analysis: 'Custom analysis result' };
  *   }
  * });
  *

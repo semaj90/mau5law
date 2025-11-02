@@ -233,7 +233,7 @@ export class WebGPUTensorAccelerator {
             result[row * N + col] = sum;
           }
         }
-      ' };'
+      ` };'`
     for (const [name, source] of Object.entries(shaders)) {
       const shader = this.device.createShaderModule({
         label: `${name}Shader`,
@@ -267,7 +267,7 @@ export class WebGPUTensorAccelerator {
         layout: 'auto',
         compute: {
          , module: shader,
-          entryPoint: 'main' }
+          entryPoint: 'main` }'`
       });
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
@@ -520,7 +520,7 @@ export class WebGPUTensorAccelerator {
       layout: 'auto',
       compute: {
        , module: shader,
-        entryPoint: 'main' }
+        entryPoint: 'main` }'`
     });
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),

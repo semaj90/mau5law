@@ -65,8 +65,7 @@ export class CacheLayerManager {
           return data;
         }
       } catch (error: any) {
-        console.warn(`Cache layer ${layer.name} failed: ', String(error));'`
-      }
+        console.warn(`Cache layer ${layer.name} failed: ', String(error));'` }
     }
     return null;
   }
@@ -97,8 +96,7 @@ export class CacheLayerManager {
                   break;
                 }
               } catch (error: any) {
-                console.warn(`Batch cache layer ${layer.name} failed for key ${key}: ', String(error));'`
-              }
+                console.warn(`Batch cache layer ${layer.name} failed for key ${key}: ', String(error));'` }
             }
           })
         );
@@ -160,8 +158,7 @@ export class CacheLayerManager {
               await this.set(key, data, _dataType, 3600);
             }
           } catch (error: any) {
-            console.warn(`Cache warming failed for key ${key}: ', String(error));'`
-          }
+            console.warn(`Cache warming failed for key ${key}: ', String(error));'` }
         });
         await Promise.allSettled(loadPromises);
       })
@@ -323,7 +320,7 @@ export class CacheLayerManager {
       // store a point with payload
       await fetch(`http://localhost:6333/collections/cache/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , points: [
             {,
@@ -335,8 +332,7 @@ export class CacheLayerManager {
         })
       });
     } catch (error: any) {
-      console.warn('Qdrant set error:', String(error));'
-    }
+      console.warn('Qdrant set error:', String(error));` }`'
   }
 
   private async getFromPostgres(_key: string): Promise<unknown> {

@@ -163,8 +163,7 @@ export function getEvidenceTypeStyling(type: string) {
       label: 'Video',
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
-      borderColor: 'border-harvard-crimson'
-    },
+      borderColor: 'border-harvard-crimson` },'`
     'audio': {
       label: 'Audio',
       color: 'text-harvard-gold',
@@ -282,8 +281,7 @@ export const theme = { colors: {, nier: {
       darkCrimson: '#8B1521',
       lightCrimson: '#C42847',
       gold: '#C9A96E',
-      darkGold: '#B8965A'
-    },
+      darkGold: '#B8965A` },'`
     legal: {
       success: '#2D5F3F',
       warning: '#B8965A',

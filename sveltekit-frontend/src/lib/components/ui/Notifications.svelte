@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { quintOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import { notifications, type Notification } from '../../stores/notification';
@@ -63,7 +63,7 @@
       in:fly={{ x: 300, duration: 300, easing: quintOut }}
       out:fly={{ x: 300, duration: 200, easing: quintOut }}
     >
-      <div class="space-y-4 flex, gap-3">
+      <div class="space-y-4, flex, gap-3">
         <!-- Icon -->
         <div, class="flex-shrink-0">
           <iconify-icon
@@ -74,34 +74,34 @@
 
         <!-- Content -->
         <div, class="flex-1">
-          <p class="font-semibold, text-sm">
+          <p, class="font-semibold, text-sm">
             {notification.title}
           </p>
 
           {#if notification.message}
-            <p class="text-sm, mt-1">
+            <p, class="text-sm, mt-1">
               {notification.message}
             </p>
           {/if}
 
           <!-- Actions -->
           {#if notification.actions && notification.actions.length > 0}
-            <div class="mt-3 flex gap-2, flex-wrap">
+            <div class="mt-3 flex, gap-2, flex-wrap">
               {#each Array.isArray(notification.actions) ? notification.actions : [] as action}
-                <Button.Root
+                <Button
                   class="bits-btn"
                   size="sm"
                   variant={action.variant ?? 'secondary'}
                   onclick={() => handleAction(notification, action)}
                 >
                   {action.label}
-                </Button.Root>
+                </Button>
               {/each}
             {/if}
         </div>
 
         <!-- Close, button -->
-        <div class="ml-2, self-start">
+        <div, class="ml-2, self-start">
           <button
             type="button"
             class="inline-flex items-center gap-2 px-2 py-1 rounded text-sm"
@@ -109,14 +109,14 @@
             aria-label="Dismiss notification"
           >
             <span>Dismiss</span>
-            <iconify-icon icon="ph:x" class="w-4, h-4"></iconify-icon>
+            <iconify-icon, icon="ph:x" class="w-4, h-4"></iconify-icon>
           </button>
         </div>
       </div>
 
-      <!-- Progress bar for timed, notifications -->
+      <!-- Progress bar for, timed, notifications -->
       {#if notification.duration && notification.duration > 0}
-        <div class="mt-3 h-1 bg-gray-200 rounded, overflow-hidden">
+        <div class="mt-3 h-1 bg-gray-200, rounded, overflow-hidden">
           <div
             class="h-full bg-indigo-600"
             style="animation: shrink {notification.duration}ms linear forwards;"

@@ -224,12 +224,12 @@ https://svelte.dev/e/js_parse_error -->
             Automatically extract entities, facts, and legal issues from {ocrResults.length} uploaded document{ocrResults.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <Button.Root
+        <Button
           onclick={performAutomatedAnalysis}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
         >
           🤖 Start Analysis
-        </Button.Root>
+        </Button>
       </div>
     {/if}
   <!-- Analysis Progress -->
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
                   aria-label="Remove entity"
                 >
                   ×
-                </Button.Root>
+                </Button>
               </div>
             </div>
           </div>
@@ -285,12 +285,12 @@ https://svelte.dev/e/js_parse_error -->
   <div class="mb-8">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Key Facts</h3>
-      <Button.Root
+      <Button
         onclick={addKeyFact}
         class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 bits-btn"
       >
         + Add Fact
-      </Button.Root>
+      </Button>
     </div>
     {#if formData.key_facts.length > 0}
       <div class="space-y-3">
@@ -309,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
               Remove
-            </Button.Root>
+            </Button>
           </div>
         {/each}
       </div>
@@ -321,12 +321,12 @@ https://svelte.dev/e/js_parse_error -->
   <div class="mb-8">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Legal Issues</h3>
-      <Button.Root
+      <Button
         onclick={addLegalIssue}
         class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 bits-btn"
       >
         + Add Issue
-      </Button.Root>
+      </Button>
     </div>
     {#if formData.legal_issues.length > 0}
       <div class="space-y-3">
@@ -346,7 +346,7 @@ https://svelte.dev/e/js_parse_error -->
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
               Remove
-            </Button.Root>
+            </Button>
           </div>
         {/each}
       </div>
@@ -376,20 +376,20 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
-    <Button.Root
+    <Button
       onclick={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
       ← Previous
     </Button>
     <div class="flex space-x-3">
-      <Button.Root
+      <Button
         onclick={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Save Draft
       </Button>
-      <Button.Root
+      <Button
         onclick={handleNext}
         disabled={formData.key_facts.length === 0}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"

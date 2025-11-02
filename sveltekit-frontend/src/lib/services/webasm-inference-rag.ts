@@ -416,7 +416,7 @@ export class WASMInferenceRAGService {
       try {
         const response = await fetch('http://localhost:8094/api/rag/search', {
           method: 'POST',
-          headers: { 'Content-Type': `application/json' },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify({
             query,
             limit,
@@ -430,8 +430,7 @@ export class WASMInferenceRAGService {
           return json.documents || [];
         }
       } catch (fallbackError) {
-        console.warn('⚠️ Fallback RAG search also failed: `, fallbackError);'`
-      }
+        console.warn('⚠️ Fallback RAG search also failed: ', fallbackError);'` }'`
       return [];
     }
   }
@@ -530,7 +529,7 @@ export class WASMInferenceRAGService {
           inferenceId,
           generatedText,
           requiresTagging: true,
-          source: 'wasm_inference' },
+          source: 'wasm_inference` },'`
         priority: priority === 'critical' ? 10 : priority === 'high' ? 8 : 5,
         correlationId: inferenceId
       });

@@ -62,7 +62,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { testType = 'comprehensive` } = body;'`
+    const { testType = 'comprehensive' } = body;'`'`
     const testResults = {
       testType,
       timestamp: new Date().toISOString(),
@@ -118,8 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
           testResults.metrics.totalTests > 0
             ? ((testResults.metrics.passedTests / testResults.metrics.totalTests) * 100).toFixed(1) + '%'
             : '0%',
-        executionTime: testResults.metrics.executionTimeMs + 'ms` }'`
-    });
+        executionTime: testResults.metrics.executionTimeMs + 'ms' }'' });
   } catch (error: any) {
     console.error('❌ Shader cache test endpoint error:', error);'
     return json(
@@ -170,7 +169,7 @@ async function testColdPath(testResults: any): Promise<any> {
         shader: shader.key,
         success: true,
         latency,
-        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions` });
+        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions' });'`
       testResults.metrics.passedTests++;
     } catch (error: any) {
       testResults.results.coldPath.tests.push({
@@ -202,7 +201,7 @@ async function testHotPath(testResults: any): Promise<any> {
           success: true,
           latency,
           fromCache: true,
-          details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}` });
+          details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}' });'`
         testResults.metrics.passedTests++;
       } else {
         // Not in cache, which is expected if cold path wasn't run first'
@@ -211,7 +210,7 @@ async function testHotPath(testResults: any): Promise<any> {
           success: true,
           latency,
           fromCache: false,
-          details: `Shader not in cache (expected if cold path not run)` });
+          details: `Shader not in cache (expected if cold path not run)' });'`
         testResults.metrics.passedTests++;
       }
     } catch (error: any) {
@@ -233,9 +232,9 @@ async function testPredictivePreloading(testResults: any): Promise<any> {
   testResults.metrics.totalTests++;
   try {
     const workflowSequence = [
-      createMockWorkflowContext('doc-load', { documentType: 'contract', complexity: 'medium` }),'`
-      createMockWorkflowContext('evidence-view', { documentType: 'evidence', complexity: `low` }),
-      createMockWorkflowContext('timeline', { documentType: 'precedent', complexity: `expert` })
+      createMockWorkflowContext('doc-load', { documentType: 'contract', complexity: 'medium' }),'`'`
+      createMockWorkflowContext('evidence-view', { documentType: 'evidence', complexity: `low' }),'`
+      createMockWorkflowContext('timeline', { documentType: 'precedent', complexity: `expert' })'`
     ];
     for (const context of workflowSequence) {
       await gpuShaderCacheOrchestrator.analyzeAndPreload(context);
@@ -243,7 +242,7 @@ async function testPredictivePreloading(testResults: any): Promise<any> {
     testResults.results.predictivePreloading.tests.push({
       test: 'workflow_analysis',
       success: true,
-      details: `Analyzed ${workflowSequence.length} workflow steps for predictive patterns` });
+      details: `Analyzed ${workflowSequence.length} workflow steps for predictive patterns' });'`
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.predictivePreloading.tests.push({
@@ -263,11 +262,11 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
   const searchQueries = [
     {,
       name: 'semantic_search',
-      query: { semanticQuery: `legal document timeline visualization` }
+      query: { semanticQuery: `legal document timeline visualization' }'`
     },
     {
       name: 'context_search',
-      query: { workflowStep: 'doc-load', legalContext: { documentType: `contract` } }
+      query: { workflowStep: 'doc-load', legalContext: { documentType: `contract' } }'`
     },
     {
       name: 'temporal_search',
@@ -285,7 +284,7 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
         query: searchQuery.name,
         success: true,
         resultCount: results.length,
-        details: `Found ${results.length} matching shaders` });
+        details: `Found ${results.length} matching shaders' });'`
       testResults.metrics.passedTests++;
     } catch (error: any) {
       testResults.results.multiDimensionalSearch.tests.push({
@@ -314,7 +313,7 @@ async function testReinforcementLearning(testResults: any): Promise<any> {
         cacheMisses: metrics.cacheMisses,
         preloadSuccesses: metrics.preloadSuccesses
       },
-      details: `Collected ${Object.keys(metrics).length} performance metrics` });
+      details: `Collected ${Object.keys(metrics).length} performance metrics' });'`
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.reinforcementLearning.tests.push({
@@ -340,7 +339,7 @@ async function testCacheManagement(testResults: any): Promise<any> {
     testResults.results.cacheManagement.tests.push({
       test: 'cache_clearing',
       success: true,
-      details: `Successfully cleared cache entries` });
+      details: `Successfully cleared cache entries' });'`
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.cacheManagement.tests.push({
@@ -364,7 +363,7 @@ async function testDatabaseIntegration(testResults: any): Promise<any> {
     testResults.results.databaseIntegration.tests.push({
       test: 'database_connection',
       success: true,
-      details: `Database schema and operations functional` });
+      details: `Database schema and operations functional' });'`
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.databaseIntegration.tests.push({
@@ -387,7 +386,7 @@ function createMockWorkflowContext(step: string, docContext: any) {
       documentType: docContext.documentType || 'contract',
       caseId: 'test-case-001',
       documentSize: 1024000,
-      complexity: docContext.complexity || 'medium` },'`
+      complexity: docContext.complexity || 'medium' },'`'`
     timestamp: new Date()
   };
 }

@@ -10,7 +10,7 @@ Use this template for all essential routes
 	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
 	import Button from '$lib/components/ui/enhanced-bits.svelte';
 	import * as Card from '$lib/components/ui/card.svelte';
-	import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui.svelte';
+	import  ButtonBits, CardBits, DialogBits  from "$lib/components/ui/bits-ui.svelte";
 	// Props
 	interface Props {
 		pageTitle: string;
@@ -44,12 +44,12 @@ Use this template for all essential routes
 <ProductionLayout>
 	<div class="essential-route-page {className}">
 		<!-- Header -->
-		<Card.Root class="mb-6 nes-container is-rounded">
+		<Card class="mb-6 nes-container is-rounded">
 			<CardHeader>
 				<div class="flex justify-between items-center">
 					<div class="flex items-center gap-4">
 						{#if showBackButton}
-							<Button.Root
+							<Button
 								variant="ghost"
 								size="sm"
 								onclick={goBack}
@@ -84,7 +84,7 @@ Use this template for all essential routes
 					{@render children()}
 				{:else}
 					<!-- Default placeholder content -->
-					<Card.Root class="nes-container is-rounded">
+					<Card class="nes-container is-rounded">
 						<CardContent class="p-8 text-center">
 							<div class="mb-4">
 								<div class="text-6xl mb-4">🚧</div>
@@ -97,9 +97,9 @@ Use this template for all essential routes
 								</p>
 							</div>
 							<div class="flex justify-center gap-4 mt-6">
-								<Button.Root class="nes-btn is-primary" onclick={goBack}>
+								<Button class="nes-btn is-primary" onclick={goBack}>
 									Go Back
-								<Button.Root
+								<Button
 									variant="ghost"
 									class="nes-btn"
 									onclick={() => window.location.href = '/'}
@@ -111,7 +111,7 @@ Use this template for all essential routes
 				{/if}
 			{:else}
 				<!-- Loading state -->
-				<Card.Root class="nes-container is-rounded">
+				<Card class="nes-container is-rounded">
 					<CardContent class="p-8 text-center">
 						<div class="nes-text is-disabled">
 							<div class="animate-pulse">Loading...</div>

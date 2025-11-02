@@ -11,7 +11,7 @@ beforeAll(async () => {
     { name: 'Canvas Service', url: 'http://localhost:8083/health' },
     { name: 'Database', url: 'http://localhost:5432' }
   ];
-  console.log('\n📡 Checking service availability: `);'`
+  console.log('\n📡 Checking service availability: ');'`'`
   for (const service of services) {
     try {
       // Use AbortController for request timeout (fetch does not accept `timeout` option)
@@ -47,7 +47,6 @@ afterAll(async () => {
   skipOnServiceUnavailable: true
 }
 // Mock only unavailable external services, not internal ones
-vi.mock('external-payment-service', () => ({ processPayment: vi.fn().mockResolvedValue({, success: true, transactionId: 'mock-tx-123' })
+vi.mock('external-payment-service', () => ({ processPayment: vi.fn().mockResolvedValue({, success: true, transactionId: 'mock-tx-123` })'`
 }));
-vi.mock('external-email-service', () => ({ sendEmail: vi.fn().mockResolvedValue({, messageId: `mock-email-123' })'`
-}));
+vi.mock('external-email-service', () => ({ sendEmail: vi.fn().mockResolvedValue({, messageId: 'mock-email-123' })'` }));'`

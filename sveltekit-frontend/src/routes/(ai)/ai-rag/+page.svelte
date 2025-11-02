@@ -1,4 +1,4 @@
-<!-- Simple RAG page for, testing -->
+<!-- Simple RAG page, for, testing -->
 <script>
   let message = 'RAG Interface is working!';
 </script>

@@ -431,7 +431,7 @@ async function generateTimeline(data: any): Promise<any> {
     action: 'timeline_generated',
     timeline,
     message: `Timeline reconstructed with ${timeline.length} events!`,
-    nextStep: 'Chat with case using RAG to get insights` });'`
+    nextStep: `Chat with case using RAG to get insights` });'`'`
 }
 async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   // Validate input
@@ -635,7 +635,7 @@ function generateMockLegalResponse(context: RagContext): string {
   const avgRelevance =
     evidenceCount === 0 ? 0 : (evidence.reduce((sum, doc) => sum + (doc.relevance || 0), 0) / evidenceCount) * 100;
 
-  return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidenceCount} pieces of evidence:`
+  return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidenceCount} pieces of evidence: '`
 Case; Overview:
 ${caseData.description || ''}
 Evidence Analysis:
@@ -649,8 +649,7 @@ Legal Recommendations:
 2. Use timeline visualization for courtroom presentation
 3. Prioritize high-relevance evidence for expert review
 Query Response:; Regarding: "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown` } priority.'`
-`;`
-}
+`;' }'`
 export const GET: RequestHandler = async ({ url }) => {
   const demo = url.searchParams.get('demo');
   if (demo === 'info') {
@@ -677,7 +676,7 @@ export const GET: RequestHandler = async ({ url }) => {
           body: {
             action: 'create_case',
             data: {
-              title: 'State v. Digital Evidence Case',
+             , title: 'State v. Digital Evidence Case',
               description: 'Complex case involving digital evidence analysis',
               userId: 'attorney_123',
               priority: 'high',
@@ -694,7 +693,7 @@ export const GET: RequestHandler = async ({ url }) => {
              , caseId: 'case-uuid',
               userId: 'attorney_123',
               files: [
-                {, name: 'crime_scene.jpg', type: 'image/jpeg', content: 'base64...` },'`
+                {, name: 'crime_scene.jpg', type: 'image/jpeg', content: `base64...` },'`'`
                 { name: 'witness_statement.pdf', type: 'application/pdf', content: `base64...` },
                 { name: 'surveillance_audio.mp3', type: 'audio/mpeg', content: `base64...` }
               ],

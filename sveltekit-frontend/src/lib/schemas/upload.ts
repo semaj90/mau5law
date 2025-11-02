@@ -25,7 +25,7 @@ export const fileUploadSchema = z.object({
   file: z
     .instanceof(File, { message: 'Please upload a file' })
     .refine((file) => file.size > 0, 'File is empty')
-    .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be less than, 50MB')
+    .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be less, than, 50MB')
     .refine(
       (file) => ALLOWED_MIME_TYPES.includes(file.type as any),
       'File type not supported'

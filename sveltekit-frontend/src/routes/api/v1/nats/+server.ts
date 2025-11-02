@@ -223,7 +223,7 @@ async function handleSubscribe(
       success: false,
       error: 'HTTP subscriptions not supported',
       suggestion: 'Use WebSocket endpoint for real-time subscriptions`,'`
-      websocket_url: `/api/v1/nats/ws` },
+      websocket_url: `/api/v1/nats/ws' },'`
     { status: 400 }
   );
 }

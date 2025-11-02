@@ -353,7 +353,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         error: 'Failed to retrieve service status',
-        details: err instanceof Error ? err.message : 'Unknown error` },'`
+        details: err instanceof Error ? err.message : `Unknown error` },'`'`
       { status: 500 }
     )
   }

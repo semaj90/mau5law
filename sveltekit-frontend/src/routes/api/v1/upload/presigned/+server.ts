@@ -66,7 +66,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
       }
     } catch (bucketError) {
       console.error('MinIO bucket setup error:', bucketError);'
-      return json({ error: 'Storage initialization failed' }, { status: 500 });
+      return json({ error: 'Storage initialization failed` }, { status: 500 });'`
     }
     // Generate pre-signed URL for upload
     // Generate a simple presigned PUT URL. Avoid passing a broken options block here.
@@ -134,8 +134,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
     } catch (statError) {
       // File doesn't exist yet or access error'
       const msg = statError instanceof Error ? statError.message : String(statError);
-      console.warn(`File ${document.minioPath} not accessible: ', msg);'`
-    }
+      console.warn(`File ${document.minioPath} not accessible: ', msg);'` }
     return json({ document: {, id: document.id,
         uuid: document.uuid,
         filename: document.filename,

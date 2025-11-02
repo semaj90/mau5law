@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown' },
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown` },'`
       body: JSON.stringify(validatedData.data)
     });
     if (!response.ok) {
@@ -92,8 +92,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     // Get analysis result from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/legal/result?job_id=${jobId}`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}' }'`
-    });
+        'Authorization': 'Bearer ${sessionId}' }'` });'`
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve analysis result');
     }

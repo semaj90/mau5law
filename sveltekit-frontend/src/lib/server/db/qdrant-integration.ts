@@ -270,11 +270,10 @@ export class QdrantPostgreSQLService {
             id: row.id,
             score: row.similarity,
             document: row as LegalDocument,
-            source: `postgresql` });
+            source: `postgresql' });'`
         }
       } catch (error: any) {
-        console.error('PostgreSQL search error: ', error);'
-      }
+        console.error('PostgreSQL search error: ', error);` }`'
     }
     // Qdrant search
     if (useQdrant) {
@@ -311,13 +310,12 @@ export class QdrantPostgreSQLService {
                 id: rid,
                 score: (result as any).score,
                 document,
-                source: `qdrant` });
+                source: `qdrant' });'`
             }
           }
         }
       } catch (error: any) {
-        console.error('Qdrant search error:', error);'
-      }
+        console.error('Qdrant search error:', error);` }`'
     }
     // Deduplicate and sort results
     const uniqueResults = new Map<string, any>();

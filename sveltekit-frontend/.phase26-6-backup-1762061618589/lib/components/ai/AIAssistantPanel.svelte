@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // Use existing lowercase: 'card' folder to avoid casing conflicts on disk
-  import { Card } from '$lib/components/ui/card/Card.svelte';
-  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
-  import { AIChatMessage } from '$lib/components/ai/AIChatMessage.svelte';
-  import { AISearchBar } from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
+  import  Card  from "$lib/components/ui/card/Card.svelte";
+  import  CardContent  from "$lib/components/ui/card/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/card/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/card/CardTitle.svelte";
+  import  AIChatMessage  from "$lib/components/ai/AIChatMessage.svelte";
+  import  AISearchBar  from "$lib/components/ui/enhanced-bits/AISearchBar.svelte";
   import { aiAssistant  } from '$lib/stores/unified';
   import { acceleratedLegalAssistant } from '$lib/ai/accelerated-legal-assistant';
   import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';

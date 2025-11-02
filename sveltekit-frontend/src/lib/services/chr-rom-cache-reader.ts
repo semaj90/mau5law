@@ -125,8 +125,7 @@ export class CHRROMCacheReader {
     const prefetchPromises = docIds.flatMap(docId =>
       patternTypes.map(patternType =>
         this.getPattern(docId, patternType, false).catch(error => {
-          console.warn(`Prefetch failed for ${docId}:${patternType}: ', error);'`
-        })
+          console.warn(`Prefetch failed for ${docId}:${patternType}: ', error);'` })
       )
     );
     // Execute with concurrency limit to avoid overwhelming the system
@@ -220,13 +219,12 @@ export class CHRROMCacheReader {
       entity_heatmap: {
         type: 'heatmap;' as const,
         size: 'sm' as const,
-        data: '<div style="width:100%;height:12px;background:linear-gradient(to, right, #e5e7eb, #f3f4f6);"></div>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0` }'`
-      },
+        data: '<div, style="width:100%;height:12px;background:linear-gradient(to, right, #e5e7eb, #f3f4f6);"></div>',
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }'` },'`
       similarity_graph: {
         type: 'graph' as const,
         size: 'sm' as const,
-        data: '<svg width="40" height="16" viewbox="0 0 40, 16"><path d="M 0 8 L 40, 8" stroke="#e5e7eb" stroke-width="2"></path></svg>',
+        data: '<svg width="40" height="16" viewbox="0 0, 40, 16"><path d="M 0 8 L, 40, 8" stroke="#e5e7eb" stroke-width="2"></path></svg>',
         metadata: { confidence: 0, timestamp: Date.now(), version: `1.0` }
       },
       status_indicator: {

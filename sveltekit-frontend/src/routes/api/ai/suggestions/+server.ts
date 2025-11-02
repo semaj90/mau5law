@@ -180,7 +180,7 @@ async function generateComprehensiveSuggestions({
 }: { content: string;, reportType: string;
   context: any;
   useVectorSearch: boolean;
-  useOllamaAI: boolean;
+ , useOllamaAI: boolean;
  , useEnhancedRAG: boolean;
  , useProtobuf: boolean;
  , maxSuggestions: number;
@@ -522,8 +522,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'case_context',
         confidence: 0.75,
         reasoning: 'Working within specific case context',
-        metadata: {, caseId: context.caseId, category: 'context_aware` }'`
-      });
+        metadata: {, caseId: context.caseId, category: 'context_aware' }'` });'`
     }
     // If we have evidence context, suggest evidence-specific analysis
     if (context.evidenceIds && context.evidenceIds.length > 0) {

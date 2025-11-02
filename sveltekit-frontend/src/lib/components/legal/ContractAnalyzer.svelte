@@ -24,13 +24,13 @@
 
 <script, lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
 
   // exported props - use explicit union types to avoid svelte-preprocess parsing issues
   const { contract } = $props<{ contract: ContractAnalysis | undefined }>()
@@ -161,7 +161,7 @@
               <h2>{contractData.title}</h2>
               <div, class="contract-meta">
                 <span, class="contract-type">{contractData.type.toUpperCase()}</span>
-                <span class="contract-status, status-{contractData.status}">{contractData.status}</span>
+                <span, class="contract-status, status-{contractData.status}">{contractData.status}</span>
                 <span
                   class="risk-score"
                   style="color: {getRiskBadgeStyle(contractData.riskScore > 7 ? 'high' : 'medium').color}"
@@ -173,7 +173,7 @@
           </div>
 
           <div, class="contract-actions">
-            <!-- use a native button for the analyze action to avoid component event typing, issues -->
+            <!-- use a native button for the analyze action to avoid component event, typing, issues -->
             <button
               class="ai-analyze-btn"
               onclick={() => void analyzeContract()}
@@ -186,7 +186,7 @@
             </button>
 
             <div, class="export-dropdown">
-              <Button.Root, class="export-btn">📤 Export</Button.Root>
+              <Button.Root, class="export-btn">📤 Export</Button>
               <div, class="export-menu">
                 <button, onclick={() => exportContract('pdf')}>📄 PDF</button>
                 <button, onclick={() => exportContract('docx')}>📝 DOCX</button>
@@ -198,9 +198,9 @@
       </CardHeader>
 
       <CardContent>
-        <!-- Search and, Filters -->
+        <!-- Search, and, Filters -->
         <div, class="search-section">
-          <!-- replace custom Input bind with native, input + on:input -->
+          <!-- replace custom Input bind with, native, input + on:input -->
           <input
             class="clause-search"
             placeholder="Search clauses, terms, or clause types..."

@@ -197,8 +197,7 @@ class EvidenceGlobalStore {
     const node = this.currentCase.nodes.find(n => n.id === nodeId);
     if (node) {
       node.position = position;
-      // Don't trigger full persistence for just position changes'
-    }
+      // Don't trigger full persistence for just position changes` }'`
   }
   startDrag(nodeId: string) {
     this.ui.draggedNodeId = nodeId;
@@ -366,8 +365,7 @@ class EvidenceGlobalStore {
         }
       };
       this.aiWorker.onerror = error => {
-        console.error('AI Worker error:', error);'
-      };
+        console.error('AI Worker error:', error);` };`'
     }
   }
   // === Filtering and Search ===
@@ -463,7 +461,7 @@ class EvidenceGlobalStore {
       {
         case caseData,
         exportedAt: new Date().toISOString(),
-        version: `1.0' },'`
+        version: `1.0` },'`'`
       null,
       2
     );
@@ -507,8 +505,7 @@ export function createEvidenceNode(
     type,
     tags: [],
     position,
-    status: `pending' }'`
-}
+    status: 'pending' }'` }'`
 export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
   return evidenceStore.currentNodes.filter(node => node.type === type);
 }

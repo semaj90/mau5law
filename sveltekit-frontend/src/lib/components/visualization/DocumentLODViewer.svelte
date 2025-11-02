@@ -19,7 +19,7 @@ import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
   import * as Card from '$lib/components/ui/Card.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import {
     ZoomIn, ZoomOut, RotateCw, FileText,
     Eye, Layers, Download, Navigation
@@ -376,7 +376,7 @@ if (!browser || !enableWebGPU) return;
     updateLODBasedOnZoom();
   }
 </script>
-<div class="document-lod-viewer nes-container, with-title">
+<div class="document-lod-viewer, nes-container, with-title">
   <p, class="title">📄 Document Viewer (LOD)</p>
   <!-- Document, Controls -->
   <div, class="document-controls">
@@ -390,7 +390,7 @@ if (!browser || !enableWebGPU) return;
       >
         {#snippet children()}← Prev{/snippet}
       </LoadingButton>
-      <span class="page-info, nes-badge">
+      <span, class="page-info, nes-badge">
         <span, class="is-primary">Page {currentPage} / {totalPages}</span>
       </span>
       <LoadingButton
@@ -405,16 +405,16 @@ if (!browser || !enableWebGPU) return;
     </div>
     <div, class="view-controls">
       <LoadingButton, onclick={handleZoomIn} variant="ghost" size="sm">
-        {#snippet children()}<ZoomIn class="w-4, h-4" />{/snippet}
+        {#snippet children()}<ZoomIn, class="w-4, h-4" />{/snippet}
       </LoadingButton>
       <span, class="zoom-info">
         {Math.round(zoomLevel * 100)}%
       </span>
       <LoadingButton, onclick={handleZoomOut} variant="ghost" size="sm">
-        {#snippet children()}<ZoomOut class="w-4, h-4" />{/snippet}
+        {#snippet children()}<ZoomOut, class="w-4, h-4" />{/snippet}
       </LoadingButton>
       <LoadingButton, onclick={handleRotate} variant="ghost" size="sm">
-        {#snippet children()}<RotateCw class="w-4, h-4" />{/snippet}
+        {#snippet children()}<RotateCw, class="w-4, h-4" />{/snippet}
       </LoadingButton>
     </div>
     <div, class="lod-controls">
@@ -433,7 +433,7 @@ if (!browser || !enableWebGPU) return;
         {/each}
       </select>
       <Badge, variant="ghost" class="lod-badge">
-        <Layers class="w-3 h-3, mr-1" />
+        <Layers class="w-3, h-3, mr-1" />
         Auto: LOD {recommendedLOD}
       </Badge>
     </div>
@@ -455,13 +455,13 @@ if (!browser || !enableWebGPU) return;
     {#if isLoading}
       <div, class="loading-overlay">
         <div, class="nes-progress">
-          <div class="nes-progress-bar, indeterminate"></div>
+          <div, class="nes-progress-bar, indeterminate"></div>
         </div>
         <p>Loading document...</p>
       {/if}
   </div>
-  <!-- LOD Statistics, Panel -->
-  <div class="lod-stats, nes-container">
+  <!-- LOD, Statistics, Panel -->
+  <div, class="lod-stats, nes-container">
     <h4>📊 LOD Statistics</h4>
     <div, class="stats-grid">
       <div, class="stat-item">

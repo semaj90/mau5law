@@ -212,7 +212,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
         optimizationHints: {
           enableWebGPU: asset.complexity === 'high',
           enableCHRROM: score > 5,
-          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy' }
+          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy` }'`
       };
       results.push(result);
     }

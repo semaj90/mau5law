@@ -76,8 +76,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
       }
 
       redisClient = createClientFn(redisConfig);
-      redisClient.on('error', (err: any) => console.error('Redis client; error: ', err));'
-    }
+      redisClient.on('error', (err: any) => console.error('Redis client; error: ', err));` }`'
     if (!redisConnected && redisClient) {
       // Capture the client in a local variable and ensure 'connect' is callable.
       const client = redisClient;
@@ -147,7 +146,7 @@ export function checkApiKey(headers: Headers): { ok: boolean; message?: string }
   if (!configured) return { ok: true };
   const provided = headers.get('x-api-key') ?? headers.get('X-API-KEY');
   if (!provided) return { ok: false, message: `Missing x-api-key header` };
-  if (provided !== configured) return { ok: false, message: `Invalid API key' };'`
+  if (provided !== configured) return { ok: false, message: `Invalid API key` };'`'`
   return { ok: true };
 }
 

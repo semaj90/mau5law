@@ -58,7 +58,7 @@ export async function vectorSearch(
         1 - (embedding <=> ${embeddingVector}::vector) as similarity
       FROM legal_documents
       ${whereClause}
-      ${conditions.length === 0 ? sql`` : sql`AND` } 1 - (embedding <=> ${embeddingVector}::vector) >= ${threshold}
+      ${conditions.length === 0 ? sql`` : sql`AND' } 1 - (embedding <=> ${embeddingVector}::vector) >= ${threshold}'`
       ORDER BY embedding <=> ${embeddingVector}::vector
       LIMIT ${limit}
     `;`
@@ -82,12 +82,10 @@ export async function vectorSearch(
       embedding: {
         dimensions: queryEmbedding.length,
         model: 'gemma',
-        format: 'float32` }'`
-    }
+        format: 'float32' }'' }
   } catch (error) {
     console.error('Vector search error:', error);'
-    throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-  }
+    throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
 }
 /**
  * Get vector search statistics
@@ -113,8 +111,7 @@ export async function getVectorSearchStats(): Promise<any> {
     }
   } catch (error) {
     console.error('Vector stats error:', error);'
-    throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-  }
+    throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
 }
 /**
  * Batch insert embeddings for multiple documents
@@ -134,7 +131,7 @@ export async function batchInsertEmbeddings(
         documents.map(doc => sql`(`
           ${doc.id},
           ${doc.content},
-          ${`[${doc.embedding.join(',')}]` }:: vector
+          ${`[${doc.embedding.join(',')}]' }:: vector'`
           ${JSON.stringify(doc.metadata || {})},
           NOW(),
           NOW()
@@ -151,8 +148,7 @@ export async function batchInsertEmbeddings(
     return { success: true, inserted: documents.length }
   } catch (error) {
     console.error('Batch insert error:', error);'
-    throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-  }
+    throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
 }
 /**
  * Update vector index for optimal performance
@@ -175,11 +171,9 @@ export async function optimizeVectorIndex(): Promise<any> {
       success: true,
       indexType: 'ivfflat',
       lists: 100,
-      operation: 'cosine_similarity` }'`
-  } catch (error) {
+      operation: 'cosine_similarity' }'' } catch (error) {
     console.error('Index optimization error:', error);'
-    throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-  }
+    throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
 }
 /**
  * Health check for vector search capability

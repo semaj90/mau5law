@@ -5,11 +5,11 @@
   import { writable, derived, get } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import { ocrProcessor } from '$lib/services/ocr-processor';
-  import { CaseInfoForm } from './CaseInfoForm.svelte';
-  import { AIAnalysisForm } from './AIAnalysisForm.svelte';
-  import { ReviewSubmitForm } from './ReviewSubmitForm.svelte';
-  import { ProgressIndicator } from './ProgressIndicator.svelte';
-  import { LoadingSpinner } from './LoadingSpinner.svelte';
+  import  CaseInfoForm  from "./CaseInfoForm.svelte";
+  import  AIAnalysisForm  from "./AIAnalysisForm.svelte";
+  import  ReviewSubmitForm  from "./ReviewSubmitForm.svelte";
+  import  ProgressIndicator  from "./ProgressIndicator.svelte";
+  import  LoadingSpinner  from "./LoadingSpinner.svelte";
   export let caseId: string | null = null;
   // renamed to avoid collision with browser FormData
   interface CaseFormData {

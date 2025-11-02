@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     });
   } catch (err: any) {
     const e = ensureError(err);
-    console.error('Error fetching cases: `, e);'`
+    console.error('Error fetching cases: ', e);'`'`
     return error(
       500,
       ensureError({
@@ -222,8 +222,7 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
       return error(
         400,
         ensureError({
-          message: 'Case ID is required'
-        })
+          message: 'Case ID is required` })'`
       );
     }
     // Check if case exists
@@ -248,7 +247,7 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
       message: `Case deleted successfully` });
   } catch (err: any) {
     const e = ensureError(err);
-    console.error('Error deleting case: `, e);'`
+    console.error('Error deleting case: ', e);'`'`
     return error(
       500,
       ensureError({

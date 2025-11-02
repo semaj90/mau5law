@@ -329,8 +329,7 @@ class InputValidator {
       sanitized = sanitized.replace(/<[^>]*>?/gm, '');
     }
     if (this.securityConfig.sanitization.removeSqlChars) {
-      sanitized = sanitized.replace(/['";`]/g, '');'"`
-    }
+      sanitized = sanitized.replace(/['";`]/g, '');'"` }
     return sanitized.trim();
   }
 

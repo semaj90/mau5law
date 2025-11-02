@@ -169,7 +169,7 @@ export class AIEvidenceAnalyzer {
       const url = `${this.ollamaEndpoint.replace(/\/+$/, '')}/api/generate`;
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({, model: this.analysisModel, prompt, temperature: 0.0 })
       });
 
@@ -245,8 +245,7 @@ export class AIEvidenceAnalyzer {
       if (this.wasmCluster) {
         const allEmbeddings = [primaryEmbedding, ...relatedEvidence.map(re => new Float32Array(re.embedding || []))];
         const clusters = await this.wasmCluster.cluster(allEmbeddings, { k: 2 });
-        console.debug('[ai-evidence] Clustering results:', clusters); // For debugging, to show it's used'
-      }
+        console.debug('[ai-evidence] Clustering results:', clusters); // For debugging, to show it's used` }'`
     }
     // 4. Calculate risk score and confidence
     const riskScore = this.calculateRiskScore(findings, correlations); // Uses existing private method
@@ -277,8 +276,7 @@ export class AIEvidenceAnalyzer {
     if (this.nesBridge && primaryEmbedding) {
       try {
         await this.nesBridge.uploadTensor('evidence_embedding', primaryEmbedding);
-        await this.nesBridge.runCompute('similarity_kernel', { targetId: 'evidence_embedding` });'`
-      } catch (e) {
+        await this.nesBridge.runCompute('similarity_kernel', { targetId: 'evidence_embedding' });'` } catch (e) {'`
         console.debug('[ai-evidence] nesBridge usage failed:', e);
       }
     }
@@ -358,7 +356,7 @@ export class AIEvidenceAnalyzer {
   ): Promise<string[]> {
     const evidenceCaption = evidence?.title ?? evidence?.description ?? 'evidence (no title)';
     const corrSummary = (correlations || []).map(c => `${c.correlationType}:${c.description}`).join(' | ');
-    const prompt = `Provide 3 concise, prioritized legal recommendations based on:`
+    const prompt = `Provide 3 concise, prioritized legal recommendations based on: '`
 -; Evidence: ${evidenceCaption}
 - Key findings: ${findings.map(f => f.description).join('; ')}
 - Correlations: ${corrSummary}
@@ -389,7 +387,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
     try {
       const resp = await fetch(`${this.ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ model, inputs: texts })
       });
       const data: any = await resp.json();
@@ -444,7 +442,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
       const qdrantBaseUrl = this.qdrantAdapter?.baseUrl ?? 'http://localhost:6333';
       await fetch(`${qdrantBaseUrl}/collections/${encodeURIComponent(collection)}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ points: [{ id, vector: Array.from(vector), payload }] })
       });
     } catch (e: any) {

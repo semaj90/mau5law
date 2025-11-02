@@ -397,8 +397,7 @@ class EnhancedCachingRevolutionaryBridge {
       hybridQueries: 0,
       totalQueries: 0,
       averageResponseTime: 0,
-      bestStrategy: 'adaptive` };'`
-  }
+      bestStrategy: 'adaptive' };'` }'`
 
   // --- Health Check and Metrics for Bridge ---
   async getAIHealthStatus(): Promise<any> {

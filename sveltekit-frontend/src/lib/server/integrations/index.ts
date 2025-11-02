@@ -14,7 +14,7 @@
  * // Ingest a document
  * const doc = await pipeline.ingestDocument(
  *   'Contract content...',
- *   { title: 'Employment Contract', type: 'contract', jurisdiction: 'CA` }'`
+ *   { title: 'Employment Contract', type: 'contract', jurisdiction: 'CA' }'`'`
  * );
  *
  * // Search documents
@@ -34,7 +34,7 @@
  *
  * // Use services independently
  * const embedding = await ollama.embedText('test');
- * await redis.set('key', { data: 'value` });'`
+ * await redis.set('key', { data: 'value' });'`'`
  * await qdrant.upsertVector('id', embedding, { metadata: {} });
  * ```
  */

@@ -179,8 +179,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         requestTime: new Date().toISOString(),
         processingTimeMs: processingTime,
         streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
-        version: '1.0` }'`
-    };
+        version: '1.0' }'` };'`
     return json(response, {
       status: 200,
       headers: {

@@ -73,7 +73,7 @@ JSON array of detected languages:`;`
     const startTime = Date.now();
     const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model,
         prompt,
@@ -190,13 +190,13 @@ export const GET: RequestHandler = async () => {
 			model: {
 			, name: DEFAULT_MODEL,
 				available: hasEmbeddingGemma,
-				size: '621MB` },'`
+				size: '621MB' },'`'`
 			supportedLanguages: LEGAL_LANGUAGES,
 			endpoint: OLLAMA_BASE_URL,
 			features: ['multi-language-detection', 'legal-terminology-support'],
 			meta: {
 			, timestamp: new Date().toISOString(),
-				version: `1.0.0` }
+				version: `1.0.0' }'`
 		});
 	} catch (err: any) {
 		const e = ensureError(err);

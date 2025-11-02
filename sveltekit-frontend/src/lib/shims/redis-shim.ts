@@ -143,7 +143,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
       }
     },
     on: (ev: string, fn: (...a: any[]) => void) => {
-      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on` },'`
+      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on' },'`'`
     ping: async (message?: string) =>;
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed

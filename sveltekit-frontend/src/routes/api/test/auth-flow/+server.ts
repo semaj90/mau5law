@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
   };
   try {
     const body = await request.json();
-    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com` } = body;'`
+    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com' } = body;'`'`
     // Test 1: Authentication System
     const authResult = await testAuthenticationSystem(testUser);
     testSuite.results.push(authResult);
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Calculate overall results
     testSuite.totalDuration = Date.now() - startTime;
     testSuite.overallSuccess = testSuite.results.every(result => result.success === true);
-    console.log(`✅ Authentication flow test completed: ${testSuite.overallSuccess ? 'PASSED' : `FAILED` }`);
+    console.log(`✅ Authentication flow test completed: ${testSuite.overallSuccess ? 'PASSED' : `FAILED' }`);'`
     console.log(`⏱️ Total duration: ${testSuite.totalDuration}ms`);
     return json({
       success: testSuite.overallSuccess,
@@ -151,7 +151,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
        , email: testUser,
-        password: `password` })
+        password: `password' })'`
     });
     if (!loginResponse.ok) {
       throw new Error(`Login failed: ${loginResponse.statusText}`);
@@ -355,7 +355,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       available: true,
       model: 'RTX 3060 Ti',
       memory: '8GB VRAM',
-      utilization: `45%` };
+      utilization: `45%' };'`
     // Test GPU-accelerated query
     const gpuQuery = await services.queryRAG('GPU-accelerated legal document analysis test', {
       useGPU: true,
@@ -413,7 +413,7 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
         workflow,
         completedSteps: workflowSteps,
         totalSteps,
-        integrationScore: `100%` }
+        integrationScore: `100%' }'`
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);

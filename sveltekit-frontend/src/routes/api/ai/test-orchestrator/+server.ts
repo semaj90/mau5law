@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
       endpoints: {
         fullTest: '/api/ai/test-orchestrator?test=full',
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
-        healthCheck: '/api/ai/test-orchestrator' }
+        healthCheck: '/api/ai/test-orchestrator` }'`
     });
   } catch (error) {
     return json(
@@ -327,6 +327,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization' }
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization` }'`
   });
 };

@@ -5,7 +5,7 @@ import { browser } from '$app/environment';
 import type { SearchResult } from './aiPipeline.js';
 
 // Replace usage of Loki.Collection (not exported in some type setups) with a minimal local interface
-type Collection<T extends, object> = {
+type Collection<T, extends, object> = {
   // basic collection properties/methods used by this file
   data: T[];
   name?: string;
@@ -109,7 +109,7 @@ export class MultiLayerCache {
   constructor() {
     // Initialize in-memory database
     this.memoryDb = new Loki('multiLayerCache.db', {
-      env: browser ? 'BROWSER' : `NODEJS` });
+      env: browser ? 'BROWSER' : `NODEJS' });'`
     // Create collections (cast Loki's return to the local Collection<T> type to avoid cross-type conflicts)'
     this.cacheCollection = this.memoryDb.addCollection('cache', {
       indices: ['key'],
@@ -305,7 +305,7 @@ export class MultiLayerCache {
       'metadata.createdAt'?: LokiCondition<Date>;
     };
 
-    const lokiQuery: LokiQueryForSearchIndexEntry = { type: `document` };
+    const lokiQuery: LokiQueryForSearchIndexEntry = { type: `document' };'`
     if (filters?.userId) {
       lokiQuery['userId'] = filters.userId;
     }
@@ -619,7 +619,7 @@ class LokiIndexedAdapter {
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('database')) {
-          db.createObjectStore('database', { keyPath: `id` });
+          db.createObjectStore('database', { keyPath: `id' });'`
         }
       };
     });

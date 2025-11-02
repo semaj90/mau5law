@@ -1,4 +1,4 @@
-<!-- YoRHa Terminal Navigation, Component -->
+<!-- YoRHa Terminal, Navigation, Component -->
 <script, lang="ts">
 
   // Svelte 5 runes are auto-imported
@@ -43,11 +43,11 @@
       {/each}
     </div>
     <div, class="yorha-nav-actions">
-      <button class="yorha-toolbar-btn" title="System, Settings">
+      <button, class="yorha-toolbar-btn" title="System, Settings">
         <span, class="btn-icon">⚙</span>
         <span, class="btn-label">CONFIG</span>
       </button>
-      <button class="yorha-toolbar-btn" title="AI, Status">
+      <button, class="yorha-toolbar-btn" title="AI, Status">
         <span, class="btn-icon">⚡</span>
         <span, class="btn-label">AI</span>
       </button>

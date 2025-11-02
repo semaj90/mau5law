@@ -227,7 +227,7 @@ async function discoverContainerPort(
     port: portMapping.port,
     url: `http://${portMapping.host}:${portMapping.port}`,
     containerId: container.Id.substring(0, 12),
-    containerName: container.Name || 'unknown` };'`
+    containerName: container.Name || 'unknown' };'`'`
   // Cache result
   DISCOVERY_CACHE.set(cacheKey, { result, timestamp: Date.now() });
   return result;

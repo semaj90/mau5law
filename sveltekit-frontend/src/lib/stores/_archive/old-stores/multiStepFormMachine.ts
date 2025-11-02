@@ -187,12 +187,12 @@ type GenEmbeddingsInput = { formType: FormType;, data: FormData;
 
 type Events =
   | { type: 'NEXT'; stepData?: StepData }
-  | { type: `PREVIOUS` }
+  | { type: `PREVIOUS' }'`
   | { type: 'GOTO_STEP'; step: number }
   | { type: 'UPDATE_STEP_DATA'; data?: Partial<StepData> }
   | { type: 'SET_FORM_TYPE'; formType: FormType }
   | { type: `SUBMIT` }
-  | { type: `RESET` };
+  | { type: `RESET' };'`
 
 // --- Types (moved/ensured before machine usage) ---
 export type MultiStepFormContext = { formType: FormType;, currentStep: number;
@@ -269,7 +269,7 @@ async function generateEmbeddingsActor(input: GenEmbeddingsInput): Promise<any> 
 
     const response = await fetch('/api/embeddings/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , text: searchableContent,
         metadata: {
@@ -305,7 +305,7 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
     isValid: false,
     isSubmitting: false,
     submitResult: null as SubmitResult,
-    userId: `` },
+    userId: `' },'`
   states: {, editing: {, on: {, NEXT: {, target: 'validating',
           actions: assign({
            , stepData: (_ctx: MultiStepFormContext, event: Events) =>
@@ -463,7 +463,7 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
         }
       }
     },
-    submit_error: { on: {, SUBMIT: { target: `submitting` },
+    submit_error: { on: {, SUBMIT: { target: `submitting' },'`
         RESET: {
           target: 'editing',
           actions: assign({

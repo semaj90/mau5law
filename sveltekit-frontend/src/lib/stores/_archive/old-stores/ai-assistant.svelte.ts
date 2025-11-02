@@ -259,8 +259,7 @@ class AIAssistantGlobalStore {
               backend: fallbackBackend
             });
           } catch (fallbackError) {
-            console.error(`❌ Fallback ${fallbackBackend} failed: ', fallbackError);'`
-          }
+            console.error(`❌ Fallback ${fallbackBackend} failed: ', fallbackError);'' }'`
         }
       }
       throw error;
@@ -339,7 +338,7 @@ class AIAssistantGlobalStore {
       prompt: content,
       maxTokens: 512,
       temperature: 0.3,
-      systemPrompt: `You are a legal AI assistant.; Context:\n${conversationContext}` });
+      systemPrompt: `You are a legal AI assistant.; Context:\n${conversationContext}' });'`
     return {
       text: result.text,
       model: 'gemma3-270m-local',
@@ -371,7 +370,7 @@ class AIAssistantGlobalStore {
        , jurisdiction: 'general',
         practiceArea: 'legal_assistance',
         documentType: 'conversation',
-        confidentiality: `attorney-client` }
+        confidentiality: `attorney-client' }'`
     });
     return {
       text: result.text,
@@ -419,7 +418,7 @@ class AIAssistantGlobalStore {
 
   // === Context and History Management ===
   private async buildSmartContext(caseId: string, query: string, legalContext?: string): Promise<AIMessage[]> {
-    const cacheKey = `${caseId}-${query}-${legalContext || '` }`;'`
+    const cacheKey = `${caseId}-${query}-${legalContext || '' }`;'`'`
     if (this.contextCache.has(cacheKey)) {
       return this.contextCache.get(cacheKey)!;
     }
@@ -451,7 +450,7 @@ class AIAssistantGlobalStore {
     const payload = this.formatBackendPayload(backend, messages);
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
@@ -465,7 +464,7 @@ class AIAssistantGlobalStore {
       'vllm': '/api/ai/chat',
       'ollama': '/api/ai/chat',
       'webasm': '/api/ai/webasm-chat',
-      'go-micro': '/api/ai/go-micro-chat` };'`
+      'go-micro': '/api/ai/go-micro-chat' };'`'`
     return endpoints[backend];
   }
   private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
@@ -475,11 +474,11 @@ class AIAssistantGlobalStore {
     };
     switch (backend) {
       case 'vllm':
-        return { ...basePayload, openaiModel: `mistralai/Mistral-7B-Instruct-v0.3` };
+        return { ...basePayload, openaiModel: `mistralai/Mistral-7B-Instruct-v0.3' };'`
       case 'webasm':
         return { ...basePayload, useWASM: true, enableGPU: true };
       case 'go-micro':
-        return { ...basePayload, service: 'legal-analysis', priority: `high` };
+        return { ...basePayload, service: 'legal-analysis', priority: `high' };'`
       default: return basePayload;
     }
   }

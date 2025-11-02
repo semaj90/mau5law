@@ -39,7 +39,7 @@ export async function generateEmbedding(text: string, useCache: boolean = true):
   try {
     // Use backend-agnostic gateway (tries: local embedder -> FastAPI -> vLLM -> Ollama -> Go)
     const { embedding } = await getEmbeddingViaGate(fetch, text, {
-      model: process.env.EMBED_MODEL || 'nomic-embed-text' });
+      model: process.env.EMBED_MODEL || 'nomic-embed-text` });'`
     // Cache the result for performance
     if (useCache && Array.isArray(embedding)) {
       if (embeddingCache.size >= cacheMaxSize) {
@@ -154,8 +154,7 @@ export async function searchSimilarChats(
     if (error instanceof Error) {
       console.error('Vector search error:', error.message);'
     } else {
-      console.error('Vector search error: ', error);'
-    }
+      console.error('Vector search error: ', error);` }`'
     return [];
   }
 }
@@ -194,8 +193,7 @@ export async function searchSimilarChatsKeyword(
     if (error instanceof Error) {
       console.error('Keyword search error:', error.message);'
     } else {
-      console.error('Keyword search error:', error);'
-    }
+      console.error('Keyword search error:', error);` }`'
     return [];
   }
 }

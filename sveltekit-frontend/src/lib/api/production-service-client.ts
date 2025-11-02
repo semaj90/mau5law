@@ -84,7 +84,7 @@ class ProductionServiceClient {
       // Handle network errors, timeouts, etc.
       return { data: {, error: message,
           type: name,
-          code: name === 'AbortError' ? 'TIMEOUT' : 'NETWORK_ERROR' },
+          code: name === 'AbortError' ? 'TIMEOUT' : 'NETWORK_ERROR` },'`
         status: 0, // Indicates network failure / aborted
         headers: {} as Record<string, string>,
         protocol: 'HTTP/1.1',

@@ -7,13 +7,13 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   import type { Props } from '$lib/types/global';
   // Replace the incorrect named import block with explicit default imports
   // (adjust paths if your project places these components elsewhere)
-  import { Card } from '$lib/components/ui/enhanced-bits/Card.svelte';
-  import { CardHeader } from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
-  import { CardContent } from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import  Card  from "$lib/components/ui/enhanced-bits/Card.svelte";
+  import  CardHeader  from "$lib/components/ui/enhanced-bits/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/enhanced-bits/CardTitle.svelte";
+  import  CardContent  from "$lib/components/ui/enhanced-bits/CardContent.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
+  import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
   import { Bot, User, Send, Brain, Eye, Zap, Search, FileText, Scale, AlertTriangle } from 'lucide-svelte';
   import { onMount } from 'svelte';

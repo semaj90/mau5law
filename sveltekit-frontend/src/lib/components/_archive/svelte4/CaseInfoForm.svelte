@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
@@ -106,16 +106,16 @@ import type { Case } from '$lib/types';
   }
 </script>
 
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg, shadow-lg" transition:fade>
+<div class="max-w-4xl mx-auto p-6 bg-white, rounded-lg, shadow-lg" transition:fade>
   <div, class="mb-8">
-    <h2 class="text-2xl font-bold text-gray-900, mb-2">Case Information</h2>
+    <h2 class="text-2xl font-bold, text-gray-900, mb-2">Case Information</h2>
     <p, class="text-gray-600">Enter the basic information about this legal case</p>
   </div>
 
   <form on:submit|preventDefault={handleNext} class="space-y-6">
     <!-- Case, Title -->
     <div>
-      <label for="title" class="block text-sm font-medium text-gray-700, mb-2"> Case Title * </label>
+      <label for="title" class="block text-sm font-medium, text-gray-700, mb-2"> Case Title * </label>
       <input
         id="title"
         type="text"
@@ -124,13 +124,13 @@ import type { Case } from '$lib/types';
         placeholder="e.g., Smith vs. Jones Contract Dispute"
       />
       {#if validationErrors.title}
-        <p class="mt-1 text-sm, text-red-600">{validationErrors.title}</p>
+        <p class="mt-1, text-sm, text-red-600">{validationErrors.title}</p>
       {/if}
     </div>
 
     <!-- Client, Name -->
     <div>
-      <label for="client_name" class="block text-sm font-medium text-gray-700, mb-2"> Client Name * </label>
+      <label for="client_name" class="block text-sm font-medium, text-gray-700, mb-2"> Client Name * </label>
       <input
         id="client_name"
         type="text"
@@ -139,14 +139,14 @@ import type { Case } from '$lib/types';
         placeholder="Enter client's full name"'
       />
       {#if validationErrors.client_name}
-        <p class="mt-1 text-sm, text-red-600">{validationErrors.client_name}</p>
+        <p class="mt-1, text-sm, text-red-600">{validationErrors.client_name}</p>
       {/if}
     </div>
 
-    <!-- Case Type and Priority, Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2, gap-4">
+    <!-- Case Type and, Priority, Row -->
+    <div class="grid grid-cols-1, md:grid-cols-2, gap-4">
       <div>
-        <label for="case_type" class="block text-sm font-medium text-gray-700, mb-2"> Case Type * </label>
+        <label for="case_type" class="block text-sm font-medium, text-gray-700, mb-2"> Case Type * </label>
         <select
           id="case_type"
           bind:value={formData.case_type}
@@ -158,12 +158,12 @@ import type { Case } from '$lib/types';
           {/each}
         </select>
         {#if validationErrors.case_type}
-          <p class="mt-1 text-sm, text-red-600">{validationErrors.case_type}</p>
+          <p class="mt-1, text-sm, text-red-600">{validationErrors.case_type}</p>
         {/if}
       </div>
 
       <div>
-        <label for="priority" class="block text-sm font-medium text-gray-700, mb-2"> Priority Level </label>
+        <label for="priority" class="block text-sm font-medium, text-gray-700, mb-2"> Priority Level </label>
         <select
           id="priority"
           bind:value={formData.priority}
@@ -175,7 +175,7 @@ import type { Case } from '$lib/types';
           <option, value="urgent">Urgent</option>
         </select>
         <div, class="mt-2">
-          <!-- merged static classes + dynamic color classes into one class, attribute -->
+          <!-- merged static classes + dynamic color classes into one, class, attribute -->
           <span
             class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(formData.priority)}`}
           >
@@ -187,7 +187,7 @@ import type { Case } from '$lib/types';
 
     <!-- Jurisdiction -->
     <div>
-      <label for="jurisdiction" class="block text-sm font-medium text-gray-700, mb-2"> Jurisdiction * </label>
+      <label for="jurisdiction" class="block text-sm font-medium, text-gray-700, mb-2"> Jurisdiction * </label>
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
@@ -199,13 +199,13 @@ import type { Case } from '$lib/types';
         {/each}
       </select>
       {#if validationErrors.jurisdiction}
-        <p class="mt-1 text-sm, text-red-600">{validationErrors.jurisdiction}</p>
+        <p class="mt-1, text-sm, text-red-600">{validationErrors.jurisdiction}</p>
       {/if}
     </div>
 
     <!-- Case, Description -->
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700, mb-2"> Case Description * </label>
+      <label for="description" class="block text-sm font-medium, text-gray-700, mb-2"> Case Description * </label>
       <textarea
         id="description"
         bind:value={formData.description}
@@ -214,16 +214,16 @@ import type { Case } from '$lib/types';
         placeholder="Provide a detailed description of the case, including key issues, parties involved, and relevant background information..."
       ></textarea>
       {#if validationErrors.description}
-        <p class="mt-1 text-sm, text-red-600">{validationErrors.description}</p>
+        <p class="mt-1, text-sm, text-red-600">{validationErrors.description}</p>
       {/if}
     </div>
 
     <!-- Actions -->
-    <div class="flex justify-end, gap-2">
-      <button type="button" onclick={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800, border"
+    <div class="flex, justify-end, gap-2">
+      <button type="button" onclick={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100, text-gray-800, border"
         >Save Draft</button
       >
-      <button type="submit" class="px-4 py-2 rounded-md bg-blue-600, text-white">Next</button>
+      <button type="submit" class="px-4 py-2 rounded-md, bg-blue-600, text-white">Next</button>
     </div>
   </form>
 </div>

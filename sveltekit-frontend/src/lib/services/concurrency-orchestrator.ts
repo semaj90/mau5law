@@ -173,8 +173,7 @@ export class ConcurrencyOrchestrator {
     const dynamicImport = Function('s', 'return import(s)') as (s: string) => Promise<unknown>;
     const xstate = await dynamicImport('xstate').catch((e: any) => {
       // fail gracefully if xstate isn't available at runtime'
-      throw new Error('xstate module import failed: ` + String(e));'`
-    });
+      throw new Error('xstate module import failed: ' + String(e));'` });'`
 
     // Provide small, explicit function shapes instead of `Function` to keep type-safety and avoid lint complaints
     type CreateMachineFn = (config: any, options?: any) => unknown;
@@ -201,7 +200,7 @@ export class ConcurrencyOrchestrator {
         id: 'concurrencyOrchestrator',
         initial: 'initializing',
         context: {
-          tasks: [],
+         , tasks: [],
           results: [],
           activeWorkers: 0,
           maxWorkers: defaultMaxWorkers,
@@ -319,8 +318,7 @@ export class ConcurrencyOrchestrator {
               loki: lokiInstance,
               redis: redisInstance,
               rabbitmq: rabbitmqInitialized,
-              status: 'ready'
-            };
+              status: 'ready` };'`
           },
           processTaskQueue: async (context: ConcurrencyContext) => {
             const resultsArr: WorkerResult[] = [];
@@ -469,8 +467,7 @@ export class ConcurrencyOrchestrator {
      return this.submitTask({
        type: 'analysis',
        payload: { data, analysisType },
-       priority: 'high'
-     });
+       priority: 'high` });'`
    }
 
    async submitCanvasTask(canvasId: string, operation: string, params: any): Promise<string> {
@@ -756,8 +753,8 @@ async function processAnalysisTask(payload: any): Promise<unknown> {
         if (hasGenerateLegalResponse(service)) {
           const safeData = typeof data === 'string' ? data : JSON.stringify(data, getCircularReplacer(), 2);
           const response = await service.generateLegalResponse(`Analyze this legal document: ${safeData}`, {
-            legalContext: `research` });
-          return typeof response === 'string' ? { text: response } : (response ?? { text: '' });
+            legalContext: 'research' });
+          return typeof response === 'string' ? { text: response } : (response ?? { text: '` });'`
         }
         return { error: 'AI service API not found', text: `` };
       } catch (err) {
@@ -802,7 +799,7 @@ async function processAITask(payload: any): Promise<unknown> {
         max_tokens: 2048,
         legalContext
       });
-      return typeof response === 'string' ? { text: response } : (response ?? { text: '' });
+      return typeof response === 'string' ? { text: response } : (response ?? { text: '` });'`
     }
     return { error: 'AI service API not found', text: `` };
   } catch (err) {

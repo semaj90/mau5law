@@ -97,8 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
               asBoolean(jsonBody.use_tensor_cores) === true || formData?.get('use_tensor_cores') === 'true',
             quantization: asString(jsonBody.quantization) ?? String(formData?.get('quantization') || '4bit'),
             negative_latent_space:
-              asBoolean(jsonBody.negative_latent_space) === true || formData?.get('negative_latent_space') === 'true` }'`
-        };
+              asBoolean(jsonBody.negative_latent_space) === true || formData?.get('negative_latent_space') === 'true' }'` };'`
 
         const gpuResp = await fetch(`${CUDA_SERVICE_URL}/cuda/compute`, {
           method: 'POST',

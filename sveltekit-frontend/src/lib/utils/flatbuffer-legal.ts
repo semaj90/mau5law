@@ -351,8 +351,7 @@ export class FlatBufferLegalProcessor {
         documentId: 'result-doc-1',
         score: 0.89,
         excerpt: 'Sample search result excerpt...',
-        metadata: { type: 'contract', jurisdiction: 'federal` }'`
-      },
+        metadata: { type: 'contract', jurisdiction: 'federal' }'' }
     ];
   }
   private extractEntitiesLocally(documentId: string, _content: Uint8Array): LegalEntityExtraction {

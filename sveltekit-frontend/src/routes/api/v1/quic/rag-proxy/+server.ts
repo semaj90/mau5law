@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error(400, ensureError({ message: 'Max results must be between 1 and 100' })); // Added: '))'
     }
     if (ragRequest.threshold && (ragRequest.threshold < 0 || ragRequest.threshold > 1)) {
-      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added: '))` }'`
+      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added: `))` }'`'`
     // Placeholder: Enhanced RAG go client is not available; use HTTP path or future client
     // Prepare request payload for Go service
     const requestPayload = {
@@ -252,8 +252,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         executionTimeMs: ragResponse.executionTime,
         confidence: ragResponse.confidence,
         cached: ragResponse.cached,
-        model: ragResponse?.model || 'unknown` }'`
-    });
+        model: ragResponse?.model || 'unknown' }'` });'`
   } catch (err: any) {
     console.error('RAG QUIC Proxy error:', err);'
     error(500, err instanceof Error ? err.message : 'RAG operation failed');

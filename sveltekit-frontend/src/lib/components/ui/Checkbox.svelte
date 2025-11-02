@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been, declared;
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been, declared -->
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   let { checked = $state(false), label = '', id = ''  }: { checked = $state(false), label = '', id = '' : any } = $props();
@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 <div, class="checkbox-container">
-  <input type="checkbox" {id} bind:checked, class="checkbox-input" />
+  <input, type="checkbox" {id} bind:checked, class="checkbox-input" />
   {#if label}
     <label, for={id} class="checkbox-label">{label}</label>
   {/if}

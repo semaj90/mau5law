@@ -227,7 +227,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
     // In production, call your embedding service (OpenAI, local model, etc.)
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , model: 'nomic-embed-text',
         prompt: query
@@ -259,7 +259,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Constitutional Law', 'Supreme Court'],
       relevanceScore: 0.95,
       citedBy: 156,
-      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}` },'`
+      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}' },'`'`
     {
       id: '2',
       title: `Federal Statute - ${query} Regulations`,
@@ -274,7 +274,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Federal Law', 'Regulations'],
       relevanceScore: 0.89,
       citedBy: 89,
-      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}` },'`
+      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}' },'`'`
     {
       id: '3',
       title: `Circuit Court Analysis of ${query}`,
@@ -289,7 +289,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Circuit Court', 'Appeals'],
       relevanceScore: 0.82,
       citedBy: 43,
-      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}` },'`
+      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}' },'`'`
   ];
   // Apply filters
   let filteredResults = allResults;
@@ -337,7 +337,7 @@ function generateRelatedTopics(query: string): string[] {
   ];
   // Generate query-specific related topics
   const queryWords = query.toLowerCase().split(' ');
-  const relatedTopics: string[] = []; // <-- typed to avoid implicit, any[]
+  const relatedTopics: string[] = []; // <-- typed to avoid, implicit, any[]
   queryWords.forEach(word => {
     if (word.length > 3) {
       relatedTopics.push(`${word} precedents`);

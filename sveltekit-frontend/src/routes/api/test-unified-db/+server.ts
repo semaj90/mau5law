@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
         database: health.postgresql ? '✅ Connected' : '❌ Failed',
         pgvector: vectorSupport ? '✅ Available' : '⚠️ Not Available',
         qdrant: qdrantSupport ? '✅ Connected' : '⚠️ Not Connected',
-        overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy' }
+        overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy` }'`
     };
     console.log('🎉 Unified Database Client Test Complete:', results.summary);
     return json(results);

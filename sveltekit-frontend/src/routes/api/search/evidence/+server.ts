@@ -165,7 +165,7 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
     ilike(evidence.title, `%${query}%`),
     ilike(evidence.description, `%${query}%`),
     ilike(evidence.fileName, `%${query}%`),
-    sql`${evidence.tags}::text ILIKE ${`%${query}%' }`'`
+    sql`${evidence.tags}::text ILIKE ${`%${query}%` }`'`'`
   );
   whereConditions.push(textSearch);
   // Apply filters
@@ -184,7 +184,7 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`1.0`,
-      searchType: sql<string>`'text'' })'`
+      searchType: sql<string>`'text'` })'`'`
     .from(evidence)
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))
@@ -262,7 +262,7 @@ async function searchEvidenceSemantic(query: string, options: SearchOptions): Pr
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`0.5`, // Placeholder similarity score
-      searchType: sql<string>`'semantic'' })'`
+      searchType: sql<string>`'semantic'` })'`'`
     .from(evidence)
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))

@@ -337,8 +337,7 @@ export function liveRegion(
         width: 1px;
         height: 1px;
         overflow: hidden;
-      `;`
-    }
+      `;` }
   }
   function announce(message: string) {
     // Clear and then set the message to ensure it's announced'
@@ -446,7 +445,7 @@ export function liveRegion(
     const focusAction = focusManagement(element, {
       trapFocus: true,
       restoreFocus: true,
-      initialFocus: '[role="button"], button, [tabindex="0"]' });
+      initialFocus: '[role="button"], button, [tabindex="0"]` });'`
     const ariaAction = ariaState(element, {
       role: 'dialog',
       hidden: false,

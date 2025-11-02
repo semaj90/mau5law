@@ -56,8 +56,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
         redis: redisOk
       },
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Simplified Health Check'
-    };
+      phase: 'Phase 13 - Simplified Health Check` };'`
   } catch (error: any) {
     console.error('Health check error:', error);'
     return { services: {, ollama: false,
@@ -178,8 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
            , processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            message: 'Phase 13 integration initialized'
-          }
+            message: 'Phase 13 integration initialized` }'`
         });
       }
       case 'apply-suggestion': {
@@ -191,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
             { status: 400 }
           );
         }
-        console.log('🔧 Applying integration suggestion: `, suggestion);'`
+        console.log('🔧 Applying integration suggestion: ', suggestion);'`'`
         const applyResult = { success: true, message: `Suggestion applied successfully` };
         return json({
           success: applyResult.success,

@@ -2,7 +2,7 @@
   import { writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import { createEventDispatcher } from 'svelte';
-  import { Button } from './Button.svelte';
+  import  Button  from "./Button.svelte";
   import { fade } from 'svelte/transition';
   interface ThemeToggleProps {
     theme?: 'default' | 'gaming' | 'legal';
@@ -168,7 +168,7 @@
     </button>
   </div>
 {:else if variant === 'button'}
-  <Button.Root
+  <Button
     {theme}
     {size}
     variant="outline"
@@ -184,7 +184,7 @@
         {themeLabels[currentTheme]}
       </span>
     {/if}
-  </Button.Root>
+  </Button>
 {:else}
   <!-- Icon variant (default) -->
   <button

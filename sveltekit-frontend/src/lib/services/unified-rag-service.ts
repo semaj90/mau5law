@@ -436,8 +436,7 @@ export class UnifiedRAGService {
         embedding = EXCLUDED.embedding,
         metadata = EXCLUDED.metadata,
         updated_at = CURRENT_TIMESTAMP
-    `;`
-  }
+    `;` }
 
   /**
    * Index document in Qdrant
@@ -578,7 +577,7 @@ export class UnifiedRAGService {
       try {
         const response = await fetch(`${this.ollamaUrl}/api/embed`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({
            , model: this.embeddingModel,
             input: text.substring(0, 2000)
@@ -698,7 +697,7 @@ export class UnifiedRAGService {
     try {
       const response = await fetch(`${this.mcpUrl}/mcp/docs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ libraries })
       });
 

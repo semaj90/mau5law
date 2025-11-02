@@ -149,7 +149,7 @@ export class JsonbLegalService {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       let query: any = db.select().from(legalDocumentsJsonb as any);
-      let countQuery: any = db.select({ count: sql<number>`count(*)` }).from(legalDocumentsJsonb as any);
+      let countQuery: any = db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb as any);'`
       const conditions: any[] = [];
 
       if (criteria.documentTypes?.length)
@@ -370,7 +370,7 @@ export class JsonbLegalService {
 
   async addCaseTimelineEvent(
     caseId: string,
-    event: { date: string; event: string; significance: 'low' | 'medium' | 'high' | 'critical` }'`
+    event: { date: string; event: string; significance: 'low' | 'medium' | 'high' | 'critical' }'`'`
   ): Promise<Case> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
@@ -718,7 +718,7 @@ export class JsonbLegalService {
           error: error instanceof Error ? error.message : String(error),
           context: 'jsonb_performance_metrics',
           severity: 'medium',
-          category: 'database` })'`
+          category: 'database' })'`'`
         .catch(() => {});
       throw error;
     }
@@ -747,7 +747,7 @@ export class JsonbLegalService {
           error: error instanceof Error ? error.message : String(error),
           context: 'legal_analytics',
           severity: 'medium',
-          category: `analytics` })
+          category: `analytics' })'`
         .catch(() => {});
       throw error;
     }

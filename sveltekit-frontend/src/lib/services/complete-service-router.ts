@@ -274,7 +274,7 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown` },'`
+        status: `unknown` },'`'`
       {
         name: 'simple-api-endpoints',
         port: 8226,

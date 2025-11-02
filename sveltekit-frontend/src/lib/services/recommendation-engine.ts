@@ -388,7 +388,7 @@ export class LegalRecommendationEngine {
     try {
       const resp = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text.slice(0, 2048) })
       });
       if (resp.ok) {
@@ -479,7 +479,7 @@ export class LegalRecommendationEngine {
           responseId,
           userId,
           userRating: rating,
-          feedbackType: 'interaction' });
+          feedbackType: 'interaction` });'`
       }
     } catch (error) {
       console.error('Failed to record interaction:', error);

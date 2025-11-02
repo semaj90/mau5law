@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             'Content-Type': 'application/json',
             'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
             'X-Forwarded-Proto': useHttp3 ? 'https' : 'http',
-            'X-QUIC-Request': `true` },
+            'X-QUIC-Request': `true' },'`
           body: JSON.stringify(body),
           signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
         });
@@ -147,7 +147,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       throw error(400, ensureError({ message: `Invalid primary port` }));
     }
     if (fallbackPort !== undefined && (fallbackPort < 1024 || fallbackPort > 65535)) {
-      throw error(400, ensureError({ message: `Invalid fallback port` }));
+      throw error(400, ensureError({ message: `Invalid fallback port' }));'`
     }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {

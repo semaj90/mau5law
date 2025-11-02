@@ -1,4 +1,4 @@
-<!-- Case Timeline Component for Legal AI, App -->
+<!-- Case Timeline Component for Legal, AI, App -->
 <script, context="module" lang="ts">
 import type { Case } from '$lib/types';
   // Move interface here so modifiers are allowed
@@ -81,15 +81,15 @@ import type { Case } from '$lib/types';
     return date < new, Date();
   }
 </script>
-<div class={cn('case-timeline w-full, space-y-4', className)}>
+<div class={cn('case-timeline, w-full, space-y-4', className)}>
   <!-- Header -->
-  <div class="flex items-center, justify-between">
+  <div class="flex, items-center, justify-between">
     <div>
-      <h3 class="text-lg font-semibold text-yorha-text-primary, font-mono">Case Timeline</h3>
-      <p class="text-sm text-yorha-text-secondary, font-mono">
+      <h3 class="text-lg font-semibold, text-yorha-text-primary, font-mono">Case Timeline</h3>
+      <p class="text-sm, text-yorha-text-secondary, font-mono">
         {caseName}
         {#if caseId}
-          <span class="mx-1 text-xs, text-yorha-text-secondary">• #{caseId.slice(-8)}</span>
+          <span class="mx-1, text-xs, text-yorha-text-secondary">• #{caseId.slice(-8)}</span>
         {/if}
         • {sortedEvents.length} events
       </p>
@@ -99,7 +99,7 @@ import type { Case } from '$lib/types';
         onclick={onAddEvent}
         class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded-md hover:bg-yorha-primary/20 transition-colors"
       >
-        <Calendar class="w-4, h-4" />
+        <Calendar, class="w-4, h-4" />
         Add Event
       </button>
     {/if}
@@ -107,17 +107,17 @@ import type { Case } from '$lib/types';
   <!-- Timeline -->
   <div, class="relative">
     {#if sortedEvents.length === 0}
-      <div class="text-center py-12 text-yorha-text-secondary, font-mono">
-        <Calendar class="w-12 h-12 mx-auto mb-4, opacity-50" />
+      <div class="text-center py-12, text-yorha-text-secondary, font-mono">
+        <Calendar class="w-12 h-12 mx-auto, mb-4, opacity-50" />
         <p>No timeline events recorded</p>
         {#if onAddEvent}
-          <button onclick={onAddEvent} class="mt-2 text-yorha-primary hover:text-yorha-accent, transition-colors">
+          <button onclick={onAddEvent} class="mt-2 text-yorha-primary, hover:text-yorha-accent, transition-colors">
             Add the first event
           </button>
         {/if}
       </div>
     {:else}
-      <div class="absolute left-6 top-0 bottom-0 w-px, bg-yorha-border"></div>
+      <div class="absolute left-6 top-0 bottom-0, w-px, bg-yorha-border"></div>
       <div, class="space-y-6">
         {#each sortedEvents as event (event.id)}
           {@const config = eventConfig[event.type]}
@@ -147,7 +147,7 @@ import type { Case } from '$lib/types';
                 interactive && 'group-hover:scale-110 transition-transform'
               )}
             >
-              <IconComponent class={cn('w-5, h-5', config.color)} />
+              <IconComponent, class={cn('w-5, h-5', config.color)} />
             </div>
             <!-- Event, Content -->
             <div class={cn('flex-1 min-w-0 pb-6', compactMode && 'pb-4')}>
@@ -159,12 +159,12 @@ import type { Case } from '$lib/types';
                 )}
               >
                 <!-- Event, Header -->
-                <div class="flex items-start justify-between, mb-2">
+                <div class="flex items-start, justify-between, mb-2">
                   <div, class="flex-1">
-                    <h4 class={cn('font-semibold text-yorha-text-primary, font-mono', compactMode ? 'text-sm' : 'text-base')}>
+                    <h4 class={cn('font-semibold, text-yorha-text-primary, font-mono', compactMode ? 'text-sm' : 'text-base')}>
                       {event.title}
                     </h4>
-                    <div class="flex items-center gap-3, mt-1">
+                    <div class="flex items-center, gap-3, mt-1">
                       <span
                         class={cn(
                           'font-mono text-yorha-text-secondary',
@@ -174,7 +174,7 @@ import type { Case } from '$lib/types';
                       >
                         {formatDate(event.date)} • {formatTime(event.date)}
                         {#if isToday(event.date)}
-                          <span class="ml-1, text-yorha-accent">TODAY</span>
+                          <span, class="ml-1, text-yorha-accent">TODAY</span>
                         {/if}
                       </span>
                       {#if event.priority && event.priority !== 'medium'}
@@ -192,23 +192,23 @@ import type { Case } from '$lib/types';
                     </div>
                   </div>
                   <!-- Status, Badge -->
-                  <span class={cn('px-2 py-1 text-xs font-mono rounded, border', status.className)}>
+                  <span class={cn('px-2 py-1 text-xs font-mono, rounded, border', status.className)}>
                     {status.label}
                   </span>
                 </div>
                 <!-- Event, Description -->
                 {#if event.description && !compactMode}
-                  <p class="text-sm text-yorha-text-secondary font-mono, mb-3">
+                  <p class="text-sm text-yorha-text-secondary, font-mono, mb-3">
                     {event.description}
                   </p>
                 {/if}
                 <!-- Event, Metadata -->
                 {#if !compactMode && (event.participants?.length || event.documents?.length || event.location)}
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs, font-mono">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3, text-xs, font-mono">
                     {#if event.participants?.length}
                       <div>
                         <span, class="text-yorha-text-secondary">Participants:</span>
-                        <div class="mt-1, space-y-1">
+                        <div, class="mt-1, space-y-1">
                           {#each Array.isArray(event.participants) ? event.participants : [] as participant}
                             <div, class="text-yorha-text-primary">{participant}</div>
                           {/each}
@@ -217,9 +217,9 @@ import type { Case } from '$lib/types';
                     {#if event.documents?.length}
                       <div>
                         <span, class="text-yorha-text-secondary">Documents:</span>
-                        <div class="mt-1, space-y-1">
+                        <div, class="mt-1, space-y-1">
                           {#each Array.isArray(event.documents) ? event.documents : [] as document}
-                            <div class="text-yorha-primary hover:text-yorha-accent, cursor-pointer">
+                            <div class="text-yorha-primary, hover:text-yorha-accent, cursor-pointer">
                               {document}
                             </div>
                           {/each}
@@ -228,7 +228,7 @@ import type { Case } from '$lib/types';
                     {#if event.location}
                       <div>
                         <span, class="text-yorha-text-secondary">Location</span>
-                        <div class="mt-1, text-yorha-text-primary">{event.location}</div>
+                        <div, class="mt-1, text-yorha-text-primary">{event.location}</div>
                       {/if}
                   {/if}
               </div>

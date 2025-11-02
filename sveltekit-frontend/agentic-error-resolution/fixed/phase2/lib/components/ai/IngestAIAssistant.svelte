@@ -10,16 +10,16 @@ https://svelte.dev/e/attribute_duplicate -->
    */
   import { onMount } from 'svelte';
   import { writable, derived, get } from 'svelte/store';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/input/Input.svelte'; // fixed: use default import (component exports default)
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Input  from "$lib/components/ui/input/Input.svelte"; // fixed: use default import (component exports default)
   import type { ComponentType } from 'svelte';
   // Badge replaced with span - not available in enhanced-bits
-  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
-  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
-  import { AlertDescription } from '$lib/components/ui/alert/AlertDescription.svelte';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
-  import { Label } from '$lib/components/ui/label/LabelCompat.svelte';
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
+  import  Alert  from "$lib/components/ui/alert/Alert.svelte";
+  import  AlertDescription  from "$lib/components/ui/alert/AlertDescription.svelte";
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
+  import  Label  from "$lib/components/ui/label/LabelCompat.svelte";
   // Your established store patterns
   import {
     aiAgentStore,
@@ -225,7 +225,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>✕</Button.Root>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>✕</Button>
       </AlertDescription>
     </Alert>
   {/each}
@@ -298,17 +298,17 @@ https://svelte.dev/e/attribute_duplicate -->
           />
         </div>
         <div class="flex space-x-2">
-          <Button.Root onclick={ingestDocument} disabled={!$canIngest || $isProcessing} class="flex-1 bits-btn bits-btn">
+          <Button onclick={ingestDocument} disabled={!$canIngest || $isProcessing} class="flex-1 bits-btn bits-btn">
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             class="bits-btn"
             variant="ghost"
             onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
             ➕ Add to Batch
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </div>
@@ -340,16 +340,16 @@ https://svelte.dev/e/attribute_duplicate -->
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
-                <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => removeFromBatch(doc.id)}>✕</Button.Root>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => removeFromBatch(doc.id)}>✕</Button>
               </div>
             {/each}
           </div>
           <div class="space-y-2">
-            <Button.Root onclick={processBatch} disabled={$isProcessing} class="w-full bits-btn bits-btn">
+            <Button onclick={processBatch} disabled={$isProcessing} class="w-full bits-btn bits-btn">
               {$processingStatus === 'batch_processing'
                 ? 'Processing Batch...'
                 : `🔥 Process ${$batchDocuments.length} Documents`}
-            </Button.Root>
+            </Button>
             <Button
               variant="ghost"
               onclick={() => batchDocuments.set([])}

@@ -235,7 +235,7 @@ export function generateCSSVariables(designSystem: DesignSystem): string {
   Object.entries(cssVariables).forEach(([key, value]) => {
     css += `  ${key}: ${value}\n`;
   });
-  css += ' }\n';
+  css += ` }\n';'`
   return css;
 }
 export function applyDesignSystemToDocument(designSystem: DesignSystem): void {
@@ -294,8 +294,7 @@ export function withResponsiveStyles(
       Object.entries(styles).forEach(([property, value]) => {
         css += `${property}: ${value} `;
       });
-      css += ` } ';'`
-    }
+      css += ' } ';'` }'`
   });
   return css;
 }

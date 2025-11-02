@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown' },
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown` },'`
       body: JSON.stringify(validatedData.data)
     });
     if (!response.ok) {
@@ -86,8 +86,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     // Get tensor cache metrics from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/metrics`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}' }'`
-    });
+        'Authorization': 'Bearer ${sessionId}' }'` });'`
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve tensor metrics');
     }

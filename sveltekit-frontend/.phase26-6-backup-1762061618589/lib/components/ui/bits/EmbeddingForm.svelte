@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from './Button.svelte';
-  import { Input } from './Input.svelte';
-  import { Card } from './Card.svelte';
+  import  Button  from "./Button.svelte";
+  import  Input  from "./Input.svelte";
+  import  Card  from "./Card.svelte";
   import { z } from "zod";
   import { Search, Database, Zap, AlertCircle, CheckCircle } from 'lucide-svelte';
   // Form validation schema

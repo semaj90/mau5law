@@ -26,25 +26,21 @@ function escapeLiteral(val: any): string {
 
   // Dates -> ISO string, quoted
   if (val instanceof Date) {
-    return `'${val.toISOString().replace(/'/g, "''")}'`;'
-  }
+    return `'${val.toISOString().replace(/'/g, "''")}'`;` }'`
 
   // Objects -> stringify then quote
   if (typeof val === 'object') {
     try {
       const s = JSON.stringify(val);
-      return `'${s.replace(/'/g, "''")}'`;'
-    } catch {
+      return `'${s.replace(/'/g, "''")}'`;` } catch {'`
       // fallback to generic string conversion
       const s = String(val);
-      return `'${s.replace(/'/g, "''")}'`;'
-    }
+      return `'${s.replace(/'/g, "''")}'`;` }'`
   }
 
   // Fallback: convert to string and escape single quotes
   const s = String(val);
-  return `'${s.replace(/'/g, "''")}'`;'
-}
+  return `'${s.replace(/'/g, "''")}'`;` }'`
 
 /**
  * Escape an object for JSONB insertion.
@@ -55,8 +51,7 @@ function escapeJSON(obj: any): string {
   if (obj === undefined) return 'NULL';
   try {
     const json = JSON.stringify(obj ?? {});
-    return `'${json.replace(/'/g, "''")}'`;'
-  } catch {
+    return `'${json.replace(/'/g, "''")}'`;` } catch {'`
     // If stringify fails, store empty JSON object
     return `'{}'`;
   }
@@ -237,10 +232,10 @@ export async function searchSimilarMessages(
       content: asString(row.content),
       similarity: asNumber(row.similarity),
       metadata: includeMetadata ? asObject(row.metadata) : undefined,
-      documentType: 'chat_message' }));
+      documentType: 'chat_message` }));'`
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error('Vector search for messages failed: `, msg);'`
+    console.error('Vector search for messages failed: ', msg);'`'`
     return [];
   }
 }
@@ -277,7 +272,7 @@ export async function searchSimilarEvidence(
             ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
           }
         : undefined,
-      documentType: 'evidence' }));
+      documentType: 'evidence` }));'`
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for evidence failed:', msg);
@@ -426,7 +421,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
       return {
         available: false,
         functions: [],
-        error: 'pgvector extension not installed' };
+        error: 'pgvector extension not installed` };'`
     }
 
     const functionsCheck = (await db.execute(
@@ -454,7 +449,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
     return {
       available: false,
       functions: [],
-      error: errMsg || 'Unknown error' };
+      error: errMsg || 'Unknown error` };'`
   }
 }
 // Initialize on import (only in non-production)

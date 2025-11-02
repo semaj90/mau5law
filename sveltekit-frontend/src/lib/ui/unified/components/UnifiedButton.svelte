@@ -24,7 +24,7 @@
   // Dynamic classes based on props
   // In a larger project, a utility like `clsx` or `tw-merge` would be preferred
   // for combining classes robustly, especially with UnoCSS.
-  const baseClasses = $derived('inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none, disabled:opacity-50');
+  const baseClasses = $derived('inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2, disabled:pointer-events-none, disabled:opacity-50');
 
   const sizeClasses = $derived({
     default: 'h-10 px-4 py-2',

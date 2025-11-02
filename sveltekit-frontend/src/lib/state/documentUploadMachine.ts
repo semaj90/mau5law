@@ -124,7 +124,7 @@ const calculateFileHashService = fromPromise(async ({ input }: { input: Document
   }
 
   const hashBuffer = await subtle.digest('SHA-256', buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer)); // <-- fixed: added closing, parenthesis
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // <-- fixed: added, closing, parenthesis
   const hashHex = hashArray.map((b: number) => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 });
@@ -228,7 +228,7 @@ export const documentUploadMachine = createMachine({
     },
     fileSelected: { always: {, target: `validating` }
     },
-    validating: { invoke: {, src: validateFileService, // <-- fixed: use comma not, semicolon; input: ({ context }) => context,
+    validating: { invoke: {, src: validateFileService, // <-- fixed: use comma, not, semicolon; input: ({ context }) => context,
         onDone: [
           {,
             target: 'calculatingHash',
@@ -329,8 +329,7 @@ export const documentUploadMachine = createMachine({
         onError: {
           target: 'uploadError',
           actions: assign({
-            error: ({ event }) => `Upload failed: ${event.error}' })'`
-        }
+            error: ({ event }) => `Upload failed: ${event.error}' })'' }'`
       },
       on: {
         CANCEL_UPLOAD: 'cancelled'
@@ -410,8 +409,7 @@ export const documentUploadMachine = createMachine({
         },
         caching: {
           after: {
-            1000: 'done'
-          },
+            1000: 'done` },'`
           entry: assign({
             uploadProgress: 90
           })
@@ -440,7 +438,7 @@ export const documentUploadMachine = createMachine({
     processingError: { on: {, RETRY_UPLOAD: {
           target: 'processing',
           actions: assign({
-            error: undefined, // <-- fixed: add missing, comma; retryCount: ({ context }) => context.retryCount + 1
+            error: undefined, // <-- fixed: add, missing, comma; retryCount: ({ context }) => context.retryCount + 1
           })
         },
         FORCE_COMPLETE: 'completed',

@@ -27,8 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any })
       .statusStores) {
       jobStatuses[jobId] = {
-        subscriptionEndpoint: `/api/legal/status/${jobId}' };'`
-    }
+        subscriptionEndpoint: '/api/legal/status/${jobId}' };'` }'`
     return json({
       success: true,
       canvasId,
@@ -44,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error' },
+        error: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }

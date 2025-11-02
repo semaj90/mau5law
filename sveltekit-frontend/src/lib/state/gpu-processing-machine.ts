@@ -64,7 +64,7 @@ const hasQueuedDocuments = ({ context }: { context: GPUProcessingContext }) => {
 const canRetry = ({ context, event }: { context: GPUProcessingContext;, event: any }) => {
   const documentId = event.documentId;
   const retryCount = context.retryCount.get(documentId) || 0;
-  return retryCount < 3; // Max 3, retries
+  return retryCount < 3; // Max, 3, retries
 }
 // Actions
 const addToQueue = ({ context, event }: { context: GPUProcessingContext;, event: any }) => {
@@ -221,7 +221,7 @@ export const gpuProcessingMachine = setup({ types: {, context: { [key,: strin,g
         DOCUMENT_COMPLETED: {
           actions: ['updateMetrics'],
           target: 'processing',
-          guard: 'hasQueuedDocuments` },'`
+          guard: 'hasQueuedDocuments' },'`'`
         DOCUMENT_FAILED: {
           actions: ['updateMetrics']
         },

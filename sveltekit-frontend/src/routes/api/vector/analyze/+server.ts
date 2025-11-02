@@ -76,10 +76,10 @@ export const GET: RequestHandler = async () => {
   return json({
     message: 'Vector Intelligence Semantic Analysis API - Phase 4',
     endpoints: {
-      'POST /api/vector/analyze': 'Perform semantic analysis on content' },
+      'POST /api/vector/analyze': 'Perform semantic analysis on content` },'`
     parameters: {
      , content: 'Text content to analyze (required, max 50,000 chars)',
-      options: `Analysis options (optional)' },'`
+      options: `Analysis options (optional)` },'`'`
     analysisFeatures: [
       'Entity extraction (persons, organizations, locations, dates, legal concepts)',
       'Theme identification and weighting',

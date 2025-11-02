@@ -172,8 +172,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       );
     }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED` }));'`
-    }
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }));'` }'`
     return error(
       500,
       makeHttpErrorPayload({

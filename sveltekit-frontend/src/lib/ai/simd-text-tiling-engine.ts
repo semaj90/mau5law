@@ -154,7 +154,7 @@ export class SIMDTextTilingEngine {
         {
           tileSize: this.config.tileSize,
           enableCompression: true,
-          priority: 'medium' }
+          priority: 'medium` }'`
       );
       console.log(
         `🧮 SIMD tiling applied: ${combinedEmbeddings.length} → ${tilingResult.chunks.length} chunks (${tilingResult.tensorCompressionRatio.toFixed(1)}:1)`
@@ -396,8 +396,7 @@ export class SIMDTextTilingEngine {
   opacity: ${(tile.tileMetadata.semanticDensity * 0.8 + 0.2).toFixed(2)}
   font-size: ${Math.max(0.8, tile.tileMetadata.semanticDensity * 1.2)}em;
   animation: tile-${index} ${((tile.compressedData[5] / 127) * 2 + 0.5).toFixed(1)}s infinite;
-}`;`
-      })
+}`;` })
       .join('\n\n');
     return `/* SIMD-optimized CSS for 7-bit text tiles */\n/* Generated from ${tiles.length} compressed tiles */\n\n${cssRules}`;
   }

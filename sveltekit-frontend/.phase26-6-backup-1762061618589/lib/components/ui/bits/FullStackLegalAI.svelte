@@ -12,14 +12,14 @@ Features:
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 import { onMount } from 'svelte';
-import { Button } from './Button.svelte';
-import { Card } from './Card.svelte';
-import { CardContent } from './CardContent.svelte';
-import { CardHeader } from './CardHeader.svelte';
-import { CardTitle } from './CardTitle.svelte';
-import { Input } from './Input.svelte';
-import { Alert } from './Alert.svelte';
-import { AlertDescription } from './AlertDescription.svelte';
+import  Button  from "./Button.svelte";
+import  Card  from "./Card.svelte";
+import  CardContent  from "./CardContent.svelte";
+import  CardHeader  from "./CardHeader.svelte";
+import  CardTitle  from "./CardTitle.svelte";
+import  Input  from "./Input.svelte";
+import  Alert  from "./Alert.svelte";
+import  AlertDescription  from "./AlertDescription.svelte";
 interface ServiceStatus {
 	cuda_service_8097: boolean;
 	legal_extraction_8098: boolean;

@@ -34,8 +34,7 @@ export async function getLibraryDocs(libraryId: string, topic?: string, tokens?:
     return response.content;
   } catch (error) {
     console.error('Failed to get library docs:', error);
-    return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message : 'Unknown error` }`;'`
-  }
+    return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message : 'Unknown error' }`;'' }
 }
 // Re-export MCP functions for direct usage
 export { mcpContext72GetLibraryDocs, getSvelte5Docs, getBitsUIv2Docs, getMeltUIDocs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';

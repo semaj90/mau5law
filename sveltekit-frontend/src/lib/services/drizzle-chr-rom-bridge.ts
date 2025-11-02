@@ -87,7 +87,7 @@ export class DrizzleCHRROMBridge {
           parties: ['TechCorp Inc.', 'DevStudio LLC'],
           value: 150000,
           duration_months: 12,
-          jurisdiction: 'Delaware` },'`
+          jurisdiction: 'Delaware' },'`'`
         created_at: new Date('2024-01-15T10:30:00Z'),
         updated_at: new Date('2024-01-15T11:45:00Z')
       },
@@ -103,7 +103,7 @@ export class DrizzleCHRROMBridge {
         metadata: {
           parties: ['Startup Ventures Inc.', 'Innovation Labs'],
           confidentiality_period: 24,
-          jurisdiction: `California` },
+          jurisdiction: `California' },'`
         created_at: new Date('2024-01-16T09:15:00Z'),
         updated_at: new Date('2024-01-16T10:20:00Z')
       },

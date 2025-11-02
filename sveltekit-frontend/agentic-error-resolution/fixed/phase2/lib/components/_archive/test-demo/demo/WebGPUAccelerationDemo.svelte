@@ -4,12 +4,12 @@
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Reactive state using Svelte 5 runes
   let capabilities = $state<WebGPUCapabilities | null>(null);
   let isInitializing = $state(true);
@@ -380,7 +380,7 @@
                 class="w-full"
                 disabled={isProcessing} />
             </div>
-            <Button.Root
+            <Button
               onclick={runSimilarityDemo}
               disabled={isProcessing || activeDemo === 'similarity'}
               class="w-full bits-btn bits-btn">
@@ -425,7 +425,7 @@
                 class="w-full"
                 disabled={isProcessing} />
             </div>
-            <Button.Root
+            <Button
               onclick={runClusteringDemo}
               disabled={isProcessing || activeDemo === 'clustering'}
               class="w-full bits-btn bits-btn">
@@ -457,7 +457,7 @@
                 class="w-full"
                 disabled={isProcessing} />
             </div>
-            <Button.Root
+            <Button
               onclick={runMatrixDemo}
               disabled={isProcessing || activeDemo === 'matrix'}
               class="w-full bits-btn bits-btn">

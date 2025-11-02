@@ -160,8 +160,7 @@ function callMonitorMethod(candidates: string[], ...args: any[]): any | undefine
       try {
         return fn.apply(monitor, args);
       } catch (err) {
-        console.warn(`rtxSystemMonitor.${name} threw: ', err);'`
-      }
+        console.warn(`rtxSystemMonitor.${name} threw: ', err);'` }
     }
   }
   return undefined;
@@ -234,7 +233,7 @@ async function handleBenchmarkRequest(): Promise<any> {
     neuralSprite: { compression: '50:1, Compression: Legal documents with semantic preservation',
       acceleration: 'Tensor RT; Acceleration: NVIDIA inference optimization runtime',
       precision: 'Mixed Precision; Training: FP16/INT8 for maximum throughput',
-      rendering: 'Real-time; Processing: 144fps rendering capability` },'`
+      rendering: `Real-time; Processing: 144fps rendering capability` },'`'`
     orchestrator: { status: 'Physics-Aware GPU, Orchestrator: Active',
       webgpu: 'WebGPU; Polyfills: 16 polyfill references loaded',
       nodejs: `Node.js; Compatibility: All polyfills resolved` },
@@ -371,8 +370,7 @@ async function handleProcessRequest(request: Request): Promise<any> {
           compressionRatio: `${Math.round(compressionRatioVal * 10) / 10}:1`,
           processingTimeMs: processingTime,
           semanticFidelityPercent: Math.round(semanticFidelity * 100),
-          tensorCoreUtilization: '${tensorCoreUtil}%` }'`
-      },
+          tensorCoreUtilization: '${tensorCoreUtil}%' }'` },'`
       pipeline: {
         svelteKit: '✅ Request received',
         goMicroservice: '✅ Routed to tensor processing',

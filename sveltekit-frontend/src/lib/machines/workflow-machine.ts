@@ -42,20 +42,18 @@ export type CaseEvent = | { type: 'CREATE_CASE'; title: string; assignedTo?: num
         }, REQUEST_CHANGES: { target: 'draft', actions: 'updateActivity'
         } }
     }, closed: { on: {, ARCHIVE_CASE: { target: 'archived', actions: 'updateActivity'
-        }, REOPEN_CASE: { target: 'active', actions: 'updateActivity` } }'`
-    }, archived: { on: {, REOPEN_CASE: { target: 'active', actions: `updateActivity` } }
+        }, REOPEN_CASE: { target: 'active', actions: 'updateActivity' } }'` }, archived: { on: {, REOPEN_CASE: { target: 'active', actions: `updateActivity` } }'`
     } }
 }); // ==================== RAG QUERY WORKFLOW ==================== export interface RAGContext { queryId: string;, query: string; userId: number; caseId?: string; searchResults: any[]; generatedResponse: string; confidence: number; sources: string[]; cached: boolean; processingTime: number; tokens: { input: number;, output: number; }
 } export type RAGEvent = | { type: 'START_QUERY'; query: string; userId: number; caseId?: string } | { type: 'CACHE_HIT'; response: string; sources: string[] } | { type: 'SEARCH_COMPLETED'; results: any[] } | { type: 'SEARCH_FAILED'; error: string } | { type: 'GENERATION_COMPLETED'; response: string; confidence: number; tokens: any } | { type: 'GENERATION_FAILED'; error: string } | { type: `CACHE_STORED` } | { type: `RETRY` } export const ragWorkflowMachine = setup({ types: {, context: { [key,: strin,g]: any } as RAGContext, events: { [key,: strin,g]: any } as RAGEvent }, actions: {, initializeQuery: assign({, queryId: () => `rag_${Date.now()}`, query: ({ event }) => (event as any).query, userId: ({ event }) => (event as any).userId, caseId: ({ event }) => (event as any).caseId, processingTime: () => Date.now() }), setCachedResponse: assign({ generatedResponse: ({ event }) => (event as any).response, sources: ({ event }) => (event as any).sources, cached: true, confidence: 1.0, processingTime: ({ context }) => Date.now() - context.processingTime }), setSearchResults: assign({ searchResults: ({ event }) => (event as any).results }), setGeneratedResponse: assign({ generatedResponse: ({ event }) => (event as any).response, confidence: ({ event }) => (event as any).confidence, tokens: ({ event }) => (event as any).tokens, sources: ({ context }) => context.searchResults.map(r => r.id || r.title).slice(0, 5), cached: false, processingTime: ({ context }) => Date.now() - context.processingTime }) }, guards: { hasSearchResults: ({ context }) => context.searchResults.length > 0, isHighConfidence: ({ context }) => context.confidence > 0.7 }
-}).createMachine({ id: 'ragWorkflow', initial: 'idle', context: { queryId: '', query: '', userId: 0, searchResults: [], generatedResponse: '', confidence: 0, sources: [], cached: false, processingTime: 0, tokens: { input: 0, output: 0 } }, states: { idle: {, on: { START_QUERY: {, target: 'checkingCache', actions: 'initializeQuery'
+}).createMachine({ id: 'ragWorkflow', initial: 'idle', context: {, queryId: '', query: '', userId: 0, searchResults: [], generatedResponse: '', confidence: 0, sources: [], cached: false, processingTime: 0, tokens: {, input: 0, output: 0 } }, states: {, idle: {, on: {, START_QUERY: {, target: 'checkingCache', actions: 'initializeQuery'
         } }
     }, checkingCache: { on: {, CACHE_HIT: { target: 'completed', actions: 'setCachedResponse'
         }, SEARCH_COMPLETED: { target: 'searching', actions: 'setSearchResults'
         } }, after: { 100: 'searching' // Fallback if cache check takes too long }
     }, searching: { on: {, SEARCH_COMPLETED: { target: 'generating', actions: 'setSearchResults'
         }, SEARCH_FAILED: 'failed'
-      } }, generating: { on: {, GENERATION_COMPLETED: { , target: 'caching', actions: 'setGeneratedResponse'
-        }, GENERATION_FAILED: 'failed` } }, caching: {, on: {, CACHE_STORED: `completed` }, after: { , 1000: 'completed' // Complete even if caching fails }'`
+      } }, generating: {, on: {, GENERATION_COMPLETED: { , target: 'caching', actions: `setGeneratedResponse` }, GENERATION_FAILED: `failed` } }, caching: {, on: {, CACHE_STORED: `completed` }, after: { , 1000: 'completed' // Complete even if caching fails }'`'`
     }, completed: { , type: `final` }, failed: {, on: {, RETRY: `searching` } }
   } }); // ==================== WORKFLOW ORCHESTRATOR ==================== export class WorkflowOrchestrator { private static instance: WorkflowOrchestrator; private activeWorkflows = new Map<string, any>(); static getInstance(): WorkflowOrchestrator { if (!WorkflowOrchestrator.instance) { WorkflowOrchestrator.instance = new WorkflowOrchestrator(); }
     return WorkflowOrchestrator.instance; }

@@ -60,8 +60,7 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
       const { width, height } = page.getSize();
       fullText += `\n[Page ${i + 1}] (${width}x${height})\n`;
       // Basic page content extraction would go here
-      // For now, we'll simulate with page metadata'
-    }
+      // For now, we'll simulate with page metadata` }'`
     return fullText || 'PDF text extraction requires additional PDF parsing library';
   } catch (error) {
     console.error('PDF extraction error:', error);'
@@ -93,8 +92,7 @@ async function uploadToMinIO(
   } catch (error: any) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : `Unknown error during MinIO upload' };'`
-  }
+      error: error instanceof Error ? error.message : 'Unknown error during MinIO upload' };'` }'`
 }
 /**
  * Process with MCP multi-core server
@@ -104,7 +102,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     const response = await fetch(`${MCP_SERVER_URL}/mcp/process`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json' },'`
+        'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
         text,
         metadata: {
@@ -130,8 +128,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     console.error('MCP processing error: ', error);'
     return {
       success: false,
-      error: error instanceof Error ? error.message : `Unknown error during MCP processing' };'`
-  }
+      error: error instanceof Error ? error.message : 'Unknown error during MCP processing' };'` }'`
 }
 /**
  * Generate Gemma embeddings
@@ -143,7 +140,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
       const response = await fetch('${ollamaConfig.getBaseUrl()}/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json' },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
           prompt: chunk
@@ -187,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     if (!file) {
-      return json({ success: false, error: 'No file provided' }, { status: 400 });
+      return json({ success: false, error: 'No file provided` }, { status: 400 });'`
     }
     console.log(`[API] Processing file: ${file.name} (${file.size} bytes, ${file.type})');'`
     // Step 1: Extract text from PDF
@@ -210,12 +207,12 @@ export const POST: RequestHandler = async ({ request }) => {
     // Step 3: Process with MCP multi-core SIMD
     const mcpResult = await processWithMCP(extractedText, file.name);
     if (!mcpResult.success) {
-      return json({ success: false, error: `MCP processing;, failed: ${mcpResult.error}` }, { status: 500 });
+      return json({ success: false, error: 'MCP processing;, failed: ${mcpResult.error}' }, { status: 500 });
     }
 
     // Ensure mcpResult.data is defined before proceeding, as its properties are required by CombinedDocumentData
     if (!mcpResult.data) {
-      return json({ success: false, error: 'MCP processing succeeded but returned no data.' }, { status: 500 });
+      return json({ success: false, error: 'MCP processing succeeded but returned no data.` }, { status: 500 });'`
     }
 
     console.log(`[API] MCP processing successful, chunks: ${mcpResult.data.chunks?.length}`);
@@ -234,7 +231,7 @@ export const POST: RequestHandler = async ({ request }) => {
       minioResult.objectPath!
     );
     if (!stored) {
-      return json({ success: false, error: 'Database storage failed' }, { status: 500 });
+      return json({ success: false, error: 'Database storage failed` }, { status: 500 });'`
     }
     // Return comprehensive result
     return json({
@@ -259,13 +256,12 @@ export const POST: RequestHandler = async ({ request }) => {
         searchable: true,
         ragReady: true
       },
-      message: `Successfully processed ${file.name} with Gemma embeddings pipeline' });'`
-  } catch (error: any) {
+      message: 'Successfully processed ${file.name} with Gemma embeddings pipeline' });'` } catch (error: any) {'`
     console.error('[API] Processing error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `Internal server error' },'`
+        error: error instanceof Error ? error.message : `Internal server error` },'`'`
       { status: 500 }
     );
   }

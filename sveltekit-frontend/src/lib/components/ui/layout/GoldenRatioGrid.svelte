@@ -26,7 +26,7 @@ import type { Document } from '$lib/types'; // Svelte 5 runes are auto-imported 
     }, classNameVar )); // Calculate golden ratio proportions let goldenProportions = $derived( direction === 'horizontal' ? { primary: `${ PHI }fr`, secondary: '1fr'
     }: direction === 'vertical' ? { primary: `${ PHI }fr`, secondary: '1fr'
     }: { primary: `${ PHI }fr`, secondary: '1fr', tertiary: `${ INVERSE_PHI }fr` }
-  ); </script> <div class={ gridClasses } style="
+  ); </script> <div, class={ gridClasses } style="
     --golden-ratio: { PHI } --inverse-golden-ratio: { INVERSE_PHI } --primary-proportion {goldenProportions.primary} --secondary-proportion {goldenProportions.secondary} {goldenProportions.tertiary ? `--tertiary-proportion ${goldenProportions.tertiary}`: ''}
   "
   data-variant={ variant } data-direction={ direction } data-legal={ legal } data-evidence-layout={ evidenceLayout } data-case-layout={ caseLayout } data-ai-panels={ aiPanels } >

@@ -86,8 +86,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         await db.execute(sql`
           INSERT INTO embeddings (query_id, embedding, created_at)
           VALUES (${String((query as Record<string, unknown>).id)}, ${query_embedding}, ${new Date()})
-        `);`
-      } catch (embedding_error) {
+        `);` } catch (embedding_error) {
         console.warn('Failed to store embedding:', embedding_error);
         // Non-critical error, continue
       }
@@ -128,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     return json(
       {
         success: false,
-        error: 'Internal server error` },'`
+        error: 'Internal server error' },''
       { status: 500 }
     );
   }
@@ -163,7 +162,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       }
     });
   } catch (error) {
-    console.error('Failed to fetch queries: `, error);'`
+    console.error('Failed to fetch queries: ', error);'`'`
     return json(
       {
         success: false,
@@ -195,8 +194,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!query_text) {
       return json({
         success: false,
-        error: 'Query text is required` }, { status: 400 })'`
-    }
+        error: 'Query text is required' }, { status: 400 })'` }'`
     // Generate embedding for search query
     const query_embedding = await generateEmbedding(query_text)
     // Perform similarity search
@@ -223,6 +221,5 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Vector search error: ', error)'
     return json({
       success: false,
-      error: 'Vector search failed` }, { status: 500 })'`
-  }
+      error: 'Vector search failed' }, { status: 500 })'` }'`
 }

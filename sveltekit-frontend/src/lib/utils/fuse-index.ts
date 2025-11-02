@@ -2,7 +2,7 @@ import type { SearchResult } from '$lib/types';
 import Fuse from 'fuse.js';
 
 // Narrow T so keyof T may include non-strings but we only accept string keys
-export function createFuseIndex<T extends, Record<string, unknown>>(
+export function createFuseIndex<T, extends, Record<string, unknown>>(
   items: T[],
   // Replace non-existent Fuse.FuseOptionKey with a simple input shape
   keys: Array<string | {, name: string; weight?: number }>

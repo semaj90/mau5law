@@ -4,12 +4,12 @@ Real-time collaboration interface for multiple investigators working on evidence
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits/Card.svelte';
-  import { CardHeader } from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
-  import { CardContent } from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
+  import  Card  from "$lib/components/ui/enhanced-bits/Card.svelte";
+  import  CardHeader  from "$lib/components/ui/enhanced-bits/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/enhanced-bits/CardTitle.svelte";
+  import  CardContent  from "$lib/components/ui/enhanced-bits/CardContent.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from 'lucide-svelte';
   // --- Type Definitions ---
   interface Position {
@@ -319,14 +319,14 @@ Real-time collaboration interface for multiple investigators working on evidence
               // @ts-ignore - The Textarea component forwards keyboard events, but its types may be incomplete.
               onkeydown={handleKeydown}
             />
-            <Button.Root
+            <Button
               onclick={sendMessage}
               disabled={!newMessage.trim()}
               size="sm"
               class="self-end bits-btn bits-btn"
             >
               <Send class="w-4 h-4" />
-            </Button.Root>
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -339,14 +339,14 @@ Real-time collaboration interface for multiple investigators working on evidence
             <MapPin class="w-4 h-4 mr-2" />
             Annotations ({collaborationSession.annotations.length})
           </div>
-          <Button.Root
+          <Button
             class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showAnnotationInput = !showAnnotationInput)}
           >
             Add Note
-          </Button.Root>
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent class="space-y-3">
@@ -358,12 +358,12 @@ Real-time collaboration interface for multiple investigators working on evidence
               class="mb-3"
             />
             <div class="flex space-x-2">
-              <Button.Root class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
+              <Button class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
                 Add Annotation
-              </Button.Root>
-              <Button.Root class="bits-btn" onclick={() => (showAnnotationInput = false)} variant="ghost" size="sm">
+              </Button>
+              <Button class="bits-btn" onclick={() => (showAnnotationInput = false)} variant="ghost" size="sm">
                 Cancel
-              </Button.Root>
+              </Button>
             </div>
           {/if}
         {#if collaborationSession.annotations.length === 0}

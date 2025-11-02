@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.log(`✅ Built unified index with ${combinedIndex.length} items`)
     return json(combinedIndex)
   } catch (error) {
-    console.error('❌ Index building failed: `, error)'`
+    console.error('❌ Index building failed: ', error)'`'`
     return json({ error: `Failed to build search index` }, { status: 500 })
   }
 }
@@ -254,8 +254,7 @@ async function buildLokiIndex(): Promise<any> {
         labels: {
           job: 'legal-platform',
           service: 'evidence-upload',
-          case_id: 'case_123'
-        },
+          case_id: 'case_123` },'`
         metadata: {
           document_id: 'doc_upload_001',
           file_name: 'contract_evidence.pdf',

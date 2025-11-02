@@ -207,7 +207,7 @@ export class RedisOrchestratorClient {
       const response = await fetch(`${this.baseUrl}/tasks`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           taskType,
           query,
@@ -277,7 +277,7 @@ export class RedisOrchestratorClient {
     }
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
-        method: 'DELETE' });
+        method: 'DELETE` });'`
       return response.ok;
     } catch (error) {
       console.error('🎮 Cache clear failed:', error);

@@ -72,7 +72,7 @@ async function embedWithLocal(text: string, model?: string): Promise<number[]> {
   };
   const resp = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(body)
   });
   if (!resp.ok) {
@@ -97,7 +97,7 @@ async function embedWithNomic(text: string, model?: string): Promise<number[]> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}` },
+          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}' },'`
         body: JSON.stringify({
           text,
           model: model || EMBEDDING_CONFIG.defaultModel
@@ -197,7 +197,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
     try {
       const resp = await fetch(batchUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({, model: modelName, input: texts })
       });
       if (resp.ok) {

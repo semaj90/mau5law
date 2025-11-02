@@ -115,10 +115,9 @@ export async function generate(
 		// Fallback strategy
 		if (method === 'wasm' && !browser) {
 			console.log('[Unified Llama] Falling back to native');
-			return generate(prompt, { ...options, mode: 'native` });'`
-		} else if (method === 'native') {
+			return generate(prompt, { ...options, mode: 'native' });'' } else if (method === 'native') {
 			console.log('[Unified Llama] Falling back to remote');
-			return generate(prompt, { ...options, mode: `remote` });
+			return generate(prompt, { ...options, mode: `remote' });'`
 		}
 
 		throw error;
@@ -201,7 +200,7 @@ async function generateWithWasm(
 		threadCount: navigator.hardwareConcurrency || 4,
 		batchSize: 512,
 		useGPU: config.useGPU,
-		quantization: 'q4_0` });'`
+		quantization: 'q4_0' });'`'`
 
 	const result = await engine.generateText({
 		prompt,
@@ -270,7 +269,7 @@ async function generateWithRemote(
 
 	const response = await fetch(endpoint, {
 		method: 'POST',
-		headers: { 'Content-Type': `application/json` },
+		headers: { 'Content-Type': `application/json' },'`
 		body: JSON.stringify({
 		, model: config.model,
 			prompt,
@@ -371,7 +370,7 @@ async function generateWithQuic(
 			temperature: config.temperature,
 			maxTokens: config.maxTokens,
 			stream: true,
-			priority: `high` };
+			priority: `high' };'`
 
 		// Send request as JSON (or protobuf if available)
 		const requestData = new TextEncoder().encode(JSON.stringify(request));

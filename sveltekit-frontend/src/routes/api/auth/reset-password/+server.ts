@@ -69,8 +69,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'X-Processing-Time': `${Math.round(performance.now() - startTime)}ms' }'`
-        }
+            'X-Processing-Time': '${Math.round(performance.now() - startTime)}ms' }'` }'`
       );
     }
 
@@ -109,8 +108,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
-      }
+          'X-Processing-Time': '${Math.round(processingTime)}ms' }'` }'`
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -127,7 +125,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };
@@ -169,7 +167,7 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
     .update(users)
     .set({
       passwordHash,
-      updatedAt: sql`now()' })'`
+      updatedAt: sql`now()` })'`'`
     .where(eq(users.id, resetRecord.userId));
 
   // Delete used reset token
@@ -190,7 +188,6 @@ async function handlePasswordReset(requestData: any, getClientAddress: () => str
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
-    }
+        'X-Processing-Time': '${Math.round(processingTime)}ms' }'` }'`
   );
 }

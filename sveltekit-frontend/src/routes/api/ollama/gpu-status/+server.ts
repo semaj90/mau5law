@@ -78,8 +78,7 @@ export const GET: RequestHandler = async () => {
         { status: 200 }
       );
     }
-    return json({ ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'health_check_error` }, { status: 200 });'`
-  }
+    return json({ ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'health_check_error' }, { status: 200 });'` }'`
   // Serve from cache if fresh
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     return json({ ok: true, source: 'cache', gpu: cached.payload.gpu }, { status: 200 })

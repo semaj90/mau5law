@@ -238,7 +238,7 @@ export class OCRTensorProcessor {
       });
       return ocrResult;
     } catch (error) {
-      console.error('OCR processing failed: `, error);'`
+      console.error('OCR processing failed: ', error);'`'`
       throw error;
     }
   }
@@ -382,8 +382,7 @@ export class OCRTensorProcessor {
       return {
         embeddings: new Float32Array(data.embedding), // Access properties directly
         fromCache: data.fromCache || false,
-        model: data?.model || 'unknown` };'`
-    } catch (error) {
+        model: data?.model || 'unknown' };'` } catch (error) {'`
       console.error('Embedding generation failed:', error);
       throw error;
     }

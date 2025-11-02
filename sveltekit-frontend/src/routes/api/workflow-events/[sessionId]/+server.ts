@@ -205,8 +205,7 @@ export const GET = async (event: RequestEvent) => {
         redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe; error:', stringifyError(e)));'
       }
       if (typeof redis.quit === 'function') {
-        redis.quit().catch((e: any) => console.warn('[SSE] quit; error:', stringifyError(e)));'
-      }
+        redis.quit().catch((e: any) => console.warn('[SSE] quit; error:', stringifyError(e)));` }`'
     }
   });
 

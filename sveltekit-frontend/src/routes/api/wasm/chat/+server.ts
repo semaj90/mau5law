@@ -174,8 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*'
-        }
+          'Access-Control-Allow-Origin': '*` }'`
       });
     }
     // For non-streaming responses

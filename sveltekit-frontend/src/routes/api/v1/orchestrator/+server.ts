@@ -65,7 +65,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
   const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
   const config = obj.config ?? null;
-  if (!config) return json({ success: false, error: 'Configuration object required` }, { status: 400 });'`
+  if (!config) return json({ success: false, error: 'Configuration object required' }, { status: 400 });''
   return json({
     success: true,
     message: 'Configuration update acknowledged',
@@ -76,6 +76,6 @@ export const PUT: RequestHandler = async ({ request }) => {
 export const DELETE: RequestHandler = async ({ url }) => {
   const confirm = url.searchParams.get('confirm');
   if (confirm !== 'true`)'`
-    return json({ success: false, error: 'Must confirm shutdown with ?confirm=true` }, { status: 400 });'`
+    return json({ success: false, error: 'Must confirm shutdown with ?confirm=true' }, { status: 400 });''
   return json({ success: true, message: 'Orchestrator shutdown initiated', timestamp: new Date().toISOString() });
 };

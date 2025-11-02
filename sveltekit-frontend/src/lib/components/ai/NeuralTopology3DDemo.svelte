@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
@@ -348,24 +348,24 @@ https://svelte.dev/e/js_parse_error -->
       with predictive 3D asset search, animation: pre-rendering, and CHR-ROM caching
     </p>
   </div>
-  <!-- Neural Topology Status, Grid -->
+  <!-- Neural Topology, Status, Grid -->
   <div, class="topology-status-grid">
-    <div class="{`topology-nier-bits-card, transformer ${neuralTopologyStatus.transformer}`}">
+    <div, class="{`topology-nier-bits-card, transformer ${neuralTopologyStatus.transformer}`}">
       <h3>🔤 Transformer</h3>
       <p>Language Processing</p>
       <div, class="status">Ollama gemma3-legal</div>
     </div>
-    <div class="{`topology-nier-bits-card, autoencoder ${neuralTopologyStatus.autoencoder}`}">
+    <div, class="{`topology-nier-bits-card, autoencoder ${neuralTopologyStatus.autoencoder}`}">
       <h3>🗜️ Autoencoder</h3>
       <p>Pattern Compression</p>
       <div, class="status">CHR-ROM Active</div>
     </div>
-    <div class="{`topology-nier-bits-card, cnn ${neuralTopologyStatus.cnn}`}">
+    <div, class="{`topology-nier-bits-card, cnn ${neuralTopologyStatus.cnn}`}">
       <h3>👁️ CNN</h3>
       <p>Visual Recognition</p>
       <div, class="status">WebGPU/RTX 3060 Ti</div>
     </div>
-    <div class="{`topology-nier-bits-card, rnn ${neuralTopologyStatus.rnn}`}">
+    <div, class="{`topology-nier-bits-card, rnn ${neuralTopologyStatus.rnn}`}">
       <h3>🔄 RNN</h3>
       <p>Sequence Prediction</p>
       <div, class="status">RL Cache Active</div>
@@ -374,7 +374,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Demo, Controls -->
   <div, class="demo-controls">
     {#if demoStage === 'ready'}
-      <button class="demo-btn, primary" onclick={runNeuralTopologyDemo}>
+      <button, class="demo-btn, primary" onclick={runNeuralTopologyDemo}>
         🎬 Start Neural Topology Demo
       </button>
     {:else if demoStage === 'running'}
@@ -388,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
     {:else if demoStage === 'completed'}
       <div, class="demo-completed">
         <h3>✅ Demo Completed!</h3>
-        <button class="demo-btn, secondary" onclick={resetDemo}>
+        <button, class="demo-btn, secondary" onclick={resetDemo}>
           🔄 Run Again
         </button>
       </div>
@@ -397,7 +397,7 @@ https://svelte.dev/e/js_parse_error -->
         <p>⚡ Initializing neural topologies...</p>
       {/if}
   </div>
-  <!-- Real-time Metrics, Dashboard -->
+  <!-- Real-time, Metrics, Dashboard -->
   <div, class="metrics-dashboard">
     <div, class="metric-nier-bits-card">
       <h4>3D Component Predictions</h4>
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if predictions.length > 0 || animations.length > 0 || searchResults.length > 0}
     <div, class="results-section">
       <h3>🎯 Neural Topology Results</h3>
-      <!-- 3D Component, Predictions -->
+      <!-- 3D, Component, Predictions -->
       {#if predictions.length > 0}
         <div, class="result-group">
           <h4>🔄 RNN Predictions ({predictions.length})</h4>
@@ -454,7 +454,7 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         {/if}
-      <!-- Asset Search, Results -->
+      <!-- Asset, Search, Results -->
       {#if searchResults.length > 0}
         <div, class="result-group">
           <h4>🔍 Transformer Asset Search Results</h4>
@@ -711,7 +711,7 @@ https://svelte.dev/e/js_parse_error -->
 </style>
 <div, class="neural-demo">
   {#if webgpuSupported}
-    <canvas bind:this={canvas} width={width} height={height} class="neural-canvas" aria-label="Neural Topology 3D demo, canvas" />
+    <canvas bind:this={canvas} width={width} height={height} class="neural-canvas" aria-label="Neural Topology 3D, demo, canvas" />
   {:else}
     <div, class="fallback">
       <p>WebGPU not available in this environment. Showing lightweight fallback preview.</p>
@@ -719,7 +719,7 @@ https://svelte.dev/e/js_parse_error -->
         <p, class="error">Init error: {initError}</p>
       {/if}
       <div, class="placeholder" style="width:{Math.min(width,600)}px;height:{Math.min(height,300)}px">
-        <svg width="100%" height="100%" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid, meet">
+        <svg width="100%" height="100%" viewBox="0 0 400, 200" preserveAspectRatio="xMidYMid, meet">
           <rect, width="100%" height="100%" rx="8" fill="#eef2ff" />
           <text, x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#4b5563" font-size="14">
             NeuralTopology3DDemo placeholder

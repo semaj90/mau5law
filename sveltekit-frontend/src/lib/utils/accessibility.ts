@@ -372,8 +372,7 @@ export class MotionUtils {
           scroll-behavior: auto !important;
         }
       }
-    `;`
-  }
+    `;` }
 }
 // Error handling and validation
 export class AccessibilityValidator {
@@ -451,7 +450,7 @@ export class AccessibilityValidator {
       if (color && backgroundColor && color !== 'rgba(0, 0, 0, 0)' && backgroundColor !== 'rgba(0, 0, 0, 0)') {
         if (!ColorContrast.meetsWCAG(color, backgroundColor)) {
           errors.push(
-            `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : '` }${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : `` }`'`
+            `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : `` }${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : `` }`'`'`
           );
         }
       }

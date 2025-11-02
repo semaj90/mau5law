@@ -59,7 +59,7 @@ interface ChatRequest { sessionId: string;, message: string;
   maxHistoryContext?: number;
 }
 interface ChatResponse { response: string;, sessionId: string;
-  sources?: RagSource[]; // <- replaced any[] with, RagSource[]
+  sources?: RagSource[]; // <- replaced, any[] with, RagSource[]
   confidence?: number;
   processing_time: number;
   cache_stats?: Record<string, unknown>;
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🎮 Retrieved ${chatHistory.length} messages from history`);
 
     // Step 3: Perform RAG search if enabled
-    let ragSources: RagSource[] = []; // <- typed instead of, any[]
+    let ragSources: RagSource[] = []; // <- typed instead, of, any[]
     let ragContext = '';
     if (useRAG && message.length > 10) {
       try {
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.log(`🎮 RAG search found ${searchResults.length} relevant documents`);
         }
       } catch (ragError) {
-        console.warn('🎮 RAG search failed, continuing without context: `, ragError);'`
+        console.warn('🎮 RAG search failed, continuing without context: ', ragError);'`'`
       }
     }
 
@@ -242,7 +242,7 @@ export const POST: RequestHandler = async ({ request }) => {
     ${caseId ? `You are currently working on case ${caseId}.` : `` }
     Provide accurate, helpful legal information while noting that this is not legal advice.
     Use the provided context and conversation history to give informed responses.
-    ${ragContext ? `\nRelevant legal context:\n${ragContext}` : `` }`;`
+    ${ragContext ? `\nRelevant legal context:\n${ragContext}` : '' }`;`
 
     // Step 5: Build conversation messages for Ollama
     const conversationMessages = [
@@ -367,7 +367,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
   }
 };
 // Add/update typed surface for the legalChatMemory service to include delete methods
@@ -424,7 +424,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
-    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
   }
 };
 /**
@@ -489,7 +489,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
-    throw error(500, `History clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `History clear failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
   }
 };
 

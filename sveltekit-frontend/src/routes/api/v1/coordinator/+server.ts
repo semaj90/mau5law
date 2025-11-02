@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
       systemStatus = {
         services: servicesMap,
-        systemHealth: coordinator.systemHealth ?? { status: 'unknown` },'`
+        systemHealth: coordinator.systemHealth ?? { status: 'unknown' },'`'`
         activeErrors: Array.isArray(coordinator.activeErrors) ? coordinator.activeErrors : [],
         performance: coordinator.performance ?? {}
       };

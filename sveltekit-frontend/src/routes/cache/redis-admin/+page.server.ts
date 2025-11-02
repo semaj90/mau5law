@@ -95,9 +95,9 @@ export const actions: Actions = {
     try {
       await redisService.del(key);
       console.log(`Redis key deleted by admin: ${key}`);
-      return { success: true, message: 'Key "${key}" deleted successfully' };
+      return { success: true, message: `Key "${key}" deleted successfully` };
     } catch (err) {
-      console.error('Failed to delete Redis key:', err);
+      console.error('Failed to delete Redis key: `, err);'`
       return fail(500, { error: `Failed to delete key` });
     }
   },
@@ -121,7 +121,7 @@ export const actions: Actions = {
       console.log(`Redis key set by admin: ${key}`);
       return { success: true, message: `Key "${key}" set successfully` };
     } catch (err) {
-      console.error('Failed to set Redis key: `, err);'`
+      console.error('Failed to set Redis key: ', err);'`'`
       return fail(500, { error: `Failed to set key` });
     }
   }

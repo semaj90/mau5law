@@ -116,7 +116,7 @@ class EnhancedLokiDB {
         unique: ['id'],
         transforms: {
           byCaseHighConfidence: [
-            { type: 'find', value: { caseId: {, $aeq: '[%lktxp]caseId' } } },
+            { type: 'find', value: {, caseId: {, $aeq: '[%lktxp]caseId' } } },
             { type: 'find', value: {, confidence: {, $gte: 0.8 } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
@@ -170,7 +170,7 @@ class EnhancedLokiDB {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
         transforms: {
           strongRelationships: [
-            { type: 'find', value: {, strength: {, $gte: 0.7 } } },
+            {, type: 'find', value: {, strength: {, $gte: 0.7 } } },
             { type: 'simplesort', property: 'strength', desc: true }
           ],
           byType: [
@@ -577,7 +577,7 @@ class EnhancedLokiDB {
     try {
       const swPath = '/service-worker.js';
       try {
-        const head = await fetch(swPath, { method: 'HEAD` });'`
+        const head = await fetch(swPath, { method: 'HEAD' });'`'`
         if (!head.ok) return;
       } catch {
         return;
@@ -664,7 +664,7 @@ class EnhancedLokiDB {
     const endpoint = `/api/cache/sync/${operation.collection}`;
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , operation: operation.type,
         data: operation.data,

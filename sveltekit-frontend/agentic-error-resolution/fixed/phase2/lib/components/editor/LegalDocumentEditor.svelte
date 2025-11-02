@@ -325,7 +325,7 @@
         <Tooltip.Trigger asChild let:builder>
           <Button builders={[builder]} variant="ghost" size="icon" aria-label="Help">
             <AlertCircle class="h-5 w-5" />
-          </Button.Root>
+          </Button>
         </Tooltip.Trigger>
         <Tooltip.Content>
           Use the AI assistant for legal research and drafting help. Click the citation button to add references.
@@ -333,11 +333,11 @@
       </Tooltip.Root>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
-          <Button.Root builders={[builder]} variant="outline" class="flex items-center gap-2">
+          <Button builders={[builder]} variant="outline" class="flex items-center gap-2">
             <Settings class="h-4 w-4" />
             <span>Actions</span>
             <ChevronDown class="h-4 w-4" />
-          </Button.Root>
+          </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content class="w-56">
           <DropdownMenu.Item onclick={() => console.log('Preview')}>
@@ -494,7 +494,7 @@
                 </div>
               {/each}
             {/if}
-          <Button.Root
+          <Button
             variant="outline"
             class="w-full"
             onclick={() =>

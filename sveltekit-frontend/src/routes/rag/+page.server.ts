@@ -108,7 +108,6 @@ export const actions: Actions = {
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       // keep returning a shape the client expects; use 500 status if desired
-      return { form, result: { error: `Upload, failed: ${msg}' } };'`
-    }
+      return { form, result: { error: `Upload, failed: ${msg}` } };`` }
   }
 };

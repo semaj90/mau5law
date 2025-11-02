@@ -277,8 +277,7 @@ export class LegalDocumentStreamService {
         data: {
           entities: semanticAnalysis.legalEntities,
           entityCount: semanticAnalysis.legalEntities.length,
-          entityTypes: [...new Set(semanticAnalysis.legalEntities.map((e: LegalEntity) => e.type))] // Added type; for: 'e'
-        }
+          entityTypes: [...new Set(semanticAnalysis.legalEntities.map((e: LegalEntity) => e.type))] // Added type; for: 'e` }'`
       });
       // Step 2: Embeddings generated
       if (streamProgress) {
@@ -517,8 +516,7 @@ export class LegalDocumentStreamService {
         try {
           callback(event);
         } catch (error) {
-          console.error('Event listener error:', error);'
-        }
+          console.error('Event listener error:', error);` }`'
       });
     }
   }

@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from './Button.svelte';
-  import { Input } from './Input.svelte';
-  import { Card } from './Card.svelte';
-  import { SearchInput } from './SearchInput.svelte';
+  import  Button  from "./Button.svelte";
+  import  Input  from "./Input.svelte";
+  import  Card  from "./Card.svelte";
+  import  SearchInput  from "./SearchInput.svelte";
   import { z } from "zod";
   import {
     Brain,

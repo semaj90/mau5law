@@ -172,7 +172,7 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
       metadata: {
         documentType: 'contract-addendum',
         location: 'likely in HR files',
-        importance: 'case-critical` },'`
+        importance: `case-critical` },'`'`
       aiInsight: `Contract amendment from June 2023 contains non-compete clause modifications that directly contradict opposing arguments.` },
     {
       id: 'case-rec-003',
@@ -251,7 +251,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
       priority: 160,
       metadata: {
         searchType: 'precedents',
-        filters: { practiceArea: 'employment-law', dateRange: 'last-2-years` },'`
+        filters: { practiceArea: 'employment-law', dateRange: `last-2-years` },'`'`
         expectedResults: 89
       },
       aiInsight: `Your recent case pattern suggests constructive dismissal angle worth exploring.` },
@@ -326,7 +326,7 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
         lowPriorityCases: 3,
         timeAllocation: '45%',
         recommendedAllocation: '25%',
-        redistributionOpportunity: '20%` },'`
+        redistributionOpportunity: `20%` },'`'`
       aiInsight: `Delegating routine tasks in low-priority cases frees up 8 hours weekly for high-value work.` },
     {
       id: 'workflow-rec-003',
@@ -393,7 +393,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
         impact: 'transformative',
         relevanceScore: 0.94
       },
-      aiInsight: 'This decision fundamentally changes the landscape for employment privacy rights and surveillance.` },'`
+      aiInsight: `This decision fundamentally changes the landscape for employment privacy rights and surveillance.` },'`'`
     {
       id: 'precedent-rec-002',
       type: 'precedent',

@@ -72,10 +72,9 @@ export const POST: RequestHandler = async ({ request }) => {
       queuedAt: new Date().toISOString(),
       expectedProcessingTime: priority === 'urgent' ? '2-5 minutes' : '5-15 minutes',
       responseTime: `${responseTime}ms`,
-      message: 'Document queued for legal analysis workflow'
-    });
+      message: `Document queued for legal analysis workflow` });
   } catch (error) {
-    logger.error('[Legal Workflow API] Error processing request:', error);
+    logger.error('[Legal Workflow API] Error processing request: `, error);'`
     return json(
       {
         success: false,

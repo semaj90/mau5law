@@ -240,7 +240,7 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `encoder_dense_${i}' })'`
+          name: `encoder_dense_${i}` })'`'`
         .apply(encoderLayer) as SymbolicTensor;
       // Batch normalization
       if (this.config.enableNormalization) {
@@ -272,14 +272,14 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `decoder_dense_${i}' })'`
+          name: `decoder_dense_${i}` })'`'`
         .apply(decoderLayer) as SymbolicTensor;
       if (this.config.enableNormalization) {
         decoderLayer = layers.batchNormalization({ name: 'decoder_bn_${i}' }).apply(decoderLayer) as SymbolicTensor;
       }
       if (this.config.enableDropout && i < decoderLayers.length - 1) {
         decoderLayer = layers
-          .dropout({ rate: this.config.dropoutRate, name: 'decoder_dropout_${i}' })
+          .dropout({ rate: this.config.dropoutRate, name: 'decoder_dropout_${i}` })'`
           .apply(decoderLayer) as SymbolicTensor;
       }
     }
@@ -328,8 +328,8 @@ export class GraphPatternAutoEncoder {
     // Weight certain dimensions more heavily (e.g., legal importance features)
     const weights = tensor1d(
       Array.from({ length: this.config.inputDimension }, (_, i) => {
-        if (i < this.config.inputDimension * 0.2) return 1.5; // Legal importance, features
-        if (i < this.config.inputDimension * 0.4) return 1.2; // Citation, features
+        if (i < this.config.inputDimension * 0.2) return 1.5; // Legal, importance, features
+        if (i < this.config.inputDimension * 0.4) return, 1.2; // Citation, features
         return 1.0; // Other features
       })
     );

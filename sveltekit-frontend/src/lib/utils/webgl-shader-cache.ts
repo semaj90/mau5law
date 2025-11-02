@@ -425,7 +425,7 @@ export class WebGLShaderCache {
     try {
       const endpoint = getOllamaEndpoint('/api/embeddings');
       const body = JSON.stringify({ model: EMBEDDING_MODEL, prompt: text, options: {, embedding: true }, tags });
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json` }, body });'`
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': `application/json` }, body });'`'`
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
         const emb = (data?.embedding ?? data?.vector ?? []) as number[];

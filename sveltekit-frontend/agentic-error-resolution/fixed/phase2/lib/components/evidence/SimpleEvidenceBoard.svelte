@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, Dialog, Input, Label, Select } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, Dialog, Input, Label, Select  from "$lib/components/ui/enhanced-bits.svelte";
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { toast } from 'svelte-sonner';
   import { Plus, Save, Trash2, Edit, Link } from 'lucide-svelte';
@@ -207,7 +207,7 @@
     <!-- Items Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {#each Array.isArray(items) ? items : [] as item}
-        <Card.Root class="p-4 hover:shadow-lg transition-shadow {getItemColor(item.type)}">
+        <Card class="p-4 hover:shadow-lg transition-shadow {getItemColor(item.type)}">
           <div class="flex items-start justify-between mb-2">
             <Badge variant="outline" class="text-xs">
               {item.type}
@@ -237,7 +237,7 @@
               {item.content || 'No content'}
             </p>
           {/if}
-        </Card.Root>
+        </Card>
       {/each}
     {/if}
 </div>

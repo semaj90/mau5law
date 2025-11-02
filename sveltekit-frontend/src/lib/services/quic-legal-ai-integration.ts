@@ -79,8 +79,7 @@ export class QUICLegalAIIntegration {
       config: {
         quicPort: 4433,
         ollamaUrl: getOllamaEndpoint(), // use helper instead of hardcoded URL
-        redisUrl: 'redis://:redis@localhost:6379/0'
-      },
+        redisUrl: 'redis://:redis@localhost:6379/0` },'`
       lastUpdated: new Date().toISOString(),
       activeConnections: 0,
       quicEnabled: false, // Will be updated by GPUAIService
@@ -167,7 +166,7 @@ export class QUICLegalAIIntegration {
 
       // Check Redis via productionServiceClient - await and narrow the response type
       const redisResp = (await productionServiceClient
-        .makeRequest('/redis/health', { method: 'GET' })
+        .makeRequest('/redis/health', { method: 'GET` })'`
         .catch(() => null)) as ServiceClientResponse | null;
       const redisHealth: ServiceStatus = redisResp?.status === 200 ? 'healthy' : 'critical';
 

@@ -10,7 +10,7 @@
 </script>
 <Select.Trigger, class="space-y-4 {className}" {...rest}>
   <slot />
-  <!-- No {#snippet children()} usage to avoid slot/snippet, conflict -->
+  <!-- No {#snippet children()} usage to avoid, slot/snippet, conflict -->
 </Select.Trigger>
 <style>
 /* @unocss-include */ {}

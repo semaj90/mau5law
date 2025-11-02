@@ -114,8 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to initiate rolling restart',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      },
+        message: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }

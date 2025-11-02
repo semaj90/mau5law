@@ -191,7 +191,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
   console.log(`🔄 Sending ${jobData.documentId} to Go server for processing...`);
   const response = await fetch(`${GO_SERVER_URL}/process-document`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(300_000)
   });

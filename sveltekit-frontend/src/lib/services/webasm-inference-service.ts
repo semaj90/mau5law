@@ -128,7 +128,7 @@ export class WebASMInferenceService {
       // Best-effort SIMD detection; platform support varies
       // Use the `in` operator instead of calling hasOwnProperty on globalThis
       const simdSupported = typeof WebAssembly !== 'undefined' && 'SIMD' in globalThis;
-      console.log(`🔧 WebASM SIMD Support: ${simdSupported ? 'Enabled' : 'Disabled` }`);'`
+      console.log(`🔧 WebASM SIMD Support: ${simdSupported ? 'Enabled' : `Disabled` }`);'`'`
       return simdSupported;
     } catch {
       return false;
@@ -272,8 +272,7 @@ export class WebASMInferenceService {
           `webasm-inference-${modelName}-end`
         );
       } catch {
-        // ignore in environments that don't support measure'
-      }
+        // ignore in environments that don't support measure` }'`
 
       const tokensPerSecond = inputSize / (inferenceTime / 1000);
       const memoryUsage = this.getMemoryUsage(model);
@@ -399,7 +398,7 @@ export class VectorSearchInferenceEngine {
     this.config = config;
   }
 
-  async initialize(models: { name: string; wasmBuffer: Uint8Array;, config: WebASMModelConfig }[]): Promise<void> {
+  async initialize(models: {, name: string; wasmBuffer: Uint8Array;, config: WebASMModelConfig }[]): Promise<void> {
     for (const model of models) {
       await this.wasmService.loadModel(model.name, model.wasmBuffer, model.config);
     }

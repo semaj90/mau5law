@@ -435,8 +435,7 @@ class ComprehensiveOllamaSummarizer {
       content,
       keyPoints: this.extractKeyPoints(content),
       legalAnalysis: this.extractLegalAnalysis(content),
-      model: 'cuda-accelerated` };'`
-  }
+      model: 'cuda-accelerated' };'` }'`
 
   private async generateWithLangChainService(request: ComprehensiveSummaryRequest) {
     const query = this.buildLegalPrompt(request);
@@ -498,8 +497,7 @@ class ComprehensiveOllamaSummarizer {
           keyPoints: this.extractKeyPoints(partialContent),
           confidence: this.calculatePartialConfidence(partialContent),
           processingTime: Date.now() - startTime,
-          model: chunk?.model || 'streaming` };'`
-      }
+          model: chunk?.model || 'streaming' };'` }'`
 
       const metadata = this.extractMetadata(request.content);
       const finalResponse: ComprehensiveSummaryResponse = {

@@ -208,8 +208,7 @@ export class YoRHaOptimizedTextureManager {
       const allocationTime = performance.now() - startTime;
       console.log(`✅ Allocated texture ${textureId} to ${bankName} bank in ${allocationTime.toFixed(2)}ms`);
       if (mipmapResult) {
-        console.log(`🔥 Generated ${mipmapResult.mipmapLevels.length} mip levels with ${mipmapResult.optimization.rtxAcceleration ? 'RTX' : 'CPU` } acceleration`);'`
-      }
+        console.log(`🔥 Generated ${mipmapResult.mipmapLevels.length} mip levels with ${mipmapResult.optimization.rtxAcceleration ? 'RTX' : 'CPU' } acceleration`);'' }
       return textureEntry;
     } catch (error) {
       console.error(`Failed to allocate texture ${textureId}: ', error);'`
@@ -447,7 +446,7 @@ export class YoRHaOptimizedTextureManager {
     try {
       if (!navigator.gpu) return null;
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance` });'`
+        powerPreference: 'high-performance' });'`'`
       if (!adapter) return null;
       return await adapter.requestDevice({
         requiredFeatures: [],

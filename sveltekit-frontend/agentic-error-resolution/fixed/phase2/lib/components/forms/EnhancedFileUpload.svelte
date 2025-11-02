@@ -12,17 +12,17 @@ export default ;
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Label } from "$lib/components/ui/label/Label.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Label  from "$lib/components/ui/label/Label.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
     AlertCircle,
@@ -386,9 +386,9 @@ export default ;
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button.Root class="bits-btn" type="button" variant="ghost" onclick={addTag} disabled={isUploading}>
+            <Button class="bits-btn" type="button" variant="ghost" onclick={addTag} disabled={isUploading}>
 Add
-</Button.Root>
+</Button>
           </div>
           {#if formState.tags.length > 0}
             <div class="flex flex-wrap gap-2 mt-2">
@@ -397,7 +397,7 @@ Add
                   <span>{tag}</span>
                   <button type="button" class="ml-2" onclick={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
                     <X class="h-3 w-3" />
-</Button.Root>
+</Button>
                 </Badge>
               {/each}
             {/if}
@@ -435,7 +435,7 @@ Add
         {#if multiple}(max {maxFiles}){/if}
       </p>
       <div class="flex gap-2">
-        <Button.Root class="bits-btn" variant="ghost" onclick={() =>
+        <Button class="bits-btn" variant="ghost" onclick={() =>
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
         <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">

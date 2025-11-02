@@ -69,8 +69,8 @@ async function getQuicEngine(): Promise<QuicRecommendationEngine> {
       const instance = new (module.QuicNeo4jRecommendationEngine as new () => unknown)();
       QuicEngine = instance as QuicRecommendationEngine;
     } catch (err) {
-      console.error('Failed to load QUIC engine: `, err);'`
-      throw error(503, makeHttpErrorPayload({ message: `QUIC recommendation engine unavailable` }));
+      console.error('Failed to load QUIC engine: ', err);'`'`
+      throw error(503, makeHttpErrorPayload({ message: 'QUIC recommendation engine unavailable' }));
     }
   }
   return QuicEngine;
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         benchmark: benchmarkResults,
         connection: engine.getConnectionInfo(),
-        message: `QUIC Neo4j Recommendation Engine benchmark completed` });
+        message: 'QUIC Neo4j Recommendation Engine benchmark completed' });
     }
     // Execute ultra-fast QUIC recommendation
     const startTime = performance.now();
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
       'X-Protocol': recommendations.protocol ?? 'unknown',
       'X-Cache-Status': recommendations.cacheHit ? 'HIT' : 'MISS',
       'X-GPU-Used': recommendations.tensorMetrics?.tensorCoresUsed ? 'true' : 'false',
-      'X-SIMD-Optimized': recommendations.metadata?.simdOptimized ? 'true' : `false` };
+      'X-SIMD-Optimized': recommendations.metadata?.simdOptimized ? 'true' : 'false' };
 
     return json(
       {
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body as PostBody; // cast to typed body
 
     if (!query && !(batchQueries && batchQueries.length)) {
-      throw error(400, makeHttpErrorPayload({ message: `Query or batchQueries required` }));
+      throw error(400, makeHttpErrorPayload({ message: 'Query or batchQueries required' }));
     }
     const engine = await getQuicEngine();
     const startTime = performance.now();
@@ -266,6 +266,6 @@ export const OPTIONS: RequestHandler = async () => {
 			'Alt-Svc': 'h3=":4433"; ma=3600', // Advertise QUIC/HTTP3
 			'X-API-Version': '1.0',
 			'X-Supported-Protocols': 'QUIC, HTTP/2, HTTP/1.1',
-			'X-Target-Latency': `5-15ms` }
+			'X-Target-Latency': '5-15ms' }
 	})
 }

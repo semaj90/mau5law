@@ -301,7 +301,7 @@ class IntelligentModelSwitcher {
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: message || 'Unknown error' };
+        error: message || 'Unknown error` };'`
     }
   }
   /**

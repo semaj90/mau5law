@@ -5,8 +5,8 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { DraggableEvidenceNode } from './DraggableEvidenceNode.svelte';
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
+  import  DraggableEvidenceNode  from "./DraggableEvidenceNode.svelte";
+  import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
   import { Plus, Zap, Search, Brain, Download } from 'lucide-svelte';
   interface EvidenceConnection {
     id: string;
@@ -264,7 +264,7 @@ await embeddingsService.initialize();
 <!-- Canvas Container -->
 <div class="evidence-canvas-container">
   <!-- Toolbar -->
-  <Card.Root class="mb-4">
+  <Card class="mb-4">
     <CardHeader class="pb-3">
       <div class="flex items-center justify-between">
         <CardTitle class="flex items-center gap-2">
@@ -322,9 +322,9 @@ await embeddingsService.initialize();
         <span>{selectedNodes.length} selected</span>
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
   <!-- Canvas -->
-  <Card.Root class="relative overflow-hidden">
+  <Card class="relative overflow-hidden">
     <div;
       bind:this={canvasElement}
       class="relative bg-slate-50 dark:bg-slate-900 min-h-[600px] overflow-auto"
@@ -389,7 +389,7 @@ await embeddingsService.initialize();
           </div>
         {/if}
     </div>
-  </Card.Root>
+  </Card>
 </div>
 <style>
   .evidence-canvas-container {

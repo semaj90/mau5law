@@ -2,7 +2,7 @@
   // removed bits-ui Dialog import (module types didn't export Dialog.*). Using a local modal markup below.
   // cast helper type to satisfy sveltekit-superforms zod adapter typing
   import type { ZodTypeAny } from 'zod';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   import X from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -141,15 +141,15 @@
         <p class="text-red-600 text-xs mt-1">{$errors.termsAccepted}</p>
       {/if}
       <div class="flex gap-3 justify-end pt-4">
-        <Button.Root
+        <Button
           type="button"
           onclick={closeModal}
           variant="secondary"
           class="px-4 py-2 bg-slate-200 text-slate-900 rounded hover:bg-slate-300"
         >
           Cancel
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           type="submit"
           disabled={$submitting || !$form.termsAccepted}
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
@@ -159,7 +159,7 @@
           {:else}
             Register
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </form>
   {/if}

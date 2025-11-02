@@ -82,7 +82,7 @@ async function extractTextFromImage(buffer: Buffer, mimeType: string): Promise<s
 
     return data.text || '[No text extracted from image]';
   } catch (error) {
-    console.error('Image OCR failed: `, error);'`
+    console.error('Image OCR failed: ', error);'`'`
     return `[Image OCR failed: ${error instanceof Error ? error.message : `Unknown error` }]`;
   }
 }
@@ -182,7 +182,7 @@ async function uploadToMinIO(file: File, documentId: string): Promise<string> {
 
     return url;
   } catch (error) {
-    console.error('MinIO upload failed: `, error);'`
+    console.error('MinIO upload failed: ', error);'`'`
     throw new Error(`Failed to upload to MinIO: ${error instanceof Error ? error.message : `Unknown error` }`);
   }
 }
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
             console.log(`✅ Generated embedding and indexed in Qdrant + pgvector`);
           } catch (embeddingError) {
-            console.error('Embedding/indexing failed: `, embeddingError);'`
+            console.error('Embedding/indexing failed: ', embeddingError);'`'`
             embeddingResult = {
               success: false,
               error: embeddingError instanceof Error ? embeddingError.message : `Unknown error` };
@@ -309,8 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
         embeddings: services.env.ollamaConfig.embeddingModel,
         legalAnalysis: services.env.ollamaConfig.chatModel,
         ocr: 'pdf-parse + tesseract.js (optional)',
-        service: 'centralized-production'
-      }
+        service: 'centralized-production` }'`
     });
 
   } catch (error) {

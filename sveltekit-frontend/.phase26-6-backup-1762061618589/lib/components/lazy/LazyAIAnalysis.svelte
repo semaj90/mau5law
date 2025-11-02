@@ -4,7 +4,7 @@ https://svelte.dev/e/bindable_invalid_location -->
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { LazyLoader } from '../LazyLoader.svelte';
+  import  LazyLoader  from "../LazyLoader.svelte";
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
   // Props for AI analysis configuration
   let {

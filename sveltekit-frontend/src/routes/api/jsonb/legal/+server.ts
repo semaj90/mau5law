@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       context: 'jsonb_legal_api_get',
       requestId: requestId,
       severity: 'high',
-      category: `api' });'`
+      category: `api` });'`'`
     return json(
       {
         success: false,
@@ -491,7 +491,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       requestId: requestId,
       requestBody: requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
-      category: `api' });'`
+      category: `api` });'`'`
     return json(
       {
         success: false,
@@ -653,7 +653,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       requestId: requestId,
       requestBody: requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
-      category: 'api' });
+      category: 'api` });'`
     return json(
       {
         success: false,
@@ -715,7 +715,7 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
       context: 'jsonb_legal_api_patch',
       requestId,
       severity: 'high',
-      category: `api' });'`
+      category: `api` });'`'`
     return json(
       {
         success: false,

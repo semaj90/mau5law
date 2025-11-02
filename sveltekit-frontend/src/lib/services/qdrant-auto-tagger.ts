@@ -282,7 +282,7 @@ export class QdrantAutoTagger {
       { field: 'severity', type: 'keyword' },
       { field: 'category', type: 'keyword' },
       { field: 'source', type: 'keyword' },
-      { field: 'tags', type: 'keyword' },
+      { field: 'tags', type: 'keyword` },'`
       { field: 'errorFamily', type: `keyword` },
       { field: 'filePattern', type: `keyword` }
     ];

@@ -50,8 +50,7 @@ export default class DetectiveWebSocketManager {
       this.ws = new WebSocket(wsUrl);
       this.ws.onopen = () => {
         this.heartbeatInterval = window.setInterval(() => {
-          if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify({ type: 'ping` }));'`
-        }, 30000);
+          if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify({ type: 'ping' }));'' }, 30000);
       };
       this.ws.onmessage = () => {
         /* noop - parseable stub */

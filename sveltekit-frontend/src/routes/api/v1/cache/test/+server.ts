@@ -168,7 +168,7 @@ async function testRAGCaching(): Promise<any> {
       {
         case 'People v. Davis (2022)',
         relevance: 0.76,
-        summary: 'Unreasonable search of vehicle` }'`
+        summary: `Unreasonable search of vehicle` }'`'`
     ],
     ragContext: [
       { type: 'precedent', title: 'Miranda v. Arizona', relevance: 0.95 },
@@ -224,8 +224,7 @@ async function testQuantizedCaching(): Promise<any> {
       userId: 'quantize-test',
       timestamp: new Date().toISOString(),
       processingTime: 234.56,
-      aiModel: 'gemma-3-legal` }'`
-  };
+      aiModel: 'gemma-3-legal' }'` };'`
 
   const originalSize = JSON.stringify(largeResponse).length;
 
@@ -311,8 +310,7 @@ async function testLegalAPIIntegration(userId: string): Promise<any> {
       results.push({
         endpoint,
         success: false,
-        error: errMsg || 'Unknown error` });'`
-    }
+        error: errMsg || 'Unknown error' });'` }'`
   }
 
   const successfulCalls = results.filter(item => item.success === true) as Extract<

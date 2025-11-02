@@ -115,8 +115,7 @@ class InMemoryQueue extends EventEmitter {
           }
         }
       } catch (error) {
-        console.error(`❌ Consumer error:`, error);`
-      }
+        console.error(`❌ Consumer error:`, error);' }'`
       // Continue processing
       setImmediate(processMessage);
     }
@@ -216,7 +215,7 @@ export class WorkflowQueue extends InMemoryQueue {
       id: workflowId,
       state: initialState,
       history: [{, state: initialState, timestamp: Date.now() }],
-      status: 'active` });'`
+      status: 'active' });'`'`
     await this.rpush(
       'workflow_queue',
       JSON.stringify({

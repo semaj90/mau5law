@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         title, // Added title
         userId, // Added userId
       },
-      message: 'Document uploaded successfully' });
+      message: 'Document uploaded successfully` });'`
   } catch (err: any) {
     console.error('❌ Upload error:', err);'
     if (err instanceof Error) {
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
        , model: config.embeddingModel,
         chunkSize: config.chunkSize,
         uploadDir: config.uploadDir,
-        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB' },'`
+        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB` },'`'`
       ollama: {
         baseUrl: config.ollamaBaseUrl,
         connected: true

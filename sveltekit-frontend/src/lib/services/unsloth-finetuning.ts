@@ -158,7 +158,7 @@ export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'A
       {,
         input: 'What is the statute of limitations for breach of contract claims?',
         output:
-          'Statute of limitations for breach of contract varies by jurisdiction and contract type. Generally: Written; contracts: 4-6 years in most states. Oral; contracts: 2-3 years. UCC sales; contracts: 4 years (UCC §2-725). Real estate; contracts: Often 4-6 years.; Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
+          'Statute of limitations for breach of contract varies by jurisdiction and contract type.; Generally: Written; contracts: 4-6 years in most states. Oral; contracts: 2-3 years. UCC sales; contracts: 4 years (UCC §2-725). Real estate; contracts: Often 4-6 years.; Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
       },
     ]
   }
@@ -380,8 +380,7 @@ export class UnslothFinetuningService {
           complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'contract_law',
           verified: Math.random() > 0.2,
-          source: `synthetic_generation' }'`
-      });
+          source: 'synthetic_generation' }'` });'`
     }
     return samples;
   }
@@ -426,8 +425,7 @@ export class UnslothFinetuningService {
          , complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'case_law',
           verified: true,
-          source: `court_records' }'`
-      });
+          source: 'court_records' }'` });'`
     }
     return samples;
   }
@@ -455,8 +453,7 @@ export class UnslothFinetuningService {
           complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'general_law',
           verified: Math.random() > 0.3,
-          source: `legal_qa_database' }'`
-      });
+          source: 'legal_qa_database' }'` });'`
     }
     return samples;
   }
@@ -474,7 +471,7 @@ export class UnslothFinetuningService {
     // In a real implementation:
     // await fetch('/api/finetuning/jobs', {
     //   method: 'POST',
-    //   headers: { 'Content-Type': `application/json' },'`
+    //   headers: { 'Content-Type': `application/json` },'`'`
     //   body: this.ultraJSONParser?.stringify(job) ?? JSON.stringify(job),
     // });
     console.log(`[Postgres] Job ${job.id} persisted.`);
@@ -491,7 +488,7 @@ export class UnslothFinetuningService {
     // In a real implementation:
     // await fetch(`/api/finetuning/cache/dataset`, {
     //   method: 'POST',
-    //   headers: { 'Content-Type': `application/json' },'`
+    //   headers: { 'Content-Type': `application/json` },'`'`
     //   body: JSON.stringify({, key: `dataset:${dataset.id}`, value: dataset, ttl: 3600 }),
     // });
     console.log(`[Redis] Dataset ${dataset.id} cached.`);
@@ -509,7 +506,7 @@ export class UnslothFinetuningService {
     // Mock API call to a backend service that handles Ollama and Qdrant
     // await fetch('/api/finetuning/embeddings/index', {
     //   method: 'POST',
-    //   headers: { 'Content-Type': `application/json' },'`
+    //   headers: { 'Content-Type': `application/json` },'`'`
     //   body: JSON.stringify({ datasetId }),
     // });
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing time
@@ -804,7 +801,7 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
         overall: $status.initialized && $metrics.gpuTemperature < 85 ? 'healthy' : 'warning',
         gpu: $metrics.gpuUtilization < 95 ? 'optimal' : 'overloaded',
         memory: $metrics.gpuMemoryUsed < 7 ? 'good' : 'high',
-        thermal: $metrics.gpuTemperature < 80 ? 'cool' : `warm' })),'`
+        thermal: $metrics.gpuTemperature < 80 ? 'cool' : `warm` })),'`'`
       trainingEfficiency: derived(
         [service.trainingProgress, service.resourceMetrics],
         ([$progress, $metrics]: any) => ({
@@ -841,15 +838,14 @@ export const UnslothLegalHelpers = { createContractDataset: (contracts: string[]
         complexity: 3,
         domain: 'contract_law',
         verified: false,
-        source: 'user_upload' }
+        source: 'user_upload` }'`
     })),
     metadata: {
       created: Date.now(),
       size: contracts.length,
       domain: 'contract_law',
       quality: 'medium' as const,
-      source: `user_generated' }'`
-  }),
+      source: 'user_generated' }'` }),'`
   optimizeForRTX3060: (config: Partial<UnslothConfig> = {}): UnslothConfig => ({
     baseModel: 'gemma3-mohf16-q4_k_m.gguf',
     outputModel: 'gemma3-legal-finetuned',

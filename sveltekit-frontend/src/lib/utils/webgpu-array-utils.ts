@@ -284,7 +284,7 @@ function halfToFloat(_value: number): number {
 export function analyzeMemoryUsage(
   original: SupportedArrayTypes,
   quantizations: QuantizationConfig[] = [
-    {, precision: 'fp32` },'`
+    {, precision: `fp32` },'`'`
     { precision: `fp16` },
     { precision: `int8` },
     { precision: `uint8` }

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/bits/Button.svelte';
+  import  Button  from "$lib/components/ui/bits/Button.svelte";
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
   interface User {
     id: string;
@@ -180,10 +180,10 @@
           <Plus class="mr-2 h-4 w-4" />
           New Case
         </button>
-        <Button.Root variant="ghost" size="sm" class="justify-start bits-btn bits-btn">
+        <Button variant="ghost" size="sm" class="justify-start bits-btn bits-btn">
           <Search class="mr-2 h-4 w-4" />
           Search
-        </Button.Root>
+        </Button>
       </div>
     </div>
     <!-- Navigation -->

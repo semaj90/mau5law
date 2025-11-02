@@ -3,8 +3,8 @@
 	import { onMount } from 'svelte';
 
 	// UI libraries
-	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte';
-	import { Badge } from '$lib/components/ui/Badge.svelte';
+	import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
+	import  Badge  from "$lib/components/ui/Badge.svelte";
 	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
@@ -17,9 +17,9 @@
 	// App stores & AI
 	import { evidenceStore  } from '$lib/stores/unified';
 	import { aiAssistant  } from '$lib/stores/unified';
-	import { AIAssistantPanel } from '../ai/AIAssistantPanel.svelte';
-	import { EvidenceCard } from './EvidenceCard.svelte';
-	import { UploadZone } from './UploadZone.svelte';
+	import  AIAssistantPanel  from "../ai/AIAssistantPanel.svelte";
+	import  EvidenceCard  from "./EvidenceCard.svelte";
+	import  UploadZone  from "./UploadZone.svelte";
 	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
 	import { rabbitMQService } from '$lib/services/rabbitmq-service';
 	import { VectorService } from '$lib/services/vector-service';
@@ -369,7 +369,7 @@
 <svelte:window onkeydown={handleGlobalKeydown} />
 
 <div class="w-full h-full min-h-screen bg-background detective-board p-4">
-	<Card.Root class="mb-6">
+	<Card class="mb-6">
 		<CardHeader>
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
@@ -460,14 +460,14 @@
 				</div>
 			</div>
 		</CardHeader>
-	</Card.Root>
+	</Card>
 
 	<main class="flex-1 flex gap-6">
 		<div class="flex-1 min-w-0">
 			{#if viewMode === 'columns'}
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
 					{#each columns as column (column.id)}
-						<Card.Root class="h-fit nes-container is-rounded">
+						<Card class="h-fit nes-container is-rounded">
 							<div class="yorha-panel-header pb-3">
 								<div class="flex justify-between items-center">
 									<h3 class="nes-text is-primary text-lg flex items-center gap-2">
@@ -539,11 +539,11 @@
 									{/each}
 								</div>
 							</div>
-						</Card.Root>
+						</Card>
 					{/each}
 				</div>
 			{:else}
-				<Card.Root class="h-[calc(100vh-200px)] nes-container is-rounded bits-card p-0 uno-stack">
+				<Card class="h-[calc(100vh-200px)] nes-container is-rounded bits-card p-0 uno-stack">
 					<div class="yorha-panel-content p-0 h-full">
 						<div
 							bind:this={canvasContainer}
@@ -572,7 +572,7 @@
 										tabindex="0"
 									>
 										<svelte:component this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}}>
-											<Card.Root class="nes-container is-rounded p-2 w-full mt-2">
+											<Card class="nes-container is-rounded p-2 w-full mt-2">
 												<CardHeader class="flex items-center justify-between">
 													<div class="flex items-center gap-2">
 														<div class="w-3 h-3 bg-primary rounded-full"></div>
@@ -603,7 +603,7 @@
 														</div>
 													</div>
 												</CardContent>
-											</Card.Root>
+											</Card>
 										</svelte:component>
 									</div>
 
@@ -640,7 +640,7 @@
 								{/if}
 						</div>
 					</div>
-				</Card.Root>
+				</Card>
 			{/if}
 		</div>
 

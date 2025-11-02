@@ -2,9 +2,9 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Button } from '$lib/components/ui/core.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Button  from "$lib/components/ui/core.svelte";
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -218,7 +218,7 @@ import type { Document } from '$lib/types';
     <p, class="subtitle">Comprehensive AI-powered legal intelligence platform.</p>
   </div>
 
-  <!-- User Profile, Card -->
+  <!-- User, Profile, Card -->
   <section, class="user-profile-section">
     <Card.Root, class="user-card">
       <CardContent, class="user-card-content">
@@ -299,7 +299,7 @@ import type { Document } from '$lib/types';
     </div>
   </section>
 
-  <!-- Recent Cases, Section -->
+  <!-- Recent, Cases, Section -->
   {#if recentCases.length > 0}
     <section, class="cases-section">
       <div, class="cases-header-container">
@@ -307,14 +307,14 @@ import type { Document } from '$lib/types';
           <h2, class="cases-section-title">Recent Cases</h2>
           <p, class="cases-section-subtitle">Active cases with latest updates.</p>
         </div>
-        <a href="/cases" class="nes-btn is-primary, view-all-cases-btn">View All Cases →</a>
+        <a href="/cases" class="nes-btn, is-primary, view-all-cases-btn">View All Cases →</a>
       </div>
 
       <div, class="cases-grid-container">
         {#each recentCases as caseItem (caseItem.id)}
-          <a href="/cases/{caseItem.id}" class="nes-container is-dark, case-card-wrapper">
+          <a href="/cases/{caseItem.id}" class="nes-container, is-dark, case-card-wrapper">
             <div, class="case-card-inner">
-              <!-- Case Status, Badge -->
+              <!-- Case, Status, Badge -->
               <div, class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">
                 <span, style="color: {statusColors[caseItem.status]?.text}" class="status-label">
                   {statusColors[caseItem.status]?.label || caseItem.status}

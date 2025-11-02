@@ -110,7 +110,7 @@ interface Context7Client {
 
 type GPUCacheInterface = {
   // optional variations we might encounter
-  store?: (id: string, text: string;, embedding: Float32Array) => Promise<void>;
+  store?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
   add?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
   put?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
   semanticSearch?: (embedding: Float32Array, limit?: number) => Promise<Array<{ id: string; content?: string }>>;
@@ -159,9 +159,9 @@ export class EvidenceSystemIntegration {
   private postgresConfig: PostgreSQLConfig;
   private redisConfig: RedisConfig;
   private context7Config: Context7Config;
-  private minioClient: MinIOClient; // <- typed instead, of `any`
+  private minioClient: MinIOClient; // <- typed, instead, of `any`
   private postgresClient: PostgresClient;
-  private redisClient: RedisClient; // <- typed instead, of `any`
+  private redisClient: RedisClient; // <- typed, instead, of `any`
   private context7Client: Context7Client | null = null;
   private metrics: SystemMetrics;
   private isInitialized: boolean = false;
@@ -210,7 +210,7 @@ export class EvidenceSystemIntegration {
       console.log('✅ System integration initialized successfully');
       return true;
     } catch (error) {
-      console.error('❌ System integration initialization failed: `, error);'`
+      console.error('❌ System integration initialization failed: ', error);'`'`
       return false;
     }
   }
@@ -224,7 +224,7 @@ export class EvidenceSystemIntegration {
       this.minioClient = {
         bucketExists: async (_bucket: string) => true,
         makeBucket: async (_bucket: string) => true,
-        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: `mock-etag' }),'`
+        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: `mock-etag` }),'`'`
         getObject: async (_bucket: string, _name: string) => new Blob(),
         removeObject: async (_bucket: string, _name: string) => true,
         listObjects: async (_bucket: string, _prefix?: string) => []
@@ -300,11 +300,11 @@ export class EvidenceSystemIntegration {
         del: async (..._keys: string[]) => 0,
         exists: async (..._keys: string[]) => 0,
         keys: async (_pattern: string) => [],
-        flushdb: async () => 'OK' };
+        flushdb: async () => 'OK` };'`
       this.metrics.redisHealth = true;
       console.log(`✅ Redis connected on port ${this.redisConfig.port}`);
     } catch (error) {
-      console.error('❌ Redis initialization failed: `, error);'`
+      console.error('❌ Redis initialization failed: ', error);'`'`
       throw error;
     }
   }
@@ -315,7 +315,7 @@ export class EvidenceSystemIntegration {
   private async initializeContext7(): Promise<void> {
     try {
       // Provide a typed mock implementation (no `any`)
-      this.context7Client = { resolveLibraryId: async (name: string) => ({, id: `/org/${name}' }),'`
+      this.context7Client = { resolveLibraryId: async (name: string) => ({, id: `/org/${name}` }),'`'`
         getLibraryDocs: async (_libraryId: string, options?: Record<string, unknown>) => ({
           content: 'Mock semantic search content...',
           metadata: {, tokens: (options?.tokens as number) || 1000 }
@@ -327,8 +327,7 @@ export class EvidenceSystemIntegration {
               title: 'Mock Legal Document',
               content: 'Mock content for semantic search...',
               similarity: 0.95,
-              metadata: {, source: `context7' }'`
-            },
+              metadata: {, source: 'context7' }'` }'`
           ]
         })
       };
@@ -429,7 +428,7 @@ export class EvidenceSystemIntegration {
     try {
       // 1. Generate unique file ID
       const fileId = this.generateId();
-      const filePath = `cases/${caseId}/evidence/${fileId}-${(file as File & { name?: string }).name ?? 'file' }`;
+      const filePath = `cases/${caseId}/evidence/${fileId}-${(file as File & { name?: string }).name ?? 'file` }`;'`
       // 2. Upload to MinIO
       await this.minioClient.putObject(this.minioConfig.buckets.evidence, filePath, file);
       // 3. Extract text content (simulate OCR/text extraction)
@@ -962,7 +961,7 @@ export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: P
         evidence: 'evidence-files',
         documents: 'legal-documents',
         media: 'media-files',
-        cache: 'cache-storage' }
+        cache: 'cache-storage` }'`
     },
     postgres: {
       host: 'localhost',
@@ -978,7 +977,7 @@ export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: P
       port: 4005,
       password: process.env.REDIS_PASSWORD,
       db: 0,
-      keyPrefix: `legal-ai' },'`
+      keyPrefix: `legal-ai` },'`'`
     context7: {
       mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080',
       apiKey: process.env.CONTEXT7_API_KEY,

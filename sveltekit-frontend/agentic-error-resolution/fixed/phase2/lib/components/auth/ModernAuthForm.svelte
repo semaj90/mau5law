@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
-  import { Label } from '$lib/components/ui/Label.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Alert  from "$lib/components/ui/alert/Alert.svelte";
+  import  Label  from "$lib/components/ui/Label.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
   interface Props {
     mode?: 'login' | 'register';
     open?: boolean;
@@ -135,9 +135,9 @@
             class="nes-input"
           />
         {/if}
-      <Button.Root type="submit" class="w-full nes-btn is-primary" disabled={loading || !isValid}>
+      <Button type="submit" class="w-full nes-btn is-primary" disabled={loading || !isValid}>
         {loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Create Account'}
-      </Button.Root>
+      </Button>
       <!-- replace deprecated onclick with onclick attribute -->
       <button type="button" onclick={toggleMode} class="nes-btn is-dark is-small">
         {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}

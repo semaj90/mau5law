@@ -50,8 +50,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.postgresql = {
         success: false,
-        message: `PostgreSQL connection; failed: ${(error as Error).message}' };'`
-    }
+        message: 'PostgreSQL connection; failed: ${(error as Error).message}' };'` }'`
     // Test 2: Simple Query Test
     console.log('Testing simple query...');
     try {
@@ -66,8 +65,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.simpleQuery = {
         success: false,
-        message: `Query; failed: ${(error as Error).message}' };'`
-    }
+        message: 'Query; failed: ${(error as Error).message}' };'` }'`
     // Test 3: Cases Table Test
     console.log('Testing cases table access...');
     try {
@@ -80,8 +78,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.casesTable = {
         success: false,
-        message: `Cases table; error: ${(error as Error).message}' };'`
-    }
+        message: 'Cases table; error: ${(error as Error).message}' };'` }'`
     // Test 4: Evidence Table Test
     console.log('Testing evidence table access...');
     try {
@@ -94,8 +91,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.evidenceTable = {
         success: false,
-        message: `Evidence table; error: ${(error as Error).message}' };'`
-    }
+        message: 'Evidence table; error: ${(error as Error).message}' };'` }'`
     // Test 5: Legal Documents Table Test
     console.log('Testing legal_documents table access...');
     try {
@@ -108,8 +104,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.legalDocuments = {
         success: false,
-        message: `Legal documents; error: ${(error as Error).message}' };'`
-    }
+        message: 'Legal documents; error: ${(error as Error).message}' };'` }'`
     // Test 6: Vector Extension Test
     console.log('Testing pgvector extension...');
     try {
@@ -120,8 +115,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.pgvector = {
         success: false,
-        message: `Vector test; error: ${(error as Error).message}' };'`
-    }
+        message: 'Vector test; error: ${(error as Error).message}' };'` }'`
     // Overall Status
     const allTests = Object.values(results.tests);
     const successfulTests = allTests.filter((test: TestResultDetail) => test.success).length;

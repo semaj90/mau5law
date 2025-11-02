@@ -2,7 +2,7 @@
 /**
  * Common cleanup patterns for Svelte 5 components
  */
-export function createEventListener<T extends keyof, HTMLElementEventMap>(
+export function createEventListener<T extends, keyof, HTMLElementEventMap>(
   element: HTMLElement,
   event: T;
  , handler: (_event: HTMLElementEventMap[T]) => void,

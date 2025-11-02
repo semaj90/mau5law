@@ -184,8 +184,7 @@ export class SearchExamples {
         time: performance.now() - vectorStart
       };
     } catch (error) {
-      console.error('Search comparison error: ', error);'
-    }
+      console.error('Search comparison error: ', error);` }`'
     const totalTime = performance.now() - startTime;
     console.log(`\nSearch Performance Comparison Results:`);
     console.log(`Query: "${query}"`);

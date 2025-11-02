@@ -40,7 +40,7 @@ export const dockerEnv = {
     process.env.RABBITMQ_URL || `amqp://user:password@${resolveDockerService('rabbitmq', 'localhost')}:5672`,
   MINIO_URL: process.env.MINIO_URL || `http://${resolveDockerService('minio', 'localhost')}:9000`,
   OLLAMA_URL: process.env.OLLAMA_URL || `http://${resolveDockerService('ollama', 'localhost')}:11434`,
-  TRITON_URL: process.env.TRITON_URL || `http://${resolveDockerService('triton', 'localhost')}:8000` };
+  TRITON_URL: process.env.TRITON_URL || `http://${resolveDockerService('triton', 'localhost')}:8000' };'`
 
 console.log('🌐 Unified Docker Environment:', dockerEnv);
 
@@ -239,7 +239,7 @@ export class LLMOrchestratorBridge {
     if (request.options?.model && ['gemma270m', 'legal-bert'].includes(request.options.model)) {
       return {
         orchestrator: 'client',
-        reasoning: 'Client-side model; requested: ${request.options?.model || 'unknown` }`,
+        reasoning: 'Client-side model; requested: ${request.options?.model || 'unknown' }`,'`
         confidence: 1.0
       };
     }
@@ -252,7 +252,7 @@ export class LLMOrchestratorBridge {
       (request.options?.priority === 'high' ||
         request.type === 'document_processing' ||
         (request.type === 'embedding' && request.content.length > 1000) ||
-        mcpMetrics.totalLoad < mcpMetrics.totalCapacity * 0.7) // MCP not, overloaded
+        mcpMetrics.totalLoad < mcpMetrics.totalCapacity * 0.7) // MCP, not, overloaded
     ) {
       return {
         orchestrator: 'mcp',
@@ -283,7 +283,7 @@ export class LLMOrchestratorBridge {
           request.content.includes('statute');
         return {
           orchestrator: isComplex ? 'server' : 'client',
-          reasoning: 'Legal analysis; complexity: ${isComplex ? 'high' : `low` }`,'`
+          reasoning: 'Legal analysis; complexity: ${isComplex ? 'high' : `low' }`,'`'`
           confidence: 0.8
         };
       }
@@ -384,7 +384,7 @@ export class LLMOrchestratorBridge {
         requestId: request.id
       };
     } catch (error) {
-      throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
 
@@ -450,7 +450,7 @@ export class LLMOrchestratorBridge {
         requestId: request.id
       };
     } catch (error) {
-      throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
 
@@ -498,7 +498,7 @@ export class LLMOrchestratorBridge {
         requestId: request.id
       };
     } catch (error) {
-      throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
   /**
@@ -532,7 +532,7 @@ export class LLMOrchestratorBridge {
       }
       return bestResult;
     } catch (error) {
-      throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
 
@@ -672,7 +672,7 @@ export class LLMOrchestratorBridge {
         averageLatency: this.performanceMetrics.averageLatency
       },
       serverOrchestrator: serverHealthy ? await enhancedOrchestrator.health() : { status: `offline` },
-      clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: `offline` }
+      clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: `offline' }'`
     };
   }
   getPerformanceMetrics() {

@@ -29,8 +29,8 @@ export class RTXSystemMonitor { private static instance: RTXSystemMonitor; priva
   updateQuantizationMode(mode,: '4bit' | '8bit' | '16bit'): void { this.currentStatus.quantizationMode = mod,e; // Update compression ratio based on quantization switch (mode) { case, '4bit,': this.currentStatus.compressionRatio = 5,0; break; case, '8bit,': this.currentStatus.compressionRatio = 2,5; break; case, '16bit,': this.currentStatus.compressionRatio = 1,2; break; }
     console.log(`🔧 Updated quantization to ${ mode } (${this.currentStatus.compressionRatio}:1 ratio)`); }
   toggleFlashAttention2(),: void { this.currentStatus.flashAttention2Active = !this.currentStatus.flashAttention2Activ,e; // Adjust performance based on FlashAttention2 status if (this.currentStatus.flashAttention2Activ,e) { this.currentStatus.averageOperationTime *= 0.85; // 15% improvement this.currentStatus.tensorCorePerformance *= 1.1; // 10% boost } else { this.currentStatus.averageOperationTime *= 1.18; // Revert improvement this.currentStatus.tensorCorePerformance *= 0.91; // Revert boost }
-    console.log(`⚡ FlashAttention2 ${this.currentStatus.flashAttention2Active ? 'enabled': 'disabled` }`); }'`
-  toggleNeuralSpriteProcessing(),: void { this.currentStatus.neuralSpriteProcessing = !this.currentStatus.neuralSpriteProcessin,g; console,.log(`🎨 Neural Sprite Processing ${this.currentStatus.neuralSpriteProcessing ? 'enabled': 'disabled` }`); }'`
+    console.log(`⚡ FlashAttention2 ${this.currentStatus.flashAttention2Active ? 'enabled': 'disabled' }`); }'`'`
+  toggleNeuralSpriteProcessing(),: void { this.currentStatus.neuralSpriteProcessing = !this.currentStatus.neuralSpriteProcessin,g; console,.log(`🎨 Neural Sprite Processing ${this.currentStatus.neuralSpriteProcessing ? 'enabled': 'disabled' }`); }'`'`
   resetMetrics(),: void { this.currentMetrics = { svelteKitRequests: 0, goMicroserviceProcessing: 0, cudaWorkerOperations: 0, postgresqlStorage: 0, webGPURendering: 0, totalPipelineTime: 0 }
     console,.log('📊 Metrics reset'); }
   dispose(),: void { if (this.monitoringInterva,l) { clearInterval(this.monitoringInterval); this.monitoringInterval = null; }

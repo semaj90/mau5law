@@ -1,7 +1,7 @@
-<!-- YoRHa Modal Manager, Component -->
+<!-- YoRHa Modal, Manager, Component -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
-  import { YoRHaModal } from './YoRHaModal.svelte';
+  import  YoRHaModal  from "./YoRHaModal.svelte";
   import { modalStore, type Modal } from '$lib/stores/dialogs';
   // Subscribe to modal store
   let modals = $state<Modal[]>([]);
@@ -22,7 +22,7 @@
     modalStore.reject(modal.id, 'cancelled');
   }
 </script>
-<!-- Render active, modals -->
+<!-- Render, active, modals -->
 {#each modals as modal (modal.id)}
   <YoRHaModal
     open={true}
@@ -37,7 +37,7 @@
   >
     {#snippet children()}
       {#if modal.component}
-        <!-- Dynamic components replaced with explicit component, mapping -->
+        <!-- Dynamic components replaced with explicit, component, mapping -->
         <div, class="modal-component-placeholder">
           <p>Dynamic component: {modal.component?.name || 'Unknown'}</p>
           {#if modal.props}

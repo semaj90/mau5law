@@ -566,7 +566,7 @@ export const commonMCPQueries = {
   }),
   ragComponentIntegration: (): MCPToolRequest => ({
     tool: 'rag-integration-guide',
-    integrationType: 'component-integration` }),'`
+    integrationType: `component-integration` }),'`'`
   ragSearchUI: (): MCPToolRequest => ({
     tool: 'rag-integration-guide',
     integrationType: `search-ui` }),

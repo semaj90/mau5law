@@ -102,8 +102,7 @@ class WorkerPool {
                 serializedSize: 0,
                 compressionRatio: 1,
                 processingTime: performance.now() - start,
-                method: `worker' }'`
-            }
+                method: 'worker' }'` }'`
           }
         }
       }
@@ -320,8 +319,7 @@ class WorkerPool {
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
           processingTime,
-          method: `cpu' }'`
-      };
+          method: 'cpu' }'` };'`
     } catch (error) {
       const processingTime = performance.now() - start;
       return {
@@ -333,8 +331,7 @@ class WorkerPool {
           compressionRatio: 1,
           processingTime,
           method: `cpu` },
-        error: error instanceof Error ? error.message : `Unknown serialization error' };'`
-    }
+        error: error instanceof Error ? error.message : 'Unknown serialization error' };'` }'`
   }
   /**
    * Batch serialization for multiple objects

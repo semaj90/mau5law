@@ -1,6 +1,6 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import  ErrorBoundary  from "$lib/components/ErrorBoundary.svelte"; -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported

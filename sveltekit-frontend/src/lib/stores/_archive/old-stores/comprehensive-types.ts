@@ -23,14 +23,14 @@ export interface DerivedRune<T> {
 export interface EffectRune {
   (): void | (() => void);
 }
-export interface PropsRune<T extends, Record<string, unknown>> {
+export interface PropsRune<T, extends, Record<string, unknown>> {
   (): T;
 }
 export interface BindableRune<T> {
   (initial?: T): T;
 }
 // Snippet types (from Svelte 5)
-export interface Snippet<Parameters extends readonly, unknown[] = []> {
+export interface Snippet<Parameters extends, readonly, unknown[] = []> {
   (...args: Parameters): {
     render(): string;
     setup?(): void;
@@ -38,7 +38,7 @@ export interface Snippet<Parameters extends readonly, unknown[] = []> {
   };
 }
 // Component types
-export interface Component<Props extends, Record<string, unknown> = Record<string, unknown>> {
+export interface Component<Props, extends, Record<string, unknown> = Record<string, unknown>> {
   (props: Props): {
     render(): string;
     setup?(): void;
@@ -114,7 +114,7 @@ export interface HandleError {
   (input: {, error: any;, event: RequestEvent }): any;
 }
 export interface HandleFetch {
-  (input: { event: RequestEvent; request: Request;, fetch: typeof fetch }): Promise<Response>;
+  (input: {, event: RequestEvent; request: Request;, fetch: typeof fetch }): Promise<Response>;
 }
 // SvelteKit stores
 export interface PageStore { url: URL;, params: Record<string, string>;
@@ -220,7 +220,7 @@ export interface DrizzleColumnHelpers { pgTable: any;, serial: any;
   not: any;
   sql: any;
 }
-export interface DrizzleTable<T extends, Record<string, unknown> = Record<string, unknown>> {
+export interface DrizzleTable<T, extends, Record<string, unknown> = Record<string, unknown>> {
   // Fixed: Added; closing: '>'; _: { name: string;, columns: T;
     schema?: string;
     baseName: string;

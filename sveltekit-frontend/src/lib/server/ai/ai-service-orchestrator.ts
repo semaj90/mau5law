@@ -204,7 +204,7 @@ export class AIServiceOrchestrator {
         text: request.text,
         documentId: request.documentId,
         type: (request.type || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
-        cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}` };
+        cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}' };'`
       const response = await this.embeddingService.embed(embeddingRequest);
       // Update metrics
       this.serviceStatus.embeddingProvider.successCount++;
@@ -230,7 +230,7 @@ export class AIServiceOrchestrator {
         text: req.text,
         documentId: req.documentId,
         type: (req.type || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
-        cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}` }));
+        cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}' }));'`
       const response = await this.embeddingService.embedBatch(embeddingRequests);
       // Update metrics
       this.serviceStatus.embeddingProvider.successCount += response.embeddings.length;
@@ -248,7 +248,7 @@ export class AIServiceOrchestrator {
     const startTime = Date.now();
     try {
       // Primary: pgvector search
-      const queryEmbedding = await this.embed({ text: query, type: 'legal_context` });'`
+      const queryEmbedding = await this.embed({ text: query, type: 'legal_context' });'`'`
       const results = await this.vectorSearchService.similaritySearch(queryEmbedding.embedding, {
         limit: topK,
         threshold
@@ -301,7 +301,7 @@ export class AIServiceOrchestrator {
       const llmResponse = {
         content: 'Based on the search results, here's the analysis of your query: "${request.question}". Found ${sources.length} relevant documents.`,`
         model: 'gemma3-legal',
-        provider: 'ollama` };'`
+        provider: 'ollama' };'`'`
       // 4. Build response with citations
       const citations = request.includeCitations
         ? sources.slice(0, 3).map(s => ({
@@ -331,7 +331,7 @@ export class AIServiceOrchestrator {
         const embedding = await this.embed({
           text: doc.content,
           documentId: doc.documentId,
-          type: (doc.embeddingType || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause` });'`
+          type: (doc.embeddingType || 'text'); as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause' });'`'`
         doc.embedding = embedding.embedding;
       }
       // 2. Store in pgvector
@@ -479,10 +479,10 @@ export class AIServiceOrchestrator {
     if (!this.config.qdrantUrl) {
       throw new Error('Qdrant not configured');
     }
-    const queryEmbedding = await this.embed({ text: query, type: 'legal_context` });'`
+    const queryEmbedding = await this.embed({ text: query, type: 'legal_context' });'`'`
     const response = await fetch(`${this.config.qdrantUrl}/collections/legal_documents/points/search`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , vector: queryEmbedding.embedding,
         limit: topK,

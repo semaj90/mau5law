@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { evidenceId, searchDepth = 3, consoleTheme = 'n64` } = await request.json();'`
     if (!evidenceId) {
-      return json({ error: 'Evidence ID is required' }, { status: 400 });
+      return json({ error: 'Evidence ID is required` }, { status: 400 });'`
     }
     console.log(`🔍 Discovering precedents for evidence ${evidenceId} (depth: ${searchDepth}, theme: ${consoleTheme})');'`
 
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to discover legal precedents',
-        details: error instanceof Error ? error.message : `Unknown error' },'`
+        details: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }
@@ -126,6 +126,6 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error) {
     console.error('Precedent discovery GET error: ', error);'
-    return json({ error: 'Failed to discover precedents' }, { status: 500 });
+    return json({ error: 'Failed to discover precedents` }, { status: 500 });'`
   }
 };

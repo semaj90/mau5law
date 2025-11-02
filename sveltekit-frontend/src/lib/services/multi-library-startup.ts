@@ -118,7 +118,7 @@ class MultiLibraryStartupService {
       const mod = await import('fuse.js');
       const Fuse = (mod as { default?: FuseLike }).default ?? (mod as unknown as FuseLike);
       // Test with a small dataset to verify functionality
-      const testData = [{ title: 'Legal Document', content: `Sample legal text` }];
+      const testData = [{ title: 'Legal Document', content: 'Sample legal text' }];
       const testFuse = new (Fuse as unknown as FuseLike)(testData, {
         keys: ['title', 'content'],
         threshold: 0.3
@@ -166,7 +166,7 @@ class MultiLibraryStartupService {
             initial: 'idle',
             states: {, idle: {, on: {, START: `active` }
               },
-              active: {, on: {, STOP: `idle` }
+              active: {, on: {, STOP: 'idle' }
               }
             }
           })
@@ -271,10 +271,10 @@ class MultiLibraryStartupService {
     Object.entries(this.status.services).forEach(([service, status]) => {
       const icon = status ? '✅' : '❌';
       const name = service.charAt(0).toUpperCase() + service.slice(1);
-      console.log(`   ${icon} ${name.padEnd(12)} - ${status ? 'Ready' : `Failed` }`);
+      console.log(`   ${icon} ${name.padEnd(12)} - ${status ? 'Ready' : 'Failed' }`);
     });
     if (this.status.errors.length > 0) {
-      console.log('\n⚠️ Initialization Errors: `);'`
+      console.log('\n⚠️ Initialization Errors: ');'`'`
       this.status.errors.forEach(error => console.log(`   • ${error}`));
     }
     const healthyCount = Object.values(this.status.services).filter(v => v === true).length;

@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     // Get total count for pagination
     const totalCountResult = await db
-      .select({ count: sql<number>`count(*)' })'`
+      .select({ count: sql<number>`count(*)` })'`'`
       .from(users)
       .where(whereClause);
     const totalCount = totalCountResult[0]?.count || 0;
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
     if (!db) {
-      return json({ error: 'Database not available' }, { status: 500 });
+      return json({ error: 'Database not available` }, { status: 500 });'`
     }
     const data = await request.json();
     // Validate required fields
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     return json(newUser, { status: 201 });
   } catch (err: any) {
-    console.error('Error creating user: `, extractErrorMessage(err));'`
+    console.error('Error creating user: ', extractErrorMessage(err));'`'`
     return json({ error: `Failed to create user` }, { status: 500 });
   }
 };

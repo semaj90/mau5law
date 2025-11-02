@@ -61,7 +61,7 @@ export class DbCaseOperations {
       .offset(offset);
     // Get total count
     const totalQuery = await db
-      .select({ count: sql<number>`cast(count(*) as integer)' })'`
+      .select({ count: sql<number>`cast(count(*) as integer)` })'`'`
       .from(cases)
       .where(whereClause);
     return {
@@ -160,7 +160,7 @@ export class DbEvidenceOperations {
       .limit(limit)
       .offset(offset);
     const totalQuery = await db
-      .select({ count: sql<number>`cast(count(*) as integer)' })'`
+      .select({ count: sql<number>`cast(count(*) as integer)` })'`'`
       .from(evidence)
       .where(whereClause);
     return {

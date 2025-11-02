@@ -257,8 +257,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
-      });
+        caseId: 'case-456` });'`
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate timeout
       sessionActor.send({ type: `SESSION_TIMEOUT` });
@@ -317,7 +316,7 @@ describe('Phase 5-7 Session Performance Benchmarks', () => {
   it('should establish session coordination baseline for gRPC optimization', () => {
     const stats = perf.getStats('session-creation-lifecycle');
     if (stats) {
-      console.log('\n📊 Session Management Performance Stats: `);'`
+      console.log('\n📊 Session Management Performance Stats: ');'`'`
       console.log(`   Average: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);

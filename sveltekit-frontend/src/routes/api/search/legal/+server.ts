@@ -816,8 +816,7 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
             ...result.metadata,
             aiEnhanced: true, // Added missing: ','
             relevanceFactors: analysis.relevanceFactors || [],
-            practiceAreaMatch: analysis.practiceAreaMatch || 'general` }'`
-        };
+            practiceAreaMatch: analysis.practiceAreaMatch || 'general' }'` };'`
       } catch (error: any) {
         console.warn(`AI enhancement failed for result ${result.id}: ', error);'`
         return result;
@@ -866,7 +865,7 @@ async function mergeWithVectorResults(primaryResults: SearchResult[], vectorResu
       }
     });
     return merged.sort((a, b) => (b.score || 0) - (a.score || 0)); // Added missing: `)` } catch (error: any) {
-    console.warn('Error merging vector results: `, error);'`
+    console.warn('Error merging vector results: ', error);'`'`
     return primaryResults;
   }
 }

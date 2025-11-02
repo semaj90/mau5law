@@ -144,14 +144,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="component-section">
             <h4 class="section-title">Action Buttons</h4>
             <div class="button-group">
-              <Button.Root class="snes-btn snes-btn-a bits-btn bits-btn">A</Button.Root>
-              <Button.Root class="snes-btn snes-btn-b bits-btn bits-btn">B</Button.Root>
-              <Button.Root class="snes-btn snes-btn-x bits-btn bits-btn">X</Button.Root>
-              <Button.Root class="snes-btn snes-btn-y bits-btn bits-btn">Y</Button.Root>
+              <Button class="snes-btn snes-btn-a bits-btn bits-btn">A</Button>
+              <Button class="snes-btn snes-btn-b bits-btn bits-btn">B</Button>
+              <Button class="snes-btn snes-btn-x bits-btn bits-btn">X</Button>
+              <Button class="snes-btn snes-btn-y bits-btn bits-btn">Y</Button>
             </div>
             <div class="shoulder-buttons">
-              <Button.Root class="snes-btn snes-btn-l bits-btn bits-btn">L</Button.Root>
-              <Button.Root class="snes-btn snes-btn-r bits-btn bits-btn">R</Button.Root>
+              <Button class="snes-btn snes-btn-l bits-btn bits-btn">L</Button>
+              <Button class="snes-btn snes-btn-r bits-btn bits-btn">R</Button>
             </div>
           </div>
 
@@ -159,13 +159,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="component-section">
             <h4 class="section-title">D-Pad Navigation</h4>
             <div class="dpad">
-              <Button.Root class="dpad-btn dpad-up bits-btn bits-btn">▲</Button.Root>
+              <Button class="dpad-btn dpad-up bits-btn bits-btn">▲</Button>
               <div class="dpad-middle">
-                <Button.Root class="dpad-btn dpad-left bits-btn bits-btn">◄</Button.Root>
+                <Button class="dpad-btn dpad-left bits-btn bits-btn">◄</Button>
                 <div class="dpad-center"></div>
-                <Button.Root class="dpad-btn dpad-right bits-btn bits-btn">►</Button.Root>
+                <Button class="dpad-btn dpad-right bits-btn bits-btn">►</Button>
               </div>
-              <Button.Root class="dpad-btn dpad-down bits-btn bits-btn">▼</Button.Root>
+              <Button class="dpad-btn dpad-down bits-btn bits-btn">▼</Button>
             </div>
           </div>
 
@@ -272,12 +272,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
           <!-- Interactive Dialog -->
           <div class="dialog-section">
-            <Button.Root
+            <Button
               class="snes-btn snes-nes-btn is-primary bits-btn bits-btn"
               onclick={() => dialogOpen = true}
             >
               🗨️ Open Message Box
-            </Button.Root>
+            </Button>
 
             <Dialog.Root bind:open={dialogOpen}>
               <Dialog.Portal>
@@ -292,12 +292,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                       the incredible 16-bit capabilities of the Super Nintendo Entertainment System...
                     </Dialog.Description>
                     <div class="dialog-actions">
-                      <Button.Root
+                      <Button
                         class="snes-btn snes-btn-confirm bits-btn bits-btn"
                         onclick={() => dialogOpen = false}
                       >
                         ✓ OK
-                      </Button.Root>
+                      </Button>
                     </div>
                   </div>
                 </Dialog.Content>

@@ -189,8 +189,7 @@ export class LegalAIJobQueue {
         ...job.data,
         textChunks: chunks.map(c => c.text),
         chunkMetadata: chunks.map(c => c.metadata),
-        embeddingModel: 'sentence-transformers'
-      });
+        embeddingModel: 'sentence-transformers` });'`
       await job.updateProgress(100);
       return {
         extractedText,
@@ -240,8 +239,7 @@ export class LegalAIJobQueue {
           text,
           ...job.data.chunkMetadata[idx]
         })),
-        indexType: 'pgvector'
-      });
+        indexType: 'pgvector` });'`
       await job.updateProgress(100);
       return {
         embeddingCount: embeddings.length,

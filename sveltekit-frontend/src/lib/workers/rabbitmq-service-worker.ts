@@ -19,7 +19,7 @@ const QUEUE_NAMES = {
   RAG_PROCESSING: 'rag.processing',
   EMAIL_NOTIFICATIONS: 'email.notifications',
   SEARCH_INDEXING: 'search.indexing',
-  CASE_UPDATES: 'case.updates' } as const;
+  CASE_UPDATES: 'case.updates` } as const;'`
 
 export interface ServiceWorkerConfig {
   enableLogging?: boolean;
@@ -41,8 +41,7 @@ type RabbitMQServiceLike = {
   stop?: () => Promise<void> | void;
   closeConnection?: () => Promise<void> | void;
   consume?: (
-    queue: string,
-    cb: (message: any, originalMessage?: any) => Promise<void> | void
+    queue: string; cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
   subscribe?: (
     queue: string; cb: (message: any, originalMessage?: any) => Promise<void> | void
@@ -274,7 +273,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue(QUEUE_NAMES.SEARCH_INDEXING, {
         ...msg,
         embeddings: 'generated',
-        stage: 'indexing_ready' });
+        stage: 'indexing_ready` });'`
     });
 
     // Evidence analysis handler
@@ -289,7 +288,7 @@ export class RabbitMQServiceWorker {
         insights: {
           confidence: 0.85,
           keyEntities: ['contract', 'signature', 'date'],
-          summary: 'Legal document analysis completed' }
+          summary: 'Legal document analysis completed` }'`
       });
     });
 
@@ -379,7 +378,7 @@ export class RabbitMQServiceWorker {
       const publishResult = await rabbitmqService.publish('workers', queueName, {
         ...message,
         publishedAt: Date.now(),
-        workerVersion: '1.0.0' });
+        workerVersion: '1.0.0` });'`
       const publishedOk = Boolean(publishResult);
       if (!publishedOk) {
         this.log(`Failed to publish message to ${queueName}`, 'error');

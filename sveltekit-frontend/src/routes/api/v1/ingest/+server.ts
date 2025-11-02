@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
-          error: 'Service; unreachable: ${response.status}` },'`
+          error: `Service; unreachable: ${response.status}` },'`'`
         { status: 503 }
       );
     }

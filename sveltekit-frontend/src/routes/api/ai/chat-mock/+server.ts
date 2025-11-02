@@ -247,7 +247,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           ragSourcesCount: ragSources.length,
           ragTimeMs,
           memoryBank: 'CHR_ROM',
-          cachingStrategy: `aggressive` }
+          cachingStrategy: `aggressive' }'`
       },
       success: true,
       production: true,
@@ -282,8 +282,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     detectedArea = 'evidence';
     confidence = 0.88;
     intelligentResponse +=
-      "Regarding evidence matters, it's important to consider factors such as relevance, reliability, authenticity, and admissibility. Evidence must be properly collected, documented, and preserved to maintain its integrity for legal proceedings.";'
-  } else if (legalPatterns.criminal.test(message)) {
+      "Regarding evidence matters, it's important to consider factors such as relevance, reliability, authenticity, and admissibility. Evidence must be properly collected, documented, and preserved to maintain its integrity for legal proceedings.";` } else if (legalPatterns.criminal.test(message)) {'`
     detectedArea = 'criminal';
     confidence = 0.85;
     intelligentResponse +=

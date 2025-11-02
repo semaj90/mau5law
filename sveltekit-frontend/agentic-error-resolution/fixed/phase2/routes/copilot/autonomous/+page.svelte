@@ -4,8 +4,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // use default export for Button component
-  import { Badge } from '$lib/components/ui/badge.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // use default export for Button component
+  import  Badge  from "$lib/components/ui/badge.svelte";
   import {
     Bot,
     Brain,
@@ -278,9 +278,9 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             System Architecture
           </span>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (showArchitecture = !showArchitecture)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showArchitecture = !showArchitecture)}>
             {showArchitecture ? 'Hide' : 'Show'} Details
-          </Button.Root>
+          </Button>
         </h3>
       </div>
 
@@ -334,9 +334,9 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (showIntegration = !showIntegration)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showIntegration = !showIntegration)}>
             {showIntegration ? 'Hide' : 'Show'} Examples
-          </Button.Root>
+          </Button>
         </h3>
       </div>
       {#if showIntegration}

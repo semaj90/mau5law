@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Badge } from '$lib/components/ui/badge.svelte'';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
   let { analysisData = $bindable()  }: { analysisData = $bindable() : any } = $props(); // {
     evidenceAnalysis?: any;
     personsData?: any;

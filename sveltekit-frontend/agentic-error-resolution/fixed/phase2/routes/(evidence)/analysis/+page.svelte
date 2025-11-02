@@ -2,12 +2,12 @@
   // Svelte 5 runes are auto-imported
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   // If migrating to a UI kit with named exports, use curly braces for consistency:
-  // import { WebGPUEvidenceGraphVisualization } from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
+  // import  WebGPUEvidenceGraphVisualization  from "$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte";
   // For now, keep default import as the module doesn't provide a named export
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
 
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/button.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
 
   // Use Svelte 5 reactive state API so updates trigger reactivity
   let showWebGPUDemo = $state(false);
@@ -161,7 +161,7 @@
           <li>Timeline reconstruction and pattern detection</li>
         </ul>
       </CardContent>
-    </Card.Root>
+    </Card>
     <Card>
       <CardHeader>
         <CardTitle>📊 Advanced Visualizations</CardTitle>
@@ -174,7 +174,7 @@
           <li>Evidence timeline visualization</li>
         </ul>
       </CardContent>
-    </Card.Root>
+    </Card>
     <Card>
       <CardHeader>
         <CardTitle>🔗 Evidence Correlation</CardTitle>
@@ -192,7 +192,7 @@
   <!-- Main Evidence Analysis Dashboard -->
   <div class="dashboard-section">
   <!-- WebGPU Demo Section -->
-  <Card.Root class="mb-8">
+  <Card class="mb-8">
     <!-- Per project guideline: UI kits (Bits-UI, etc.) export named components, not default; see .github/copilot-instructions.md -->
     <div class="demo-header">
       <Button bind:this={webgpuButton} variant="primary">
@@ -244,7 +244,7 @@
     </CardContent>
   </Card>
   <!-- Technical Specifications -->
-  <Card.Root class="tech-specs">
+  <Card class="tech-specs">
     <CardHeader>
       <CardTitle>⚙️ Technical Specifications</CardTitle>
     </CardHeader>

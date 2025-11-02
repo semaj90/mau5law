@@ -11,7 +11,7 @@
     Scale,
     Target,
   } from "lucide-svelte";
-  import { AISummaryReader } from "./AISummaryReader.svelte";
+  import  AISummaryReader  from "./AISummaryReader.svelte";
   export interface EvidenceReport {
     id: string;
     title: string;

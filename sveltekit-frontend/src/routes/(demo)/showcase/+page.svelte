@@ -128,7 +128,7 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Demo Showcase - Legal AI Platform</title>
-  <meta name="description" content="Explore interactive demos across the YoRHa Legal AI, platform." />
+  <meta name="description" content="Explore interactive demos across the YoRHa Legal, AI, platform." />
 </svelte:head>
 
 <div, class="showcase-layout">

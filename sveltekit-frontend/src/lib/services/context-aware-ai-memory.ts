@@ -256,8 +256,7 @@ class ContextAwareAIMemoryService {
 							toId: d.documentId,
 							relationshipType: 'temporal_correlation',
 							strength: 0.6,
-							contextualNote: 'Processed around same time` } as Types.ContextRelationship);'`
-					}
+							contextualNote: 'Processed around same time' } as Types.ContextRelationship);'' }
 				}
 			}
 		} catch {

@@ -179,8 +179,7 @@ export class MatrixLODSystem {
         nesMemoryOptimization: true
       });
 
-      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid` } acceleration`);'`
-    } catch (error) {
+      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid` } acceleration`);'` } catch (error) {
       console.warn('⚠️ Hybrid GPU initialization failed or factory not found, using WebGL2 fallback:', error);
       this.useHybridAcceleration = $state(false);
     }
@@ -469,8 +468,7 @@ export class MatrixLODSystem {
    * Initialize GPU performance metrics
    */ private initializeGPUMetrics(): void {
     // This method is no longer needed as gpuMetrics is initialized in the constructor
-    // Keeping it for now, but it's effectively a no-op after constructor initialization.'
-  }
+    // Keeping it for now, but it's effectively a no-op after constructor initialization.` }'`
   /**
    * Start performance monitoring loop
    */ private startPerformanceMonitoring(): void {

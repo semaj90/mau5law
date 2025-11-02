@@ -4,10 +4,10 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { goto } from "$app/navigation";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Form } from '$lib/components/ui/Form.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Card  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Form  from "$lib/components/ui/Form.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
   import { notifications  } from '$lib/stores/unified';
   export const data = null;
   // Form validation
@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
                     blur={() => formApi.touchField("tags")}
                   />
                 </div>
-                <Button.Root class="bits-btn"
+                <Button class="bits-btn"
                   type="button"
                   variant="secondary"
                   size="md"
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
 addTag()}
                 >
                   Add
-</Button.Root>
+</Button>
               </div>
             </div>
           </div>

@@ -23,8 +23,7 @@ export const GET: RequestHandler = async () => {
           signal: controller.signal,
           headers: {
             'Accept': 'application/json',
-            'User-Agent': 'Context7-API/1.0'
-          }
+            'User-Agent': 'Context7-API/1.0` }'`
         });
         clearTimeout(timeout);
         const responseTime = Date.now() - startTime;

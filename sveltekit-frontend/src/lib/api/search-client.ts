@@ -33,7 +33,7 @@ export async function advancedSearch(
 ): Promise<{ results: SearchResult[]; count: number }> {
   const res = await fetch(`/api/search/advanced`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(payload),
     signal
   });
@@ -42,4 +42,4 @@ export async function advancedSearch(
 // Example usage hint (not executed):
 // import { search, advancedSearch } from '$lib/api/search-client';
 // const { results } = await search('contract breach', 10);
-// const adv = await advancedSearch({ query: 'contract', filters: {, riskLevel: `high` } });
+// const adv = await advancedSearch({ query: 'contract', filters: {, riskLevel: `high' } });'`

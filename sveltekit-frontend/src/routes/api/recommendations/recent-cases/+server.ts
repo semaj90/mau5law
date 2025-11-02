@@ -262,8 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required; fields: caseId, action'
-        },
+          error: 'Missing required; fields: caseId, action` },'`
         { status: 400 }
       );
     }

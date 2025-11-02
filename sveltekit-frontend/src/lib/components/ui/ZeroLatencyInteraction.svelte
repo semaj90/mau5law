@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { getCachedPattern } from '$lib/services/chr-rom-precomputation-service';
@@ -367,8 +367,8 @@ https://svelte.dev/e/js_parse_error -->
     <h4>⚡ Zero-Latency Stats</h4>
     <div, class="debug-stats">
       <div, class="stat"><span, class="label">Total Interactions:</span><span, class="value">{interactionStats.totalInteractions}</span></div>
-      <div, class="stat"><span, class="label">Cache Hits:</span><span class="value, cache-hits">{interactionStats.cacheHits}</span></div>
-      <div, class="stat"><span, class="label">Zero-Latency Hits:</span><span class="value, zero-latency">{interactionStats.zeroLatencyHits}</span></div>
+      <div, class="stat"><span, class="label">Cache Hits:</span><span, class="value, cache-hits">{interactionStats.cacheHits}</span></div>
+      <div, class="stat"><span, class="label">Zero-Latency Hits:</span><span, class="value, zero-latency">{interactionStats.zeroLatencyHits}</span></div>
       <div, class="stat"><span, class="label">Average Response:</span><span, class="value">{interactionStats.averageResponseTime.toFixed(2)}ms</span></div>
       <div, class="stat"><span, class="label">Hit Rate:</span><span, class="value">{interactionStats.totalInteractions > 0 ? ((interactionStats.cacheHits / interactionStats.totalInteractions) * 100).toFixed(1) : 0}%</span></div>
     </div>

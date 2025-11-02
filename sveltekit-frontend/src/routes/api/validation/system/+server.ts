@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             {
               success: false,
               error: 'No validation report available. Run validation first.',
-              suggestion: 'Use ?action=validate to generate a report` },'`
+              suggestion: `Use ?action=validate to generate a report` },'`'`
             { status: 404 }
           );
         }
@@ -453,8 +453,7 @@ async function runMemoryBenchmark(): Promise<{ score: number; details: { allocat
     score,
     details: {
       allocatedMB: Math.max(0, Math.round(allocatedMB * 100) / 100),
-      rating: allocatedMB < 5 ? 'excellent' : allocatedMB < 20 ? 'good' : 'fair` }'`
-  };
+      rating: allocatedMB < 5 ? 'excellent' : allocatedMB < 20 ? 'good' : 'fair' }'` };'`
 }
 async function runDiskIOBenchmark(): Promise<{ score: number; details: { durationMs: number; rating: string } }> {
   const startTime = Date.now();

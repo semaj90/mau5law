@@ -3,16 +3,16 @@
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Badge replaced with span - not available in enhanced-bits
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
   // Reactive state from Context7 service
@@ -117,7 +117,7 @@ await context7Service.initialize();
           class="flex-1"
           keydown={(e) => e.key === 'Enter' && performSearch()}
         />
-        <Button.Root
+        <Button
           onclick={performSearch}
           disabled={$isAnalyzing || !searchQuery.trim()}
           class="px-6 bits-btn bits-btn"
@@ -129,7 +129,7 @@ await context7Service.initialize();
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-</Button.Root>
+</Button>
       </div>
       <!-- Filters -->
       <div class="space-y-2">
@@ -151,7 +151,7 @@ await context7Service.initialize();
         <label class="text-sm font-medium">Sample Queries:</label>
         <div class="flex flex-wrap gap-2">
           {#each Array.isArray(sampleQueries) ? sampleQueries : [] as query}
-            <Button.Root
+            <Button
               variant="ghost"
               size="sm"
               class="text-xs bits-btn bits-btn"
@@ -159,7 +159,7 @@ await context7Service.initialize();
 useSampleQuery(query)}
             >
               {query}
-</Button.Root>
+</Button>
           {/each}
         </div>
       </div>
@@ -263,9 +263,9 @@ useSampleQuery(query)}
           <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
               <h3 class="nes-text is-primary text-lg">Recent Searches</h3>
-              <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearHistory}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearHistory}>
 Clear
-</Button.Root>
+</Button>
             </div>
           </div>
           <div class="yorha-panel-content">

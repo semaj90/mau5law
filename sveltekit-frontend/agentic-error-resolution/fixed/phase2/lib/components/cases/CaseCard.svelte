@@ -15,9 +15,9 @@
     Clock,
     CheckCircle
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import * as Card from '$lib/components/ui/card.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
+  import  Badge  from "$lib/components/ui/badge.svelte";
   interface CaseData {
     id: string
     title: string
@@ -83,14 +83,14 @@
           {/key}
           {currentStatus.label}
         </Badge>
-        <Button.Root
+        <Button
           variant="ghost"
           size="sm"
           class="opacity-0 group-hover:opacity-100 bits-btn"
           aria-label="More options"
         >
           <MoreVertical class="w-5 h-5 text-nier-gray dark:text-nier-silver" />
-        </Button.Root>
+        </Button>
       </div>
     </div>
     <!-- Stats Grid -->

@@ -305,8 +305,7 @@ const autoAttachMachine = createMachine({
             id: 'machineLearning',
             src: 'runLearningAlgorithms',
             onDone: { target: 'optimizing', actions: 'storeLearningResults' },
-            onError: 'active` }'`
-        },
+            onError: 'active' }'` },'`
         optimizing: {
           entry: 'startOptimization',
           invoke: {

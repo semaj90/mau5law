@@ -292,7 +292,7 @@ Consider:
 - Rate the overall quality and reliability`;`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: CONFIG.ollama?.model || 'unknown',
         prompt: analysisPrompt,
@@ -375,7 +375,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
           label: phraseText,
           confidence,
           category: categorizeLegalPhrase(phraseText),
-          justification: `High prosecution correlation (${avgScore}%) based on ${freq} similar cases` });
+          justification: 'High prosecution correlation (${avgScore}%) based on ${freq} similar cases' });
       }
     }
     // --- end changes ---
@@ -387,7 +387,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
           label: 'Supports '${charge}' charge`,'`
           confidence: 0.8,
           category: 'charge_support',
-          justification: `Evidence directly relates to stated charges` });
+          justification: 'Evidence directly relates to stated charges' });
       }
     }
     return labels.slice(0, CONFIG.enhancement.maxSuggestions);
@@ -411,7 +411,7 @@ Text to analyze:
 ${evidenceText}`;`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: CONFIG.ollama?.model || 'unknown',
         prompt: entityPrompt,
@@ -550,7 +550,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
     }
     return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5);
   } catch (error: any) {
-    console.error('Similar evidence search failed: `, error);'`
+    console.error('Similar evidence search failed: ', error);'`'`
     return [];
   }
 }
@@ -558,7 +558,7 @@ async function analyzeProsecutionValue(evidenceText: string, caseContext?: CaseC
   try {
     const analysisPrompt = `As a prosecution strategist, analyze this evidence for its prosecution value:; Evidence:`
 ${evidenceText}
-${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : `` }
+${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : '' }
 Respond with ONLY a JSON object:
 {
   "strengths": ["strength1", "strength2"],
@@ -573,7 +573,7 @@ Focus on:
 - How well does this align with legal precedents?`;`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: CONFIG.ollama?.model || 'unknown',
         prompt: analysisPrompt,
@@ -607,7 +607,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: CONFIG.ollama.embeddingModel,
         prompt: text

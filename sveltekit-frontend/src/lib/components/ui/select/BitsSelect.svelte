@@ -1,4 +1,4 @@
-<!-- Modern Bits-UI Select Component for Legal AI, App -->
+<!-- Modern Bits-UI Select Component for Legal, AI, App -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
@@ -47,10 +47,10 @@
       className
     )}
   >
-    <SelectValue class="text-sm, font-mono" {placeholder}>
+    <SelectValue, class="text-sm, font-mono" {placeholder}>
       {selectedOption?.label || placeholder}
     </SelectValue>
-    <ChevronDown class="h-4 w-4, opacity-50" />
+    <ChevronDown class="h-4, w-4, opacity-50" />
   </SelectTrigger>
   <!-- Select, Content -->
   <SelectContent
@@ -68,9 +68,9 @@
           value={option.value}
           disabled={option.disabled}
         >
-          <span class="absolute right-2 flex h-3.5 w-3.5 items-center, justify-center">
+          <span class="absolute right-2 flex h-3.5 w-3.5, items-center, justify-center">
             <SelectItemIndicator>
-              <Check class="h-4, w-4" />
+              <Check, class="h-4, w-4" />
             </SelectItemIndicator>
           </span>
           <SelectItemText>{option.label}</SelectItemText>
@@ -78,7 +78,7 @@
       {/each}
     </div>
   </SelectContent>
-  <!-- Hidden Input for Form, Submission -->
+  <!-- Hidden Input for, Form, Submission -->
   {#if name}
     <Select.Input {name} />
   {/if}

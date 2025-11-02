@@ -399,8 +399,7 @@ export class RabbitMQXStateIntegration {
                 frameMessage = 'error extracting frame message';
               }
               console.error('❌ RabbitMQ STOMP error:', frame);'
-              reject(new Error(`STOMP error: ${frameMessage ?? 'unknown` }`));'`
-            };
+              reject(new Error(`STOMP error: ${frameMessage ?? 'unknown` }`));'` };
             const onWebSocketCloseHandler = (evt: CloseEvent | Event) => {
               // CloseEvent provides code/reason; other Event shapes may be used by some clients
               try {

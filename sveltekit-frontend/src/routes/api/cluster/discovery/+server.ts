@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get full registry
     const registry = await getServiceRegistry();
     const response: Record<string, unknown> = {
-      // <- typed instead, of `any`
+      // <- typed, instead, of `any`
       success: true,
       registry,
       capabilities: [
@@ -424,8 +424,7 @@ async function performFullHealthCheck(force: boolean = false): Promise<{ summary
 async function executeFailover(serviceId: string, reason: string, targetInstance?: string): Promise<FailoverResult> {
   const service = findServiceById(serviceId);
   if (!service) {
-    return { success: false, error: 'Service not found` };'`
-  }
+    return { success: false, error: 'Service not found' };'` }'`
   const startTime = Date.now();
   try {
     const serviceName = service.name;

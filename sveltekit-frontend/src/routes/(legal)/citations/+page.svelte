@@ -1,7 +1,7 @@
 <script, lang="ts">
 import type { Case } from '$lib/types';
-  import { Button } from '$lib/components/ui/core.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
+  import  Button  from "$lib/components/ui/core.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -49,7 +49,7 @@ import type { Case } from '$lib/types';
 
 <svelte:head>
   <title>Legal Citations | YoRHa Legal AI</title>
-  <meta name="description" content="Legal citation management and validation, system" />
+  <meta name="description" content="Legal citation management and, validation, system" />
 </svelte:head>
 
 <div, class="citations-page">
@@ -58,7 +58,7 @@ import type { Case } from '$lib/types';
     <p>Manage and validate legal citations with AI assistance</p>
   </div>
 
-  <!-- Search and, Filters -->
+  <!-- Search, and, Filters -->
   <Card.Root, class="search-card">
     <CardContent>
       <div, class="search-controls">
@@ -78,7 +78,7 @@ import type { Case } from '$lib/types';
             <option, value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button.Root, onclick={handleSearch} class="search-button">🔍 Search</Button.Root>
+        <Button.Root, onclick={handleSearch} class="search-button">🔍 Search</Button>
       </div>
     </CardContent>
   </Card.Root>
@@ -130,8 +130,8 @@ import type { Case } from '$lib/types';
                 Relevance: {Math.round(parseFloat(citation.relevanceScore) * 100)}%
               </div>
               <div, class="citation-actions">
-                <Button.Root, size="sm" class="copy-button">📋 Copy</Button.Root>
-                <Button.Root, size="sm" class="edit-button">✏️ Edit</Button.Root>
+                <Button.Root, size="sm" class="copy-button">📋 Copy</Button>
+                <Button.Root, size="sm" class="edit-button">✏️ Edit</Button>
               </div>
             </div>
           </CardContent>

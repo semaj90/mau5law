@@ -493,8 +493,7 @@ class PPOAgent {
   }
   private generateStateKey(context: PPOContext): string {
     const qlen = context?.query?.length ?? 0;
-    return `${context.userId ?? 'anon'}:${context.caseId ?? 'global` }:${qlen}`;'`
-  }
+    return `${context.userId ?? 'anon'}:${context.caseId ?? 'global` }:${qlen}`;'` }
   async updatePolicy(stateKey: string, reward: number, action: number[]): Promise<void> {
     const currentPolicy = this.policyNetwork.get(stateKey) || action;
     const updatedPolicy = currentPolicy.map(

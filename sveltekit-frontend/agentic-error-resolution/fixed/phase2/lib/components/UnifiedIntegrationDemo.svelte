@@ -4,13 +4,13 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import {
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
 
   // System status and results
   const systemHealth = writable<any | null>(null);
@@ -317,7 +317,7 @@ Both parties acknowledge they have read and agree to these terms.`,
               <p class="text-red-600 text-sm">{errorMessage}</p>
             {/if}
           <!-- Execute Button -->
-          <Button.Root
+          <Button
             onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
@@ -333,7 +333,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             {:else}
               Execute {selectedOperation}
             {/if}
-</Button.Root>
+</Button>
         </div>
       </div>
     </div>

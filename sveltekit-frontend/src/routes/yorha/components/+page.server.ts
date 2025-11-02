@@ -174,7 +174,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   <div, slot="content">
     Modal content...
   </div>
-</YoRHaModal3D>' };'
+</YoRHaModal3D>` };'`
     return {
       specs: componentSpecs,
       gallery: galleryData,
@@ -183,13 +183,13 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       timestamp: new Date().toISOString()
     };
   } catch (error: any) {
-    console.error('Error loading YoRHa components data: `, error);'`
+    console.error('Error loading YoRHa components data: ', error);'`'`
     return {
       specs: {},
       gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
       codeSnippets: {},
       initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load components data' };
+      error: 'Failed to load components data` };'`
   }
 };

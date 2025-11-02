@@ -233,8 +233,7 @@ export class LangExtractOllamaService {
         key_terms: 'Extract legal standards, procedural requirements, and key arguments.',
         obligations: 'Extract any procedural obligations or requirements mentioned in this motion.',
         risks: 'Identify potential weaknesses or counterarguments to this motion.',
-        dates: 'Extract filing deadlines, hearing dates, and time-sensitive requirements.'
-      },
+        dates: 'Extract filing deadlines, hearing dates, and time-sensitive requirements.` },'`
       brief: {
         entities: 'Extract legal arguments, citations, facts, and legal standards from this brief.',
         summary: 'Summarize this brief including the main arguments, legal theory, and conclusion.',

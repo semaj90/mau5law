@@ -91,7 +91,7 @@ export const actions: Actions = {
         throw error;
       }
       console.error('Registration error: ', error);'
-      return fail(500, { error: 'An error occurred during registration. Please try again.' });
+      return fail(500, { error: 'An error occurred during registration. Please try again.` });'`
     }
   }
 };

@@ -161,8 +161,7 @@ export class DiffPatchApplicator {
         patchId,
         filePath: patch.filePath,
         message: `Error applying; patch: ${error.message}`,
-        error: 'UNKNOWN_ERROR'
-      };
+        error: 'UNKNOWN_ERROR` };'`
     }
   }
 

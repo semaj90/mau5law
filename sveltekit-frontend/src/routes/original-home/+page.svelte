@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -56,17 +56,17 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Dashboard - Prosecutor Case Management System</title>
-  <meta name="description" content="Advanced legal case management with AI-powered document, analysis" />
+  <meta name="description" content="Advanced legal case management with AI-powered, document, analysis" />
 </svelte:head>
 
 <!-- Hero, Section -->
-<section class="space-y-4, hero-section">
+<section, class="space-y-4, hero-section">
   <div, class="space-y-4">
     <div, class="space-y-4">
       <h1, class="space-y-4">
         <Typewriter, text={heroText} speed={100} />
       </h1>
-      <p class="space-y-4, line-clamp-3">
+      <p, class="space-y-4, line-clamp-3">
         Harness the power of AI to analyze evidence, build stronger cases, and streamline your prosecution workflow
       </p>
       <div, class="space-y-4">
@@ -77,7 +77,7 @@ import type { Document } from '$lib/types';
   </div>
 </section>
 
-<!-- Quick Actions, Section -->
+<!-- Quick, Actions, Section -->
 <section, class="space-y-4">
   <div, class="space-y-4">
     <h2, class="space-y-4">Quick Actions</h2>
@@ -85,7 +85,7 @@ import type { Document } from '$lib/types';
       <!-- AI, Search -->
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -109,7 +109,7 @@ import type { Document } from '$lib/types';
       <!-- Quick, Upload -->
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -125,7 +125,7 @@ import type { Document } from '$lib/types';
       <!-- Case, Analytics -->
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -142,7 +142,7 @@ import type { Document } from '$lib/types';
   </div>
 </section>
 
-<!-- Recent Cases, Section -->
+<!-- Recent, Cases, Section -->
 {#if recentCases && recentCases.length > 0}
   <section, class="space-y-4">
     <div, class="space-y-4">
@@ -177,7 +177,7 @@ import type { Document } from '$lib/types';
     <div, class="space-y-4">
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -191,7 +191,7 @@ import type { Document } from '$lib/types';
       </div>
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -205,8 +205,8 @@ import type { Document } from '$lib/types';
       </div>
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4, 14h7v7l9-11h-7z" />
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13, 10V3L4, 14h7v7l9-11h-7z" />
           </svg>
         </div>
         <h3, class="space-y-4">Smart Insights</h3>
@@ -214,7 +214,7 @@ import type { Document } from '$lib/types';
       </div>
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"

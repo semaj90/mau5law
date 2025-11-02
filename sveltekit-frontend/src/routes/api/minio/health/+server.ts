@@ -48,7 +48,7 @@ export const GET: RequestHandler = async () => {
         name: bucketName,
         exists: bucketExists,
         region,
-        objectCount: objectCount > 0 ? `${objectCount}+` : '0' },
+        objectCount: objectCount > 0 ? `${objectCount}+` : '0` },'`
       timestamp: new Date().toISOString(),
       connectivity: {
         read: true,

@@ -59,8 +59,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Get citation from database
     const [citation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!citation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND` }));'`
-    }
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));'` }'`
     return json({
       success: true,
       data: {
@@ -187,8 +186,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id);
     // Check if citation exists

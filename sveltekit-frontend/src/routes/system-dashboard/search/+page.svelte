@@ -205,42 +205,42 @@ import type { Document } from '$lib/types';
 
 <div, class="space-y-6">
   <!-- Header -->
-  <div class="flex items-center, justify-between">
+  <div class="flex, items-center, justify-between">
     <div>
-      <h1 class="text-3xl font-bold text-nier-text-primary flex items-center, gap-3">
-        <span class="w-8 h-8 text-nier-accent-warm inline-flex items-center justify-center, text-2xl">{ICON.brain}</span>
+      <h1 class="text-3xl font-bold text-nier-text-primary flex, items-center, gap-3">
+        <span class="w-8 h-8 text-nier-accent-warm inline-flex items-center, justify-center, text-2xl">{ICON.brain}</span>
         Vector Search
       </h1>
-      <p class="text-nier-text-muted, mt-1">AI-powered semantic search across legal documents</p>
+      <p, class="text-nier-text-muted, mt-1">AI-powered semantic search across legal documents</p>
     </div>
-    <div class="flex items-center, gap-2">
-      <!-- Wrap Badge so we don't pass `class` directly to the Badge, component -->'
-      <div class="text-nier-accent-warm, border-nier-accent-warm">
+    <div class="flex, items-center, gap-2">
+      <!-- Wrap Badge so we don't pass `class` directly to the, Badge, component -->'
+      <div, class="text-nier-accent-warm, border-nier-accent-warm">
         <Badge, variant="ghost">
           <span, class="mr-1">{ICON.sparkles}</span>
           pgvector + AI
         </Badge>
       </div>
 
-      <!-- Wrap Button so we don't pass `class` directly to the Button, component -->'
+      <!-- Wrap Button so we don't pass `class` directly to the, Button, component -->'
       <div, class="bits-btn">
         <Button, variant="ghost" size="sm" onclick={() => {/* open settings */}}>
-          <span class="w-4 h-4 mr-2, inline-block">{ICON.settings}</span>
+          <span class="w-4 h-4, mr-2, inline-block">{ICON.settings}</span>
           Settings
         </Button>
       </div>
     </div>
   </div>
 
-  <!-- Search Interface - Enhanced-Bits, orchestrated -->
-  <!-- replaced OrchestratedCard.Analysis with a plain wrapper to avoid namespace-component typing, issues -->
-  <div class="orchestrated-card, analysis">
-    <div class="p-6, nes-container">
+  <!-- Search, Interface - Enhanced-Bits, orchestrated -->
+  <!-- replaced OrchestratedCard.Analysis with a plain wrapper to avoid namespace-component, typing, issues -->
+  <div, class="orchestrated-card, analysis">
+    <div, class="p-6, nes-container">
       <div, class="space-y-4">
         <!-- Search, Input -->
         <div, class="relative">
-          <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5, text-nier-text-muted">{ICON.search}</span>
-          <!-- annotate event type to avoid implicit, any -->
+          <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5, h-5, text-nier-text-muted">{ICON.search}</span>
+          <!-- annotate event type to avoid, implicit, any -->
           <Input
             bind:value={query}
             onkeydown={handleKeyPress}
@@ -249,8 +249,8 @@ import type { Document } from '$lib/types';
             disabled={loading}
           />
 
-          <!-- Position wrapper instead of putting class on, Button -->
-          <div class="absolute right-2 top-1/2 transform -translate-y-1/2, gap-2">
+          <!-- Position wrapper instead of putting class, on, Button -->
+          <div class="absolute right-2 top-1/2, transform -translate-y-1/2, gap-2">
             <Button
               variant="primary"
               size="sm"
@@ -258,38 +258,38 @@ import type { Document } from '$lib/types';
               disabled={loading || !query.trim()}
             >
                {#if loading}
-                 <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent, rounded-full"></div>
+                 <div class="animate-spin w-4 h-4 border-2 border-white, border-t-transparent, rounded-full"></div>
                  Searching...
                {:else}
-                 <span class="w-4, h-4">{ICON.zap}</span>
+                 <span, class="w-4, h-4">{ICON.zap}</span>
                   Search
                {/if}
              </Button>
            </div>
         </div>
 
-         <!-- Search Mode, Tabs -->
-         <!-- simple inline tab buttons to avoid external Tabs API, mismatch -->
-         <div class="grid w-full grid-cols-3, gap-2">
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent, border')}
+         <!-- Search, Mode, Tabs -->
+         <!-- simple inline tab buttons to avoid external Tabs, API, mismatch -->
+         <div class="grid w-full, grid-cols-3, gap-2">
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
               onclick={() => (searchMode = 'semantic')}>
-              <span class="inline-block, mr-1">{ICON.brain}</span> Semantic
+              <span, class="inline-block, mr-1">{ICON.brain}</span> Semantic
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent, border')}
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
               onclick={() => (searchMode = 'keyword')}>
-              <span class="inline-block, mr-1">{ICON.target}</span> Keyword
+              <span, class="inline-block, mr-1">{ICON.target}</span> Keyword
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent, border')}
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
               onclick={() => (searchMode = 'hybrid')}>
-              <span class="inline-block, mr-1">{ICON.sparkles}</span> Hybrid
+              <span, class="inline-block, mr-1">{ICON.sparkles}</span> Hybrid
             </button>
           </div>
 
          <!-- Filters -->
-         <div class="flex flex-wrap gap-4, items-center">
-           <div class="flex items-center, gap-2">
-              <span class="w-4 h-4, text-nier-text-muted">{ICON.filter}</span>
-             <span class="text-sm, text-nier-text-muted">Document Types:</span>
+         <div class="flex flex-wrap, gap-4, items-center">
+           <div class="flex, items-center, gap-2">
+              <span class="w-4, h-4, text-nier-text-muted">{ICON.filter}</span>
+             <span, class="text-sm, text-nier-text-muted">Document Types:</span>
            </div>
 
            {#each Array.isArray(documentTypes) ? documentTypes : [] as docType}
@@ -302,13 +302,13 @@ import type { Document } from '$lib/types';
                     : 'border-nier-border-muted hover:border-nier-accent-warm')
                 }
               >
-                <span class="w-3, h-3">{docType.iconEmoji}</span>
+                <span, class="w-3, h-3">{docType.iconEmoji}</span>
                 <span, class="text-xs">{docType.label}</span>
               </button>
            {/each}
 
-           <div class="ml-auto flex items-center, gap-2">
-             <span class="text-xs, text-nier-text-muted">Similarity:</span>
+           <div class="ml-auto flex, items-center, gap-2">
+             <span, class="text-xs, text-nier-text-muted">Similarity:</span>
              <input
                type="range"
                bind:value={similarityThreshold}
@@ -317,7 +317,7 @@ import type { Document } from '$lib/types';
                step="0.1"
                class="w-20"
              />
-             <span class="text-xs, font-mono">{similarityThreshold}</span>
+             <span, class="text-xs, font-mono">{similarityThreshold}</span>
            </div>
          </div>
        </div>
@@ -326,92 +326,92 @@ import type { Document } from '$lib/types';
 
    <!-- Search, Results -->
    {#if searchInfo}
-     <!-- replaced OrchestratedCard.Evidence with a plain wrapper to avoid namespace-component typing, issues -->
-     <div class="orchestrated-card, evidence">
+     <!-- replaced OrchestratedCard.Evidence with a plain wrapper to avoid namespace-component, typing, issues -->
+     <div, class="orchestrated-card, evidence">
        <div, class="nes-container">
-         <div class="flex items-center, justify-between">
-           <div class="flex items-center, gap-2">
-             <span class="w-5, h-5">{ICON.database}</span>
-             <h2 class="text-lg, font-medium">Search Results ({results.length})</h2>
+         <div class="flex, items-center, justify-between">
+           <div class="flex, items-center, gap-2">
+             <span, class="w-5, h-5">{ICON.database}</span>
+             <h2, class="text-lg, font-medium">Search Results ({results.length})</h2>
            </div>
-           <div class="flex items-center gap-4 text-sm, text-nier-text-muted">
-             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300, text-gray-700">{formatSearchTime(searchInfo.search_time_ms)}</span>
-             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700">{searchInfo.embedding_model}</span>
+           <div class="flex items-center gap-4, text-sm, text-nier-text-muted">
+             <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">{formatSearchTime(searchInfo.search_time_ms)}</span>
+             <span class="px-2 py-1 rounded text-xs font-medium, bg-gray-200, text-gray-700">{searchInfo.embedding_model}</span>
            </div>
          </div>
          <!-- changed <p> to <div> to avoid invalid nesting when template blocks render inside -->
-         <div class="text-sm text-nier-text-muted, mt-1">Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches</div>
+         <div class="text-sm, text-nier-text-muted, mt-1">Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches</div>
        </div>
 
-       <div class="space-y-4, nes-container">
+       <div, class="space-y-4, nes-container">
          {#if loading}
-           <div class="text-center, py-8">
-             <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full, mx-auto"></div>
-             <p class="mt-2, text-nier-text-muted">Searching vector space...</p>
+           <div, class="text-center, py-8">
+             <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent, rounded-full, mx-auto"></div>
+             <p, class="mt-2, text-nier-text-muted">Searching vector space...</p>
            </div>
          {:else if error}
-           <div class="text-center, py-8">
-             <div class="w-8 h-8 text-red-500 mx-auto mb-2, text-2xl">{ICON.alert}</div>
+           <div, class="text-center, py-8">
+             <div class="w-8 h-8 text-red-500 mx-auto, mb-2, text-2xl">{ICON.alert}</div>
              <p, class="text-red-600">{error}</p>
-             <!-- wrap retry Button so we don't give `class` to the Button, component -->'
-             <div class="mt-2, bits-btn">
+             <!-- wrap retry Button so we don't give `class` to the, Button, component -->'
+             <div, class="mt-2, bits-btn">
                <Button, onclick={performSearch} variant="ghost" size="sm">
                  Retry Search
                </Button>
              </div>
            </div>
          {:else if results.length === 0}
-           <div class="text-center, py-8">
-             <div class="w-8 h-8 text-nier-text-muted mx-auto mb-2, text-2xl">{ICON.search}</div>
+           <div, class="text-center, py-8">
+             <div class="w-8 h-8 text-nier-text-muted mx-auto, mb-2, text-2xl">{ICON.search}</div>
              <p, class="text-nier-text-muted">No matching documents found</p>
-             <p class="text-sm text-nier-text-muted, mt-1">Try adjusting your query or filters</p>
+             <p class="text-sm, text-nier-text-muted, mt-1">Try adjusting your query or filters</p>
            </div>
          {:else}
            {#each results as result, i}
-             <div class="border border-nier-border-muted rounded-lg p-4 hover:bg-nier-bg-tertiary, transition-colors">
-               <div class="flex items-start justify-between, mb-3">
-                 <div class="flex items-center, gap-3">
-                   <div class="w-8 h-8 bg-nier-accent-warm/10 rounded-lg flex items-center justify-center text-nier-accent-warm font-bold, text-sm">
+             <div class="border border-nier-border-muted rounded-lg p-4, hover:bg-nier-bg-tertiary, transition-colors">
+               <div class="flex items-start, justify-between, mb-3">
+                 <div class="flex, items-center, gap-3">
+                   <div class="w-8 h-8 bg-nier-accent-warm/10 rounded-lg flex items-center justify-center text-nier-accent-warm, font-bold, text-sm">
                      {i + 1}
                    </div>
                    <div>
-                     <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm, cursor-pointer">
+                     <h3 class="font-medium text-nier-text-primary, hover:text-nier-accent-warm, cursor-pointer">
                        {result.title || `Document ${result.document_id.slice(0, 8)}`}
                      </h3>
-                     <div class="flex items-center gap-2, mt-1">
-                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300, text-gray-700">{result.document_type.replace('_', ' ')}</span>
+                     <div class="flex items-center, gap-2, mt-1">
+                       <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">{result.document_type.replace('_', ' ')}</span>
                        {#if result.case_id}
-                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700">case {result.case_id.slice(0, 8)}</span>
+                         <span class="px-2 py-1 rounded text-xs font-medium, bg-gray-200, text-gray-700">case {result.case_id.slice(0, 8)}</span>
                        {/if}
                        {#if result.metadata?.file_type}
-                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300, text-gray-700">{result.metadata.file_type.toUpperCase()}</span>
+                         <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">{result.metadata.file_type.toUpperCase()}</span>
                        {/if}
                      </div>
                    </div>
                  </div>
 
-                 <div class="flex items-center, gap-2">
+                 <div class="flex, items-center, gap-2">
                    <div, class={"text-xs " + getSimilarityColor(result.similarity_score)}>
                      <Badge>
                        {getSimilarityLabel(result.similarity_score)}
                      </Badge>
                    </div>
-                   <span class="text-xs font-mono, text-nier-text-muted">
+                   <span class="text-xs, font-mono, text-nier-text-muted">
                      {(result.similarity_score * 100).toFixed(1)}%
                    </span>
                  </div>
                </div>
 
-               <p class="text-sm text-nier-text-secondary leading-relaxed, mb-3">
+               <p class="text-sm text-nier-text-secondary, leading-relaxed, mb-3">
                  {result.content_preview}
                </p>
 
                {#if result.highlights && result.highlights.length > 0}
                  <div, class="mb-3">
-                   <h4 class="text-xs font-medium text-nier-text-muted, mb-2">Key Highlights:</h4>
-                   <div class="flex flex-wrap, gap-1">
+                   <h4 class="text-xs font-medium, text-nier-text-muted, mb-2">Key Highlights:</h4>
+                   <div class="flex, flex-wrap, gap-1">
                      {#each Array.isArray(result.highlights.slice(0, 3)) ? result.highlights.slice(0, 3) : [] as highlight}
-                       <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm, rounded">
+                       <span class="text-xs px-2 py-1 bg-nier-accent-warm/10, text-nier-accent-warm, rounded">
                          {highlight}
                        </span>
                      {/each}
@@ -419,28 +419,28 @@ import type { Document } from '$lib/types';
                  </div>
                {/if}
 
-               <div class="flex items-center, justify-between">
-                 <div class="flex items-center gap-4 text-xs, text-nier-text-muted">
+               <div class="flex, items-center, justify-between">
+                 <div class="flex items-center gap-4, text-xs, text-nier-text-muted">
                    {#if result.metadata?.upload_date}
-                     <div class="flex items-center, gap-1">
-                       <span class="w-3, h-3">{ICON.clock}</span>
+                     <div class="flex, items-center, gap-1">
+                       <span, class="w-3, h-3">{ICON.clock}</span>
                        {new Date(result.metadata.upload_date).toLocaleDateString()}
                      </div>
                    {/if}
                    {#if typeof result.metadata?.confidence === 'number'}
-                     <!-- tightened spacing per, selection -->
-                     <div class="flex items-center, gap-1">
-                       <span class="w-3, h-3">{ICON.check}</span>
+                     <!-- tightened spacing, per, selection -->
+                     <div class="flex, items-center, gap-1">
+                       <span, class="w-3, h-3">{ICON.check}</span>
                        {(result.metadata.confidence * 100).toFixed(1)}% confidence
                      </div>
                    {/if}
                  </div>
 
-                 <div class="flex items-center, gap-2">
+                 <div class="flex, items-center, gap-2">
                    <div, class="bits-btn">
                      <!-- added, onclick -->
                      <Button, variant="ghost" size="sm" onclick={() => viewResult(result.document_id)}>
-                       <span class="w-4 h-4, mr-1">{ICON.eye}</span>
+                       <span class="w-4, h-4, mr-1">{ICON.eye}</span>
                        View
                      </Button>
                    </div>
@@ -448,7 +448,7 @@ import type { Document } from '$lib/types';
                    <div, class="bits-btn">
                      <!-- added, onclick -->
                      <Button, variant="ghost" size="sm" onclick={() => openResultDetails(result.document_id)}>
-                       <span class="w-4, h-4">{ICON.chevronRight}</span>
+                       <span, class="w-4, h-4">{ICON.chevronRight}</span>
                      </Button>
                    </div>
                  </div>
@@ -462,23 +462,23 @@ import type { Document } from '$lib/types';
 
    <!-- Search, Suggestions -->
    <section, class="nes-container">
-     <div class="flex items-center, gap-2">
-       <span class="w-5, h-5">{ICON.lightbulb}</span>
-       <h3 class="text-lg, font-medium">Search Suggestions</h3>
+     <div class="flex, items-center, gap-2">
+       <span, class="w-5, h-5">{ICON.lightbulb}</span>
+       <h3, class="text-lg, font-medium">Search Suggestions</h3>
      </div>
-     <p class="text-sm text-nier-text-muted, mt-1">Try these common legal research queries</p>
+     <p class="text-sm, text-nier-text-muted, mt-1">Try these common legal research queries</p>
 
-     <div class="nes-container, mt-3">
-       <div class="grid grid-cols-1 md:grid-cols-2, gap-3">
+     <div, class="nes-container, mt-3">
+       <div class="grid grid-cols-1, md:grid-cols-2, gap-3">
          {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
            <button
             onclick={() => setSuggestionQuery(suggestion)}
              class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
              disabled={loading}
            >
-             <div class="flex items-center, justify-between">
+             <div class="flex, items-center, justify-between">
                <span>{suggestion}</span>
-               <span class="w-4 h-4, text-nier-text-muted">{ICON.chevronRight}</span>
+               <span class="w-4, h-4, text-nier-text-muted">{ICON.chevronRight}</span>
              </div>
            </button>
          {/each}
@@ -489,12 +489,12 @@ import type { Document } from '$lib/types';
    <!-- Performance, Metrics -->
    {#if searchInfo}
      <section, class="nes-container">
-       <div class="flex items-center, gap-2">
-         <span class="w-5, h-5">{ICON.trendingUp}</span>
-         <h3 class="text-lg, font-medium">Search Performance</h3>
+       <div class="flex, items-center, gap-2">
+         <span, class="w-5, h-5">{ICON.trendingUp}</span>
+         <h3, class="text-lg, font-medium">Search Performance</h3>
        </div>
-       <div class="nes-container, mt-3">
-         <div class="grid grid-cols-1 md:grid-cols-4 gap-4, text-sm">
+       <div, class="nes-container, mt-3">
+         <div class="grid grid-cols-1 md:grid-cols-4, gap-4, text-sm">
            <div>
              <div, class="text-nier-text-muted">Query Processing</div>
              <div, class="font-medium">{formatSearchTime(searchInfo.search_time_ms)}</div>
@@ -509,7 +509,7 @@ import type { Document } from '$lib/types';
            </div>
            <div>
              <div, class="text-nier-text-muted">Search Mode</div>
-             <div class="font-medium, capitalize">{searchMode}</div>
+             <div, class="font-medium, capitalize">{searchMode}</div>
            </div>
          </div>
        </div>

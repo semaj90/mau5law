@@ -25,9 +25,9 @@
   );
   let sizeClasses = $derived('h-2'); // keep simple, allow override via class prop
 </script>
-<!-- accessible, SSR-friendly progress, bar -->
-<div class={['relative, w-full', className].filter(Boolean).join(' ')}>
-  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full, overflow-hidden {sizeClasses}">
+<!-- accessible, SSR-friendly, progress, bar -->
+<div, class={['relative, w-full', className].filter(Boolean).join(' ')}>
+  <div class="w-full bg-gray-200 dark:bg-gray-700, rounded-full, overflow-hidden {sizeClasses}">
     <div
       role="progressbar"
       aria-valuemin="0"
@@ -37,11 +37,11 @@
       style="width: {percentage}%"
     >
       {#if variant === 'yorha'}
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent, animate-shimmer">{/if}
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20, to-transparent, animate-shimmer">{/if}
     </div>
   </div>
   {#if showPercentage}
-    <div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 text-right, nes-text">
+    <div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1, text-right, nes-text">
       {Math.round(percentage)}%
     {/if}
 </div>

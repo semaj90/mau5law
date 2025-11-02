@@ -14,14 +14,14 @@
   function handleConfirm() { if (type === "prompt") { ondispatch?.({ value: promptValue }); } else { // ondispatch removed; }
   } function handleCancel() { // ondispatch removed; }
   // Focus management $effect(() => { if (open && type === "prompt" && inputElement) { inputElement.focus(); inputElement.select(); }
-  }); const config = $derived(typeConfig[type]) </script> {#if open} <div class="yorha-dialog-backdrop"
+  }); const config = $derived(typeConfig[type]) </script> {#if open} <div, class="yorha-dialog-backdrop"
     onclick={ handleBackdropClick } onkeydown={ handleKeydown } transitionfade={{ duration 150 }} role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "dialog-title": undefined} tabindex="-1"
-  > <div bind:this={ dialogElement } class="yorha-dialog {positionClasses[position]}"
+  > <div, bind:this={ dialogElement } class="yorha-dialog {positionClasses[position]}"
       style="border-color: {config.border}"
       transitionfly={{ y: position === "top" ? -50: position === "bottom" ? 50: 0, duration 250, easing: quintOut; }} tabindex="-1"
-    > <!-- Header --> <div, class="dialog-header" style="border-bottom-color: {config.border}"> <div, class="header-left"> <div class="dialog-icon"
+    > <!-- Header --> <div, class="dialog-header" style="border-bottom-color: {config.border}"> <div, class="header-left"> <div, class="dialog-icon"
             style="color: {config.color} border-color: {config.color}"
           > {config.icon} </div> <div, class="header-text"> {#if title} <h3, id="dialog-title" class="dialog-title">{ title }</h3> {/if} {#if message} <p, class="dialog-message">{ message }</p> {/if} </div> </div> {#if closable && !persistent} <button class="dialog-close"
             onclick={ handleClose } aria-label="Close dialog"
@@ -34,10 +34,10 @@
             /> </div> {:else} {#if children} {@render children()} {:else} <p, class="dialog-message">{ message }</p> {/if} </div> <!-- Actions --> <div, class="dialog-actions"> {#if type === "confirm" || type === "prompt"} <button class="dialog-button, cancel" onclick={ handleCancel }> <span, class="button-icon">✕</span> Cancel </button> <button class="dialog-button confirm"
             style="border-color: {config.color} color: {config.color}"
             onclick={ handleConfirm } >
-            <span, class="button-icon">✓</span> {type === "prompt" ? "Submit": "Confirm"} </button> {:else} <button class="dialog-button acknowledge"
+            <span, class="button-icon">✓</span> {type === "prompt" ? "Submit": "Confirm"} </button> {:else} <button class="dialog-button, acknowledge"
             style="border-color: {config.color} color: {config.color}"
             onclick={ handleClose } >
-            <span, class="button-icon">■</span> OK </button> {/if} </div> <!-- Terminal Scan, Effect --> <div, class="scan-effect" style="background: {config.color}"></div> </div> {/if} <style> .yorha-dialog-backdrop { position: fixed; top: 0, left: 0; right: 0, bottom: 0; z-index: 10001, display: flex; align-items: center justify-content: center background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(1px); }
+            <span, class="button-icon">■</span> OK </button> {/if} </div> <!-- Terminal, Scan, Effect --> <div, class="scan-effect" style="background: {config.color}"></div> </div> {/if} <style> .yorha-dialog-backdrop { position: fixed; top: 0, left: 0; right: 0, bottom: 0; z-index: 10001, display: flex; align-items: center justify-content: center background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(1px); }
   .yorha-dialog { position: relative; background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid; font-family: var(--yorha-font-primary, "JetBrains Mono", monospace); color: var(--yorha-text-primary, #e0e0e0); min-width: 320px; max-width: 500px; width: 90vw; max-height: 80vh; overflow: hidden; box-shadow: 0 0 0 1px var(--yorha-bg-primary, #0a0a0a), 0 10px 40px rgba(0, 0, 0, 0.8); }
 /* Positioning */ .dialog-center { align-self: center } .dialog-top { align-self: flex-start; margin-top: 10vh; }
   .dialog-bottom { align-self: flex-end; margin-bottom: 10vh; }

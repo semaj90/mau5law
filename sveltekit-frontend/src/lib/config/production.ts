@@ -329,7 +329,7 @@ export const CONFIG = {
     vector: {
       search: '/api/vector/search',
       similar: '/api/vector/similar',
-      index: '/api/vector/index` },'`
+      index: `/api/vector/index` },'`'`
     
     // AI Services
     ai: {

@@ -1,4 +1,4 @@
-<!-- Context menu content, component -->
+<!-- Context menu, content, component -->
 <script, lang="ts">
   import { getContext, onMount, onDestroy } from 'svelte';
   import type { Writable } from 'svelte/store';

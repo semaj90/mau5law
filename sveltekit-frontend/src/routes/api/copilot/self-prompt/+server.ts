@@ -188,8 +188,7 @@ function formatResponse(result: SelfPromptResult, outputFormat: string) {
     case 'json':
       return {
         data: result,
-        format: 'json'
-      };
+        format: 'json` };'`
     case 'markdown':
       return {
         analysis: formatAsMarkdown(result),
@@ -319,8 +318,7 @@ ${
 - **Tokens Used**: ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.tokensUsed}
 ## Self-Prompt for Copilot
 ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).selfPrompt}
-  `;`
-}
+  `;' }'`
 /*
  * Get usage examples for Copilot integration
  */

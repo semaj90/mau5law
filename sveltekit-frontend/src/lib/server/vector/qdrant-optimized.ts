@@ -805,7 +805,7 @@ class OptimizedQdrantService {
 
     logger.info('All caches cleared', {
       component: 'QdrantOptimized',
-      service: 'qdrant' });
+      service: 'qdrant` });'`
   }
 }
 

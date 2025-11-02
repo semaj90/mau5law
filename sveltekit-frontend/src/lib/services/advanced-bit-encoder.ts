@@ -231,7 +231,7 @@ export class AdvancedBitEncoder {
 					compressedSize: Math.floor(pattern.size * this.config.compression),
 					encoding: 'dimensional-splice-v1',
 					checksum: this.calculateChecksum(new Uint8Array(pattern.size)),
-					version: '1.0.0` },'`
+					version: '1.0.0' },'`'`
 				timestamp: Date.now(),
 				accessCount: 0
 			}
@@ -705,7 +705,7 @@ const encoder = new AdvancedBitEncoder({
 	compression: 0.8,
 	enableDimensionalSplicing: true,
 	enableAutoEncoder: true,
-	cacheStrategy: 'aggressive` });'`
+	cacheStrategy: 'aggressive' });'`'`
 // Encode color
 const colorEncoding = encoder.encodeColor(255, 128, 64);
 console.log('Encoded color:', colorEncoding);

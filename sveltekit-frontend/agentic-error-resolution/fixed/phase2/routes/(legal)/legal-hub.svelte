@@ -102,7 +102,7 @@
 
   <!-- Legal Statistics Dashboard -->
   <div class="stats-grid">
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Active Cases</CardTitle>
       </CardHeader>
@@ -110,9 +110,9 @@
         <div class="stat-value">{legalStats.activeCases}</div>
         <div class="stat-label">Currently Processing</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Documents Analyzed</CardTitle>
       </CardHeader>
@@ -120,9 +120,9 @@
         <div class="stat-value">{legalStats.documentsAnalyzed.toLocaleString()}</div>
         <div class="stat-label">Total Processed</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Citations Found</CardTitle>
       </CardHeader>
@@ -130,9 +130,9 @@
         <div class="stat-value">{legalStats.citationsFound}</div>
         <div class="stat-label">Legal References</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Compliance Score</CardTitle>
       </CardHeader>
@@ -140,7 +140,7 @@
         <div class="stat-value">{legalStats.complianceScore}%</div>
         <div class="stat-label">Overall Rating</div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </div>
 
   <!-- Legal Services Grid -->
@@ -148,7 +148,7 @@
     <h2>📋 Legal Services</h2>
     <div class="services-grid">
       {#each Array.isArray(legalServices) ? legalServices : [] as service}
-        <Card.Root class="service-card">
+        <Card class="service-card">
           <CardHeader>
             <CardTitle>
               <span class="service-icon">{service.icon}</span>
@@ -167,7 +167,7 @@
               Access Service
             </a>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   </div>
@@ -177,7 +177,7 @@
     <h2>📊 Recent Legal Activities</h2>
     <div class="activities-list">
       {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
-        <Card.Root class="activity-card">
+        <Card class="activity-card">
           <CardContent>
             <div class="activity-header">
               <div class="activity-type">
@@ -213,7 +213,7 @@
               {/if}
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   </div>

@@ -362,7 +362,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
             type: 'evidence',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Evidence-focused search` },'`
+            reasoning: `Evidence-focused search` },'`'`
           {
             text: query + ' case law',
             type: 'case',

@@ -69,8 +69,7 @@ export const GET: RequestHandler = async ({ _url }) => {
               // Handle publish error if it happens before message is received
               settled = true;
               clearTimeout(timeout);
-              resolve({ ok: false, error: 'publish;, error: ${e instanceof Error ? e.message : 'Unknown error' }` });'`
-            }
+              resolve({ ok: false, error: 'publish;, error: ${e instanceof Error ? e.message : 'Unknown error' }' });'` }'`
           });
         })
         .catch(e => {
@@ -78,7 +77,7 @@ export const GET: RequestHandler = async ({ _url }) => {
           if (!settled) {
             settled = true;
             clearTimeout(timeout);
-            resolve({ ok: false, error: 'subscribe;, error: ${e instanceof Error ? e.message : `Unknown error` }` });'`
+            resolve({ ok: false, error: 'subscribe;, error: ${e instanceof Error ? e.message : `Unknown error' }` });'`'`
           }
         });
     });

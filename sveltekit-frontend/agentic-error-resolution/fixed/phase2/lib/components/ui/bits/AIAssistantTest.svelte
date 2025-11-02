@@ -2,8 +2,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Card, CardContent, CardHeader, CardTitle, Button, Alert } from './index.js';
-  import { Bot } from 'lucide-svelte/icons/bot.svelte';
-  import { CheckCircle } from 'lucide-svelte/icons/check-circle.svelte';
+  import  Bot  from "lucide-svelte/icons/bot.svelte";
+  import  CheckCircle  from "lucide-svelte/icons/check-circle.svelte";
   // Test data
   let testMessages = $state([
     {
@@ -62,7 +62,7 @@
   }
 </script>
 <div class="p-6 max-w-4xl mx-auto space-y-6">
-  <Card.Root class="border-2 border-primary/20">
+  <Card class="border-2 border-primary/20">
     <CardHeader>
       <div class="flex items-center gap-3">
         <Bot class="w-8 h-8 text-primary" />
@@ -116,7 +116,7 @@
               placeholder="Test AI search functionality..."
               bind:value={aiSearchTerm}
             />
-            <Button type="submit">Search</Button.Root>
+            <Button type="submit">Search</Button>
           </div>
         </form>
       </div>
@@ -124,7 +124,7 @@
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <h3 class="font-semibold text-sm">AI Chat Messages Component</h3>
-          <Button.Root variant="ghost" size="sm" onclick={clearMessages} class="text-xs">Clear Messages</Button>
+          <Button variant="ghost" size="sm" onclick={clearMessages} class="text-xs">Clear Messages</Button>
         </div>
         <div class="border rounded-lg p-4 max-h-96 overflow-y-auto space-y-3 bg-muted/20">
           {#if testMessages.length === 0}
@@ -198,7 +198,7 @@
           </div>
         {/if}
     </CardContent>
-  </Card.Root>
+  </Card>
 </div>
 <style>
   /* Enhanced-bits styling integration */

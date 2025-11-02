@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'http://localhost:11434/api/generate',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify({
             model,
             prompt: 'Test connection',

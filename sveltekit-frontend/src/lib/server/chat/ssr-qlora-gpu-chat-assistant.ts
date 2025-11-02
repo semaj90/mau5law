@@ -139,10 +139,10 @@ export class SSRQLorAGPUChatAssistant {
     const commonPatterns: Array<Pick<PatternItem, 'pattern' | 'response'>> = [
       {,
         pattern: 'contract review',
-        response: 'I can help analyze contract terms, identify risks, and suggest modifications.` },'`
-      { pattern: 'legal research', response: `Let me search relevant case law and statutes for your jurisdiction.` },
+        response: 'I can help analyze contract terms, identify risks, and suggest modifications.' },'`'`
+      { pattern: 'legal research', response: `Let me search relevant case law and statutes for your jurisdiction.' },'`
       { pattern: 'document analysis', response: "I'll extract key information and identify potential issues." },'
-      { pattern: 'case preparation', response: `I can help organize evidence and build legal arguments.` }
+      { pattern: 'case preparation', response: `I can help organize evidence and build legal arguments.' }'`
     ];
     for (const [index, item] of commonPatterns.entries()) {
       const patternBuffer = new TextEncoder().encode(JSON.stringify(item));
@@ -229,7 +229,7 @@ export class SSRQLorAGPUChatAssistant {
                 `data: ${JSON.stringify({`
                  , type: 'instant',
                   content: instantResponse,
-                  source: `nes_memory` })}\n\n`
+                  source: `nes_memory' })}\n\n`'
               )
             );
           }
@@ -250,7 +250,7 @@ export class SSRQLorAGPUChatAssistant {
                  , type: 'cached',
                   content: cacheHit[0]?.metadata?.response ?? null,
                   similarity: cacheHit[0]?.similarity ?? 0,
-                  source: `gpu_cache` })}\n\n`
+                  source: `gpu_cache' })}\n\n`'
               )
             );
           }
@@ -270,7 +270,7 @@ export class SSRQLorAGPUChatAssistant {
                   content: chunk,
                   index,
                   total: chunks.length,
-                  source: `qlora` })}\n\n`
+                  source: `qlora' })}\n\n`'
               )
             );
             // Small delay for streaming effect
@@ -290,7 +290,7 @@ export class SSRQLorAGPUChatAssistant {
           }
           // 8. Store interaction for learning
           await this.storeInteraction(ssrContext, userMessage, qloraResponse);
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({, type: `complete` })}\n\n`));
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({, type: `complete' })}\n\n`));'`
           controller.close();
         } catch (error) {
           controller.error(error);
@@ -531,7 +531,7 @@ export class SSRQLorAGPUChatAssistant {
     // Use your existing embedding service (nomic-embed-text)
     const response = await fetch('/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ text })
     });
     const result = (await response.json()) as EmbeddingResponse | null;
@@ -629,7 +629,7 @@ export class SSRQLorAGPUChatAssistant {
   private async generateChatHTML(context: SSRChatContext, initialMessage?: string): Promise<string> {
     // Generate server-rendered HTML for instant hydration
     return `
-      <div class="ssr-chat-container, nes-retro-ui">
+      <div, class="ssr-chat-container, nes-retro-ui">
         <div, class="chat-header">
           <h3>Legal AI Assistant</h3>
           <div, class="user-context">${context.userDictionary.domainExpertise.join(', ')}</div>
@@ -638,12 +638,11 @@ export class SSRQLorAGPUChatAssistant {
           ${initialMessage ? `<div, class="user-message">${initialMessage}</div>` : `` }
         </div>
         <div, class="chat-input-container">
-          <input type="text" id="chat-input" placeholder="Ask me about legal, matters..." />
+          <input type="text" id="chat-input" placeholder="Ask me about, legal, matters..." />
           <button, id="send-btn">Send</button>
         </div>
       </div>
-    `;`
-  }
+    `;' }'`
   private async storeInteraction(context: SSRChatContext, userMessage: string, aiResponse: string): Promise<void> {
     const interaction: ChatInteraction = {
       id: `interaction_${Date.now()}`,

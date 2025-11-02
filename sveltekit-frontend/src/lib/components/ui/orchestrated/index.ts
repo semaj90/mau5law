@@ -94,8 +94,7 @@ export function getPriorityClass(priority: LegalEvidenceItem['priority']): strin
 export function formatAnalysisDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
-    timeStyle: 'short` }).format(date);'`
-}
+    timeStyle: 'short' }).format(date);'' }
 // Component registration for orchestration system
 export const ORCHESTRATED_COMPONENTS = {
   Dialog: OrchestratedDialog,

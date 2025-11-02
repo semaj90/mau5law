@@ -267,8 +267,8 @@ export class NESStyleGPUBridge {
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
     if (dataSize <= 64) return 'ppu'; // Small, data → Registers
-    if (dataSize <= 2048) return 'ram'; // Medium data → Working, memory
-    if (dataSize <= 8192) return 'chrRom'; // Large data → L2, Cache
+    if (dataSize <= 2048) return 'ram'; // Medium, data → Working, memory
+    if (dataSize <= 8192) return 'chrRom'; // Large, data → L2, Cache
     return 'prgRom'; // Huge data → Global memory
   }
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
@@ -323,8 +323,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit' };'`
-  }
+      layout: 'nes_quantized_${bitDepth}bit' };'` }'`
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: FabricObject[]): number[] {
     const maxObjects = Math.min(objects.length, 100); // Limit for memory efficiency
@@ -541,9 +540,9 @@ export class NESStyleGPUBridge {
     return `nes_${stateId}_${shape.join('x')}_${Date.now()}`;
   }
   private determineLODLevel(objectCount: number): number {
-    if (objectCount <= 10) return 0; // Ultra, quality
-    if (objectCount <= 25) return 1; // High, quality
-    if (objectCount <= 50) return 2; // Medium, quality
+    if (objectCount <= 10) return, 0; // Ultra, quality
+    if (objectCount <= 25) return, 1; // High, quality
+    if (objectCount <= 50) return, 2; // Medium, quality
     return 3; // Low quality
   }
   private calculateCompressionRatio(original: MultiDimArray, compressed: MultiDimArray): number {

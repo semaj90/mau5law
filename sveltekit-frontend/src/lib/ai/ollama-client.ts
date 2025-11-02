@@ -50,7 +50,7 @@ export class OllamaClient {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           prompt,
           model,
@@ -103,7 +103,7 @@ export class OllamaClient {
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
-        method: 'GET` });'`
+        method: 'GET' });'`'`
       if (!response.ok) {
         return {
           status: 'offline',

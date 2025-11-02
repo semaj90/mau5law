@@ -340,7 +340,7 @@ export const documentUploadMachine = createMachine(
       uploadError: { on: {, RETRY: [
             {,
               // use functional assign to ensure correct typing for ctx modifications (see retry logic)
-              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type, ctx
+              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly, type, ctx
               target: 'uploading', // Go back to uploading
               actions: assign(({ context }) => ({
                 // Changed from (ctx: DocumentUploadContext) to ({ context })
@@ -358,7 +358,7 @@ export const documentUploadMachine = createMachine(
       processingError: { on: {, RETRY: [
             {,
               target: 'processing',
-              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type, ctx
+              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly, type, ctx
               actions: assign(({ context }) => ({
                 // Changed from (ctx: DocumentUploadContext) to ({ context })
                 retryCount: context.retryCount + 1,
@@ -493,7 +493,7 @@ export const caseCreationMachine = createMachine(
     id: 'caseCreation',
     initial: 'idle',
     context: {
-      formData: null,
+     , formData: null,
       validationErrors: {},
       createdCase: null,
       relatedDocuments: [],
@@ -537,7 +537,7 @@ export const caseCreationMachine = createMachine(
           },
           AUTO_SAVE: 'autoSaving',
           VALIDATE: 'validating',
-          SUBMIT: 'validating` },'`
+          SUBMIT: `validating` },'`'`
         after: {
           5000: 'autoSaving', // Auto-save every 5 seconds
         }
@@ -578,8 +578,7 @@ export const caseCreationMachine = createMachine(
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in fieldErrors) {
                     if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
-                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array'
-                    }
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array` }'`
                   }
                   return cleanedErrors;
                 }
@@ -831,8 +830,7 @@ export const searchMachine = createMachine(
                 (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 }
             })
           },
-          onError: 'results` }'`
-      },
+          onError: 'results' }'` },'`
       error: { on: {, RETRY: 'searching',
           NEW_SEARCH: `idle` }
       }
@@ -1017,8 +1015,7 @@ export const aiAnalysisMachine = createMachine(
         }
       },
       completed: { on: {, NEW_ANALYSIS: 'idle',
-          RETRY_ANALYSIS: 'analyzing` }'`
-      },
+          RETRY_ANALYSIS: 'analyzing' }'` },'`
       error: { on: {, RETRY: 'analyzing',
           NEW_ANALYSIS: `idle` }
       }

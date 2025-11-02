@@ -362,8 +362,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       return json(
         {
           success: false,
-          error: 'Action parameter required'
-        },
+          error: 'Action parameter required` },'`
         { status: 400 }
       );
     }

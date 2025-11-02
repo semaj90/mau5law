@@ -4,9 +4,9 @@ Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Textarea } from '$lib/components/ui/textarea.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Textarea  from "$lib/components/ui/textarea.svelte";
   import {
     Cpu,
     Brain,
@@ -252,7 +252,7 @@ Showcases the service worker-based AI orchestration system
                   </div>
                 {/each}
               </div>
-              <Button.Root
+              <Button
                 variant="ghost"
                 size="sm"
                 class="w-full bits-btn bits-btn"
@@ -267,7 +267,7 @@ runDemoScenario(scenario)}
                   <Play class="h-4 w-4 mr-2" />
                   Run Demo
                 {/if}
-              </Button.Root>
+              </Button>
             </div>
           {/each}
         </div>
@@ -303,7 +303,7 @@ runDemoScenario(scenario)}
             />
           </div>
           <div class="flex gap-2">
-            <Button.Root
+            <Button
               onclick={submitCustomTask}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
@@ -315,10 +315,10 @@ runDemoScenario(scenario)}
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
-            </Button.Root>
-            <Button.Root class="bits-btn" variant="ghost" onclick={clearResults}>
+            </Button>
+            <Button class="bits-btn" variant="ghost" onclick={clearResults}>
               <RotateCcw class="h-4 w-4" />
-            </Button.Root>
+            </Button>
           </div>
         </div>
       </div>
@@ -331,9 +331,9 @@ runDemoScenario(scenario)}
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
                 Clear
-              </Button.Root>
+              </Button>
             {/if}
           </h3>
         </div>

@@ -232,7 +232,7 @@ export function getComponentBundleInfo() {
       legal: '~45KB',
       ai: '~38KB',
       gaming: '~22KB',
-      advanced: '~31KB` },'`
+      advanced: '~31KB' },'`'`
     totalEstimatedSize: '~151KB',
     treShakeableCore: true
   }

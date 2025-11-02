@@ -11,7 +11,7 @@
   import { cn } from '$lib/utils';
   import { authStore } from '$lib/stores/auth-store.svelte.js';
   // Client-side AI assistant chat widget
-  import { ClientSideAIChat } from '$lib/components/ai/ClientSideAIChat.svelte'; // Changed to named import
+  import  ClientSideAIChat  from "$lib/components/ai/ClientSideAIChat.svelte"; // Changed to named import
   interface Props {
     children: any;
     title?: string; // Added missing title property

@@ -170,15 +170,13 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       headers: {
         'X-Upload-ID': fileId,
         'X-File-Size': file.size.toString(),
-        'Cache-Control': `no-cache' }'`
-    });
+        'Cache-Control': 'no-cache' }'` });'`
   } catch (err) {
     console.error('Upload error:', err);'
     if (err instanceof Error && err.message.includes('400')) {
       throw error(400, err.message);
     }
-    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  }
+    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };
 // tighten the return type instead of `any`
 async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number; height: number } | null> {
@@ -275,8 +273,7 @@ async function triggerBackgroundProcessing(
     // })
   } catch (error) {
     console.error('Failed to trigger background processing:', error);
-    // Don't throw here as upload was successful'
-  }
+    // Don't throw here as upload was successful` }'`
 }
 // GET endpoint for upload status and history
 export const GET: RequestHandler = async ({ url }) => {
@@ -325,6 +322,5 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (err) {
     console.error('Upload status error:', err);'
-    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error' }`);'`
- }
+    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };

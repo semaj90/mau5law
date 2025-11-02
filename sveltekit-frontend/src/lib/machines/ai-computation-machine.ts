@@ -24,7 +24,7 @@ export interface AIComputationContext { userId: string;, sessionId: string;
     didYouMean: string[];
     othersSearched: string[];
   };
-  computationResults: ComputationResult[]; // <-- replaced any[] with, ComputationResult[]
+  computationResults: ComputationResult[]; // <-- replaced, any[] with, ComputationResult[]
   errorMessage?: string;
 }
 // Replace `any` with the concrete ComputationResult type
@@ -37,7 +37,7 @@ export type AIComputationEvent =
   | { type: 'NETWORK_ONLINE' }
   | { type: 'NETWORK_OFFLINE' }
   | { type: 'RABBITMQ_CONNECTED' }
-  | { type: 'RABBITMQ_DISCONNECTED` }'`
+  | { type: `RABBITMQ_DISCONNECTED` }'`'`
   | { type: `PROCESS_QUEUE` }
   | { type: 'GET_RECOMMENDATIONS'; context: string }
   | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray }
@@ -152,7 +152,7 @@ export const aiComputationMachine = createMachine({
           target: 'userIdle'
         },
         GET_RECOMMENDATIONS: {
-          target: 'loadingRecommendations` },'`
+          target: `loadingRecommendations` },'`'`
         NETWORK_OFFLINE: { actions: assign({, isOnline: false
           })
         },

@@ -79,7 +79,6 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Error processing AI prompt:', error);
-    return json({ error: 'Failed to process AI prompt` }, { status: 500 });'`
-  }
+    return json({ error: 'Failed to process AI prompt' }, { status: 500 });'' }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

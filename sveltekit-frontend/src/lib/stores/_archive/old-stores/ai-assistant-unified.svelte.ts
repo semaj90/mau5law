@@ -60,7 +60,7 @@ class AIAssistantUnified {
       // Call AI endpoint
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({, messages: this.state.messages.map(m => ({, role: m.role,
             content: m.content
           })),

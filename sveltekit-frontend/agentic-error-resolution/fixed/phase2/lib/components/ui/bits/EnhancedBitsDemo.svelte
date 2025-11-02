@@ -143,33 +143,33 @@
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Standard Variants</h3>
             <div class="space-y-3">
-              <Button.Root class="bits-btn" variant="default">Default Button</Button.Root>
-              <Button.Root class="bits-btn" variant="primary">Primary Action</Button.Root>
-              <Button.Root class="bits-btn" variant="default">YoRHa Legal</Button.Root>
-              <Button.Root class="bits-btn" variant="ghost">Outline Style</Button.Root>
+              <Button class="bits-btn" variant="default">Default Button</Button>
+              <Button class="bits-btn" variant="primary">Primary Action</Button>
+              <Button class="bits-btn" variant="default">YoRHa Legal</Button>
+              <Button class="bits-btn" variant="ghost">Outline Style</Button>
             </div>
           </div>
           <!-- Legal AI Variants -->
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Legal AI Variants</h3>
             <div class="space-y-3">
-              <Button.Root class="bits-btn" variant="crimson">Critical Evidence</Button.Root>
-              <Button.Root class="bits-btn" variant="gold">Case Analysis</Button.Root>
-              <Button.Root class="bits-btn" variant="primary">Review Required</Button.Root>
-              <Button.Root class="bits-btn" variant="ghost" loading>Processing...</Button.Root>
+              <Button class="bits-btn" variant="crimson">Critical Evidence</Button>
+              <Button class="bits-btn" variant="gold">Case Analysis</Button>
+              <Button class="bits-btn" variant="primary">Review Required</Button>
+              <Button class="bits-btn" variant="ghost" loading>Processing...</Button>
             </div>
           </div>
           <!-- Priority Buttons -->
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Priority Actions</h3>
             <div class="space-y-3">
-              <Button.Root class="bits-btn" variant="destructive">
+              <Button class="bits-btn" variant="destructive">
                 <AlertTriangle class="w-4 h-4 mr-2" />
                 Critical Alert
-              </Button.Root>
-              <Button.Root class="bits-btn" variant="ghost">High Priority</Button.Root>
-              <Button.Root class="bits-btn" variant="secondary">Medium Priority</Button.Root>
-              <Button.Root class="bits-btn" variant="ghost">Low Priority</Button.Root>
+              </Button>
+              <Button class="bits-btn" variant="ghost">High Priority</Button>
+              <Button class="bits-btn" variant="secondary">Medium Priority</Button>
+              <Button class="bits-btn" variant="ghost">Low Priority</Button>
             </div>
           </div>
         </div>
@@ -257,17 +257,17 @@
           Modal dialogs optimized for legal workflows with evidence analysis and case management features.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button.Root class="bits-btn" variant="default" onclick={() => (dialogOpen = true)}>Case Management</Button.Root>
-          <Button.Root class="bits-btn" variant="primary" onclick={() => (evidenceDialogOpen = true)}>
+          <Button class="bits-btn" variant="default" onclick={() => (dialogOpen = true)}>Case Management</Button>
+          <Button class="bits-btn" variant="primary" onclick={() => (evidenceDialogOpen = true)}>
             Evidence Upload
-          </Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" onclick={runAIAnalysis} loading={aiAnalysisLoading}>
+          </Button>
+          <Button class="bits-btn" variant="ghost" onclick={runAIAnalysis} loading={aiAnalysisLoading}>
             {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
               AI Case Analysis
             {/if}
-          </Button.Root>
+          </Button>
         </div>
         <!-- Case Management Dialog -->
         <Dialog bind:open={dialogOpen} size="lg">
@@ -319,8 +319,8 @@
               </div>
             </div>
             <div class="bits-dialog-footer">
-              <Button.Root class="bits-btn" variant="ghost" onclick={() => (dialogOpen = false)}>Cancel</Button.Root>
-              <Button.Root class="bits-btn" variant="primary">Create Case</Button.Root>
+              <Button class="bits-btn" variant="ghost" onclick={() => (dialogOpen = false)}>Cancel</Button>
+              <Button class="bits-btn" variant="primary">Create Case</Button>
             </div>
           </div>
         </Dialog>
@@ -362,10 +362,10 @@
                 {/if}
             </div>
             <div class="bits-dialog-footer">
-              <Button.Root class="bits-btn" variant="ghost" onclick={() => (evidenceDialogOpen = false)}>Cancel</Button.Root>
-              <Button.Root class="bits-btn" variant="primary" onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+              <Button class="bits-btn" variant="ghost" onclick={() => (evidenceDialogOpen = false)}>Cancel</Button>
+              <Button class="bits-btn" variant="primary" onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                 Upload Evidence
-              </Button.Root>
+              </Button>
             </div>
           </div>
         </Dialog>
@@ -410,8 +410,8 @@
                 {#if selectedEvidenceCard === item.id}
                   <div class="border-t border-nier-border-secondary pt-3 mt-3">
                     <div class="flex gap-2">
-                      <Button.Root size="sm" variant="ghost" class="flex-1 bits-btn bits-btn">Review</Button.Root>
-                      <Button.Root size="sm" variant="primary" class="flex-1 bits-btn bits-btn">Analyze</Button.Root>
+                      <Button size="sm" variant="ghost" class="flex-1 bits-btn bits-btn">Review</Button>
+                      <Button size="sm" variant="primary" class="flex-1 bits-btn bits-btn">Analyze</Button>
                     </div>
                   {/if}
               </div>
@@ -437,9 +437,9 @@
                 </p>
               </div>
               <div class="flex gap-2">
-                <Button.Root class="bits-btn" size="sm" variant="primary">Accept Analysis</Button.Root>
-                <Button.Root class="bits-btn" size="sm" variant="ghost">Request Review</Button.Root>
-                <Button.Root class="bits-btn" size="sm" variant="ghost">Generate Report</Button.Root>
+                <Button class="bits-btn" size="sm" variant="primary">Accept Analysis</Button>
+                <Button class="bits-btn" size="sm" variant="ghost">Request Review</Button>
+                <Button class="bits-btn" size="sm" variant="ghost">Generate Report</Button>
               </div>
             </div>
           </div>

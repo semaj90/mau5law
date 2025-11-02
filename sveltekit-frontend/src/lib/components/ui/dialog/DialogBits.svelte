@@ -8,20 +8,20 @@
   } // Ensure the dialog content (a visible non-interactive element that has a click // handler) also responds to keyboard events to satisfy a11y rules. function handleContentKeydown(event: KeyboardEvent) { // Prevent Enter/Space from triggering outer handlers and stop propagation if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') { event.preventDefault(); }
     event.stopPropagation(); }
 
-</script> <svelte:window, onkeydown={ handleKeydown } /> {#if $$slots.trigger} <!-- accessible trigger: use native button (keyboard support + role, handled) --> <button type="button"
+</script> <svelte:window, onkeydown={ handleKeydown } /> {#if $$slots.trigger} <!-- accessible trigger: use native button (keyboard, support + role, handled) --> <button, type="button"
     class="inline-block"
     aria-expanded={ open } aria-controls={ dialogId } onclick={() => (open = !open)} >
-    <slot, name="trigger" /> </button> {/if} {#if open} <div class="fixed inset-0 z-40 flex items-center, justify-center" role="presentation"> <!-- overlay --> <div class="fixed inset-0 bg-black/50"
+    <slot, name="trigger" /> </button> {/if} {#if open} <div class="fixed inset-0 z-40 flex, items-center, justify-center" role="presentation"> <!-- overlay --> <div class="fixed inset-0, bg-black/50"
       transitionfade={{ duration 200 }} role="button"
       tabindex="0"
       aria-label="Close dialog"
-      onclick={ handleOutsideClick } onkeydown={ handleOverlayKeydown } ></div> <!-- content --> <div id={ dialogId } class={ dialogClasses } role="dialog"
+      onclick={ handleOutsideClick } onkeydown={ handleOverlayKeydown } ></div> <!-- content --> <div, id={ dialogId } class={ dialogClasses } role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'dialog-title': undefined} aria-describedby={description ? 'dialog-desc': undefined} tabindex="0"
       onclick={event => event.stopPropagation()} onkeydown={ handleContentKeydown } transitionscale={{ duration 180, start: 0.96 }} >
       <!-- header --> {#if title || description} <div class="flex items-start justify-between gap-4, mb-4"> <div> {#if title} <h2 id="dialog-title" class="text-lg, font-semibold"> { title } </h2> {/if} {#if description} <p id="dialog-desc" class="mt-1 text-sm text-slate-600, dark:text-slate-400"> { description } </p> {/if} </div> <!-- close, button --> <button type="button"
             class="ml-4 inline-flex items-center justify-center rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none"
             onclick={ close } aria-label="Close dialog"
-          > <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24, 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12, 12"></path> </svg> </button> {/if} <!-- body --> <div, class="dialog-body"> <slot /> </div> <!-- footer --> {#if $$slots.footer} <div, class="mt-4"> <slot, name="footer" /> {/if} </div> {/if} <style> /* minimal, component-scoped adjustments */:global(.dialog-body) { color: var(--text-color, #0f172a); }
+          > <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0, 24, 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6, 6l12, 12"></path> </svg> </button> {/if} <!-- body --> <div, class="dialog-body"> <slot /> </div> <!-- footer --> {#if $$slots.footer} <div, class="mt-4"> <slot, name="footer" /> {/if} </div> {/if} <style> /* minimal, component-scoped adjustments */:global(.dialog-body) { color: var(--text-color, #0f172a); }
   /* Global scrollbar styling for dialogs (properly inside the same <style> block) */:global(.legal-ai-dialog *::-webkit-scrollbar-thumb) { background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6)); border-radius: 4px; }
 </style>

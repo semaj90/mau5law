@@ -75,7 +75,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     const frontendData = await request.json();
     const { firstName, lastName, email } = frontendData;
     if (!email) {
-      return json({ error: 'Email is required' }, { status: 400 });
+      return json({ error: 'Email is required` }, { status: 400 });'`
     }
 
     const authUser = locals.user;
@@ -110,7 +110,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     });
 
     if (!updatedUser) {
-      return json({ error: `Failed to update profile` }, { status: 500 });
+      return json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
     // Transform snake_case database result to camelCase for frontend
@@ -120,13 +120,12 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       user: {
         ...frontendUser,
         avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg` },'`
-      message: `Profile updated successfully` });
+      message: `Profile updated successfully' });'`
   } catch (error: any) {
     if (error instanceof Error) {
       console.error('Profile update error:', error.message);'
     } else {
-      console.error('Profile update error: ', error);'
-    }
+      console.error('Profile update error: ', error);` }`'
     return json({ error: `Failed to update profile` }, { status: 500 });
   }
 };

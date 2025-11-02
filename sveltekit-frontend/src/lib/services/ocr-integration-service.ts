@@ -81,8 +81,7 @@ export class OCRIntegrationService {
   }
 
   private handleWorkerError(error: ErrorEvent) {
-    console.error('OCR Worker error:', error);'
-  }
+    console.error('OCR Worker error:', error);` }`'
 
   private async initializeClientProcessor() {
     try {
@@ -677,7 +676,7 @@ export class OCRIntegrationService {
     try {
       const response = await fetch('/api/v1/cache/redis', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , action: 'get',
           key: cacheKey

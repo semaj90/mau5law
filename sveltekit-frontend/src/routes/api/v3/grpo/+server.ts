@@ -109,7 +109,7 @@ function validateGrpoThinkingResponse(data: Partial<GrpoThinkingResponse>): { va
     return { valid: false, error: 'thinkingChain is required' };
   }
   if (data.thinkingChain.length < 50) {
-    return { valid: false, error: 'thinkingChain must be at least 50 characters` };'`
+    return { valid: false, error: 'thinkingChain must be at least 50 characters' };''
   }
   if (data.thinkingChain.length > 50000) {
     return { valid: false, error: `thinkingChain too long (max 50000 characters)` };

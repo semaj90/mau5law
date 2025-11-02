@@ -242,7 +242,7 @@ export class VectorSuggestionsService {
             source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
-            category: 'similarity_based' }
+            category: 'similarity_based` }'`
         });
       }
 
@@ -257,7 +257,7 @@ export class VectorSuggestionsService {
            , source: 'vector_search',
             sourceDocumentId: ctx.documentId,
             similarityScore: ctx.similarityScore,
-            category: 'pattern_matching' }
+            category: 'pattern_matching` }'`
         });
       }
     }
@@ -286,7 +286,7 @@ export class VectorSuggestionsService {
         metadata: {
          , source: 'graph_context',
           contextNodes: evidenceNodes.map(n => n.id),
-          category: 'case_integration' }
+          category: 'case_integration` }'`
       });
 
       const evidenceTypes = new Set(evidenceNodes.map(n => n.properties.evidenceType).filter(Boolean));
@@ -300,7 +300,7 @@ export class VectorSuggestionsService {
             source: 'graph_context',
             contextNodes: evidenceNodes.map(n => n.id),
             keywords: Array.from(evidenceTypes),
-            category: 'evidence_analysis' }
+            category: 'evidence_analysis` }'`
         });
       }
     }

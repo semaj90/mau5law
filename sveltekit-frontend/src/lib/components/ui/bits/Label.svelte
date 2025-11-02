@@ -38,7 +38,7 @@ NES-styled label with legal AI theming
     {@render children()}
   {/if}
   {#if required}
-    <span class="text-red-500, ml-1" aria-label="required">*</span>
+    <span, class="text-red-500, ml-1" aria-label="required">*</span>
   {/if}
 </label>
 <style>

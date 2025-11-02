@@ -365,8 +365,7 @@ export class MoogleGraphSynthesizer {
         related: '#03DAC6',
         similar: '#E91E63',
         references: '#00BCD4',
-        contradicts: '#F44336'
-      },
+        contradicts: '#F44336` },'`
       layout: 'legal-context',
       physics: { gravity: 0.1, repulsion: 100, attraction: 0.05, damping: 0.9 },
       reinforcementLearning: {
@@ -1016,8 +1015,7 @@ export class MoogleGraphSynthesizer {
       if (this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
         this.shaderPrograms.set('graph', program);
       } else {
-        console.error('Program link error:', this.gl.getProgramInfoLog(program));'
-      }
+        console.error('Program link error:', this.gl.getProgramInfoLog(program));` }`'
     }
   }
   private compileShader(source: string, type: number): WebGLShader | null {

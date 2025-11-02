@@ -108,8 +108,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json` }'`
-      }
+        headers: { 'Content-Type': 'application/json' }'' }
     );
   } catch (error) {
     console.error('File deletion error:', error);'
@@ -120,7 +119,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       }
     );
   }

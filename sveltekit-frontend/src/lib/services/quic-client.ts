@@ -216,7 +216,7 @@ class QUICClient {
         headers: {
           'Content-Type': 'application/json',
           'X-Stream-ID': streamId,
-          Accept: 'text/plain` },'`
+          Accept: `text/plain` },'`'`
         body: JSON.stringify({
          , content: documentContent,
           document_type: 'legal',
@@ -364,8 +364,7 @@ class QUICClient {
       }
     } catch (err: any) {
       const errObj = err instanceof Error ? err : new Error(String(err));
-      console.error(`Failed to process chunk: ', errObj);'`
-    }
+      console.error(`Failed to process chunk: ', errObj);'` }
   }
 
   // Create new stream
@@ -506,8 +505,7 @@ class QUICClient {
         rtt: smoothed
       }));
     } catch {
-      // keep method safe — don't throw from metric updates'
-    }
+      // keep method safe — don't throw from metric updates` }'`
   }
 
   // Schedule reconnection with exponential backoff

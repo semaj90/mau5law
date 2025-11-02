@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import Button from '$lib/components/ui/Button.svelte';
   // Type definitions
   interface User {
@@ -453,7 +453,7 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button.Root class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button.Root>
+          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
@@ -467,50 +467,50 @@
     </div>
     <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
-        <Button.Root
+        <Button
           class="bits-btn"
           onclick={runAuthenticatedCRUDTest}
           disabled={isLoading || !isAuthenticated}
           variant="default"
         >
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
-        </Button.Root>
-        <Button.Root class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
+        </Button>
+        <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           onclick={testAuthenticatedGET}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
           📋 Test GET
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           onclick={testAuthenticatedPOST}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
           📝 Test POST
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           onclick={() => testAuthenticatedPUT()}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
           ✏️ Test PUT
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           onclick={() => testAuthenticatedDELETE()}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
           🗑️ Test DELETE
-        </Button.Root>
-        <Button.Root class="bits-btn" onclick={clearResults} variant="ghost">🧹 Clear Results</Button.Root>
+        </Button>
+        <Button class="bits-btn" onclick={clearResults} variant="ghost">🧹 Clear Results</Button>
       </div>
       {#if !isAuthenticated}
         <p class="text-sm text-gray-500 mt-2">⚠️ Authentication required to run tests. Please log in first.</p>

@@ -198,10 +198,9 @@ class ViteErrorLogger {
   }
   // Generate text suitable for embedding
   private generateEmbeddingText(errorLog: ViteErrorLog): string {
-    return `${errorLog.type} error in ${errorLog.file || 'unknown file'}: ${errorLog.message}.`
+    return `${errorLog.type} error in ${errorLog.file || 'unknown file` }: ${errorLog.message}.`'`
 Context: SvelteKit legal AI platform, Svelte 5, ${errorLog.context?.url || 'unknown URL'}.
-Stack: ${errorLog.stack || 'No stack trace` }`;'
-  }
+Stack: ${errorLog.stack || 'No stack trace` }`;` }'`
   // Flush queued errors when connection is restored
   private flushErrorQueue() {
     while (this.errorQueue.length > 0) {

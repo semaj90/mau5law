@@ -318,8 +318,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Citation ID is required'
-        },
+          error: 'Citation ID is required` },'`
         { status: 400 }
       );
     }

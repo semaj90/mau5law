@@ -106,10 +106,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const iterations = Number(body?.iterations ?? 100);
 
     if (!test_type || typeof test_type !== 'string') {
-      return json({ error: `test_type required` }, { status: 400 });
+      return json({ error: 'test_type required' }, { status: 400 });
     }
 
-    // use explicit TestResponse type instead of `any'`
+    // use explicit TestResponse type instead of `any'`'
     const results: TestResponse = {
       test_type,
       iterations,
@@ -125,12 +125,12 @@ export const POST: RequestHandler = async ({ request }) => {
           results.results = {
             simd_available: !!health,
             health: health ?? null,
-            message: health ? 'SIMD service is operational' : 'SIMD service did not return health` };'`
+            message: health ? 'SIMD service is operational' : 'SIMD service did not return health' };'`'`
         } catch (error: any) {
           results.results = {
             simd_available: false,
             error: String(error),
-            message: `SIMD service unavailable - start; with: cd go-microservice && go run simd-server.go` };
+            message: `SIMD service unavailable - start; with: cd go-microservice && go run simd-server.go' };'`
         }
         break;
       }
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } catch (error: any) {
             benchmarkResults[size] = {
               error: String(error),
-              message: `SIMD benchmark failed - service may be unavailable` };
+              message: `SIMD benchmark failed - service may be unavailable' };'`
           }
         }
         results.results = benchmarkResults;
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       default: return json(
-          { error: `Invalid test_type., Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations` },
+          { error: 'Invalid test_type., Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations' },
           { status: 400 }
         );
     }

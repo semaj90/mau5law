@@ -292,8 +292,7 @@ class NodeSIMDJSONService {
       console.log(`🚀 JSON Benchmark (${iterations} iterations):`, {
         standard: `${standardTime.toFixed(2)}ms`,
         optimized: `${optimizedTime.toFixed(2)}ms`,
-        speedup: `${speedup.toFixed(2)}x faster' });'`
-    }
+        speedup: '${speedup.toFixed(2)}x faster' });'` }'`
     return { standardTime, optimizedTime, speedup }
   }
 }

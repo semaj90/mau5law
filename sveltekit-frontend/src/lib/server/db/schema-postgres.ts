@@ -74,7 +74,7 @@ export const users = pgTable(
       .primaryKey()
       .notNull(),
     email: varchar('email', { length: 255 }).notNull(),
-    emailVerified: timestamp('email_verified', { mode: 'string` }),'`
+    emailVerified: timestamp('email_verified', { mode: `string` }),'`'`
     hashedPassword: text('hashed_password'),
     name: text('name'),
     firstName: varchar('first_name', { length: 100 }),
@@ -122,7 +122,7 @@ export const emailVerificationCodes = pgTable(
     userId: uuid('user_id').notNull(),
     email: varchar('email', { length: 255 }).notNull(),
     code: varchar('code', { length: 8 }).notNull(),
-    expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string` }).notNull()'`
+    expiresAt: timestamp('expires_at', { withTimezone: true, mode: `string` }).notNull()'`'`
   },
   table => ({
     foreignKeys: [
@@ -197,7 +197,7 @@ export const criminals = pgTable(
     lastName: varchar('last_name', { length: 100 }).notNull(),
     middleName: varchar('middle_name', { length: 100 }),
     aliases: jsonb('aliases').default([]).notNull(),
-    dateOfBirth: timestamp('date_of_birth', { mode: 'string` }),'`
+    dateOfBirth: timestamp('date_of_birth', { mode: `string` }),'`'`
     placeOfBirth: varchar('place_of_birth', { length: 200 }),
     address: text('address'),
     phone: varchar('phone', { length: 20 }),
@@ -253,7 +253,7 @@ export const evidence = pgTable(
     hash: varchar('hash', { length: 128 }),
     tags: jsonb('tags').default([]).notNull(),
     chainOfCustody: jsonb('chain_of_custody').default([]).notNull(),
-    collectedAt: timestamp('collected_at', { mode: 'string` }),'`
+    collectedAt: timestamp('collected_at', { mode: `string` }),'`'`
     collectedBy: varchar('collected_by', { length: 255 }),
     location: text('location'),
     labAnalysis: jsonb('lab_analysis').default({}).notNull(),
@@ -327,7 +327,7 @@ export const legalDocuments = pgTable(
     foreignKey({,
       columns: [table.caseId],
       foreignColumns: [cases.id],
-      name: 'legal_documents_case_id_cases_id_fk` }).onDelete('cascade'),'`
+      name: `legal_documents_case_id_cases_id_fk` }).onDelete('cascade'),'`'`
     foreignKey({
       columns: [table.evidenceId],
       foreignColumns: [evidence.id],
@@ -349,7 +349,7 @@ export const caseActivities = pgTable('case_activities', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   scheduledFor: timestamp('scheduled_for', { mode: 'string' }),
-  completedAt: timestamp('completed_at', { mode: 'string` }),'`
+  completedAt: timestamp('completed_at', { mode: `string` }),'`'`
   status: activityStatusEnum('status').default('pending').notNull(),
   priority: casePriorityEnum('priority').default('medium').notNull(),
   assignedTo: uuid('assigned_to'),
@@ -372,7 +372,7 @@ export const attachmentVerifications = pgTable(
     verifiedBy: uuid('verified_by').notNull(),
     verificationStatus: verificationStatusEnum('verification_status').default('pending').notNull(),
     verificationNotes: text('verification_notes'),
-    verifiedAt: timestamp('verified_at', { mode: 'string` }).defaultNow().notNull(),'`
+    verifiedAt: timestamp('verified_at', { mode: `string` }).defaultNow().notNull(),'`'`
     createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()
   },
@@ -405,7 +405,7 @@ export const canvasAnnotations = pgTable(
     parentAnnotationId: uuid('parent_annotation_id'),
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -433,7 +433,7 @@ export const canvasStates = pgTable(
     isDefault: boolean('is_default').default(false),
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -466,7 +466,7 @@ export const aiReports = pgTable(
     isActive: boolean('is_active').default(true),
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -510,7 +510,7 @@ export const citations = pgTable(
     foreignKey({,
       columns: [table.caseId],
       foreignColumns: [cases.id],
-      name: 'citations_case_id_cases_id_fk` }).onDelete('cascade'),'`
+      name: `citations_case_id_cases_id_fk` }).onDelete('cascade'),'`'`
     foreignKey({
       columns: [table.documentId],
       foreignColumns: [legalDocuments.id],
@@ -539,7 +539,7 @@ export const reports = pgTable(
     metadata: jsonb('metadata').default({}).notNull(),
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -579,7 +579,7 @@ export const savedReports = pgTable(
     lastExported: timestamp('last_exported', { mode: 'string' }),
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -636,7 +636,7 @@ export const personsOfInterest = pgTable(
     position: jsonb('position').default({}).notNull(),
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -665,7 +665,7 @@ export const hashVerifications = pgTable(
     verifiedBy: uuid('verified_by'),
     verifiedAt: timestamp('verified_at', { mode: 'string' }).defaultNow(),
     notes: text('notes'),
-    createdAt: timestamp('created_at', { mode: 'string` }).defaultNow().notNull()'`
+    createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -860,7 +860,7 @@ export const legalAnalysisSessions = pgTable(
     processingTime: integer('processing_time'),
     isActive: boolean('is_active').default(true),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -897,7 +897,7 @@ export const legalResearch = pgTable(
     dataSource: varchar('data_source', { length: 50 }),
     isBookmarked: boolean('is_bookmarked').default(false),
     createdBy: uuid('created_by'),
-    createdAt: timestamp('created_at', { mode: 'string` }).defaultNow().notNull()'`
+    createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -943,7 +943,7 @@ export const caseScores = pgTable(
     recommendations: jsonb('recommendations').default([]).notNull(),
     calculatedBy: uuid('calculated_by'),
     calculatedAt: timestamp('calculated_at', { mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string` }).defaultNow().notNull()'`
+    updatedAt: timestamp('updated_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -978,7 +978,7 @@ export const userAiQueries = pgTable(
     metadata: jsonb('metadata').default({}).notNull(),
     isSuccessful: boolean('is_successful').default(true).notNull(),
     errorMessage: text('error_message'),
-    createdAt: timestamp('created_at', { mode: 'string` }).defaultNow().notNull()'`
+    createdAt: timestamp('created_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -1059,7 +1059,7 @@ export const conversationSessions = pgTable(
     userId: uuid('user_id').notNull(),
     caseId: uuid('case_id'),
     startedAt: timestamp('started_at', { mode: 'string' }).defaultNow().notNull(),
-    lastActiveAt: timestamp('last_active_at', { mode: 'string` }).defaultNow().notNull(),'`
+    lastActiveAt: timestamp('last_active_at', { mode: `string` }).defaultNow().notNull(),'`'`
     turnCount: integer('turn_count').default(0).notNull(),
     currentHmmState: integer('current_hmm_state').default(0).notNull(),
     confidence: numeric('confidence', { precision: 5, scale: 4 }).default('0.0').notNull(),
@@ -1128,7 +1128,7 @@ export const extractedEntities = pgTable(
     endPos: integer('end_pos'),
     context: text('context'),
     metadata: jsonb('metadata').default({}).notNull(),
-    extractedAt: timestamp('extracted_at', { mode: 'string` }).defaultNow().notNull()'`
+    extractedAt: timestamp('extracted_at', { mode: `string` }).defaultNow().notNull()'`'`
   },
   table => [
     foreignKey({,
@@ -1233,7 +1233,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: 'leadProsecutor' }),
   casesCreated: many(cases, { relationName: 'createdBy' }),
   evidenceUploaded: many(evidence),
-  activitiesAssigned: many(caseActivities, { relationName: 'assignedTo` }),'`
+  activitiesAssigned: many(caseActivities, { relationName: `assignedTo` }),'`'`
   activitiesCreated: many(caseActivities, { relationName: `createdBy` }),
   criminalsCreated: many(criminals),
   sessions: many(sessions)

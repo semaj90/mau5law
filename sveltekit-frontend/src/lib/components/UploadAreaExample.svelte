@@ -1,6 +1,6 @@
 <script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { UploadArea } from './UploadArea.svelte';
+  import  UploadArea  from "./UploadArea.svelte";
 
   let uploadComponent: any = null;
   let uploadStatus = $state<string>('');
@@ -145,12 +145,12 @@
         </div>
       </div>
       <!-- Upload, Component -->
-      <!-- Note: UploadArea now accepts `maxFiles` (exported, prop) -->
+      <!-- Note: UploadArea now, accepts `maxFiles` (exported, prop) -->
       <UploadArea
         bind:this={uploadComponent}
         {maxFiles}
         multiple={true}
-        <!-- removed: uploadEndpoint="/api/upload/" to avoid Props typing, error -->
+        <!-- removed: uploadEndpoint="/api/upload/" to avoid Props, typing, error -->
         acceptedTypes=".pdf,.jpg,.jpeg,.png,.mp4,.avi,.mov,.mp3,.wav"
         allowedMimeTypes={[
           'application/pdf',
@@ -170,7 +170,7 @@
         <div, class="space-y-4" role="status">
           <i, class="space-y-4"></i>
           {uploadStatus}
-          <button type="button" class="space-y-4" aria-label="Clear, status" onclick={() => clearStatus()}>Clear</button>
+          <button, type="button" class="space-y-4" aria-label="Clear, status" onclick={() => clearStatus()}>Clear</button>
         {/if}
     </div>
     <div, class="space-y-4">

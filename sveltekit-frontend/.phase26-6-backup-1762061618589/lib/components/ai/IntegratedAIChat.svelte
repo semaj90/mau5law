@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
-  import { Badge } from '$lib/components/ui/Badge.svelte';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
+  import  Badge  from "$lib/components/ui/Badge.svelte";
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
   import { enhancedRAGClient } from '$lib/services/enhanced-rag-client';
   import { browser } from '$app/environment';
   interface Message {

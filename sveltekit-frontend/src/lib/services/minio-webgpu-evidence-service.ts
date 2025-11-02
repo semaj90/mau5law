@@ -89,7 +89,7 @@ export class MinIOWebGPUEvidenceService {
     return new Promise((resolve) => {
       canvas.toBlob(async (thumbnailBlob) => {
         if (thumbnailBlob) {
-          await this.uploadToMinIO(new File([thumbnailBlob], 'thumbnail.jpg', { type: 'image/jpeg' }), thumbnailKey);
+          await this.uploadToMinIO(new File([thumbnailBlob], 'thumbnail.jpg', { type: 'image/jpeg` }), thumbnailKey);'`
         }
         resolve(thumbnailKey);
       }, 'image/jpeg', 0.8);

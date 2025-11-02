@@ -1,10 +1,10 @@
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { useChatActor, chatActions } from '\/stores/chat.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/bits/Input.svelte';
-  import { serviceStatus } from '\/stores/chat.svelte';
+  import  useChatActor, chatActions  from "\/stores/chat.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Input  from "$lib/components/ui/bits/Input.svelte";
+  import  serviceStatus  from "\/stores/chat.svelte";
   // Use the XState machine through the store
   const actor = useChatActor();
   const stateStore = actor.state;
@@ -37,11 +37,11 @@
     // Add any initialization here
   });
 </script>
-<div class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8, nes-container">
-  <div class="flex items-center justify-between border-b, p-4">
+<div class="flex flex-col h-[70vh] max-w-3xl mx-auto, my-8, nes-container">
+  <div class="flex items-center justify-between, border-b, p-4">
     <div>
-      <h2 class="text-xl, font-semibold">Legal AI Assistant</h2>
-      <p class="text-sm nes-text, is-disabled">
+      <h2, class="text-xl, font-semibold">Legal AI Assistant</h2>
+      <p class="text-sm, nes-text, is-disabled">
         {#if $serviceStatus.ollama === 'connected'}
           <span, class="text-green-500">●</span> AI Connected
         {:else if $serviceStatus.ollama === 'error'}
@@ -51,10 +51,10 @@
         {/if}
       </p>
     </div>
-    <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button.Root>
+    <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
   </div>
   <!-- Chat, messages -->
-  <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4, space-y-4">
+  <div bind:this={chatContainer} class="flex-1 overflow-y-auto, p-4, space-y-4">
     {#each $stateStore.context.messages as message, i (message.id)}
       <div, class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
         <div, class="message-bubble">
@@ -66,15 +66,15 @@
       </div>
     {/each}
     {#if $stateStore.matches('error')}
-      <div class="chat-message, error" aria-live="polite" role="alert">
-        <div class="message-bubble, error-bubble" aria-live="polite" role="alert">
+      <div, class="chat-message, error" aria-live="polite" role="alert">
+        <div, class="message-bubble, error-bubble" aria-live="polite" role="alert">
           <p>Error: {$stateStore.context.error?.message || 'Unknown error'}</p>
           <p>Please try again.</p>
         </div>
       {/if}
   </div>
   <!-- Input, area -->
-  <div class="border-t, p-4">
+  <div, class="border-t, p-4">
     <form
       onsubmit={e => {
         e.preventDefault();
@@ -89,9 +89,9 @@
         disabled={$stateStore.matches('loading')}
         class="flex-1"
       />
-      <Button.Root class="bits-btn" type="submit" disabled={$stateStore.matches('loading') || !userInput.trim()}>
+      <Button class="bits-btn" type="submit" disabled={$stateStore.matches('loading') || !userInput.trim()}>
         {$stateStore.matches('loading') ? 'Thinking...' : 'Send'}
-      </Button.Root>
+      </Button>
     </form>
   </div>
 </div>

@@ -307,8 +307,7 @@ export const actions: Actions = {
         default:
           tempMetadata = {
             ...tempMetadata,
-            kind: evidenceType ?? 'UNKNOWN` };'`
-      }
+            kind: evidenceType ?? 'UNKNOWN' };'` }'`
 
       // 9) Final metadata composition - prefer undefined over null for optional fields
       const finalMetadata: FinalEvidenceMetadata = {

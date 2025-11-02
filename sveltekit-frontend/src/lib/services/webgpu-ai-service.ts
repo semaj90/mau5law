@@ -128,7 +128,7 @@ export class WebGPUAIService {
         success: false,
         error: String(error || 'unknown error'),
         processingTime,
-        source: 'error' };
+        source: 'error` };'`
       pendingTask.reject(new Error(String(error || 'worker error')));
       this.pendingTasks.delete(taskId);
       console.error(`❌ AI Task failed: ${taskId} - ${error}`);
@@ -200,7 +200,7 @@ export class WebGPUAIService {
         citations,
         thoroughCheck: options.thoroughCheck || false
       },
-      priority: options.priority || 'low' };
+      priority: options.priority || 'low` };'`
     return this.processTask(task);
   }
 
@@ -420,7 +420,7 @@ export class WebGPUAIService {
         return {
           ...baseConfig,
           model: 'gemma3-legal',
-          prompt: 'Analyze this legal document with ${task.data.analysisType || 'basic' } analysis level`,'`
+          prompt: 'Analyze this legal document with ${task.data.analysisType || 'basic` } analysis level`,'`'`
           temperature: 0.3
         };
       case 'evidence-review':
@@ -440,7 +440,7 @@ export class WebGPUAIService {
         return {
           ...baseConfig,
           model: 'gemma3-legal',
-          prompt: 'Detect patterns and anomalies using ${task.data.analysisDepth || 'surface' } analysis`,'`
+          prompt: 'Detect patterns and anomalies using ${task.data.analysisDepth || 'surface` } analysis`,'`'`
           temperature: 0.1
         };
       case 'document-processing':
@@ -507,8 +507,7 @@ export class WebGPUAIService {
         try {
           callback(data);
         } catch (error) {
-          console.error('❌ Event listener error:', error);'
-        }
+          console.error('❌ Event listener error:', error);` }`'
       });
     }
   }

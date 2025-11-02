@@ -1,15 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Label } from '$lib/components/ui/label.svelte';
-  import { Progress } from '$lib/components/ui/progress.svelte';
-  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Label  from "$lib/components/ui/label.svelte";
+  import  Progress  from "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription, AlertTitle  from "$lib/components/ui/alert.svelte";
   import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
-  import { FeedbackIntegration } from '$lib/components/feedback/FeedbackIntegration.svelte';
+  import  FeedbackIntegration  from "$lib/components/feedback/FeedbackIntegration.svelte";
 
   // Replace Svelte 5 $state runes with plain typed local variables to avoid parsing issues during migration.
   let files: FileList | null = null;
@@ -135,41 +135,41 @@ import type { Document } from '$lib/types';
   context={{ component: 'FileUpload' }}
   let:feedback
 >
-  <div class="w-full max-w-2xl mx-auto, nes-container">
+  <div class="w-full max-w-2xl, mx-auto, nes-container">
     <div, class="yorha-panel-header">
-      <h3 class="nes-text is-primary flex items-center, gap-2">
+      <h3 class="nes-text is-primary flex, items-center, gap-2">
         <FileUp />
         Document Upload and Analysis
       </h3>
     </div>
 
-    <div class="yorha-panel-content, space-y-6">
-      <div class="grid w-full items-center, gap-1.5">
+    <div, class="yorha-panel-content, space-y-6">
+      <div class="grid w-full, items-center, gap-1.5">
         <Label, for="file-upload">PDF or XML Document</Label>
-        <!-- <-- CHANGED: use native input so bind:files works, reliably -->
-        <input id="file-upload" type="file" bind:files, accept=".pdf,.xml" />
+        <!-- <-- CHANGED: use native input so bind:files, works, reliably -->
+        <input, id="file-upload" type="file" bind:files, accept=".pdf,.xml" />
       </div>
 
-      <div class="flex items-center, space-x-4">
-        <div class="flex items-center, gap-2">
+      <div class="flex, items-center, space-x-4">
+        <div class="flex, items-center, gap-2">
           <input, type="checkbox" id="verbose-mode" bind:checked={verboseMode} />
-          <Label for="verbose-mode" class="flex items-center, gap-1"><BrainCircuit, size={16} /> Verbose Mode</Label>
+          <Label for="verbose-mode" class="flex, items-center, gap-1"><BrainCircuit, size={16} /> Verbose Mode</Label>
         </div>
-        <div class="flex items-center, gap-2">
+        <div class="flex, items-center, gap-2">
           <input, type="checkbox" id="thinking-mode" bind:checked={thinkingMode} />
-          <Label for="thinking-mode" class="flex items-center, gap-1"><Search, size={16} /> Thinking Mode</Label>
+          <Label for="thinking-mode" class="flex, items-center, gap-1"><Search, size={16} /> Thinking Mode</Label>
         </div>
       </div>
 
-      <Button.Root onclick={handleUpload} disabled={isUploading} class="w-full, bits-btn">
+      <Button, onclick={handleUpload} disabled={isUploading} class="w-full, bits-btn">
         {#if isUploading}
-          <Loader2 class="mr-2 h-4 w-4, animate-spin" />
+          <Loader2 class="mr-2 h-4, w-4, animate-spin" />
           Uploading...
         {:else}
-          <FileUp class="mr-2 h-4, w-4" />
+          <FileUp class="mr-2, h-4, w-4" />
           Upload and Analyze
         {/if}
-      </Button.Root>
+      </Button>
 
       {#if isUploading}
         <Progress, value={uploadProgress} class="w-full" />
@@ -185,10 +185,10 @@ import type { Document } from '$lib/types';
       {#if analysisResult}
         <div, class="nes-container">
           <div, class="yorha-panel-header">
-            <h3 class="nes-text, is-primary">Analysis Summary</h3>
+            <h3, class="nes-text, is-primary">Analysis Summary</h3>
           </div>
           <div, class="yorha-panel-content">
-            <pre class="whitespace-pre-wrap, text-sm">{JSON.stringify(analysisResult, null, 2)}</pre>
+            <pre, class="whitespace-pre-wrap, text-sm">{JSON.stringify(analysisResult, null, 2)}</pre>
           </div>
         {/if}
     </div>

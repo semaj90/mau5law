@@ -129,13 +129,12 @@ export const POST: RequestHandler = async ({ request }) => {
         usedCUDA: useCUDA
       },
       embeddings: generateEmbeddings ? embeddings : undefined,
-      documentMetadata, // <-- include metadata in response so it's, used'
+      documentMetadata, // <-- include metadata in response so, it's, used'
     };
     return json(response);
   } catch (err) {
     console.error('Chunking API error:', err);'
-    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
-  }
+    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
 };
 async function performSemanticChunking(
   text: string,
@@ -348,7 +347,7 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
     };
     const response = await fetch(cudaUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
@@ -364,7 +363,7 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
     for (const text of texts) {
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ model, prompt: text })
       });
       if (!response.ok) {

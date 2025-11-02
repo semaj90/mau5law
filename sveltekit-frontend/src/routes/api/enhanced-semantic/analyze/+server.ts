@@ -89,8 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: new Date().toISOString(),
       source: 'Fallback Analyzer',
-      note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.'
-    });
+      note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.` });'`
   }
 };
 export const POST: RequestHandler = async ({ request }) => {

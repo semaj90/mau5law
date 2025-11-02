@@ -97,8 +97,7 @@ class EnhancedAuthStore {
   get userInitials() {
     if (!this._state.user) return 'GU';
     const { firstName, lastName } = this._state.user;
-    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || '` }`.toUpperCase();'`
-  }
+    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || '` }`.toUpperCase();'' }'`
   get isAdmin() {
     return this._state.user?.role === 'admin';
   }
@@ -297,7 +296,7 @@ class EnhancedAuthStore {
   }
   async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
     if (!this._state.isAuthenticated) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: 'Not authenticated` };'`
     }
     try {
       const response = await fetch('/api/auth/change-password', {
@@ -317,7 +316,7 @@ class EnhancedAuthStore {
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: `include` });
+        credentials: `include' });'`
       if (response.ok) {
         const result: ApiResponse = await response.json();
         if (result.success && result.user) {
@@ -355,8 +354,7 @@ class EnhancedAuthStore {
         return await response.json();
       }
     } catch (error: any) {
-      console.error('Security summary error:', error);'
-    }
+      console.error('Security summary error:', error);` }`'
     return null;
   }
   clearError(): void {

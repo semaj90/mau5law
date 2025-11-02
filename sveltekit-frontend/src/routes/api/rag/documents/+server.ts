@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Apply search filter
     if (search.trim()) {
       query = query.where(
-        sql`${documents.filename} ILIKE ${`%${search}%` } OR ${documents.title} ILIKE ${`%${search}%' }`'`
+        sql`${documents.filename} ILIKE ${`%${search}%` } OR ${documents.title} ILIKE ${`%${search}%` }`'`'`
       );
     }
 
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to list documents',
-        details: error instanceof Error ? error.message : 'Unknown error' },
+        details: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }

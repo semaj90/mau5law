@@ -60,8 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         console.error(`Error processing file ${file.name}: ', fileError)'`
         results.push({
           fileName: file.name,
-          error: fileError instanceof Error ? fileError.message: 'Unknown error` })'`
-      }
+          error: fileError instanceof Error ? fileError.message: 'Unknown error' })'' }
     }
     return json({
       success: true,
@@ -74,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Upload failed',
-        details: error instanceof Error ? error.message : `Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

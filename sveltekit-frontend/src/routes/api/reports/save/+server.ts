@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         Bucket: CONFIG.MINIO_BUCKET,
         Key: `reports/${user.id}/${updatedReport.id}.json`,
         Body: JSON.stringify(updatedReport),
-        ContentType: 'application/json' })
+        ContentType: 'application/json` })'`
     );
 
     // ⚡ Step 4 — Upsert embedding in Qdrant

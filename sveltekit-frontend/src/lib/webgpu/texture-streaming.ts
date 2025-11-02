@@ -196,7 +196,7 @@ export class WebGPUTextureStreamer {
         }
       }
     `;`
-    const blob = new Blob([workerCode], { type: 'application/javascript` });'`
+    const blob = new Blob([workerCode], { type: 'application/javascript' });'`'`
     this.workerUrl = URL.createObjectURL(blob);
     this.compressionWorker = new Worker(this.workerUrl);
     // Clean up the worker URL to prevent memory leaks

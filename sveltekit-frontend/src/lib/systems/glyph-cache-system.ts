@@ -338,7 +338,7 @@ export class GlyphCacheSystem {
         scalingMethod: 'sigmoid',
         targetLength: 64,
         cudaThreads: 32,
-        cacheStrategy: 'aggressive` });'`
+        cacheStrategy: 'aggressive' });'`'`
       return quantizationResult.quantizedData as Float32Array;
     } catch (error) {
       console.error(`❌ Glyph quantization failed for: '${char}':`, error);
@@ -371,8 +371,7 @@ export class GlyphCacheSystem {
       });
       console.log(`🎮 Stored glyph: '${glyph.char}' to CHR-ROM bank ${glyph.chrRomBankId}`);
     } catch (error) {
-      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}': ', error);'`
-    }
+      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}': ', error);'' }'`
   }
   private updateMetrics(renderTime: number, _cacheHit: boolean): void {
     this.metrics.renderingTime = (this.metrics.renderingTime + renderTime) / 2;
@@ -525,7 +524,7 @@ export class GlyphCacheSystem {
       };
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify(payload)
       });
       if (!response.ok) {
@@ -557,7 +556,7 @@ export class GlyphCacheSystem {
       };
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify(payload)
       });
       if (!response.ok) {

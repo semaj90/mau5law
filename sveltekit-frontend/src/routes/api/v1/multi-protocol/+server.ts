@@ -174,7 +174,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Update gateway configuration
     const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/gateway/config`, {
       method: 'PUT',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(config),
       signal: AbortSignal.timeout(GATEWAY_CONFIG.timeout)
     });
@@ -193,7 +193,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Configuration update failed',
-        error: err instanceof Error ? err.message : 'Unknown error` })'`
+        error: err instanceof Error ? err.message : 'Unknown error' })'`'`
     );
   }
 };
@@ -206,7 +206,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const service = pathParts[pathParts.length - 2];
     const endpoint = pathParts[pathParts.length - 1];
     if (!service || !endpoint) {
-      throw error(400, ensureError({ message: `Service and endpoint are required` }));
+      throw error(400, ensureError({ message: `Service and endpoint are required' }));'`
     }
     const response = await fetch(`${GATEWAY_CONFIG.baseUrl}/api/circuit-breaker/reset/${service}/${endpoint}`, {
       method: 'POST',
@@ -229,7 +229,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Circuit breaker reset failed',
-        error: err instanceof Error ? err.message : `Unknown error` })
+        error: err instanceof Error ? err.message : `Unknown error' })'`
     );
   }
 };
@@ -277,7 +277,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
       headers: {
         'Content-Type': 'application/json',
         'X-Request-ID': generateRequestId(),
-        'X-Source': `sveltekit-frontend` },
+        'X-Source': `sveltekit-frontend' },'`
       body: JSON.stringify(request),
       signal: AbortSignal.timeout(request.timeout || GATEWAY_CONFIG.timeout)
     });
@@ -374,7 +374,7 @@ export function getOptimalProtocol(
     reliability?: 'standard' | 'high';
   } = {}
 ): ProtocolType {
-  const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard` } = requirements;'`
+  const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard' } = requirements;'`'`
   // Real-time requirements typically need WebSocket
   if (realtime) {
     return 'websocket';

@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
         valueMatches: getValue === testValue
       },
       timing: {
-       , totalTime: `${(end - start).toFixed(2)}ms` },
+       , totalTime: `${(end - start).toFixed(2)}ms' },'`
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {

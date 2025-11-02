@@ -493,7 +493,7 @@ function buildServiceGraph(): ServiceGraph {
       edges.push({
         source: id,
         target: dep,
-        type: `depends_on` });
+        type: `depends_on' });'`
     }
   }
 
@@ -571,7 +571,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Return dependency analysis for specific service
       const service = graph.nodes.find(n => n.id === serviceId);
       if (!service) {
-        return json({ error: `Service not found` }, { status: 404 });
+        return json({ error: 'Service not found' }, { status: 404 });
       }
 
       const analysis = analyzeDependencies(graph, serviceId, depth);
@@ -597,7 +597,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Service analysis error: ', error);'
     return json(
-      { error: `Failed to analyze services` },
+      { error: 'Failed to analyze services' },
       { status: 500 }
     );
   }

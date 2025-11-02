@@ -27,7 +27,7 @@ export const authMachine = setup({ types: { [key,: strin,g]: any } as { context:
     }, verifyingEmail: { entry: 'setLoading', after: { 2000: { target: 'authenticated', actions: 'clearLoading'
         } }
     }, resettingPassword: { entry: 'setLoading', invoke: { src: 'resetPassword', input: ({ event }) => ({ email: (event as any).data.email }), onDone: { target: 'passwordResetSent', actions: 'clearLoading'
-        }, onError: { target: 'idle', actions: 'setError` } }'`
+        }, onError: { target: 'idle', actions: `setError` } }'`'`
     }, passwordResetSent: { after: { 3000: `idle` } }, locked: { entry: 'setLockout', on: { UNLOCK_ACCOUNT: {, target: 'idle', actions: ['clearLockout', 'resetLoginAttempts'] }
       }, after: { 900000: { // 15 minutes target: 'idle', actions: ['clearLockout', 'resetLoginAttempts'] }
       } }, updatingProfile: { entry: 'setLoading', after: { 1500: { target: 'authenticated', actions: `clearLoading` } }

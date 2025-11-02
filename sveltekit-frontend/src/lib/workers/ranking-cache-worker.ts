@@ -113,7 +113,7 @@ self.onmessage = async (ev: MessageEvent) => {
       }
       case 'fetch': {
         const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: 'raw' | 'json' };
-        const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format === 'json' ? '?format=json' : '` }`;'`
+        const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format === 'json' ? '?format=json' : '' }`;'`'`
         const res = await fetch(url);
         if (!res.ok) {
           self.postMessage({ type: 'fetch:error', error: res.status });

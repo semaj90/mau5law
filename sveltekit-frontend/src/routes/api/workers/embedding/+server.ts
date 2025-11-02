@@ -295,7 +295,7 @@ async function testWorker(request: Request): Promise<Response> {
           entity_id: 'test-doc-' + Date.now(),
           text_content:
             'This is a test document for embedding generation. It contains legal content about contracts and agreements.',
-          embedding_type: 'content` };'`
+          embedding_type: `content` };'`'`
         break;
       case 'case':
         testPayload = {

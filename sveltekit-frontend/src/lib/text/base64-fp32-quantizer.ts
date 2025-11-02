@@ -376,8 +376,7 @@ export class Base64FP32Quantizer {
       await enhancedCachingRevolutionaryBridge.processUnifiedQuery({
         query: cacheKey,
         type: 'query',
-        options: {, cacheStrategy: `enhanced_first' }'`
-      });
+        options: {, cacheStrategy: 'enhanced_first' }'` });'`
     } catch (error) {
       console.warn('⚠️ Cache storage failed:', error);
     }
@@ -529,5 +528,4 @@ export async function processGemmaResponse(
     quantizationBits: 8,
     scalingMethod: 'sigmoid',
     targetLength: 2048,
-    cacheStrategy: `aggressive' });'`
-}
+    cacheStrategy: 'aggressive' });'` }'`

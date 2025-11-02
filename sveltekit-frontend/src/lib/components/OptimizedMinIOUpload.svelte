@@ -41,7 +41,7 @@
 	</button>
 	<div, class="status">Status: {status}</div>
 	<div, class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>
-	<!-- TODO: Implement optimized MinIO multipart upload with hashing, offload -->
+	<!-- TODO: Implement optimized MinIO multipart upload with, hashing, offload -->
 </div>
 <style>
 	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem; }

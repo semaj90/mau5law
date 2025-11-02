@@ -110,7 +110,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       name: EXCHANGES.LEGAL_AI_MAIN,
       type: 'topic',
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false
       }
     },
@@ -333,8 +333,7 @@ export const getRabbitMQConnectionURL = (): string => {
   const config = getRabbitMQConfig();
   const { protocol, hostname, port, username, password, vhost } = config.connection;
   const encodedVhost = encodeURIComponent(vhost);
-  return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : '` }`;'`
-};
+  return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : '' }`;'' };
 // Health check configuration
 export const HEALTH_CHECK = {
   interval: 30000, // 30 seconds

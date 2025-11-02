@@ -12,7 +12,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from "svelte";
   import { page } from '$app/state';
-  import { HeadlessTypingListener } from '$lib/components/HeadlessTypingListener.svelte';
+  import  HeadlessTypingListener  from "$lib/components/HeadlessTypingListener.svelte";
   import DetectiveWebSocketManager, { type CollaborativeUser } from '$lib/websocket/DetectiveWebSocketManager.js';
   import type { TypingContext, TypingState } from '$lib/machines/userTypingStateMachine.js';
   // Props

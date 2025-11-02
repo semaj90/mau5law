@@ -5,16 +5,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
+  import  Select, SelectContent, SelectItem, SelectTrigger, SelectValue  from "$lib/components/ui/select.svelte";
   import {
     Bot,
     Brain,
@@ -313,7 +313,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                   >{example.platform}</span
                 >
               </div>
-              <Button.Root
+              <Button
                 class="bits-btn"
                 size="sm"
                 variant="ghost"
@@ -321,7 +321,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                 disabled={isProcessing}
               >
                 Run
-              </Button.Root>
+              </Button>
             </div>
           </div>
         {/each}
@@ -404,7 +404,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           </div>
         {/if}
       <div class="flex gap-2">
-        <Button.Root onclick={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
+        <Button onclick={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
           {#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
             Processing...
@@ -412,17 +412,17 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
             <Play class="h-4 w-4 mr-2" />
             Analyze with Copilot AI
           {/if}
-        </Button.Root>
-        <Button.Root class="bits-btn" variant="ghost" onclick={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
+        </Button>
+        <Button class="bits-btn" variant="ghost" onclick={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
           Via API
-        </Button.Root>
+        </Button>
         {#if currentResult}
-          <Button.Root class="bits-btn" variant="ghost" onclick={downloadResult}>
+          <Button class="bits-btn" variant="ghost" onclick={downloadResult}>
             <Download class="h-4 w-4" />
-          </Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" onclick={clearResults}>
+          </Button>
+          <Button class="bits-btn" variant="ghost" onclick={clearResults}>
             <RefreshCw class="h-4 w-4" />
-          </Button.Root>
+          </Button>
         {/if}
       </div>
     </div>

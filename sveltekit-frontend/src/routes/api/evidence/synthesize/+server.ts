@@ -137,7 +137,7 @@ const enhancedRAGService = {
       };
     }
   },
-  indexDocument: async (doc: { id: string; content: string;, metadata: Record<string, unknown> }) => {
+  indexDocument: async (doc: {, id: string; content: string;, metadata: Record<string, unknown> }) => {
     try {
       // Index document for future RAG queries
       const embedding = (doc.metadata?.embedding as number[]) || (await aiService.generateEmbedding(doc.content));
@@ -307,8 +307,7 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'ACCESS_DENIED',
-              stage: 'verifyingCaseAccess` })'`
-          })
+              stage: 'verifyingCaseAccess' })'` })'`
         }
       }
     },
@@ -493,7 +492,7 @@ const synthesisMachine = createMachine({
       }
     },
     success: { type: 'final' },
-    failure: { type: 'final` }'`
+    failure: { type: `final` }'`'`
   }
 });
 
@@ -668,7 +667,7 @@ ${evidenceContext
   .map(
     (item, idx) => `
   ${idx + 1}. Title: ${item.title}
-     Type: ${item.type}${item.subType ? ` (${item.subType})` : `` }
+     Type: ${item.type}${item.subType ? ` (${item.subType})` : `' }'`
      Content: ${item.content}
      Tags: ${item.tags?.join(', ') || 'None` }'`
      ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : `` }
@@ -686,7 +685,7 @@ Instructions:
 - Generate actionable recommendations
 - Assess evidentiary value and admissibility implications
 ${synthesisType === 'timeline' ? '- Create chronological sequence with gaps identified' : ''}
-${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : '` }'`
+${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : `` }'`'`
 ${synthesisType === 'compare' ? '- Highlight similarities, differences, and contradictions' : `` }
 ${synthesisType === 'merge' ? '- Combine evidence into coherent narrative' : `` }
 
@@ -923,8 +922,7 @@ async function addToEnhancedRAG(
 // Get synthesis suggestions endpoint
 export const GET: RequestHandler = async ({ url, locals }) => {
   if (!locals.user) {
-    return json({ error: 'Unauthorized` }, { status: 401 });'`
-  }
+    return json({ error: 'Unauthorized' }, { status: 401 });'` }'`
 
   const caseId = url.searchParams.get('caseId');
   if (!caseId) {

@@ -65,13 +65,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate file type
     const fileType = file.type || '';
     if (!ALLOWED_TYPES.includes(fileType)) {
-      console.log('Invalid file type: `, fileType);'`
+      console.log('Invalid file type: ', fileType);'`'`
       return json({ error: `Invalid file type., Allowed: JPEG, PNG, GIF, SVG, WebP` }, { status: 400 });
     }
     // Validate file size
     const fileSize = Number(file.size || 0);
     if (fileSize > MAX_FILE_SIZE) {
-      console.log('File too large: `, fileSize);'`
+      console.log('File too large: ', fileSize);'`'`
       return json({ error: `File too large. Maximum, size: 5MB` }, { status: 400 });
     }
     // Generate unique filename
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       avatarUrl,
-      message: 'Avatar uploaded successfully' });
+      message: 'Avatar uploaded successfully` });'`
   } catch (error: any) {
     console.error('Avatar upload error:', error);'
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

@@ -295,8 +295,7 @@ export class SelfPromptingIntelligence {
         return 'extract key information from a document or summarize content';
       case 'code-generation':
         return 'write code, debug an error, or explain a programming concept';
-      default: return "be more specific about what you're looking for";'
-    }
+      default: return "be more specific about what you're looking for";` }'`
   }
   private generateExpansionSuggestions(query: string, intent: UserIntent): SelfPromptingSuggestion[] {
     const expansions: SelfPromptingSuggestion[] = [];
@@ -369,7 +368,7 @@ export class IntelligentModelOrchestrator {
   private performanceMetrics: Map<string, ModelPerformanceMetrics> = new Map();
   private activeModel: string = 'gemma-270m';
   private modelSwitchQueue: string[] = [];
-  private performanceIntervalId?: ReturnType<typeof, setInterval>; // <-- added to manage, interval
+  private performanceIntervalId?: ReturnType<typeof, setInterval>; // <-- added to, manage, interval
   // Svelte stores for reactive UI
   public readonly currentModel = writable<ModelVariant | null>(null);
   public readonly suggestions = writable<SelfPromptingSuggestion[]>([]);

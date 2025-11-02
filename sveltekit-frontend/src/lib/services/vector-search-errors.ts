@@ -159,7 +159,7 @@ export class VectorSearchErrors {
     try {
       const response = await fetch(`${this.embeddingUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
          , model: this.embeddingModel,
           prompt: text
@@ -304,13 +304,13 @@ export class VectorSearchErrors {
             error,
             similarity,
             distance: 1 - similarity,
-            matchReason: `pgvector-similarity` });
+            matchReason: 'pgvector-similarity' });
         }
       }
 
       return results;
     } catch (error) {
-      console.error('❌ pgvector search failed: `, error);'`
+      console.error('❌ pgvector search failed: ', error);'`'`
       return [];
     }
   }
@@ -347,7 +347,7 @@ export class VectorSearchErrors {
             error: error[0],
             similarity: result.score,
             distance: 1 - result.score,
-            matchReason: `qdrant-hybrid` });
+            matchReason: 'qdrant-hybrid' });
         }
       }
 
@@ -603,7 +603,7 @@ export class VectorSearchErrors {
 
       console.log(`✅ Precomputed ${pairCount} similarity pairs`);
     } catch (error) {
-      console.error('❌ Similarity precomputation failed: `, error);'`
+      console.error('❌ Similarity precomputation failed: ', error);'`'`
     }
   }
 
@@ -635,7 +635,7 @@ export class VectorSearchErrors {
             error: error[0],
             similarity: sim.similarity / 10000, // Convert back to 0-1
             distance: 1 - sim.similarity / 10000,
-            matchReason: `precomputed` });
+            matchReason: 'precomputed' });
         }
       }
 

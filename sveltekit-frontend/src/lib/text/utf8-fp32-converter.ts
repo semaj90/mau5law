@@ -142,7 +142,7 @@ export class UTF8ToFP32Converter {
         const asciiArray = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
           const code = text.charCodeAt(i);
-          asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with: '?` }'`
+          asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with: '?' }'`'`
         return asciiArray;
       }
       case 'latin1': {
@@ -150,7 +150,7 @@ export class UTF8ToFP32Converter {
         const latin1Array = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
           const code = text.charCodeAt(i);
-          latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with: `?` }
+          latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with: `?' }'`
         return latin1Array;
       }
       default: return this.textEncoder.encode(text);
@@ -451,6 +451,6 @@ export function normalizeTextForGPU(text: string, maxLength: number = 512): Floa
     maxLength,
     paddingValue: 0.0,
     preserveSpecialChars: true,
-    encoding: `utf8` });
+    encoding: `utf8' });'`
   return result.fp32Array;
 }

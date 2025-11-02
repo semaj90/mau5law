@@ -220,7 +220,7 @@ export class ComprehensiveAgentOrchestrator {
     const recommendationRequest: RecommendationRequest = { context: `Legal AI analysis, request: ${request.prompt}`,
       errorType: request.options?.analysisType,
       codeSnippet: ((request.context ?? {}) as Record<string, unknown>)['codeSnippet'] as string | undefined,
-      priority: request.options?.priority || 'medium' };
+      priority: request.options?.priority || 'medium` };'`
     const recommendationTask = await this.multicoreService.generateRecommendations(
       recommendationRequest,
       request.options?.priority || 'medium'
@@ -369,7 +369,7 @@ export class ComprehensiveAgentOrchestrator {
       context: 'TypeScript/Svelte error analysis',
       errorType: 'compilation_errors',
       codeSnippet,
-      priority: 'high' });
+      priority: 'high` });'`
 
     const result = await this.multicoreService.waitForTask(errorAnalysisTask.id, 30000);
     if (result.status === 'completed') {

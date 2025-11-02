@@ -10,18 +10,18 @@ https://svelte.dev/e/expected_token -->
 </script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
+  import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import Label from '$lib/components/ui/label/Label.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Test results state
@@ -266,7 +266,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button.Root onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Testing...' : 'Test Connection'}
             {#if connectionDetails}
               <div class="text-sm space-y-1">
@@ -290,7 +290,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button.Root onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Loading...' : 'Get Statistics'}
             {#if dbStats}
               <div class="text-sm space-y-1">
@@ -316,13 +316,13 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button.Root class="bits-btn" onclick={() =>
+            <Button class="bits-btn" onclick={() =>
 seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
-            <Button.Root class="bits-btn" onclick={() =>
+            <Button class="bits-btn" onclick={() =>
 seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
-            <Button.Root class="bits-btn" onclick={() =>
+            <Button class="bits-btn" onclick={() =>
 createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
           </div>
@@ -350,7 +350,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
               />
             </div>
             <div class="flex items-end">
-              <Button.Root class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+              <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
 {isLoading ? 'Searching...' : 'Search'}
             </div>
           </div>
@@ -406,7 +406,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button.Root onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Inserting...' : 'Test Document Insert'}
             <p class="text-sm nes-text is-disabled">
               Inserts a sample legal document with 1536-dimension mock embedding
@@ -423,16 +423,16 @@ createIndex(100, 'cosine')} disabled={isLoading}>
           </div>
           <div class="yorha-panel-content space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button.Root class="bits-btn" onclick={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
-              <Button.Root class="bits-btn" onclick={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
-              <Button.Root class="bits-btn" onclick={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
-              <Button.Root class="bits-btn" onclick={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
             </div>

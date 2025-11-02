@@ -49,7 +49,7 @@ export async function processDocument(bucket: string, objectKey: string): Promis
       // Request embeddings (keep existing Ollama endpoint usage)
       const embedRes = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text })
       });
       const embedJson = (await embedRes.json()) as { embedding?: number[] };
@@ -70,7 +70,7 @@ export async function processDocument(bucket: string, objectKey: string): Promis
             {,
              , id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
               vector: embedding,
-              payload: { title, source_uri: `minio://${bucket}/${objectKey}` }
+              payload: { title, source_uri: `minio://${bucket}/${objectKey}' }'`
             }
           ]
         });

@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: true, record: newEvidence[0], upload });
   } catch (error) {
     console.error('Upload error:', error);'
-    return json({ success: false, error: 'Failed to upload evidence' }, { status: 500 });
+    return json({ success: false, error: 'Failed to upload evidence` }, { status: 500 });'`
   }
 };
 export const DELETE: RequestHandler = async ({ url }) => {

@@ -240,8 +240,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const validated = CitationsListResponse.safeParse(payload);
     if (!validated.success) {
       console.error('Citations list response validation failed', validated.error);
-      return error(500, { message: 'Invalid response shape` });'`
-    }
+      return error(500, { message: 'Invalid response shape' });'' }
     return json(payload);
   } catch (err: any) {
     console.error('Error fetching citations:', err);
@@ -261,7 +260,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: `Authentication required` }, { status: 401 });
+      return json({ success: false, message: `Authentication required' }, { status: 401 });'`
     }
     const body = await request.json();
     const validatedData = CreateCitationSchema.parse(body);
@@ -292,7 +291,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const validated = CreateCitationResponse.safeParse(payload);
     if (!validated.success) {
       console.error('Create citation response validation failed', validated.error);
-      return error(500, { message: `Invalid response shape` });
+      return error(500, { message: `Invalid response shape' });'`
     }
     return json(payload, { status: 201 });
   } catch (err: any) {

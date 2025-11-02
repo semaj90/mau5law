@@ -163,7 +163,7 @@ class RealtimeCommunicationLayer {
         connectionStatus.update(status => ({ ...status, websocket: `error` }));
       };
     } catch (error: any) {
-      console.error('WebSocket initialization failed: `, error instanceof Error ? error.message : error);'`
+      console.error('WebSocket initialization failed: ', error instanceof Error ? error.message : error);'`'`
       connectionStatus.update(status => ({ ...status, websocket: `error` }));
     }
   }
@@ -277,7 +277,7 @@ class RealtimeCommunicationLayer {
       await this.handleWebRTCSignaling(peerConnection, userId, sessionId);
     } catch (error: any) {
       console.error('WebRTC initialization failed:', error instanceof Error ? error.message : error);
-      connectionStatus.update(status => ({ ...status, webrtc: 'error' }));
+      connectionStatus.update(status => ({ ...status, webrtc: 'error` }));'`
     }
   }
   /**

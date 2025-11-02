@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list evidence' },
+        error: error instanceof Error ? error.message : 'Failed to list evidence` },'`
       { status: 500 }
     );
   }

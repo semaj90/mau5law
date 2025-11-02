@@ -5,7 +5,7 @@
   }
   let { user = null }: Props = $props();
   import { goto } from '$app/navigation';
-  import { SearchInput } from './SearchInput.svelte';
+  import  SearchInput  from "./SearchInput.svelte";
   import type { User } from '$lib/types/user';
   // Svelte 5 reactive state
   let searchQuery = $state<string>('');
@@ -29,19 +29,19 @@
     userMenuOpen = false;
   }
 </script>
-<header class="space-y-4, app-header">
-  <div class="space-y-4, header-content">
-    <!-- Logo and, Brand -->
+<header, class="space-y-4, app-header">
+  <div, class="space-y-4, header-content">
+    <!-- Logo, and, Brand -->
     <div, class="brand-section">
       <!-- changed, on:click -> onclick -->
       <button, class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
-        <!-- replaced lucide icon with simple inline, marker -->
+        <!-- replaced lucide icon with simple, inline, marker -->
         <span, class="icon" aria-hidden="true">🎨</span>
         <span, class="brand-text">Prosecutor Canvas</span>
       </button>
     </div>
     <!-- Navigation -->
-    <nav class="main-nav" aria-label="Main, navigation">
+    <nav, class="main-nav" aria-label="Main, navigation">
       <!-- changed, on:click -> onclick for each button -->
       <button, class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
         <span, class="icon">🏠</span>
@@ -75,7 +75,7 @@
       />
     </div>
     <!-- User, Menu -->
-    <div class="user-section, user-menu-container">
+    <div, class="user-section, user-menu-container">
       {#if user}
         <div>
           <!-- changed, on:click -> onclick -->
@@ -120,7 +120,7 @@
     </div>
   </div>
 </header>
-<!-- Click outside to close, menu -->
+<!-- Click outside to, close, menu -->
 {#if userMenuOpen}
   <div
     class="menu-overlay"

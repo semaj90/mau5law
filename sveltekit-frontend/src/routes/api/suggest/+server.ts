@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const limit = Number(url.searchParams.get('limit')) || 10;
 	const context = url.searchParams.get('context') ?? 'GENERAL';
 
-	if (query.length < 2) throw error(400, 'Query must be at least 2, characters');
+	if (query.length < 2) throw error(400, 'Query must be at least, 2, characters');
 
 	const cacheKey = `suggest:${context}:${query}`;
 	const cached = await redis?.get(cacheKey);
@@ -98,8 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { query, contextType = 'GENERAL', recentQueries = [] } = body;
 
 	if (typeof query !== 'string' || query.length < 2) {
-		return json({ error: ''query' must be a string ≥ 2 chars` }, { status: 400 });'`
-	}
+		return json({ error: ''query' must be a string ≥ 2 chars' }, { status: 400 });'` }'`
 
 	const enhanced = `${query} ${recentQueries.join(' ')}`.trim();
 	const url = new URL(`/api/suggest?q=${encodeURIComponent(enhanced)}&context=${contextType}`, 'http://localhost');
@@ -211,8 +210,7 @@ async function searchDatabase(query: string, context: string, limit: number): Pr
 			}
 		}
 	} catch (err) {
-		console.error('DB search error:', err instanceof Error ? err.message : String(err));'
-	}
+		console.error('DB search error:', err instanceof Error ? err.message : String(err));` }`'
 
 	return results;
 }
@@ -270,8 +268,7 @@ async function searchWithFuzzy(query: string, context: string, limit: number): P
 			}
 		}
 	} catch (err) {
-		console.error('Fuzzy search error:', err instanceof Error ? err.message : String(err));'
-	}
+		console.error('Fuzzy search error:', err instanceof Error ? err.message : String(err));` }`'
 	return results;
 }
 

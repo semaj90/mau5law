@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     const [pois, totalCount] = await Promise.all([
       query.orderBy(desc(personsOfInterest.createdAt)).limit(limit).offset(offset),
-      db.select({ count: sql`count(*)' }).from(personsOfInterest)'`
+      db.select({ count: sql`count(*)` }).from(personsOfInterest)'`'`
     ]);
 
     return json({
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   } catch (error) {
     console.error('Error fetching POIs:', error);
-    return json({ error: 'Failed to fetch POIs` }, { status: 500 });'`
+    return json({ error: 'Failed to fetch POIs' }, { status: 500 });''
   }
 };
 

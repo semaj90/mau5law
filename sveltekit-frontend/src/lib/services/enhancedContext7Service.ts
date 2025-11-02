@@ -210,7 +210,7 @@ export class EnhancedContext7Service {
   private async callMCPTool(toolName: string, args?: Record<string, unknown>): Promise<unknown> {
     const endpoint = this.getMcpEndpoint();
     const url = `${endpoint.replace(/\/$/, '')}/tools/${encodeURIComponent(toolName)}`;
-    const headers: Record<string, string> = { 'Content-Type': `application/json` };
+    const headers: Record<string, string> = { 'Content-Type': `application/json' };'`
     if (this.apiKey) headers['Authorization'] = `Bearer ${this.apiKey}`;
 
     // timeout helper
@@ -295,7 +295,7 @@ export class EnhancedContext7Service {
         liability: normalizeCompliance(
           this.extractValue(text, 'Liability Assessment', 'Standard Processing'),
           'Standard Processing'
-        ) as: 'High Priority Review Needed' | 'Standard Processing` },'`
+        ) as: 'High Priority Review Needed' | 'Standard Processing' },'`'`
       recommendedActions: this.extractList(text, 'Recommended Actions'),
       integrationNotes: this.extractList(text, 'Integration Notes')
     };
@@ -440,11 +440,11 @@ export class EnhancedContext7Service {
     return {
       text: '# Legal Document Analysis'
 ## Risk Assessment
-- **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium` }'`
+- **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium' }'`'`
 - **Risk Score**: ${riskScore}/100
 ## Key Findings
 - Contract terms identified
-${hasLiability ? '- Liability clauses present' : `- Standard contract language` }
+${hasLiability ? '- Liability clauses present' : `- Standard contract language' }'`
 ## GDPR Compliance
 - **GDPR Compliance**: Under Review
 - **Contract Law**: Requires Review
@@ -490,8 +490,7 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language` 
 ### Monetary Amounts (1)
 - $50,000
 ### Legal Clauses (1)
-- Section 3.1` };`
-  }
+- Section 3.1` };' }'`
 
   // add small helper for safe coercion if needed elsewhere
   private toSafeString(value: any, fallback = ''): string {

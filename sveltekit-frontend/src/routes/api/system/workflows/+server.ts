@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           dimensions: 384, // embeddinggemma:latest; embeddingModel: 'embeddinggemma:latest',
           operations: ['embed', 'search', 'similarity', 'clustering'],
-          performance: '< 50ms search, times'
+          performance: '< 50ms, search, times'
         };
       }),
       runTest('Semantic Search Capabilities', 'Validate semantic document search functionality', async () => {
@@ -205,8 +205,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: 'Semantic search fully functional',
           endpoints: searchEndpoints,
           features: ['Cosine Similarity', 'Hybrid Search', 'Faceted Search', 'Relevance Ranking'],
-          indexing: 'Real-time with batch processing'
-        };
+          indexing: 'Real-time with batch processing` };'`
       }),
     ]);
 
@@ -235,7 +234,7 @@ export const GET: RequestHandler = async ({ url }) => {
               return {
                 message: 'Complete workflow integration validated',
                 steps: workflow,
-                duration: '< 5 seconds, end-to-end',
+                duration: '< 5, seconds, end-to-end',
                 reliability: `99.9% uptime target` };
             }
           ),
@@ -318,7 +317,7 @@ export const GET: RequestHandler = async ({ url }) => {
     };
     return json(response, { status: 500 });
   }
-}; // <-- Add this closing bracket for the GET, handler
+}; // <-- Add this closing bracket for the, GET, handler
 
 // POST endpoint for running specific workflow tests
 export const POST: RequestHandler = async ({ request }) => {

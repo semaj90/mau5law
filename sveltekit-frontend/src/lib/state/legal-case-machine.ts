@@ -313,7 +313,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
         }
       }
     },
-    loadingCase: { invoke: {, id: 'loadCase',
+    loadingCase: {, invoke: {, id: 'loadCase',
         src: loadCaseService
         // onDone gets event.data
        , onDone: {
@@ -473,8 +473,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
                   actions,: 'assignError'
                 }
               },
-              on: { AI_ANALYSIS_PROGRESS: {, actions: 'assignAIProgress` }'`
-              }
+              on: { AI_ANALYSIS_PROGRESS: {, actions: 'assignAIProgress' }'` }'`
             },
             complete: {
               entry: [
@@ -558,8 +557,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onError: {
               target: 'ready',
-              actions,: 'assignError` }'`
-          }
+              actions,: 'assignError' }'` }'`
         },
         generatingEmbedding: { invoke: {, id: 'generateEmbedding',
             src,: generateEmbeddingService
@@ -613,8 +611,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           })
         },
         REFRESH: {
-          target: '.loadingEvidence` }'`
-      }
+          target: '.loadingEvidence' }'` }'`
     },
     searching: { invoke: {, id: 'search',
         src,: searchService

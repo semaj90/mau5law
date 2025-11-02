@@ -239,8 +239,7 @@ class RedisCacheService implements IRedisCacheService {
         usedMemory
       };
     } catch (error) {
-      return { status: 'unavailable` };'`
-    }
+      return { status: 'unavailable' };'' }
   }
 
   /**

@@ -127,8 +127,7 @@ class NomicEmbeddingService {
         return;
       } catch (err) {
         lastError = err;
-        console.warn(`Model init failed for ${modelName}, trying next: ', err);'`
-      }
+        console.warn(`Model init failed for ${modelName}, trying next: ', err);'' }'`
     }
     console.error('❌ Failed to initialize embedding service with all candidate models:', lastError);
     throw lastError;
@@ -477,8 +476,7 @@ class NomicEmbeddingService {
           }
           insertedCount++;
         } catch (updateError) {
-          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);'`
-        }
+          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);'' }'`
       }
       return insertedCount;
     } catch (err) {

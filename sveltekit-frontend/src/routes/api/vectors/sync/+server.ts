@@ -47,8 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🔄 Syncing vector to Qdrant: ${jobId} (${event})`);
     // Validate required fields
     if (!jobId || !ownerType || !ownerId || !event) {
-      return json({ error: 'Missing required, fields: jobId, ownerType, ownerId, event` }, { status: 400 });'`
-    }
+      return json({ error: 'Missing required, fields: jobId, ownerType, ownerId, event' }, { status: 400 });'' }
     // Update job status to processing
     await db
       .update(vectorJobs)
@@ -68,8 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .set({ status: 'succeeded', progress: 100, completedAt: new Date(), result })
       .where(eq(vectorJobs.jobId, jobId));
     console.log(`✅ Vector sync completed: ${jobId}`);
-    return json({ success: true, jobId, result, message: 'Vector ${event} completed successfully` });'`
-  } catch (error: any) {
+    return json({ success: true, jobId, result, message: 'Vector ${event} completed successfully' });'' } catch (error: any) {
     console.error('❌ Vector sync error:', error);'
     // Update job status to failed
     if (jobId) {
@@ -83,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .where(eq(vectorJobs.jobId, jobId))
         .catch(console.error);
     }
-    return json({ success: false, error: error instanceof Error ? error.message : `Unknown error` }, { status: 500 });
+    return json({ success: false, error: error instanceof Error ? error.message : `Unknown error' }, { status: 500 });'`
   }
 };
 
@@ -99,7 +97,7 @@ type SourceDataType = {
   tags?: string[];
   reportType?: string;
   status?: string;
-}; // <-- closed the, type
+}; // <-- closed, the, type
 
 async function ensureQdrantCollectionFallback(collectionName: string, dimension: number): Promise<void> {
   try {
@@ -109,7 +107,7 @@ async function ensureQdrantCollectionFallback(collectionName: string, dimension:
       await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ vectors: {, size: dimension, distance: `Cosine` },
+        body: JSON.stringify({ vectors: {, size: dimension, distance: `Cosine' },'`
           // minimal default config; adjust if your platform uses HNSW or other params
         })
       });
@@ -184,7 +182,7 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
       };
       const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(body)
       });
       qdrantResult = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
@@ -215,7 +213,7 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
     const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
     const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points/delete?wait=true`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ points: [ownerId] })
     });
     const result = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
@@ -229,7 +227,7 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
         const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
         await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({ points: [{, id: ownerId, vector: [], payload: {, deleted: true } }] })
         });
       }
@@ -276,7 +274,7 @@ export const GET: RequestHandler = async () => {
     });
   } catch (error: any) {
     return json(
-      { success: false, error: error instanceof Error ? error.message : `Health check failed` },
+      { success: false, error: error instanceof Error ? error.message : `Health check failed' },'`
       { status: 500 }
     );
   }

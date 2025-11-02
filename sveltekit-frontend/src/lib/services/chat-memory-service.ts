@@ -390,7 +390,7 @@ export class LegalChatMemoryService {
     // Generate simple flow indicator
     const color = role === 'user' ? '#3cbcfc' : role === 'assistant' ? '#00d800' : '#fc9838';
     const width = Math.min(48, Math.max(8, Math.floor(messageLength / 20)));
-    return `<div style="width: ${width}px; height: 4px; background: ${color}; margin: 1px 0; border: 1px, solid #000;"></div>`;
+    return `<div style="width: ${width}px; height: 4px; background: ${color}; margin: 1px, 0; border: 1px, solid #000;"></div>`;
   }
 
   /**
@@ -404,9 +404,9 @@ export class LegalChatMemoryService {
       corporate: '#0000ff',
       criminal: '#ff8800',
       intellectual_property: '#8800ff',
-      employment: '#00ff88' };
+      employment: '#00ff88` };'`
     const color = colors[category] ?? '#888888';
-    return `<div style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence}; border: 1px, solid #000;"></div>`;
+    return `<div, style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence}; border: 1px, solid #000;"></div>`;
   }
 
   /**

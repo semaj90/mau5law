@@ -255,7 +255,7 @@ export class AISuggestionsGRPCClient {
       const params = new URLSearchParams({
         content: request.content,
         report_type: String(request.report_type),
-        model: request.model ?? 'unknown' });
+        model: request.model ?? 'unknown` });'`
       const eventSource = new EventSource(`/api/ai/suggestions/stream?${params.toString()}`);
       yield* this.handleStreamingResponse(eventSource);
     } catch (error: any) {
@@ -270,7 +270,7 @@ export class AISuggestionsGRPCClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Client-Type': 'grpc-fallback' },
+          'X-Client-Type': 'grpc-fallback` },'`
         body: JSON.stringify(data)
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);

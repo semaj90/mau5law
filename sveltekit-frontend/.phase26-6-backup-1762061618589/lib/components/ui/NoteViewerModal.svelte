@@ -41,7 +41,7 @@
     removeSavedNote,
     saveNoteForLater,
   } from '$lib/stores/saved-notes';
-  import { RichTextEditor } from "./RichTextEditor.svelte";
+  import  RichTextEditor  from "./RichTextEditor.svelte";
   // Local state for mutable values that need to change
   let localMode = $state(mode);
   let localTitle = $state(title);

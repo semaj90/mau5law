@@ -4,16 +4,16 @@
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import { Dialog } from 'bits-ui'; // Changed from MeltDialog to bits-ui
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
   // Badge replaced with span - not available in enhanced-bits
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { ScrollArea } from '$lib/components/ui/scrollarea/ScrollArea.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  ScrollArea  from "$lib/components/ui/scrollarea/ScrollArea.svelte";
   import {
     Bot,
     User,
@@ -296,10 +296,10 @@
 </script>
 <Dialog.Root bind:open>
   <Dialog.Trigger>
-    <Button.Root variant="ghost" class="gap-2 nes-btn"> <!-- Simplified bits-btn -->
+    <Button variant="ghost" class="gap-2 nes-btn"> <!-- Simplified bits-btn -->
       <MessageCircle class="h-4 w-4" />
       {title}
-    </Button.Root>
+    </Button>
   </Dialog.Trigger>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
@@ -336,7 +336,7 @@
             {@render statusIndicator()}
           </div>
           <!-- Action Buttons -->
-          <Button.Root
+          <Button
             class="nes-btn is-small"
             variant="ghost"
             size="sm"
@@ -344,12 +344,12 @@
             disabled={messages.length <= 1}
           >
             <Download class="h-4 w-4" />
-          </Button.Root>
-          <Button.Root class="nes-btn is-small" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
+          </Button>
+          <Button class="nes-btn is-small" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
             <Trash2 class="h-4 w-4" />
-          </Button.Root>
+          </Button>
           <Dialog.Close>
-            <Button.Root class="nes-btn is-small" variant="ghost" size="sm">✕</Button.Root>
+            <Button class="nes-btn is-small" variant="ghost" size="sm">✕</Button>
           </Dialog.Close>
         </div>
       </div>
@@ -414,7 +414,7 @@
               onkeydown={handleKeydown} <!-- Changed to onkeydown -->
             />
           </div>
-          <Button.Root
+          <Button
             onclick={sendMessage}
             disabled={!currentMessage.trim() || !isConnected || isLoading}
             class="nes-btn is-primary" <!-- Changed to nes-btn is-primary -->
@@ -424,7 +424,7 @@
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </Button.Root>
+          </Button>
         </div>
         <div class="flex items-center justify-between mt-2">
           <div class="text-xs nes-text is-disabled"> <!-- Adjusted styling -->

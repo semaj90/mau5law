@@ -1,5 +1,5 @@
 // Minimal Qdrant indexer with lazy import and safe fallback
-export async function indexQdrant(doc: { id: string; text: string;, embedding: number[] }): Promise<any> {
+export async function indexQdrant(doc: {, id: string; text: string;, embedding: number[] }): Promise<any> {
   try {
     const { QdrantClient } = await import('@qdrant/js-client-rest');
     const client = new QdrantClient({ url: process.env.QDRANT_URL || 'http://localhost:6333' })

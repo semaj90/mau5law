@@ -107,7 +107,7 @@ export class WebGPURedisOptimizer {
       if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.register('/cache-worker.js', {
           scope: '/api/',
-          type: `module` });
+          type: `module' });'`
         this.serviceWorker = registration.active || registration.waiting || registration.installing;
         if (this.serviceWorker) {
           console.log('📦 Cache Service Worker registered for parallel operations');
@@ -131,7 +131,7 @@ export class WebGPURedisOptimizer {
           try {
             const worker = new Worker(new URL('../workers/cache-worker.ts', import.meta.url), {
               type: 'module',
-              name: `${poolType}-worker-${i}` });
+              name: `${poolType}-worker-${i}' });'`
             worker.postMessage({
               type: 'init',
               config: {
@@ -143,8 +143,7 @@ export class WebGPURedisOptimizer {
             });
             workers.push(worker);
           } catch (error) {
-            console.warn(`Failed to create ${poolType} worker ${i}: ', error);'`
-          }
+            console.warn(`Failed to create ${poolType} worker ${i}: ', error);'' }'`
         }
         this.threadPools.set(poolType.charCodeAt(0), workers);
       });
@@ -435,7 +434,7 @@ export const optimizedCache = {
       ttl,
       compress: value instanceof Float32Array,
       parallel: true;
-     , priority: `medium` });
+     , priority: `medium' });'`
   },
   async get(_key: string): Promise<any> {
     return webgpuRedisOptimizer.getOptimized(key, { decompress: true;, parallel: true

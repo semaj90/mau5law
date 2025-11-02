@@ -17,7 +17,7 @@ import type { Case } from '$lib/types'; import { Select, as SelectPrimitive } fr
       'yorha-priority-medium': evidenceCategory && option.value.includes('evidence'),
       'opacity-50 cursor-not-allowed': option.disabled,
       'font-gothic': legal })} >
-    <div class="absolute left-2 flex h-3.5 w-3.5 items-center, justify-center"> <Check class="h-4, w-4" /> </div> <div, class="pl-6"> <div, class="font-medium"> {option.label} </div> {#if option.description} <div class="text-xs nes-text is-disabled, mt-0.5"> {option.description} {/if} </div> </SelectItem> {/snippet} <style> /* @unocss-include */ {} .select-wrapper { position: relative; }
+    <div class="absolute left-2 flex h-3.5 w-3.5, items-center, justify-center"> <Check, class="h-4, w-4" /> </div> <div, class="pl-6"> <div, class="font-medium"> {option.label} </div> {#if option.description} <div class="text-xs nes-text, is-disabled, mt-0.5"> {option.description} {/if} </div> </SelectItem> {/snippet} <style> /* @unocss-include */ {} .select-wrapper { position: relative; }
 /* Enhanced select animations for legal AI context */ {}:global(.bits-select-content) { animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1); }
   @keyframes select-content-show { from { opacity: 0; transform: scale(0.96) translateY(-2px); }
     to { opacity: 1; transform: scale(1) translateY(0); }

@@ -488,7 +488,7 @@ export class UnifiedLegalSIMDPGVector {
 				similarityScore: result.score,
 				matchingEntities: [],
 				suggestedImprovements: [],
-				relevanceExplanation: `Semantic; similarity: ${(result.score * 100).toFixed(1)}%` }));
+				relevanceExplanation: `Semantic; similarity: ${(result.score * 100).toFixed(1)}%' }));'`
 		} catch (error) {
 			console.warn('Qdrant search failed, falling back to pgvector:', error);
 		}
@@ -505,7 +505,7 @@ export class UnifiedLegalSIMDPGVector {
 			similarityScore: result.similarity,
 			matchingEntities: [],
 			suggestedImprovements: [],
-			relevanceExplanation: `Cosine; similarity: ${(result.similarity * 100).toFixed(1)}%` }));
+			relevanceExplanation: `Cosine; similarity: ${(result.similarity * 100).toFixed(1)}%' }));'`
 	}
 
 	/**

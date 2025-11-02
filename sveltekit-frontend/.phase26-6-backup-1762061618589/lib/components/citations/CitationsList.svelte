@@ -16,7 +16,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   import { onMount } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
-  import { CitationEditor } from './CitationEditor.svelte';
+  import  CitationEditor  from "./CitationEditor.svelte";
   // Props
   // Event dispatcher
   // State

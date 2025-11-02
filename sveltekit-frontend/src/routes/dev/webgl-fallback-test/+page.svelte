@@ -1,7 +1,7 @@
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib/components/ui/enhanced-bits.svelte";
   import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js';
   // import { GpuVectorProcessor } from '$lib/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues
   let log = $state<string>('');
@@ -77,14 +77,14 @@
   });
 </script>
 
-<div class="container mx-auto p-6, max-w-4xl">
+<div class="container mx-auto, p-6, max-w-4xl">
   <Card>
     <CardHeader>
       <CardTitle>WebGL2/WebGPU Acceleration Test</CardTitle>
       <p, class="text-muted-foreground">Browser GPU acceleration capabilities for Gemma3 270M WebAssembly deployment</p>
     </CardHeader>
     <CardContent, class="space-y-4">
-      <div class="flex, gap-2">
+      <div, class="flex, gap-2">
         <Button, onclick={runTest} disabled={isRunning} variant="default">
           {isRunning ? '🔄 Testing...' : '🚀 Run Test'}
         </Button>
@@ -92,14 +92,14 @@
       </div>
       {#if log}
         <Alert>
-          <div class="font-mono text-sm whitespace-pre-wrap bg-background border rounded p-4 max-h-96, overflow-y-auto">
+          <div class="font-mono text-sm whitespace-pre-wrap bg-background border rounded p-4, max-h-96, overflow-y-auto">
             {log}
           </div>
         </Alert>
       {/if}
-      <div class="text-sm text-muted-foreground, mt-4">
+      <div class="text-sm, text-muted-foreground, mt-4">
         <p><strong>Testing Strategy:</strong></p>
-        <ul class="list-disc list-inside, space-y-1">
+        <ul class="list-disc, list-inside, space-y-1">
           <li>🥇 <strong>WebGPU</strong>: Next-gen GPU compute for neural networks</li>
           <li>🥈 <strong>WebGL2</strong>: Transform feedback for matrix operations</li>
           <li>🥉 <strong>WebGL1</strong>: Basic GPU acceleration fallback</li>

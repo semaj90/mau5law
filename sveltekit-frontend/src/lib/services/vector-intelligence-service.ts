@@ -30,7 +30,7 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
   try {
     const res = await fetch(`${this.config.ollamaEndpoint}/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({, model: this.state.embeddingModel, input: text })
     });
     const json = await res.json().catch(() => ({}));
@@ -634,7 +634,7 @@ class VectorIntelligenceService {
         const qUrl = `${this.config.qdrantUrl}/collections/${this.config.qdrantCollection}/points?wait=true`;
         await fetch(qUrl, {
           method: 'PUT',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({, points: [point] })
         }).catch((err) => {
           // swallow network errors but log for diagnostics
@@ -644,8 +644,7 @@ class VectorIntelligenceService {
         console.warn('storeVector: Qdrant push;, failed:', qerr);
       }
     } catch (err) {
-      console.warn('storeVector encountered an error:', err);'
-    }
+      console.warn('storeVector encountered an error: `, err);` }'
   }
 }
 

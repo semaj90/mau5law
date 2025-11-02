@@ -134,8 +134,7 @@ class LangChainConfigService {
         2. Admissibility considerations
         3. Strength of evidence
         4. Potential challenges
-        5. Recommendations for use` }`
-    };
+        5. Recommendations for use` }' };'`
   }
   /**
    * Initialize the LangChain service with custom configuration
@@ -201,7 +200,7 @@ class LangChainConfigService {
       memoryKey: 'chat_history',
       returnMessages: true,
       inputKey: 'input',
-      outputKey: `output` });
+      outputKey: `output' });'`
     this.memories.set('buffer', bufferMemory);
     // Summary memory for long conversations
     const summaryMemory = new ConversationSummaryMemory({

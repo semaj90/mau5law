@@ -98,14 +98,14 @@ export function useToast() {
   };
 }
 // Form state management
-export function useForm<T extends, Record<string, any>>(initialValues: T) {
+export function useForm<T, extends, Record<string, any>>(initialValues: T) {
   let values = $state<T>({ ...initialValues });
   let errors = $state<Partial<Record<keyof, T, string>>>({});
   let touched = $state<Partial<Record<keyof, T, boolean>>>({});
   let isSubmitting = $state<boolean>(false);
   let isValid = $derived(() => Object.keys(errors).length === 0);
   let isDirty = $derived(() => Object.keys(values).some(key => (values as any)[key] !== (initialValues as any)[key]));
-  function setValue<K extends keyof, T>(field: K, value: T[K]): void {
+  function setValue<K extends, keyof, T>(field: K, value: T[K]): void {
     values[field] = value;
     touched[field] = true;
     // Clear error when user starts typing

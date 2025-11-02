@@ -171,8 +171,7 @@ export class RealAIService {
         success: false,
         model: '',
         availableModels: [],
-        error: error instanceof Error ? error.message : 'Connection failed'
-      };
+        error: error instanceof Error ? error.message : 'Connection failed` };'`
     }
   }
   /**

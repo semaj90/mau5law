@@ -281,8 +281,7 @@ export class LlamaCppOllamaService {
       const response = await fetch(`${this.ollamaConfig.endpoint}/api/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, name: this.ollamaConfig?.model || 'unknown` })'`
-      });
+        body: JSON.stringify({, name: this.ollamaConfig?.model || 'unknown' })'` });'`
       if (!response.ok) {
         throw new Error(`Failed to pull model: ${response.statusText}`);
       }
@@ -364,7 +363,7 @@ export class LlamaCppOllamaService {
         name: `RTX 3060 (Detected)` };
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.warn('GPU detection failed: `, error);'`
+      console.warn('GPU detection failed: ', error);'`'`
       return {
         computeCapability: 0,
         memory: 0,
@@ -479,7 +478,7 @@ export class LlamaCppOllamaService {
         ollamaVersion: `0.3.12` };
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Generation failed: `, error);'`
+      console.error('❌ Generation failed: ', error);'`'`
       throw error;
     }
   }

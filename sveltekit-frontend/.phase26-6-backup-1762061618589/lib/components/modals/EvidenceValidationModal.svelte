@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     onvalidated
   }: Props = $props();
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
   import {
     AlertTriangle,
     CheckCircle,

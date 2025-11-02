@@ -274,7 +274,7 @@ export class StatelessAPICoordinator {
           (
             prev,
             current // Corrected semicolon
-          ) => (prev.load < current.load ? prev : current) // Corrected closing, parenthesis
+          ) => (prev.load < current.load ? prev : current) // Corrected, closing, parenthesis
         );
       case 'WEIGHTED':
         const weightedNode = availableNodes.reduce((prev, current) => {

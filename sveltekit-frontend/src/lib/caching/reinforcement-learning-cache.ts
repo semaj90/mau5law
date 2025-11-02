@@ -226,8 +226,7 @@ export class ReinforcementLearningCache {
       'transform': 'cubic-bezier(0.4, 0, 0.2, 1)',
       'morph': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       'physics': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-      'particle': 'linear'
-    };
+      'particle': 'linear` };'`
     return easings[animationType as keyof typeof easings] || 'ease-in-out';
   }
   private calculateTriggerProbability(componentId: string): number {

@@ -335,7 +335,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: `Document not found` },
+            error: 'Document not found' },
           { status: 404 }
         );
       }
@@ -399,7 +399,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       return json(
         {
           success: false,
-          error: `Document ID is required` },
+          error: 'Document ID is required' },
         { status: 400 }
       );
     }
@@ -420,7 +420,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       success: true,
       documentId,
       chunksRemoved: Array.isArray(deletedChunks) ? deletedChunks.length : 0,
-      message: `Document removed from search index` });
+      message: `Document removed from search index' });'`
   } catch (error: any) {
     return json(
       {

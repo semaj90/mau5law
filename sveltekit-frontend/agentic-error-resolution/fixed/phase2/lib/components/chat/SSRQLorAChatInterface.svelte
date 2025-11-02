@@ -22,15 +22,15 @@ https://svelte.dev/e/js_parse_error -->
   import { useMachine } from '@xstate/svelte';
   import { chatMachine } from '$lib/machines/chat-machine';
   // Neural sprite rendering
-  import { NeuralSpriteRenderer } from '$lib/components/three/NeuralSpriteRenderer.svelte';
+  import  NeuralSpriteRenderer  from "$lib/components/three/NeuralSpriteRenderer.svelte";
   // YoRHa UI components
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Props
   // Dispatcher
   // XState machine
@@ -344,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
         disabled={$isStreaming}
         class="message-input nes-input"
       />
-      <Button.Root
+      <Button
         onclick={sendMessage}
         disabled={!$canSend}
         class="send-button bits-btn bits-btn"
@@ -355,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           Send
         {/if}
-      <Button.Root
+      <Button
         onclick={clearChat}
         variant="ghost"
         size="sm"

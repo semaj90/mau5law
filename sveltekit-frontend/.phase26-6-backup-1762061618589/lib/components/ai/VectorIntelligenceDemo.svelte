@@ -2,8 +2,8 @@
   // Svelte 5 runes are auto-imported
   import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/Badge.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Badge  from "$lib/components/ui/Badge.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
   type SearchResult = {
     id: string;
     title: string;

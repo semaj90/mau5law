@@ -183,6 +183,6 @@ export const GET: RequestHandler = async () => {
     headers: {
       'X-Health-Score': healthScore.toString(),
       'X-Service-Count': `${healthyServices}/${totalServices}`,
-      'X-Architecture': 'Legal-AI-Platform-v2.0' }
+      'X-Architecture': 'Legal-AI-Platform-v2.0` }'`
   });
 };

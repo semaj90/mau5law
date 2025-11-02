@@ -145,7 +145,7 @@
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Database Health</h3>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={refreshHealth}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshHealth}>
 Refresh
       </div>
       <divContent>
@@ -173,7 +173,7 @@ Refresh
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Cache Metrics</h3>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={refreshMetrics}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshMetrics}>
 Refresh
       </div>
       <divContent>
@@ -248,7 +248,7 @@ Refresh
               </select>
             </div>
           </div>
-          <Button.Root
+          <Button
             onclick={createCase}
             disabled={isLoading || !newCaseData.title || !newCaseData.description}
             class="w-full bits-btn bits-btn"
@@ -273,7 +273,7 @@ Refresh
               keydown={(e) => e.key === 'Enter' && searchCases()}
             />
           </div>
-          <Button.Root
+          <Button
             onclick={searchCases}
             disabled={isLoading || !searchQuery.trim()}
             class="w-full bits-btn bits-btn"
@@ -307,21 +307,21 @@ Refresh
           Demonstrate different case loading strategies with cognitive caching
         </p>
         <div class="flex flex-wrap gap-2">
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
 loadCase('demo-case-001')}
             disabled={isLoading}
           >
             Load Case (Standard)
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
 loadCase('demo-case-002', true)}
             disabled={isLoading}
           >
             Load Case (With Prediction)
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
 loadCase('demo-case-003')}

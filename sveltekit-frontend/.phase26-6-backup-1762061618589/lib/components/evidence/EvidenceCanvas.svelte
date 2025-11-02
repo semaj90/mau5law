@@ -5,7 +5,7 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { DraggableEvidenceNode } from './DraggableEvidenceNode.svelte';
+  import  DraggableEvidenceNode  from "./DraggableEvidenceNode.svelte";
   import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Plus, Zap, Search, Brain, Download } from 'lucide-svelte';
   interface EvidenceConnection {

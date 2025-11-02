@@ -36,7 +36,7 @@ type SyncModule = {
 // safe cast from imported namespace to the typed module
 const importedSyncModule = (syncModule as unknown) as SyncModule
 
-const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({, status: 'unknown` }),'`
+const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({, status: `unknown` }),'`'`
   performFullSync: async () => ({ success: false })
 }
 const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? { syncMockLegalDocuments: async () => ({, success: false }),
@@ -184,8 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case 'chr_manifests':
             mockData = mockDataGenerators.generateMockCHRManifests(count);
             break;
-          default: return json({ error: 'Unknown mock data type` }, { status: 400 });'`
-        }
+          default: return json({ error: 'Unknown mock data type' }, { status: 400 });'` }'`
         // normalize to array in case generator returned a promise or a sync array
         const resolvedData = await Promise.resolve(mockData);
         return json({
@@ -214,8 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
               bulkResults[syncType] = await databaseSync.syncPredictiveAssetCache();
               break;
             default:
-              bulkResults[syncType] = { error: 'unsupported sync type` };'`
-          }
+              bulkResults[syncType] = { error: 'unsupported sync type' };'` }'`
         }
         return json({
           action: 'bulk_sync',

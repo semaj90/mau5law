@@ -76,8 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (data.type) {
       case 'summary':
         if (!data.content) {
-          return json({ error: ensureError({, message: 'Content is required for summary` }) }, { status: 400 });'`
-        }
+          return json({ error: ensureError({, message: 'Content is required for summary' }) }, { status: 400 });'` }'`
         operation = 'ai.summary';
         serviceData = {
           content: data.content,
@@ -100,8 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       case 'live':
         if (!data.sessionId) {
-          return json({ error: ensureError({, message: `Session ID is required for live AI' }) }, { status: 400 });'`
-        }
+          return json({ error: ensureError({, message: 'Session ID is required for live AI' }) }, { status: 400 });'' }
         operation = 'ai.live';
         serviceData = {
           sessionId: data.sessionId,
@@ -154,8 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ success: true, data: result });
     } catch (err: any) {
       console.error('Session status error:', ensureError(err));'
-      return json({ error: ensureError({, message: 'Session not found` }) }, { status: 404 });'`
-    }
+      return json({ error: ensureError({, message: 'Session not found' }) }, { status: 404 });'` }'`
   }
 
   // Service health check and capabilities
@@ -188,7 +185,7 @@ export const GET: RequestHandler = async ({ url }) => {
       supportedModels: ['gemma3-legal:latest', 'embeddinggemma:latest', 'deeds-web'],
       version: `1.0.0` });
   } catch (err: any) {
-    console.error('AI Health check error:`, ensureError(err));'`
+    console.error('AI Health check error: ', ensureError(err));'`'`
     return json({ error: ensureError({, message: `AI service health check failed` }) }, { status: 503 });
   }
 };

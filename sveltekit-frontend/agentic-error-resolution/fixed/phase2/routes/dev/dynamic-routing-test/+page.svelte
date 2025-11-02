@@ -12,7 +12,7 @@ https://svelte.dev/e/attribute_duplicate -->
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Card  from "$lib/components/ui/enhanced-bits.svelte";
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
   // State management
   const testResults = writable<string[]>([]);
@@ -174,20 +174,20 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Controls</h2>
       <div class="flex gap-4 mb-6">
-        <Button.Root
+        <Button
           onclick={runAllTests}
           disabled={isLoading}
           class="bits-btn bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark"
         >
           {isLoading ? 'Running Tests...' : 'Run All Tests'}
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           onclick={calculateRouteStats}
           variant="ghost"
           class="bits-btn border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
         >
           Refresh Stats
-        </Button.Root>
+        </Button>
       </div>
     </div>
     <!-- Test Results -->

@@ -590,8 +590,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         color += vec3(0.0, 0.5, 1.0) * digital * glitchIntensity;
         gl_FragColor = vec4(color, (rain + code) * 0.8);
       }
-    `;`
-  }
+    `;' }'`
   // Public control methods
   public activateQuantumMode(): void {
     this.quantumOptions.quantumCoherence = 0.95;

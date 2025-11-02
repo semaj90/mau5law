@@ -405,17 +405,14 @@ export class CacheOrchestrator {
       }
       // Guard for SSR when posting messages to service worker
       if (typeof navigator !== 'undefined' && this.serviceWorkerRegistration?.active) {
-        this.serviceWorkerRegistration.active.postMessage({ type: `SYNC_CACHES' });'`
-      }
+        this.serviceWorkerRegistration.active.postMessage({ type: 'SYNC_CACHES' });'` }'`
       const metrics = await this.getSystemMetrics();
-      console.log('📊 Sync complete. System metrics: `, {'`
+      console.log('📊 Sync complete. System metrics: ', {'`'`
         redisConnected: metrics.redis,
         somActive: metrics.som,
         serviceWorkerActive: metrics.serviceWorker,
-        cacheEfficiency: `${( (metrics.cacheEfficiency as number) * 100 ).toFixed(1)}%' });'`
-    } catch (error) {
-      console.error('Cross-system sync error:', error);'
-    }
+        cacheEfficiency: '${( (metrics.cacheEfficiency as number) * 100 ).toFixed(1)}%' });'' } catch (error) {
+      console.error('Cross-system sync error:', error);` }`'
   }
 
   /**
@@ -436,8 +433,7 @@ export class CacheOrchestrator {
         const redisMetrics = await this.redisIntegration.getMetrics();
         metrics.cacheEfficiency = redisMetrics?.efficiency ?? metrics.cacheEfficiency;
       } catch (error) {
-        console.warn('Failed to get Redis metrics: `, error);'`
-      }
+        console.warn('Failed to get Redis metrics: ', error);'` }'`
     }
     return metrics;
   }
@@ -446,7 +442,7 @@ export class CacheOrchestrator {
    * Manual cache warming trigger
    */
   async manualWarmCache(strategyName?: string): Promise<void> {
-    console.log(`🔥 Manual cache warming triggered${strategyName ? ` for ${strategyName}` : `' }`);'`
+    console.log(`🔥 Manual cache warming triggered${strategyName ? ` for ${strategyName}` : `` }`);'`'`
     const strategies = strategyName
       ? this.config.strategies.filter(s => s.name === strategyName)
       : this.config.strategies.filter(s => s.enabled);
@@ -519,7 +515,7 @@ export class CacheOrchestrator {
       compile: 'TypeScript compilation error in module resolution',
       runtime: 'Cannot read property of undefined at runtime',
       dependency: 'Module not found, dependency resolution failed',
-      syntax: 'Unexpected token in JSON parsing operation' };
+      syntax: 'Unexpected token in JSON parsing operation` };'`
     return errors[type] || 'Generic error message';
   }
 
@@ -529,15 +525,14 @@ export class CacheOrchestrator {
         content: 'Document content...',
         metadata: { category: 'contract', confidence: 0.95 }
       },
-      api_response: { success: true, data: { result: `response data' }, timestamp: Date.now() },'`
+      api_response: { success: true, data: { result: `response data` }, timestamp: Date.now() },'`'`
       user_query: {
         query: 'legal analysis request',
         filters: { category: `contract` },
         options: { includeMetadata: true }
       }
     };
-    return schemas[schema] ?? { type: `unknown' };'`
-  }
+    return schemas[schema] ?? { type: 'unknown' };'` }'`
 
   private hashString(str: string): number {
     let hash = 0;

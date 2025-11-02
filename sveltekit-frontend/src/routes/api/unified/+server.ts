@@ -107,8 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
             extractedEntities: metadata?.extractedEntities || [],
             keyTerms: metadata?.keyTerms || [],
             userId: metadata?.userId,
-            priority: metadata?.priority || 'normal` }'`
-        });
+            priority: metadata?.priority || 'normal' }'` });'`
 
         // Async Neo4j sync if document ingestion succeeded
         if (result?.success && 'documentId' in result && result.documentId) {
@@ -167,8 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
           content = fileBuffer.toString('utf8');
         } else {
           // Defer heavy OCR/parsing to ingestion pipeline; include original filename for context
-          content = `__binary_file__:${file.originalName || 'uploaded_file` }`;'`
-        }
+          content = `__binary_file__:${file.originalName || 'uploaded_file` }`;'` }
 
         // Use the existing ingestDocument API on UnifiedSearchService rather than a non-existent processUploadedFile
         const result = await unifiedSearchService.ingestDocument({
@@ -480,8 +478,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document IDs array required'
-            },
+              error: 'Document IDs array required` },'`
             { status: 400 }
           );
         }

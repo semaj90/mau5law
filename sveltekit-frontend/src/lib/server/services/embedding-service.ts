@@ -104,7 +104,7 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
   const endpoint = resolveEndpoint(backend, mode);
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify({
       model,
       input: texts

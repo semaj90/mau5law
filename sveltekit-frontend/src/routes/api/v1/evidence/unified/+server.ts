@@ -87,5 +87,4 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 export const GET: RequestHandler = async () => {
-  return json({ capabilities: {, vectorSimilarity: true }, status: {, systemHealth: 'operational` } });'`
-};
+  return json({ capabilities: {, vectorSimilarity: true }, status: {, systemHealth: 'operational' } });'' };

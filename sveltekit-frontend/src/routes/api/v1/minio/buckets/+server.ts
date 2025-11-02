@@ -234,8 +234,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json` }'`
-        }
+          headers: { 'Content-Type': 'application/json' }'` }'`
       );
     }
     // Delete bucket (implementation needed in MinIO service)

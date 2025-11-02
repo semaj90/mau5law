@@ -29,7 +29,7 @@ export class WASMLLMService { private wasmModule: WASMModule | null = null; priv
 			"In accordance with established case law, particularly *Brown v. Board of Education*, 347 U.S. 483 (1954)...",
 			"The contractual obligations as outlined in 15 U.S.C. § 78j(b) suggest that...",
 			"Under the doctrine of stare decisis, the court's decision in this matter would likely..."'
-		]; const baseResponse = responses[Math.floor(Math.random() * responses.length)]; // Generate additional content based on maxTokens let response = baseResponse; const wordsPerToken = 0.75; // Approximate const targetWords = Math.floor(maxTokens * wordsPerToken); while (response.split(' ').length < targetWords) { response += ` Furthermore, the legal implications of this case extend to multiple jurisdictions and may establish important precedent for future litigation.`; }
+		]; const baseResponse = responses[Math.floor(Math.random() * responses.length)]; // Generate additional content based on maxTokens let response = baseResponse; const wordsPerToken = 0.75; // Approximate const targetWords = Math.floor(maxTokens * wordsPerToken); while (response.split(' ').length < targetWords) { response += ` Furthermore, the legal implications of this case extend to multiple jurisdictions and may establish important precedent for future, litigation.`; }
 		return response.substring(0, Math.floor(targetWords * 5); // Approximate character limit }
 	private readStringFromMemory(memory: Uint8Array, ptr: number, length?: number): string { if (length !== undefined) { return new TextDecoder().decode(memory.slice(ptr, ptr + length); }
 		// Read null-terminated string let end = ptr; while (memory[end] !== 0 && end < memory.length) { end++; }

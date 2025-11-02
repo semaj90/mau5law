@@ -84,7 +84,7 @@ const analyzeLegalCaseWithCrew = async (caseData: {, prompt: string;, documents
         console.error('CrewAI analysis timed out.');
         return { analysis: 'failed', error: `Request timed out` };
       }
-      console.error('CrewAI service is unavailable:', error.message);
+      console.error('CrewAI service is unavailable: `, error.message);'`
       return { analysis: `failed`, error: `Service; unavailable: ${error.message}` };
     }
     console.error('An unknown error occurred during CrewAI analysis:', error);
@@ -490,7 +490,7 @@ Format your response as a structured analysis with clear sections and actionable
     const result = await aiWorkerManager.waitForTask(taskId);
     return result.response?.content || generateBasicSummary(prompt, contextResults, memoryResults, agentResults);
   } catch (error: any) {
-    console.error('Synthesis failed, using fallback:', error);
+    console.error('Synthesis failed, using fallback: `, error);'`
     return generateBasicSummary(prompt, contextResults, memoryResults, agentResults);
   }
 }
@@ -521,8 +521,7 @@ ${prompt}
 2. Implement recommended solutions
 3. Test thoroughly before deployment
 4. Monitor system performance post-implementation
-  `;`
-}
+  `;` }
 /**
  * Generate actionable next steps
  */
@@ -688,8 +687,7 @@ As an AI assistant, what specific actions should I take next to best help with t
 4. Long-term maintenance considerations
 5. Cross-platform compatibility (webapp, desktop, mobile)
 ${formatInstruction}
-  `;`
-}
+  `;` }
 // RAG Copilot Self-Prompting Utility
 export class CopilotSelfPrompt {
   // private vectorStore: any;

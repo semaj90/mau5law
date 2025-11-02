@@ -153,8 +153,7 @@ class FrontendServiceClient {
   }
 
   private async get<T>(endpoint: string): Promise<ServiceResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET` });'`
-  }
+    return this.request<T>(endpoint, { method: 'GET' });'' }
 
   private async post<T>(endpoint: string, body?: RequestBody): Promise<ServiceResponse<T>> {
     const options: RequestInit = {};
@@ -166,7 +165,7 @@ class FrontendServiceClient {
       options.method = 'POST';
       // body is treated as JSON object
       options.body = JSON.stringify((body as JsonObject) ?? {});
-      options.headers = { 'Content-Type': `application/json` };
+      options.headers = { 'Content-Type': `application/json' };'`
     }
     return this.request<T>(endpoint, options);
   }
@@ -368,7 +367,7 @@ export function createUploadStore() {
   const upload = async (file: File, caseId?: string): Promise<UploadResult> => {
     const uploadId = `${Date.now()}_${file.name}`;
     uploads.update(map => {
-      map.set(uploadId, { file, progress: 0, status: `uploading` });
+      map.set(uploadId, { file, progress: 0, status: `uploading' });'`
       return map;
     });
 

@@ -408,8 +408,7 @@ export class VectorSearchService {
         vector = EXCLUDED.vector,
         metadata = EXCLUDED.metadata,
         updated_at = CURRENT_TIMESTAMP
-    `;`
-  }
+    `;` }
   /**
    * Index document in Qdrant
    */
@@ -512,8 +511,7 @@ export class VectorSearchService {
   private startHealthChecks(): void {
     this.healthCheckInterval = setInterval(() => {
       Promise.all([this.checkPgVectorHealth(), this.checkQdrantHealth()]).catch(error => {
-        console.error('[VectorSearchService] Health check error:', error);'
-      });
+        console.error('[VectorSearchService] Health check error:', error);` });`'
     }, 30000); // Check every 30 seconds
   }
   /**

@@ -6,9 +6,9 @@
   // Svelte 5 runes are auto-imported
   import { onMount  } from "svelte";
   import { writable } from 'svelte/store';
-  import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  import { CanvasBoard } from '$lib/components/yorha/CanvasBoard.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte";
+  import  CanvasBoard  from "$lib/components/yorha/CanvasBoard.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   interface Props {
     caseId?: string;
     enableYoRHaBoard?: boolean;
@@ -192,7 +192,7 @@
       >
         🔄 Both
       </button>
-      <Button.Root
+      <Button
         variant="ghost"
         size="sm"
         onclick={syncCanvasBoards}
@@ -200,7 +200,7 @@
         class="sync-btn bits-btn"
       >
 {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
-      <Button.Root
+      <Button
         variant="ghost"
         size="sm"
         onclick={clearAllCanvases}

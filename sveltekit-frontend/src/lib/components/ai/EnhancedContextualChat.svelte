@@ -177,15 +177,15 @@ import type { Document } from '$lib/types';
 </script>
 <div, class="enhanced-contextual-chat">
   <!-- Header -->
-  <div class="chat-header nes-container, is-dark">
+  <div class="chat-header, nes-container, is-dark">
     <div, class="header-content">
-      <h2 class="nes-text, is-primary">AI LEGAL ASSISTANT</h2>
+      <h2, class="nes-text, is-primary">AI LEGAL ASSISTANT</h2>
       <div, class="header-actions">
         <Tooltip.Root>
-          <Tooltip.Trigger class="nes-btn, is-small">
+          <Tooltip.Trigger, class="nes-btn, is-small">
             ⚙️
           </Tooltip.Trigger>
-          <Tooltip.Content class="tooltip-content nes-container, is-dark">
+          <Tooltip.Content class="tooltip-content, nes-container, is-dark">
             <p>Settings</p>
           </Tooltip.Content>
         </Tooltip.Root>
@@ -212,11 +212,11 @@ import type { Document } from '$lib/types';
       <div, class="messages-container">
         {#each conversationHistory as turn, idx (idx)}
           <div, class="message-group">
-            <div class="user-message nes-container, is-dark">
+            <div class="user-message, nes-container, is-dark">
               <div, class="message-label">👤 You</div>
               <p>{turn.userMessage}</p>
             </div>
-            <div class="agent-message, nes-container">
+            <div, class="agent-message, nes-container">
               <div, class="message-label">🤖 Assistant</div>
               <p>{turn.agentResponse}</p>
               <div, class="message-meta">
@@ -233,9 +233,9 @@ import type { Document } from '$lib/types';
           </div>
         {/each}
         {#if conversationHistory.length === 0}
-          <div class="empty-state, nes-container">
+          <div, class="empty-state, nes-container">
             <p, class="nes-text">Start a conversation about your legal case...</p>
-            <p class="nes-text, is-disabled">
+            <p, class="nes-text, is-disabled">
               Try asking about case analysis, document review, or risk assessment.
             </p>
           {/if}
@@ -263,7 +263,7 @@ import type { Document } from '$lib/types';
             disabled={$submitting}
           ></textarea>
           {#if $errors.message}
-            <p class="error-text nes-text, is-error">{$errors.message}</p>
+            <p class="error-text, nes-text, is-error">{$errors.message}</p>
           {/if}
         </div>
         <div, class="form-controls">
@@ -292,7 +292,7 @@ import type { Document } from '$lib/types';
         <!-- Predictions -->
         <Accordion.Item, value="predictions">
           <Accordion.Header>
-            <Accordion.Trigger class="accordion-trigger nes-container, is-dark">
+            <Accordion.Trigger class="accordion-trigger, nes-container, is-dark">
               <span>🔮 Next-Step Predictions</span>
               <span, class="accordion-icon">▼</span>
             </Accordion.Trigger>
@@ -301,7 +301,7 @@ import type { Document } from '$lib/types';
             {#if predictions.length > 0}
               <div, class="predictions-list">
                 {#each predictions as prediction, idx (idx)}
-                  <div class="prediction-item, nes-container">
+                  <div, class="prediction-item, nes-container">
                     <div, class="prediction-header">
                       <span, class="prediction-action">{prediction.action}</span>
                       <span, class="prediction-confidence">
@@ -319,14 +319,14 @@ import type { Document } from '$lib/types';
                 {/each}
               </div>
             {:else}
-              <p class="nes-text, is-disabled">No predictions yet</p>
+              <p, class="nes-text, is-disabled">No predictions yet</p>
             {/if}
           </Accordion.Content>
         </Accordion.Item>
         <!-- Entities -->
         <Accordion.Item, value="entities">
           <Accordion.Header>
-            <Accordion.Trigger class="accordion-trigger nes-container, is-dark">
+            <Accordion.Trigger class="accordion-trigger, nes-container, is-dark">
               <span>🏷️ Extracted Entities</span>
               <span, class="accordion-icon">▼</span>
             </Accordion.Trigger>
@@ -346,7 +346,7 @@ import type { Document } from '$lib/types';
                 {/each}
               </div>
             {:else}
-              <p class="nes-text, is-disabled">No entities extracted yet</p>
+              <p, class="nes-text, is-disabled">No entities extracted yet</p>
             {/if}
           </Accordion.Content>
         </Accordion.Item>
@@ -354,7 +354,7 @@ import type { Document } from '$lib/types';
         {#if contextualState}
           <Accordion.Item, value="history">
             <Accordion.Header>
-              <Accordion.Trigger class="accordion-trigger nes-container, is-dark">
+              <Accordion.Trigger class="accordion-trigger, nes-container, is-dark">
                 <span>📊 State History</span>
                 <span, class="accordion-icon">▼</span>
               </Accordion.Trigger>
@@ -362,7 +362,7 @@ import type { Document } from '$lib/types';
             <Accordion.Content, class="accordion-content">
               <div, class="state-history">
                 {#each contextualState.hmmState.stateHistory.slice(-10) as state, idx (idx)}
-                  <div class="history-item, nes-container">
+                  <div, class="history-item, nes-container">
                     <span, class="history-index">#{idx + 1}</span>
                     <span, class="history-state">
                       {stateNames[state as keyof typeof stateNames]}
@@ -377,11 +377,11 @@ import type { Document } from '$lib/types';
     </div>
   </div>
 </div>
-<!-- Entity Details, Dialog -->
+<!-- Entity, Details, Dialog -->
 <Dialog.Root, bind:open={showEntityDetails}>
   <Dialog.Portal>
     <Dialog.Overlay, class="dialog-overlay" />
-    <Dialog.Content class="dialog-content nes-dialog, is-dark">
+    <Dialog.Content class="dialog-content, nes-dialog, is-dark">
       <Dialog.Title, class="dialog-title">
         Entity Details
       </Dialog.Title>
@@ -409,7 +409,7 @@ import type { Document } from '$lib/types';
               </span>
             {/if}
         {/if}
-      <Dialog.Close class="nes-btn, is-primary">Close</Dialog.Close>
+      <Dialog.Close, class="nes-btn, is-primary">Close</Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>

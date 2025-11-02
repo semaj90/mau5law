@@ -76,7 +76,7 @@ export class NintendoMemoryManager {
       this.l2Banks.push({ id: i;, items: new Map(),
         currentSize: 0,
         maxSize: MEMORY_BANKS.L2_SYSTEM_RAM / 8,
-        isActive: i < 2 // First 2 banks, active>
+        isActive: i < 2 // First 2, banks, active>
       });
     }
   }
@@ -148,8 +148,7 @@ export class NintendoMemoryManager {
       }
     } catch (error) {
       this.stats.redisErrors++;
-      console.error(`Redis retrieval error for key ${key}: ', error);'`
-    }
+      console.error(`Redis retrieval error for key ${key}: ', error);'` }
     return null;
   }
   /**
@@ -372,8 +371,7 @@ export class NintendoMemoryManager {
           console.log('Nintendo Memory Manager Stats:', this.stats);
         }
       } catch (error) {
-        console.error('Memory monitor error:', error);'
-      }
+        console.error('Memory monitor error:', error);` }`'
     }, 5000); // Check every 5 seconds
   }
   /**

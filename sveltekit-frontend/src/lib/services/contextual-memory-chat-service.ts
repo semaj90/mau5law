@@ -161,8 +161,7 @@ class ContextualMemoryChatService {
           response_time_ms: performance.now() - startTime,
           cached: false,
           quantized: !!llmResponse.quantized,
-          model_used: llmResponse?.model || 'unknown` }'`
-      };
+          model_used: llmResponse?.model || 'unknown' }'' };
       await this.updateChatHistory(userId, sessionId, [userMsg, assistantMsg]);
 
       this.isProcessing.set(false);
@@ -299,7 +298,7 @@ class ContextualMemoryChatService {
       };
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       if (!response.ok) {
@@ -310,10 +309,9 @@ class ContextualMemoryChatService {
         response: (data?.choices?.[0]?.message?.content as string) ?? 'No response generated',
         confidence: data?.confidence,
         quantized: data?.quantized ?? null,
-        model: data?.model ?? 'unknown` };'`
-    } catch (error) {
-      console.warn('sendToLLM failed, returning fallback: `, error);'`
-      return { response: `The assistant is temporarily unavailable. Please try again later.` };
+        model: data?.model ?? 'unknown' };'' } catch (error) {
+      console.warn('sendToLLM failed, returning fallback: ', error);'`'`
+      return { response: 'The assistant is temporarily unavailable. Please try again later.' };
     }
   }
 
@@ -390,7 +388,7 @@ class ContextualMemoryChatService {
       const queryEmbedding = await this.generateEmbedding(query);
       const resp = await fetch('/api/chat/similar', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({, embedding: queryEmbedding, userId, limit })
       });
       if (!resp.ok) return [];
@@ -410,7 +408,7 @@ class ContextualMemoryChatService {
     try {
       const resp = await fetch('/api/rag/context', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, userId, limit: 5 })
       });
       if (!resp.ok) return [];
@@ -428,7 +426,7 @@ class ContextualMemoryChatService {
     try {
       const resp = await fetch('/api/embeddings/generate', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })
       });
       if (!resp.ok) return this.generateSimpleEmbedding(text);
@@ -516,7 +514,7 @@ class ContextualMemoryChatService {
     try {
       await fetch('/api/chat/messages', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages })
       });
     } catch (error) {
@@ -601,7 +599,7 @@ class ContextualMemoryChatService {
         resolve(event.data ?? {});
       };
       try {
-        this.serviceWorker.postMessage({ type: `GET_PERFORMANCE_METRICS` }, [channel.port2]);
+        this.serviceWorker.postMessage({ type: 'GET_PERFORMANCE_METRICS' }, [channel.port2]);
       } catch {
         resolve({});
       }

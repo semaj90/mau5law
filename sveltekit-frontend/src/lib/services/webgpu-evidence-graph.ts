@@ -164,8 +164,7 @@ export class WebGPUEvidenceGraph {
       depthStencil: {
         format: 'depth24plus',
         depthWriteEnabled: true,
-        depthCompare: 'less` }'`
-    });
+        depthCompare: 'less' }'` });'`
   }
   private createBuffers(): void {
     if (!this.device) return;

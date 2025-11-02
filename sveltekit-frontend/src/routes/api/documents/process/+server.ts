@@ -123,7 +123,7 @@ export const OPTIONS: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: message || 'Health check failed' },
+        error: message || 'Health check failed` },'`
       {
         status: 500
       }

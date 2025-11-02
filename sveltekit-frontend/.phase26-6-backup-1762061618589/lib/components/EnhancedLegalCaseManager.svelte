@@ -11,19 +11,19 @@ https://svelte.dev/e/js_parse_error -->
 	// Use safer imports and silence TypeScript when the project uses named exports
 	// (this prevents: "has no default export" errors when UI libs export named components)
 	// @ts-ignore
-	import { CaseInfoForm } from './CaseInfoForm.svelte';
+	import  CaseInfoForm  from "./CaseInfoForm.svelte";
 	// @ts-ignore
-	import { DocumentUploadForm } from './DocumentUploadForm.svelte';
+	import  DocumentUploadForm  from "./DocumentUploadForm.svelte";
 	// @ts-ignore
-	import { EvidenceAnalysisForm } from './EvidenceAnalysisForm.svelte';
+	import  EvidenceAnalysisForm  from "./EvidenceAnalysisForm.svelte";
 	// @ts-ignore
-	import { AIAnalysisForm } from './AIAnalysisForm.svelte';
+	import  AIAnalysisForm  from "./AIAnalysisForm.svelte";
 	// @ts-ignore
-	import { ReviewSubmitForm } from './ReviewSubmitForm.svelte';
+	import  ReviewSubmitForm  from "./ReviewSubmitForm.svelte";
 	// @ts-ignore
-	import { ProgressIndicator } from './subcomponents/ProgressIndicator.svelte';
+	import  ProgressIndicator  from "./subcomponents/ProgressIndicator.svelte";
 	// @ts-ignore
-	import { LoadingSpinner } from './LoadingSpinner.svelte';
+	import  LoadingSpinner  from "./LoadingSpinner.svelte";
 	// Import enhanced services
 	// Consolidate store imports to reduce missing-export churn
 	// @ts-ignore

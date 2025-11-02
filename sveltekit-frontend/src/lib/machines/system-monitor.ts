@@ -62,7 +62,7 @@ export const systemMonitorMachine = createMachine(
             { cond: 'lowLatency', target: 'active', actions: ['updateLatency', 'resumeGPU'] },
             { actions: ['updateLatency'] }
           ],
-          NETWORK_TIMEOUT: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
+          NETWORK_TIMEOUT: {, target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
           FORCE_OFFLINE: {, target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
         }
       },
@@ -157,7 +157,7 @@ export function startSystemMonitorService(opts?: {
   const service = interpret(systemMonitorMachine).start();
 
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-    const onActivity = () => service.send({ type: 'USER_ACTIVITY` });'`
+    const onActivity = () => service.send({ type: `USER_ACTIVITY` });'`'`
     window.addEventListener('mousemove', onActivity, { passive: true });
     window.addEventListener('keydown', onActivity, { passive: true });
 

@@ -99,8 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (!file && !fileUrl && (!text || text.length < 10)) {
-      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least 10 characters of text.` }, { status: 400 });'`
-    }
+      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least 10 characters of text.' }, { status: 400 });'` }'`
 
     // 1) Extract
     const t0 = Date.now();

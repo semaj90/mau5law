@@ -331,7 +331,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           participants: ['John Doe', 'Jane Smith'],
           location: '123 Main Street',
           evidence_references: ['DOC-001', 'PHOTO-001'],
-          legal_significance: 'High - establishes timeline of events` },'`
+          legal_significance: `High - establishes timeline of events` },'`'`
         {
           id: crypto.randomUUID(),
           date: '2024-01-16T09:00:00Z',

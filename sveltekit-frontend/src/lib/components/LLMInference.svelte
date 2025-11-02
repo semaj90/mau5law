@@ -30,7 +30,7 @@
     }
   }
 </script>
-<div class="space-y-4, llm-inference-container">
+<div, class="space-y-4, llm-inference-container">
   <h2>Local LLM Inference (Tauri Desktop)</h2>
   <div, class="space-y-4">
     <label, for="model">Model:</label>
@@ -42,15 +42,15 @@
   </div>
   <div, class="space-y-4">
     <label, for="prompt">Prompt:</label>
-    <textarea id="prompt" class="prompt-input" rows="4" bind:value={prompt} placeholder="Enter your, prompt..."></textarea>
+    <textarea id="prompt" class="prompt-input" rows="4" bind:value={prompt} placeholder="Enter, your, prompt..."></textarea>
   </div>
   <button class="space-y-4 run-btn" onclick={() => handleInference()} disabled={loading || !selectedModel || !prompt.trim()}>
     {loading ? 'Running...' : 'Run Inference'}
   </button>
   {#if error}
-    <div class="space-y-4, error">{error}{/if}
+    <div, class="space-y-4, error">{error}{/if}
   {#if result}
-    <div class="space-y-4, result">
+    <div, class="space-y-4, result">
       <h3>Result:</h3>
       <pre>{result}</pre>
     {/if}

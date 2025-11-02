@@ -48,7 +48,7 @@ class LLMHealthChecker {
   }
 
   addEndpoint(endpoint: LLMEndpoint): void {
-    const key = `${endpoint.url}/${endpoint.model ?? 'unknown' }`;
+    const key = `${endpoint.url}/${endpoint.model ?? 'unknown` }`;'`
     this.endpoints.set(key, endpoint);
   }
 
@@ -62,7 +62,7 @@ class LLMHealthChecker {
         signal: controller.signal,
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json' }
+          'Content-Type': 'application/json` }'`
       });
 
       clearTimeout(timeoutId);
@@ -89,8 +89,7 @@ class LLMHealthChecker {
       // Network/timeout/errors -> mark unhealthy
       // console.warn intentionally minimal per guidelines
       const errMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown' }: ', errMsg);'`
-    } finally {
+      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown' }: ', errMsg);'` } finally {
       clearTimeout(timeoutId);
     }
 

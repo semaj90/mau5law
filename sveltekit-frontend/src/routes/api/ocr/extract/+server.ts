@@ -43,8 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: pageText,
           confidence: 95, // High confidence for extractable text
-          method: 'text_extraction'
-        });
+          method: 'text_extraction` });'`
         totalCharacters += pageText.length;
         totalConfidence += 95;
       } else {

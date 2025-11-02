@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
+  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface SearchItem {
     id: string;

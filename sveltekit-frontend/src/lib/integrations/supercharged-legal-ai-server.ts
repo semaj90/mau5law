@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            title: '🚀 Supercharged Legal AI System Status',
+           , title: '🚀 Supercharged Legal AI System Status',
             systems: {, redis: {, enabled: systemStatus.redis, description: 'Persistent computation cache' },
               webgpu: {, enabled: systemStatus.webgpu, description: 'GPU compute shaders' },
               simd: {, enabled: systemStatus.simd, description: 'SIMD JSON parsing' },
@@ -209,7 +209,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'queryVector and candidateVectors must be arrays` },'`
+              error: 'queryVector and candidateVectors must be arrays' },''
             { status: 400 }
           );
         }

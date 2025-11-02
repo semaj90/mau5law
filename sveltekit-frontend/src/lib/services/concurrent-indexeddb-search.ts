@@ -89,13 +89,13 @@ export class ConcurrentIndexedDBSearch {
         const req = event.target as IDBOpenDBRequest;
         const db = req.result as IDBDatabase;
         if (!db.objectStoreNames.contains('documents')) {
-          const store = db.createObjectStore('documents', { keyPath: 'id` });'`
+          const store = db.createObjectStore('documents', { keyPath: 'id' });'`'`
           store.createIndex('type', 'type', { unique: false });
           store.createIndex('language', 'metadata.language', { unique: false });
           store.createIndex('lastModified', 'metadata.lastModified', { unique: false });
         }
         if (!db.objectStoreNames.contains('embeddings')) {
-          const embeddingStore = db.createObjectStore('embeddings', { keyPath: `id` });
+          const embeddingStore = db.createObjectStore('embeddings', { keyPath: `id' });'`
           embeddingStore.createIndex('documentId', 'documentId', { unique: false });
         }
       };
@@ -188,7 +188,7 @@ export class ConcurrentIndexedDBSearch {
       };
     };
 
-    const workerBlob = new Blob(['(' + workerFn.toString() + ')()'], { type: `application/javascript` });
+    const workerBlob = new Blob(['(' + workerFn.toString() + ')()'], { type: `application/javascript' });'`
     const workerUrl = URL.createObjectURL(workerBlob);
     for (let i = 0; i < this.workerPool; i++) {
       const worker = new Worker(workerUrl);
@@ -406,7 +406,7 @@ export class ConcurrentIndexedDBSearch {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: 'nomic-embed-text:latest',
           prompt: text

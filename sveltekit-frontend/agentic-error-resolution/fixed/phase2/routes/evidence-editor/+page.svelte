@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
-  import { UiButton as Button } from '$lib/components/ui.svelte';
+  import  UiButton as Button  from "$lib/components/ui.svelte";
   import { onMount } from 'svelte';
   let caseId: string | null = $state(null);
   let readOnly = $state(false);
@@ -30,13 +30,13 @@
         </p>
       </div>
       <div class="space-y-4">
-    <Button.Root class="bits-btn"
+    <Button class="bits-btn"
       onclick={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
         >
 {readOnly ? 'Enable Editing' : 'Read Only'}
-        </Button.Root>
+        </Button>
         <div class="space-y-4">
           {#if caseId}
             case {caseId}
@@ -62,7 +62,7 @@
     <li>• Use the AI assistant for search and insights</li>
     <li>• Edit metadata and tags in the inspector panel</li>
   </ul>
-  <Button.Root
+  <Button
     size="sm"
     class="space-y-4 bits-btn bits-btn"
             onclick={() =>
@@ -74,7 +74,7 @@
     }}
   >
     Got it!
-  </Button.Root>
+  </Button>
 <style>
   /* @unocss-include */
   .evidence-editor-page {

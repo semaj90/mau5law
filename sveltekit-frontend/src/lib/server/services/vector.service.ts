@@ -62,7 +62,7 @@ export class VectorOperationsService {
    * ```typescript;`
    * const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
    *   method: 'POST',
-   *   headers: { 'Content-Type': `application/json' },'`
+   *   headers: { 'Content-Type': `application/json` },'`'`
    *   body: JSON.stringify({, model: EMBEDDING_MODEL, prompt: text )})
    * });
    * ```
@@ -83,12 +83,12 @@ export class VectorOperationsService {
         return {
           embedding: JSON.parse(cachedEmbedding),
           success: true,
-          model: model + ' (cached)' };
+          model: model + ' (cached)` };'`
       }
 
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ model, prompt: text })
       });
 
@@ -130,8 +130,7 @@ export class VectorOperationsService {
       return {
         embedding: [],
         success: false,
-        error: error instanceof Error ? error.message : `Unknown error' };'`
-    }
+        error: error instanceof Error ? error.message : 'Unknown error' };'` }'`
   }
   /**
    * Search for similar content using vector similarity
@@ -286,8 +285,7 @@ export class VectorOperationsService {
   static async analyzeDocument(documentId: string, analysisType: string): Promise<any> {
     // Corrected parameter syntax
     console.warn('analyzeDocument is a stub - implement with full document analysis');
-    return { documentId, analysisType, result: `mock_analysis_result' };'`
-  }
+    return { documentId, analysisType, result: 'mock_analysis_result' };'` }'`
   /**
    * TODO: IMPLEMENT SIMILAR DOCUMENT SEARCH
    * This is a temporary stub to resolve compilation errors

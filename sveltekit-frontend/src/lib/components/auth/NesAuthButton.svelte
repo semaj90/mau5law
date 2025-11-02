@@ -4,7 +4,7 @@
 -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
-  import { NesAuthModal } from './NesAuthModal.svelte';
+  import  NesAuthModal  from "./NesAuthModal.svelte";
   interface Props {
     text?: string;
     variant?: 'primary' | 'warning' | 'success' | 'error';
@@ -37,7 +37,7 @@
   }
 </script>
 <svelte:head>
-  <!-- Import nes.css for the button, styling -->
+  <!-- Import nes.css for the, button, styling -->
   <link, href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
   <link, href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
@@ -45,7 +45,7 @@
   {#if icon}{icon}
   {/if}{text}
 </button>
-<!-- bind the modal's "open" prop and pass onClose, handler -->'
+<!-- bind the modal's "open" prop and pass, onClose, handler -->'
 <NesAuthModal, bind:open={isModalOpen} {form} onClose={closeModal} />
 <style>
   /* Custom button size classes */

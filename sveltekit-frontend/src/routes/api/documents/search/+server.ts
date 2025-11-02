@@ -424,7 +424,7 @@ export const GET: RequestHandler = async () => {
       const [docResult] = await db.select({ count: sql<number>`count(*)` }).from(legal_documents);
       documentCount = docResult?.count || 0;
       const [embResult] = await db
-        .select({ count: sql<number>`count(*)' })'`
+        .select({ count: sql<number>`count(*)` })'`'`
         .from(legal_documents)
         .where(legal_documents.content_embedding.isNotNull()); // Added closing parenthesis
       embeddingCount = embResult?.count || 0;
@@ -434,7 +434,7 @@ export const GET: RequestHandler = async () => {
     // Test cognitive cache
     let cacheStatus = $state<boolean>(false);
     try {
-      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: {, action: 'health-test` } });'`
+      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: {, action: `health-test` } });'`'`
       cacheStatus = true;
     } catch (err: any) {
       console.warn('[Search] Cognitive cache health check failed:', err);

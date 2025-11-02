@@ -67,18 +67,16 @@ export const GET: RequestHandler = async ({ url }) => {
       let query = db
         .select({
           id: embeddingTable.id,
-          similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)` })
+          similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)' })'`
         .from(embeddingTable)
         .orderBy(sql`${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector`)
         .limit(limit)
         .offset(offset);
       // Apply simple metadata filters when provided (string-match against metadata JSON text)
       if (caseId) {
-        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + caseId + '%` }`);'`
-      }
+        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + caseId + '%' }`);'' }
       if (tag) {
-        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + tag + '%` }`);'`
-      }
+        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + tag + '%' }`);'' }
       const pgRows = await query;
       pgvectorResult = { rows: pgRows, page, limit };
     } catch (err) {

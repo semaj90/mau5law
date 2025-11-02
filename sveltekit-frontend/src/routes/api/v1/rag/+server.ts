@@ -238,8 +238,7 @@ async function performEnhancedRAG(
       service: 'enhanced-rag',
       version: ragData.version || '2.0.0',
       embedding_model: ragData.embedding_model,
-      search_type: ragData.search_type || 'semantic` }'`
-  };
+      search_type: ragData.search_type || 'semantic' }'` };'`
 }
 /*
  * Check dimensional cache for existing results
@@ -278,7 +277,7 @@ async function storeDimensionalCache(query: string, results: EnhancedRAGResponse
     await fetch(`${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.set}`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , key: cacheKey,
         embeddings: [queryEmbedding],
@@ -298,8 +297,7 @@ async function storeDimensionalCache(query: string, results: EnhancedRAGResponse
     });
   } catch (error) {
     console.warn('Cache storage failed:', error);
-    // Don't throw - caching is optional'
-  }
+    // Don't throw - caching is optional` }'`
 }
 /*
  * Health check handler
@@ -371,7 +369,7 @@ async function handleStats(): Promise<Response> {
         protocols: {
          , QUIC: 'Primary (< 5ms)',
           HTTP: 'Fallback (< 50ms)',
-          gRPC: 'Available (< 15ms)` },'`
+          gRPC: `Available (< 15ms)` },'`'`
         performance: {
           averageResponseTime: '< 10ms',
           cacheHitRate: cacheStats?.hitRate || 0,

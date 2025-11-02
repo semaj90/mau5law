@@ -87,7 +87,7 @@
     </span>
   </a>
 {:else}
-  <Button.Root {type} {disabled} class={buttonClasses} onclick={handleClick}>
+  <Button {type} {disabled} class={buttonClasses} onclick={handleClick}>
     <span class="button-content">
       {#if loading}
         <div class="loading-spinner"></div>
@@ -98,7 +98,7 @@
         <span class="button-text">{@render children()}</span>
       {/if}
     </span>
-  </Button.Root>
+  </Button>
 {/if}
 {#if tooltip && $open}
   <div class="tooltip">{tooltip}</div>

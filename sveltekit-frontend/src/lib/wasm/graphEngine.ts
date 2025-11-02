@@ -152,8 +152,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
           created: new Date().toISOString(),
-          source: `wasm' }'`
-      });
+          source: 'wasm' }'` });'`
     }
     // Generate mock edges
     for (let i = 0; i < wasmResult.edges && i < nodes.length - 1; i++) {
@@ -174,7 +173,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: wasmResult.executionTime,
         resultCount: nodes.length + edges.length,
-        source: 'wasm' }
+        source: 'wasm` }'`
     };
   }
   private async executeRemoteQuery(query: string): Promise<GraphResult> {
@@ -194,8 +193,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: 75,
         resultCount: 1,
-        source: `remote' }'`
-    };
+        source: 'remote' }'` };'`
   }
   async cacheQuery(query: string, result: GraphResult): Promise<void> {
     const cacheKey = this.hashQuery(query);
@@ -263,7 +261,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       console.log(`✅ Cache hydrated with ${hydratedCount} queries`);
       return hydratedCount;
     } catch (error) {
-      console.error('❌ Cache hydration failed: `, error);'`
+      console.error('❌ Cache hydration failed: ', error);'`'`
       return 0;
     }
   }
@@ -275,8 +273,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: storedResult.queryTime || 0,
         resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
-        source: `cache' }'`
-    };
+        source: 'cache' }'` };'`
   }
   private hashQuery(query: string): string {
     let hash = 0;

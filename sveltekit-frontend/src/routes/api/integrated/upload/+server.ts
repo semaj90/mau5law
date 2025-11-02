@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to process document',
-        details: error instanceof Error ? error.message : 'Unknown error' },
+        details: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }

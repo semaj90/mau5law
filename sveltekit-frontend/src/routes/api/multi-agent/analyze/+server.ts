@@ -82,8 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       analysis: analysisResult,
-      message: 'Multi-agent analysis completed successfully'
-    });
+      message: 'Multi-agent analysis completed successfully` });'`
   } catch (error) {
     console.error('Multi-agent analysis error:', error);'
     return json(

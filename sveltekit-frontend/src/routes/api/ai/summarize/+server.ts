@@ -194,8 +194,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     raw = (await request.json()) as SummarizeRequest;
   } catch {
-    return json({ success: false, error: 'Invalid JSON body` } as SummarizeResponse, { status: 400 });'`
-  }
+    return json({ success: false, error: 'Invalid JSON body' } as SummarizeResponse, { status: 400 });'` }'`
   try {
     const { text, type = 'legal', options = {} as SummarizeOptions } = raw;
     if (!text || typeof text !== 'string' || text.trim().length < 10) {
@@ -489,8 +488,7 @@ const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     await deleteCache(key);
     return json({ success: true, deleted: key, timestamp: new Date().toISOString() });
   } catch (err: any) {
-    return json({ success: false, error: 'Failed to delete cache entry` }, { status: 500 });'`
-  }
+    return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 });'` }'`
 };
 
 // POST body: { fileId: string, type?: 'brief'|'detailed'|'bullet', model?: string }
@@ -531,8 +529,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	} catch (err) {
 		console.error('Summarization error: ', err);'
-		return new Response(JSON.stringify({ success: false, error: 'Summarization failed` }), { status: 500 });'`
-	}
+		return new Response(JSON.stringify({ success: false, error: 'Summarization failed' }), { status: 500 });'` }'`
 };
 
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)

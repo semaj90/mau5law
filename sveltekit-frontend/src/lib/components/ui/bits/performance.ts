@@ -189,7 +189,7 @@ export function createDebouncedSearch<T>(
 /**
  * Memoization utility for expensive computations
  */
-export function memoize<Args extends, unknown[], Return>(
+export function memoize<Args, extends, unknown[], Return>(
   fn: (...args: Args) => Return,
   keyFn?: (...args: Args) => string,
 ): (...args: Args) => Return {

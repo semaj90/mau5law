@@ -183,7 +183,7 @@ export const N64_THEME_VARIANTS = {
     accent: { base: '#c5299b', highlight: '#d14daa', shadow: '#9e2179' }
   },
   // Military/tactical theme
-  military: { primary: {, base: '#4a5c2a', highlight: '#6b8039', shadow: '#3a4620` },'`
+  military: { primary: {, base: '#4a5c2a', highlight: '#6b8039', shadow: `#3a4620` },'`'`
     secondary: { base: '#8b4513', highlight: '#a0611a', shadow: `#6d3410` },
     accent: { base: '#cd853f', highlight: '#d4a374', shadow: `#a36a32` }
   }

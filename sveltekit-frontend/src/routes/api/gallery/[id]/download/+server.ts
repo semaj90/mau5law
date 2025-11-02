@@ -135,8 +135,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500;
       throw error(statusCode, err.message);
     }
-    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  }
+    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };
 function handleRangeRequest(
   bodyArrayBuffer: ArrayBuffer,
@@ -156,8 +155,7 @@ function handleRangeRequest(
         headers: {
           'Content-Type': contentType,
           'Content-Length': fileSize.toString(),
-          'Accept-Ranges': `bytes' }'`
-      });
+          'Accept-Ranges': 'bytes' }'` });'`
     }
 
     const range = ranges[0]; // single range
@@ -175,8 +173,7 @@ function handleRangeRequest(
         'Content-Type': contentType,
         'Content-Length': chunkSize.toString(),
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': `bytes' }'`
-    });
+        'Accept-Ranges': 'bytes' }'` });'`
   } catch (error) {
     console.error('Range request error:', error);'
     // Fallback to full file - return full ArrayBuffer
@@ -292,7 +289,7 @@ export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
         'Last-Modified': item.uploadedAt ? new Date(item.uploadedAt).toUTCString() : new Date().toUTCString(),
         'Accept-Ranges': 'bytes',
         'X-File-ID': item.id,
-        'X-File-Name': item.originalFileName || item.fileName || 'unknown' }
+        'X-File-Name': item.originalFileName || item.fileName || 'unknown` }'`
     });
   } catch (err) {
     console.error('HEAD request error:', err)'

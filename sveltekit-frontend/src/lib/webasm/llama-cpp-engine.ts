@@ -464,7 +464,7 @@ export class WebASMLlamaCppEngine {
       }
       const transaction = this.db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
-      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')` } catch (error) {'`
+      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')' } catch (error) {'`'`
       console.warn('Failed to cache model:', error);
     }
   }
@@ -475,7 +475,7 @@ export class WebASMLlamaCppEngine {
       request.onsuccess = () => resolve(request.result);
       request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result; // Correctly get db from event
-        db.createObjectStore('models', { keyPath: `path` });
+        db.createObjectStore('models', { keyPath: `path' });'`
       };
     });
   }

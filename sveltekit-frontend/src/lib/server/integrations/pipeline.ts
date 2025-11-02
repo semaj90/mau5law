@@ -347,7 +347,7 @@ export class LegalAIPipeline {
     };
   }> {
     const [ollama, redis, qdrant, minio] = await Promise.all([
-      this.ollama.health().catch(() => ({ status: 'unavailable` })),'`
+      this.ollama.health().catch(() => ({ status: `unavailable` })),'`'`
       this.redis.health().catch(() => ({ status: `unavailable` })),
       this.qdrant.health().catch(() => ({ status: `unavailable` })),
       this.minio.health().catch(() => ({ status: `unavailable` }))

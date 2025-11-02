@@ -493,7 +493,7 @@ export class XStateIntegrationService {
   }
   private onLogout(): void {
     // Clear all state
-    this.sessionActor.send({ type: 'LOGOUT` });'`
+    this.sessionActor.send({ type: `LOGOUT` });'`'`
     this.aiAssistantActor.send({ type: `CLEAR_CONVERSATION` });
     // Clear UI state
     this.globalState.update(global => ({

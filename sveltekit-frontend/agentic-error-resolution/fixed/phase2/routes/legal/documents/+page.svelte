@@ -11,9 +11,9 @@ https://svelte.dev/e/js_parse_error -->
     Clock, BarChart3
   } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import Label from '$lib/components/ui/label/Label.svelte';
   import * as Card from '$lib/components/ui/card.svelte';
   import * as Dialog from '$lib/components/ui/dialog.svelte';
@@ -325,14 +325,14 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="flex gap-2">
         <!-- fixed: properly closed Button tags and valid onclick handlers -->
-        <Button.Root class="bits-btn" variant="ghost" onclick={() => goto('/legal/documents/templates')}>
+        <Button class="bits-btn" variant="ghost" onclick={() => goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
-        </Button.Root>
-        <Button.Root class="bits-btn" onclick={() => (showUploadDialog = true)}>
+        </Button>
+        <Button class="bits-btn" onclick={() => (showUploadDialog = true)}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
-        </Button.Root>
+        </Button>
       </div>
     </div>
     <!-- Statistics Overview -->
@@ -436,10 +436,10 @@ https://svelte.dev/e/js_parse_error -->
               ? 'Upload your first document to get started with AI-powered analysis'
               : 'Try adjusting your search terms or filters'}
           </p>
-          <Button.Root class="bits-btn" onclick={() => (showUploadDialog = true)}>
+          <Button class="bits-btn" onclick={() => (showUploadDialog = true)}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
-          </Button.Root>
+          </Button>
         </div.Content>
       </div.Root>
     {:else}
@@ -467,12 +467,12 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
                 <div class="flex gap-1">
                   <!-- Document card actions: ensure Button tags are closed and handlers stop propagation properly -->
-                  <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
-                  </Button.Root>
-                  <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
+                  </Button>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
-                  </Button.Root>
+                  </Button>
                 </div>
               </div>
             </div.Header>
@@ -545,9 +545,9 @@ https://svelte.dev/e/js_parse_error -->
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm nes-text is-disabled">{formatFileSize(uploadFile.size)}</p>
-              <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (uploadFile = null)}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (uploadFile = null)}>
                 Remove
-              </Button.Root>
+              </Button>
             </div>
           {:else}
             <div class="space-y-2">
@@ -620,17 +620,17 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     <!-- Upload dialog footer: fixed closing tags and onclick handlers -->
     <Dialog.Footer>
-      <Button.Root class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = $state(false); resetUploadForm(); }}>
+      <Button class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = $state(false); resetUploadForm(); }}>
         Cancel
-      </Button.Root>
-      <Button.Root class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
+      </Button>
+      <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
         {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
         {:else}
           <Upload class="h-4 w-4 mr-2" />
         {/if}
         Upload Document
-      </Button.Root>
+      </Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -735,13 +735,13 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- AI Analysis Dialog footer: fixed closing tags -->
       <Dialog.Footer>
-        <Button.Root class="bits-btn" variant="ghost" onclick={() => (showAIAnalysisDialog = false)}>
+        <Button class="bits-btn" variant="ghost" onclick={() => (showAIAnalysisDialog = false)}>
           Close
-        </Button.Root>
-        <Button.Root class="bits-btn" onclick={() => editDocument(selectedDocument!)}>
+        </Button>
+        <Button class="bits-btn" onclick={() => editDocument(selectedDocument!)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
-        </Button.Root>
+        </Button>
       </Dialog.Footer>
     {/if}
   </Dialog.Content>

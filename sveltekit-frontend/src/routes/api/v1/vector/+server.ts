@@ -128,8 +128,7 @@ async function processCUDA(
           use_cuda: true,
           priority: request.options?.priority || 'medium'
         },
-        priority: request.options?.priority || 'medium` })'`
-    });
+        priority: request.options?.priority || 'medium' })'` });'`
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }

@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err) {
     console.error('Vector similarity API error: ', err);'
-    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : 'Unknown error` }');
+    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : 'Unknown error' }');'`
   }
 };
 async function processCUDAVectorOperation(params: {, operation: string;, vectorA: Float32Array;
@@ -156,12 +156,12 @@ async function processCUDAVectorOperation(params: {, operation: string;, vector
       expected_throughput: vectors?.length || 1,
       memory_pattern: 'sequential_access',
       cache_locality: 'high',
-      branch_prediction: `favorable` }
+      branch_prediction: `favorable' }'`
   };
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': `application/json` },
+      'Content-Type': `application/json' },'`
     body: JSON.stringify(payload)
   });
   if (!response.ok) {

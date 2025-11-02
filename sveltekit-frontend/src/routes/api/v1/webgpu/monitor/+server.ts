@@ -120,15 +120,15 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (action) {
       case 'clear-cache':
         await clearSystemCache();
-        return json({ success: true, message: 'Cache cleared successfully` });'`
+        return json({ success: true, message: 'Cache cleared successfully' });'`'`
 
       case 'restart-workers':
         await restartWorkerPools();
-        return json({ success: true, message: `Worker pools restarted` });
+        return json({ success: true, message: `Worker pools restarted' });'`
 
       case 'optimize-gpu':
         await optimizeGPUSettings();
-        return json({ success: true, message: `GPU settings optimized` });
+        return json({ success: true, message: `GPU settings optimized' });'`
 
       case 'export-metrics': {
         const exportData = await exportMetricsData((data && data.timeRange) || '24h');

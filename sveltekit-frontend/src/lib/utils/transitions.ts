@@ -66,7 +66,6 @@ export function scaleIn(node: Element, params: { duration?: number; start?: numb
       return `
         transform: scale(${scale});
         opacity: ${eased}
-      `;`
-    }
+      `;' }'`
   };
 }

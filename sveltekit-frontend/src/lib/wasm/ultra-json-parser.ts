@@ -115,7 +115,7 @@ export class UltraJSONParser {
       sharedArrayBuffer: false,
       atomics: false,
       bigInt64Array: false,
-      supportLevel: 'none' };
+      supportLevel: 'none` };'`
     if (browser) {
       // call async initializer without awaiting in ctor; explicit void to acknowledge the promise
       void this.initialize();
@@ -314,7 +314,7 @@ export class UltraJSONParser {
    * Select optimal parsing strategy based on data and capabilities
    */
   private selectParsingStrategy(dataSize: number, options: ParseOptions): string {
-    // Small data (< 1KB) - use native JSON for minimal, overhead
+    // Small data (< 1KB) - use native JSON for, minimal, overhead
     if (dataSize < 1024) {
       return 'native';
     }
@@ -534,7 +534,7 @@ export class UltraJSONParser {
    */
   private async nesBridgeStringify(obj: unknown, options: StringifyOptions): Promise<string> {
     // Changed obj from any to unknown
-    console.log('<� Using NES bridge, stringification...');
+    console.log('<� Using NES, bridge, stringification...');
     if (this.config.enableNESBridge) {
       try {
         if (this.isLegalDocument(obj)) {
@@ -642,7 +642,7 @@ export class UltraJSONParser {
       recommendedSettings: {
         enableBrowserSIMD: this.capabilities.wasmSIMD,
         enableWebGPUAcceleration: this.capabilities.webgpuCompute,
-        bulkProcessingMode: this.capabilities.supportLevel === 'optimal' }
+        bulkProcessingMode: this.capabilities.supportLevel === 'optimal` }'`
     };
   }
   /**

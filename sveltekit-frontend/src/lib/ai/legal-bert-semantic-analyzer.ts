@@ -510,8 +510,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           term: match[1] || match[0],
           type,
           enforceability: 0.7 + Math.random() * 0.3,
-          riskLevel: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low'
-        });
+          riskLevel: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low` });'`
       }
     }
     return terms.slice(0, 20); // Limit to top 20 terms
@@ -602,8 +601,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`Cache retrieval failed for ${documentId}: ', message);'`
-    }
+      console.warn(`Cache retrieval failed for ${documentId}: ', message);'` }
     return null;
   }
   private async cacheAnalysis(documentId: string, analysis: SemanticAnalysis): Promise<void> {
@@ -643,8 +641,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       });
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`Cache storage failed for ${documentId}: ', message);'`
-    }
+      console.warn(`Cache storage failed for ${documentId}: ', message);'` }
   }
   private calculatePriority(analysis: SemanticAnalysis): number {
     let priority = 128; // Base priority

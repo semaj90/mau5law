@@ -257,7 +257,7 @@ class EnhancedRabbitMQCudaBridge {
       if (this.cudaHealthy) {
         normalizedEmbeddings = await this.submitToCudaService({
           type: 'batch_normalize',
-          data: {, vectors: embeddings, batch_size: Math.min(batchSize, 500), normalize_type: `l2` },
+          data: {, vectors: embeddings, batch_size: Math.min(batchSize, 500), normalize_type: `l2' },'`
           priority: job.priority || 6
         });
       } else {
@@ -285,7 +285,7 @@ class EnhancedRabbitMQCudaBridge {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/compute`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(jobData)
       });
       if (!response.ok) throw new Error(`CUDA service error: ${response.statusText}`);
@@ -308,8 +308,7 @@ class EnhancedRabbitMQCudaBridge {
       const health = await response.json();
       this.cudaHealthy = health.status === 'healthy' && (health.ready_workers ?? 0) > 0;
       rabbitMQCudaState.update(s => ({ ...s, cudaHealthy: this.cudaHealthy }));
-      if (this.cudaHealthy) console.log(`✅ CUDA service healthy: ${health.gpu_model ?? 'unknown` }`);'`
-    } catch (error: any) {
+      if (this.cudaHealthy) console.log(`✅ CUDA service healthy: ${health.gpu_model ?? 'unknown' }`);'' } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('⚠️ CUDA health check failed:', msg);
       this.cudaHealthy = $state(false);
@@ -320,7 +319,7 @@ class EnhancedRabbitMQCudaBridge {
   private async fallbackTensorCompute(_payload: any): Promise<unknown> {
     console.log('🔄 Using WebAssembly fallback for tensor computation');
     await new Promise(resolve => setTimeout(resolve, 100));
-    return { computed: true, fallback: `wasm` };
+    return { computed: true, fallback: `wasm' };'`
   }
 
   private async fallbackVectorSimilarity(query: number[], vectors: number[][], algorithm: string): Promise<number[]> {
@@ -366,12 +365,12 @@ class EnhancedRabbitMQCudaBridge {
       tensor_compute: 'legal_cuda_tensor_compute',
       vector_similarity: 'legal_cuda_vector_similarity',
       embedding_normalize: 'legal_cuda_embedding_normalize',
-      batch_process: 'legal_cuda_batch_process` };'`
+      batch_process: 'legal_cuda_batch_process' };'`'`
     const routingKey = routingKeyMap[type];
     this.channel.publish('legal-ai-cuda', routingKey, Buffer.from(JSON.stringify(job)), {
       priority,
       persistent: true,
-      headers: { 'x-job-type': type, 'x-cuda-preferred': this.cudaHealthy ? 'true' : `false` }
+      headers: { 'x-job-type': type, 'x-cuda-preferred': this.cudaHealthy ? 'true' : `false' }'`
     });
     this.jobQueue.set(jobId, job);
     console.log(`🚀 Submitted ${type} job: ${jobId} (priority: ${priority})`);

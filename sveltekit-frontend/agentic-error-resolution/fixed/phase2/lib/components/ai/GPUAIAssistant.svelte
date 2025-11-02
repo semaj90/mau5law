@@ -5,7 +5,7 @@
   import { gpuAIService } from '$lib/services/gpu-ai-service';
   import { evidenceStore  } from '$lib/stores/unified';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
   import { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal } from 'lucide-svelte';
   interface ChatMessage {
     id: string;
@@ -261,7 +261,7 @@ await initializeAssistant();
   }
 </script>
 <!-- AI Assistant Panel -->
-<Card.Root class="h-full flex flex-col">
+<Card class="h-full flex flex-col">
   <!-- Header -->
   <CardHeader class="pb-3 border-b">
     <div class="flex items-center justify-between">
@@ -407,7 +407,7 @@ await initializeAssistant();
   <!-- Quick Actions -->
   <div class="p-3 border-t bg-muted/30">
     <div class="flex flex-wrap gap-2 mb-3">
-      <Button.Root
+      <Button
         size="sm"
         variant="ghost"
         onclick={analyzeSelectedEvidence}
@@ -416,8 +416,8 @@ await initializeAssistant();
       >
         <Brain class="w-3 h-3 mr-1" />
         Analyze ({selectedEvidenceIds.length})
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         size="sm"
         variant="ghost"
         onclick={suggestInvestigationSteps}
@@ -426,8 +426,8 @@ await initializeAssistant();
       >
         <TrendingUp class="w-3 h-3 mr-1" />
         Next Steps
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         size="sm"
         variant="ghost"
         onclick={identifyEvidenceGaps}
@@ -436,7 +436,7 @@ await initializeAssistant();
       >
         <AlertTriangle class="w-3 h-3 mr-1" />
         Find Gaps
-      </Button.Root>
+      </Button>
     </div>
     <!-- Message Input -->
     <div class="flex gap-2">
@@ -461,7 +461,7 @@ await initializeAssistant();
       </Button>
     </div>
   </div>
-</Card.Root>
+</Card>
 <style>
   .prose {
 /* @apply text-current; */

@@ -219,7 +219,7 @@ async function handleSearch(request: Request): Promise<Response> {
       const result = await forwardToRAGBackend<RagSearchResult>('/api/v1/rag/search', {
         // Use specific type
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
           query,
           searchType,
@@ -463,7 +463,7 @@ export const GET: RequestHandler = async ({ url }) => {
           const searchResult = await forwardToRAGBackend<RagSearchResult>('/api/v1/rag/search', {
             // Use specific type
             method: 'POST',
-            headers: { 'Content-Type': 'application/json` },'`
+            headers: { 'Content-Type': `application/json` },'`'`
             body: JSON.stringify({
               query,
               searchType,
@@ -508,8 +508,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
       default:
-        throw error(400, `Invalid action: ${action || 'none` }`);'`
-    }
+        throw error(400, `Invalid action: ${action || 'none` }`);'` }
   } catch (err: any) {
     // Use unknown for catch block
     console.error(`GET /${action} error: ', err);'`
@@ -577,8 +576,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       message: result.message || 'Cache cleared successfully', // Use typed result
-      pattern: pattern || 'all` });'`
-  } catch (err: any) {
+      pattern: pattern || 'all' });'` } catch (err: any) {'`
     // Use unknown for catch block
     console.error('Cache clear error:', err);'
     // Check if err is an instance of HttpError from SvelteKit or has a status property

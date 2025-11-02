@@ -53,9 +53,9 @@ export const GET: RequestHandler = async ({ url }) => {
       analysisRate:
         totals.totalEvidence > 0 ? Math.round((totals.totalEvidence / (totals.totalEvidence + 1)) * 100) : 0,
       generatedAt: new Date().toISOString(),
-      timeRange: url.searchParams.get('timeRange') || '30d` };'`
+      timeRange: url.searchParams.get('timeRange') || '30d' };'`'`
 
-    return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': `max-age=30` } });
+    return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': `max-age=30' } });'`
   } catch (err) {
     console.error('[Stats API] unexpected error', err);
     return json(

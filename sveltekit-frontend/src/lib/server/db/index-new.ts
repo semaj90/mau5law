@@ -59,13 +59,12 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
       console.log('Running PostgreSQL migrations (async) ...');
       // run migrations asynchronously so initializeDatabase can remain sync.
       // Use promise handlers to log success/failure.
-      migrate(_db, { migrationsFolder: './drizzle` })'`
+      migrate(_db, { migrationsFolder: `./drizzle` })'`'`
         .then(() => {
           console.log('✅ PostgreSQL migrations completed');
         })
         .catch(error => {
-          console.error('❌ PostgreSQL migration error:', error);'
-        });
+          console.error('❌ PostgreSQL migration error: `, error);` });'
     } catch (error) {
       console.error('❌ PostgreSQL migration error (sync):', error);
     }

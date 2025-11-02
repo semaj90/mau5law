@@ -232,8 +232,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'accessibility',
       message: 'Form lacks accessibility features like live regions or fieldsets',
-      fix: 'Add aria-live regions for error announcements and fieldsets for grouping` });'`
-  }
+      fix: 'Add aria-live regions for error announcements and fieldsets for grouping' });'` }'`
   // Error handling and UX (15 points)
   if (result.hasErrorHandling) {
     score += 8;
@@ -333,10 +332,9 @@ ${result.compliance.recommendations.map((rec: string) => `- ${rec}`).join('\n')}
 3. Test all forms with JavaScript disabled
 4. Implement missing accessibility features
 5. Add comprehensive error handling
-`;`
-}
+`;` }
 // Progressive enhancement validator for Svelte components
-export function createProgressiveForm<T extends, Record<string, unknown> = Record<string, unknown>>(
+export function createProgressiveForm<T, extends, Record<string, unknown> = Record<string, unknown>>(
   config: Partial<ProgressiveEnhancementConfig> = {}
 ) {
   const finalConfig = { ...DEFAULT_PE_CONFIG, ...config };

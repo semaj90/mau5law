@@ -41,7 +41,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 	showBackButton={true}
 >
 	{#snippet children()}
-		<Card.Root class="nes-container is-rounded max-w-md mx-auto">
+		<Card class="nes-container is-rounded max-w-md mx-auto">
 			<CardContent class="p-8 text-center">
 				<div class="mb-6">
 					<div class="text-4xl mb-4">👋</div>
@@ -58,13 +58,13 @@ TODO: Implement logout functionality, clear session, redirect to login
 				</div>
 				{#if !isLoggingOut}
 					<div class="flex justify-center gap-4">
-						<Button.Root
+						<Button
 							class="nes-btn is-error"
 							onclick={handleLogout}
 							disabled={isLoggingOut}
 						>
 							Logout Now
-						<Button.Root
+						<Button
 							variant="ghost"
 							class="nes-btn"
 							onclick={() => window.history.back()}

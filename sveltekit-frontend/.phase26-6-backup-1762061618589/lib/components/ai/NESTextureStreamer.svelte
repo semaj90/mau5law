@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
-  import { SSRWebGPULoader_ } from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
+  import  SSRWebGPULoader_  from "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
   const SSRWebGPULoader = SSRWebGPULoader_ as any;
   import { fade, scale, slide } from 'svelte/transition';
   // Svelte 5 props

@@ -355,7 +355,7 @@ const originalGETHandler: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Failed to get system status' },
+        error: 'Failed to get system status` },'`
       { status: 500 }
     );
   }
@@ -411,8 +411,7 @@ async function processSIMDDirect(
 
   return simdTextTilingEngine.processText(text, {
     type: engineTaskType, // Using the mapped type
-    context: `ollama-direct' }) as unknown as SIMDProcessingResult; // Cast result via unknown'`
-}
+    context: 'ollama-direct' }) as unknown as SIMDProcessingResult; // Cast result via unknown'` }'`
 // Helper function: Update XState session
 async function updateXStateSession(sessionId: string, data: XStateSessionUpdateData): Promise<any> {
   // Changed data type to XStateSessionUpdateData
@@ -458,15 +457,13 @@ function generateQuickCSS(tile: SIMDTile, qualityTier: string): string {
     font-size: ${(tile.tileMetadata.semanticDensity * 1.5 + 0.5).toFixed(1)}em; /* Added semicolon */
     image-rendering: pixelated; /* Added semicolon */
     text-shadow: ${pixelSize} ${pixelSize} 0px rgba(0,0,0,0.8); /* Added semicolon */
-  }`;`
-}
+  }`;` }
 // Helper function: Generate quick DOM
 function generateQuickDOM(tile: SIMDTile, index: number): string {
   // Explicitly type tile
   return `<span, class="tile-${tile.id}" data-index="${index}">`
-    ${tile.tileMetadata.categories?.join(' ') || 'content' }
-  </span>`;`
-}
+    ${tile.tileMetadata.categories?.join(' ') || 'content` }'`
+  </span>`;' }'`
 // Helper function: Calculate tokens per second
 function calculateTokensPerSecond(text: string, timeMs: number): number {
   const estimatedTokens = text.split(/\s+/).length;
@@ -508,7 +505,7 @@ const originalDELETEHandler: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Failed to clear caches' },
+        error: 'Failed to clear caches` },'`
       { status: 500 }
     );
   }

@@ -98,7 +98,7 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       // Explicitly type case_
       ...case_,
       searchScore: 1.0,
-      matchType: 'text' }));
+      matchType: 'text` }));'`
   } catch (error: any) {
     // Change: 'any'; to: 'unknown'
     console.error('Text search failed:', error);

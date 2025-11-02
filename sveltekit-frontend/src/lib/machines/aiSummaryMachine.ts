@@ -117,7 +117,7 @@ export type AISummaryEvent =
   | { type: 'SYNTHESIZE_INSIGHTS' }
   | { type: 'UPDATE_PROGRESS'; progress: number }
   | { type: 'UPDATE_PREFERENCES'; preferences: Partial<AISummaryContext> }
-  | { type: 'RETRY` }'`
+  | { type: `RETRY` }'`'`
   | { type: `RESET` };
 const initialContext: AISummaryContext = {
   documentId: null,
@@ -326,7 +326,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           }
         },
         on: { UPDATE_PREFERENCES: {, actions: assign(
-              (_context: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES` }>) => ({'`
+              (_context: AISummaryContext, event: Extract<AISummaryEvent, { type: `UPDATE_PREFERENCES` }>) => ({'`'`
                 ..._context,
                 ...(event.preferences || {})
               })

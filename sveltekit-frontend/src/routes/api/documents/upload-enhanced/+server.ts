@@ -27,8 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No file provided'
-        },
+          error: 'No file provided` },'`
         { status: 400 }
       );
     }
@@ -116,8 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: errorMessage,
-        details: 'An error occurred during document processing'
-      },
+        details: 'An error occurred during document processing` },'`
       { status: 500 }
     );
   }

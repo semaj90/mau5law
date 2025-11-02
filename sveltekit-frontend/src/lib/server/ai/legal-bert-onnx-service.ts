@@ -298,8 +298,7 @@ export class GalbertService extends EventEmitter {
       return {
         ...result,
         processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)` };'`
-    }
+        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)' };'' }
 
     try {
       // Tokenize input
@@ -324,7 +323,7 @@ export class GalbertService extends EventEmitter {
         predictions,
         topPrediction: predictions[0],
         processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx` };
+        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
 
       await redisClient.set(cacheKey, JSON.stringify(result), { EX: 3600 }); // Cache for 1 hour
       this.emit('classification-complete', result);
@@ -356,8 +355,7 @@ export class GalbertService extends EventEmitter {
       return {
         ...result,
         processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)` };'`
-    }
+        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)' };'' }
 
     try {
       // Tokenize input
@@ -382,7 +380,7 @@ export class GalbertService extends EventEmitter {
         embeddings,
         dimensions: embeddings.length,
         processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx` };
+        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
 
       await redisClient.set(cacheKey, JSON.stringify(result), { EX: 7200 }); // Cache for 2 hours
       this.emit('embedding-complete', result);
@@ -479,7 +477,7 @@ Text: ${prompt}
     try {
       const response = await fetch(`${ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: model,
           prompt: fullPrompt,
@@ -579,7 +577,7 @@ Text: ${prompt}
     try {
       const response = await fetch(`${ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: model,
           prompt: prompt,
@@ -617,7 +615,7 @@ Text: ${prompt}
   async retrieveContext(query: string, userId?: string): Promise<GemmaResponse> {
     // Changed return type
     const startTime = Date.now();
-    const cacheKey = `langcache:rag:${await this.hashText(query)}${userId ? `:${userId}` : `` }`;
+    const cacheKey = `langcache:rag:${await this.hashText(query)}${userId ? `:${userId}` : `' }`;'`
     const cachedContext = await redisClient.get(cacheKey);
     if (cachedContext) {
       console.log('✅ RAG context from cache');

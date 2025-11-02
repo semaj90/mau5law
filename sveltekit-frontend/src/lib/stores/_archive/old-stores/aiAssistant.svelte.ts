@@ -402,7 +402,7 @@ export class AIAssistantManager {
       throw new Error('AI Assistant actor not initialized');
     }
     this.actor.send({
-      type: 'START_STREAMING` });'`
+      type: `START_STREAMING` });'`'`
     // Then send the message
     this.sendMessage(message);
   }

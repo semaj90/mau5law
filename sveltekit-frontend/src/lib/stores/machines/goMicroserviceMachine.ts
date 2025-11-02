@@ -56,8 +56,7 @@ export const goMicroserviceMachine = createMachine({
           actions: assign((_, e: any) => ({ connectionStatus: 'error' as any, error: e.error?.message })
         }
       },
-      on: { DISCONNECT: {, target: 'disconnected` } }'`
-    },
+      on: { DISCONNECT: {, target: 'disconnected' } }'` },'`
     disconnected: { entry: assign(() => ({, connectionStatus: 'disconnected' as any })),
       on: { CONNECT: {, target: 'connecting', actions: assign((c: any, e: any) => ({ endpoint: e.endpoint || c.endpoint })) } }
     },
@@ -126,9 +125,8 @@ export const goMicroserviceMachine = createMachine({
         }
       }
     },
-    error: { after: { 4000: {, target: 'connecting' } },
-      on: { CONNECT: {, target: 'connecting` }, DISCONNECT: { target: `disconnected` } }'`
-    }
+    error: { after: { 4000: {, target: `connecting` } },
+      on: { CONNECT: {, target: `connecting` }, DISCONNECT: { target: `disconnected' } }'` }
   }
 }, { actions: {, startHealthCheckTimer: () => { },
     stopHealthCheckTimer: () => { }

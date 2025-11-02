@@ -1,11 +1,11 @@
-<!-- 🤖 AI Recommendation Assistant with Gemma3, Integration -->
+<!-- 🤖 AI Recommendation Assistant with, Gemma3, Integration -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { fade, slide, fly } from 'svelte/transition';
   import { elasticOut } from 'svelte/easing';
-  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
+  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface AIRecommendation {
     id: string;
@@ -258,11 +258,11 @@ import type { Document } from '$lib/types';
     }
   }
 </script>
-<DiamondModal bind:open title="🤖 AI Legal, Assistant" size="large">
+<DiamondModal bind:open title="🤖 AI, Legal, Assistant" size="large">
   <div, class="ai-assistant-modal">
     <!-- Header, Controls -->
     <div, class="modal-header">
-      <!-- Analysis Type, Selector -->
+      <!-- Analysis, Type, Selector -->
       <div, class="analysis-types">
         {#each Array.isArray(AI_ANALYSIS_TYPES) ? AI_ANALYSIS_TYPES : [] as analysisType}
           <button
@@ -275,7 +275,7 @@ import type { Document } from '$lib/types';
           </button>
         {/each}
       </div>
-      <!-- Custom Query, Input -->
+      <!-- Custom, Query, Input -->
       <div, class="query-section">
         <input
           type="text"
@@ -288,7 +288,7 @@ import type { Document } from '$lib/types';
         </button>
       </div>
     </div>
-    <!-- AI Thinking, Process -->
+    <!-- AI, Thinking, Process -->
     {#if isThinking}
       <div, class="ai-thinking" transitionslide={{ duration: 300 }}>
         <div, class="thinking-header">
@@ -305,7 +305,7 @@ import type { Document } from '$lib/types';
           {/each}
         </div>
       {/if}
-    <!-- AI Analysis, Results -->
+    <!-- AI, Analysis, Results -->
     {#if !isThinking && recommendations.length > 0}
       <div, class="ai-results" transitionfade={{ duration: 400 }}>
         <!-- AI, Reasoning -->

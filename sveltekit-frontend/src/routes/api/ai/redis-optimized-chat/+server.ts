@@ -25,7 +25,7 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       messages: [
         {,
          , role: 'system',
-          content: `You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.' },'`
+          content: `You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.` },'`'`
         {
           role: 'user',
           content: message
@@ -50,8 +50,7 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
     });
   } catch (err) {
     console.error('AI chat error:', err);'
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  }
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };
 /**
  * Redis-Optimized Version

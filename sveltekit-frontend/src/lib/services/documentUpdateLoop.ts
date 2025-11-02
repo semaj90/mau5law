@@ -397,7 +397,6 @@ export class DocumentUpdateLoop {
         console.log('No changes detected');
       }
     } catch (error) {
-      console.error('Debug re-embed error:', formatError(error));'
-    }
+      console.error('Debug re-embed error:', formatError(error));` }`'
   }
 }

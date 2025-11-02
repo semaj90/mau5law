@@ -32,7 +32,7 @@ class OllamaClient implements OllamaService {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: this.embeddingModel,
           prompt: text
@@ -60,7 +60,7 @@ class OllamaClient implements OllamaService {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: this.completionModel,
           prompt: prompt,
@@ -170,8 +170,7 @@ export class EvidenceProcessingService {
       return processedData;
     } catch (error: any) {
       console.error(`❌ Error processing evidence for case ${documentInput.caseId}:`, error);
-      throw new Error(`Failed to process evidence: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
+      throw new Error(`Failed to process evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
   }
 
   /**
@@ -188,8 +187,7 @@ export class EvidenceProcessingService {
       return null;
     } catch (error: any) {
       console.error(`❌ Error retrieving evidence by ID ${id}:`, error);
-      throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
+      throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
   }
 
   /**
@@ -243,8 +241,7 @@ export class EvidenceProcessingService {
       return results as Array<ProcessedEvidenceResult & { similarity: number }>;
     } catch (error: any) {
       console.error(`❌ Error searching similar evidence:`, error);
-      throw new Error(`Failed to search similar evidence: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
+      throw new Error(`Failed to search similar evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
   }
 }
 

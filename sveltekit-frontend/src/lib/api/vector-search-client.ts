@@ -139,7 +139,7 @@ export class VectorSearchClient {
         headers: {
           'Content-Type': 'application/x-protobuf',
           'Accept': 'application/x-protobuf',
-          'X-Client-Version': '1.0.0' },
+          'X-Client-Version': '1.0.0` },'`
         body: requestBuffer,
         signal: AbortSignal.timeout(this.timeout)
       });
@@ -169,7 +169,7 @@ export class VectorSearchClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json' },
+          'Accept': 'application/json` },'`
         body: JSON.stringify(request),
         signal: AbortSignal.timeout(this.timeout)
       });
@@ -212,7 +212,7 @@ export class VectorSearchClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json' },
+          'Accept': 'application/json` },'`
         body: JSON.stringify(batchRequest),
         signal: AbortSignal.timeout(this.timeout * 2), // Double timeout for batch
       });
@@ -316,7 +316,7 @@ export function getDocumentTypeLabel(type: DocumentType): string {
     [DocumentType.RULING]: 'Ruling',
     [DocumentType.STATUTE]: 'Statute',
     [DocumentType.CASE_LAW]: 'Case Law',
-    [DocumentType.REGULATION]: 'Regulation' };
+    [DocumentType.REGULATION]: 'Regulation` };'`
   return labels[type] || 'Unknown';
 }
 export function highlightText(text: string, highlights: HighlightRange[]): string {

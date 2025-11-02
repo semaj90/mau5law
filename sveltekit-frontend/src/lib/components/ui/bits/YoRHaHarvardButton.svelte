@@ -6,7 +6,7 @@
   function handleKeydown(event: KeyboardEvent) { if (event.code === 'Space' || event.code === 'Enter') { event.preventDefault(); handleClick(); }
   } let buttonClasses = $derived( [
       'yorha-harvard-btn', variantClasses[variant], sizeClasses[size], pixelated && 'pixelated', glowing && 'harvard-glow', isPressed && 'pressed', disabled && 'disabled', loading && 'loading', ]
-      .filter(Boolean) .join(' ') ); </script> <button class={ buttonClasses } { disabled } onclick={ handleClick } onkeydown={ handleKeydown } onmouseenter={() => (isHovered = true)} onmouseleave={() => (isHovered = false)} {...restProps} >
+      .filter(Boolean) .join(' ') ); </script> <button, class={ buttonClasses } { disabled } onclick={ handleClick } onkeydown={ handleKeydown } onmouseenter={() => (isHovered = true)} onmouseleave={() => (isHovered = false)} {...restProps} >
   {#if loading} <span, class="loading-spinner" aria-hidden="true"></span> {/if} {#if variant === 'gaming'} <span, class="gaming-border-accent"></span> {/if} <slot /> </button> <style> .yorha-harvard-btn { font-family: var(--font-mono); font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 2px solid var(--enhanced-border); background: var(--enhanced-bg-secondary); color: var(--enhanced-text-primary); cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; position: relative; overflow: hidden; outline: none; }
   .yorha-harvard-btn:focus-visible { outline: 2px solid var(--enhanced-accent); outline-offset: 2px; }
   .yorha-harvard-btn-primary { background: linear-gradient(135deg, var(--enhanced-accent), var(--enhanced-accent-secondary)); color: var(--enhanced-bg-primary); border-color: var(--enhanced-accent); font-weight: 700; }

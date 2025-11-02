@@ -13,19 +13,19 @@ https://svelte.dev/e/js_parse_error -->
     type RealtimeMessage,
     type StreamingResponse,
   } from '$lib/services/realtime-communication';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
   let messageList = $state<RealtimeMessage[]>([]);
@@ -264,10 +264,10 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="nes-text is-primary flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button.Root onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
+          <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
 {isInitializing ? 'Initializing...' : 'Connect'}
         {:else}
-          <Button.Root onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+          <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
 Disconnect
         {/if}
       </h3>
@@ -366,7 +366,7 @@ Disconnect
                 </select>
               </div>
             </div>
-            <Button.Root onclick={sendTestMessage} class="w-full bits-btn bits-btn">
+            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">
 Send Message
           </div>
         </div>
@@ -397,7 +397,7 @@ Send Message
                 <option value="semantic_analysis">Semantic Analysis</option>
               </select>
             </div>
-            <Button.Root onclick={startStreamingRequest} class="w-full bits-btn bits-btn">
+            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">
 Start Stream
           </div>
         </div>
@@ -408,7 +408,7 @@ Start Stream
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button.Root onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
+          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
 Run Performance Test
         </h3>
       </div>

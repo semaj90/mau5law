@@ -489,7 +489,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         </div>
         <!-- Section Overview -->
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-          <Card.Root class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
+          <Card class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-blue-800 flex items-center gap-2">👤 Core User</h3>
@@ -497,8 +497,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <p class="text-sm text-blue-600">Production ready</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-green-800 flex items-center gap-2">🔌 API Routes</h3>
@@ -506,8 +506,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <p class="text-sm text-green-600">Backend services</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-purple-800 flex items-center gap-2">🧪 Demo Routes</h3>
@@ -515,8 +515,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <p class="text-sm text-purple-600">Development</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-yellow-800 flex items-center gap-2">🧪 Need Testing</h3>
@@ -524,8 +524,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <p class="text-sm text-yellow-600">API testing</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
-          <Card.Root class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
+          </Card>
+          <Card class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
             {#snippet children()}
               <CardContent class="p-4">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">📊 Total Routes</h3>
@@ -533,7 +533,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <p class="text-sm text-gray-600">Platform-wide</p>
               </CardContent>
             {/snippet}
-          </Card.Root>
+          </Card>
         </div>
         <!-- Priority Breakdown -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -756,7 +756,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     </div>
     <!-- SSR Testing Info Panel -->
     {#if showSSRTest}
-      <Card.Root class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200">
+      <Card class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200">
         {#snippet children()}
           <CardContent class="p-4">
             <h3 class="text-lg font-bold text-purple-800 mb-2 flex items-center gap-2">🧪 SSR UI Components Test</h3>
@@ -786,7 +786,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             </div>
           </CardContent>
         {/snippet}
-      </Card.Root>
+      </Card>
     {/if}
     <!-- Clustered API Services View -->
     {#if showClustered}
@@ -820,7 +820,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                               : serviceName === 'gpu-services'
                                 ? '🖥️'
                                 : '🔌'}
-            <Card.Root class="service-cluster border-2 border-gray-300 hover:border-blue-400">
+            <Card class="service-cluster border-2 border-gray-300 hover:border-blue-400">
               {#snippet children()}
                 <CardHeader>
                   <CardTitle class="flex items-center justify-between">
@@ -910,7 +910,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                   </div>
                 </CardContent>
               {/snippet}
-            </Card.Root>
+            </Card>
           {/each}
         </div>
       </div>
@@ -926,7 +926,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
-            <Card.Root
+            <Card
               class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group border-2"
             >
               {#snippet children()}
@@ -953,7 +953,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                   {/snippet}
                 </CardContent>
               {/snippet}
-            </Card.Root>
+            </Card>
           </button>
         {/each}
       </div>
@@ -968,7 +968,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
-            <Card.Root class={'hover:' + cls.border300 + ' group'}>
+            <Card class={'hover:' + cls.border300 + ' group'}>
               {#snippet children()}
                 <CardContent class="p-4">
                   <!-- Route Header -->
@@ -1042,7 +1042,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                   </div>
                 </CardContent>
               {/snippet}
-            </Card.Root>
+            </Card>
           </button>
         {/each}
       </div>

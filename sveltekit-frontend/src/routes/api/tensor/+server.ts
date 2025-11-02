@@ -167,8 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
            , status: 'offline',
             lastCheck: new Date(),
-            error: error instanceof Error ? error.message : 'Unknown error` }'`
-        });
+            error: error instanceof Error ? error.message : 'Unknown error' }'` });'`
       }
     case 'metrics':
       try {
@@ -226,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Missing required; fields: operation, documentId, data` },
+          error: 'Missing required; fields: operation, documentId, data' },
         { status: 400 }
       );
     }
@@ -262,8 +261,7 @@ export const POST: RequestHandler = async ({ request }) => {
             : undefined,
           error: response.error,
           timestamp: response.timestamp,
-          source: 'go-service` }'`
-      });
+          source: 'go-service' }'` });'`
     } catch (serviceError) {
       // Fallback to mock processing
       console.log('Go service unavailable, using mock processing');
@@ -342,8 +340,7 @@ export const PUT: RequestHandler = async ({ request }) => {
             timestamp: response.timestamp
           })),
           batchSize: responses.length,
-          source: 'go-service` }'`
-      });
+          source: 'go-service' }'` });'`
     } catch (serviceError) {
       // Fallback to mock batch processing
       console.log('Go service unavailable, using mock batch processing');

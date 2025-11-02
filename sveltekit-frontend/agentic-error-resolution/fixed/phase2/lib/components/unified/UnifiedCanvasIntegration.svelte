@@ -5,15 +5,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { onMount } from 'svelte';
-  	import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  	import { DetectiveBoard } from '$lib/components/detective/DetectiveBoard.svelte';
-  	import {
+  	import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte";
+  	import  DetectiveBoard  from "$lib/components/detective/DetectiveBoard.svelte";
+  	import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  	import { Button } from '$lib/components/ui/Button.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  	import  Button  from "$lib/components/ui/Button.svelte";
   	// Badge replaced with span - not available in enhanced-bits
   	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
   	// Svelte 5 state management
@@ -154,7 +154,7 @@ await initializeUnifiedSystems();
 				<div class="flex items-center gap-3">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
-						<Button.Root class="bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() =>
@@ -163,7 +163,7 @@ switchViewMode('canvas')}
 						>
 							<Canvas class="w-4 h-4 mr-1" />
 							Canvas
-						<Button.Root class="bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() =>
@@ -172,7 +172,7 @@ switchViewMode('board')}
 						>
 							<Grid3X3 class="w-4 h-4 mr-1" />
 							Board
-						<Button.Root class="bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() =>
@@ -220,11 +220,11 @@ switchViewMode('hybrid')}
 					</div>
 				</div>
 				<div class="flex gap-2">
-					<Button.Root class="bits-btn" variant="ghost" size="sm" onclick={syncCanvasToBoard}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncCanvasToBoard}>
 Sync Canvas → Board
-					<Button.Root class="bits-btn" variant="ghost" size="sm" onclick={syncBoardToCanvas}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncBoardToCanvas}>
 Sync Board → Canvas
-					<Button.Root class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
+					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 Analyze All Evidence
 				</div>
 			</div>

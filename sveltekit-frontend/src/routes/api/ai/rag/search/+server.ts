@@ -71,8 +71,7 @@ export const POST: RequestHandler = async event => {
         jurisdiction: doc.metadata?.jurisdiction,
         practiceArea: doc.metadata?.practiceArea,
         chunkIndex: doc.metadata?.chunkIndex,
-        source: doc.metadata?.source || 'vector_store'
-      }
+        source: doc.metadata?.source || 'vector_store` }'`
     }));
 
     return json({

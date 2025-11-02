@@ -379,7 +379,7 @@ export class ProductionMonitoringDashboard {
     if (includePerformance) {
       const analytics = await this.getPerformanceAnalytics({
         ...timeRange,
-        granularity: `hour' });'`
+        granularity: `hour` });'`'`
       exportData.performanceAnalytics = analytics;
     }
     switch (format) {
@@ -595,8 +595,7 @@ export class ProductionMonitoringDashboard {
          }
        });
      } catch (err) {
-       console.warn('Vector search health check failed: `, err);'`
-     }
+       console.warn('Vector search health check failed: ', err);'` }'`
 
     return services;
   }
@@ -622,8 +621,7 @@ export class ProductionMonitoringDashboard {
           },
           replication: {
             lag: Math.random() * 100 + 10,
-            status: `active' }'`
-        }
+            status: 'active' }'` }'`
       },
       vectorIndex: {
         indexHealth: 'optimal',
@@ -1087,7 +1085,7 @@ export class ProductionMonitoringDashboard {
       const sh = maybe.systemHealth;
       rows.push(`${ts},system_overall,${sh.overall}`);
       // example metric
-      rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? '' }`);
+      rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? '` }`);'`
     } else {
       rows.push(`${ts},export,empty`);
     }
@@ -1123,8 +1121,7 @@ export class ProductionMonitoringDashboard {
       infrastructure: { database: {, postgresql: {, connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 },
           queryPerformance: { avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 },
           storage: { totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 },
-          replication: { lag: 0, status: `active' }'`
-        } },
+          replication: { lag: 0, status: 'active' }'` } },'`
         vectorIndex: {
           indexHealth: 'good',
           totalVectors: 0,

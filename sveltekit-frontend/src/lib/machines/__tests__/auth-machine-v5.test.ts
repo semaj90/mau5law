@@ -222,7 +222,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Login first
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'password' }
+        credentials: {, email: 'test@example.com', password: 'password` }'`
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate token refresh failure
@@ -281,7 +281,7 @@ describe('Phase 5-7 Performance Benchmarks', () => {
   it('should establish HTTP baseline for gRPC comparison', () => {
     const stats = perf.getStats('xstate-v5-login-success');
     if (stats) {
-      console.log('\n📊 Authentication Performance Stats (HTTP Baseline): `);'`
+      console.log('\n📊 Authentication Performance Stats (HTTP Baseline): ');'`'`
       console.log(`   Average: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);

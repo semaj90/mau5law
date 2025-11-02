@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   import { Progress } from '$lib/components/ui/progress.svelte'";
   import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte'";
   import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
-  import { FeedbackIntegration } from '$lib/components/feedback/FeedbackIntegration.svelte';
+  import  FeedbackIntegration  from "$lib/components/feedback/FeedbackIntegration.svelte";
 
   // Replace Svelte 5 $state runes with plain typed local variables to avoid parsing issues during migration.
   let files: FileList | null = null;
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
 
-      <Button.Root onclick={handleUpload} disabled={isUploading} class="w-full bits-btn">
+      <Button onclick={handleUpload} disabled={isUploading} class="w-full bits-btn">
         {#if isUploading}
           <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           Uploading...
@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
           <FileUp class="mr-2 h-4 w-4" />
           Upload and Analyze
         {/if}
-      </Button.Root>
+      </Button>
 
       {#if isUploading}
         <Progress value={uploadProgress} class="w-full" />

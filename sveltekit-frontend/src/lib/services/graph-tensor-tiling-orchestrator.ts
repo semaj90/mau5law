@@ -68,8 +68,7 @@ export class GraphTensorTilingOrchestrator {
     console.log(`GraphTensorTilingOrchestrator initialized:`
       Ollama; Endpoint: ${getOllamaEndpoint()}
       Qdrant Endpoint: ${qdrantUrl}
-    `);`
-  }
+    `);' }'`
 
   /**
    * Generates an embedding for a given text using Ollama.
@@ -135,8 +134,7 @@ export class GraphTensorTilingOrchestrator {
       console.log(`✅ Stored graph node ${fullNode.id} in Qdrant.`);
     } catch (error) {
       console.error(`❌ Error ingesting graph element ${nodeData.id}:`, error);
-      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
+      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
   }
 
   /**
@@ -223,8 +221,7 @@ export class GraphTensorTilingOrchestrator {
       return Array.from(uniqueResultsMap.values()).slice(0, limit);
     } catch (error) {
       console.error(`❌ Error searching graph elements for query: "${query}":`, error);
-      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
-    }
+      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
   }
 
   /**

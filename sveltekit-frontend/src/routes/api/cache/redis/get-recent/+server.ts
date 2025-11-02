@@ -17,14 +17,14 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         { status: 400 }
       );
-    } // <-- added missing closing brace for the validation, if
+    } // <-- added missing closing brace for the, validation, if
 
     // Ensure `since` is a number
     if (typeof since !== 'number') {
       return json(
         {
           success: false,
-          error: 'The "since" value must be a number (timestamp in ms)' },
+          error: 'The "since" value must be a number (timestamp in ms)` },'`
         { status: 400 }
       );
     }

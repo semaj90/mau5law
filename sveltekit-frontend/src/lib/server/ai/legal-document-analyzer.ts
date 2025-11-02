@@ -215,7 +215,7 @@ const LEGAL_FUNCTIONS = [
 // ============================================================================
 
 function buildLegalAnalysisPrompt(documentText: string, metadata: LegalDocumentMetadata): string {
-  return `You are an expert legal AI assistant analyzing legal documents. You have access to the following functions:`
+  return `You are an expert legal AI assistant analyzing legal documents. You have access to the following functions: '`
 
 ${JSON.stringify(LEGAL_FUNCTIONS, null, 2)}
 
@@ -248,8 +248,7 @@ Use function calls to:
 - generate_recommendations: to provide strategic insights
 - compare_outcomes: to compare with similar cases
 
-Provide a structured, comprehensive analysis with citations and confidence scores.`;`
-}
+Provide a structured, comprehensive analysis with citations and confidence scores.`;` }
 
 // ============================================================================
 // Legal Analysis Functions

@@ -5,15 +5,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 	import { onMount } from 'svelte';
-	import {
+	import 
 	Card,
 	CardHeader,
 	CardTitle,
 	CardContent,
 	Input,
 	Badge
-  } from '$lib/components/ui/enhanced-bits.svelte';
-	import { Button } from '$lib/components/ui/Button.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+	import  Button  from "$lib/components/ui/Button.svelte";
 	import {
 		Search, BookOpen, ExternalLink, Download,
 		Plus, FileText, Calendar, User, Tags,
@@ -314,7 +314,7 @@ await loadCitations();
 				</div>
 				<div class="flex items-center gap-2">
 					{#if !readonly}
-						<Button.Root
+						<Button
 							class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
 							variant="ghost"
 							size="sm"
@@ -328,11 +328,11 @@ await loadCitations();
 						>
 <Plus class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Plus icon" />
 							Add Citation
-</Button.Root>
+</Button>
 						<div id="add-citation-help" class="sr-only">
 							Create a new legal citation with complete source information
 						{/if}
-					<Button.Root
+					<Button
 						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
 						variant="ghost"
 						size="sm"
@@ -346,7 +346,7 @@ await loadCitations();
 					>
 <Download class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Download icon" />
 						Export
-</Button.Root>
+</Button>
 					<div id="export-help" class="sr-only">
 						Download all filtered citations as a JSON file for backup or sharing
 					</div>
@@ -372,7 +372,7 @@ await loadCitations();
 				</div>
 				<!-- Sort Options -->
 				<div class="flex gap-2">
-					<Button.Root
+					<Button
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
@@ -388,11 +388,11 @@ changeSortBy('date')}
 					>
 						<Calendar class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Calendar icon" />
 						Date
-</Button.Root>
+</Button>
 					<div id="sort-date-help" class="sr-only">
 						Sort citations by the date they were added to the system
 					</div>
-					<Button.Root
+					<Button
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
@@ -408,11 +408,11 @@ changeSortBy('title')}
 					>
 						<SortAsc class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Sort ascending icon" />
 						Title
-</Button.Root>
+</Button>
 					<div id="sort-title-help" class="sr-only">
 						Sort citations alphabetically by title
 					</div>
-					<Button.Root
+					<Button
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
@@ -428,7 +428,7 @@ changeSortBy('relevance')}
 					>
 						<Filter class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Filter icon" />
 						Relevance
-</Button.Root>
+</Button>
 					<div id="sort-relevance-help" class="sr-only">
 						Sort citations by their calculated relevance score to your case
 					</div>
@@ -453,7 +453,7 @@ changeSortBy('relevance')}
 					>
 						<span>{category.label}</span>
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{category.count}</span>
-</Button.Root>
+</Button>
 				{/each}
 			</div>
 		</div>
@@ -530,7 +530,7 @@ changeSortBy('relevance')}
 										<Eye class="w-4 h-4" />
 									</button>
 									{#if citation.url}
-										<Button.Root
+										<Button
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-external-btn h-8 w-8 p-0"
 											variant="ghost"
 											size="sm"
@@ -544,10 +544,10 @@ window.open(citation.url, '_blank')}
 											data-operation="external-link"
 										>
 											<ExternalLink class="w-4 h-4" />
-</Button.Root>
+</Button>
 									{/if}
 									{#if !readonly}
-										<Button.Root
+										<Button
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-delete-btn danger-variant h-8 w-8 p-0 text-destructive hover:text-destructive"
 											variant="ghost"
 											size="sm"
@@ -562,7 +562,7 @@ deleteCitation(citation.id)}
 											data-critical="true"
 										>
 											<Trash2 class="w-4 h-4" />
-</Button.Root>
+</Button>
 									{/if}
 								</div>
 							</div>
@@ -628,7 +628,7 @@ deleteCitation(citation.id)}
 					></textarea>
 				</div>
 				<div class="flex justify-end gap-2 pt-4">
-					<Button.Root
+					<Button
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
 						variant="ghost"
 						onclick={hideAddCitationForm}
@@ -638,8 +638,8 @@ deleteCitation(citation.id)}
 						data-enhanced-bits="true"
 					>
 Cancel
-</Button.Root>
-					<Button.Root
+</Button>
+					<Button
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
 						onclick={saveCitation}
 						aria-label="Save new citation to collection"
@@ -650,7 +650,7 @@ Cancel
 						data-operation="save-citation"
 					>
 Save Citation
-</Button.Root>
+</Button>
 					<div id="save-citation-help" class="sr-only">
 						Add this citation to your legal reference collection
 					</div>
@@ -704,7 +704,7 @@ Save Citation
 					</div>
 					<div class="flex gap-2">
 						{#if selectedCitation.url}
-							<Button.Root
+							<Button
 								class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-external-btn"
 								variant="ghost"
 								onclick={() =>
@@ -717,9 +717,9 @@ window.open(selectedCitation.url, '_blank')}
 							>
 								<ExternalLink class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="External link icon" />
 								Open Link
-</Button.Root>
+</Button>
 						{/if}
-						<Button.Root
+						<Button
 							class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-close-btn"
 							onclick={hideDetailModal}
 							aria-label="Close citation details dialog"

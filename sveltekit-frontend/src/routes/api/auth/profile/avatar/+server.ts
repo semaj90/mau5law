@@ -202,7 +202,7 @@ export const GET: RequestHandler = async (event) => {
     return new Response(dataStream as any, {
       headers: {
         'Content-Type': latestAvatar.etag ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=31536000' }
+        'Cache-Control': 'public, max-age=31536000` }'`
     });
   } catch (error) {
     console.error('Error retrieving avatar:', error);

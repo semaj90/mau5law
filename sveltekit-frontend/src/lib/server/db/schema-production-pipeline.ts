@@ -57,12 +57,12 @@ export const crawlJobs = pgTable('crawl_jobs', {
  */
 export const crawledPages = pgTable('crawled_pages', {
   id: uuid('id').primaryKey().defaultRandom(),
-  crawlJobId: uuid('crawl_job_id').references(() => crawlJobs.id, { onDelete: 'cascade` }),'`
+  crawlJobId: uuid('crawl_job_id').references(() => crawlJobs.id, { onDelete: 'cascade' }),'`'`
   url: text('url').notNull(),
   title: text('title'),
   contentType: varchar('content_type', { length: 100 }),
   statusCode: integer('status_code'),
-  contentLength: bigint('content_length', { mode: `number` }),
+  contentLength: bigint('content_length', { mode: `number' }),'`
   contentHash: varchar('content_hash', { length: 64 }), // SHA-256
   rawContent: text('raw_content'), // HTML/Text content
   blobPath: text('blob_path'), // MinIO path for large files
@@ -133,7 +133,7 @@ export const documents = pgTable('documents', {
  */
 export const documentChunks = pgTable('document_chunks', {
   id: uuid('id').primaryKey().defaultRandom(),
-  documentId: uuid('document_id').notNull().references(() => documents.id, { onDelete: `cascade` }),
+  documentId: uuid('document_id').notNull().references(() => documents.id, { onDelete: `cascade' }),'`
   chunkIndex: integer('chunk_index').notNull(),
   chunkType: varchar('chunk_type', { length: 50 }).notNull().default('paragraph'), // paragraph, section, page, sentence, heading
   content: text('content').notNull(),
@@ -172,8 +172,8 @@ export const documentChunks = pgTable('document_chunks', {
  */
 export const searchIndex = pgTable('search_index', {
   id: uuid('id').primaryKey().defaultRandom(),
-  documentId: uuid('document_id').notNull().references(() => documents.id, { onDelete: `cascade` }),
-  chunkId: uuid('chunk_id').references(() => documentChunks.id, { onDelete: `cascade` }),
+  documentId: uuid('document_id').notNull().references(() => documents.id, { onDelete: `cascade' }),'`
+  chunkId: uuid('chunk_id').references(() => documentChunks.id, { onDelete: `cascade' }),'`
   indexType: varchar('index_type', { length: 50 }).notNull().default('full_text'), // full_text, semantic, hybrid
   searchVector: sql`tsvector`, // PostgreSQL full-text search vector
   searchContent: text('search_content'), // Processed content for search
@@ -206,8 +206,8 @@ export const cacheKeys = pgTable('cache_keys', {
   id: uuid('id').primaryKey().defaultRandom(),
   cacheKey: varchar('cache_key', { length: 255 }).notNull(),
   cacheType: varchar('cache_type', { length: 50 }).notNull(), // search_result, document_content, embedding_result, blob_metadata
-  documentId: uuid('document_id').references(() => documents.id, { onDelete: `cascade` }),
-  chunkId: uuid('chunk_id').references(() => documentChunks.id, { onDelete: `cascade` }),
+  documentId: uuid('document_id').references(() => documents.id, { onDelete: `cascade' }),'`
+  chunkId: uuid('chunk_id').references(() => documentChunks.id, { onDelete: `cascade' }),'`
   queryHash: varchar('query_hash', { length: 64 }), // Hash of search query for cache key
   ttl: integer('ttl').default(3600), // TTL in seconds
   hitCount: integer('hit_count').default(0),

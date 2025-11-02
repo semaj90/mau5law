@@ -3,7 +3,7 @@
    * Usage Examples for bits-ui Button Component
    * This demonstrates how to use the ButtonExample component in Svelte 5
    */
-  import { ButtonExample } from './ButtonExample.svelte';
+  import  ButtonExample  from "./ButtonExample.svelte";
   import { counterStore } from '$lib/stores/example-barrel-pattern';
   let isLoading = $state<boolean>(false);
   async function handleAsyncAction(): Promise<any> {
@@ -13,11 +13,11 @@
     console.log('Async action completed!');
   }
 </script>
-<div class="space-y-6 p-8, bg-background">
+<div class="space-y-6, p-8, bg-background">
   <div, class="space-y-4">
-    <h2 class="text-2xl font-bold, text-foreground">bits-ui Button Examples (Svelte 5)</h2>
+    <h2 class="text-2xl, font-bold, text-foreground">bits-ui Button Examples (Svelte 5)</h2>
     <!-- Basic, variants -->
-    <div class="flex gap-4, flex-wrap">
+    <div class="flex, gap-4, flex-wrap">
       <ButtonExample, variant="default" onclick={() => console.log('Default clicked')}>
         Default Button
       </ButtonExample>
@@ -37,14 +37,14 @@
         Link
       </ButtonExample>
     </div>
-    <!-- NieR/YoRHa themed, button -->
-    <div class="flex, gap-4">
+    <!-- NieR/YoRHa, themed, button -->
+    <div, class="flex, gap-4">
       <ButtonExample, variant="nier" onclick={() => console.log('YoRHa protocol activated')}>
         YoRHa Theme
       </ButtonExample>
     </div>
     <!-- Size, variants -->
-    <div class="flex gap-4, items-center">
+    <div class="flex, gap-4, items-center">
       <ButtonExample, size="sm" onclick={() => console.log('Small button')}>
         Small
       </ButtonExample>
@@ -55,11 +55,11 @@
         Large
       </ButtonExample>
       <ButtonExample, size="icon" variant="outline">
-        <span class="i-lucide-heart h-4, w-4" />
+        <span class="i-lucide-heart, h-4, w-4" />
       </ButtonExample>
     </div>
     <!-- Loading, state -->
-    <div class="flex, gap-4">
+    <div, class="flex, gap-4">
       <ButtonExample
         loading={isLoading}
         onclick={handleAsyncAction}
@@ -72,53 +72,53 @@
         Disabled Button
       </ButtonExample>
     </div>
-    <!-- Integration with Svelte 5, stores -->
-    <div class="flex gap-4, items-center">
+    <!-- Integration with Svelte, 5, stores -->
+    <div class="flex, gap-4, items-center">
       <ButtonExample, onclick={counterStore.decrement}>
-        <span class="i-lucide-minus h-4, w-4" />
+        <span class="i-lucide-minus, h-4, w-4" />
       </ButtonExample>
-      <span class="px-4 py-2 bg-muted rounded-md, font-mono">
+      <span class="px-4 py-2 bg-muted, rounded-md, font-mono">
         Count: {counterStore.count} (Doubled: {counterStore.doubled})
       </span>
       <ButtonExample, onclick={counterStore.increment}>
-        <span class="i-lucide-plus h-4, w-4" />
+        <span class="i-lucide-plus, h-4, w-4" />
       </ButtonExample>
       <ButtonExample, variant="outline" onclick={counterStore.reset}>
         Reset
       </ButtonExample>
     </div>
     <!-- With, icons -->
-    <div class="flex, gap-4">
+    <div, class="flex, gap-4">
       <ButtonExample, onclick={() => console.log('Download')}>
-        <span class="i-lucide-download mr-2 h-4, w-4" />
+        <span class="i-lucide-download mr-2, h-4, w-4" />
         Download
       </ButtonExample>
       <ButtonExample, variant="outline" onclick={() => console.log('Share')}>
-        <span class="i-lucide-share-2 mr-2 h-4, w-4" />
+        <span class="i-lucide-share-2 mr-2, h-4, w-4" />
         Share
       </ButtonExample>
       <ButtonExample, variant="destructive" onclick={() => console.log('Delete')}>
-        <span class="i-lucide-trash-2 mr-2 h-4, w-4" />
+        <span class="i-lucide-trash-2 mr-2, h-4, w-4" />
         Delete
       </ButtonExample>
     </div>
   </div>
   <!-- Code, example -->
-  <div class="mt-8 p-4 bg-muted, rounded-lg">
-    <h3 class="text-lg font-semibold, mb-2">Usage Code:</h3>
-    <pre class="text-sm, overflow-x-auto"><code>{`<script, lang="ts">`
-  import { ButtonExample } from '$lib/components/bits-ui/ButtonExample.svelte';
+  <div class="mt-8 p-4, bg-muted, rounded-lg">
+    <h3 class="text-lg, font-semibold, mb-2">Usage Code:</h3>
+    <pre, class="text-sm, overflow-x-auto"><code>{`<script, lang="ts">`
+  import  ButtonExample  from "$lib/components/bits-ui/ButtonExample.svelte";
   import { counterStore } from '$lib/stores';
 </script>
 <!-- Basic, usage -->
 <ButtonExample, variant="default" onclick={() => console.log('Clicked')}>
   Click Me
 </ButtonExample>
-<!-- With loading, state -->
+<!-- With, loading, state -->
 <ButtonExample, loading={isLoading} onclick={handleAsyncAction}>
   Process
 </ButtonExample>
-<!-- With store, integration -->
+<!-- With, store, integration -->
 <ButtonExample, onclick={counterStore.increment}>
   Increment
 </ButtonExample>`}</code></pre>`

@@ -190,8 +190,7 @@ class LegalPlatformClient {
       }
       return {
         success: false,
-        error: msg || 'Unknown error` };'`
-    }
+        error: msg || 'Unknown error' };'` }'`
   }
 
   // Case Management Methods

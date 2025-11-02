@@ -7,14 +7,14 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Label } from '$lib/components/ui/label/Label.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
-  import { AlertDescription } from '$lib/components/ui/alert/AlertDescription.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Label  from "$lib/components/ui/label/Label.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Alert  from "$lib/components/ui/alert/Alert.svelte";
+  import  AlertDescription  from "$lib/components/ui/alert/AlertDescription.svelte";
   import {
     Shield, CheckCircle, AlertCircle, Loader2,
     User, MessageCircle, Settings, LogOut,
@@ -225,7 +225,7 @@
                 />
               </div>
             </div>
-            <Button.Root
+            <Button
               onclick={demonstrateLogin}
               disabled={isLoading || authenticated}
               class="w-full bits-btn bits-btn"
@@ -262,17 +262,17 @@
             </AlertDescription>
           </Alert>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button.Root class="bits-btn" onclick={demonstrateAI} variant="ghost">
+            <Button class="bits-btn" onclick={demonstrateAI} variant="ghost">
 <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
-            <Button.Root class="bits-btn" onclick={demonstrateUpload} variant="ghost">
+            <Button class="bits-btn" onclick={demonstrateUpload} variant="ghost">
 <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
-            <Button.Root class="bits-btn" onclick={demonstrateSessionActivity} variant="ghost">
+            <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="ghost">
 <Settings class="h-4 w-4 mr-2" />
               Record Activity
           </div>
-          <Button.Root onclick={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
+          <Button onclick={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
 <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
         {/if}
@@ -311,10 +311,10 @@
                 </div>
               {/if}
             <div class="flex gap-2">
-              <Button.Root class="bits-btn" onclick={() =>
+              <Button class="bits-btn" onclick={() =>
 demoStep = 'dashboard'} variant="ghost">
                 Back to Dashboard
-              <Button.Root class="bits-btn" onclick={demonstrateLogout} variant="error">
+              <Button class="bits-btn" onclick={demonstrateLogout} variant="error">
 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
             </div>

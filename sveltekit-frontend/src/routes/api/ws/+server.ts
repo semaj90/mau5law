@@ -78,7 +78,7 @@ function initializeWebSocket() {
       }
     );
     // Handle real-time collaboration
-    socket.on('document-edit', (data: { documentId: string; change: any;, userId: string }) => {
+    socket.on('document-edit', (data: {, documentId: string; change: any;, userId: string }) => {
       // Destructure and forward unknown change payload as-is
       const { documentId, change, userId } = data;
       socket.to(`doc-${documentId}`).emit('document-change', {
@@ -192,7 +192,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
     // Analyze query for legal context
     const contextResponse = await fetch('http://localhost:8080/api/context/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         query,
         socketId,
@@ -278,8 +278,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       ]
     }),
     {
-      headers: { 'Content-Type': 'application/json` }'`
-    }
+      headers: { 'Content-Type': 'application/json' }'' }
   );
 };
 // Cleanup function

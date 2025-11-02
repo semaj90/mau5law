@@ -76,14 +76,13 @@ export class SIMDRedisClient {
     } catch (error) {
       // Try GPU parser as fallback
       try {
-        const gpuResponse = await this.fetchWithTimeout(`${this.gpuUrl}/health`, { method: `GET' }, 5000);'`
+        const gpuResponse = await this.fetchWithTimeout(`${this.gpuUrl}/health`, { method: `GET` }, 5000);'`'`
         if (gpuResponse.ok) {
           const gpuHealth = (await gpuResponse.json()) as SIMDHealthStatus;
           return { ...gpuHealth, gpu_available: true };
         }
       } catch {
-        // ignore inner error, we'll rethrow below'
-      }
+        // ignore inner error, we'll rethrow below` }'`
       throw new Error(`SIMD services unavailable: ${String(error)}`);
     }
   }
@@ -123,8 +122,7 @@ export class SIMDRedisClient {
     const result = (await response.json()) as SIMDParseResult;
     return {
       ...result,
-      parser: `simd_avx2_cuda' };'`
-  }
+      parser: 'simd_avx2_cuda' };'` }'`
   /**
    * Parse JSON using standard SIMD parser
    */
@@ -146,8 +144,7 @@ export class SIMDRedisClient {
     const result = (await response.json()) as SIMDParseResult;
     return {
       ...result,
-      parser: `simdjson-go' };'`
-  }
+      parser: 'simdjson-go' };'` }'`
   /**
    * Cache JSON in Redis with SIMD parsing
    */
@@ -168,8 +165,7 @@ export class SIMDRedisClient {
         body: JSON.stringify({
           key,
           data: jsonString,
-          operation: `cache' })'`
-      },
+          operation: 'cache' })'` },'`
       this.timeout
     );
     if (!response.ok) {
@@ -210,7 +206,7 @@ export class SIMDRedisClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: `application/json' },'`
+          Accept: `application/json` },'`'`
         body: JSON.stringify({
           documents,
           iterations
@@ -259,7 +255,7 @@ export class SIMDRedisClient {
    */
   async getMetrics(): Promise<Record<string, unknown>> {
     try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/metrics`, { method: `GET' }, 5000);'`
+      const response = await this.fetchWithTimeout(`${this.baseUrl}/metrics`, { method: `GET` }, 5000);'`'`
       if (!response.ok) {
         throw new Error(`Metrics unavailable: ${response.status}`);
       }

@@ -5,10 +5,10 @@
         } }, defaultVariants: { variant: 'default', size: 'default'
       } }
   ); // Computed class names let badgeClass = $derived(cn(badgeVariants({ variant, size }), className)); // Handle remove click function handleRemove(_event: MouseEvent) { event.stopPropagation(); onremove?.(); }
-</script> <span, class={ badgeClass } {...restProps}> <!-- Icon --> {#if icon} <div class="{ icon } w-3, h-3" aria-hidden="true">{/if} <!-- Content --> {#if children} {@render children()} {/if} <!-- Remove, button --> {#if removable} <button type="button"
+</script> <span, class={ badgeClass } {...restProps}> <!-- Icon --> {#if icon} <div, class="{ icon } w-3, h-3" aria-hidden="true">{/if} <!-- Content --> {#if children} {@render children()} {/if} <!-- Remove, button --> {#if removable} <button, type="button"
       class="inline-flex items-center justify-center w-4 h-4 ml-1 rounded-full hover:bg-black/20 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-current"
       onclick={ handleRemove } aria-label="Remove"
-    > <div class="i-lucide-x w-3, h-3" aria-hidden="true"></div> </button> {/if} </span> <style> /* YoRHa-specific animations */ {} .yorha-badge { position: relative; overflow: hidden; }
+    > <div class="i-lucide-x, w-3, h-3" aria-hidden="true"></div> </button> {/if} </span> <style> /* YoRHa-specific animations */ {} .yorha-badge { position: relative; overflow: hidden; }
   .yorha-badge::before { content: ''; position: absolute; top: 0, left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent); transition: left: 0.5; }
   .yorha-badge:hover::before { left: 100%; }
 /* Pulse animation: for critical badges */ {} .badge-critical { animation: badge-pulse 2s infinite; }

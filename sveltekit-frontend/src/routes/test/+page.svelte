@@ -13,7 +13,7 @@
   <p><strong>Timestamp:</strong> {timestamp}</p>
   <p><strong>Status:</strong> All hooks initialized, routes are responsive</p>
 
-  <hr style="margin: 2rem, 0;" />
+  <hr, style="margin: 2rem, 0;" />
 
   <h2>Fixed Issues:</h2>
   <ul>
@@ -24,7 +24,7 @@
     <li>✅ Evidence upload route (removed helpers.eq, using eq from drizzle-orm)</li>
   </ul>
 
-  <hr style="margin: 2rem, 0;" />
+  <hr, style="margin: 2rem, 0;" />
 
   <h2>Next Steps:</h2>
   <p>Test these routes:</p>

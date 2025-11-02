@@ -10,13 +10,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import {
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   interface EvidenceFile {
     id: number; // Assuming ID is number, adjust if UUID string
     title: string;
@@ -304,22 +304,22 @@ export default {};
         </div>
       </div>
       <div class="flex gap-2">
-        <Button.Root
+        <Button
           onclick={loadEmbeddingStats}
           disabled={loading.stats}
           variant="ghost"
           class="text-sm bits-btn"
         >
           {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           onclick={triggerEmbeddingBackfill}
           disabled={loading.backfill || embeddingStats.withoutEmbeddings === 0}
           variant="secondary"
           class="text-sm bits-btn"
         >
           {loading.backfill ? 'Processing...' : `🚀 Generate Embeddings (${embeddingStats.withoutEmbeddings})`}
-        </Button.Root>
+        </Button>
       </div>
     </div>
   </div>
@@ -351,12 +351,12 @@ export default {};
             <div class="text-4xl mb-4">📎</div>
             <p class="text-lg mb-2">Drop files here or click to browse</p>
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               onclick={() => fileInput?.click()}
               disabled={loading.upload}
             >
               {loading.upload ? 'Uploading...' : 'Select Files'}
-            </Button.Root>
+            </Button>
           </div>
         </div>
         {#if uploadProgress}
@@ -380,12 +380,12 @@ export default {};
             class="flex-1 px-3 py-2 border rounded-lg"
             onkeydown={(e) => e.key === 'Enter' && performSemanticSearch()}
           />
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             onclick={performSemanticSearch}
             disabled={loading.search || !searchQuery.trim()}
           >
             {loading.search ? 'Searching...' : 'Search'}
-          </Button.Root>
+          </Button>
         </div>
         {#if showSearchResults}
           <div class="search-results">
@@ -397,7 +397,7 @@ export default {};
                 class="bits-btn text-sm"
               >
                 Clear Results
-              </Button.Root>
+              </Button>
             </div>
             {#if searchResults.length === 0}
               <p class="text-gray-600 italic">No similar evidence found.</p>
@@ -436,7 +436,7 @@ export default {};
     <div class="yorha-panel-header">
       <div class="flex justify-between items-center">
         <h3 class="nes-text is-primary">📋 Evidence Files ({evidenceFiles.length})</h3>
-        <Button.Root
+        <Button
           onclick={loadEvidenceFiles}
           disabled={loading.files}
           variant="ghost"

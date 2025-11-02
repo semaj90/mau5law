@@ -110,7 +110,7 @@ export class DocumentApiService {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}/process`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(options)
       });
 
@@ -208,7 +208,7 @@ export class DocumentApiService {
   async deleteDocument(documentId: string): Promise<{ success: boolean; error?: string }> {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}`, {
-        method: `DELETE' });'`
+        method: `DELETE` });'`'`
 
       if (!response.ok) {
         throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
@@ -235,7 +235,7 @@ export class DocumentApiService {
     try {
       const response = await fetch(`${this.baseUrl}/documents/search`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ query, ...options })
       });
 

@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Service unavailable',
-        error: dev ? String(err) : 'Internal error` })'`
+        error: dev ? String(err) : `Internal error` })'`'`
     );
   }
 };

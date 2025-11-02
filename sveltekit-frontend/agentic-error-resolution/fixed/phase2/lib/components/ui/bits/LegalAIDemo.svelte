@@ -128,7 +128,7 @@
     <p class="text-gray-600">Specialized UI components for legal evidence management</p>
   </div>
   <!-- Search Section -->
-  <Card.Root class="p-4">
+  <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">🔍 AI-Powered Search</h2>
     <SearchInput
       bind:value={searchQuery}
@@ -141,9 +141,9 @@
       onsearch={handleSearch}
       onselect={handleSearchSelect}
     />
-  </Card.Root>
+  </Card>
   <!-- Evidence Gallery -->
-  <Card.Root class="p-4">
+  <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">📁 Evidence Gallery</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
       {#each Array.isArray(sampleEvidence) ? sampleEvidence : [] as evidence}
@@ -165,11 +165,11 @@
         </div>
       {/each}
     </div>
-  </Card.Root>
+  </Card>
   <!-- Two Column Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- AI Analysis Panel -->
-    <Card.Root class="p-4">
+    <Card class="p-4">
       <h2 class="text-xl font-semibold mb-4">🧠 AI Analysis</h2>
       {#if showAnalysis && selectedEvidence}
         <EvidenceAIAnalysis
@@ -183,9 +183,9 @@
         <div class="text-center text-gray-500 py-8">
           <p>Select an evidence item to view AI analysis</p>
         {/if}
-    </Card.Root>
+    </Card>
     <!-- Evidence Board -->
-    <Card.Root class="p-4">
+    <Card class="p-4">
       <h2 class="text-xl font-semibold mb-4">📋 Evidence Board</h2>
       <Board;
         bind:items={boardItems}
@@ -198,10 +198,10 @@
         onitemMove={handleBoardItemMove}
         onboardSave={handleBoardSave}
       />
-    </Card.Root>
+    </Card>
   </div>
   <!-- Quick Actions -->
-  <Card.Root class="p-4">
+  <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
     <div class="flex flex-wrap gap-3">
       <Button variant="primary" onclick={() => (showAnalysis = true)}>Run AI Analysis</Button>
@@ -210,9 +210,9 @@
       <Button variant="warning" onclick={() => console.log('Flag critical')}>Flag Critical</Button>
       <Button variant="error" onclick={() => console.log('Archive case')}>Archive Case</Button>
     </div>
-  </Card.Root>
+  </Card>
   <!-- Component Stats -->
-  <Card.Root class="p-4 bg-blue-50">
+  <Card class="p-4 bg-blue-50">
     <h3 class="text-lg font-semibold mb-3">📊 Demo Statistics</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
       <div>
@@ -232,9 +232,9 @@
         <div class="text-sm text-gray-600">Board Items</div>
       </div>
     </div>
-  </Card.Root>
+  </Card>
   <!-- Technical Information -->
-  <Card.Root class="p-4 bg-gray-100">
+  <Card class="p-4 bg-gray-100">
     <details>
       <summary class="font-semibold cursor-pointer mb-3">🛠️ Technical Implementation Details</summary>
       <div class="space-y-3 text-sm">
@@ -274,6 +274,6 @@
         </div>
       </div>
     </details>
-  </Card.Root>
+  </Card>
 </div>
 ;

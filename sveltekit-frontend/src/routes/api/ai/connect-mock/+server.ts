@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
             production: true,
             service: 'enhanced-rag',
             endpoint: 'http://localhost:8094',
-            message: `Connected to Enhanced RAG service (Go microservice)` });
+            message: `Connected to Enhanced RAG service (Go microservice)' });'`
         }
       } catch (ragError) {
         // Final fallback - development mode

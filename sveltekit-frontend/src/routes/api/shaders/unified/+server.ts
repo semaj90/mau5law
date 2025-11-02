@@ -114,8 +114,7 @@ export const GET: RequestHandler = async () => {
         shaderType: 'string (optional) - "webgpu", "webgl", or: "all" (default)',
         tags: 'string[] (optional) - Filter by shader tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or: "recent"',
-        limit: 'number (optional) - Maximum results (default: 20, max: 100)'
-      },
+        limit: `number (optional) - Maximum results (default: 20, max: 100)` },
       supportedOperations: [
         'vector_similarity',
         'attention_visualization',
@@ -136,7 +135,7 @@ export const GET: RequestHandler = async () => {
     return json(capabilities);
   } catch (error) {
     // use helper to avoid: 'any' and still keep logs/safe responses
-    console.error('Failed to get unified shader capabilities:', getErrorMessage(error));
+    console.error('Failed to get unified shader capabilities: `, getErrorMessage(error));'`
     return json({ error: `Failed to get unified shader capabilities` }, { status: 500 });
   }
 };
@@ -440,7 +439,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache` });
   } catch (err) {
-    console.error('Failed to clean shader caches: `, getErrorMessage(err));'`
+    console.error('Failed to clean shader caches: ', getErrorMessage(err));'`'`
     return json({ error: `Failed to clean shader caches` }, { status: 500 });
   }
 };

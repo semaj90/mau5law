@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   import {
     Input
   } from '$lib/components/ui/enhanced-bits.svelte'';
@@ -12,9 +12,9 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
+  import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
   // Svelte 5 runes for state management
   let messages = $state<any[]>([]);
   let inputMessage = $state('');

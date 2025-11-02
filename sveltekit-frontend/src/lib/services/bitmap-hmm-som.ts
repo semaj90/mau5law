@@ -614,8 +614,7 @@ export class BitmapHiddenMarkovSOM {
         legalContext: state.legalContext,
         somPosition: state.somPosition,
         compressionRatio: 0.6, // 40% compression
-        renderableHTML: `<div, class="hmm-state" data-state="${state.id}">${state.name}</div>' });'`
-    }
+        renderableHTML: '<div, class="hmm-state" data-state="${state.id}">${state.name}</div>' });'` }'`
 
     console.log(`📦 Cached ${this.states.length} bitmap patterns`);
   }

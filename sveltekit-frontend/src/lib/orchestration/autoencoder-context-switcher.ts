@@ -480,7 +480,7 @@ export class AutoencoderContextSwitcher {
     return {
       coherence: 0.85,
       uniqueness: 0.72,
-      domain: 'specialized_contract_analysis' };
+      domain: 'specialized_contract_analysis` };'`
   }
   private extractTrainingData(
     _modelId: string,

@@ -233,8 +233,7 @@ export class GemmaEmbeddingService {
       }
     } catch (error) {
       console.error('Failed to cache embedding:', error);
-      // Don't throw - allow processing to continue'
-    }
+      // Don't throw - allow processing to continue` }'`
   }
   /**
    * Check if embedding is cached
@@ -261,7 +260,7 @@ export class GemmaEmbeddingService {
         keysCount: keys.length,
         estimatedMemory: `${(totalMemory / 1024 / 1024).toFixed(2)} MB` };
     } catch (error) {
-      console.error('Failed to get cache stats: `, error);'`
+      console.error('Failed to get cache stats: ', error);'`'`
       return { keysCount: 0, estimatedMemory: `0 MB` };
     }
   }

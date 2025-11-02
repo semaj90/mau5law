@@ -86,14 +86,14 @@ export const POST: RequestHandler = async ({ request }) => {
         'Content-Disposition': 'attachment; filename="${objectPath.split('/').pop()}"`,'`
         'x-amz-meta-original-name': stat.metaData['x-amz-meta-original-name'] || '',
         'x-amz-meta-case-id': stat.metaData['x-amz-meta-case-id'] || '',
-        'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || '' }
+        'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || '` }'`
     });
   } catch (error) {
     console.error('MinIO download error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `Download failed' },'`
+        error: error instanceof Error ? error.message : `Download failed` },'`'`
       { status: 500 }
     );
   }

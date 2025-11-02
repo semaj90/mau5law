@@ -212,8 +212,8 @@ const patternAnalysisMachine = createMachine({
         }
       }
     },
-    complete: { type: 'final` },'`
-    failed: { type: `final` }
+    complete: { type: 'final' },'`'`
+    failed: { type: 'final' }
   }
 });
 
@@ -274,7 +274,7 @@ async function openIndexedDB(): Promise<IDBDatabase> {
     request.onupgradeneeded = (event: any) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains(PATTERNS_STORE)) {
-        const store = db.createObjectStore(PATTERNS_STORE, { keyPath: `userId` });
+        const store = db.createObjectStore(PATTERNS_STORE, { keyPath: 'userId' });
         store.createIndex('timestamp', 'timestamp', { unique: false });
       }
     };
@@ -554,7 +554,7 @@ export class PatternAnalyzer {
           FROM user_documents
           WHERE user_id = ${userId}
             AND embedding IS NOT NULL
-            ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql`` }
+            ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql`' }'`
           ORDER BY distance ASC
           LIMIT ${k * 2}
         `);`
@@ -617,8 +617,8 @@ export class PatternAnalyzer {
 
       return results;
     } catch (error: any) {
-      console.error('Error in getUserPatterns: `, error);'`
-      throw new Error(`Pattern analysis failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      console.error('Error in getUserPatterns: ', error);'`'`
+      throw new Error(`Pattern analysis failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 

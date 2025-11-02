@@ -297,7 +297,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
         centroid,
         documents: documentIndices.map(i => `doc_${i}`),
         size: documentIndices.length,
-        label: `SOM Cluster ${clusterId + 1} (${x},${y})` } as DocumentCluster);
+        label: `SOM Cluster ${clusterId + 1} (${x},${y})' } as DocumentCluster);'`
       clusterId++;
     }
     return clusters;

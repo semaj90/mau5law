@@ -9,7 +9,7 @@
         } }, defaultVariants: { variant: 'default', size: 'default'
       } }
   ) let buttonClass = $derived( cn(buttonVariants({ variant, size }), loading && 'cursor-not-allowed', className) )
-  let isDisabled = $derived(disabled || loading) </script> <!-- Wrap in Bits-UI if, desired: <Button.Root class="bits-btn"Primitive.Root, asChild> --> <button class={ buttonClass } disabled={ isDisabled } type={ type } aria-busy={loading ? 'true': undefined} aria-label={ ariaLabel } {...restProps} >
+  let isDisabled = $derived(disabled || loading) </script> <!-- Wrap in Bits-UI if, desired: <Button class="bits-btn"Primitive.Root, asChild> --> <button class={ buttonClass } disabled={ isDisabled } type={ type } aria-busy={loading ? 'true': undefined} aria-label={ ariaLabel } {...restProps} >
   <!-- Loading spinner (aria-hidden so SR users just, hear: "busy") --> {#if loading} <div class="i-lucide-loader-2 w-4 h-4, animate-spin" aria-hidden="true">{/if} <!-- Icon (aria-hidden, since aria-label or text covers, meaning) --> {#if icon && !loading} <div class="{ icon } w-4, h-4" aria-hidden="true">{/if} <!-- Content (snippet or, text) --> {#if children} {@render children()} {/if} <!-- </ButtonPrimitive.Root> --> <style> .yorha-shadow { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
   .hover-lift { transition: all 0.2s ease; }
   .hover-lift:hover { transform: translateY(-1px); }

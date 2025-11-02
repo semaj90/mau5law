@@ -152,7 +152,7 @@ const createEvidenceStore = () => {
       const response = await fetch(`/api/evidence/list?caseId=${caseId}`, {
         headers: {
           'Content-Type': 'application/json',
-          'X-Legal-Request': `true` }
+          'X-Legal-Request': `true' }'`
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -312,7 +312,7 @@ const createEvidenceStore = () => {
           person: newEvidenceData.collected_by,
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
-          notes: `Evidence "${newEvidenceData.title}" added to case system` };
+          notes: `Evidence "${newEvidenceData.title}" added to case system' };'`
         const evidencePayload = {
           ...newEvidenceData,
           caseId: currentCaseId,
@@ -327,7 +327,7 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': `true` },
+            'X-Legal-Request': `true' },'`
           body: JSON.stringify(evidencePayload)
         });
         if (!response.ok) {
@@ -402,7 +402,7 @@ const createEvidenceStore = () => {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': `true` },
+            'X-Legal-Request': `true' },'`
           body: JSON.stringify(payload)
         });
         if (!response.ok) {
@@ -447,7 +447,7 @@ const createEvidenceStore = () => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': `true` },
+            'X-Legal-Request': `true' },'`
           body: JSON.stringify({ reason })
         });
         if (!response.ok) {
@@ -479,7 +479,7 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': `true` },
+            'X-Legal-Request': `true' },'`
           body: JSON.stringify({, type: processingType })
         });
         if (!response.ok) {
@@ -581,7 +581,7 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true` },'`
+            'X-Legal-Request': 'true' },'`'`
           body: JSON.stringify(entry)
         });
         if (!response.ok) {
@@ -612,7 +612,7 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': `true` },
+            'X-Legal-Request': `true' },'`
           body: JSON.stringify({ evidenceIds, reportType })
         });
         if (!response.ok) {
@@ -631,7 +631,7 @@ const createEvidenceStore = () => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/validate`, {
           method: 'POST',
-          headers: { 'X-Legal-Request': `true` }
+          headers: { 'X-Legal-Request': `true' }'`
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -678,8 +678,7 @@ const createEvidenceStore = () => {
       if (!currentCaseId) return;
       try {
         const response = await fetch(`/api/evidence/stats?caseId=${currentCaseId}`, {
-          headers: { 'X-Legal-Request': 'true` }'`
-        });
+          headers: { 'X-Legal-Request': 'true' }'' });
         if (response.ok) {
           const stats = await response.json();
           update(state => ({ ...state, stats }));
@@ -695,7 +694,7 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': `true` },
+            'X-Legal-Request': `true' },'`
           body: JSON.stringify({ evidenceIds, format })
         });
         if (!response.ok) {
@@ -792,7 +791,7 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Legal-Request': `true` },
+        'X-Legal-Request': `true' },'`
       body: JSON.stringify({
        , evidence_id: evidenceId, // Added comma
         action,
@@ -860,7 +859,7 @@ export function validateChainOfCustody(evidence: Evidence): { valid: boolean; is
   for (let i = 1; i < chain.length; i++) {
     const prev = new Date(chain[i - 1].timestamp);
     const curr = new Date(chain[i].timestamp);
-    if (curr < prev) issues.push(`Chain of custody timestamp out of order at, entry ${i + 1}`);
+    if (curr < prev) issues.push(`Chain of custody timestamp out of order, at, entry ${i + 1}`);
   }
   for (let i = 0; i < chain.length; i++) {
     const entry = chain[i];

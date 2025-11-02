@@ -474,8 +474,7 @@ export class MCPSIMDParser {
       }
 
       const data = await response.json();
-      return { healthy: true, message: data.message || 'Server healthy` };'`
-    } catch (error) {
+      return { healthy: true, message: data.message || 'Server healthy' };'` } catch (error) {'`
       return { healthy: false, message: String(error) };
     }
   }

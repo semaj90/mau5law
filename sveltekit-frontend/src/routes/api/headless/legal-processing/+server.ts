@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       );
     }
-    console.log(`📄 Processing legal document: ${body.text.length} chars, type: ${body.documentType || 'general` }`);'`
+    console.log(`📄 Processing legal document: ${body.text.length} chars, type: ${body.documentType || 'general' }`);'`'`
 
     // Initialize headless processor if needed (use safe access)
     const stats = factory.getStats?.() ?? { isInitialized: false, hasDevice: false };
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
         id: body.documentId,
         type: body.documentType,
         length: body.text.length,
-        processingMode: `headless-webgpu` },
+        processingMode: `headless-webgpu' },'`
       // WebGPU results;
       webgpu: {
         mipmapGenerated: !!result?.mipmapChain,
@@ -329,7 +329,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         legalAnalysis: result.legalAnalysis,
         compressionRatio: result.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null,
         mipmapLevels: result.mipmapChain?.levels ?? 0,
-        error: result.success ? undefined : `Processing failed` })),
+        error: result.success ? undefined : `Processing failed' })),'`
       // Performance summary
       performance: {
         documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000),
@@ -461,13 +461,12 @@ function getErrorInfo(error: any): { message: string; name: string } {
     return { message: error.message, name: error.name };
   }
   if (typeof error === 'string') {
-    return { message: error, name: 'Error` };'`
-  }
+    return { message: error, name: 'Error' };'' }
   if (error && typeof error === 'object') {
     const maybe = error as { message?: any; name?: any };
     const message = typeof maybe.message === 'string' ? maybe.message : 'Unknown error';
     const name = typeof maybe.name === 'string' ? maybe.name : 'Error';
     return { message, name };
   }
-  return { message: 'Unknown error', name: `Error` };
+  return { message: 'Unknown error', name: `Error' };'`
 }

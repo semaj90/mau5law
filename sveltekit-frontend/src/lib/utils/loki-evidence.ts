@@ -311,20 +311,20 @@ export class LokiEvidenceService {
       case 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
-          headers: { 'Content-Type': `application/json' },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify(data)
         });
         break;
       case 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': `application/json' },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify(data)
         });
         break;
       case 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
-          method: `DELETE' });'`
+          method: `DELETE` });'`'`
         break;
     }
   }
@@ -413,8 +413,7 @@ class LokiIndexedAdapter {
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains('data')) {
-        db.createObjectStore('data', { keyPath: `id' });'`
-      }
+        db.createObjectStore('data', { keyPath: 'id' });'` }'`
     };
   }
   saveDatabase(_dbname: string, dbstring: string, callback: () => void): void {

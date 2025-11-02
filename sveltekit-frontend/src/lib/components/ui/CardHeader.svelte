@@ -6,7 +6,7 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-<div class="{className} flex flex-col, gap-4">
+<div class="{className} flex, flex-col, gap-4">
   {#if children}
     {@render children()}
   {/if}

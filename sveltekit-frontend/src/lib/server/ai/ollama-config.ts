@@ -44,8 +44,7 @@ export const MODELS: Record<string, ModelConfig> = {
     contextWindow: 8192,
     temperature: 0.0, // Deterministic embeddings
     systemPrompt:
-      'Generate high-quality semantic embeddings for legal document analysis and retrieval.` }'`
-}
+      'Generate high-quality semantic embeddings for legal document analysis and retrieval.' }'' }
 // Fallback chain configuration - llama3.2 removed
 export const FALLBACK_CHAIN = {
   'legal-analysis': [
@@ -65,7 +64,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   fallbackModel: 'gemma3-legal:latest',
   fallbackModels: {
     legal: 'gemma3-legal:latest',
-    general: `gemma3-legal:latest` },
+    general: `gemma3-legal:latest' },'`
   timeout: 60000, // 60 seconds for complex legal analysis
   maxRetries: 3,
   streamEnabled: true

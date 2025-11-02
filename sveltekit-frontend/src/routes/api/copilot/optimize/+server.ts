@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: 'result_1',
             content: 'Example search result',
             score: 0.92,
-            explanation: 'Context7 pattern; match: Svelte 5 runes' }
+            explanation: 'Context7 pattern; match: Svelte 5 runes` }'`
         ],
         count: 1,
         timestamp: Date.now()
@@ -115,7 +115,7 @@ function generateExampleCopilotContent(): string {
   return `# Copilot Context - Legal AI System`
 ## SvelteKit 2 & Svelte 5 Patterns
 ### Modern Component Patterns
-- **Props**: Use \`let { prop = 'default' } = $props()\`
+- **Props**: Use \`let { prop = 'default` } = $props()\`'`
 - **State**: Use \`$state()\` for reactive state
 - **Computed**: Use \`$derived()\` for computed values
 - **Effects**: Use \`$effect()\` for side effects
@@ -149,5 +149,4 @@ export async function processLegalDocument(content: string): Promise<any> {
   return { embedding, similarDocs }
 }
 \n+\`\`\`
-`;`
-}
+`;` }

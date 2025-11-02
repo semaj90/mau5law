@@ -148,8 +148,7 @@ export class HybridVectorService {
       }
     } catch (err) {
       // non-fatal initialization error
-      console.error('Failed to initialize Qdrant collections: `, err);'`
-    }
+      console.error('Failed to initialize Qdrant collections: ', err);'' }
   }
 
   // Add: safe extraction helpers to avoid `any` and casting issues

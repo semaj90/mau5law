@@ -1,9 +1,9 @@
 <script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
-  import { Dropdown } from './Dropdown.svelte';
-  import { Checkbox } from './Checkbox.svelte';
-  import { SearchBar } from './SearchBar.svelte';
+  import  Dropdown  from "./Dropdown.svelte";
+  import  Checkbox  from "./Checkbox.svelte";
+  import  SearchBar  from "./SearchBar.svelte";
   // Test data for dropdown
   const legalCaseTypes = [
     { value: 'contract', label: 'Contract Dispute' },
@@ -42,8 +42,8 @@ import type { Case } from '$lib/types';
   </div>
   <div, class="component-section">
     <h3>✅ Checkbox Component</h3>
-    <Checkbox bind:checked={acceptTerms} label="I accept the terms and, conditions" id="terms-checkbox" />
-    <Checkbox bind:checked={urgentCaseOnly} label="Urgent cases, only" id="urgent-checkbox" />
+    <Checkbox bind:checked={acceptTerms} label="I accept the terms, and, conditions" id="terms-checkbox" />
+    <Checkbox bind:checked={urgentCaseOnly} label="Urgent, cases, only" id="urgent-checkbox" />
     <p, class="status">
       Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> | Urgent:
       <strong>{urgentCaseOnly ? 'Yes' : 'No'}</strong>

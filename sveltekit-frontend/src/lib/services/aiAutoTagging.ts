@@ -117,7 +117,7 @@ class AIAutoTaggingService {
     try {
       const resp = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
           prompt: text.substring(0, 8192)
@@ -146,7 +146,7 @@ class AIAutoTaggingService {
         } else {
           const resp = await fetch('/api/embeddings', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json` },'`
+            headers: { 'Content-Type': 'application/json' },'`'`
             body: JSON.stringify({, text: text.substring(0, 8192) })
           });
           if (!resp.ok) {
@@ -200,7 +200,7 @@ Return JSON format:
 
     const resp = await fetch(`${getOllamaEndpoint()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt,
@@ -317,7 +317,7 @@ Return JSON format:
           type: 'similar_to',
           targetId: doc.id,
           confidence: doc.similarity,
-          description: `High similarity; to: "${doc.title}"` });
+          description: `High similarity; to: "${doc.title}"' });'`
       }
     }
     return relationships;

@@ -55,14 +55,14 @@ interface CaseData {
 }
 
 // Placeholder services
-const VectorService = { storeCaseEmbedding: async (data: { caseId: string; content: string;, metadata: Record<string, unknown> }) => {
+const VectorService = { storeCaseEmbedding: async (data: {, caseId: string; content: string;, metadata: Record<string, unknown> }) => {
     // Changed from Record<string, any>
     // MODIFIED: Added specific type for data
     console.log('Storing case embedding:', data);
   }
 };
 const ollamaService = {
-  generateResponse: async (_prompt: string, _options: { model: string; max_tokens: number;, temperature: number }) => {
+  generateResponse: async (_prompt: string, _options: {, model: string; max_tokens: number;, temperature: number }) => {
     // Marked prompt and options as unused
     // MODIFIED: Added specific type for options
     return { response: JSON.stringify(generateFallbackSummary({, caseId: 'placeholder' })) };
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       return json(
-        { success: false, error: 'Authentication required' },
+        { success: false, error: 'Authentication required` },'`
         { status: 401 } // Corrected json() syntax
       );
     }

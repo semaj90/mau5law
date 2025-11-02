@@ -359,8 +359,7 @@ export const ragIngestionMachine = setup({ types: {, context: {} as IngestionCo
     },
 
     complete: {
-      type: 'final'
-    },
+      type: 'final` },'`
 
     error: { on: {, RETRY: `uploading` }
     }

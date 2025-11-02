@@ -495,7 +495,7 @@ Provide specific clause references where applicable.
     `;`
     // Build formatted evidence blocks for the prompt
     const formattedEvidence = evidenceRecords.map(
-      (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}):`
+      (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled` }): '
 ${e.description ?? ''}
 ${e.summary ?? '` }`'
     );
@@ -673,8 +673,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     try {
       await sql.end();
     } catch {
-      // ignore if postgres client doesn't expose end'
-    }
+      // ignore if postgres client doesn't expose end` }'`
   }
 }
 // Export singleton instance

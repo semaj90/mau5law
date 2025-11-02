@@ -312,7 +312,7 @@ class PgVectorBridge {
             metadata: {
               type: 'legal_document',
               similarity_score: score,
-              search_method: `pgvector' },'`
+              search_method: `pgvector` },'`'`
             created_at: new Date(),
             updated_at: new Date()
           });
@@ -509,8 +509,7 @@ export class PgVectorFAISSBridge {
           fusion_time_ms: 0,
           gpu_accelerated: false
         },
-        explanation: `Search; failed: ${error}' };'`
-    }
+        explanation: 'Search; failed: ${error}' };'` }'`
   }
   private fuseResults(
     faissResults: PgVectorDocument[],
@@ -529,7 +528,7 @@ export class PgVectorFAISSBridge {
           ...pgvectorResults.map(doc => ({
             ...doc,
             fusionScore: doc.metadata?.similarity_score || 0.8,
-            source: `pgvector' }))'`
+            source: `pgvector` }))'`'`
         ];
         return combinedResults.sort((a, b) => (b as any).fusionScore - (a as any).fusionScore).slice(0, 50);
       case 'weighted':

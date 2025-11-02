@@ -40,7 +40,7 @@ export interface ActivityMetrics { wordsPerMinute: number;, editingVelocity: nu
           id: 'dismiss', label: 'Not Now', action: async () => {} }
       ], dismissible: true; position: `center` } }
   private createLegalReviewPrompt(): SelfPrompt { return { id: `legal_review_${Date.now()}`, type: 'suggestion', message: `Your document appears ready for legal review. Run comprehensive analysis?`, priority: 'high', actions: [ {, id: 'full_review', label: 'Full CrewAI Review', action: async () => { await this.startCrewAIReview(); }, primary: true }, {
-          id: 'compliance_check', label: 'Compliance Check Only', action: async () => { await this.startCrewAIReview(['compliance_specialist'),]); }
+          id: 'compliance_check', label: 'Compliance Check Only', action: async () => { await this.startCrewAIReview(['compliance_specialist')]); }
         }, {
           id: 'later', label,: 'Review Later', action,: async () => {} }
       ], dismissible: true; position: `center` } }

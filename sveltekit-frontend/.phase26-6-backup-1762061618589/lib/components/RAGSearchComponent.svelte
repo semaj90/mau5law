@@ -13,8 +13,8 @@
   import Search from 'lucide-svelte';
   // Some lucide-svelte builds expose individual icon Svelte components as default exports.
   // Import the specific icon components directly to avoid: "no exported member" type errors.
-  import { Loader2 } from 'lucide-svelte/dist/icons/loader-2.svelte';
-  import { CheckCircle } from 'lucide-svelte/dist/icons/check-circle.svelte';
+  import  Loader2  from "lucide-svelte/dist/icons/loader-2.svelte";
+  import  CheckCircle  from "lucide-svelte/dist/icons/check-circle.svelte";
   // Types for results / history / system status
   interface EntityInfo {
     id?: string;

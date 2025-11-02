@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				const rawAgentResult = await runLegalCaseScoringAgent(agentPayload);
 				const agentResult = rawAgentResult as unknown as CaseScoringResult;
 				await cognitiveCache.set(cacheKey, agentResult, { ttl: CACHE_TTL_SECONDS });
-				emit('progress', { stage: 'agentic_done', message: 'Agentic scoring finished` });'`
+				emit('progress', { stage: 'agentic_done', message: `Agentic scoring finished` });'`'`
 				emit('done', agentResult);
 				controller.close();
 				return;

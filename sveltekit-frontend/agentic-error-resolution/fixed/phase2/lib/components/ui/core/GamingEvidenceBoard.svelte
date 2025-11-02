@@ -3,14 +3,14 @@
   import { onMount } from 'svelte';
   import { fade, scale, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { createEnhancedEvidenceCard } from '$lib/components/ui/enhanced-bits/builders.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  createEnhancedEvidenceCard  from "$lib/components/ui/enhanced-bits/builders.svelte";
   interface EvidenceItem {
     id: string;
     title: string;
@@ -152,20 +152,20 @@
         </div>
       </div>
       <div class="board-controls">
-        <Button.Root class="control-btn">📚 LIBRARY</Button.Root>
-        <Button.Root class="control-btn">🔍 ANALYSIS</Button.Root>
+        <Button class="control-btn">📚 LIBRARY</Button>
+        <Button class="control-btn">🔍 ANALYSIS</Button>
       </div>
     </div>
   </div>
   <!-- Gaming-style toolbar -->
   <div class="toolbar">
     <div class="zoom-controls">
-      <Button.Root class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}>
+      <Button class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}>
         🔍 {zoom}%
-      </Button.Root>
-      <Button.Root class="action-btn">🔗 CONNECT</Button.Root>
-      <Button.Root class="action-btn" onclick={addEvidence}>➕ ADD EVIDENCE</Button.Root>
-      <Button.Root class="action-btn">📚 LIBRARY (0)</Button.Root>
+      </Button>
+      <Button class="action-btn">🔗 CONNECT</Button>
+      <Button class="action-btn" onclick={addEvidence}>➕ ADD EVIDENCE</Button>
+      <Button class="action-btn">📚 LIBRARY (0)</Button>
     </div>
     <div class="connection-status">
       <div class="status-indicator {isConnected ? 'connected' : 'disconnected'}">

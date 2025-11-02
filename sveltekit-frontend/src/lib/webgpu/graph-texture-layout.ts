@@ -438,8 +438,7 @@ export class GraphTextureManager {
         // Store result
         results[node_index] = adjusted_confidence;
       }
-    `;`
-  }
+    `;' }'`
   private encodeDocumentType(documentType: string): number {
     const typeMap: Record<string, number> = {
       'contract': 1.0,

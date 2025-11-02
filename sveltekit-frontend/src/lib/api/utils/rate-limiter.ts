@@ -1,5 +1,5 @@
 // src/lib/api/utils/rate-limiter.ts
-export interface RateLimitOptions<Args extends, unknown[] = unknown[]> {
+export interface RateLimitOptions<Args, extends, unknown[] = unknown[]> {
   /**
    * Key resolver to partition rate buckets (e.g. per-endpoint or per-user).
    * Default: single global bucket.
@@ -34,7 +34,7 @@ type Pending<Args extends unknown[], T> = { args: Args;, resolve: (_value: T | 
   reject: (err: any) => void;
   enqueueAt: number;
 };
-class Bucket<Args extends, unknown[], T> { tokens: number;, lastRefill: number;
+class Bucket<Args, extends, unknown[], T> { tokens: number;, lastRefill: number;
   queue: Pending<Args, T>[];
   concurrentlyRunning: number;
   constructor(public opts: Required<RateLimitOptions<Args>>) {
@@ -72,7 +72,7 @@ class Bucket<Args extends, unknown[], T> { tokens: number;, lastRefill: number;
  * Example:
  *   const limitedFetch = rateLimit(apiFetch, { maxRequests: 20, windowMs: 1000, key: (url) => url });
  */
-export function rateLimit<T, Args extends, unknown[] = unknown[]>(
+export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
   fn: (...args: Args) => Promise<T>,
   options?: RateLimitOptions<Args>
 ): (...args: Args) => Promise<T> {

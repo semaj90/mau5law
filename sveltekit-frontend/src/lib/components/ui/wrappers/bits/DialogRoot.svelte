@@ -1,11 +1,11 @@
 <script, lang="ts"> import type { Snippet } from 'svelte'; import { onMount } from 'svelte'; import { browser } from '$app/environment'; import { getBitsOverrides } from './bits-overrides'; let { open = $bindable(false), onOpenChange, children }: { open?: boolean; onOpenChange?: (open: boolean) => void; children?: Snippet } = $props(); // Use $state for reactivity in Svelte 5 let DialogRoot = $state<any>(null); let isLoading = $state<boolean>(true); // SvelteKit 2 compatible: Check for overrides first const overrides = getBitsOverrides(); if (overrides && overrides.Dialog) { // Cast overrides.Dialog to any to safely access .Root const dialogOverride = overrides.Dialog as any; DialogRoot = dialogOverride.Root ?? dialogOverride; isLoading = false; } else if (browser) { // Only attempt dynamic import in browser onMount(async () => { try { // @ts-ignore - dynamic module shape may vary const mod = await import('bits-ui'); const anyMod = mod as any; DialogRoot = anyMod.Dialog?.Root ?? anyMod.Dialog ?? null; } catch (err) { console.warn('Failed to load bits-ui Dialog, using fallback:', err); DialogRoot = null; } finally { isLoading = false; }
     }); } else { // SSR fallback isLoading = false; }
   function handleOpenChange(newOpen: boolean) { open = newOpen; onOpenChange?.(newOpen); }
-</script> {#if !isLoading} {#if DialogRoot} {@const DR = DialogRoot} <DR bind:open, onOpenChange={ handleOpenChange }> <slot /> </DR> {:else} <!-- SvelteKit 2 Fallback: simple dialog markup for SSR/browser, compatibility --> {#if open} <div class="fallback-dialog-overlay"
+</script> {#if !isLoading} {#if DialogRoot} {@const DR = DialogRoot} <DR, bind:open, onOpenChange={ handleOpenChange }> <slot /> </DR> {:else} <!-- SvelteKit 2 Fallback: simple dialog markup for, SSR/browser, compatibility --> {#if open} <div, class="fallback-dialog-overlay"
         onclick={() => handleOpenChange(false)} onkeydown={e => { if (e.key === 'Enter' || e.key === ' ') { handleOpenChange(false); }
         }} tabindex="0"
         role="button"
-      > <div class="fallback-dialog"
+      > <div, class="fallback-dialog"
           onclick={e => e.stopPropagation()} onkeydown={e => { if (e.key === 'Escape') { handleOpenChange(false); }
           }} role="dialog"
           aria-modal="true"

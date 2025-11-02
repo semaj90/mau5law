@@ -1,7 +1,7 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card } from '$lib/components/ui/bits/Card.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Card  from "$lib/components/ui/bits/Card.svelte";
   // Define Evidence interface locally
   interface Evidence {
     id: string;
@@ -77,7 +77,7 @@
     });
   }
 </script>
-<Card.Root
+<Card
   class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
   aria-label={item.title}
@@ -103,7 +103,7 @@
       </div>
       <!-- Quick Actions -->
       <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button.Root
+        <Button
           variant="ghost"
           size="sm"
           class="h-8 w-8 p-0 bits-btn bits-btn"
@@ -111,8 +111,8 @@
           onclick={() => onView?.(item)}
         >
           <i class="i-lucide-eye w-4 h-4" aria-hidden="true"></i>
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           variant="ghost"
           size="sm"
           class="h-8 w-8 p-0 bits-btn bits-btn"
@@ -120,7 +120,7 @@
           onclick={() => onMoreOptions?.(item)}
         >
           <i class="i-lucide-more-horizontal w-4 h-4" aria-hidden="true"></i>
-        </Button.Root>
+        </Button>
       </div>
     </div>
   </div>
@@ -184,7 +184,7 @@
         {/if}
     </div>
   </div>
-</Card.Root>
+</Card>
 <style>
   /* Modern CSS line clamping with fallback */
   .line-clamp-2 {

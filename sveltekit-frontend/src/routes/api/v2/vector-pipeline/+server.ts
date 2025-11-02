@@ -105,7 +105,7 @@ class VectorPipelineService {
       // Determine which objects to process
       const objectsToProcess =
         request.batch_objects ||
-        (request.object_key ? [request.object_key] : await this.listBucketObjects(request.bucket_name)); // <-- closed paren and added, semicolon
+        (request.object_key ? [request.object_key] : await this.listBucketObjects(request.bucket_name)); // <-- closed paren and, added, semicolon
       if (objectsToProcess.length === 0) {
         throw new Error('No objects found to process');
       }
@@ -181,8 +181,8 @@ class VectorPipelineService {
         cuda_enabled: this.cudaEnabled,
         ...request.metadata
       },
-      processing_time: 0, // <-- Added missing comma, here
-      model_used: request.embed_model || 'embeddinggemma:latest` }));'`
+      processing_time: 0, // <-- Added missing, comma, here
+      model_used: request.embed_model || 'embeddinggemma:latest' }));'`'`
     // Store in database
     await this.storeEmbeddings(results);
     return results;
@@ -218,7 +218,7 @@ class VectorPipelineService {
         return content.toString('utf8');
       case 'json':
         try {
-          const jsonData = JSON.parse(content.toString('utf8')); // <-- added closing, paren
+          const jsonData = JSON.parse(content.toString('utf8')); // <-- added, closing, paren
           return JSON.stringify(jsonData, null, 2);
         } catch {
           return content.toString('utf8');
@@ -257,7 +257,7 @@ class VectorPipelineService {
             texts,
             model,
             normalize: true,
-            device: this.cudaEnabled ? 'cuda' : `cpu` });
+            device: this.cudaEnabled ? 'cuda' : `cpu' });'`
           // embeddingService may return number[][] or { embeddings: number[][] }
           if (Array.isArray(maybeResult) && maybeResult.length > 0 && Array.isArray(maybeResult[0])) {
             return maybeResult as number[][];
@@ -281,12 +281,12 @@ class VectorPipelineService {
       const response = await fetch(`${this.fastEmbedUrl}/embed`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },'`
+          'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           texts,
           model,
           normalize: true,
-          device: this.cudaEnabled ? 'cuda' : `cpu` })
+          device: this.cudaEnabled ? 'cuda' : `cpu' })'`
       });
       if (!response.ok) {
         throw new Error(`FastEmbed API error: ${response.status} ${response.statusText}`);
@@ -455,7 +455,7 @@ class VectorPipelineService {
 				1 - (embedding <=> $1::vector) as similarity
 			FROM document_embeddings
 			${whereClause}
-			${whereClause ? 'AND' : `WHERE` } 1 - (embedding <=> $1::vector) > ${similarityThreshold}
+			${whereClause ? 'AND' : `WHERE' } 1 - (embedding <=> $1::vector) > ${similarityThreshold}'`
 			ORDER BY embedding <=> $1::vector
 			LIMIT $2
 		`;`
@@ -554,7 +554,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as VectorPipelineRequest;
     // Validate required fields
     if (!body.bucket_name) {
-      throw error(400, 'bucket_name is required'); // changed from `return error(...)` }
+      throw error(400, 'bucket_name is required'); // changed from `return error(...)' }'`
     const result = await vectorPipelineService.processDocuments(body);
     return json({
       success: true,
@@ -573,7 +573,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'search': {
         if (!query) {
-          throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)` }
+          throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)' }'`
         // declarations inside a braced block to avoid lexical-declaration-in-case-block errors
         const limit = parseInt(url.searchParams.get('limit') || '10', 10);
         const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
@@ -604,7 +604,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(stats);
       }
       default:
-        throw error(400, 'Invalid action. Use ?action=search&q=query or ?action=stats'); // changed from `return error(...)` }
+        throw error(400, 'Invalid action. Use ?action=search&q=query or ?action=stats'); // changed from `return error(...)' }'`
   } catch (err) {
     console.error('Vector pipeline GET error:', err);'
     throw error(500, `Request failed: ${String(err)}`);

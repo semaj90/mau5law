@@ -794,8 +794,7 @@ class LegalReportsManager {
             name: 'recipient',
             type: 'text',
             required: true,
-            description: 'Memo recipient'
-          },
+            description: 'Memo recipient` },'`
           {
             name: 'author',
             type: 'text',
@@ -824,7 +823,7 @@ class LegalReportsManager {
         const compressed = await this.simdCache.stringify(template);
         localStorage.setItem(`${this.templatePrefix}${template.id}`, compressed);
       } catch (error) {
-        console.warn('Failed to save default template: `, error);'`
+        console.warn('Failed to save default template: ', error);'`'`
       }
     }
     reportTemplates.set(defaultTemplates);

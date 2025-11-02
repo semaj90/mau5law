@@ -180,7 +180,7 @@ export class SIMDJSONAccelerationService {
     const entities: LegalEntity[] = [];
     const patterns = [
       { pattern: /\b\d+\s+U\.S\.\s+\d+\b/g, type: 'case_citation' },
-      { pattern: /\b\d+\s+F\.\d+d\s+\d+\b/g, type: 'case_citation` },'`
+      { pattern: /\b\d+\s+F\.\d+d\s+\d+\b/g, type: `case_citation` },'`'`
       { pattern: /\b\d+\s+U\.S\.C\.\s+§?\s*\d+/g, type: `statute` },
       { pattern: /\b\d+\s+C\.F\.R\.\s+§?\s*\d+/g, type: `regulation` },
       { pattern: /\b(?:Supreme Court|District Court|Circuit Court|Court of Appeals)\b/g, type: `court` }

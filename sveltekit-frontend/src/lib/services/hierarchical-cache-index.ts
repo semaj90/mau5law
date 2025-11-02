@@ -579,8 +579,7 @@ export class HierarchicalCacheIndex {
             });
           }
         } catch (error) {
-          console.warn(`Prefetch failed for ${key}: ', error);'`
-        }
+          console.warn(`Prefetch failed for ${key}: ', error);'' }'`
       }
     }
   }
@@ -598,8 +597,7 @@ export class HierarchicalCacheIndex {
       generated: true,
       timestamp: Date.now(),
       context: context || {},
-      source: 'hierarchical_cache_fallback` };'`
-  }
+      source: 'hierarchical_cache_fallback' };'' }
   /**
    * Check if cache entry is expired
    */

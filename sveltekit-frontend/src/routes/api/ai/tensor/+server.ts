@@ -140,7 +140,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       { status: 502 }
     );
   } catch (e: any) {
-    return json({ error: e?.message || 'Tensor error` }, { status: 500 });'`
-  }
+    return json({ error: e?.message || 'Tensor error' }, { status: 500 });'` }'`
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

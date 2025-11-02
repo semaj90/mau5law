@@ -162,7 +162,7 @@ export default {
 // ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====
 export const typeScriptErrorResolution = {
   // Utility to enhance objects with missing properties
-  enhanceWithMissingProperties: <T extends, object>(obj: T, properties: Partial<T>): T => {
+  enhanceWithMissingProperties: <T, extends, object>(obj: T, properties: Partial<T>): T => {
     return { ...obj, ...properties };
   },
   // Safe property access with type assertions

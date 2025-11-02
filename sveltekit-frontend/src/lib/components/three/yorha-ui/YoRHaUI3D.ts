@@ -363,7 +363,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				vec3 color = mix(baseColor, scanColor, scanMask);
 				gl_FragColor = vec4(color, 1.0);
 			}
-		` });`
+		' });`'`
     borderMesh.material = scanMaterial;
     // Add to animation system - use typed uniform access
     const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
@@ -394,7 +394,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				vec3 color = mix(baseColor, scanColor, scan * 0.3);
 				gl_FragColor = vec4(color, 1.0);
 			}
-		` });`
+		' });`'`
     this.mesh.material = scanMaterial;
     // typed uniform access
     const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
@@ -547,7 +547,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           vec3 color = mix(baseColor, scanColor, scan * 0.3);
           gl_FragColor = vec4(color, 1.0);
         }
-      ` });`
+      ' });`'`
     this.mesh.material = scanMaterial;
     // typed uniform access
     const uniforms = scanMaterial.uniforms as unknown as UniformsMap;

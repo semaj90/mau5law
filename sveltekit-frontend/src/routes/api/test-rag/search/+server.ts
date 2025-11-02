@@ -189,8 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { query, searchType = 'hybrid', limit = 10, threshold = 0.7 } = await request.json();
 
     if (!query || typeof query !== 'string') {
-      return json({ error: 'Query is required` }, { status: 400 });'`
-    }
+      return json({ error: 'Query is required' }, { status: 400 });'` }'`
 
     console.log(`\n🔍 [Test RAG Search] Query: "${query}" (type=${searchType}, limit=${limit})');'`
 
@@ -298,7 +297,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .from(testRagEmbeddings)
           .limit(1)) as Array<{ count: number }>;
         const sesCountRows = (await db
-          .select({ count: sql<number>`COUNT(*)` })
+          .select({ count: sql<number>`COUNT(*)' })'`
           .from(testRagSearchSessions)
           .limit(1)) as Array<{ count: number }>;
 
@@ -307,8 +306,7 @@ export const GET: RequestHandler = async ({ url }) => {
         sesCount = Array.isArray(sesCountRows) && sesCountRows[0] ? Number(sesCountRows[0].count) : 0;
       } catch (countErr) {
         console.warn('[Test RAG] Failed to read table counts:', countErr);
-        // keep counts as -1 to indicate they couldn't be fetched'
-      }
+        // keep counts as -1 to indicate they couldn't be fetched` }'`
 
       // Check qdrant health if available
       let qdrantHealthy = $state<boolean>(false);

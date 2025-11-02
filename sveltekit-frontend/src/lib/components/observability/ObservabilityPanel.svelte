@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
-<!-- Observability Panel: Real-time alerts + sustained monitoring, dashboard -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
+<!-- Observability Panel: Real-time alerts + sustained, monitoring, dashboard -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -174,7 +174,7 @@ await loadState();
       </button>
     </div>
   </div>
-  <!-- Sustained Monitoring, Badges -->
+  <!-- Sustained, Monitoring, Badges -->
   <div, class="badges-row">
     <div, class="badge {getBadgeClass(p99Badge.status)}">
       <div, class="badge-label">P99 Breaches</div>

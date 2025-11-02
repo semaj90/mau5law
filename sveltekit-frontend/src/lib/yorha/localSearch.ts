@@ -115,8 +115,7 @@ export function mergeResults(local: any[], remote: any[], localWeight = 0.6, rem
       const combined = Math.round(existing.relevance * localWeight + remoteRel * remoteWeight);
       byId.set(r.id, { ...existing, ...r, relevance: combined, source: `hybrid` });
     } else {
-      byId.set(r.id, { ...r, relevance: remoteRel, source: `remote' });'`
-    }
+      byId.set(r.id, { ...r, relevance: remoteRel, source: 'remote' });'` }'`
   }
   return Array.from(byId.values()).sort((a, b) => b.relevance - a.relevance);
 }

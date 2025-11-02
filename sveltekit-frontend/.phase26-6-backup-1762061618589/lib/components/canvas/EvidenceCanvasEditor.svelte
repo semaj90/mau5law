@@ -20,11 +20,11 @@
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
-  import { Button } from '$lib/components/ui/button/Button.svelte';
-  import { Card } from '$lib/components/ui/card/Card.svelte';
-  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  Card  from "$lib/components/ui/card/Card.svelte";
+  import  CardContent  from "$lib/components/ui/card/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/card/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/card/CardTitle.svelte";
 
   // NOTE: lucide-svelte named imports caused TS module errors in this environment.
   // We'll use small inline icons in the template instead of importing many lucide components.
@@ -1174,11 +1174,11 @@
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
-  import { Button } from '$lib/components/ui/button/Button.svelte';
-  import { Card } from '$lib/components/ui/card/Card.svelte';
-  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  Card  from "$lib/components/ui/card/Card.svelte";
+  import  CardContent  from "$lib/components/ui/card/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/card/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/card/CardTitle.svelte";
 
   // NOTE: lucide-svelte named imports caused TS module errors in this environment.
   // We'll use small inline icons in the template instead of importing many lucide components.

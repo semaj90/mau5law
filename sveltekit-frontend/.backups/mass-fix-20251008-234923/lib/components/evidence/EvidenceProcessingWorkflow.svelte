@@ -12,12 +12,12 @@
    */
   import { createActor } from 'xstate';
   import { evidenceProcessingMachine, type EvidenceProcessingContext, getProcessingProgress, getCurrentStep } from '$lib/state/evidence-processing-machine.ts';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/ui/card.svelte';
+   from "$lib/ui/card.svelte";
   import { onMount, onDestroy } from "svelte";
   import type { IFrame } from '@stomp/stompjs';
   // Explicit actor snapshot typing to satisfy accesses to currentState.context / matches

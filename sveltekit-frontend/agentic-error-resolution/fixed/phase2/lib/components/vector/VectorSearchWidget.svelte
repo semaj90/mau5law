@@ -7,7 +7,7 @@ Compact searchable component for embedding in other interfaces
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { Badge } from '$lib/components/ui/badge.svelte'";
   import {
     Search,

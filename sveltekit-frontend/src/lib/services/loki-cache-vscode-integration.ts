@@ -71,8 +71,7 @@ export class LokiCacheVSCodeIntegration {
         echo: true,
         reveal: 'always',
         focus: false,
-        panel: 'shared'
-      },
+        panel: 'shared` },'`
       problemMatcher: ['$tsc']
     },
     'vector-search': {
@@ -456,13 +455,12 @@ export class LokiCacheVSCodeIntegration {
       case 'Neo4j: Sync Graph Data':
         return {
           success: true,
-          output: 'Graph data synchronized successfully'
-        };
+          output: 'Graph data synchronized successfully` };'`
       case 'Cache: Clear All Data':
         await this.clearAll();
         return {
           success: true,
-          output: `Cache cleared successfully` };
+          output: `Cache cleared successfully' };'`
       case 'GPU: Check Status':
         return {
           success: true,
@@ -492,8 +490,7 @@ export class LokiCacheVSCodeIntegration {
           echo: true,
           reveal: 'always',
           focus: true,
-          panel: 'dedicated'
-        },
+          panel: 'dedicated` },'`
         dependsOn: ['ai-process', 'vector-search', 'neo4j-sync']
       },
       'evidence-process': {

@@ -8,15 +8,15 @@ https://svelte.dev/e/js_parse_error -->
     class?: string;
     children?: import('svelte').Snippet;
   }
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
   let { analysisData = $bindable()  }: { analysisData = $bindable() : any } = $props(); // {
     evidenceAnalysis?: any;
     personsData?: any;
@@ -201,12 +201,12 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
-      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (showDetails = !showDetails)}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Full Analysis
-      </Button.Root>
-      <Button.Root class="bits-btn" variant="ghost" size="sm">📊 View Timeline</Button.Root>
-      <Button.Root class="bits-btn" variant="ghost" size="sm">🕸️ Relationship Graph</Button.Root>
-      <Button.Root class="bits-btn" size="sm">📝 Generate Report</Button.Root>
+      </Button>
+      <Button class="bits-btn" variant="ghost" size="sm">📊 View Timeline</Button>
+      <Button class="bits-btn" variant="ghost" size="sm">🕸️ Relationship Graph</Button>
+      <Button class="bits-btn" size="sm">📝 Generate Report</Button>
     </div>
     <!-- Detailed View -->
     {#if showDetails}

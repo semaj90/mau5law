@@ -311,8 +311,7 @@ export const agenticFunctions = {
         },
         userId: {
           type: 'string',
-          description: 'Current user ID` }'`
-      },
+          description: 'Current user ID' }'` },'`
       required: ['sessionId', 'userId']
     },
     handler: async (params: {, sessionId: string;, userId: string }) => {
@@ -439,7 +438,7 @@ export const agenticFunctions = {
     parameters: {
       type: 'object',
       properties: { query: {, type: 'string',
-          description: 'Original search query` },'`
+          description: `Original search query` },'`'`
         documents: {
           type: 'array',
           description: `Documents to rerank` },
@@ -484,8 +483,7 @@ export const agenticFunctions = {
         },
         maxLength: {
           type: 'number',
-          description: 'Max summary length (default: 500)` }'`
-      },
+          description: 'Max summary length (default: 500)' }'` },'`
       required: ['query', 'context']
     },
     handler: async (params: {, query: string;, context: string; maxLength?: number }): Promise<string> => {
@@ -516,8 +514,7 @@ export const agenticFunctions = {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
            , text: params.text,
-            voice: params.voice || 'en_US-lessac-medium` })'`
-        });
+            voice: params.voice || 'en_US-lessac-medium' })'` });'`
 
         if (!response.ok) {
           const errorBody = await response.text();
@@ -549,7 +546,7 @@ export const agenticFunctions = {
         parties: { type: 'array', items: { type: 'string' }, description: 'Parties involved in the case' },
         filedDate: { type: 'string', description: 'Date the case was filed (YYYY-MM-DD)' },
         evidenceCount: { type: 'number', description: 'Number of pieces of evidence' },
-        userId: { type: 'string', description: 'User ID associated with the case` },'`
+        userId: { type: 'string', description: `User ID associated with the case` },'`'`
         title: { type: 'string', description: `Title of the case` },
         description: { type: 'string', description: `Description of the case` }
       },
@@ -880,7 +877,7 @@ export class AgenticGemma3Client {
       4: 'Risk Assessment',
       5: 'Recommendation',
       6: 'Follow-up',
-      7: `Conclusion` }; // <-- fixed: close object, literal
+      7: `Conclusion` }; // <-- fixed: close, object, literal
 
     const current = typeof state?.hmmState?.currentState === 'number' ? state.hmmState.currentState : NaN;
 

@@ -118,8 +118,8 @@ export function deleteSessionCookie(cookies: Cookies): void {
   };
   cookies.set('session_id', '', clearOptions);
   cookies.set('session', '', clearOptions);
-  cookies.delete('session_id', { path: '/` });'`
-  cookies.delete('session', { path: `/` });
+  cookies.delete('session_id', { path: '/' });'`'`
+  cookies.delete('session', { path: `/' });'`
 }
 
 export const clearSessionCookie = deleteSessionCookie;

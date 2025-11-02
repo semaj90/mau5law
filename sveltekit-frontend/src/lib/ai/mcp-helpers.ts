@@ -85,8 +85,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'SvelteKit error detected - suggesting best practices',
         args: {, area: 'performance' },
         priority: 'medium',
-        expectedOutput: 'SvelteKit performance optimization guidelines` });'`
-    }
+        expectedOutput: 'SvelteKit performance optimization guidelines' });'` }'`
     if (error.message.includes('env') || error.message.includes('environment')) {
       suggestions.push({
         tool: 'suggest-integration',
@@ -220,7 +219,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
   try {
     const response = await fetch('http://localhost:3000/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , tool: 'resolve-library-id',
         arguments: { libraryName }

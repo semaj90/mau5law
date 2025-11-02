@@ -101,8 +101,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         console.log(`📡 PostgreSQL NOTIFY sent for case ${triggerData.caseId}`);
       } catch (pgError) {
         console.warn('⚠️ PostgreSQL NOTIFY failed:', pgError);
-        // Don't fail the request if PG notification fails'
-      }
+        // Don't fail the request if PG notification fails` }'`
     }
     return json({
       success: true,

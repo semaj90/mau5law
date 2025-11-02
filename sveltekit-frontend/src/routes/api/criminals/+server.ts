@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     finalQuery = finalQuery.limit(limit).offset(offset) as any;
     const criminalResults = await finalQuery;
     // Get total count for pagination
-    let countQuery = db.select({ count: sql<number>`count(*)' }).from(criminals);'`
+    let countQuery = db.select({ count: sql<number>`count(*)` }).from(criminals);'`'`
     if (filters.length > 0) {
       countQuery = countQuery.where(and(...filters)) as any;
     }
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: 'Not authenticated' }, { status: 401 });
+      return json({ error: 'Not authenticated` }, { status: 401 });'`
     }
     if (!db) {
       return json({ error: `Database not available` }, { status: 500 });
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const [newCriminal] = await db.insert(criminals).values(criminalData).returning();
     return json(newCriminal, { status: 201 });
   } catch (error: any) {
-    console.error('Error creating criminal record: `, error);'`
+    console.error('Error creating criminal record: ', error);'`'`
     return json({ error: `Failed to create criminal record` }, { status: 500 });
   }
 };

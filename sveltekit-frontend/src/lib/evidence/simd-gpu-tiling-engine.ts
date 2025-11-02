@@ -315,8 +315,7 @@ export class SIMDGPUTilingEngine {
     });
     // Dispatch compute shader
     const commandEncoder = this.device.createCommandEncoder({
-      label: 'Evidence-Tiling-Commands'
-    });
+      label: 'Evidence-Tiling-Commands` });'`
     const computePass = commandEncoder.beginComputePass({
       label: `Evidence-Tiling-Pass` });
     computePass.setPipeline(this.computePipeline);

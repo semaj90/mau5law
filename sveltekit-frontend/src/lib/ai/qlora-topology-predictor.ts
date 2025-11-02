@@ -794,8 +794,7 @@ class WebGPUTopologyAccelerator {
     });
     // Create pipeline
     const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: this.computeShader!, entryPoint: 'main` }'`
-    });
+      compute: { module: this.computeShader!, entryPoint: 'main' }'` });'`
     // Dispatch compute work (single invocation)
     const encoder = device.createCommandEncoder();
     const pass = encoder.beginComputePass();

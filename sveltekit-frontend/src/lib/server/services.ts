@@ -190,8 +190,7 @@ export async function uploadFile(
 
 	// Upload file
 	return await minio.putObject(bucket, key, data, {
-		'Content-Type': contentType || 'application/octet-stream` });'`
-}
+		'Content-Type': contentType || 'application/octet-stream' });'' }
 
 /**
  * Helper: Download file from MinIO

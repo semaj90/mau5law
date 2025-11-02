@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 
 export const GET: RequestHandler = async ({ params: _params, locals }) => {
   if (!locals.user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });
+    return json({ error: 'Unauthorized` }, { status: 401 });'`
   }
 
   try {
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ params: _params, locals }) => {
 
     return json({ reports: userReports });
   } catch (error: any) {
-    console.error('Failed to fetch reports: `, formatError(error));'`
-    return json({ error: 'Failed to fetch reports' }, { status: 500 });
+    console.error('Failed to fetch reports: ', formatError(error));'`'`
+    return json({ error: 'Failed to fetch reports` }, { status: 500 });'`
   }
 };

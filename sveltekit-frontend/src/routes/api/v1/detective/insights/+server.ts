@@ -96,7 +96,7 @@ type RequestLocals = {
 function getUserId(locals: RequestLocals): string {
   const id = locals?.user?.id ?? locals?.session?.user?.id ?? locals?.userId ?? null;
   if (!id) {
-    throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED` }));
+    throw error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED' }));'`
   }
   return String(id);
 }
@@ -374,6 +374,6 @@ async function generateConnectionInsights(evidence: EvidenceItem[]): Promise<unk
       id: item.id ?? null,
       title: item.title ?? null,
       connectionCount: Math.floor(Math.random() * 10) + 1,
-      significance: `high` }))
+      significance: `high' }))'`
   };
 }

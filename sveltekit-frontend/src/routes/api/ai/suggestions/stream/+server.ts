@@ -223,8 +223,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json` }'`
-      }
+        headers: { 'Content-Type': 'application/json' }'' }
     );
   }
 }
@@ -240,7 +239,7 @@ export async function GET({ url }: RequestEvent): Promise<Response> {
   // Convert GET to POST format and reuse the streaming logic
   const mockRequest = new Request('', {
     method: 'POST',
-    headers: { 'Content-Type': `application/json` },
+    headers: { 'Content-Type': `application/json' },'`
     body: JSON.stringify({
       content,
       reportType,

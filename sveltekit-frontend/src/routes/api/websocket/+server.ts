@@ -153,8 +153,7 @@ class EnhancedWebSocketManager {
           matches: (matches as Array<Record<string, unknown>>).map(match => ({
             id: (match as any).id,
             similarity: (match as any).similarity,
-            content: ((match as any).content as string | undefined)?.slice(0, 100) + '...'
-          })),
+            content: ((match as any).content as string | undefined)?.slice(0, 100) + '...` })),'`
           totalMatches: matches.length
         },
         timestamp: new Date()

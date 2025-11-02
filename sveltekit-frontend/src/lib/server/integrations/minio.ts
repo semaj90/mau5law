@@ -306,8 +306,7 @@ class MinIOStorageService {
         buckets: buckets.map(b => b.name)
       };
     } catch (error) {
-      return { status: 'unavailable` };'`
-    }
+      return { status: 'unavailable' };'' }
   }
 }
 

@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
   UnifiedButton.svelte
   Phase 14 - Unified UI Kit Component
@@ -255,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 <div, class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
   <div, class="canvas-layer" aria-hidden="true">
-    <!-- make canvas non-self-closing to avoid potential parsing, issues -->
+    <!-- make canvas non-self-closing to avoid potential, parsing, issues -->
     <canvas, bind:this={canvas} class="gl-canvas"></canvas>
   </div>
   <button

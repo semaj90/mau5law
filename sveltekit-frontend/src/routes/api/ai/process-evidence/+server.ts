@@ -120,8 +120,7 @@ const originalPOSTHandler: RequestHandler = async event => {
     const userRes = await getUser(event);
     const user = (userRes as { user?: User }).user || null;
     if (!user) {
-      return json({ error: 'Authentication required` }, { status: 401 });'`
-    }
+      return json({ error: 'Authentication required' }, { status: 401 });'' }
     // Parse request body
     const body: ProcessEvidenceRequest = await request.json();
     const {
@@ -143,14 +142,14 @@ const originalPOSTHandler: RequestHandler = async event => {
     }
     // Verify user matches authenticated user
     if (userId !== user.id) {
-      return json({ error: `User ID mismatch` }, { status: 403 });
+      return json({ error: 'User ID mismatch' }, { status: 403 });
     }
     // Check Ollama model availability
     const modelCheck = await checkOllamaModel(model);
     if (!modelCheck.available) {
       return json(
         {
-          error: 'Model ${model} not available. Available, models: ${modelCheck.models.join(', `)}` },
+          error: 'Model ${model} not available. Available, models: ${modelCheck.models.join(', `)}' },'`
         { status: 503 }
       );
     }
@@ -274,7 +273,7 @@ async function checkOllamaModel(model: string): Promise<ModelCheck> {
     return { available: availableModels.includes(model), models: availableModels };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('Ollama availability check failed: `, message);'`
+    console.error('Ollama availability check failed: ', message);'`'`
     return { available: false, models: [] };
   }
 }
@@ -296,7 +295,7 @@ Focus on: Applicable statutes, case precedents, legal principles, and jurisdicti
 Format: Comprehensive research memo with citations and legal analysis.`,`
     case_comparison: `${basePrompt}`
 Focus on: Similarities/differences in facts, legal issues, holdings, and reasoning.
-Format: Comparative analysis highlighting relevant patterns and distinctions.` };`
+Format: Comparative analysis highlighting relevant patterns and distinctions.' };`'`
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary;
 }
 
@@ -309,7 +308,7 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
     const url = `${getOllamaEndpoint()}/api/generate`;
     const resp = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
       body: JSON.stringify({
        , model: context?.model || 'unknown',
@@ -359,8 +358,7 @@ Analysis Type: ${context.analysisType}
 Evidence to Analyze:
 ${evidenceText}
 Please provide a comprehensive ${context.analysisType.replace('_', ' ')} of this evidence.
-Include relevant legal principles, potential issues, and actionable insights.`;`
-}
+Include relevant legal principles, potential issues, and actionable insights.`;' }'`
 
 // Extract legal concepts from analysis text
 function extractLegalConcepts(text: string): string[] {

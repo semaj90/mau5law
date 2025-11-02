@@ -163,7 +163,7 @@ export class MatrixUICompiler {
         indexCount: indices.length,
         nodeCount: nodes.length,
         lodLevel,
-        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard' }
+        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard` }'`
     };
   }
   /**

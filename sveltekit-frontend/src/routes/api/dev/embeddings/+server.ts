@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     let qdrant: { ok?: boolean; status?: number; error?: string } | null = null;
     if (QDRANT_URL) {
       try {
-        const resp = await fetch(`${QDRANT_URL}/collections/legal_evidence`, { method: 'GET` });'`
+        const resp = await fetch(`${QDRANT_URL}/collections/legal_evidence`, { method: 'GET' });'`'`
         qdrant = { ok: resp.ok, status: resp.status };
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);

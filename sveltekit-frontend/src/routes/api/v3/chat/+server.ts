@@ -175,8 +175,7 @@ function validateChatRequest(body: any): { valid: boolean; error?: string } {
   if (hasMessage) {
     const msg = String(obj.message);
     if (msg.length > 8000) {
-      return { valid: false, error: 'Message too long (max 8000 characters)` };'`
-    }
+      return { valid: false, error: 'Message too long (max 8000 characters)' };'` }'`
   }
 
   if (obj.temperature !== undefined) {

@@ -152,8 +152,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' }
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id);
     // Parse request body
@@ -164,7 +163,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Get evidence to verify it exists and user has access
     const evidence = await evidenceService.getById(evidenceId);
     if (!evidence) {
-      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND` }));
+      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND' }));'`
     }
     console.log(`Starting AI analysis for evidence ${evidenceId} with type: ${analysisType}`);
     // Perform AI analysis based on evidence type and content
@@ -179,8 +178,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           timestamp: new Date().toISOString(),
           analyzedBy: getUserId(locals),
           options,
-          version: '1.0` }'`
-      }
+          version: '1.0' }'' }
     };
     // Update evidence with analysis results
     // Note: Update would need proper implementation in the evidence service
@@ -222,7 +220,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     }
     const errMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     if (errMessage.includes('not found') || errMessage.includes('access denied')) {
-      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND` }));
+      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND' }));'`
     }
     return error(
       500,

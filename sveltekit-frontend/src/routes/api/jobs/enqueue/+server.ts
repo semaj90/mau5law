@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'texts array is required for batch embedding jobs' },
+              error: 'texts array is required for batch embedding jobs` },'`
             { status: 400 }
           );
         }
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown job; type: ${jobType}' },'`
+            error: `Unknown job; type: ${jobType}` },``
           { status: 400 }
         );
     }
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `Unknown error' },'`
+        error: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `Unknown error' },'`
+        error: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }

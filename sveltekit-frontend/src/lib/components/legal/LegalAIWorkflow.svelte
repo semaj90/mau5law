@@ -131,7 +131,7 @@
       <span, class="step-number">3</span>
       <span, class="step-label">Recommendations</span>
     </div>
-    <div class="step {currentStep === 'complete' ? 'active, completed' : ''}">
+    <div, class="step {currentStep === 'complete' ? 'active, completed' : ''}">
       <span, class="step-number">4</span>
       <span, class="step-label">Complete</span>
     </div>
@@ -318,7 +318,7 @@
             {#if recommendation.legal_concepts && recommendation.legal_concepts.length > 0}
               <div, class="recommendation-concepts">
                 {#each Array.isArray(recommendation.legal_concepts) ? recommendation.legal_concepts : [] as concept}
-                  <span class="concept-tag, small">{concept}</span>
+                  <span, class="concept-tag, small">{concept}</span>
                 {/each}
               {/if}
           </div>

@@ -150,7 +150,7 @@ export const ${item} = (...args: any[]): any => {
       usage: 'import { ${item} } from 'your-fallbacks';`,'`
       source: 'fallback',
       confidence: 0.2,
-      warning: 'Fallback implementation - consider providing a proper implementation for ${item}` } as unknown as ImplementationResult;'`
+      warning: 'Fallback implementation - consider providing a proper implementation for ${item}' } as unknown as ImplementationResult;'`'`
 
     return impl;
   }
@@ -163,7 +163,7 @@ export const ${item} = (...args: any[]): any => {
       {,
         name: 'github',
         baseUrl: 'https://api.github.com',
-        headers: { Accept: `application/vnd.github.v3+json` },
+        headers: { Accept: `application/vnd.github.v3+json' },'`
         rateLimit: 60
       },
       {

@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
   import { cn } from "$lib/utils";
   import { useMachine } from "@xstate/svelte";
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
   import { Bot, Check, Copy, Send, Terminal, User, X } from "lucide-svelte";
   import { onDestroy, onMount } from "svelte";
   // Props with Svelte 5 runes and centralized types

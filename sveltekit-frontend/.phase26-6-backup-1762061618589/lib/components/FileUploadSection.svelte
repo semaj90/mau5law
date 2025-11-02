@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   // Use modular components and types
   import type { UploadFile } from '$lib/components/ui/modular/types.svelte'';
-  import { FileUpload } from '$lib/components/ui/modular/FileUpload.svelte';
+  import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte";
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { processDocumentWorkflow } from '$lib/services/minio-neo4j-pgvector-integration';

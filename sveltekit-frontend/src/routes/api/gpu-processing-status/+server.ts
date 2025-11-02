@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
             memory_usage_mb: 6144
           },
           stage: `completed` };
-        console.log('🎯 GPU Processing Results: `);'`
+        console.log('🎯 GPU Processing Results: ');'`'`
         console.log(`   - Total errors: ${mockProcessingResult.errors.total}`);
         console.log(`   - Successfully fixed: ${mockProcessingResult.errors.fixed}`);
         console.log(`   - Processing time: ${mockProcessingResult.performance.processing_time_ms}ms`);
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           benchmark: benchmarkResult,
-          message: 'FlashAttention2 benchmark completed' });
+          message: 'FlashAttention2 benchmark completed` });'`
       default: return json({ success: false, error: `Invalid action` }, { status: 400 });
     }
   } catch (error: any) {

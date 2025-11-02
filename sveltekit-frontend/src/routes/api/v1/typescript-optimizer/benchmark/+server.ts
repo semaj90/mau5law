@@ -64,8 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         api_version: '2.0.0',
         go_service_url: ENHANCED_API_BASE_URL,
         sveltekit_benchmark_suite: true,
-        hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM` }'`
-    });
+        hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM' }'' });
   } catch (error: any) {
     console.error('Benchmark Error:', error);
     return json(
@@ -113,7 +112,7 @@ export const GET: RequestHandler = async () => {
      , gpu: 'NVIDIA RTX 3060 Ti',
       memory: '16GB RAM',
       cuda_version: '12.8',
-      go_service_version: `2.0.0` },
+      go_service_version: `2.0.0' },'`
     timestamp: new Date().toISOString()
   });
 };
@@ -135,7 +134,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
         const startTime = Date.now();
         const response = await fetch(`${ENHANCED_API_BASE_URL}${endpoint.url}`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
            , errors: generateSampleErrors(errorCount),
             ...endpoint.config,
@@ -148,8 +147,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
           successfulRuns++;
         }
       } catch (err: any) {
-        console.warn(`Benchmark iteration ${i + 1} failed for ${endpoint.name}: ', err);'`
-      }
+        console.warn(`Benchmark iteration ${i + 1} failed for ${endpoint.name}: ', err);'' }'`
     }
     if (endpointResults.length > 0) {
       const avgLatency = endpointResults.reduce((a, b) => a + b, 0) / endpointResults.length;
@@ -192,7 +190,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
       try {
         const response = await fetch(`${ENHANCED_API_BASE_URL}/api/optimized/auto-solve`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
            , errors: generateSampleErrors(errorCount),
             ...strategy.config,
@@ -210,8 +208,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
           qualityScores.push(confidence * 100);
         }
       } catch (err: any) {
-        console.warn(`Quality test iteration ${i + 1} failed for ${strategy.name}: ', err);'`
-      }
+        console.warn(`Quality test iteration ${i + 1} failed for ${strategy.name}: ', err);'' }'`
     }
     results.push({
       endpoint: strategy.name,
@@ -326,5 +323,5 @@ function generateSampleErrors(count: number) {
     .map((_, i) => ({
       ...sampleError,
       line: sampleError.line + i,
-      file: `src/lib/components/TestComponent${i + 1}.svelte` }));
+      file: `src/lib/components/TestComponent${i + 1}.svelte' }));'`
 }

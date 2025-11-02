@@ -54,8 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { message, sessionId } = body;
 
     if (!message) {
-      return json({ error: 'Message is required` }, { status: 400 });'`
-    }
+      return json({ error: 'Message is required' }, { status: 400 });'' }
 
     // Get user from session or use test mode
     const userId = locals.user?.id || `test-${randomUUID()}`;
@@ -65,7 +64,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const actualSessionId = sessionId || randomUUID();
 
     console.log(
-      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})'`
+      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})'`'
     );
 
     const startTime = Date.now();
@@ -104,7 +103,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const ollamaResponse = await fetch(ollamaUrl, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model,
         messages,
@@ -139,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 userId,
                 isTestMode,
                 theme: 'yorha',
-                message: `YoRHa Legal AI online. Glory to mankind.` })}\n\n`
+                message: `YoRHa Legal AI online. Glory to mankind.' })}\n\n`'
             )
           );
 
@@ -209,7 +208,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               `data: ${JSON.stringify({`
                , type: 'error',
                 error: error instanceof Error ? error.message : 'Stream error',
-                theme: `yorha` })}\n\n`
+                theme: `yorha' })}\n\n`'
             )
           );
           controller.close();
@@ -222,8 +221,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
-        'X-YoRHa-Theme': 'NieR-Automata` }'`
-    });
+        'X-YoRHa-Theme': 'NieR-Automata' }'' });
   } catch (error) {
     console.error('❌ YoRHa chat API error:', error);'
     return json(
@@ -231,7 +229,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         error: error instanceof Error ? error.message : 'Internal server error',
         isTestMode: !locals.user,
         theme: 'yorha',
-        message: `YoRHa Legal AI encountered an error. Glory to mankind.` },
+        message: `YoRHa Legal AI encountered an error. Glory to mankind.' },'`
       { status: 500 }
     );
   }

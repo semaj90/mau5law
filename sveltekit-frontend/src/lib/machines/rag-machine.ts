@@ -105,7 +105,7 @@ export const ragStateMachine = createMachine({
         },
         RETRY: {
           target: 'searching',
-          cond: ({ context }) => context.retryCount < 3, // Correct context access for, guard
+          cond: ({ context }) => context.retryCount < 3, // Correct context access, for, guard
           actions: assign({
             retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
             error: null

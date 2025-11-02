@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { ModernButton } from '$lib/components/ui/Button.svelte';
+  import  ModernButton  from "$lib/components/ui/Button.svelte";
   interface UploadResponse {
     success?: boolean;
     error?: string;

@@ -7,8 +7,8 @@ export interface FormField<TValue = unknown> { name: string;, value: TValue;
   validator?: (_value: TValue) => string | null;
 }
 
-export interface FormState<T extends, Record<string, unknown>> {
-  fields: Partial<{ [K in keyof, T]: FormField<T[K]> }>;
+export interface FormState<T, extends, Record<string, unknown>> {
+  fields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>;
   values: Partial<T>;
   errors: Record<string, string>;
   isSubmitting: boolean;
@@ -17,14 +17,14 @@ export interface FormState<T extends, Record<string, unknown>> {
   submitCount: number;
 }
 
-export interface FormOptions<T extends, Record<string, unknown>> {
+export interface FormOptions<T, extends, Record<string, unknown>> {
   initialValues?: T;
   validators?: { [K in keyof T]?: (value: T[K]) => string | null };
   requiredFields?: (keyof T)[];
   onSubmit?: (values: T) => Promise<void> | void;
 }
 
-function createFormStore<T extends, Record<string, unknown>>(_options: FormOptions<T> = {}) {
+function createFormStore<T, extends, Record<string, unknown>>(_options: FormOptions<T> = {}) {
   const {
     initialValues = {} as T,
     validators = {} as FormOptions<T>['validators'],
@@ -46,10 +46,10 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
 
   // Refactored validateForm to return updated fields and validity
   const validateForm = (
-    fields: Partial<{ [K in keyof, T]: FormField<T[K]> }>
-  ): { updatedFields: Partial<{ [K in keyof, T]: FormField<T[K]> }>; isValid: boolean } => {
+    fields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>
+  ): { updatedFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>; isValid: boolean } => {
     let isValid = true;
-    const updatedFields: Partial<{ [K in keyof, T]: FormField<T[K]> }> = { ...fields };
+    const updatedFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }> = { ...fields };
     (Object.keys(updatedFields) as Array<keyof, T>).forEach(name => {
       const field = updatedFields[name];
       if (!field) return;
@@ -61,7 +61,7 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
   };
 
   // Initialize fields
-  const initialFields: Partial<{ [K in keyof, T]: FormField<T[K]> }> = {} as Partial<{
+  const initialFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }> = {} as Partial<{
     [K in keyof T]: FormField<T[K]>;
   }>;
   (Object.keys(initialValues) as Array<keyof, T>).forEach(name => {
@@ -130,7 +130,7 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
     values,
     errors,
     // Set field value
-    setField: <K extends keyof, T>(name: K, value: T[K]) => {
+    setField: <K extends, keyof, T>(name: K, value: T[K]) => {
       update(state => {
         const field = state.fields[name] || {
           name: name as string,
@@ -179,7 +179,7 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
       });
     },
     // Touch field (mark as interacted with)
-    touchField: <K extends keyof, T>(name: K) => {
+    touchField: <K extends, keyof, T>(name: K) => {
       update(state => ({
         ...state,
         fields: {
@@ -226,7 +226,7 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
           submitCount: state.submitCount + 1
         };
         // Touch all fields
-        const, touchedFields: Partial<{ [K in keyof, T]: FormField<T[K]> }> = {};
+        const, touchedFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }> = {};
         (Object.keys(newState.fields) as Array<keyof, T>).forEach(name => {
           const field = newState.fields[name];
           if (field) {
@@ -258,8 +258,7 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
         try {
           await onSubmit(get(values) as T);
         } catch (error: any) {
-          console.error('Form submission error:', error);'
-        }
+          console.error('Form submission error:', error);` }`'
       }
       update(state => ({ ...state, isSubmitting: false }));
       return canSubmit;
@@ -269,7 +268,7 @@ function createFormStore<T extends, Record<string, unknown>>(_options: FormOptio
       set(initialState);
     },
     // Add new field dynamically
-    addField: <K extends keyof, T>(name: K, initialValue: T[K], isRequired: boolean = false) => {
+    addField: <K extends, keyof, T>(name: K, initialValue: T[K], isRequired: boolean = false) => {
       update(state => {
         const newFields = {
           ...state.fields,
